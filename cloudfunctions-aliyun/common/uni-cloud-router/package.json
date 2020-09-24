@@ -1,0 +1,12 @@
+{
+    "name": "uni-cloud-router",
+    "version": "0.0.3",
+    "description": "uni-cloud router",
+    "main": "dist/index.js",
+    "files": [
+        "dist"
+    ],
+    "author": "fxy060608",
+    "license": "Apache-2.0",
+    "dependencies": {}
+}
