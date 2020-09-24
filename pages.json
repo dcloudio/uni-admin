@@ -4,8 +4,10 @@
             "path": "pages/index/index"
         }, {
             "path": "pages/login/login",
-            "topWindow": false,
-            "leftWindow": false
+            "style": {
+                "topWindow": false,
+                "leftWindow": false
+            }
         }
     ],
     "globalStyle": {
