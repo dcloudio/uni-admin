@@ -1,6 +1,6 @@
 <template>
     <view class="content">
-		内容主体，可自定义内容及样式
+        内容主体，可自定义内容及样式
     </view>
 </template>
 
@@ -13,7 +13,22 @@
         },
         computed: {},
         onLoad() {
-
+            uniCloud.callFunction({
+                name: 'uni-admin',
+                data: {
+                    action: 'user/login',
+                    data: {
+                        username: 'wangyaqi',
+                        password: '123456',
+                    },
+                },
+                success(res) {
+                    console.log(res)
+                },
+                fail(err) {
+                    console.error(err)
+                }
+            })
         },
         methods: {}
     }
@@ -21,13 +36,13 @@
 
 <style>
     .content {
-		height: calc(100vh - (var(--window-top)));
+        height: calc(100vh - (var(--window-top)));
         display: flex;
         flex-direction: column;
         align-items: center;
         justify-content: center;
-		padding-top: var(--window-top);
-		background-color: #f8f8f8;
+        padding-top: var(--window-top);
+        background-color: #f8f8f8;
     }
 
     .logo {
@@ -48,8 +63,8 @@
         /* font-size: 36rpx; */
         color: #8f8f94;
     }
-	
-	.item-bg {
-		background-color: #ecf8f3;
-	}
+
+    .item-bg {
+        background-color: #ecf8f3;
+    }
 </style>

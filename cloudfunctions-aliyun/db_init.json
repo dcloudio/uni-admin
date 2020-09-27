@@ -1,0 +1,634 @@
+// 在本文件中可配置云数据库初始化，数据格式见：https://uniapp.dcloud.io/uniCloud/cf-database?id=db_init
+
+// 编写完毕后对本文件点右键，可按配置规则创建表和添加数据
+
+{
+    "uni-id-users": {
+        "data": [],
+        "index": [{
+            "IndexName": "username",
+            "MgoKeySchema": {
+                "MgoIndexKeys": [{
+                    "Name": "username",
+                    "Direction": "1"
+                }],
+                "MgoIsUnique": false
+            }
+        }, {
+            "IndexName": "mobile",
+            "MgoKeySchema": {
+                "MgoIndexKeys": [{
+                    "Name": "mobile",
+                    "Direction": "1"
+                }],
+                "MgoIsUnique": false
+            }
+        }, {
+            "IndexName": "email",
+            "MgoKeySchema": {
+                "MgoIndexKeys": [{
+                    "Name": "email",
+                    "Direction": "1"
+                }],
+                "MgoIsUnique": false
+            }
+        }, {
+            "IndexName": "wx_openid.app-plus",
+            "MgoKeySchema": {
+                "MgoIndexKeys": [{
+                    "Name": "wx_openid.app-plus",
+                    "Direction": "1"
+                }],
+                "MgoIsUnique": false
+            }
+        }, {
+            "IndexName": "wx_openid.mp-weixin",
+            "MgoKeySchema": {
+                "MgoIndexKeys": [{
+                    "Name": "wx_openid.mp-weixin",
+                    "Direction": "1"
+                }],
+                "MgoIsUnique": false
+            }
+        }, {
+            "IndexName": "wx_unionid",
+            "MgoKeySchema": {
+                "MgoIndexKeys": [{
+                    "Name": "wx_unionid",
+                    "Direction": "1"
+                }],
+                "MgoIsUnique": false
+            }
+        }, {
+            "IndexName": "ali_openid",
+            "MgoKeySchema": {
+                "MgoIndexKeys": [{
+                    "Name": "ali_openid",
+                    "Direction": "1"
+                }],
+                "MgoIsUnique": false
+            }
+        }, {
+            "IndexName": "my_invite_code",
+            "MgoKeySchema": {
+                "MgoIndexKeys": [{
+                    "Name": "my_invite_code",
+                    "Direction": "1"
+                }],
+                "MgoIsUnique": false
+            }
+        }, {
+            "IndexName": "inviter_uid",
+            "MgoKeySchema": {
+                "MgoIndexKeys": [{
+                    "Name": "inviter_uid",
+                    "Direction": "1"
+                }],
+                "MgoIsUnique": false
+            }
+        }, {
+            "IndexName": "invite_time",
+            "MgoKeySchema": {
+                "MgoIndexKeys": [{
+                    "Name": "invite_time",
+                    "Direction": "1"
+                }],
+                "MgoIsUnique": false
+            }
+        }, {
+            "IndexName": "role",
+            "MgoKeySchema": {
+                "MgoIndexKeys": [{
+                    "Name": "role",
+                    "Direction": "1"
+                }],
+                "MgoIsUnique": false
+            }
+        }]
+    },
+    "uni-verify": {
+        "data": [],
+        "index": [{
+            "IndexName": "mobile",
+            "MgoKeySchema": {
+                "MgoIndexKeys": [{
+                    "Name": "mobile",
+                    "Direction": "1"
+                }, {
+                    "Name": "code",
+                    "Direction": "1"
+                }],
+                "MgoIsUnique": false
+            }
+        }, {
+            "IndexName": "email",
+            "MgoKeySchema": {
+                "MgoIndexKeys": [{
+                    "Name": "email",
+                    "Direction": "1"
+                }, {
+                    "Name": "code",
+                    "Direction": "1"
+                }],
+                "MgoIsUnique": false
+            }
+        }]
+    },
+    "uni-id-roles": {
+        "data": [],
+        "index": [{
+                "IndexName": "role_id",
+                "MgoKeySchema": {
+                    "MgoIndexKeys": [{
+                        "Name": "role_id",
+                        "Direction": "1"
+                    }],
+                    "MgoIsUnique": true
+                }
+            },
+            {
+                "IndexName": "permission",
+                "MgoKeySchema": {
+                    "MgoIndexKeys": [{
+                        "Name": "permission",
+                        "Direction": "1"
+                    }],
+                    "MgoIsUnique": false
+                }
+            }
+        ]
+    },
+    "uni-id-permissions": {
+        "data": [],
+        "index": [{
+            "IndexName": "permission_id",
+            "MgoKeySchema": {
+                "MgoIndexKeys": [{
+                    "Name": "permission_id",
+                    "Direction": "1"
+                }],
+                "MgoIsUnique": true
+            }
+        }]
+    },
+    "opendb-admin-menu": {
+        "data": [{
+                "_id": "A",
+                "name": "A",
+                "icon": "bIcon-setFill",
+                "sort": 0,
+                "parent_id": "",
+                "status": 1
+            },
+            {
+                "_id": "A-0",
+                "name": "A-0",
+                "icon": "bIcon-setFill",
+                "sort": 0,
+                "parent_id": "A",
+                "status": 1
+            },
+            {
+                "_id": "A-0-0",
+                "name": "A-0-0",
+                "icon": "bIcon-setFill",
+                "sort": 0,
+                "parent_id": "A-0",
+                "status": 1,
+                "url": "A-0-0",
+                "permission": [
+                    "A-0-0/add",
+                    "A-0-0/delete"
+                ]
+            },
+            {
+                "_id": "A-0-1",
+                "name": "A-0-1",
+                "icon": "bIcon-setFill",
+                "sort": 1,
+                "parent_id": "A-0",
+                "status": 1,
+                "url": "A-0-1",
+                "permission": [
+                    "A-0-1/add",
+                    "A-0-1/delete"
+                ]
+            },
+            {
+                "_id": "A-0-2",
+                "name": "A-0-2",
+                "icon": "bIcon-setFill",
+                "sort": 2,
+                "parent_id": "A-0",
+                "status": 1,
+                "url": "A-0-2",
+                "permission": [
+                    "A-0-2/add",
+                    "A-0-2/delete"
+                ]
+            },
+            {
+                "_id": "A-1",
+                "name": "A-1",
+                "icon": "bIcon-setFill",
+                "sort": 1,
+                "parent_id": "A",
+                "status": 1
+            },
+            {
+                "_id": "A-1-0",
+                "name": "A-1-0",
+                "icon": "bIcon-setFill",
+                "sort": 0,
+                "parent_id": "A-1",
+                "status": 1,
+                "url": "A-1-0",
+                "permission": [
+                    "A-1-0/add",
+                    "A-1-0/delete"
+                ]
+            },
+            {
+                "_id": "A-1-1",
+                "name": "A-1-1",
+                "icon": "bIcon-setFill",
+                "sort": 1,
+                "parent_id": "A-1",
+                "status": 1,
+                "url": "A-1-1",
+                "permission": [
+                    "A-1-1/add",
+                    "A-1-1/delete"
+                ]
+            },
+            {
+                "_id": "A-1-2",
+                "name": "A-1-2",
+                "icon": "bIcon-setFill",
+                "sort": 2,
+                "parent_id": "A-1",
+                "status": 1,
+                "url": "A-1-2",
+                "permission": [
+                    "A-1-2/add",
+                    "A-1-2/delete"
+                ]
+            },
+            {
+                "_id": "A-2",
+                "name": "A-2",
+                "icon": "bIcon-setFill",
+                "sort": 2,
+                "parent_id": "A",
+                "status": 1
+            },
+            {
+                "_id": "A-2-0",
+                "name": "A-2-0",
+                "icon": "bIcon-setFill",
+                "sort": 0,
+                "parent_id": "A-2",
+                "status": 1,
+                "url": "A-2-0",
+                "permission": [
+                    "A-2-0/add",
+                    "A-2-0/delete"
+                ]
+            },
+            {
+                "_id": "A-2-1",
+                "name": "A-2-1",
+                "icon": "bIcon-setFill",
+                "sort": 1,
+                "parent_id": "A-2",
+                "status": 1,
+                "url": "A-2-1",
+                "permission": [
+                    "A-2-1/add",
+                    "A-2-1/delete"
+                ]
+            },
+            {
+                "_id": "A-2-2",
+                "name": "A-2-2",
+                "icon": "bIcon-setFill",
+                "sort": 2,
+                "parent_id": "A-2",
+                "status": 1,
+                "url": "A-2-2",
+                "permission": [
+                    "A-2-2/add",
+                    "A-2-2/delete"
+                ]
+            },
+            {
+                "_id": "B",
+                "name": "B",
+                "icon": "bIcon-setFill",
+                "sort": 1,
+                "parent_id": "",
+                "status": 1
+            },
+            {
+                "_id": "B-0",
+                "name": "B-0",
+                "icon": "bIcon-setFill",
+                "sort": 0,
+                "parent_id": "B",
+                "status": 1
+            },
+            {
+                "_id": "B-0-0",
+                "name": "B-0-0",
+                "icon": "bIcon-setFill",
+                "sort": 0,
+                "parent_id": "B-0",
+                "status": 1,
+                "url": "B-0-0",
+                "permission": [
+                    "B-0-0/add",
+                    "B-0-0/delete"
+                ]
+            },
+            {
+                "_id": "B-0-1",
+                "name": "B-0-1",
+                "icon": "bIcon-setFill",
+                "sort": 1,
+                "parent_id": "B-0",
+                "status": 1,
+                "url": "B-0-1",
+                "permission": [
+                    "B-0-1/add",
+                    "B-0-1/delete"
+                ]
+            },
+            {
+                "_id": "B-0-2",
+                "name": "B-0-2",
+                "icon": "bIcon-setFill",
+                "sort": 2,
+                "parent_id": "B-0",
+                "status": 1,
+                "url": "B-0-2",
+                "permission": [
+                    "B-0-2/add",
+                    "B-0-2/delete"
+                ]
+            },
+            {
+                "_id": "B-1",
+                "name": "B-1",
+                "icon": "bIcon-setFill",
+                "sort": 1,
+                "parent_id": "B",
+                "status": 1
+            },
+            {
+                "_id": "B-1-0",
+                "name": "B-1-0",
+                "icon": "bIcon-setFill",
+                "sort": 0,
+                "parent_id": "B-1",
+                "status": 1,
+                "url": "B-1-0",
+                "permission": [
+                    "B-1-0/add",
+                    "B-1-0/delete"
+                ]
+            },
+            {
+                "_id": "B-1-1",
+                "name": "B-1-1",
+                "icon": "bIcon-setFill",
+                "sort": 1,
+                "parent_id": "B-1",
+                "status": 1,
+                "url": "B-1-1",
+                "permission": [
+                    "B-1-1/add",
+                    "B-1-1/delete"
+                ]
+            },
+            {
+                "_id": "B-1-2",
+                "name": "B-1-2",
+                "icon": "bIcon-setFill",
+                "sort": 2,
+                "parent_id": "B-1",
+                "status": 1,
+                "url": "B-1-2",
+                "permission": [
+                    "B-1-2/add",
+                    "B-1-2/delete"
+                ]
+            },
+            {
+                "_id": "B-2",
+                "name": "B-2",
+                "icon": "bIcon-setFill",
+                "sort": 2,
+                "parent_id": "B",
+                "status": 1
+            },
+            {
+                "_id": "B-2-0",
+                "name": "B-2-0",
+                "icon": "bIcon-setFill",
+                "sort": 0,
+                "parent_id": "B-2",
+                "status": 1,
+                "url": "B-2-0",
+                "permission": [
+                    "B-2-0/add",
+                    "B-2-0/delete"
+                ]
+            },
+            {
+                "_id": "B-2-1",
+                "name": "B-2-1",
+                "icon": "bIcon-setFill",
+                "sort": 1,
+                "parent_id": "B-2",
+                "status": 1,
+                "url": "B-2-1",
+                "permission": [
+                    "B-2-1/add",
+                    "B-2-1/delete"
+                ]
+            },
+            {
+                "_id": "B-2-2",
+                "name": "B-2-2",
+                "icon": "bIcon-setFill",
+                "sort": 2,
+                "parent_id": "B-2",
+                "status": 1,
+                "url": "B-2-2",
+                "permission": [
+                    "B-2-2/add",
+                    "B-2-2/delete"
+                ]
+            },
+            {
+                "_id": "C",
+                "name": "C",
+                "icon": "bIcon-setFill",
+                "sort": 2,
+                "parent_id": "",
+                "status": 1
+            },
+            {
+                "_id": "C-0",
+                "name": "C-0",
+                "icon": "bIcon-setFill",
+                "sort": 0,
+                "parent_id": "C",
+                "status": 1
+            },
+            {
+                "_id": "C-0-0",
+                "name": "C-0-0",
+                "icon": "bIcon-setFill",
+                "sort": 0,
+                "parent_id": "C-0",
+                "status": 1,
+                "url": "C-0-0",
+                "permission": [
+                    "C-0-0/add",
+                    "C-0-0/delete"
+                ]
+            },
+            {
+                "_id": "C-0-1",
+                "name": "C-0-1",
+                "icon": "bIcon-setFill",
+                "sort": 1,
+                "parent_id": "C-0",
+                "status": 1,
+                "url": "C-0-1",
+                "permission": [
+                    "C-0-1/add",
+                    "C-0-1/delete"
+                ]
+            },
+            {
+                "_id": "C-0-2",
+                "name": "C-0-2",
+                "icon": "bIcon-setFill",
+                "sort": 2,
+                "parent_id": "C-0",
+                "status": 1,
+                "url": "C-0-2",
+                "permission": [
+                    "C-0-2/add",
+                    "C-0-2/delete"
+                ]
+            },
+            {
+                "_id": "C-1",
+                "name": "C-1",
+                "icon": "bIcon-setFill",
+                "sort": 1,
+                "parent_id": "C",
+                "status": 1
+            },
+            {
+                "_id": "C-1-0",
+                "name": "C-1-0",
+                "icon": "bIcon-setFill",
+                "sort": 0,
+                "parent_id": "C-1",
+                "status": 1,
+                "url": "C-1-0",
+                "permission": [
+                    "C-1-0/add",
+                    "C-1-0/delete"
+                ]
+            },
+            {
+                "_id": "C-1-1",
+                "name": "C-1-1",
+                "icon": "bIcon-setFill",
+                "sort": 1,
+                "parent_id": "C-1",
+                "status": 1,
+                "url": "C-1-1",
+                "permission": [
+                    "C-1-1/add",
+                    "C-1-1/delete"
+                ]
+            },
+            {
+                "_id": "C-1-2",
+                "name": "C-1-2",
+                "icon": "bIcon-setFill",
+                "sort": 2,
+                "parent_id": "C-1",
+                "status": 1,
+                "url": "C-1-2",
+                "permission": [
+                    "C-1-2/add",
+                    "C-1-2/delete"
+                ]
+            },
+            {
+                "_id": "C-2",
+                "name": "C-2",
+                "icon": "bIcon-setFill",
+                "sort": 2,
+                "parent_id": "C",
+                "status": 1
+            },
+            {
+                "_id": "C-2-0",
+                "name": "C-2-0",
+                "icon": "bIcon-setFill",
+                "sort": 0,
+                "parent_id": "C-2",
+                "status": 1,
+                "url": "C-2-0",
+                "permission": [
+                    "C-2-0/add",
+                    "C-2-0/delete"
+                ]
+            },
+            {
+                "_id": "C-2-1",
+                "name": "C-2-1",
+                "icon": "bIcon-setFill",
+                "sort": 1,
+                "parent_id": "C-2",
+                "status": 1,
+                "url": "C-2-1",
+                "permission": [
+                    "C-2-1/add",
+                    "C-2-1/delete"
+                ]
+            },
+            {
+                "_id": "C-2-2",
+                "name": "C-2-2",
+                "icon": "bIcon-setFill",
+                "sort": 2,
+                "parent_id": "C-2",
+                "status": 1,
+                "url": "C-2-2",
+                "permission": [
+                    "C-2-2/add",
+                    "C-2-2/delete"
+                ]
+            }
+        ],
+        "index": [{
+            "IndexName": "parent_id",
+            "MgoKeySchema": {
+                "MgoIndexKeys": [{
+                    "Name": "parent_id",
+                    "Direction": "1"
+                }],
+                "MgoIsUnique": false
+            }
+        }]
+    }
+}

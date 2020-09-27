@@ -1,5 +1,5 @@
 {
-  "name": "uni-admin",
+  "name": "uni-clientDB",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -10,7 +10,6 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "uni-cloud-router": "file:../common/uni-cloud-router",
     "uni-id": "file:../common/uni-id"
   }
 }

@@ -34,5 +34,7 @@
         padding: 160px 35px 0;
         margin: 0 auto;
         overflow: hidden;
+        border-radius: 5px;
+        box-shadow: 2px 2px 10px rgba(0,0,0,0.5);
     }
 </style>
