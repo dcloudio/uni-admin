@@ -10,10 +10,10 @@ module.exports = (options) => {
         const auth = await uniID.checkToken(ctx.event.uniIdToken)
         if (auth.code) {
             // 校验失败，抛出错误信息
-            throw {
-                code: auth.code,
-                message: auth.message
-            }
+            ctx.throw(auth.code, auth.message)
+        }
+        if (!auth.permission.includes(ctx.event.action)) {
+            ctx.throw(403, '禁止访问')
         }
         ctx.auth = auth // 设置当前请求的 auth 对象
         await next() // 执行后续中间件

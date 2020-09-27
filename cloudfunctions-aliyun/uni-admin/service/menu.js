@@ -1,14 +1,13 @@
 const {
     Service
 } = require('uni-cloud-router')
-const db = uniCloud.database()
 
 module.exports = class UserService extends Service {
     async getMenu() {
         const permission = this.ctx.auth.permission
         let {
             data: menuList
-        } = await db.collection('opendb-admin-menu').limit(1000).get()
+        } = await this.db.collection('opendb-admin-menu').limit(1000).get()
 
         // 删除无权限访问的菜单
         menuList = menuList.filter(item => {
@@ -35,9 +34,9 @@ module.exports = class UserService extends Service {
             }
             return -1
         })
-        
+
         // 删除无subMenu且无url的菜单项
-        for (let i = menuList.length - 1; i > -1 ; i--) {
+        for (let i = menuList.length - 1; i > -1; i--) {
             const currentMenu = menuList[i]
             const subMenu = menuList.filter(subMenuItem => subMenuItem.parent_id === currentMenu._id)
             if (!currentMenu.url && !subMenu.length) {
@@ -56,7 +55,7 @@ module.exports = class UserService extends Service {
                 }
                 const subMenu = menuList.filter(item => item.parent_id === currentMenu._id)
                 nextLayer = nextLayer.concat(subMenu)
-                currentMenu.subMenu = subMenu
+                currentMenu.children = subMenu
             }
             if (nextLayer.length) {
                 buildMenu(nextLayer)
@@ -65,11 +64,6 @@ module.exports = class UserService extends Service {
 
         buildMenu(menu)
 
-        return {
-            code: 0,
-            message: '成功获取菜单列表',
-            menu
-        }
-
+        return menu
     }
 }
