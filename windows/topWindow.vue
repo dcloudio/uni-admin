@@ -2,9 +2,8 @@
     <view class="navbar">
         <!--TODO-->
 		<view class="flex-s p-t-20">
-			<image src="../static/logo.png" mode=""></image>
-			<view class="flex-s">
-				<image src="../static/user.png" mode=""></image>
+			<image src="../static/user.png" mode=""></image>
+			<view class="">		
 				<a herf="" text="" class="logout">退出</a>️
 			</view>
 		</view>
@@ -22,7 +21,7 @@
 		width: 100%;
         box-sizing: border-box;
         border-bottom: 1px solid #eaecef;
-        background-color: #ecf8f3;
+        background-color: #fff;
     }
 	.flex-s {
 		height: 100%;

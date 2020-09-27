@@ -1,5 +1,5 @@
 <template>
-    <scroll-view class="sidebar">
+    <scroll-view class="sidebar" scroll-y="true">
         <!-- TODO -->
 		<!-- <menus :data="data"/> -->
 		<uni-nav-menu>
@@ -186,6 +186,70 @@
 							}]
 						}]
 					},
+					{
+						title: '个人信息',
+						path: '/user',
+						meta: {
+							icon: 'gear',
+							name: ''
+						},
+						children:[{
+							title: '邮箱设置',
+							path: '/email',
+							meta: {
+								icon: 'gear',
+								name: ''
+							}
+						},
+						{
+							title: '个人信息',
+							path: '/user',
+							meta: {
+								icon: 'gear',
+								name: ''
+							},
+							children:[{
+								title: '邮箱设置',
+								path: '/email',
+								meta: {
+									icon: 'gear',
+									name: ''
+								}
+							}]
+						}]
+					},
+					{
+						title: '个人信息',
+						path: '/user',
+						meta: {
+							icon: 'gear',
+							name: ''
+						},
+						children:[{
+							title: '邮箱设置',
+							path: '/email',
+							meta: {
+								icon: 'gear',
+								name: ''
+							}
+						},
+						{
+							title: '个人信息',
+							path: '/user',
+							meta: {
+								icon: 'gear',
+								name: ''
+							},
+							children:[{
+								title: '邮箱设置',
+								path: '/email',
+								meta: {
+									icon: 'gear',
+									name: ''
+								}
+							}]
+						}]
+					},
 					
 				]
 			}
@@ -203,10 +267,11 @@
 		top: var(--window-top);
 		left: 0;
 		width:240px;
-        height: 100%;
+        height: calc(100vh - (var(--window-top)));
         box-sizing: border-box;
         border-right: 1px solid #eaecef;
 		/* background-color: #28273D; */
+		padding-bottom: 10px;
     }
 	.title {
 		margin-left: 5px;
