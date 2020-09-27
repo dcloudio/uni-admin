@@ -3,12 +3,12 @@
         <view class="flex-cc m-b-30 login-title">
             系统登录
         </view>
-        <uni-forms ref="form" :form-rules="rules" autocomplete="off">
-            <uni-field left-icon="person" name="account" v-model="formData.account" labelWidth="35" placeholder="账户"
+        <uni-forms ref="form" :form-rules="rules" @submit="submit">
+            <uni-field left-icon="person" name="username" v-model="formData.username" labelWidth="35" placeholder="账户"
                 :clearable="false" />
             <uni-field class="m-b-30" left-icon="locked" v-model="formData.password" name="password" type="password"
                 labelWidth="35" placeholder="密码" :clearable="false" />
-            <button type="primary" size="mini" style="width: 100%;" form-type="submit">登录</button>
+            <button type="primary" size="mini" style="width: 100%;" form-type="submit" :loading="loading">登录</button>
         </uni-forms>
     </view>
 </template>
@@ -17,9 +17,10 @@
     export default {
         data() {
             return {
+                loading: false,
                 formData: {
                     username: '',
-                    password: ''
+                    password: '',
                 },
                 rules: {
                     // 对name字段进行必填验证
@@ -56,6 +57,7 @@
         },
         methods: {
             submit(e) {
+                this.loading = true
                 uniCloud.callFunction({
                     name: 'uni-admin',
                     data: {
@@ -63,6 +65,7 @@
                         data: this.formData,
                     }
                 }).then(res => {
+                    this.loading = false
                     uni.setStorageSync('uni_id_token', res.result.token)
                     uni.setStorageSync('uni_id_token_expired', res.result.tokenExpired)
                     uni.showModal({
@@ -75,6 +78,7 @@
                         }
                     })
                 }).catch(err => {
+                    this.loading = false
                     uni.showModal({
                         content: '登录失败：' + err.message,
                         showCancel: false

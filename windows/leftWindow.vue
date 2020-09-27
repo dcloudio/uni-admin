@@ -3,7 +3,7 @@
         <!-- TODO -->
         <!-- <menus :data="data"/> -->
         <uni-nav-menu>
-            <sidebar-item v-for="menu in menuData" :item="menu" />
+            <sidebar-item v-for="menu in menuData" :key="menu.title" :item="menu" />
         </uni-nav-menu>
     </scroll-view>
 </template>

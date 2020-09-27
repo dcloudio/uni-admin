@@ -2,7 +2,6 @@
 	<view class="uni-form">
 		<form @submit.stop="submitForm" @reset="resetForm">
 			<slot></slot>
-			<!-- <button class="button" form-type="reset">Reset</button> -->
 		</form>
 	</view>
 </template>
@@ -64,7 +63,8 @@
 		},
 		data() {
 			return {
-				rules: {}
+				rules: {},
+				formData: {}
 			};
 		},
 		watch: {
@@ -86,7 +86,24 @@
 					this.validator = new Validator(formRules)
 				}
 			},
-			// 表单提交
+
+			/**
+			 * 公开给用户使用
+			 * 设置自定义表单组件 value 值
+			 *  @param {String} name 字段名称
+			 *  @param {String} value 字段值
+			 */
+			setValue(name, value) {
+				this.formData[name] = value
+				let example = this.childrens.find(child => child.name === name)
+				example.val = value
+				example.triggerCheck(value)
+			},
+
+			/**
+			 * 表单提交
+			 * @param {Object} event
+			 */
 			submitForm(event) {
 				const {
 					value
@@ -124,7 +141,6 @@
 			 * @param {Object} event
 			 */
 			resetForm(event) {
-				console.log(123,event);
 				this.childrens.forEach(item => {
 					item.errorMessage = ''
 					item.val = ''
@@ -144,7 +160,7 @@
 			/**
 			 * 校验所有或者部分表单
 			 */
-			validateAll(invalidFields, type) {
+			validateAll(invalidFields, type, callback) {
 				if (!this.validator) return
 				this.childrens.forEach(item => {
 					item.errorMessage = ''
@@ -153,10 +169,11 @@
 				let example = null
 				result.forEach(item => {
 					example = this.childrens.find(child => child.name === item.key)
-					example.errorMessage = item.errorMessage
+					if (example) example.errorMessage = item.errorMessage
+
 				})
 
-				typeof callback === 'function' && callback(!result, invalidFields)
+				typeof callback === 'function' && callback(result, invalidFields)
 				if (type === 'submit') {
 					this.$emit('submit', {
 						value: invalidFields,
@@ -167,19 +184,18 @@
 				}
 			},
 
-
 			/**
 			 * 校验表单
 			 * 对整个表单进行校验的方法，参数为一个回调函数。
 			 */
-			validate(callback) {
+			submit(callback) {
 				let invalidFields = {}
 				this.childrens.forEach(item => {
 					item.parentVal((val) => {
 						invalidFields = Object.assign({}, invalidFields, val)
 					})
 				})
-				this.validateAll(invalidFields, 'submit')
+				this.validateAll(this.formData, 'submit', callback)
 			},
 
 			/**
