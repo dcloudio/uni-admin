@@ -22,242 +22,40 @@
 				menuData: [
 					{
 						title: '首页',
-						path: '/index',
-						meta: {
-							icon: 'home',
-							name: ''
-						}
+						url: '/index',
+						icon: 'home',
 					},{
 						title: '设置',
-						path: '/config',
-						meta: {
-							icon: 'gear',
-							name: ''
-						}
+						url: '/config',
+						icon: 'gear',
 					},
 					{
 						title: '个人信息',
-						path: '/user',
-						meta: {
-							icon: 'gear',
-							name: ''
-						},
+						url: '/user',
+						icon: 'gear',
 						children:[{
 							title: '邮箱设置',
-							path: '/email',
-							meta: {
-								icon: 'gear',
-								name: ''
-							}
+							url: '/email',
+							icon: 'gear',
 						},
 						{
 							title: '个人信息',
-							path: '/user',
-							meta: {
-								icon: 'gear',
-								name: ''
-							},
+							url: '/user',
+							icon: 'gear',
 							children:[{
 								title: '邮箱设置',
-								path: '/email',
-								meta: {
-									icon: 'gear',
-									name: ''
-								}
+								url: '/email',
+								icon: 'gear',
 							}]
 						}]
 					},
-					{
-						title: '设置',
-						path: '/config',
-						meta: {
-							icon: 'gear',
-							name: ''
-						}
-					},
-					{
-						title: '首页',
-						path: '/index',
-						meta: {
-							icon: 'home',
-							name: ''
-						}
-					},{
-						title: '设置',
-						path: '/config',
-						meta: {
-							icon: 'gear',
-							name: ''
-						}
-					},
-					{
-						title: '个人信息',
-						path: '/user',
-						meta: {
-							icon: 'gear',
-							name: ''
-						},
-						children:[{
-							title: '邮箱设置',
-							path: '/email',
-							meta: {
-								icon: 'gear',
-								name: ''
-							}
-						},
-						{
-							title: '个人信息',
-							path: '/user',
-							meta: {
-								icon: 'gear',
-								name: ''
-							},
-							children:[{
-								title: '邮箱设置',
-								path: '/email',
-								meta: {
-									icon: 'gear',
-									name: ''
-								}
-							}]
-						}]
-					},
-					{
-						title: '个人信息',
-						path: '/user',
-						meta: {
-							icon: 'gear',
-							name: ''
-						},
-						children:[{
-							title: '邮箱设置',
-							path: '/email',
-							meta: {
-								icon: 'gear',
-								name: ''
-							}
-						},
-						{
-							title: '个人信息',
-							path: '/user',
-							meta: {
-								icon: 'gear',
-								name: ''
-							},
-							children:[{
-								title: '邮箱设置',
-								path: '/email',
-								meta: {
-									icon: 'gear',
-									name: ''
-								}
-							}]
-						}]
-					},
-					{
-						title: '个人信息',
-						path: '/user',
-						meta: {
-							icon: 'gear',
-							name: ''
-						},
-						children:[{
-							title: '邮箱设置',
-							path: '/email',
-							meta: {
-								icon: 'gear',
-								name: ''
-							}
-						},
-						{
-							title: '个人信息',
-							path: '/user',
-							meta: {
-								icon: 'gear',
-								name: ''
-							},
-							children:[{
-								title: '邮箱设置',
-								path: '/email',
-								meta: {
-									icon: 'gear',
-									name: ''
-								}
-							}]
-						}]
-					},
-					{
-						title: '个人信息',
-						path: '/user',
-						meta: {
-							icon: 'gear',
-							name: ''
-						},
-						children:[{
-							title: '邮箱设置',
-							path: '/email',
-							meta: {
-								icon: 'gear',
-								name: ''
-							}
-						},
-						{
-							title: '个人信息',
-							path: '/user',
-							meta: {
-								icon: 'gear',
-								name: ''
-							},
-							children:[{
-								title: '邮箱设置',
-								path: '/email',
-								meta: {
-									icon: 'gear',
-									name: ''
-								}
-							}]
-						}]
-					},
-					{
-						title: '个人信息',
-						path: '/user',
-						meta: {
-							icon: 'gear',
-							name: ''
-						},
-						children:[{
-							title: '邮箱设置',
-							path: '/email',
-							meta: {
-								icon: 'gear',
-								name: ''
-							}
-						},
-						{
-							title: '个人信息',
-							path: '/user',
-							meta: {
-								icon: 'gear',
-								name: ''
-							},
-							children:[{
-								title: '邮箱设置',
-								path: '/email',
-								meta: {
-									icon: 'gear',
-									name: ''
-								}
-							}]
-						}]
-					},
-					
 				]
 			}
 		},
 		props:{
-			
+
 		}
-		
+
 	}
  </script>
 

@@ -2,13 +2,13 @@
 	<view>
 		<view class="" v-if="!item.children" >
 			<uni-menu-item>
-				<uni-icons :type="item.meta.icon" size="18" color="#888" />
+				<uni-icons :type="item.icon" size="18" color="#888" />
 				<text class="title">{{item.title}}</text>
 			</uni-menu-item>
 		</view>
 		<uni-sub-menu v-else>
 			<template v-slot:title>
-				<uni-icons :type="item.meta.icon" size="18" color="#888" />
+				<uni-icons :type="item.icon" size="18" color="#888" />
 				<text class="title">{{item.title}}</text>
 			</template>
 			<sidebar-item
