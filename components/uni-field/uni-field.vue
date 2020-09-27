@@ -22,6 +22,7 @@
 					 @input="onInput" @blur="onBlur" @focus="onFocus" @confirm="onConfirm" @tap="fieldClick" />
 					<input
 						v-else
+                        autocomplete="off"
 						:type="type"
 						class="uni-flex-1 uni-field__input-wrap"
                         :name="name"
@@ -56,6 +57,7 @@
  * Field 输入框
  * @description 此组件可以实现表单的输入与校验，包括 "text" 和 "textarea" 类型。
  * @tutorial https://ext.dcloud.net.cn/plugin?id=21001
+ *
  * @property {String } 	type 				输入框的类型（默认text）
  * @property {Boolean} 	required 			是否必填，左边您显示红色"*"号（默认false）
  * @property {String } 	leftIcon 			label左边的图标，限uni-ui的图标名称
@@ -658,6 +660,15 @@ export default {
 .uni-error-in-label {
     display: flex;
 	flex-direction: row;
+}
+
+input /deep/.uni-input-input:-webkit-autofill,
+
+input /deep/.uni-input-input:-webkit-autofill:hover,
+input /deep/.uni-input-input:-webkit-autofill:focus,
+input /deep/.uni-input-input:-webkit-autofill:active {
+	 -webkit-transition-delay: 99999s;
+	-webkit-transition: color 99999s ease-out, background-color 99999s ease-out;
 }
 
 </style>

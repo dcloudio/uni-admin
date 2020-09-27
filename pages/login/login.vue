@@ -3,11 +3,12 @@
         <view class="flex-cc m-b-30 login-title">
             系统登录
         </view>
-        <uni-forms ref="form" :form-rules="rules" @submit="submit">
-            <uni-field left-icon="person" label="账号" name="username" v-model="formData.username" placeholder="账户" />
-            <uni-field class="m-b-30" left-icon="locked" label="密码" v-model="formData.password" name="password" type="password"
-                placeholder="密码" />
-            <button type="primary" form-type="submit">登录</button>
+        <uni-forms ref="form" :form-rules="rules" autocomplete="off">
+            <uni-field left-icon="person" name="account" v-model="formData.account" labelWidth="35" placeholder="账户"
+                :clearable="false" />
+            <uni-field class="m-b-30" left-icon="locked" v-model="formData.password" name="password" type="password"
+                labelWidth="35" placeholder="密码" :clearable="false" />
+            <button type="primary" size="mini" style="width: 100%;" form-type="submit">登录</button>
         </uni-forms>
     </view>
 </template>
@@ -96,7 +97,7 @@
 
     .login-box {
         position: relative;
-        width: 520px;
+        width: 420px;
         max-width: 100%;
         padding: 50px 35px;
         margin: 0 auto;
@@ -115,7 +116,7 @@
     }
 
     .login-title {
-        font-size: 28px;
+        font-size: 24px;
         color: #333;
     }
 </style>
