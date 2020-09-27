@@ -1,24 +1,14 @@
 <template>
     <view class="login-box">
-		<view class="flex-cc m-b-30 login-title">
-			系统登录
-		</view>
-		<uni-forms ref="form" :form-rules="rules">
-			<uni-field 
-				left-icon="person"
-				label="账号"
-				name="account"
-				v-model="formData.account"
-				placeholder="账户" />
-			<uni-field class="m-b-30"
-				left-icon="locked"
-				label="密码" 
-				v-model="formData.password" 
-				name="password" 
-				type="password" 
-				placeholder="密码" />
-			<button type="primary" form-type="submit">登录</button>
-		</uni-forms>
+        <view class="flex-cc m-b-30 login-title">
+            系统登录
+        </view>
+        <uni-forms ref="form" :form-rules="rules" @submit="submit">
+            <uni-field left-icon="person" label="账号" name="username" v-model="formData.username" placeholder="账户" />
+            <uni-field class="m-b-30" left-icon="locked" label="密码" v-model="formData.password" name="password" type="password"
+                placeholder="密码" />
+            <button type="primary" form-type="submit">登录</button>
+        </uni-forms>
     </view>
 </template>
 
@@ -26,46 +16,70 @@
     export default {
         data() {
             return {
-				formData: {
-					account: '',
-					password: ''					
-				},
-				rules: {
-					// 对name字段进行必填验证
-					account: {
-						rules:[
-							{
-								required: true,
-								message: '请输入姓名',
-								trigger: 'blur'
-							},
-							{
-								minLength: 3,
-								maxLength: 5,
-								message: '姓名长度在 {minLength} 到 {maxLength} 个字符',
-								trigger: 'change'
-							}
-						]
-					},
-					// 对email字段进行必填验证
-					password: {
-						rules: [{
-								required: true,
-								message: '请输入正确的密码',
-								trigger: 'blur'
-							},
-							{
-								minLength: 6,
-								message: '密码长度大于{minLength} 个字符',
-								trigger: 'change'
-							}
-						]
-					}
-				}
+                formData: {
+                    username: '',
+                    password: ''
+                },
+                rules: {
+                    // 对name字段进行必填验证
+                    username: {
+                        rules: [{
+                                required: true,
+                                errorMessage: '请输入姓名',
+                                trigger: 'blur'
+                            },
+                            {
+                                minLength: 3,
+                                maxLength: 30,
+                                errorMessage: '姓名长度在{minLength}到{maxLength}个字符',
+                                trigger: 'change'
+                            }
+                        ]
+                    },
+                    // 对email字段进行必填验证
+                    password: {
+                        rules: [{
+                                required: true,
+                                errorMessage: '请输入正确的密码',
+                                trigger: 'blur'
+                            },
+                            {
+                                minLength: 6,
+                                errorMessage: '密码长度大于{minLength}个字符',
+                                trigger: 'change'
+                            }
+                        ]
+                    }
+                }
             }
         },
         methods: {
-			
+            submit(e) {
+                uniCloud.callFunction({
+                    name: 'uni-admin',
+                    data: {
+                        action: 'user/login',
+                        data: this.formData,
+                    }
+                }).then(res => {
+                    uni.setStorageSync('uni_id_token', res.result.token)
+                    uni.setStorageSync('uni_id_token_expired', res.result.tokenExpired)
+                    uni.showModal({
+                        content: '登录成功',
+                        showCancel: false,
+                        success() {
+                            uni.redirectTo({
+                                url: '/pages/index/index'
+                            })
+                        }
+                    })
+                }).catch(err => {
+                    uni.showModal({
+                        content: '登录失败：' + err.message,
+                        showCancel: false
+                    })
+                })
+            }
         }
     }
 </script>
@@ -79,6 +93,7 @@
         justify-content: center;
         /* background-color: #28273D; */
     }
+
     .login-box {
         position: relative;
         width: 520px;
@@ -86,18 +101,21 @@
         padding: 50px 35px;
         margin: 0 auto;
         overflow: hidden;
-		/* background-color: #F5F5F5; */
+        /* background-color: #F5F5F5; */
     }
-	.flex-cc {
-		display: flex;
-		align-items: center;
-		justify-content: center;
-	}
-	.m-b-30 {
-		margin-bottom: 30px;
-	}
-	.login-title {
-		font-size: 28px;
-		color: #333;
-	}
+
+    .flex-cc {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .m-b-30 {
+        margin-bottom: 30px;
+    }
+
+    .login-title {
+        font-size: 28px;
+        color: #333;
+    }
 </style>

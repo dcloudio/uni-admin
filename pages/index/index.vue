@@ -13,22 +13,7 @@
         },
         computed: {},
         onLoad() {
-            uniCloud.callFunction({
-                name: 'uni-admin',
-                data: {
-                    action: 'user/login',
-                    data: {
-                        username: 'wangyaqi',
-                        password: '123456',
-                    },
-                },
-                success(res) {
-                    console.log(res)
-                },
-                fail(err) {
-                    console.error(err)
-                }
-            })
+            
         },
         methods: {}
     }
