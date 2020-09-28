@@ -165,22 +165,24 @@
 				this.childrens.forEach(item => {
 					item.errorMessage = ''
 				})
-				const result = this.validator.validateAll(invalidFields)
+				let result = this.validator.validateAll(invalidFields)
+				if (Array.isArray(result)) {
+					if (result.length === 0) result = null
+				}
 				let example = null
-				result.forEach(item => {
+				result && result.forEach(item => {
 					example = this.childrens.find(child => child.name === item.key)
 					if (example) example.errorMessage = item.errorMessage
-
 				})
 
 				typeof callback === 'function' && callback(result, invalidFields)
 				if (type === 'submit') {
 					this.$emit('submit', {
 						value: invalidFields,
-						validate: result.length === 0 ? null : result
+						validate: result
 					})
 				} else {
-					this.$emit('validate', result.length === 0 ? null : result)
+					this.$emit('validate', result)
 				}
 			},
 
@@ -195,6 +197,7 @@
 						invalidFields = Object.assign({}, invalidFields, val)
 					})
 				})
+				console.log('----', this.formData);
 				this.validateAll(this.formData, 'submit', callback)
 			},
 

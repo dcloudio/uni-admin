@@ -22,10 +22,9 @@
 					 @input="onInput" @blur="onBlur" @focus="onFocus" @confirm="onConfirm" @tap="fieldClick" />
 					<input
 						v-else
-                        autocomplete="off"
 						:type="type"
 						class="uni-flex-1 uni-field__input-wrap"
-                        :name="name"
+            :name="name"
 						:value="value"
 						:password="password || this.type === 'password'"
 						:placeholder="placeholder"
@@ -57,7 +56,6 @@
  * Field 输入框
  * @description 此组件可以实现表单的输入与校验，包括 "text" 和 "textarea" 类型。
  * @tutorial https://ext.dcloud.net.cn/plugin?id=21001
- *
  * @property {String } 	type 				输入框的类型（默认text）
  * @property {Boolean} 	required 			是否必填，左边您显示红色"*"号（默认false）
  * @property {String } 	leftIcon 			label左边的图标，限uni-ui的图标名称
@@ -204,6 +202,11 @@ export default {
 			labelAli:''
 		};
 	},
+	watch:{
+		value(newVal){
+			console.log('-=-= value',newVal);
+		}
+	},
 	computed: {
         fieldStyle() {
             let style = {}
@@ -307,6 +310,7 @@ export default {
 				this.formRules = this.form.formRules[this.name]
 			}
 			this.validator = this.form.validator
+			this.form.formData[this.name] = this.value || ''
 		}else{
 			this.labelPos = this.labelPosition 	|| 'left'
 			this.labelWid = this.labelWidth 	|| 65
@@ -399,9 +403,10 @@ export default {
 			let value = event.detail.value;
 			// 判断是否去除空格
 			if(this.trim) value = this.trimStr(value);
+			this.form.formData[this.name] = value || ''
+			this.val = value
 			this.$emit('input', value);
 			// 校验输入
-			this.val = value
 			this.triggerValidator('change', value)
 		},
 
@@ -460,6 +465,7 @@ export default {
 	text-align: left;
 	color: #333;
 	font-size: 14px;
+	background-color: #fff;
 }
 
 .uni-field-inner {
@@ -661,14 +667,13 @@ export default {
     display: flex;
 	flex-direction: row;
 }
+input
+/deep/.uni-input-input:-webkit-autofill,
+/deep/.uni-input-input:-webkit-autofill:hover,
+/deep/.uni-input-input:-webkit-autofill:focus,
+/deep/.uni-input-input:-webkit-autofill:active {
+    -webkit-transition-delay: 99999s;
+    -webkit-transition: color 99999s ease-out, background-color 99999s ease-out;
 
-input /deep/.uni-input-input:-webkit-autofill,
-
-input /deep/.uni-input-input:-webkit-autofill:hover,
-input /deep/.uni-input-input:-webkit-autofill:focus,
-input /deep/.uni-input-input:-webkit-autofill:active {
-	 -webkit-transition-delay: 99999s;
-	-webkit-transition: color 99999s ease-out, background-color 99999s ease-out;
 }
-
 </style>
