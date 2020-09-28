@@ -45,6 +45,8 @@
                         uni.reLaunch({
                             url: '/pages/login/login'
                         })
+                    }).catch(err => {
+
                     })
             }
         }

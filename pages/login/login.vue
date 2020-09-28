@@ -87,6 +87,8 @@
                         uni.redirectTo({
                             url: '/pages/index/index'
                         })
+                    }).catch(err => {
+
                     }).finally(err => {
                         this.loading = false
                     })
