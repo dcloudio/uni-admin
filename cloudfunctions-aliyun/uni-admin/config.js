@@ -15,7 +15,7 @@ module.exports = {
             permission(),
             {
                 enable: true,
-                ignore: ['public', 'user']
+                ignore: ['public', 'user', 'system']
             }
         ]
     ]
