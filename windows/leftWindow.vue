@@ -3,7 +3,7 @@
         <!-- TODO -->
         <!-- <menus :data="data"/> -->
         <uni-nav-menu>
-            <sidebar-item v-for="menu in menuData" :key="menu.title" :item="menu" />
+            <sidebar-item v-for="menu in $store.state.app.navMenu" :key="menu.title" :item="menu" />
         </uni-nav-menu>
     </scroll-view>
 </template>
@@ -57,6 +57,9 @@
                 navMenu: 'app/navMenu'
             })
         },
+        mounted() {
+            console.log('======== navMenu =====',this.$store.state.app.navMenu)
+        }
 
     }
 </script>
