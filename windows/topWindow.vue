@@ -12,13 +12,19 @@
 
 <script>
     import {
-        mapMutations
+        mapMutations,
+        mapState
     } from 'vuex'
     export default {
         data() {
             return {
 
             }
+        },
+        computed: {
+            ...mapState({
+                userInfo: 'user/userInfo'
+            })
         },
         methods: {
             ...mapMutations({

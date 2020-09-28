@@ -1,4 +1,5 @@
 const auth = require('./middleware/auth')
+const permission = require('./middleware/permission')
 
 module.exports = {
     baseDir: __dirname,
@@ -8,6 +9,13 @@ module.exports = {
             {
                 enable: true,
                 ignore: 'user'
+            }
+        ],
+        [
+            permission(),
+            {
+                enable: true,
+                ignore: ['public', 'user']
             }
         ]
     ]

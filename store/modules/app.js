@@ -1,9 +1,12 @@
+import http from '../../js_sdk/utils/http.js'
+
 export default {
     namespaced: true,
     state: {
         sidebar: {
             opened: true
-        }
+        },
+        navMenu: []
     },
     mutations: {
         TOGGLE_SIDEBAR: state => {
@@ -11,6 +14,9 @@ export default {
         },
         CLOSE_SIDEBAR: state => {
             state.sidebar.opened = false
+        },
+        SET_NAV_MENU: (state, navMenu) => {
+            state.navMenu = navMenu
         }
     },
     actions: {
@@ -23,6 +29,21 @@ export default {
             commit
         }) {
             commit('CLOSE_SIDEBAR')
+        },
+        init({
+            commit
+        }) {
+            http('system/init')
+                .then(res => {
+                    const {
+                        navMenu,
+                        userInfo
+                    } = res.result
+                    commit('SET_NAV_MENU', navMenu)
+                    commit('user/SET_USER_INFO', userInfo, {
+                        root: true
+                    })
+                })
         }
     }
 }

@@ -1,11 +1,26 @@
 <script>
     import {
-        mapGetters
+        mapGetters,
+        mapMutations,
+        mapActions
     } from 'vuex'
     export default {
         computed: {
             ...mapGetters({
                 isTokenValid: 'user/isTokenValid'
+            })
+        },
+        methods: {
+            ...mapMutations({
+                setNavMenu(commit, navMenu) {
+                    commit('app/SET_NAV_MENU', navMenu)
+                },
+                setUserInfo(commit, navMenu) {
+                    commit('user/SET_USER_INFO', navMenu)
+                }
+            }),
+            ...mapActions({
+                init: 'app/init'
             })
         },
         onLaunch: function() {
@@ -14,6 +29,8 @@
                 uni.navigateTo({
                     url: '/pages/login/login'
                 })
+            } else {
+                this.init()
             }
         },
         onShow: function() {

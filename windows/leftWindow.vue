@@ -9,6 +9,9 @@
 </template>
 
 <script>
+    import {
+        mapState
+    } from 'vuex'
     import sidebarItem from '@/components/sidebar-item/sidebar-item.vue'
     export default {
         components: {
@@ -49,9 +52,11 @@
                 ]
             }
         },
-        props: {
-
-        }
+        computed: {
+            ...mapState({
+                navMenu: 'app/navMenu'
+            })
+        },
 
     }
 </script>
