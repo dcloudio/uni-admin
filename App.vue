@@ -1,7 +1,6 @@
 <script>
     import {
         mapGetters,
-        mapMutations,
         mapActions
     } from 'vuex'
     export default {
@@ -11,14 +10,6 @@
             })
         },
         methods: {
-            ...mapMutations({
-                setNavMenu(commit, navMenu) {
-                    commit('app/SET_NAV_MENU', navMenu)
-                },
-                setUserInfo(commit, navMenu) {
-                    commit('user/SET_USER_INFO', navMenu)
-                }
-            }),
             ...mapActions({
                 init: 'app/init'
             })

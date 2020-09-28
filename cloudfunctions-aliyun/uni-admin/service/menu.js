@@ -53,7 +53,9 @@ module.exports = class UserService extends Service {
                 if (currentMenu.url) {
                     continue
                 }
-                const subMenu = menuList.filter(item => item.parent_id === currentMenu._id)
+                const subMenu = menuList.filter(item => item.parent_id === currentMenu._id).sort((a, b) => {
+                    return a.sort - b.sort
+                })
                 nextLayer = nextLayer.concat(subMenu)
                 currentMenu.children = subMenu
             }
