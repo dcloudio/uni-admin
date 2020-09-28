@@ -8,7 +8,7 @@
                 :clearable="false" />
             <uni-field class="p-lr-0 m-b-30" left-icon="locked" v-model="formData.password" name="password" type="password"
                 labelWidth="35" placeholder="密码" :clearable="false" />
-            <button type="primary" size="mini" style="width: 100%;" :loading="loading" @click="submitForm('form')">登录</button>
+            <button class="login-button flex-cc" type="primary" :loading="loading" @click="submitForm('form')">登录</button>
         </uni-forms>
     </view>
 </template>
@@ -124,7 +124,7 @@
         width: 100%;
         height: 100%;
         display: flex;
-        align-items: center;
+        /* align-items: center; */
         justify-content: center;
         /* background-color: #28273D; */
     }
@@ -133,7 +133,7 @@
         position: relative;
         width: 420px;
         max-width: 100%;
-        padding: 50px 35px;
+        padding: 180px 35px 0;
         margin: 0 auto;
         overflow: hidden;
     }
@@ -156,5 +156,9 @@
     .p-lr-0 {
         padding-left: 0;
         padding-right: 0;
+    }
+    .login-button {
+        height: 39px;
+        width: 100%;
     }
 </style>
