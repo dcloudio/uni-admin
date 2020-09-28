@@ -70,7 +70,7 @@
         height: calc(100vh - (var(--window-top)));
         box-sizing: border-box;
         border-right: 1px solid #eaecef;
-        /* background-color: #28273D; */
+        background-color: #fff;
         padding-bottom: 10px;
     }
 

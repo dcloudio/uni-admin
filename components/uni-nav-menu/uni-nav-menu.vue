@@ -13,7 +13,7 @@
 				type: String,
 				default: 'vertical'
 			},
-			// 是否水平折叠收起菜单（仅在 mode 为 vertical 时可用）	
+			// 是否水平折叠收起菜单（仅在 mode 为 vertical 时可用）
 			collapse: {
 				type: Boolean,
 				default: false
@@ -33,7 +33,7 @@
 				type: String,
 				default: ''
 			},
-			// 当前激活菜单的 index	
+			// 当前激活菜单的 index
 			defaultActive: {
 				type: String,
 				default: ''
@@ -45,12 +45,12 @@
 					return []
 				}
 			},
-			// 是否只保持一个子菜单的展开	
+			// 是否只保持一个子菜单的展开
 			uniqueOpened: {
 				type: Boolean,
 				default: false
 			},
-			// 子菜单打开的触发方式(只在 mode 为 horizontal 时有效) ，可选值 	 hover / click	
+			// 子菜单打开的触发方式(只在 mode 为 horizontal 时有效) ，可选值 	 hover / click
 			menuTrigger: {
 				type: String,
 				default: 'hover'
@@ -67,7 +67,7 @@
 		},
 		data() {
 			return {
-				
+
 			};
 		}
 	}
@@ -75,7 +75,7 @@
 
 <style lang="scss">
 .uni-nav-menu {
-	width: 240px;
+	width: 40px;
 	min-height: 400px;
 	// background-color: #FFFFFF;
 	// border: 1px red solid;

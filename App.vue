@@ -36,6 +36,6 @@
 <style>
     /*每个页面公共css */
     page {
-        font-size: 14px;
+        background-color: #f8f8f8;
     }
 </style>
