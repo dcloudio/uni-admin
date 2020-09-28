@@ -39,4 +39,8 @@
         background-color: #f8f8f8;
         font-size: 14px;
     }
+    
+    .clickable-hand {
+        cursor: pointer;
+    }
 </style>

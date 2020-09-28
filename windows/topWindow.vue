@@ -5,9 +5,9 @@
             <view class="">
             </view>
             <view class="flex-s">
-                <text class="user" @click="logout">{{$store.state.user.userInfo.username}}</text>️
+                <text class="user">{{userInfo.username}}</text>️
                 <image src="../static/user.png" mode=""></image>
-                <text class="logout" @click="logout">退出</text>️
+                <text v-if="userInfo.username" class="logout clickable-hand" @click="logout">退出</text>️
             </view>
         </view>
     </view>
@@ -25,12 +25,7 @@
             }
         },
         computed: {
-            ...mapState({
-                userInfo: 'user/userInfo'
-            })
-        },
-        mounted() {
-          // console.log('======== this.userInfo =========', this.userInfo)
+            ...mapState('user', ['userInfo'])
         },
         methods: {
             ...mapMutations({

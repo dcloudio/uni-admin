@@ -3,7 +3,7 @@
         <!-- TODO -->
         <!-- <menus :data="data"/> -->
         <uni-nav-menu>
-            <sidebar-item v-for="menu in $store.state.app.navMenu" :key="menu.title" :item="menu" />
+            <sidebar-item v-for="menu in navMenu" :key="menu._id" :item="menu" />
         </uni-nav-menu>
     </scroll-view>
 </template>
@@ -19,43 +19,10 @@
         },
         data() {
             return {
-                menuData: [{
-                        title: '首页',
-                        url: '/index',
-                        icon: 'home',
-                    }, {
-                        title: '设置',
-                        url: '/config',
-                        icon: 'gear',
-                    },
-                    {
-                        title: '个人信息',
-                        url: '/user',
-                        icon: 'gear',
-                        children: [{
-                                title: '邮箱设置',
-                                url: '/email',
-                                icon: 'gear',
-                            },
-                            {
-                                title: '个人信息',
-                                url: '/user',
-                                icon: 'gear',
-                                children: [{
-                                    title: '邮箱设置',
-                                    url: '/email',
-                                    icon: 'gear',
-                                }]
-                            }
-                        ]
-                    },
-                ]
             }
         },
         computed: {
-            ...mapState({
-                navMenu: 'app/navMenu'
-            })
+            ...mapState('app',['navMenu'])
         },
         mounted() {
             console.log('======== navMenu =====',this.$store.state.app.navMenu)

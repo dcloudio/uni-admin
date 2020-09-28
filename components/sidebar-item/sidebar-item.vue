@@ -1,7 +1,7 @@
 <template>
-    <view>
-        <view class="" v-if="!item.children">
-            <uni-menu-item>
+    <view class="clickable-hand">
+        <view v-if="!item.children">
+            <uni-menu-item @click="clickMenuItem(item.url)">
                 <uni-icons :type="item.icon" size="18" color="#888" />
                 <text class="title">{{item.name}}</text>
             </uni-menu-item>
@@ -11,7 +11,7 @@
                 <uni-icons :type="item.icon" size="18" color="#888" />
                 <text class="title">{{item.name}}</text>
             </template>
-            <sidebar-item v-for="child in item.children" :item="child" :key="child.title" />
+            <sidebar-item v-for="child in item.children" :item="child" :key="child._id" />
         </uni-sub-menu>
     </view>
 </template>
@@ -30,6 +30,20 @@
         },
         props: {
             item: ''
+        },
+        methods:{
+            clickMenuItem(url) {
+                url = '../../pages/test/' + url
+                uni.navigateTo({
+                    url: url,
+                    success(res) {
+                        console.log('===== success =====',res)
+                    },
+                    fail(res) {
+                        console.log('===== fail =====',res)
+                    },
+                })
+            }
         }
     }
 </script>

@@ -9,7 +9,23 @@
                 "topWindow": false,
                 "leftWindow": false
             }
-        }		
+        }
+        ,{
+            "path" : "pages/test/A-0-0",
+            "style" :
+            {
+                "navigationBarTitleText": "",
+                "enablePullDownRefresh": false
+            }
+        },
+        {
+            "path" : "pages/test/A-0-1",
+            "style" :
+            {
+                "navigationBarTitleText": "",
+                "enablePullDownRefresh": false
+            }
+        }
     ],
     "globalStyle": {
         "navigationStyle": "custom",

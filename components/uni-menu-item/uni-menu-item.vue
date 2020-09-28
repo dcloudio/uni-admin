@@ -32,7 +32,6 @@
 				this.getParentAll('Menu', this)
 			},
 			menuItemClick() {
-				console.log("============ clicked =======")
 				this.$emit('click');
 			},
 		}
