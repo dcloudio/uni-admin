@@ -10,7 +10,7 @@ export default function(action, data) {
         if (res.result.code) {
             if (typeof res.result.code === 'string' && res.result.code.indexOf('TOKEN_INVALID') === 0) {
                 uni.reLaunch({
-                    url: '/pages/login/login.vue'
+                    url: '/pages/login/login'
                 })
             }
             return Promise.reject(new Error(res.result.message))
@@ -25,7 +25,7 @@ export default function(action, data) {
                 tokenExpired
             })
         }
-        return Promise.resolve(res)
+        return Promise.resolve(res.result)
     }).catch(err => {
         uni.showModal({
             content: '请求服务失败:' + err.message,

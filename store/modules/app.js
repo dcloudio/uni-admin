@@ -38,7 +38,7 @@ export default {
                     const {
                         navMenu,
                         userInfo
-                    } = res.result
+                    } = res
                     commit('SET_NAV_MENU', navMenu)
                     commit('user/SET_USER_INFO', userInfo, {
                         root: true

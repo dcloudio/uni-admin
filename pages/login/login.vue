@@ -76,8 +76,8 @@
                 this.$http('user/login', this.formData)
                     .then(res => {
                         this.setToken({
-                            token: res.result.token,
-                            tokenExpired: res.result.tokenExpired
+                            token: res.token,
+                            tokenExpired: res.tokenExpired
                         })
                         this.init()
                         uni.showToast({
