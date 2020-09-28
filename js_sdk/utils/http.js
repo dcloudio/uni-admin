@@ -25,7 +25,7 @@ export default function(action, data) {
                 tokenExpired
             })
         }
-        resolve(res)
+        return Promise.resolve(res)
     }).catch(err => {
         uni.showModal({
             content: '请求服务失败:' + err.message,
