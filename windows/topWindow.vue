@@ -33,29 +33,13 @@
                 }
             }),
             logout() {
-                uniCloud.callFunction({
-                    name: 'uni-admin',
-                    data: {
-                        action: 'user/logout'
-                    }
-                }).then(res => {
-                    if (res.result.code) {
-                        uni.showModal({
-                            content: res.result.message || '退出失败',
-                            showCancel: false
+                this.$http('user/logout')
+                    .then(res => {
+                        this.removeToken()
+                        uni.reLaunch({
+                            url: '/pages/login/login'
                         })
-                        return
-                    }
-                    this.removeToken()
-                    uni.reLaunch({
-                        url: '/pages/login/login'
                     })
-                }).catch(err => {
-                    uni.showModal({
-                        content: '登录失败：' + err.message,
-                        showCancel: false
-                    })
-                })
             }
         }
     }

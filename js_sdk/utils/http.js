@@ -1,3 +1,4 @@
+import store from '../../store'
 export default function(action, data) {
     return new Promise((resolve, reject) => {
         uniCloud.callFunction({
@@ -23,7 +24,7 @@ export default function(action, data) {
             resolve(res)
         }).catch(err => {
             uni.showModal({
-                content: err.message,
+                content: '请求服务失败:' + err.message,
                 showCancel: false
             })
         })

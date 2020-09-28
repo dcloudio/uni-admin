@@ -4,8 +4,8 @@
             系统登录
         </view>
         <uni-forms ref="form" :form-rules="rules">
-            <uni-field class="p-lr-0" left-icon="person" name="username" v-model="formData.username" labelWidth="35" placeholder="账户"
-                :clearable="false" />
+            <uni-field class="p-lr-0" left-icon="person" name="username" v-model="formData.username" labelWidth="35"
+                placeholder="账户" :clearable="false" />
             <uni-field class="m-b-30 p-lr-0" left-icon="locked" v-model="formData.password" name="password" type="password"
                 labelWidth="35" placeholder="密码" :clearable="false" />
             <button class="login-button flex-cc m-b-30" type="primary" :loading="loading" @click="submitForm('form')">登录</button>
@@ -73,42 +73,25 @@
             }),
             submit(e) {
                 this.loading = true
-                uniCloud.callFunction({
-                    name: 'uni-admin',
-                    data: {
-                        action: 'user/login',
-                        data: this.formData,
-                    }
-                }).then(res => {
-                    this.loading = false
-                    if (res.result.code) {
-                        uni.showModal({
-                            content: res.result.message || '登录失败',
-                            showCancel: false
+                this.$http('user/login', this.formData)
+                    .then(res => {
+                        this.setToken({
+                            token: res.result.token,
+                            tokenExpired: res.result.tokenExpired
                         })
-                        return
-                    }
-                    this.setToken({
-                        token: res.result.token,
-                        tokenExpired: res.result.tokenExpired
+                        this.init()
+                        uni.showToast({
+                            title: '登录成功',
+                            icon: 'none'
+                        })
+                        uni.redirectTo({
+                            url: '/pages/index/index'
+                        })
+                    }).finally(err => {
+                        this.loading = false
                     })
-                    this.init()
-                    uni.showToast({
-                        title: '登录成功',
-                        icon: 'none'
-                    })
-                    uni.redirectTo({
-                        url: '/pages/index/index'
-                    })
-                }).catch(err => {
-                    this.loading = false
-                    uni.showModal({
-                        content: '登录失败：' + err.message,
-                        showCancel: false
-                    })
-                })
             },
-            submitForm(form){
+            submitForm(form) {
                 this.$refs[form].submit((valid, values) => {
                     if (!valid) {
                         this.submit()

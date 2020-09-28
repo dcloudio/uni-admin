@@ -1,7 +1,8 @@
 import store from './store'
+import http from './js_sdk/utils/http.js'
 export default {
     install(Vue) {
-        console.log(store);
+        Vue.prototype.$http = http
         Vue.prototype.$hasPermission = function hasPermission(name) {
             // TODO
         }
