@@ -8,8 +8,11 @@
                 :clearable="false" />
             <uni-field class="p-lr-0 m-b-30" left-icon="locked" v-model="formData.password" name="password" type="password"
                 labelWidth="35" placeholder="密码" :clearable="false" />
-            <button class="login-button flex-cc" type="primary" :loading="loading" @click="submitForm('form')">登录</button>
+            <button class="login-button flex-cc m-b-30" type="primary" :loading="loading" @click="submitForm('form')">登录</button>
         </uni-forms>
+        <view>
+            账号：admin &nbsp;&nbsp; 密码：123456
+        </view>
     </view>
 </template>
 

@@ -197,7 +197,6 @@
 						invalidFields = Object.assign({}, invalidFields, val)
 					})
 				})
-				console.log('----', this.formData);
 				this.validateAll(this.formData, 'submit', callback)
 			},
 
