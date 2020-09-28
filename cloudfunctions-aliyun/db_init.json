@@ -4,7 +4,14 @@
 
 {
     "uni-id-users": {
-        "data": [],
+        "data": [{
+            "username": "admin",
+            "password": "03caebb36670995fc261a275d212cad65e4bbebd",
+            "register_date": 1600678392087,
+            "role": [
+                "admin"
+            ]
+        }],
         "index": [{
             "IndexName": "username",
             "MgoKeySchema": {

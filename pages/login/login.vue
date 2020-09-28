@@ -14,6 +14,9 @@
 </template>
 
 <script>
+    import {
+        mapMutations
+    } from 'vuex'
     export default {
         data() {
             return {
@@ -56,6 +59,11 @@
             }
         },
         methods: {
+            ...mapMutations({
+                setToken(commit, tokenInfo) {
+                    commit('user/SET_TOKEN', tokenInfo)
+                }
+            }),
             submit(e) {
                 this.loading = true
                 uniCloud.callFunction({
@@ -66,8 +74,17 @@
                     }
                 }).then(res => {
                     this.loading = false
-                    uni.setStorageSync('uni_id_token', res.result.token)
-                    uni.setStorageSync('uni_id_token_expired', res.result.tokenExpired)
+                    if (res.result.code) {
+                        uni.showModal({
+                            content: res.result.message || '登录失败',
+                            showCancel: false
+                        })
+                        return
+                    }
+                    this.setToken({
+                        token: res.result.token,
+                        tokenExpired: res.result.tokenExpired
+                    })
                     uni.showModal({
                         content: '登录成功',
                         showCancel: false,

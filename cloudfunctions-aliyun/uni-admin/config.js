@@ -7,7 +7,7 @@ module.exports = {
             auth(), // 注册中间件
             {
                 enable: true,
-                ignore: /\/login$/
+                ignore: 'user'
             }
         ]
     ]

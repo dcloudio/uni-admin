@@ -37,7 +37,7 @@ module.exports = class UserService extends Service {
                 ]
             }
         })
-        if(err) {
+        if (err) {
             this.throw({
                 code: 'Validate_Error',
                 message: err.errorMessage
@@ -48,5 +48,9 @@ module.exports = class UserService extends Service {
             password,
             needPermission: true
         })
+    }
+
+    async logout(token) {
+        return await uniID.logout(token)
     }
 }
