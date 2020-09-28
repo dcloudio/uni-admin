@@ -166,7 +166,27 @@
         ]
     },
     "uni-id-permissions": {
-        "data": [],
+        "data": [{
+            "permission_id": "A-0-0/add",
+            "permission_name": "A-0-0/add",
+            "comment": "A-0-0/add",
+            "create_date": 1600935739556
+        },{
+            "permission_id": "A-0-1/add",
+            "permission_name": "A-0-1/add",
+            "comment": "A-0-1/add",
+            "create_date": 1600935739556
+        },{
+            "permission_id": "B-0-0/add",
+            "permission_name": "B-0-0/add",
+            "comment": "B-0-0/add",
+            "create_date": 1600935739556
+        },{
+            "permission_id": "B-0-1/add",
+            "permission_name": "B-0-1/add",
+            "comment": "B-0-1/add",
+            "create_date": 1600935739556
+        }],
         "index": [{
             "IndexName": "permission_id",
             "MgoKeySchema": {
