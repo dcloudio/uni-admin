@@ -3,10 +3,10 @@
         <view class="flex-cc m-b-30 login-title">
             系统登录
         </view>
-        <uni-forms ref="form" :form-rules="rules" @submit="submit">
-            <uni-field left-icon="person" name="username" v-model="formData.username" labelWidth="35" placeholder="账户"
+        <uni-forms ref="form" :form-rules="rules">
+            <uni-field class="p-lr-0" left-icon="person" name="username" v-model="formData.username" labelWidth="35" placeholder="账户"
                 :clearable="false" />
-            <uni-field class="m-b-30" left-icon="locked" v-model="formData.password" name="password" type="password"
+            <uni-field class="m-b-30 p-lr-0" left-icon="locked" v-model="formData.password" name="password" type="password"
                 labelWidth="35" placeholder="密码" :clearable="false" />
             <button class="login-button flex-cc m-b-30" type="primary" :loading="loading" @click="submitForm('form')">登录</button>
         </uni-forms>
@@ -107,6 +107,18 @@
                         showCancel: false
                     })
                 })
+            },
+            submitForm(form){
+                this.$refs[form].submit((valid, values) => {
+                    if (!valid) {
+                        this.submit()
+                    } else {
+                        uni.showModal({
+                            content: '请填写正确的账户密码',
+                            showCancel: false
+                        })
+                    }
+                })
             }
         }
     }
@@ -119,7 +131,7 @@
         display: flex;
         /* align-items: center; */
         justify-content: center;
-        /* background-color: #28273D; */
+        background-color: #fff;
     }
 
     .login-box {
