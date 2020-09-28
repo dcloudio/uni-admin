@@ -10,7 +10,7 @@ module.exports = (options) => {
         const auth = await uniID.checkToken(ctx.event.uniIdToken)
         if (auth.code) {
             // 校验失败，抛出错误信息
-            ctx.throw('Token_Invalid', `${auth.message}，${auth.code}`)
+            ctx.throw('TOKEN_INVALID', `${auth.message}，${auth.code}`)
         }
         ctx.auth = auth // 设置当前请求的 auth 对象
         await next() // 执行后续中间件

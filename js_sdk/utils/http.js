@@ -9,6 +9,11 @@ export default function(action, data) {
             }
         }).then(res => {
             if (res.result.code) {
+                if (res.result.code.indexOf('TOKEN_INVALID') === 0) {
+                    uni.reLaunch({
+                        url: '/pages/login/login.vue'
+                    })
+                }
                 return Promise.reject(new Error(res.result.message))
             }
             const {
