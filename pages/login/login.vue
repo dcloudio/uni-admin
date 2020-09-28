@@ -4,9 +4,9 @@
             系统登录
         </view>
         <uni-forms ref="form" :form-rules="rules">
-            <uni-field left-icon="person" name="username" :focus="true" v-model="formData.username" labelWidth="35" placeholder="账户"
+            <uni-field class="p-lr-0" left-icon="person" name="username" :focus="true" v-model="formData.username" labelWidth="35" placeholder="账户"
                 :clearable="false" />
-            <uni-field class="m-b-30" left-icon="locked" v-model="formData.password" name="password" type="password"
+            <uni-field class="p-lr-0 m-b-30" left-icon="locked" v-model="formData.password" name="password" type="password"
                 labelWidth="35" placeholder="密码" :clearable="false" />
             <button type="primary" size="mini" style="width: 100%;" :loading="loading" @click="submitForm('form')">登录</button>
         </uni-forms>
@@ -151,5 +151,10 @@
     .login-title {
         font-size: 24px;
         color: #333;
+    }
+
+    .p-lr-0 {
+        padding-left: 0;
+        padding-right: 0;
     }
 </style>
