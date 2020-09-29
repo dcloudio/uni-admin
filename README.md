@@ -7,12 +7,15 @@
 ```bash
 ├── cloudfunctions              # 云函数
 ├── components                  # 自定义组件
+├── js_sdk                      # js sdk
 ├── pages                       # 页面
 │   │── index                   # 首页
 │   └── login                   # 登录页
 ├── static                      # 静态资源
 ├── store                       # vuex
-├── windows                     # leftWindow，topWindow
+├── windows                     
+│   └── leftWindow.vue          # 左侧菜单栏
+│   └── topWindow.vue           # 顶部导航栏
 ├── App.vue
 ├── main.js
 ├── mainfest.json
@@ -21,9 +24,9 @@
 └── uni.scss
 ```
 
-### 顶部导航栏（windows/topWindow.vue）
+### 顶部导航栏
 
-### 左侧菜单栏（windows/leftWindow.vue）
+### 左侧菜单栏
 
 ### 权限验证
 
