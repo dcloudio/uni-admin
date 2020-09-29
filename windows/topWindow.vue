@@ -4,9 +4,9 @@
         <view class="flex-s p-t-20">
             <view class="">
             </view>
-            <view class="flex-s">
+            <view class="flex-s top-window-right">
+                <uni-link class="clickable-hand" href="https://github.com/dcloudio/uni-template-admin.git" text="项目文档" />
                 <text class="user">{{userInfo.username}}</text>️
-                <image src="../static/user.png" mode=""></image>
                 <text v-if="userInfo.username" class="logout clickable-hand" @click="logout">退出</text>️
             </view>
         </view>
@@ -75,18 +75,16 @@
         width: 35px;
     }
 
-    .logout {
-        margin-left: 10px;
+     .top-window-right {
         color: #999;
         font-size: 14px;
-    }
+     }
+
+     .top-window-right * {
+        margin-left: 10px;
+     }
 
     .logout:hover {
         color: #42B983;
-    }
-    .user {
-        color: #999;
-        font-size: 14px;
-        padding-right: 10px;
     }
 </style>
