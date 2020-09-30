@@ -35,7 +35,11 @@
 
 #### 运行
 
-进入 admin 项目：点击工具栏的运行 -> 运行到浏览器
+1. 进入 admin 项目
+2. 右键 cloudfuntions 绑定服务空间
+3. 上传 common/uni-cloud-router，common/uni-id，uni-admin，uni-clientDB
+4. 右键 db_init.json 初始化云数据库
+5. 点击工具栏的运行 -> 运行到浏览器
 
 ### 目录结构
 
