@@ -7,7 +7,9 @@ module.exports = class UserService extends Service {
         const permission = this.ctx.auth.permission
         let {
             data: menuList
-        } = await this.db.collection('opendb-admin-menu').limit(1000).get()
+        } = await this.db.collection('opendb-admin-menu').where({
+            status: 1
+        }).limit(1000).get()
 
         // 删除无权限访问的菜单
         menuList = menuList.filter(item => {
@@ -44,7 +46,9 @@ module.exports = class UserService extends Service {
             }
         }
 
-        const menu = menuList.filter(item => !item.parent_id)
+        const menu = menuList.filter(item => !item.parent_id).sort((a, b) => {
+            return a.sort - b.sort
+        })
 
         function buildMenu(menu) {
             let nextLayer = []
