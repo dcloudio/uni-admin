@@ -8,6 +8,10 @@ export default {
             const permission = store.getters['user/userInfo'].permission || []
             return permission.includes(name)
         }
+        Vue.prototype.$hasRole = function hasRole(name) {
+            const role = store.getters['user/userInfo'].role || []
+            return role.includes(name)
+        }
         uni.addInterceptor('navigateTo', {
             invoke(params) {
                 if (!store.getters['user/isTokenValid']) {
