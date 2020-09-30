@@ -127,17 +127,17 @@ export default {
 3. [角色表（uni-id-roles）](https://uniapp.dcloud.io/uniCloud/uni-id?id=%e8%a7%92%e8%89%b2%e8%a1%a8)
 4. [权限表（uni-id-permissions）](https://uniapp.dcloud.io/uniCloud/uni-id?id=%e6%9d%83%e9%99%90%e8%a1%a8)
 5. 菜单表（opendb-admin-menu）
-   | 字段 | 类型 | 必填 | 描述 |
-   | ---------- | --------- | ---- | --------------------------------------|
-   | \_id | Object ID | 是 | 系统自动生成的 Id |
-   | name | String | 是 | |
-   | icon | String | 否 | |
-   | url | String | 否 | |
-   | sort | Integer | 否 | |
-   | parent_id | String | 否 | |
-   | permission | Array | 否 | |
-   | status | Integer | 是 | 菜单状态：0 禁用 1 启用 |
-   | created_date | Timestamp | 是 | 创建时间 |
+| 字段			| 类型		| 必填	| 描述													|
+| ----------	| ---------	| ----	| --------------------------------------				|
+| \_id			| Object ID	| 是	| 系统自动生成的 Id										|
+| name			| String	| 是	| 菜单文字												|
+| icon			| String	| 否	| 菜单图标												|
+| url			| String	| 否	| 菜单对应的页面链接（只有没有子菜单的菜单项可以配置）	|
+| sort			| Integer	| 否	| 在同级菜单中的排序，数组越大越靠后					|
+| parent_id		| String	| 否	| 父级菜单Id											|
+| permission	| Array		| 否	| 菜单权限（只有没有子菜单的菜单项可以配置）			|
+| status		| Integer	| 是	| 菜单状态：0 禁用 1 启用								|
+| created_date	| Timestamp	| 是	| 创建时间												|
 
 ### 云函数
 
