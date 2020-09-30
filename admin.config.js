@@ -8,24 +8,23 @@ export default {
         }]
     },
     sideBar: { // 左侧菜单
-        secondaryMenus: [{ // 次级菜单配置(服务端下发的权限菜单)
+        secondaryMenus: [{
+            name: '错误页面',
+            children: [{
+                    name: '401',
+                    url: 'pages/demo/401'
+                },
+                {
+                    name: '404',
+                    url: 'pages/demo/404'
+                }
+            ]
+        }, { // 次级菜单配置(显示在授权菜单下方)
             name: '权限',
-            icon: 'upload',
             url: 'pages/demo/permission'
         }, {
             name: '图标',
             url: 'pages/demo/icon'
-        }, {
-            name: '错误页面',
-            children: [{
-                    name: '401',
-                    url: 'pages/error/401'
-                },
-                {
-                    name: '404',
-                    url: 'pages/error/404'
-                }
-            ]
         }]
     }
 }
