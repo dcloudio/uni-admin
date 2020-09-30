@@ -32,7 +32,7 @@
     }
 </script>
 
-<style>
+<style lang="scss">
     .sidebar {
         position: fixed;
         top: var(--window-top);
@@ -41,7 +41,7 @@
         height: calc(100vh - (var(--window-top)));
         box-sizing: border-box;
         border-right: 1px solid #eaecef;
-        background-color: #fff;
+        background-color: $left-window-bg-color;
         padding-bottom: 10px;
     }
 

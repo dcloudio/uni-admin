@@ -117,13 +117,13 @@
 		padding-right: 10px;
 		height: 56px;
 		line-height: 56px;
-		color: #303133;
-		border-bottom: 1px #f5f5f5 solid;
+		// color: #303133;
+		// border-bottom: 1px #f5f5f5 solid;
 	}
 
 	.uni-sub-menu__title:hover {
 		outline: none;
-		background-color: #e1e1e1;
+		background-color: $menu-bg-color-hover;
 	}
 
 	.uni-sub-menu__title-sub {
@@ -146,7 +146,4 @@
 	.transition {
 		transform: rotate(-180deg);
 	}
-    .item-bg {
-        background-color: $menu-backgorund-color;
-    }
 </style>

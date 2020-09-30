@@ -1,9 +1,9 @@
 <template>
     <view class="pointer">
         <view v-if="!item.children">
-            <uni-menu-item class="only-one-menu" @click="clickMenuItem(item.url)">
+            <uni-menu-item @click="clickMenuItem(item.url)">
                 <uni-icons :type="item.icon" size="18" color="#888" />
-                <text :class="{title: item.icon}">{{item.name}}</text>
+                <text :class="{title: item.icon, actived: isActived}">{{item.name}}</text>
             </uni-menu-item>
         </view>
         <uni-sub-menu v-else>
@@ -25,7 +25,7 @@
         },
         data() {
             return {
-
+                isActived: false
             };
         },
         props: {
@@ -33,6 +33,7 @@
         },
         methods:{
             clickMenuItem(url) {
+                this.isActived = true
                 uni.navigateTo({
                     url: url,
                     fail(res) {
@@ -49,9 +50,12 @@
         margin-left: 5px;
     }
     .item-bg {
-        background-color: $menu-backgorund-color;
+        background-color: $sub-menu-bg-color;
     }
-    .only-one-menu {
-        border-bottom: 1px #f5f5f5 solid;
+    // .only-one-menu {
+    //     border-bottom: 1px #f5f5f5 solid;
+    // }
+    .actived {
+        color: $menu-text-color-actived;
     }
 </style>

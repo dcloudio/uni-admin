@@ -49,15 +49,16 @@
     }
 </script>
 
-<style>
+<style lang="scss">
     .navbar {
         /* position: fixed;
 		top: 0; */
         height: 60px;
         width: 100%;
         box-sizing: border-box;
-        border-bottom: 1px solid #eaecef;
-        background-color: #fff;
+        // border-bottom: 1px solid #eaecef;
+        background-color: $top-window-bg-color;
+        color: $top-window-text-color;
     }
 
     .flex-s {
@@ -72,9 +73,7 @@
     }
 
     .logo-image {
-
         height: 40px;
-        /* width: 80px; */
     }
 
     .logo-image image {
@@ -83,8 +82,7 @@
     }
 
     .top-window-right {
-        color: #999;
-        font-size: 14px;
+       font-size: 14px;
     }
 
     .top-window-right * {
@@ -92,6 +90,6 @@
     }
 
     .logout:hover {
-        color: #42B983;
+        color: $menu-text-color-actived;
     }
 </style>

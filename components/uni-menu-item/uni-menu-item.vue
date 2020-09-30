@@ -45,12 +45,12 @@
 		padding: 0 20px;
 		height: 56px;
 		line-height: 56px;
-		color: #303133;
+		// color: $menu-text-color;
 		// border-bottom: 1px #f5f5f5 solid;
 	}
 
 	.uni-menu-item:hover {
 		outline: none;
-		background-color: #e1e1e1;
+		background-color: $menu-bg-color-hover;
 	}
 </style>
