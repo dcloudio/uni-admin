@@ -6,11 +6,11 @@ export default {
         Vue.prototype.$http = http
         Vue.prototype.$hasPermission = function hasPermission(name) {
             const permission = store.getters['user/userInfo'].permission || []
-            return permission.includes(name)
+            return permission.indexOf(name) > -1
         }
         Vue.prototype.$hasRole = function hasRole(name) {
             const role = store.getters['user/userInfo'].role || []
-            return role.includes(name)
+            return role.indexOf(name) > -1
         }
         uni.addInterceptor('navigateTo', {
             invoke(params) {
