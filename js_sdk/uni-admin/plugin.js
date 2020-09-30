@@ -1,5 +1,6 @@
-import store from './store'
-import http from './js_sdk/utils/http.js'
+import store from '@/store'
+import config from '@/admin.config.js'
+import http from './http.js'
 export default {
     install(Vue) {
         Vue.prototype.$http = http
@@ -14,13 +15,12 @@ export default {
                         content: '登录状态失效，请重新登录',
                         showCancel: false,
                         success() {
-                            // uni.reLaunch({
-                            //     url: '/pages/login/login'
-                            // })
+                            uni.reLaunch({
+                                url: config.loginPageUrl
+                            })
                         }
                     })
                 }
-                // TODO
             }
         })
     }

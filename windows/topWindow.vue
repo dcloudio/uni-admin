@@ -16,6 +16,7 @@
         mapMutations,
         mapState
     } from 'vuex'
+    import config from '@/admin.config.js'
     export default {
         data() {
             return {
@@ -36,7 +37,7 @@
                     .then(res => {
                         this.removeToken()
                         uni.reLaunch({
-                            url: '/pages/login/login'
+                            url: config.loginPageUrl
                         })
                     }).catch(err => {
 
@@ -73,14 +74,14 @@
         /* width: 100px; */
     }
 
-     .top-window-right {
+    .top-window-right {
         color: #999;
         font-size: 14px;
-     }
+    }
 
-     .top-window-right * {
+    .top-window-right * {
         margin-left: 10px;
-     }
+    }
 
     .logout:hover {
         color: #42B983;

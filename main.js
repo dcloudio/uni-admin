@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import App from './App'
 import store from './store'
-import plugin from './admin.plugin'
+import plugin from './js_sdk/uni-admin/plugin'
 
 Vue.config.productionTip = false
 

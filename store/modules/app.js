@@ -1,4 +1,4 @@
-import http from '../../js_sdk/utils/http.js'
+import http from '@/js_sdk/uni-admin/http.js'
 
 export default {
     namespaced: true,
