@@ -17,7 +17,7 @@
     "globalStyle": {
         "navigationStyle": "custom",
         "navigationBarTextStyle": "black",
-        "navigationBarTitleText": "uni-app",
+        "navigationBarTitleText": "管理系统",
         "navigationBarBackgroundColor": "#F8F8F8",
         "backgroundColor": "#F8F8F8"
     },

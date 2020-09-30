@@ -17,14 +17,14 @@
         },
         onPageNotFound(msg) {
             uni.redirectTo({
-                url: config.notFoundPageUrl
+                url: config.error.url
             })
         },
         onLaunch: function() {
             console.log('App Launch')
             if (!this.isTokenValid) {
                 uni.navigateTo({
-                    url: config.loginPageUrl
+                    url: config.login.url
                 })
             } else {
                 this.init()

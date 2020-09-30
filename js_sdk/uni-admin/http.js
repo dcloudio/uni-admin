@@ -11,7 +11,7 @@ export default function(action, data) {
         if (res.result.code) {
             if (typeof res.result.code === 'string' && res.result.code.indexOf('TOKEN_INVALID') === 0) {
                 uni.reLaunch({
-                    url: config.loginPageUrl
+                    url: config.login.url
                 })
             }
             return Promise.reject(new Error(res.result.message))

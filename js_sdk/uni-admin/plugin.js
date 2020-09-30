@@ -16,7 +16,7 @@ export default {
                         showCancel: false,
                         success() {
                             uni.reLaunch({
-                                url: config.loginPageUrl
+                                url: config.login.url
                             })
                         }
                     })
@@ -27,7 +27,7 @@ export default {
             }) => {
                 if (errMsg.indexOf('is not found') !== -1) { // 404
                     uni.navigateTo({
-                        url: config.notFoundPageUrl + '?errMsg=' + errMsg
+                        url: config.error.url + '?errMsg=' + errMsg
                     })
                 }
             }
