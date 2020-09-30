@@ -33,12 +33,9 @@
         },
         methods:{
             clickMenuItem(url) {
-                this.isActived = true
+                // this.isActived = true
                 uni.navigateTo({
                     url: url,
-                    fail(res) {
-                        console.log(res)
-                    },
                 })
             }
         }
@@ -57,5 +54,9 @@
     // }
     .actived {
         color: $menu-text-color-actived;
+    }
+    .el-icon-platform-eleme {
+        width: 20px;
+        height: 20px;
     }
 </style>
