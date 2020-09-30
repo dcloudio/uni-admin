@@ -23,7 +23,7 @@
                     <td>{{role.comment}}</td>
                     <td>{{role.create_date}}</td>
                     <td>
-                        <button type="default" size="mini">编辑</button>
+                        <button type="default" size="mini" @click="edit">编辑</button>
                         <button type="default" size="mini">删除</button>
                     </td>
                 </tr>
@@ -51,6 +51,11 @@
                 }).then(res => {
                     console.log(res)
                     this.roleList = res.roleList
+                })
+            },
+            edit(){
+                uni.navigateTo({
+                    url: './A-0-1'
                 })
             }
 		}
