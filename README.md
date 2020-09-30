@@ -2,13 +2,36 @@
 
 > 基于 uni-app，uniCloud 的 admin 管理项目模板
 
+---
+
+-   [使用](#使用)
+    -   [创建](#创建)
+    -   [运行](#运行)
+-   [目录结构](#目录结构)
+-   [顶部窗口（导航栏）](#顶部窗口导航栏)
+-   [左侧窗口（菜单栏）](#左侧窗口菜单栏)
+-   [用户系统](#用户系统)
+-   [权限系统](#权限系统)
+-   [数据库结构](#数据库结构)
+-   [云函数](#云函数)
+    -   [uni-admin](#uni-admin)
+        -   [目录结构](#目录结构-1)
+        -   [如何在 uni-admin 中增加新的业务接口](#如何在-uni-admin-中增加新的业务接口)
+    -   [uni-clientDB](#uni-clientdb)
+-   [插件](#插件)
+    -   [开发 admin 插件](#开发-admin-插件)
+    -   [使用 admin 插件](#使用-admin-插件)
+    -   [admin 插件列表](#admin-插件列表)
+
 ### 使用
 
 #### 创建
 
-1. [HBuilderX](https://www.dcloud.io/hbuilderx.html) 新建 uni-app 项目，选择 uniCloud admin 项目模板。
-2. [插件市场](https://ext.dcloud.net.cn/)，使用 HBuilderX 导入。
-3. [下载压缩包](https://github.com/dcloudio/uni-template-admin/archive/master.zip)，解压后，导入 HBuilderX。
+方式一：[HBuilderX](https://www.dcloud.io/hbuilderx.html) 新建 uni-app 项目，选择 uniCloud admin 项目模板。
+
+方式二：[插件市场](https://ext.dcloud.net.cn/)，使用 HBuilderX 导入。
+
+方式三：[下载压缩包](https://github.com/dcloudio/uni-template-admin/archive/master.zip)，解压后，导入 HBuilderX。
 
 #### 运行
 
@@ -131,6 +154,17 @@ export default {
     > TODO
 3. 菜单管理
     > TODO
+4. 权限验证
+    ```html
+    <template>
+        <view>
+            <!-- 包含 user/add 权限的用户可以看到新增按钮 -->
+            <button v-if="$hasPermission('user/add')">新增</button>
+            <!-- 包含 admin 角色的用户可以看到删除按钮 -->
+            <button v-if="$hasRole('admin')">删除</button>
+        </view>
+    </template>
+    ```
 
 ### 数据库结构
 
@@ -155,6 +189,61 @@ export default {
 
 #### uni-admin
 
-### 插件列表
+##### 目录结构
+
+```bash
+├── controller
+│   │── menu.js                 # 菜单接口
+│   └── system.js               # 系统接口
+│   └── user.js                 # 用户接口
+├── middleware
+│   └── auth.js                 # uni-id 校验用户 token 中间件
+│   └── permission.js           # uni-id 校验用户 permission 中间件
+├── service
+│   └── menu.js                 # 菜单业务逻辑实现
+│   └── user.js                 # 用户业务逻辑实现
+├── config.js                   # uni-cloud-router 配置
+├── index.js                    # 云函数入口
+```
+
+##### 如何在 uni-admin 中增加新的业务接口
+
+在 `controller` 目录创建一个 js 文件，如 `post.js`，[如何编写 Controller](https://github.com/fxy060608/uni-cloud-router#%E5%A6%82%E4%BD%95%E7%BC%96%E5%86%99-controller)
+
+```js
+// controller/post.js
+const Controller = require("uni-cloud-router").Controller;
+// 必须继承 Controller 类
+module.exports = class PostController extends Controller {
+    async create() {
+        const { ctx, service } = this;
+        // 校验参数
+        // 组装参数
+        const author = ctx.auth.uid;
+        const post = Object.assign(ctx.data, { author });
+        // 建议调用 Service 进行业务处理
+        // return this.service.post.create(post)
+        return this.db.add(post); // 简单业务可以跳过 Service 直接操作 db 实现入库
+    }
+};
+```
+
+> 更多扩展详情，参考 [uni-cloud-router](https://github.com/fxy060608/uni-cloud-router) 文档
+
+#### uni-clientDB
+
+> [参考文档](https://uniapp.dcloud.io/uniCloud/uni-clientDB)
+
+### 插件
+
+#### 开发 admin 插件
+
+> TODO
+
+#### 使用 admin 插件
+
+> TODO
+
+#### admin 插件列表
 
 > TODO
