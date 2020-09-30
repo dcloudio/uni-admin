@@ -77,29 +77,29 @@ $uni-font-size-paragraph:30rpx;
 
 // light menu
 
-$menu-bg-color:#fff;   //一级菜单背景色
-$sub-menu-bg-color:darken($menu-bg-color, 8%);  //二级以下菜单背景色
-$menu-bg-color-hover:darken($menu-bg-color, 15%);   //菜单 hover 背景颜色
+// $menu-bg-color:#fff;   //一级菜单背景色
+// $sub-menu-bg-color:darken($menu-bg-color, 8%);  //二级以下菜单背景色
+// $menu-bg-color-hover:darken($menu-bg-color, 15%);   //菜单 hover 背景颜色
 
-$menu-text-color: #333;  //菜单前景色
-$menu-text-color-actived: #409eff;  // 菜单激活前景色
+// $menu-text-color: #333;  //菜单前景色
+// $menu-text-color-actived: #409eff;  // 菜单激活前景色
 
-$left-window-bg-color: $menu-bg-color;  //侧边栏背景色
+// $left-window-bg-color: $menu-bg-color;  //侧边栏背景色
 
-$top-window-bg-color: darken($menu-bg-color, 10%);  //顶栏背景色
-$top-window-text-color: #999;  //侧边栏前景色
+// $top-window-bg-color: darken($menu-bg-color, 10%);  //顶栏背景色
+// $top-window-text-color: #999;  //侧边栏前景色
 
 
 // dark menu
 
-// $menu-bg-color:#303133;   //一级菜单背景色
-// $sub-menu-bg-color:darken($menu-bg-color, 8%);  //二级以下菜单背景色
-// $menu-bg-color-hover:darken($menu-bg-color, 15%);   //菜单 hover 背景颜色
+$menu-bg-color:#303133;   //一级菜单背景色
+$sub-menu-bg-color:darken($menu-bg-color, 8%);  //二级以下菜单背景色
+$menu-bg-color-hover:darken($menu-bg-color, 15%);   //菜单 hover 背景颜色
 
-// $menu-text-color: #999;  //菜单前景色
-// $menu-text-color-actived: #409eff;  // 菜单激活前景色
+$menu-text-color: #999;  //菜单前景色
+$menu-text-color-actived: #409eff;  // 菜单激活前景色
 
-// $left-window-bg-color:$menu-bg-color;  //侧边栏背景色
+$left-window-bg-color:$menu-bg-color;  //侧边栏背景色
 
-// $top-window-bg-color: darken($menu-bg-color, 10%);  //顶栏背景色
-// $top-window-text-color: #999;  //侧边栏前景色
+$top-window-bg-color: darken($menu-bg-color, 10%);  //顶栏背景色
+$top-window-text-color: #999;  //侧边栏前景色
