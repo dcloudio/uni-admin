@@ -1,17 +1,17 @@
 <template>
-    <view class="clickable-hand">
+    <view class="pointer">
         <view v-if="!item.children">
-            <uni-menu-item @click="clickMenuItem(item.url)">
+            <uni-menu-item class="only-one-menu" @click="clickMenuItem(item.url)">
                 <uni-icons :type="item.icon" size="18" color="#888" />
-                <text class="title">{{item.name}}</text>
+                <text :class="{title: item.icon}">{{item.name}}</text>
             </uni-menu-item>
         </view>
         <uni-sub-menu v-else>
             <template v-slot:title>
                 <uni-icons :type="item.icon" size="18" color="#888" />
-                <text class="title">{{item.name}}</text>
+                <text :class="{title: item.icon}">{{item.name}}</text>
             </template>
-            <sidebar-item v-for="child in item.children" :item="child" :key="child._id" />
+            <sidebar-item class="item-bg" v-for="child in item.children" :item="child" :key="child._id" />
         </uni-sub-menu>
     </view>
 </template>
@@ -33,14 +33,10 @@
         },
         methods:{
             clickMenuItem(url) {
-                url = '../../pages/test/' + url
                 uni.navigateTo({
                     url: url,
-                    success(res) {
-                        console.log('===== success =====',res)
-                    },
                     fail(res) {
-                        console.log('===== fail =====',res)
+                        console.log(res)
                     },
                 })
             }
@@ -48,12 +44,14 @@
     }
 </script>
 
-<style>
+<style lang="scss">
     .title {
         margin-left: 5px;
     }
-
     .item-bg {
-        background-color: #ecf8f3;
+        background-color: $menu-backgorund-color;
+    }
+    .only-one-menu {
+        border-bottom: 1px #f5f5f5 solid;
     }
 </style>

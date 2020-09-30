@@ -1,9 +1,11 @@
 <template>
     <view class="navbar">
         <view class="flex-s p-t-20">
-            <image src="https://img-cdn-qiniu.dcloud.net.cn/uniapp/doc/logo2@2x.png" mode="aspectFit" style="margin-left: -100px;"></image>
+            <view class="logo-image">
+                <image src="https://img-cdn-qiniu.dcloud.net.cn/uniapp/doc/logo2@2x.png" mode="heightFix"></image>
+            </view>
             <view class="flex-s top-window-right">
-                <uni-link href="https://github.com/dcloudio/uni-template-admin.git" text="项目文档" />
+                <uni-link v-for="link in links" :key="link.url" :href="link.url" :text="link.text" />
                 <text class="user">{{userInfo.username}}</text>️
                 <text v-if="userInfo.username" class="logout pointer" @click="logout">退出</text>️
             </view>
@@ -20,7 +22,7 @@
     export default {
         data() {
             return {
-
+                ...config.navBar
             }
         },
         computed: {
@@ -57,30 +59,32 @@
         border-bottom: 1px solid #eaecef;
         background-color: #fff;
     }
-
     .flex-s {
         height: 100%;
         display: flex;
         justify-content: space-between;
         align-items: center;
     }
-
     .p-t-20 {
         padding: 0 20px;
     }
+    .logo-image {
 
-    .flex-s image {
-        height: 35px;
-        /* width: 100px; */
+        height: 40px;
+        /* width: 80px; */
     }
 
+    .logo-image image {
+        max-width:100%;
+        max-height:100%;
+    }
     .top-window-right {
-        color: #999;
-        font-size: 14px;
+       color: #999;
+       font-size: 14px;
     }
 
     .top-window-right * {
-        margin-left: 10px;
+       margin-left: 10px;
     }
 
     .logout:hover {

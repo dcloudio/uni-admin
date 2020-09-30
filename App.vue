@@ -44,7 +44,7 @@
     page {
         background-color: #f8f8f8;
         font-size: 14px;
-        padding: 30px 20px;
+        padding: 20px;
     }
 
     .pointer {

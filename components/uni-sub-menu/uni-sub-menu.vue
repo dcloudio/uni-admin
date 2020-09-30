@@ -104,10 +104,10 @@
 	}
 </script>
 
-<style>
+<style lang="scss">
 	.uni-sub-menu {
 		position: relative;
-		/* background-color: #FFFFFF; */
+		// background-color: #FFFFFF;
 	}
 
 	.uni-sub-menu__title {
@@ -146,4 +146,7 @@
 	.transition {
 		transform: rotate(-180deg);
 	}
+    .item-bg {
+        background-color: $menu-backgorund-color;
+    }
 </style>

@@ -76,7 +76,7 @@
 <style lang="scss">
 .uni-nav-menu {
 	width: 240px;
-	// background-color: #FFFFFF;
+	background-color: #FFFFFF;
 	// border: 1px red solid;
 	font-size: 14px;
 }
