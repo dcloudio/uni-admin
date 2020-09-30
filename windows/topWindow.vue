@@ -1,6 +1,5 @@
 <template>
     <view class="navbar">
-        <!--TODO-->
         <view class="flex-s p-t-20">
             <image src="https://img-cdn-qiniu.dcloud.net.cn/uniapp/doc/logo2@2x.png" mode="aspectFit" style="margin-left: -100px;"></image>
             <view class="flex-s top-window-right">

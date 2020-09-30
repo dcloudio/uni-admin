@@ -1,13 +1,13 @@
 <template>
     <scroll-view class="sidebar" scroll-y="true">
-        <!-- TODO -->
-        <!-- <menus :data="data"/> -->
-        <uni-nav-menu>
-            <sidebar-item v-for="menu in navMenu" :key="menu._id" :item="menu" />
-        </uni-nav-menu>
-        <uni-nav-menu>
-            <sidebar-item v-for="menu in privateMenu" :key="menu._id" :item="menu" />
-        </uni-nav-menu>
+        <template v-if="navMenu.length">
+            <uni-nav-menu>
+                <sidebar-item v-for="menu in navMenu" :key="menu._id" :item="menu" />
+            </uni-nav-menu>
+            <uni-nav-menu>
+                <sidebar-item v-for="menu in secondaryMenus" :key="menu._id" :item="menu" />
+            </uni-nav-menu>
+        </template>
     </scroll-view>
 </template>
 
@@ -16,39 +16,19 @@
         mapState
     } from 'vuex'
     import sidebarItem from '@/components/sidebar-item/sidebar-item.vue'
+    import config from '@/admin.config.js'
     export default {
         components: {
             sidebarItem
         },
         data() {
             return {
-                privateMenu: [
-                    {
-                        icon: "bIcon-setFill",
-                        name: "C",
-                        parent_id: "",
-                        sort: 0,
-                        status: 1,
-                        _id: "C",
-                    },
-                    {
-                        icon: "bIcon-setFill",
-                        name: "D",
-                        parent_id: "",
-                        sort: 0,
-                        status: 1,
-                        _id: "D"
-                    }
-                ]
+                ...config.sideBar
             }
         },
         computed: {
-            ...mapState('app',['navMenu'])
-        },
-        mounted() {
-            console.log('======== navMenu =====',this.$store.state.app.navMenu)
+            ...mapState('app', ['navMenu'])
         }
-
     }
 </script>
 
