@@ -2,7 +2,7 @@
     <view class="navbar">
         <view class="flex-s p-t-20">
             <view class="logo-image">
-                <image src="https://img-cdn-qiniu.dcloud.net.cn/uniapp/doc/logo2@2x.png" mode="heightFix"></image>
+                <image :src="logo" mode="heightFix"></image>
             </view>
             <view class="flex-s top-window-right">
                 <uni-link v-for="link in links" :key="link.url" :href="link.url" :text="link.text" />
