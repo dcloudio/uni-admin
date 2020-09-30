@@ -4,7 +4,8 @@ export default {
     install(Vue) {
         Vue.prototype.$http = http
         Vue.prototype.$hasPermission = function hasPermission(name) {
-            // TODO
+            const permission = store.getters['user/userInfo'].permission || []
+            return permission.includes(name)
         }
         uni.addInterceptor('navigateTo', {
             invoke(params) {
