@@ -1,6 +1,18 @@
 # uni-template-admin
 
-基于 uni-app，uniCloud 的 admin 管理项目模板
+> 基于 uni-app，uniCloud 的 admin 管理项目模板
+
+### 使用
+
+#### 创建
+
+1. [HBuilderX](https://www.dcloud.io/hbuilderx.html) 新建 uni-app 项目，选择 uniCloud admin 项目模板。
+2. [插件市场](https://ext.dcloud.net.cn/)，使用 HBuilderX 导入。
+3. [下载压缩包](https://github.com/dcloudio/uni-template-admin/archive/master.zip)，解压后，导入 HBuilderX。
+
+#### 运行
+
+进入 admin 项目：点击工具栏的运行 -> 运行到浏览器
 
 ### 目录结构
 
@@ -127,18 +139,22 @@ export default {
 3. [角色表（uni-id-roles）](https://uniapp.dcloud.io/uniCloud/uni-id?id=%e8%a7%92%e8%89%b2%e8%a1%a8)
 4. [权限表（uni-id-permissions）](https://uniapp.dcloud.io/uniCloud/uni-id?id=%e6%9d%83%e9%99%90%e8%a1%a8)
 5. 菜单表（opendb-admin-menu）
-| 字段			| 类型		| 必填	| 描述													|
-| ----------	| ---------	| ----	| --------------------------------------				|
-| \_id			| Object ID	| 是	| 系统自动生成的 Id										|
-| name			| String	| 是	| 菜单文字												|
-| icon			| String	| 否	| 菜单图标												|
-| url			| String	| 否	| 菜单对应的页面链接（只有没有子菜单的菜单项可以配置）	|
-| sort			| Integer	| 否	| 在同级菜单中的排序，数组越大越靠后					|
-| parent_id		| String	| 否	| 父级菜单Id											|
-| permission	| Array		| 否	| 菜单权限（只有没有子菜单的菜单项可以配置）			|
-| status		| Integer	| 是	| 菜单状态：0 禁用 1 启用								|
-| created_date	| Timestamp	| 是	| 创建时间												|
+   | 字段 | 类型 | 必填 | 描述 |
+   | ---------- | --------- | ---- | -------------------------------------- |
+   | \_id | Object ID | 是 | 系统自动生成的 Id |
+   | name | String | 是 | 菜单文字 |
+   | icon | String | 否 | 菜单图标 |
+   | url | String | 否 | 菜单对应的页面链接（只有没有子菜单的菜单项可以配置） |
+   | sort | Integer | 否 | 在同级菜单中的排序，数组越大越靠后 |
+   | parent_id | String | 否 | 父级菜单 Id |
+   | permission | Array | 否 | 菜单权限（只有没有子菜单的菜单项可以配置） |
+   | status | Integer | 是 | 菜单状态：0 禁用 1 启用 |
+   | created_date | Timestamp | 是 | 创建时间 |
 
 ### 云函数
 
 #### uni-admin
+
+### 插件列表
+
+> TODO
