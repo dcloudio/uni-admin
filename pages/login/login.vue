@@ -129,26 +129,6 @@
         /* background-color: #F5F5F5; */
     }
 
-    .flex-cc {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
-
-    .m-b-30 {
-        margin-bottom: 30px;
-    }
-
-    .login-title {
-        font-size: 24px;
-        color: #333;
-    }
-
-    .p-lr-0 {
-        padding-left: 0;
-        padding-right: 0;
-    }
-
     .login-button {
         height: 39px;
         width: 100%;

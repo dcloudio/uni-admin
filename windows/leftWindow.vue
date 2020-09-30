@@ -5,6 +5,9 @@
         <uni-nav-menu>
             <sidebar-item v-for="menu in navMenu" :key="menu._id" :item="menu" />
         </uni-nav-menu>
+        <uni-nav-menu>
+            <sidebar-item v-for="menu in privateMenu" :key="menu._id" :item="menu" />
+        </uni-nav-menu>
     </scroll-view>
 </template>
 
@@ -19,6 +22,24 @@
         },
         data() {
             return {
+                privateMenu: [
+                    {
+                        icon: "bIcon-setFill",
+                        name: "C",
+                        parent_id: "",
+                        sort: 0,
+                        status: 1,
+                        _id: "C",
+                    },
+                    {
+                        icon: "bIcon-setFill",
+                        name: "D",
+                        parent_id: "",
+                        sort: 0,
+                        status: 1,
+                        _id: "D"
+                    }
+                ]
             }
         },
         computed: {

@@ -67,6 +67,9 @@
 </script>
 
 <style>
+    .uni-link {
+        cursor: pointer;
+    }
 	.uni-link--withline {
 		text-decoration: underline;
 	}

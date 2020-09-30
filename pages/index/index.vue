@@ -24,8 +24,8 @@
         /* height: calc(100vh - (var(--window-top))); */
         display: flex;
         flex-direction: column;
-        align-items: center;
-        justify-content: center;
+     /*   align-items: center;
+        justify-content: center; */
         padding-top: var(--window-top);
     }
 

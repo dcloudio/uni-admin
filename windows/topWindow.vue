@@ -2,12 +2,11 @@
     <view class="navbar">
         <!--TODO-->
         <view class="flex-s p-t-20">
-            <view class="">
-            </view>
+            <image src="https://img-cdn-qiniu.dcloud.net.cn/uniapp/doc/logo2@2x.png" mode="aspectFit" style="margin-left: -100px;"></image>
             <view class="flex-s top-window-right">
-                <uni-link class="clickable-hand" href="https://github.com/dcloudio/uni-template-admin.git" text="项目文档" />
+                <uni-link href="https://github.com/dcloudio/uni-template-admin.git" text="项目文档" />
                 <text class="user">{{userInfo.username}}</text>️
-                <text v-if="userInfo.username" class="logout clickable-hand" @click="logout">退出</text>️
+                <text v-if="userInfo.username" class="logout pointer" @click="logout">退出</text>️
             </view>
         </view>
     </view>
@@ -72,7 +71,7 @@
 
     .flex-s image {
         height: 35px;
-        width: 35px;
+        /* width: 100px; */
     }
 
      .top-window-right {

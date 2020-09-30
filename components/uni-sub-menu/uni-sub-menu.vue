@@ -60,11 +60,11 @@
 				// 	this.getQuery()
 				// }, 20)
 			},
-			
+
 			tiggerMenuItem() {
 				this.isOpen = !this.isOpen
 			},
-			
+
 			// select() {
 				// if (this.height === 0) {
 				// 	this.height = this.oldheight
@@ -122,9 +122,8 @@
 	}
 
 	.uni-sub-menu__title:hover {
-		color: #42B983;
 		outline: none;
-		background-color: #ecf8f3;
+		background-color: #e1e1e1;
 	}
 
 	.uni-sub-menu__title-sub {

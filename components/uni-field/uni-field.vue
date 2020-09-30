@@ -461,7 +461,7 @@ export default {
 <style lang="scss" scoped>
 
 .uni-field {
-    padding: 16px 14px;
+    padding: 16px 0;
 	text-align: left;
 	color: #333;
 	font-size: 14px;

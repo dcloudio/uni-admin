@@ -50,8 +50,7 @@
 	}
 
 	.uni-menu-item:hover {
-		color: #42B983;
 		outline: none;
-		background-color: #ecf8f3;
+		background-color: #e1e1e1;
 	}
 </style>
