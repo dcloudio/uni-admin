@@ -1,6 +1,6 @@
 <template>
     <scroll-view class="sidebar" scroll-y="true">
-        <template v-if="navMenu.length">
+        <template v-if="inited">
             <uni-nav-menu>
                 <sidebar-item v-for="menu in navMenu" :key="menu._id" :item="menu" />
             </uni-nav-menu>
@@ -27,7 +27,7 @@
             }
         },
         computed: {
-            ...mapState('app', ['navMenu'])
+            ...mapState('app', ['inited', 'navMenu'])
         }
     }
 </script>

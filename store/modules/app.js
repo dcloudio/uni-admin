@@ -3,6 +3,7 @@ import http from '@/js_sdk/uni-admin/http.js'
 export default {
     namespaced: true,
     state: {
+        inited: false,
         sidebar: {
             opened: true
         },
@@ -16,6 +17,7 @@ export default {
             state.sidebar.opened = false
         },
         SET_NAV_MENU: (state, navMenu) => {
+            state.inited = true
             state.navMenu = navMenu
         }
     },
