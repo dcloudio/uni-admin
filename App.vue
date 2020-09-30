@@ -15,6 +15,11 @@
                 init: 'app/init'
             })
         },
+        onPageNotFound(msg) {
+            uni.redirectTo({
+                url: config.notFoundPageUrl
+            })
+        },
         onLaunch: function() {
             console.log('App Launch')
             if (!this.isTokenValid) {
@@ -24,11 +29,6 @@
             } else {
                 this.init()
             }
-
-            // const observer = uni.createMediaQueryObserver(this)
-            // observer.observe({
-            //     maxWidth: 
-            // })
         },
         onShow: function() {
             console.log('App Show')

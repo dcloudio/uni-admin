@@ -21,6 +21,15 @@ export default {
                         }
                     })
                 }
+            },
+            fail: ({
+                errMsg
+            }) => {
+                if (errMsg.indexOf('is not found') !== -1) { // 404
+                    uni.navigateTo({
+                        url: config.notFoundPageUrl + '?errMsg=' + errMsg
+                    })
+                }
             }
         })
     }
