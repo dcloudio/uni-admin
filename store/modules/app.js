@@ -7,7 +7,8 @@ export default {
         sidebar: {
             opened: true
         },
-        navMenu: []
+        navMenu: [],
+        active: ''
     },
     mutations: {
         TOGGLE_SIDEBAR: state => {
@@ -19,6 +20,9 @@ export default {
         SET_NAV_MENU: (state, navMenu) => {
             state.inited = true
             state.navMenu = navMenu
+        },
+        TOGGLE_MENU_ACTIVE: (state, menuId) => {
+          state.active = menuId
         }
     },
     actions: {
@@ -46,6 +50,9 @@ export default {
                         root: true
                     })
                 })
+        },
+        changeMenuActive({ commit }, menuId) {
+            commit('TOGGLE_MENU_ACTIVE', menuId)
         }
     }
 }

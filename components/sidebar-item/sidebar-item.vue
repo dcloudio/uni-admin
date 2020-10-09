@@ -1,9 +1,9 @@
 <template>
     <view class="pointer">
         <template v-if="!item.children || !item.children.length">
-            <uni-menu-item @click="clickMenuItem(item.url)">
+            <uni-menu-item @click="clickMenuItem(item)" :class="{actived: active === item._id}">
                 <view :class="item.icon"></view>
-                <text :class="{title: item.icon, actived: isActived}">{{item.name}}</text>
+                <text :class="{title: item.icon, actived: active === item._id}">{{item.name}}</text>
             </uni-menu-item>
         </template>
         <uni-sub-menu v-else>
@@ -18,6 +18,10 @@
 
 <script>
     import sidebarItem from '@/components/sidebar-item/sidebar-item.vue'
+    import {
+        mapState,
+        mapActions
+    } from 'vuex'
     export default {
         name: 'sidebarItem',
         components: {
@@ -25,17 +29,24 @@
         },
         data() {
             return {
-                isActived: false
             };
         },
         props: {
             item: ''
         },
+
+        computed: {
+            ...mapState('app', ['active'])
+        },
+
         methods:{
-            clickMenuItem(url) {
-                // this.isActived = true
+            ...mapActions({
+                changeMenuActive: 'app/changeMenuActive'
+            }),
+            clickMenuItem(menu) {
+                this.changeMenuActive(menu._id)
                 uni.navigateTo({
-                    url: url,
+                    url: menu.url,
                 })
             }
         }
