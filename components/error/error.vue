@@ -62,21 +62,21 @@
         width: 100%;
         display: flex;
         flex-direction: column;
+        overflow: hidden;
+        box-sizing: border-box;
     }
 
     .err-row {
         display: flex;
     }
 
-    .err-column {
-        flex: 1;
-    }
+    .err-column {}
 
     .err-msg {
         color: #FF0000;
     }
 
     .err-search {
-        margin-right: 10px;
+        /* margin-right: 10px; */
     }
 </style>

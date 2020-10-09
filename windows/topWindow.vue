@@ -13,7 +13,7 @@
             </view>
             <view class="flex-s top-window-right">
                 <!-- #ifdef H5 -->
-                <view v-if="logs.length" class="debug pointer">
+                <view v-if="logs.length" @click="showErrorLogs" class="debug pointer">
                     <svg class="svg-icon">
                         <use xlink:href="#icon-bug"></use>
                     </svg>
@@ -25,6 +25,13 @@
                 <text v-if="userInfo.username" class="logout pointer" @click="logout">退出</text>️
             </view>
         </view>
+        <uni-popup ref="errorLogsPopup" type="center">
+            <view class="modal">
+                <scroll-view class="modal-content" scroll-y="true">
+                    <error class="error-table" />
+                </scroll-view>
+            </view>
+        </uni-popup>
     </view>
 </template>
 
@@ -50,6 +57,9 @@
                     commit('user/REMOVE_TOKEN')
                 }
             }),
+            showErrorLogs() {
+                this.$refs.errorLogsPopup.open()
+            },
             logout() {
                 this.$http('user/logout')
                     .then(res => {
@@ -126,5 +136,18 @@
         top: 0;
         right: 10px;
         transform: translateY(-50%) translateX(100%) scale(0.8);
+    }
+
+    .modal {
+        width: 100%;
+        max-width: 980px;
+        margin: 0 auto;
+        background-color: #FFFFFF;
+    }
+
+    .modal-content {
+        padding: 15px;
+        height: 500px;
+        box-sizing: border-box;
     }
 </style>
