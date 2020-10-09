@@ -13,7 +13,8 @@
 
 <script>
     import {
-        mapState
+        mapState,
+        mapActions
     } from 'vuex'
     import sidebarItem from '@/components/sidebar-item/sidebar-item.vue'
     import config from '@/admin.config.js'
@@ -28,6 +29,16 @@
         },
         computed: {
             ...mapState('app', ['inited', 'navMenu'])
+        },
+        watch:{
+            $route (newRoute, oldRoute) {
+                this.changeMenuActive(newRoute.path)
+            }
+        },
+        methods:{
+            ...mapActions({
+                changeMenuActive: 'app/changeMenuActive'
+            })
         }
     }
 </script>

@@ -19,6 +19,11 @@ export default {
             icon: 'el-icon-s-tools',
             name: '404页面',
             url: '/pages/error/404'
+        },{
+            _id: '500',
+            icon: 'el-icon-s-tools',
+            name: '500页面',
+            url: '/pages/error/500'
         }]
     }
 }
