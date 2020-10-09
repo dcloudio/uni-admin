@@ -30,12 +30,15 @@
         computed: {
             ...mapState('app', ['inited', 'navMenu'])
         },
-        watch:{
-            $route (newRoute, oldRoute) {
-                this.changeMenuActive(newRoute.path)
+        watch: {
+            $route: {
+                immediate: true,
+                handler(newRoute, oldRoute) {
+                    this.changeMenuActive(newRoute.path)
+                }
             }
         },
-        methods:{
+        methods: {
             ...mapActions({
                 changeMenuActive: 'app/changeMenuActive'
             })

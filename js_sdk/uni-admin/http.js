@@ -1,6 +1,7 @@
 import store from '@/store'
 import config from '@/admin.config.js'
-export default function(action, data) {
+
+export function http(action, data) {
     return uniCloud.callFunction({
         name: 'uni-admin',
         data: {
@@ -34,4 +35,8 @@ export default function(action, data) {
         })
         return Promise.reject(new Error(err.message))
     })
+}
+
+export function initHttp(Vue) {
+    Vue.prototype.$http = http
 }

@@ -2,20 +2,30 @@
     "pages": [ //pages数组中第一项表示应用启动页，参考：https://uniapp.dcloud.io/collocation/pages
         {
             "path": "pages/index/index"
-        },{
+        }, {
             "path": "pages/login/login",
             "style": {
                 "topWindow": false,
                 "leftWindow": false
             }
-        },{
+        }, {
             "path": "pages/error/404",
             "style": {}
-        },{
+        }, {
             "path": "pages/error/500",
             "style": {}
         }
     ],
+    "subPackages": [{
+        "root": "pages/demo",
+        "pages": [{
+            "path": "icons/icons",
+            "style": {}
+        }, {
+            "path": "error/error",
+            "style": {}
+        }]
+    }],
     "globalStyle": {
         "navigationStyle": "custom",
         "navigationBarTextStyle": "black",

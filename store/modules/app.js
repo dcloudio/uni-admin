@@ -1,4 +1,6 @@
-import http from '@/js_sdk/uni-admin/http.js'
+import {
+    http
+} from '@/js_sdk/uni-admin/http.js'
 
 export default {
     namespaced: true,
@@ -22,7 +24,7 @@ export default {
             state.navMenu = navMenu
         },
         TOGGLE_MENU_ACTIVE: (state, menuId) => {
-          state.active = menuId
+            state.active = menuId
         }
     },
     actions: {
@@ -51,7 +53,9 @@ export default {
                     })
                 })
         },
-        changeMenuActive({ commit }, menuId) {
+        changeMenuActive({
+            commit
+        }, menuId) {
             commit('TOGGLE_MENU_ACTIVE', menuId)
         }
     }
