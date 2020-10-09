@@ -1,5 +1,6 @@
 import {
-  getType
+  getType,
+  SYMBOL_CLIENT_DB_INTERNAL
 } from './utils.js'
 
 export default function parser (param) {
@@ -7,6 +8,9 @@ export default function parser (param) {
     case 'array':
       return param.map(item => parser(item))
     case 'object':
+      if (param._internalType === SYMBOL_CLIENT_DB_INTERNAL) {
+        return param
+      }
       Object.keys(param).forEach(key => {
         param[key] = parser(param[key])
       })

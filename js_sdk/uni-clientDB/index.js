@@ -1,4 +1,10 @@
 import parser from './parser.js'
+import {
+  getSafeProxy
+} from './utils'
+
+const authCallBacks = {}
+
 class Stage {
   constructor (content, prevStage, actionName) {
     this.content = content
@@ -63,6 +69,22 @@ class Stage {
         action: this.actionName,
         command
       }
+    }).then(res => {
+      const {
+        token,
+        tokenExpired
+      } = res.result
+      if (token && tokenExpired) {
+        authCallBacks.refreshToken.forEach(func => {
+          func({
+            token,
+            tokenExpired
+          })
+        })
+      }
+      return Promise.resolve(res)
+    }).catch(err => {
+      return Promise.reject(err)
     })
   }
 }
@@ -75,11 +97,8 @@ function isProp (prev, key) {
 
 function getDbIns (content, prevStage, actionName) {
   const stage = new Stage(content, prevStage, actionName)
-  return new Proxy(stage, {
+  return getSafeProxy(stage, {
     get (stage, key) {
-      if (Object.prototype.hasOwnProperty.call(stage, key) || stage[key] || typeof key !== 'string') {
-        return stage[key]
-      }
       let prevMethod = 'db'
       if (stage && stage.content) {
         prevMethod = stage.content.$method
@@ -99,24 +118,56 @@ function getDbIns (content, prevStage, actionName) {
   })
 }
 
+function getDbClass ({
+  path,
+  method
+}) {
+  return class {
+    constructor () {
+      this.param = Array.from(arguments)
+    }
+
+    toJSON () {
+      return {
+        $newDb: [
+          ...path.map(prop => { return { $method: prop } }),
+          {
+            $method: method,
+            $param: this.param
+          }]
+      }
+    }
+  }
+}
+
 const db = {
-  env: new Proxy({}, {
-    get (_, prop) {
-      if (typeof prop === 'string') {
-        return {
-          $env: prop
-        }
-      } else {
-        return {}[prop]
+  auth: {
+    on: (event, func) => {
+      authCallBacks[event] = authCallBacks[event] || []
+      if (authCallBacks[event].indexOf(func) > -1) {
+        return
+      }
+      authCallBacks[event].push(func)
+    },
+    off: (event, func) => {
+      authCallBacks[event] = authCallBacks[event] || []
+      const index = authCallBacks[event].indexOf(func)
+      if (index === -1) {
+        return
+      }
+      authCallBacks[event].splice(index, 1)
+    }
+  },
+  env: getSafeProxy({}, {
+    get (env, prop) {
+      return {
+        $env: prop
       }
     }
   }),
   action (actionName) {
-    return new Proxy({}, {
-      get (db, key, rec) {
-        if (db[key]) {
-          return db[key]
-        }
+    return getSafeProxy({}, {
+      get (db, key) {
         if (isProp('db', key)) {
           return getDbIns({
             $method: key
@@ -130,14 +181,31 @@ const db = {
         }
       }
     })
+  },
+  Geo: getSafeProxy({}, {
+    get (Geo, key) {
+      return getDbClass({
+        path: ['Geo'],
+        method: key
+      })
+    }
+  }),
+  get serverDate () {
+    return getDbClass({
+      path: [],
+      method: 'serverDate'
+    })
+  },
+  get RegExp () {
+    return getDbClass({
+      path: [],
+      method: 'RegExp'
+    })
   }
 }
 
-export default new Proxy(db, {
-  get (db, key, rec) {
-    if (db[key]) {
-      return db[key]
-    }
+export default getSafeProxy(db, {
+  get (db, key) {
     if (isProp('db', key)) {
       return getDbIns({
         $method: key
