@@ -23,8 +23,8 @@ export default {
             state.inited = true
             state.navMenu = navMenu
         },
-        TOGGLE_MENU_ACTIVE: (state, menuId) => {
-            state.active = menuId
+        TOGGLE_MENU_ACTIVE: (state, url) => {
+          state.active = url
         }
     },
     actions: {
@@ -53,10 +53,8 @@ export default {
                     })
                 })
         },
-        changeMenuActive({
-            commit
-        }, menuId) {
-            commit('TOGGLE_MENU_ACTIVE', menuId)
+        changeMenuActive({ commit }, url) {
+            commit('TOGGLE_MENU_ACTIVE', url)
         }
     }
 }
