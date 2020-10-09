@@ -29,10 +29,6 @@ export default {
             name: '图标',
             url: '/pages/demo/icons/icons'
         }, {
-            _id: '404',
-            name: '404页面',
-            url: '/pages/error/404'
-        }, {
             _id: 'errorLog',
             name: '错误日志模拟',
             url: '/pages/demo/error/error'
