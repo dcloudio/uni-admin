@@ -1,14 +1,14 @@
 <template>
     <view class="pointer">
-        <view v-if="!item.children">
+        <template v-if="!item.children || !item.children.length">
             <uni-menu-item @click="clickMenuItem(item.url)">
-                <uni-icons :type="item.icon" size="18" color="#888" />
+                <view :class="item.icon"></view>
                 <text :class="{title: item.icon, actived: isActived}">{{item.name}}</text>
             </uni-menu-item>
-        </view>
+        </template>
         <uni-sub-menu v-else>
             <template v-slot:title>
-                <uni-icons :type="item.icon" size="18" color="#888" />
+                <view :class="item.icon"></view>
                 <text :class="{title: item.icon}">{{item.name}}</text>
             </template>
             <sidebar-item class="item-bg" v-for="child in item.children" :item="child" :key="child._id" />
@@ -54,9 +54,5 @@
     // }
     .actived {
         color: $menu-text-color-actived;
-    }
-    .el-icon-platform-eleme {
-        width: 20px;
-        height: 20px;
     }
 </style>

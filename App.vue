@@ -41,6 +41,7 @@
 
 <style>
     /*每个页面公共css */
+    @import url("./common/el-icon.css");
     page {
         background-color: #f8f8f8;
         font-size: 14px;
