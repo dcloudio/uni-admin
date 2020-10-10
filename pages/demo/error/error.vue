@@ -1,7 +1,7 @@
 <template>
     <view style="padding-top: 50px;">
-        <button @click="throwJsError" type="primary" style="width: 350px;">点击模拟一个 js 错误</button>
-        <button @click="throwHttpError" type="primary" style="width: 350px;margin-top: 15px;">点击模拟一个接口请求错误</button>
+        <button @click="throwJsError" type="primary" style="width: 280px;">点击模拟一个 js 错误</button>
+        <button @click="throwHttpError" :disabled="loading" :loading="loading" type="primary" style="width: 280px;margin-top: 15px;">点击模拟一个接口请求错误</button>
     </view>
 </template>
 
@@ -9,7 +9,7 @@
     export default {
         data() {
             return {
-
+                loading: false
             }
         },
         methods: {
@@ -17,7 +17,10 @@
                 a
             },
             throwHttpError() {
-                this.$http('error/throw')
+                this.loading = true
+                this.$http('error/throw').finally(() => {
+                    this.loading = false
+                })
             }
         }
     }
