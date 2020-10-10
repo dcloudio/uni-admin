@@ -25,13 +25,18 @@ export default {
     sideBar: { // 左侧菜单
         // 配置静态菜单列表（放置在用户被授权的菜单列表下边）
         secondaryMenus: [{
-            _id: 'icon',
-            name: '图标',
-            url: '/pages/demo/icons/icons'
-        }, {
-            _id: 'errorLog',
-            name: '错误日志模拟',
-            url: '/pages/demo/error/error'
+            _id: 'demo',
+            name: '示例',
+            icon: 'el-icon-menu',
+            children: [{
+                _id: 'icon',
+                name: '图标',
+                url: '/pages/demo/icons/icons'
+            }, {
+                _id: 'errorLog',
+                name: '错误日志模拟',
+                url: '/pages/demo/error/error'
+            }]
         }]
     }
 }
