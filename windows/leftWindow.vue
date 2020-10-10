@@ -50,7 +50,6 @@
     .sidebar {
         position: fixed;
         top: var(--window-top);
-        left: 0;
         width: 240px;
         height: calc(100vh - (var(--window-top)));
         box-sizing: border-box;
