@@ -10,6 +10,9 @@ export default {
         links: [{ // 右侧链接
             text: '项目文档',
             url: 'https://github.com/dcloudio/uni-template-admin/blob/master/README.md'
+        }, {
+            text: '插件市场',
+            url: 'https://ext.dcloud.net.cn/'
         }],
         debug: {
             enable: process.env.NODE_ENV !== 'production', //是否显示错误信息
@@ -26,7 +29,7 @@ export default {
         // 配置静态菜单列表（放置在用户被授权的菜单列表下边）
         secondaryMenus: [{
             _id: 'demo',
-            name: '示例',
+            name: '功能演示',
             icon: 'el-icon-menu',
             children: [{
                 _id: 'icon',
@@ -37,11 +40,6 @@ export default {
                 name: '错误日志模拟',
                 url: '/pages/demo/error/error'
             }]
-        }, {
-            _id: 'ext',
-            name: '插件市场',
-            icon: 'el-icon-shopping-cart-1',
-            url: 'https://ext.dcloud.net.cn/'
         }]
     }
 }

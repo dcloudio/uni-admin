@@ -1,6 +1,6 @@
 import store from '@/store'
 import config from '@/admin.config.js'
-
+const debugOptions = config.navBar.debug
 export function http(action, data) {
     return uniCloud.callFunction({
         name: 'uni-admin',
@@ -33,12 +33,14 @@ export function http(action, data) {
             content: '请求服务失败:' + err.message,
             showCancel: false
         })
-        store.dispatch('error/add', {
-            err: err.toString(),
-            info: '$http("' + action + '")',
-            route: '',
-            time: new Date().toLocaleTimeString()
-        })
+        if (debugOptions && debugOptions.enable === true) {
+            store.dispatch('error/add', {
+                err: err.toString(),
+                info: '$http("' + action + '")',
+                route: '',
+                time: new Date().toLocaleTimeString()
+            })
+        }
         return Promise.reject(new Error(err.message))
     })
 }

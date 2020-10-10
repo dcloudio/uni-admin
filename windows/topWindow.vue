@@ -18,12 +18,12 @@
             </view>
             <view v-if="matchLeftWindow" :class="{'repalce-select flex-column':!matchLeftWindow}" class="top-window-right">
                 <!-- #ifdef H5 -->
-                <span v-if="logs.length" @click="showErrorLogs" class="debug pointer">
+                <view v-if="logs.length" @click="showErrorLogs" class="debug pointer">
                     <svg class="svg-icon">
                         <use xlink:href="#icon-bug"></use>
                     </svg>
                     <uni-badge class="debug-badge" :text="logs.length" type="error"></uni-badge>
-                </span>
+                </view>
                 <!-- #endif -->
                 <uni-link v-for="link in links" :key="link.url" :href="link.url" :text="link.text" />
                 <text class="user">{{userInfo.username}}</text>️
@@ -150,6 +150,7 @@
     }
 
     .debug {
+        display: inline-block;
         position: relative;
     }
 
