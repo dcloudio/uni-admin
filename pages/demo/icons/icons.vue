@@ -52,7 +52,7 @@
                     success(res) {
                         uni.showToast({
                             icon: 'none',
-                            title: '复制' + data + '成功！'
+                            title: '复制 ' + data + ' 成功！'
                         })
                     },
                     fail(res) {
