@@ -100,6 +100,11 @@
         justify-content: space-between;
     }
 
+    .flex-column {
+        display: flex;
+        flex-direction: column;
+    }
+
     .m-b-30 {
         margin-bottom: 30px;
     }
