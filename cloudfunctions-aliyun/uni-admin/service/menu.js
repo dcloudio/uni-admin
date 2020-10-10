@@ -12,12 +12,14 @@ module.exports = class UserService extends Service {
         }).limit(1000).get()
 
         // 删除无权限访问的菜单
-        menuList = menuList.filter(item => {
-            if (!item.permission || !item.permission.length) {
-                return true
-            }
-            return item.permission.some(item => permission.indexOf(item) > -1)
-        })
+        if (!this.ctx.auth.includes('admin')) {
+            menuList = menuList.filter(item => {
+                if (!item.permission || !item.permission.length) {
+                    return true
+                }
+                return item.permission.some(item => permission.indexOf(item) > -1)
+            })
+        }
 
         // 简单实现删除无subMenu且无url的菜单项
         // let lastMenuList = []
