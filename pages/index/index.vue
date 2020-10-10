@@ -1,7 +1,7 @@
 <template>
-    <text>
+    <view style="padding: 15px;">
         内容主体，可自定义内容及样式
-    </text>
+    </view>
 </template>
 
 <script>
