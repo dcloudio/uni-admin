@@ -39,8 +39,13 @@
             ...mapState('app', ['active'])
         },
 
-        methods:{
+        methods: {
             clickMenuItem(menu) {
+                // #ifdef H5
+                if (menu.url.indexOf('http') === 0) {
+                    return window.open(menu.url)
+                }
+                // #endif
                 uni.navigateTo({
                     url: menu.url,
                 })
@@ -53,9 +58,11 @@
     .title {
         margin-left: 5px;
     }
+
     .item-bg {
         background-color: $sub-menu-bg-color;
     }
+
     // .only-one-menu {
     //     border-bottom: 1px #f5f5f5 solid;
     // }

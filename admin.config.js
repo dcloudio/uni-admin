@@ -37,6 +37,11 @@ export default {
                 name: '错误日志模拟',
                 url: '/pages/demo/error/error'
             }]
+        }, {
+            _id: 'ext',
+            name: '插件市场',
+            icon: 'el-icon-shopping-cart-1',
+            url: 'https://ext.dcloud.net.cn/'
         }]
     }
 }
