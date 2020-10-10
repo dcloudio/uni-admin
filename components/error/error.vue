@@ -1,36 +1,30 @@
 <template>
-    <view class="err-table">
-        <view class="err-row err-header">
-            <view class="err-column">
-                <text>错误信息</text>
-            </view>
-            <view class="err-column">
-                <text>路由</text>
-            </view>
-            <view class="err-column">
-                <text>时间</text>
-            </view>
-            <view class="err-column">
-                <text>搜索</text>
-            </view>
-        </view>
-        <view v-for="(log,index) in logs" :key="index" class="err-row">
-            <view class="err-column">
-                <text class="err-msg">Error in {{log.info}}: `{{log.err}}`</text>
-            </view>
-            <view class="err-column">
-                <navigator class="err-route" :url="log.route">{{log.route}}</navigator>
-            </view>
-            <view class="err-column">
-                <text>{{log.time}}</text>
-            </view>
-            <view class="err-column">
-                <!-- #ifdef H5 -->
-                <a v-for="engine in engines" :href="engine.url.replace('ERR_MSG',encodeURIComponent(log.err))" target="_blank"
-                    class="err-search">{{engine.name}}</a>
-                <!-- #endif -->
-            </view>
-        </view>
+    <view class="uni-table">
+        <uni-table border stripe>
+            <uni-table-tr>
+                <uni-table-th align="center">错误信息</uni-table-th>
+                <uni-table-th width="100" align="center">路由</uni-table-th>
+                <uni-table-th width="100" align="center">时间</uni-table-th>
+                <uni-table-th width="100" align="center">搜索</uni-table-th>
+            </uni-table-tr>
+            <uni-table-tr v-for="(log,index) in logs" :key="index">
+                <uni-table-td>
+                    <text class="err-msg">Error in {{log.info}}: `{{log.err}}`</text>
+                </uni-table-td>
+                <uni-table-td>
+                    <navigator class="err-route" :url="log.route">{{log.route}}</navigator>
+                </uni-table-td>
+                <uni-table-td>
+                    <text>{{log.time}}</text>
+                </uni-table-td>
+                <uni-table-td>
+                    <!-- #ifdef H5 -->
+                    <a v-for="engine in engines" :href="engine.url.replace('ERR_MSG',encodeURIComponent(log.err))"
+                        target="_blank" class="err-search">{{engine.name}}</a>
+                    <!-- #endif -->
+                </uni-table-td>
+            </uni-table-tr>
+        </uni-table>
     </view>
 </template>
 
@@ -58,25 +52,13 @@
 </script>
 
 <style>
-    .err-table {
-        width: 100%;
-        display: flex;
-        flex-direction: column;
-        overflow: hidden;
-        box-sizing: border-box;
-    }
-
-    .err-row {
-        display: flex;
-    }
-
-    .err-column {}
+    .uni-table {}
 
     .err-msg {
         color: #FF0000;
     }
 
     .err-search {
-        /* margin-right: 10px; */
+        margin-right: 10px;
     }
 </style>
