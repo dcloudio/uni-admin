@@ -1,6 +1,7 @@
 <template>
     <view style="padding-top: 50px;">
-        <button @click="throwError" type="primary" style="width: 350px;">点击模拟一个 ReferenceError 错误</button>
+        <button @click="throwReferenceError" type="primary" style="width: 350px;">点击模拟一个 ReferenceError 错误</button>
+        <button @click="throwHttpError" type="primary" style="width: 350px;margin-top: 15px;">点击模拟一个接口请求错误</button>
     </view>
 </template>
 
@@ -14,6 +15,9 @@
         methods: {
             throwError() {
                 a
+            },
+            throwHttpError() {
+                this.$http('error/throw')
             }
         }
     }

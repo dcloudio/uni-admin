@@ -15,6 +15,13 @@ export default {
         add({
             commit
         }, log) {
+            if (!log.route) {
+                const pages = getCurrentPages()
+                if (pages.length) {
+                    log.route = pages[pages.length - 1].route
+                }
+            }
+            log.route = '/' + (log.route || '')
             commit('ADD_ERROR_LOG', log)
         },
         clear({
