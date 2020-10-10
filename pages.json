@@ -36,7 +36,7 @@
             "height": "60px"
         },
         "matchMedia": {
-            "minWidth": 0
+            "minWidth": 1
         }
     },
     "leftWindow": {

@@ -105,6 +105,12 @@
         flex-direction: column;
     }
 
+    .flex-end {
+        display: flex;
+        align-items: center;
+        justify-content: end;
+    }
+
     .m-b-30 {
         margin-bottom: 30px;
     }
@@ -117,5 +123,9 @@
     .p-lr-0 {
         padding-left: 0;
         padding-right: 0;
+    }
+    .uni-top-window{
+        z-index: 998;
+        overflow: visible;
     }
 </style>

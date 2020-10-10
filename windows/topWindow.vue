@@ -8,15 +8,15 @@
         </svg>
         <!-- #endif -->
         <view class="flex-s p-t-20" style="position: relative;">
-            <view v-if="!matchLeftWindow" @click="taggleSidebar" class="el-icon-s-unfold" style="padding:10px 35px 10px 0;"></view>
-            <view class="logo-image" :class="{'min-logo': !matchLeftWindow}">
+            <view v-if="!matchLeftWindow" @click="taggleSidebar" class="el-icon-s-unfold left"></view>
+            <view class="logo-image" :class="{'min-logo center': !matchLeftWindow}">
                 <image :src="logo" mode="heightFix"></image>
             </view>
-            <view v-if="!matchLeftWindow" class="top-window-right flex-s">
+            <view v-if="!matchLeftWindow" @click="taggleUserMenu" class="top-window-right right" >
                 <text class="user">{{userInfo.username}}</text>️
                 <uni-icons v-if="userInfo.username" class="arrowdown" type="arrowdown" color="#bbb" size="14"></uni-icons>
             </view>
-            <view v-if="matchLeftWindow" :class="{'repalce-select flex-column':!matchLeftWindow}" class="top-window-right">
+            <view v-if="matchLeftWindow || userMenuOpen" :class="{'repalce-select flex-column':!matchLeftWindow}" class="top-window-right flex-end">
                 <!-- #ifdef H5 -->
                 <view v-if="logs.length" @click="showErrorLogs" class="debug pointer">
                     <svg class="svg-icon">
@@ -26,7 +26,7 @@
                 </view>
                 <!-- #endif -->
                 <uni-link v-for="link in links" :key="link.url" :href="link.url" :text="link.text" />
-                <text class="user">{{userInfo.username}}</text>️
+                <text v-if="matchLeftWindow" class="user">{{userInfo.username}}</text>️
                 <text v-if="userInfo.username" class="logout pointer" @click="logout">退出</text>️
             </view>
         </view>
@@ -57,7 +57,8 @@
         },
         data() {
             return {
-                ...config.navBar
+                ...config.navBar,
+                userMenuOpen: false
             }
         },
         computed: {
@@ -90,6 +91,10 @@
                 } else {
                     uni.hideLeftWindow()
                 }
+            },
+            taggleUserMenu(){
+                console.log('this.userMenuOpen====', this.userMenuOpen)
+                this.userMenuOpen = !this.userMenuOpen
             }
         }
     }
@@ -176,14 +181,37 @@
 
     .repalce-select {
         position: absolute;
-        right: 0;
-        top: 50%;
-        background-color: #fff;
-        z-index: 1999;
+        right: 20px;
+        top: 50px;
+        background-color: #f1f1f1;
+        padding: 15px;
+        padding-bottom: 0;
+        z-index: 999;
+        border-radius: 3px;
+    }
+    .repalce-select * {
+        margin: 0;
+        margin-bottom: 5px;
     }
 
     .arrowdown {
         margin-top: 3px;
         margin-left: 3px;
+    }
+    .center {
+        flex: 1;
+        display: inline-flex;
+        justify-content: center;
+    }
+    .left {
+      flex: 1;
+      display: inline-flex;
+      justify-content: left;
+    }
+    .right {
+      flex: 1;
+      display: inline-flex;
+      justify-content: flex-end;
+      overflow: hidden;
     }
 </style>
