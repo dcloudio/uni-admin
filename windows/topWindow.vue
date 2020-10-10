@@ -8,15 +8,15 @@
         </svg>
         <!-- #endif -->
         <view class="flex-s p-t-20" style="position: relative;">
-            <view v-if="isPhone" @click="taggleSidebar" class="el-icon-s-unfold" style="padding:10px 35px 10px 0;"></view>
-            <view class="logo-image" :class="{'min-logo': isPhone}">
+            <view v-if="!matchLeftWindow" @click="taggleSidebar" class="el-icon-s-unfold" style="padding:10px 35px 10px 0;"></view>
+            <view class="logo-image" :class="{'min-logo': !matchLeftWindow}">
                 <image :src="logo" mode="heightFix"></image>
             </view>
-            <view v-if="isPhone" class="top-window-right flex-s">
+            <view v-if="!matchLeftWindow" class="top-window-right flex-s">
                 <text class="user">{{userInfo.username}}</text>️
-			    <uni-icons v-if="userInfo.username" class="arrowdown" type="arrowdown" color="#bbb" size="14"></uni-icons>
+                <uni-icons v-if="userInfo.username" class="arrowdown" type="arrowdown" color="#bbb" size="14"></uni-icons>
             </view>
-            <view v-if="!isPhone" :class="{'repalce-select flex-column':isPhone}" class="top-window-right">
+            <view v-if="matchLeftWindow" :class="{'repalce-select flex-column':!matchLeftWindow}" class="top-window-right">
                 <!-- #ifdef H5 -->
                 <view v-if="logs.length" @click="showErrorLogs" class="debug pointer">
                     <svg class="svg-icon">
@@ -47,16 +47,22 @@
     } from 'vuex'
     import config from '@/admin.config.js'
     export default {
+        props: {
+            matchLeftWindow: {
+                type: Boolean
+            },
+            showLeftWindow: {
+                type: Boolean
+            }
+        },
         data() {
             return {
-                ...config.navBar,
-                isOpen: false
+                ...config.navBar
             }
         },
         computed: {
             ...mapState('user', ['userInfo']),
-            ...mapState('error', ['logs']),
-            ...mapState('app', ['isPhone'])
+            ...mapState('error', ['logs'])
         },
         methods: {
             ...mapMutations({
@@ -78,13 +84,12 @@
 
                     })
             },
-            taggleSidebar(){
-                if (!this.isOpen) {
+            taggleSidebar() {
+                if (!this.showLeftWindow) {
                     uni.showLeftWindow()
                 } else {
                     uni.hideLeftWindow()
                 }
-                this.isOpen = !this.isOpen
             }
         }
     }
@@ -167,6 +172,7 @@
         height: 500px;
         box-sizing: border-box;
     }
+
     .repalce-select {
         position: absolute;
         right: 0;
@@ -174,6 +180,7 @@
         background-color: #fff;
         z-index: 1999;
     }
+
     .arrowdown {
         margin-top: 3px;
         margin-left: 3px;
