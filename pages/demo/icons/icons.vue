@@ -1,6 +1,6 @@
 <template>
-    <view>
-        <uni-segmented-control class="pointer" :current="current" :values="items" styleType="text" style="width: 350px;"
+    <view style="padding-top: 10px;">
+        <uni-segmented-control class="pointer" :current="current" :values="items" styleType="text" style="width: 300px;margin:0 auto;"
             @clickItem="onChange" />
         <view v-show="current===0" class="icons">
             <view v-for="icon in uniIcons" :key="icon" class="icon-item pointer">

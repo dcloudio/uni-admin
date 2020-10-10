@@ -54,7 +54,7 @@
         width: 240px;
         height: calc(100vh - (var(--window-top)));
         box-sizing: border-box;
-        border-right: 1px solid #eaecef;
+        border-right: 1px solid darken($left-window-bg-color, 8%);
         background-color: $left-window-bg-color;
         padding-bottom: 10px;
     }

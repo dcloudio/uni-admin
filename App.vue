@@ -49,10 +49,29 @@
         user-select: auto;
     }
 
-    page {
-        background-color: #f8f8f8;
-        font-size: 14px;
-        padding: 20px;
+    .uni-app--showleftwindow uni-main {
+        position: relative;
+        background-color: #f5f5f5;
+    }
+
+    .uni-app--showleftwindow uni-page-wrapper {
+        position: absolute;
+        width: 100%;
+        top: 0;
+        bottom: 0;
+        padding: 15px;
+        overflow-y: auto;
+        box-sizing: border-box;
+        background-color: #F5F5F5;
+    }
+
+    .uni-app--showleftwindow uni-page-body {
+        width: 100%;
+        min-height: 100%;
+        box-sizing: border-box;
+        border-radius: 5px;
+        box-shadow: -1px -1px 5px 0 rgba(0, 0, 0, .1);
+        background-color: #fff;
     }
 
     .pointer {

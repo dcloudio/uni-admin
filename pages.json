@@ -34,6 +34,9 @@
         "path": "windows/topWindow",
         "style": {
             "height": "60px"
+        },
+        "matchMedia": {
+            "minWidth": 0
         }
     },
     "leftWindow": {

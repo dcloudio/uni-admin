@@ -1,5 +1,5 @@
 <template>
-    <view>
+    <view style="padding-top: 50px;">
         <button @click="throwError" type="primary" style="width: 350px;">点击模拟一个 ReferenceError 错误</button>
     </view>
 </template>
