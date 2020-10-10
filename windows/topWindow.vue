@@ -7,11 +7,16 @@
             </symbol>
         </svg>
         <!-- #endif -->
-        <view class="flex-s p-t-20">
-            <view class="logo-image">
+        <view class="flex-s p-t-20" style="position: relative;">
+            <view v-if="isPhone" @click="taggleSidebar" class="el-icon-s-unfold" style="padding:10px 35px 10px 0;"></view>
+            <view class="logo-image" :class="{'min-logo': isPhone}">
                 <image :src="logo" mode="heightFix"></image>
             </view>
-            <view class="flex-s top-window-right">
+            <view v-if="isPhone" class="top-window-right flex-s">
+                <text class="user">{{userInfo.username}}</text>️
+			    <uni-icons v-if="userInfo.username" class="arrowdown" type="arrowdown" color="#bbb" size="14"></uni-icons>
+            </view>
+            <view v-if="!isPhone" :class="{'repalce-select flex-column':isPhone}" class="top-window-right">
                 <!-- #ifdef H5 -->
                 <view v-if="logs.length" @click="showErrorLogs" class="debug pointer">
                     <svg class="svg-icon">
@@ -44,12 +49,14 @@
     export default {
         data() {
             return {
-                ...config.navBar
+                ...config.navBar,
+                isOpen: false
             }
         },
         computed: {
             ...mapState('user', ['userInfo']),
-            ...mapState('error', ['logs'])
+            ...mapState('error', ['logs']),
+            ...mapState('app', ['isPhone'])
         },
         methods: {
             ...mapMutations({
@@ -70,6 +77,14 @@
                     }).catch(err => {
 
                     })
+            },
+            taggleSidebar(){
+                if (!this.isOpen) {
+                    uni.showLeftWindow()
+                } else {
+                    uni.hideLeftWindow()
+                }
+                this.isOpen = !this.isOpen
             }
         }
     }
@@ -97,7 +112,11 @@
     }
 
     .logo-image {
-        height: 40px;
+        height: 30px;
+    }
+
+    .min-logo {
+        height: 25px;
     }
 
     .logo-image image {
@@ -147,5 +166,16 @@
         padding: 15px;
         height: 500px;
         box-sizing: border-box;
+    }
+    .repalce-select {
+        position: absolute;
+        right: 0;
+        top: 50%;
+        background-color: #fff;
+        z-index: 1999;
+    }
+    .arrowdown {
+        margin-top: 3px;
+        margin-left: 3px;
     }
 </style>

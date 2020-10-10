@@ -10,7 +10,8 @@ export default {
             opened: true
         },
         navMenu: [],
-        active: ''
+        active: '',
+        isPhone: false
     },
     mutations: {
         TOGGLE_SIDEBAR: state => {
@@ -25,6 +26,9 @@ export default {
         },
         TOGGLE_MENU_ACTIVE: (state, url) => {
           state.active = url
+        },
+        QUERY_MEDIA: (state, matches) => {
+            state.isPhone = matches
         }
     },
     actions: {
@@ -55,6 +59,9 @@ export default {
         },
         changeMenuActive({ commit }, url) {
             commit('TOGGLE_MENU_ACTIVE', url)
+        },
+        queryMedia({ commit }, matches) {
+            commit('QUERY_MEDIA', matches)
         }
     }
 }
