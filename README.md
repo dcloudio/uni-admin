@@ -56,7 +56,6 @@
 │   └── leftWindow.vue          # 左侧窗口（菜单栏）
 │   └── topWindow.vue           # 顶部窗口（导航栏）
 ├── admin.config.js             # 系统配置（配置导航，菜单等）
-├── admin.plugin.js             # 系统插件（挂载原型方法，路由拦截等）
 ├── App.vue
 ├── main.js
 ├── mainfest.json
