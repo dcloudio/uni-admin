@@ -40,6 +40,11 @@
             "style": {
                 "navigationBarTitleText": "用户管理"
             }
+        }, {
+            "path": "storage/storage",
+            "style": {
+                "navigationBarTitleText": "云存储管理"
+            }
         }]
     }, {
         "root": "pages/demo",
