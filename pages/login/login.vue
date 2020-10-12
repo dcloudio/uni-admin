@@ -121,8 +121,8 @@
 
     .login-box {
         position: relative;
-        width: 420px;
-        max-width: 100%;
+        max-width: 420px;
+        flex: 1;
         padding: 180px 35px 0;
         margin: 0 auto;
         overflow: hidden;

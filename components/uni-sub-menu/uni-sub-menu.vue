@@ -9,7 +9,7 @@
 		</view>
 		<!--  -->
 		<!-- <view class="uni-sub-menu__content" :style="{height:height+'px'}"> -->
-		<view class="uni-sub-menu__content" :style="{display: !isOpen ? 'none' : 'block'}">
+		<view class="uni-sub-menu__content" :style="{display: isOpen ? 'block' : 'none'}">
 			<view id="content--hook">
 				<slot></slot>
 			</view>
@@ -26,9 +26,12 @@
 			return {
 				height: 0,
 				oldheight: 0,
-				isOpen: false
+				isOpen: this.active
 			};
 		},
+        props: {
+            active: false,
+        },
 		computed: {
 			paddingLeft() {
 				return 20 + 20 * this.rootMenu.SubMenu.length + 'px'
@@ -36,9 +39,6 @@
 		},
 		created() {
 			this.init()
-		},
-		mounted(){
-			// this.getQuery()
 		},
 		methods: {
 			init() {
@@ -63,6 +63,7 @@
 
 			tiggerMenuItem() {
 				this.isOpen = !this.isOpen
+                // console.log("======== this.hasChildActive =========", this.hasChildActive, "======= this.isOpen =======", this.isOpen)
 			},
 
 			// select() {

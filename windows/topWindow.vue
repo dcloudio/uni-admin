@@ -8,11 +8,11 @@
         </svg>
         <!-- #endif -->
         <view class="flex-s p-t-20" style="position: relative;">
-            <view v-if="!matchLeftWindow" @click="taggleSidebar" class="el-icon-s-unfold left"></view>
+            <view v-if="!matchLeftWindow" @click="taggleSidebar" class="el-icon-s-unfold left pointer"></view>
             <view class="logo-image" :class="{'min-logo center': !matchLeftWindow}">
                 <image :src="logo" mode="heightFix"></image>
             </view>
-            <view v-if="!matchLeftWindow" @click="taggleUserMenu" class="top-window-right right">
+            <view v-if="!matchLeftWindow" @click="taggleUserMenu" class="top-window-right right pointer" >
                 <text class="user">{{userInfo.username}}</text>️
                 <uni-icons v-if="userInfo.username" class="arrowdown" type="arrowdown" color="#bbb" size="14"></uni-icons>
             </view>
@@ -96,8 +96,7 @@
                     uni.hideLeftWindow()
                 }
             },
-            taggleUserMenu() {
-                console.log('this.userMenuOpen====', this.userMenuOpen)
+            taggleUserMenu(){
                 this.userMenuOpen = !this.userMenuOpen
             }
         }
