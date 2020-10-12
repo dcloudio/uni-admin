@@ -6,25 +6,33 @@
             "path": "pages/login/login",
             "style": {
                 "topWindow": false,
-                "leftWindow": false
+                "leftWindow": false,
+                "navigationBarTitleText": "登录"
             }
         }, {
             "path": "pages/error/404",
-            "style": {}
+            "style": {
+                "navigationBarTitleText": "Not Found"
+            }
         }
     ],
     "subPackages": [{
         "root": "pages/demo",
         "pages": [{
             "path": "icons/icons",
-            "style": {}
-        }, {
-            "path": "error/error",
-            "style": {}
+            "style": {
+                "navigationBarTitleText": "图标"
+            }
         }, {
             "path": "table/table",
-            "style": {}
-
+            "style": {
+                "navigationBarTitleText": "表格"
+            }
+        }, {
+            "path": "error/error",
+            "style": {
+                "navigationBarTitleText": "模拟错误"
+            }
         }]
     }],
     "globalStyle": {

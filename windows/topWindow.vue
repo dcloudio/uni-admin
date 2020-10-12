@@ -12,7 +12,7 @@
             <view class="logo-image" :class="{'min-logo center': !matchLeftWindow}">
                 <image :src="logo" mode="heightFix"></image>
             </view>
-            <view v-if="!matchLeftWindow" @click="taggleUserMenu" class="top-window-right right" >
+            <view v-if="!matchLeftWindow" @click="taggleUserMenu" class="top-window-right right">
                 <text class="user">{{userInfo.username}}</text>️
                 <uni-icons v-if="userInfo.username" class="arrowdown" type="arrowdown" color="#bbb" size="14"></uni-icons>
             </view>
@@ -46,8 +46,12 @@
         mapState
     } from 'vuex'
     import config from '@/admin.config.js'
+
     export default {
         props: {
+            navigationBarTitleText: {
+                type: String
+            },
             matchLeftWindow: {
                 type: Boolean
             },
@@ -92,7 +96,7 @@
                     uni.hideLeftWindow()
                 }
             },
-            taggleUserMenu(){
+            taggleUserMenu() {
                 console.log('this.userMenuOpen====', this.userMenuOpen)
                 this.userMenuOpen = !this.userMenuOpen
             }
@@ -189,6 +193,7 @@
         z-index: 999;
         border-radius: 3px;
     }
+
     .repalce-select * {
         margin: 0;
         margin-bottom: 5px;
@@ -198,20 +203,23 @@
         margin-top: 3px;
         margin-left: 3px;
     }
+
     .center {
         flex: 1;
         display: inline-flex;
         justify-content: center;
     }
+
     .left {
-      flex: 1;
-      display: inline-flex;
-      justify-content: left;
+        flex: 1;
+        display: inline-flex;
+        justify-content: left;
     }
+
     .right {
-      flex: 1;
-      display: inline-flex;
-      justify-content: flex-end;
-      overflow: hidden;
+        flex: 1;
+        display: inline-flex;
+        justify-content: flex-end;
+        overflow: hidden;
     }
 </style>
