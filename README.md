@@ -249,4 +249,8 @@ module.exports = class PostController extends Controller {
 
 #### admin 插件列表
 
-> TODO
+-   [菜单管理](https://github.com/dcloudio/uni-template-admin/tree/master/uni_modules/admin-menu)
+-   [权限管理](https://github.com/dcloudio/uni-template-admin/tree/master/uni_modules/admin-permission)
+-   [角色管理](https://github.com/dcloudio/uni-template-admin/tree/master/uni_modules/admin-role)
+-   [用户管理](https://github.com/dcloudio/uni-template-admin/tree/master/uni_modules/admin-user)
+-   [云存储管理](https://github.com/dcloudio/uni-template-admin/tree/master/uni_modules/admin-storage)
