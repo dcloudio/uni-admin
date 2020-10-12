@@ -6,19 +6,10 @@ export default {
     namespaced: true,
     state: {
         inited: false,
-        sidebar: {
-            opened: true
-        },
         navMenu: [],
         active: ''
     },
     mutations: {
-        TOGGLE_SIDEBAR: state => {
-            state.sidebar.opened = !state.sidebar.opened
-        },
-        CLOSE_SIDEBAR: state => {
-            state.sidebar.opened = false
-        },
         SET_NAV_MENU: (state, navMenu) => {
             state.inited = true
             state.navMenu = navMenu
@@ -28,16 +19,6 @@ export default {
         }
     },
     actions: {
-        toggleSideBar({
-            commit
-        }) {
-            commit('TOGGLE_SIDEBAR')
-        },
-        closeSideBar({
-            commit
-        }) {
-            commit('CLOSE_SIDEBAR')
-        },
         init({
             commit
         }) {
