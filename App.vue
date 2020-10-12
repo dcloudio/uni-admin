@@ -40,9 +40,6 @@
 </script>
 
 <style>
-    /*每个页面公共css */
-    @import url("./common/el-icon.css");
-
     body,
     html {
         -webkit-user-select: auto;
@@ -124,7 +121,8 @@
         padding-left: 0;
         padding-right: 0;
     }
-    .uni-top-window{
+
+    .uni-top-window {
         z-index: 998;
         overflow: visible;
     }

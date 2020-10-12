@@ -65,6 +65,11 @@
             }
         }]
     }],
+    "easycom": {
+        "custom": {
+            "^el-(.*)": "element-ui/lib/$1.js"
+        }
+    },
     "globalStyle": {
         "navigationStyle": "custom",
         "navigationBarTextStyle": "black",
