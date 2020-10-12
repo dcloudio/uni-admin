@@ -36,7 +36,7 @@ export default {
                 name: '图标',
                 url: '/pages/demo/icons/icons'
             }, {
-                _id: 'icon',
+                _id: 'table',
                 name: '表格',
                 url: '/pages/demo/table/table'
             }, {
