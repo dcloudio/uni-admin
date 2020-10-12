@@ -144,14 +144,14 @@
 
     .logo-image text {
         font-size: 14px;
-        line-height: 25px;
+        line-height: 30px;
     }
 
     .top-window-right {
         font-size: 14px;
-        overflow:hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
+        // overflow:hidden;
+        // text-overflow: ellipsis;
+        // white-space: nowrap;
     }
 
     .top-window-right * {
@@ -218,7 +218,7 @@
 
     .center {
         flex: 1;
-        // display: inline-flex;
+        display: inline-flex;
         justify-content: center;
     }
 
