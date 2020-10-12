@@ -253,3 +253,17 @@ module.exports = class PostController extends Controller {
 -   [角色管理](https://github.com/dcloudio/uni-template-admin/tree/master/uni_modules/admin-role)
 -   [用户管理](https://github.com/dcloudio/uni-template-admin/tree/master/uni_modules/admin-user)
 -   [云存储管理](https://github.com/dcloudio/uni-template-admin/tree/master/uni_modules/admin-storage)
+
+### 进阶
+
+##### 如何使用 element-ui
+
+1. 根目录，命令行执行：`npm i element-ui -S`
+2. 根目录，修改 `template.h5.html`，引用 `element-ui` 的 `index.css` 文件
+   注：在 html 中直接引入后，请不要在 js 中再引入该 css 文件
+
+```js
+<!-- 若使用了 element-ui 组件，可取消下一行的 css 引用注释，注意：不要在 js 中重复引入该 css -->
+<link rel="stylesheet" href="<%= BASE_URL %>static/element-ui/lib/theme-chalk/index.css"/>
+```
+3. `pages.json` 中已内置 `element-ui` 的 `easycom` 配置，可以直接在 `template` 中使用 `el-` 开头的组件
