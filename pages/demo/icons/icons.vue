@@ -2,13 +2,13 @@
     <view style="padding-top: 10px;">
         <uni-segmented-control class="pointer" :current="current" :values="items" styleType="text" style="width: 300px;margin:0 auto;"
             @clickItem="onChange" />
-        <view v-show="current===0" class="icons">
+        <view v-if="current===0" class="icons">
             <view v-for="icon in uniIcons" :key="icon" class="icon-item pointer">
                 <uni-icons @click.native="setClipboardData('uni','tag',icon)" :type="icon" size="30" />
                 <text @click="setClipboardData('uni','class',icon)" class="icon-text">{{icon}}</text>
             </view>
         </view>
-        <view v-show="current===1" class="icons">
+        <view v-if="current===1" class="icons">
             <view v-for="icon in icons" :key="icon" class="icon-item pointer">
                 <view @click="setClipboardData('el','tag',icon)" :class="'el-icon-'+icon"></view>
                 <text @click="setClipboardData('el','class',icon)" class="icon-text">el-icon-{{icon}}</text>
