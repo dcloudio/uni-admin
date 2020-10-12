@@ -1,0 +1,13 @@
+{
+    "id": "admin-menu",
+    "name": "菜单管理",
+    "version": "1.0.0",
+    "description": "菜单管理",
+    "author": "DCloud",
+    "license": "MIT",
+    "homepage": "https://ext.dcloud.net.cn/plugin?id=55",
+    "files": [
+        "cloudfunctions/uni-admin/controller/base/menu.js",
+        "pages/base/menu/menu.vue"
+    ]
+}

@@ -1,0 +1,13 @@
+{
+    "id": "admin-user",
+    "name": "用户管理",
+    "version": "1.0.0",
+    "description": "用户管理",
+    "author": "DCloud",
+    "license": "MIT",
+    "homepage": "https://ext.dcloud.net.cn/plugin?id=55",
+    "files": [
+        "cloudfunctions/uni-admin/controller/base/user.js",
+        "pages/base/user/user.vue"
+    ]
+}

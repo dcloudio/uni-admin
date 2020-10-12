@@ -1,0 +1,11 @@
+{
+    "subPackages": [{
+        "root": "pages/base",
+        "pages": [{
+            "path": "permission/permission",
+            "style": {
+                "navigationBarTitleText": "权限管理"
+            }
+        }]
+    }]
+}
