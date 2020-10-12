@@ -40,6 +40,7 @@
 	.uni-table {
 		width: 100%;
 		display: table;
+        box-sizing: border-box;
 		/deep/ .uni-table-tr:nth-child(n+2) {
 			&:hover {
 				background-color: #f5f7fa;

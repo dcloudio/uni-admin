@@ -6,6 +6,7 @@
 
 <script>
 	export default {
+		name:'uniTr',
 		options: {
 			virtualHost: true
 		},

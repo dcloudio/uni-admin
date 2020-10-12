@@ -6,7 +6,7 @@
 
 <script>
 	export default {
-		name: 'uniTableTd',
+		name: 'uniTd',
 		options: {
 			virtualHost: true
 		},

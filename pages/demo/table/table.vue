@@ -1,54 +1,54 @@
 <template>
     <view class="container">
         <uni-table border stripe>
-            <uni-table-tr>
-                <uni-table-th width="100" align="center">日期</uni-table-th>
-                <uni-table-th width="100" align="center">姓名</uni-table-th>
-                <uni-table-th width="500" align="center">地址</uni-table-th>
-                <uni-table-th width="100" align="center">设置</uni-table-th>
-            </uni-table-tr>
-            <uni-table-tr v-for="(item ,index) in tableData" :key="index">
-                <uni-table-td>{{item.date}}</uni-table-td>
-                <uni-table-td>
+            <uni-tr>
+                <uni-th width="100" align="center">日期</uni-th>
+                <uni-th width="100" align="center">姓名</uni-th>
+                <uni-th width="500" align="center">地址</uni-th>
+                <uni-th width="100" align="center">设置</uni-th>
+            </uni-tr>
+            <uni-tr v-for="(item ,index) in tableData" :key="index">
+                <uni-td>{{item.date}}</uni-td>
+                <uni-td>
                     <view class="name">{{item.name}}</view>
-                </uni-table-td>
-                <uni-table-td>{{item.address}}</uni-table-td>
-                <uni-table-td>
-                    <button type="default">详情</button>
-                </uni-table-td>
-            </uni-table-tr>
+                </uni-td>
+                <uni-td>{{item.address}}</uni-td>
+                <uni-td>
+                    <button class="button" type="default">详情</button>
+                </uni-td>
+            </uni-tr>
         </uni-table>
+        <view class="pagination-box">
+            <uni-pagination class="pagination" show-icon :page-size="pageSize" :current="current" :total="total" @change="change" />
+        </view>
     </view>
 </template>
 
 <script>
+    import tableData from './tableData.js'
     export default {
         data() {
             return {
-                tableData: [{
-                    date: '2016-05-02',
-                    name: '王小虎1',
-                    address: '上海市普陀区金沙江路 1518 弄'
-                }, {
-                    date: '2016-05-04',
-                    name: '王小2',
-                    address: '上海市普陀区金沙江路 1517 弄'
-                }, {
-                    date: '2016-05-01',
-                    name: '王小虎3',
-                    address: '上海市普陀区金沙江路 1519 弄'
-                }, {
-                    date: '2016-05-03',
-                    name: '王小4',
-                    address: '上海市普陀区金沙江路 1516 弄'
-                }]
+                tableData: [],
+                // 每页数据量
+                pageSize:10,
+                // 当前页
+                current:1,
+                // 数据总量
+                total:0
             }
         },
         onLoad() {
-
+            this.tableData = tableData.filter((item, index) => index < this.pageSize)
+            this.total = tableData.length
         },
         methods: {
-
+            change(e){
+                this.tableData = tableData.filter((item, index) => {
+                    const idx  = index - (e.current-1)*this.pageSize
+                    return idx < this.pageSize && idx >= 0
+                })
+            }
         }
     }
 </script>
@@ -57,14 +57,16 @@
     .container {
         padding: 10px;
     }
+    .button {
 
-    .name {
-        text-decoration: underline;
-        color: #ff5a5f;
-        cursor: pointer;
+    }
+    .pagination-box {
+        display: flex;
+        justify-content: center;
+        margin-top: 20px;
     }
 
-    .name:active {
-        color: blue;
+    .pagination {
+        /* width: 300px; */
     }
 </style>
