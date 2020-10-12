@@ -1,0 +1,11 @@
+{
+    "data": [{
+        "_id": "xxx",
+        "name": "",
+        "file_id": "",
+        "catagory": "",
+        "type": "image", // audio video
+        "size": 1000,
+        "create_date": 1000123012
+    }]
+}
