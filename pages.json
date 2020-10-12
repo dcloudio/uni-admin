@@ -21,6 +21,10 @@
         }, {
             "path": "error/error",
             "style": {}
+        }, {
+            "path": "table/table",
+            "style": {}
+
         }]
     }],
     "globalStyle": {

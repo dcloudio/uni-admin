@@ -36,6 +36,10 @@ export default {
                 name: '图标',
                 url: '/pages/demo/icons/icons'
             }, {
+                _id: 'icon',
+                name: '表格',
+                url: '/pages/demo/table/table'
+            }, {
                 _id: 'errorLog',
                 name: '错误日志模拟',
                 url: '/pages/demo/error/error'
