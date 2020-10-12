@@ -6,25 +6,63 @@
             "path": "pages/login/login",
             "style": {
                 "topWindow": false,
-                "leftWindow": false
+                "leftWindow": false,
+                "navigationBarTitleText": "登录"
             }
         }, {
             "path": "pages/error/404",
-            "style": {}
+            "style": {
+                "navigationBarTitleText": "Not Found"
+            }
         }
     ],
     "subPackages": [{
+        "root": "pages/base",
+        "pages": [{
+            "path": "menu/menu",
+            "style": {
+                "navigationBarTitleText": "菜单管理"
+            }
+        }, {
+            "path": "permission/permission",
+            "style": {
+                "navigationBarTitleText": "权限管理"
+            }
+
+        }, {
+            "path": "role/role",
+            "style": {
+                "navigationBarTitleText": "角色管理"
+            }
+
+        }, {
+            "path": "user/user",
+            "style": {
+                "navigationBarTitleText": "用户管理"
+            }
+        }, {
+            "path": "storage/storage",
+            "style": {
+                "navigationBarTitleText": "云存储管理"
+            }
+        }]
+    }, {
         "root": "pages/demo",
         "pages": [{
             "path": "icons/icons",
-            "style": {}
-        }, {
-            "path": "error/error",
-            "style": {}
+            "style": {
+                "navigationBarTitleText": "图标"
+            }
         }, {
             "path": "table/table",
-            "style": {}
-
+            "style": {
+                "navigationBarTitleText": "表格"
+            }
+        }, {
+            "path": "error/error",
+            "style": {
+                "navigationBarTitleText": "模拟错误"
+            }
         }]
     }],
     "globalStyle": {

@@ -8,11 +8,12 @@
         </svg>
         <!-- #endif -->
         <view class="flex-s p-t-20" style="position: relative;">
-            <view v-if="!matchLeftWindow" @click="taggleSidebar" class="el-icon-s-unfold left"></view>
-            <view class="logo-image" :class="{'min-logo center': !matchLeftWindow}">
-                <image :src="logo" mode="heightFix"></image>
+            <view v-if="!matchLeftWindow" @click="taggleSidebar" class="el-icon-s-unfold left pointer"></view>
+            <view class="logo-image " :class="{'center': !matchLeftWindow}">
+                <image v-if="matchLeftWindow" :src="logo" mode="heightFix"></image>
+                <text v-if="!matchLeftWindow">{{navigationBarTitleText}}</text>
             </view>
-            <view v-if="!matchLeftWindow" @click="taggleUserMenu" class="top-window-right right" >
+            <view v-if="!matchLeftWindow" @click="taggleUserMenu" class="top-window-right right pointer">
                 <text class="user">{{userInfo.username}}</text>️
                 <uni-icons v-if="userInfo.username" class="arrowdown" type="arrowdown" color="#bbb" size="14"></uni-icons>
             </view>
@@ -46,8 +47,12 @@
         mapState
     } from 'vuex'
     import config from '@/admin.config.js'
+
     export default {
         props: {
+            navigationBarTitleText: {
+                type: String
+            },
             matchLeftWindow: {
                 type: Boolean
             },
@@ -75,7 +80,7 @@
                 this.$refs.errorLogsPopup.open()
             },
             logout() {
-                this.$http('user/logout')
+                this.$request('user/logout')
                     .then(res => {
                         this.removeToken()
                         uni.reLaunch({
@@ -92,8 +97,7 @@
                     uni.hideLeftWindow()
                 }
             },
-            taggleUserMenu(){
-                console.log('this.userMenuOpen====', this.userMenuOpen)
+            taggleUserMenu() {
                 this.userMenuOpen = !this.userMenuOpen
             }
         }
@@ -123,6 +127,10 @@
 
     .logo-image {
         height: 30px;
+        text-align: center;
+        overflow:hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
     }
 
     .min-logo {
@@ -134,8 +142,16 @@
         max-height: 100%;
     }
 
+    .logo-image text {
+        font-size: 14px;
+        line-height: 30px;
+    }
+
     .top-window-right {
         font-size: 14px;
+        // overflow:hidden;
+        // text-overflow: ellipsis;
+        // white-space: nowrap;
     }
 
     .top-window-right * {
@@ -189,6 +205,7 @@
         z-index: 999;
         border-radius: 3px;
     }
+
     .repalce-select * {
         margin: 0;
         margin-bottom: 5px;
@@ -198,20 +215,23 @@
         margin-top: 3px;
         margin-left: 3px;
     }
+
     .center {
         flex: 1;
         display: inline-flex;
         justify-content: center;
     }
+
     .left {
-      flex: 1;
-      display: inline-flex;
-      justify-content: left;
+        flex: 1;
+        display: inline-flex;
+        justify-content: left;
     }
+
     .right {
-      flex: 1;
-      display: inline-flex;
-      justify-content: flex-end;
-      overflow: hidden;
+        flex: 1;
+        display: inline-flex;
+        justify-content: flex-end;
+        overflow: hidden;
     }
 </style>

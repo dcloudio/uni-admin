@@ -28,6 +28,31 @@ export default {
     sideBar: { // 左侧菜单
         // 配置静态菜单列表（放置在用户被授权的菜单列表下边）
         secondaryMenus: [{
+            _id: 'sys',
+            name: '系统管理',
+            icon: 'el-icon-menu',
+            children: [{
+                _id: 'menu',
+                name: '菜单管理',
+                url: '/pages/base/menu/menu'
+            }, {
+                _id: 'permission',
+                name: '权限管理',
+                url: '/pages/base/permission/permission'
+            }, {
+                _id: 'role',
+                name: '角色管理',
+                url: '/pages/base/role/role'
+            }, {
+                _id: 'user',
+                name: '用户管理',
+                url: '/pages/base/user/user'
+            }, {
+                _id: 'storage',
+                name: '云存储管理',
+                url: '/pages/base/storage/storage'
+            }]
+        }, {
             _id: 'demo',
             name: '功能演示',
             icon: 'el-icon-menu',

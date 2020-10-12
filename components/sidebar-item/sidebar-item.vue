@@ -6,7 +6,7 @@
                 <text :class="{title: item.icon}">{{item.name}}</text>
             </uni-menu-item>
         </template>
-        <uni-sub-menu v-else>
+        <uni-sub-menu :active="hasChildActive" v-else>
             <template v-slot:title>
                 <view :class="item.icon"></view>
                 <text :class="{title: item.icon}">{{item.name}}</text>
@@ -34,11 +34,12 @@
         props: {
             item: ''
         },
-
         computed: {
-            ...mapState('app', ['active'])
+            ...mapState('app', ['active']),
+            hasChildActive() {
+                return this.activeUrl(this.active, this.item)
+            }
         },
-
         methods: {
             clickMenuItem(menu) {
                 // #ifdef H5
@@ -49,6 +50,18 @@
                 uni.navigateTo({
                     url: menu.url,
                 })
+            },
+            activeUrl(active, item) {
+                if (item.url === active) {
+                    return true
+                }
+                const children = item.children
+                if (children && children.length) {
+                    const childItem = children.find(item => this.activeUrl(active, item))
+                    if (childItem) {
+                        return true
+                    }
+                }
             }
         }
     }

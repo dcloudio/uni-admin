@@ -1,9 +1,12 @@
 import store from '@/store'
 import config from '@/admin.config.js'
 const debugOptions = config.navBar.debug
-export function http(action, data) {
+export function request(action, data, {
+    functionName = 'uni-admin',
+    showModal = true
+} = {}) {
     return uniCloud.callFunction({
-        name: 'uni-admin',
+        name: functionName,
         data: {
             action,
             data
@@ -29,7 +32,7 @@ export function http(action, data) {
         }
         return Promise.resolve(res.result)
     }).catch(err => {
-        uni.showModal({
+        showModal && uni.showModal({
             content: '请求服务失败:' + err.message,
             showCancel: false
         })
@@ -45,6 +48,6 @@ export function http(action, data) {
     })
 }
 
-export function initHttp(Vue) {
-    Vue.prototype.$http = http
+export function initRequest(Vue) {
+    Vue.prototype.$request = request
 }

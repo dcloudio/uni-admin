@@ -23,11 +23,15 @@
     export default {
         data() {
             return {
-                current: 0,
+                current: -1,
                 items: ['uni-ui Icons', 'element-ui Icons'],
                 icons,
                 uniIcons
             }
+        },
+        onReady() {
+            //延迟渲染，优化页面进入速度
+            setTimeout(() => this.current = 0, 100)
         },
         methods: {
             onChange(e) {
