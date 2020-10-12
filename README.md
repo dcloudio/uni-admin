@@ -260,10 +260,27 @@ module.exports = class PostController extends Controller {
 
 1. 根目录，命令行执行：`npm i element-ui -S`
 2. 根目录，修改 `template.h5.html`，引用 `element-ui` 的 `index.css` 文件
-   注：在 html 中直接引入后，请不要在 js 中再引入该 css 文件
 
-```js
+    注：在 html 中直接引入后，请不要在 js 中再引入该 css 文件
+
+```html
 <!-- 若使用了 element-ui 组件，可取消下一行的 css 引用注释，注意：不要在 js 中重复引入该 css -->
-<link rel="stylesheet" href="<%= BASE_URL %>static/element-ui/lib/theme-chalk/index.css"/>
+<link
+    rel="stylesheet"
+    href="<%= BASE_URL %>static/element-ui/lib/theme-chalk/index.css"
+/>
 ```
+
 3. `pages.json` 中已内置 `element-ui` 的 `easycom` 配置，可以直接在 `template` 中使用 `el-` 开头的组件
+
+```html
+<template>
+    <view>
+        <el-tag>标签一</el-tag>
+        <el-tag type="success">标签二</el-tag>
+        <el-tag type="info">标签三</el-tag>
+        <el-tag type="warning">标签四</el-tag>
+        <el-tag type="danger">标签五</el-tag>
+    </view>
+</template>
+```
