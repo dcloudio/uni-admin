@@ -12,7 +12,7 @@ module.exports = class UserService extends Service {
         }).limit(1000).get()
 
         // 删除无权限访问的菜单
-        if (!this.ctx.auth.includes('admin')) {
+        if (!this.ctx.auth.role.includes('admin')) {
             menuList = menuList.filter(item => {
                 if (!item.permission || !item.permission.length) {
                     return true
