@@ -18,7 +18,9 @@
             },
             throwHttpError() {
                 this.loading = true
-                this.$request('error/throw').finally(() => {
+                this.$request('error/throw', {}, {
+                    showModal: false
+                }).finally(() => {
                     this.loading = false
                 })
             }

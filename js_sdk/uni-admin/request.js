@@ -1,7 +1,10 @@
 import store from '@/store'
 import config from '@/admin.config.js'
 const debugOptions = config.navBar.debug
-export function request(action, data, functionName = 'uni-admin') {
+export function request(action, data, {
+    functionName = 'uni-admin',
+    showModal = true
+} = {}) {
     return uniCloud.callFunction({
         name: functionName,
         data: {
@@ -29,14 +32,14 @@ export function request(action, data, functionName = 'uni-admin') {
         }
         return Promise.resolve(res.result)
     }).catch(err => {
-        uni.showModal({
+        showModal && uni.showModal({
             content: '请求服务失败:' + err.message,
             showCancel: false
         })
         if (debugOptions && debugOptions.enable === true) {
             store.dispatch('error/add', {
                 err: err.toString(),
-                info: '$request("' + action + '")',
+                info: '$http("' + action + '")',
                 route: '',
                 time: new Date().toLocaleTimeString()
             })
