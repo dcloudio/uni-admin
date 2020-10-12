@@ -2,11 +2,11 @@ import {
     initApi
 } from './api.js'
 import {
-    initHttp
-} from './http.js'
-import {
     initError
 } from './error.js'
+import {
+    initRequest
+} from './request.js'
 import {
     initPermission
 } from './permission.js'
@@ -15,8 +15,8 @@ import {
 } from './interceptor.js'
 export default {
     install(Vue) {
-        initHttp(Vue)
         initError(Vue)
+        initRequest(Vue)
         initPermission(Vue)
 
         initApi()

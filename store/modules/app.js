@@ -1,6 +1,6 @@
 import {
-    http
-} from '@/js_sdk/uni-admin/http.js'
+    request
+} from '@/js_sdk/uni-admin/request.js'
 
 export default {
     namespaced: true,
@@ -22,7 +22,7 @@ export default {
         init({
             commit
         }) {
-            http('system/init')
+            request('system/init')
                 .then(res => {
                     const {
                         navMenu,

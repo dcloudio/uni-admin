@@ -1,9 +1,9 @@
 import store from '@/store'
 import config from '@/admin.config.js'
 const debugOptions = config.navBar.debug
-export function http(action, data) {
+export function request(action, data, functionName = 'uni-admin') {
     return uniCloud.callFunction({
-        name: 'uni-admin',
+        name: functionName,
         data: {
             action,
             data
@@ -36,7 +36,7 @@ export function http(action, data) {
         if (debugOptions && debugOptions.enable === true) {
             store.dispatch('error/add', {
                 err: err.toString(),
-                info: '$http("' + action + '")',
+                info: '$request("' + action + '")',
                 route: '',
                 time: new Date().toLocaleTimeString()
             })
@@ -45,6 +45,6 @@ export function http(action, data) {
     })
 }
 
-export function initHttp(Vue) {
-    Vue.prototype.$http = http
+export function initRequest(Vue) {
+    Vue.prototype.$request = request
 }

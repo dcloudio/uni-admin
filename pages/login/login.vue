@@ -73,7 +73,7 @@
             }),
             submit(e) {
                 this.loading = true
-                this.$http('user/login', this.formData)
+                this.$request('user/login', this.formData)
                     .then(res => {
                         this.setToken({
                             token: res.token,

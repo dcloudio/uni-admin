@@ -12,7 +12,7 @@
             <view class="logo-image" :class="{'min-logo center': !matchLeftWindow}">
                 <image :src="logo" mode="heightFix"></image>
             </view>
-            <view v-if="!matchLeftWindow" @click="taggleUserMenu" class="top-window-right right pointer" >
+            <view v-if="!matchLeftWindow" @click="taggleUserMenu" class="top-window-right right pointer">
                 <text class="user">{{userInfo.username}}</text>️
                 <uni-icons v-if="userInfo.username" class="arrowdown" type="arrowdown" color="#bbb" size="14"></uni-icons>
             </view>
@@ -79,7 +79,7 @@
                 this.$refs.errorLogsPopup.open()
             },
             logout() {
-                this.$http('user/logout')
+                this.$request('user/logout')
                     .then(res => {
                         this.removeToken()
                         uni.reLaunch({
@@ -96,7 +96,7 @@
                     uni.hideLeftWindow()
                 }
             },
-            taggleUserMenu(){
+            taggleUserMenu() {
                 this.userMenuOpen = !this.userMenuOpen
             }
         }
