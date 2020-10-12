@@ -196,7 +196,6 @@ export default {
 
 ```bash
 ├── controller
-│   │── menu.js                 # 菜单接口
 │   └── system.js               # 系统接口
 │   └── user.js                 # 用户接口
 ├── middleware
