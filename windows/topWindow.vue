@@ -9,8 +9,9 @@
         <!-- #endif -->
         <view class="flex-s p-t-20" style="position: relative;">
             <view v-if="!matchLeftWindow" @click="taggleSidebar" class="el-icon-s-unfold left pointer"></view>
-            <view class="logo-image" :class="{'min-logo center': !matchLeftWindow}">
-                <image :src="logo" mode="heightFix"></image>
+            <view class="logo-image " :class="{'center': !matchLeftWindow}">
+                <image v-if="matchLeftWindow" :src="logo" mode="heightFix"></image>
+                <text v-if="!matchLeftWindow">{{navigationBarTitleText}}</text>
             </view>
             <view v-if="!matchLeftWindow" @click="taggleUserMenu" class="top-window-right right pointer">
                 <text class="user">{{userInfo.username}}</text>️
@@ -126,6 +127,10 @@
 
     .logo-image {
         height: 30px;
+        text-align: center;
+        overflow:hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
     }
 
     .min-logo {
@@ -137,8 +142,16 @@
         max-height: 100%;
     }
 
+    .logo-image text {
+        font-size: 14px;
+        line-height: 25px;
+    }
+
     .top-window-right {
         font-size: 14px;
+        overflow:hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
     }
 
     .top-window-right * {
@@ -205,7 +218,7 @@
 
     .center {
         flex: 1;
-        display: inline-flex;
+        // display: inline-flex;
         justify-content: center;
     }
 
