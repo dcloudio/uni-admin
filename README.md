@@ -127,6 +127,12 @@ $menu-text-color: #333; /* 菜单前景色 */
 $menu-text-color-actived: #007aff; /* 菜单激活前景色 */
 ```
 
+### 新增页面
+
+1. 新增前端 vue 页面
+
+2. 新增后端 api 接口
+
 ### 用户系统
 
 > 基于 [uni-id](https://uniapp.dcloud.io/uniCloud/uni-id) 用户登录
@@ -145,18 +151,18 @@ export default {
 ```
 
 2. 用户管理
-    > TODO
+    > [详情](https://github.com/dcloudio/uni-template-admin/tree/master/uni_modules/admin-user)
 
 ### 权限系统
 
 > 基于 [uni-id](https://uniapp.dcloud.io/uniCloud/uni-id?id=rbac-api) 角色权限
 
 1. 角色管理
-    > TODO
+    > [详情](https://github.com/dcloudio/uni-template-admin/tree/master/uni_modules/admin-role)
 2. 权限管理
-    > TODO
+    > [详情](https://github.com/dcloudio/uni-template-admin/tree/master/uni_modules/admin-permission)
 3. 菜单管理
-    > TODO
+    > [详情](https://github.com/dcloudio/uni-template-admin/tree/master/uni_modules/admin-menu)
 4. 权限验证
     ```html
     <template>
