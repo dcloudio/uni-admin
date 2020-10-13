@@ -111,7 +111,7 @@
                 const num = this.currentIndex
                 // TODO 最大页数
                 const pagerCount = this.pagerCount
-                // const total = 500
+                // const total = 181
                 const total = this.total
                 const pageSize = this.pageSize
                 let totalArr = []
@@ -131,30 +131,44 @@
                         if (item > (num - (pagerCount + 1) / 2) && item < (num + (pagerCount + 1) / 2)) {
                             showPagerArr.push(item)
                         }
+
                     } else {
-                        if (item + (pagerCount - 1) / 2 >= totalNum && item < totalArr[totalArr.length - 1]) {
+                        if ((item > num - (pagerCount + 1) / 2 || pagerNum - pagerCount < item) && item <
+                            totalArr[totalArr.length - 1]) {
                             showPagerArr.push(item)
                         }
+
                     }
 
                 })
-
-                if ((pagerCount + 1) / 2 >= num) {
-                    showPagerArr[showPagerArr.length - 1] = '...'
-                } else if (num + 2 <= totalNum) {
-                    showPagerArr[1] = '...'
-                    showPagerArr[showPagerArr.length - 1] = '...'
+                if (pagerNum > pagerCount) {
+                    if ((pagerCount + 1) / 2 >= num) {
+                        showPagerArr[showPagerArr.length - 1] = '...'
+                    } else if (num + 2 <= totalNum) {
+                        showPagerArr[1] = '...'
+                        showPagerArr[showPagerArr.length - 1] = '...'
+                    } else {
+                        showPagerArr[1] = '...'
+                    }
+                    showPagerArr.push(totalArr[totalArr.length - 1])
                 } else {
-                    showPagerArr[1] = '...'
+
+                    if ((pagerCount + 1) / 2 >= num) {
+                    } else if (num + 2 <= totalNum) {
+                    } else {
+                        showPagerArr.shift()
+                        showPagerArr.push(totalArr[totalArr.length - 1])
+                    }
+
                 }
 
-                showPagerArr.push(totalArr[totalArr.length - 1])
                 return showPagerArr
             }
         },
         watch: {
             current(val) {
-                this.currentIndex = +val
+                this.currentIndex = val
+                console.log(this.currentIndex);
             }
         },
         created() {
@@ -164,20 +178,28 @@
             // 选择标签
             selectPage(e, index) {
                 if (parseInt(e)) {
-                    console.log(e);
                     this.currentIndex = e
                     this.change('current')
                 } else {
-                    console.log(index);
+                    let pagerNum = Math.ceil(this.total / this.pageSize)
+                    // let pagerNum = Math.ceil(181 / this.pageSize)
                     // 上一页
-                    if(index <=1){
-                        
-                       return
+                    if (index <= 1) {
+                        if(this.currentIndex - 5  > 1){
+                            this.currentIndex -= 5
+                        }else{
+                            this.currentIndex =  1
+                        }
+                        return
                     }
                     // 下一页
-                    if(index >= 6){
-                        
-                     return
+                    if (index >= 6) {
+                        if(this.currentIndex + 5  > pagerNum){
+                            this.currentIndex = pagerNum
+                        }else{
+                            this.currentIndex += 5
+                        }
+                        return
                     }
 
                 }

@@ -28,7 +28,6 @@
 		created() {
 			this.root = this.getTable()
 			this.border = this.root.border
-			console.log(this.border);
 		},
 		methods:{
 			/**
