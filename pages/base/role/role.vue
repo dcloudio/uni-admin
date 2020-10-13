@@ -8,6 +8,7 @@
             <uni-tr>
                 <uni-th width="100" align="center">角色id</uni-th>
                 <uni-th width="100" align="center">角色名称</uni-th>
+                <uni-th width="100" align="center">角色权限</uni-th>
                 <uni-th width="100" align="center">备注</uni-th>
                 <uni-th width="100" align="center">创建时间</uni-th>
                 <uni-th width="100" align="center">设置</uni-th>
@@ -17,12 +18,15 @@
                 <uni-td>
                     <view class="name">{{item.role_name}}</view>
                 </uni-td>
+                <uni-td>
+                    <view class="name">{{item.permission.join(',')}}</view>
+                </uni-td>
                 <uni-td>{{item.comment}}</uni-td>
                 <uni-td>{{item.create_date}}</uni-td>
                 <uni-td>
                     <view class="flex-cc">
                         <button class="button" size="mini" :plain="true" type="default" @click="edit(item)" style="margin-right: 10px;">编辑</button>
-                        <button class="button" size="mini" :plain="true"  type="warn" @click="deleteRole(item.role_id)">删除</button>
+                        <button class="button" size="mini" :plain="true" type="warn" @click="deleteRole(item.role_id)">删除</button>
                     </view>
                 </uni-td>
             </uni-tr>
@@ -37,11 +41,11 @@
                 roleList: [],
             }
         },
-        onShow(){
+        onShow() {
             this.getRoleList()
         },
         methods: {
-            getRoleList(){
+            getRoleList() {
                 this.$request('base/role/getList', {
                     limit: 10000,
                     offset: 0,
@@ -51,18 +55,20 @@
                     this.roleList = res.roleList
                 })
             },
-            add(){
+            add() {
                 uni.navigateTo({
                     url: './edit'
                 })
             },
-            edit(item){
+            edit(item) {
                 uni.navigateTo({
-                    url: `./edit?roleID=${item.role_id}&roleName=${item.role_name}&comment=${item.comment}`
+                    url: `./edit?role=${JSON.stringify({roleID:item.role_id,roleName:item.role_name,comment:item.comment,permission:item.permission})}`
                 })
             },
-            async deleteRole(id){
-                await this.$request('base/role/deleteRole', {roleID: id})
+            async deleteRole(id) {
+                await this.$request('base/role/deleteRole', {
+                    roleID: id
+                })
                 this.getRoleList()
             }
         }
@@ -79,6 +85,7 @@
         justify-content: center;
         margin-top: 20px;
     }
+
     button {
         margin: 0;
     }

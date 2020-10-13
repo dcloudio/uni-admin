@@ -5,7 +5,6 @@ const uniId = require('uni-id')
 module.exports = class PermissionController extends Controller {
     async add() {
         const permission = this.ctx.data
-        //  TODO
         if(!permission.permissionID){
             this.throw({
                 code:'VALIDATE_ERROR',

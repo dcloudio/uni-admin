@@ -39,7 +39,7 @@
 						@confirm="onConfirm"
 						@tap="fieldClick"
 					/>
-                	<uni-icons :size="clearSize" v-if="clearable && value != ''" type="clear" color="#c0c4cc" @click="onClear" class="uni-clear-icon" />
+                	<uni-icons :size="clearSize" v-if="clearable && value != ''" type="clear" color="#c0c4cc" @click="onClear" class="uni-clear-icon pointer" />
 				</view>
 				<view class="uni-button-wrap"><slot name="right" /></view>
                 <uni-icons v-if="rightIcon" size="16" @click="rightIconClick" :type="rightIcon" color="#c0c4cc" :style="[rightIconStyle]" />

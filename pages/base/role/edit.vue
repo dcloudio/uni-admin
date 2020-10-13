@@ -4,11 +4,14 @@
             {{title}}
         </view>
         <uni-forms ref="form" :form-rules="rules" class="uni-forms">
-            <uni-field :disabled="isEdit" :clearable="!isEdit" label="角色id" name="roleID" v-model="role.roleID"
-                placeholder="请填写角色id" />
-            <uni-field label="角色名称" name="roleName" v-model="role.roleName" placeholder="请填写角色名称" />
-            <uni-field label="备注" v-model="role.comment" type="textarea" placeholder="请填写备注" />
-            <view class="m-t-10 m-b-30">
+            <uni-field label="角色id" :label-width="100" :inputBorder="true" :border-bottom="false" name="roleID" v-model="role.roleID"
+                :disabled="isEdit" :clearable="!isEdit" placeholder="请填写角色id" />
+            <uni-field label="角色名称" :label-width="100" :inputBorder="true" :border-bottom="false" name="roleName"
+                v-model="role.roleName" placeholder="请填写角色名称" />
+            <uni-field label="备注" :labelWidth="100" :inputBorder="true" :border-bottom="false" v-model="role.comment"
+                type="textarea" placeholder="请填写备注" />
+            <permissions ref="permissions" label="权限配置" :label-width="150" :permissions="permissions" />
+            <view class="m-b-30">
                 <view v-if="isEdit" class="tips">* 编辑时不能修改角色id</view>
             </view>
             <button form-type="submit" type="primary" size="mini" @click="save">保存</button>
@@ -21,27 +24,27 @@
     export default {
         data() {
             return {
+                permissions: [],
                 role: {
                     roleID: '',
                     roleName: '',
                     comment: '',
+                    permission: []
                 },
                 rules: {
                     roleID: {
                         rules: [{
-                                required: true,
-                                errorMessage: '请输入角色id',
-                                trigger: 'blur'
-                            }
-                        ]
+                            required: true,
+                            errorMessage: '请输入角色id',
+                            trigger: 'blur'
+                        }]
                     },
                     roleName: {
                         rules: [{
-                                required: true,
-                                errorMessage: '请输入备注',
-                                trigger: 'blur'
-                            },
-                        ]
+                            required: true,
+                            errorMessage: '请输入角色名称',
+                            trigger: 'blur'
+                        }]
                     }
                 }
             }
@@ -51,13 +54,12 @@
                 return this.isEdit ? '编辑角色' : '新增角色'
             }
         },
-        onLoad(option) {
-            if (option.roleID) {
-                this.role = {
-                    roleID: option.roleID,
-                    roleName: option.roleName,
-                    comment: option.comment,
-                }
+        mounted() {
+            this.getPermissions()
+        },
+        onLoad(options) {
+            if (options.role) {
+                this.role = JSON.parse(options.role)
                 this.isEdit = true
             } else {
                 this.isEdit = false
@@ -68,10 +70,26 @@
         },
         methods: {
             save() {
+                this.role.permission = this.$refs.permissions.getValues()
+                console.log("===== role=====", this.role)
                 this.$request('base/role/' + (this.isEdit ? 'update' : 'add'), this.role)
             },
             back() {
                 uni.navigateBack()
+            },
+            getPermissions() {
+                this.$request('base/permission/getList', {
+                    limit: 10000,
+                    offset: 0
+                }).then(res => {
+                    const permissionIds = this.role.permission
+                    this.permissions = res.permissionList.map(item => {
+                        if (permissionIds.indexOf(item.permission_id) !== -1) {
+                            item.checked = true
+                        }
+                        return item
+                    })
+                })
             },
         }
     }
@@ -82,6 +100,10 @@
     page {
         background-color: #fff;
         padding: 20px;
+    }
+
+    .uni-forms {
+        /* max-width: 600px; */
     }
 
     .uni-forms button {
