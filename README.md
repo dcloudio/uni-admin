@@ -12,11 +12,6 @@
 -   [左侧窗口（菜单栏）](#左侧窗口菜单栏)
 -   [用户系统](#用户系统)
 -   [权限系统](#权限系统)
--   [云函数](#云函数)
-    -   [uni-admin](#uni-admin)
-        -   [目录结构](#目录结构-1)
-        -   [如何在 uni-admin 中增加新的业务接口](#如何在-uni-admin-中增加新的业务接口)
-    -   [uni-clientDB](#uni-clientdb)
 -   [插件](#插件)
     -   [开发 admin 插件](#开发-admin-插件)
     -   [使用 admin 插件](#使用-admin-插件)
@@ -149,20 +144,19 @@ export default {
 };
 ```
 
-2. 用户管理
-    > [详情](https://github.com/dcloudio/uni-template-admin/tree/master/uni_modules/admin-user)
-
 ### 权限系统
 
 > 基于 [uni-id](https://uniapp.dcloud.io/uniCloud/uni-id?id=rbac-api) 角色权限
 
-1. 角色管理
+1. 用户管理
+    > [详情](https://github.com/dcloudio/uni-template-admin/tree/master/uni_modules/admin-user)
+2. 角色管理
     > [详情](https://github.com/dcloudio/uni-template-admin/tree/master/uni_modules/admin-role)
-2. 权限管理
+3. 权限管理
     > [详情](https://github.com/dcloudio/uni-template-admin/tree/master/uni_modules/admin-permission)
-3. 菜单管理
+4. 菜单管理
     > [详情](https://github.com/dcloudio/uni-template-admin/tree/master/uni_modules/admin-menu)
-4. 权限验证
+5. 权限验证
     ```html
     <template>
         <view>
@@ -173,54 +167,6 @@ export default {
         </view>
     </template>
     ```
-
-### 云函数
-
-#### uni-admin
-
-##### 目录结构
-
-```bash
-├── controller
-│   └── system.js               # 系统接口
-│   └── user.js                 # 用户接口
-├── middleware
-│   └── auth.js                 # uni-id 校验用户 token 中间件
-│   └── permission.js           # uni-id 校验用户 permission 中间件
-├── service
-│   └── menu.js                 # 菜单业务逻辑实现
-│   └── user.js                 # 用户业务逻辑实现
-├── config.js                   # uni-cloud-router 配置
-├── index.js                    # 云函数入口
-```
-
-##### 如何在 uni-admin 中增加新的业务接口
-
-在 `controller` 目录创建一个 js 文件，如 `post.js`，[如何编写 Controller](https://github.com/fxy060608/uni-cloud-router#%E5%A6%82%E4%BD%95%E7%BC%96%E5%86%99-controller)
-
-```js
-// controller/post.js
-const Controller = require("uni-cloud-router").Controller;
-// 必须继承 Controller 类
-module.exports = class PostController extends Controller {
-    async create() {
-        const { ctx, service } = this;
-        // 校验参数
-        // 组装参数
-        const author = ctx.auth.uid;
-        const post = Object.assign(ctx.data, { author });
-        // 建议调用 Service 进行业务处理
-        // return this.service.post.create(post)
-        return this.db.add(post); // 简单业务可以跳过 Service 直接操作 db 实现入库
-    }
-};
-```
-
-> 更多扩展详情，参考 [uni-cloud-router](https://github.com/fxy060608/uni-cloud-router) 文档
-
-#### uni-clientDB
-
-> [参考文档](https://uniapp.dcloud.io/uniCloud/uni-clientDB)
 
 ### 插件
 
