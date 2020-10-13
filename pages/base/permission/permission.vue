@@ -20,8 +20,8 @@
                 <uni-td>{{item.comment}}</uni-td>
                 <uni-td>{{item.create_date}}</uni-td>
                 <uni-td>
-                    <button class="button" size="mini" type="default" @click="edit(item)">编辑</button>
-                    <button class="button" size="mini" type="default" @click="deletePermission(item.permission_id)">删除</button>
+                    <button class="button" size="mini" :plain="true" type="default" @click="edit(item)" style="margin-right: 10px;">编辑</button>
+                    <button class="button" size="mini" :plain="true"  type="warn" @click="deletePermission(item.permission_id)">删除</button>
                 </uni-td>
             </uni-tr>
         </uni-table>
@@ -29,7 +29,6 @@
 </template>
 
 <script>
-    import tableData from '../../demo/table/tableData.js'
     export default {
         data() {
             return {
@@ -43,7 +42,7 @@
         mounted() {
             this.getPermissionList()
         },
-        onLoad(){
+        onShow(){
             this.getPermissionList()
         },
         methods: {
