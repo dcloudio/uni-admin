@@ -22,7 +22,7 @@
                 <uni-td>
                     <view class="flex-cc">
                         <button class="button" size="mini" :plain="true" type="default" @click="edit(item)" style="margin-right: 10px;">编辑</button>
-                        <button class="button" size="mini" :plain="true"  type="warn" @click="deletePermission(item.permission_id)">删除</button>
+                        <button class="button" size="mini" :plain="true"  type="warn" @click="remove(item.permission_id)">删除</button>
                     </view>
                 </uni-td>
             </uni-tr>
@@ -64,6 +64,21 @@
             async deletePermission(id){
                 await this.$request('base/permission/deletePermission', {permissionID: id})
                 this.getPermissionList()
+            },
+            remove(id) {
+                const that = this
+                uni.showModal({
+                    title: '提示',
+                    content: '确认删除该角色？',
+                    success: function (res) {
+                        if (res.confirm) {
+                            that.deletePermission(id)
+                            console.log('用户点击确定');
+                        } else if (res.cancel) {
+                            console.log('用户点击取消');
+                        }
+                    }
+                })
             }
         }
     }

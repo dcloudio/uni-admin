@@ -55,11 +55,11 @@
             }
         },
         mounted() {
-            this.getPermissions()
         },
         onLoad(options) {
             if (options.role) {
                 this.role = JSON.parse(options.role)
+                this.getRole(this.role.roleID)
                 this.isEdit = true
             } else {
                 this.isEdit = false
@@ -71,11 +71,29 @@
         methods: {
             save() {
                 this.role.permission = this.$refs.permissions.getValues()
-                console.log("===== role=====", this.role)
-                this.$request('base/role/' + (this.isEdit ? 'update' : 'add'), this.role)
+                this.$request('base/role/' + (this.isEdit ? 'update' : 'add'), this.role).then(res => {
+                    uni.showModal({
+                        title: '提示',
+                        content: res.msg,
+                        showCancel: false
+                    });
+                })
             },
             back() {
                 uni.navigateBack()
+            },
+            async getRole(id) {
+               await this.$request('base/role/getRole', {
+                    roleID: id
+                }).then(res => {
+                    this.role = {
+                        roleID: res.role_id,
+                        roleName: res.role_name,
+                        comment: res.comment,
+                        permission: res.permission
+                    }
+                })
+                this.getPermissions()
             },
             getPermissions() {
                 this.$request('base/permission/getList', {

@@ -19,14 +19,14 @@
                     <view class="name">{{item.role_name}}</view>
                 </uni-td>
                 <uni-td>
-                    <view class="name">{{item.permission.join(',')}}</view>
+                    <view class="name">{{item.permission.join('、')}}</view>
                 </uni-td>
                 <uni-td>{{item.comment}}</uni-td>
                 <uni-td>{{item.create_date}}</uni-td>
                 <uni-td>
                     <view class="flex-cc">
                         <button class="button" size="mini" :plain="true" type="default" @click="edit(item)" style="margin-right: 10px;">编辑</button>
-                        <button class="button" size="mini" :plain="true" type="warn" @click="deleteRole(item.role_id)">删除</button>
+                        <button class="button" size="mini" :plain="true" type="warn" @click="remove(item.role_id)">删除</button>
                     </view>
                 </uni-td>
             </uni-tr>
@@ -62,7 +62,7 @@
             },
             edit(item) {
                 uni.navigateTo({
-                    url: `./edit?role=${JSON.stringify({roleID:item.role_id,roleName:item.role_name,comment:item.comment,permission:item.permission})}`
+                    url: `./edit?role=${JSON.stringify({roleID:item.role_id})}`
                 })
             },
             async deleteRole(id) {
@@ -70,6 +70,21 @@
                     roleID: id
                 })
                 this.getRoleList()
+            },
+            remove(id) {
+                const that = this
+                uni.showModal({
+                    title: '提示',
+                    content: '确认删除该角色？',
+                    success: function (res) {
+                        if (res.confirm) {
+                            that.deleteRole(id)
+                            console.log('用户点击确定');
+                        } else if (res.cancel) {
+                            console.log('用户点击取消');
+                        }
+                    }
+                })
             }
         }
     }

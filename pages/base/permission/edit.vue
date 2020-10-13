@@ -68,7 +68,13 @@
         },
         methods: {
             save() {
-                this.$request('base/permission/' + (this.isEdit ? 'update' : 'add'), this.permission)
+                this.$request('base/permission/' + (this.isEdit ? 'update' : 'add'), this.permission).then(res => {
+                    uni.showModal({
+                        title: '提示',
+                        content: res.msg,
+                        showCancel: false
+                    });
+                })
             },
             back() {
                 uni.navigateBack()
