@@ -40,9 +40,6 @@
 </script>
 
 <style>
-    /*每个页面公共css */
-    @import url("./common/el-icon.css");
-
     body,
     html {
         -webkit-user-select: auto;
@@ -111,9 +108,22 @@
         justify-content: flex-end;
     }
 
+    .m-t-10 {
+        margin-top: 10px;
+    }
+    
+    .m-t-30 {
+        margin-top: 30px;
+    }
+    
+    .m-b-10 {
+        margin-bottom: 10px;
+    }
+    
     .m-b-30 {
         margin-bottom: 30px;
     }
+    
 
     .login-title {
         font-size: 24px;
@@ -124,8 +134,13 @@
         padding-left: 0;
         padding-right: 0;
     }
-    .uni-top-window{
+
+    .uni-top-window {
         z-index: 998;
         overflow: visible;
+    }
+    .tips {
+        font-size: 12px;
+        color: #666;
     }
 </style>

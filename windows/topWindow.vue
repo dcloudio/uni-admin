@@ -8,7 +8,9 @@
         </svg>
         <!-- #endif -->
         <view class="flex-s p-t-20" style="position: relative;">
-            <view v-if="!matchLeftWindow" @click="taggleSidebar" class="el-icon-s-unfold left pointer"></view>
+            <view v-if="!matchLeftWindow" class="left">
+                <view @click="taggleSidebar" class="pointer el-icon-s-unfold"></view>
+            </view>
             <view class="logo-image " :class="{'center': !matchLeftWindow}">
                 <image v-if="matchLeftWindow" :src="logo" mode="heightFix"></image>
                 <text v-if="!matchLeftWindow">{{navigationBarTitleText}}</text>
@@ -218,7 +220,7 @@
 
     .center {
         flex: 1;
-        display: inline-flex;
+        // display: inline-flex;
         justify-content: center;
     }
 

@@ -5,7 +5,7 @@
 {
     "uni-id-users": {
         "data": [{
-            "_id": "e373396c5f8169ab014dc5062159e4",
+            "_id": "admin",
             "username": "admin",
             "password": "03caebb36670995fc261a275d212cad65e4bbebd",
             "register_date": 1600678392087,
@@ -187,6 +187,46 @@
                 "MgoIndexKeys": [{
                     "Name": "parent_id",
                     "Direction": "1"
+                }],
+                "MgoIsUnique": false
+            }
+        }]
+    },
+    "opendb-admin-storage": {
+        "data": [],
+        "index": [{
+            "IndexName": "name",
+            "MgoKeySchema": {
+                "MgoIndexKeys": [{
+                    "Name": "name",
+                    "Direction": "1"
+                }],
+                "MgoIsUnique": false
+            }
+        },{
+            "IndexName": "cloud_id",
+            "MgoKeySchema": {
+                "MgoIndexKeys": [{
+                    "Name": "cloudID",
+                    "Direction": "1"
+                }],
+                "MgoIsUnique": false
+            }
+        },{
+            "IndexName": "catagory",
+            "MgoKeySchema": {
+                "MgoIndexKeys": [{
+                    "Name": "catagory",
+                    "Direction": "1"
+                }],
+                "MgoIsUnique": false
+            }
+        },{
+            "IndexName": "create_date",
+            "MgoKeySchema": {
+                "MgoIndexKeys": [{
+                    "Name": "create_date",
+                    "Direction": "-1"
                 }],
                 "MgoIsUnique": false
             }

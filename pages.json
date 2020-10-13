@@ -30,6 +30,18 @@
             }
 
         }, {
+            "path": "permission/add",
+            "style": {
+                "navigationBarTitleText": "新增权限"
+            }
+
+        }, {
+            "path": "permission/edit",
+            "style": {
+                "navigationBarTitleText": "修改权限"
+            }
+
+        }, {
             "path": "role/role",
             "style": {
                 "navigationBarTitleText": "角色管理"
@@ -65,6 +77,11 @@
             }
         }]
     }],
+    "easycom": {
+        "custom": {
+            "^el-(.*)": "element-ui/lib/$1.js"
+        }
+    },
     "globalStyle": {
         "navigationStyle": "custom",
         "navigationBarTextStyle": "black",

@@ -1,3 +1,0 @@
-// 本文件中的json内容将在云函数【运行】时作为参数传给云函数。
-// 配置教程参考：https://uniapp.dcloud.net.cn/uniCloud/quickstart?id=runparam
-{"action":"role/add","data":{"roleID":"111111","roleName":"222222","comment":"333333"},"clientInfo":{"PLATFORM":"h5","OS":"other","APPID":"__UNI__D78F28F","CLIENT_SDK_VERSION":"1.0.0"},"uniCloudClientInfo":"%7B%22ak%22%3A%22__UNI__D78F28F%22%2C%22p%22%3A%22i%22%2C%22ut%22%3A%22h5%22%2C%22uuid%22%3A%22kotpkubkse7qufp1h6mcg9qs73b3umoo%22%2C%22fn%22%3A%22uni-admin%22%2C%22sid%22%3A%221402b650-2716-4c8b-b60d-e9dfb02fe5f5%22%2C%22pvd%22%3A%22a%22%7D","uniIdToken":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiI1ZjcxYWY2ZjM3ZDE2ZDAwMDE3YmIyOWIiLCJuZWVkUGVybWlzc2lvbiI6dHJ1ZSwiaWF0IjoxNjAxMzc1ODExLCJleHAiOjE2MDEzODMwMTF9.MG7LTecWP66zQgJ90Bj7S_z3yvihxrow5B8e_mJa_Yo"}
