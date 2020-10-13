@@ -30,12 +30,6 @@
             }
 
         }, {
-            "path": "permission/add",
-            "style": {
-                "navigationBarTitleText": "新增权限"
-            }
-
-        }, {
             "path": "permission/edit",
             "style": {
                 "navigationBarTitleText": "修改权限"
