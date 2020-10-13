@@ -1,6 +1,6 @@
-# 权限管理
+# 角色管理
 
-> admin 项目模板权限管理插件，支持权限的新增，修改，删除。
+> admin 项目模板角色管理插件，支持角色的新增，修改，删除。
 
 ---
 
@@ -11,24 +11,27 @@
 
 ### 数据库结构
 
-1. 权限表（uni-id-permissions）
+1. 权限表（uni-id-roles）
    | 字段 | 类型 | 必填| 描述 |
    | ---------- | --------- | ----| --------------------------------------|
    | \_id | Object ID | 是 | 系统自动生成的 Id |
-   | permission_id | String | 是 | 权限唯一标识 |
-   | permission_name | String | 否 | 权限名，展示用 |
+   | role_id | String | 是 | 角色唯一标识 |
+   | role_name | String | 否 | 角色名，展示用 |
+   | permission | Array | 是 | 角色拥有的权限列表 |
    | comment | String | 否 | 备注 |
-   | created_date | Timestamp | 是 | 权限创建时间 |
+   | created_date| Timestamp | 是 | 角色创建时间 |
 
 ### 自带菜单项
 
 ```bash
 ├── 系统菜单
-│   │── 权限管理
+│   │── 角色管理
 ```
 
 ### 自带权限列表
 
-> 仅限 admin 角色操作权限管理
+1. 新增角色
+2. 修改角色
+3. 删除角色
 
 ### 功能截图
