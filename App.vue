@@ -108,9 +108,22 @@
         justify-content: flex-end;
     }
 
+    .m-t-10 {
+        margin-top: 10px;
+    }
+    
+    .m-t-30 {
+        margin-top: 30px;
+    }
+    
+    .m-b-10 {
+        margin-bottom: 10px;
+    }
+    
     .m-b-30 {
         margin-bottom: 30px;
     }
+    
 
     .login-title {
         font-size: 24px;
@@ -125,5 +138,9 @@
     .uni-top-window {
         z-index: 998;
         overflow: visible;
+    }
+    .tips {
+        font-size: 12px;
+        color: #666;
     }
 </style>

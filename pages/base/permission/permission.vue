@@ -2,7 +2,7 @@
     <view class="container">
         <view class="flex-c-between m-b-30">
             <text>权限</text>
-            <button class="button" size="mini" type="default" style="margin: 0;">新增</button>
+            <button class="button" @click="add" size="mini" type="default" style="margin: 0;">新增</button>
         </view>
         <uni-table border stripe>
             <uni-tr>
@@ -12,22 +12,19 @@
                 <uni-th width="100" align="center">创建时间</uni-th>
                 <uni-th width="100" align="center">设置</uni-th>
             </uni-tr>
-            <uni-tr v-for="(item ,index) in tableData" :key="index">
-                <uni-td>{{item.date}}</uni-td>
+            <uni-tr v-for="(item ,index) in permissionList" :key="index">
+                <uni-td>{{item.permission_id}}</uni-td>
                 <uni-td>
-                    <view class="name">{{item.name}}</view>
+                    <view class="name">{{item.permission_name}}</view>
                 </uni-td>
-                <uni-td>{{item.address}}</uni-td>
-                <uni-td>{{item.date}}</uni-td>
+                <uni-td>{{item.comment}}</uni-td>
+                <uni-td>{{item.create_date}}</uni-td>
                 <uni-td>
-                    <button class="button" size="mini" type="default">编辑</button>
-                    <button class="button" size="mini" type="default">删除</button>
+                    <button class="button" size="mini" type="default" @click="edit(item)">编辑</button>
+                    <button class="button" size="mini" type="default" @click="deletePermission(item.permission_id)">删除</button>
                 </uni-td>
             </uni-tr>
         </uni-table>
-        <view class="pagination-box">
-            <uni-pagination class="pagination" show-icon :page-size="pageSize" :current="current" :total="total" @change="change" />
-        </view>
     </view>
 </template>
 
@@ -36,25 +33,43 @@
     export default {
         data() {
             return {
-                tableData: [],
-                // 每页数据量
-                pageSize:10,
-                // 当前页
-                current:1,
-                // 数据总量
-                total:0
+                permissionList: [],
             }
         },
         onLoad() {
             this.tableData = tableData.filter((item, index) => index < this.pageSize)
             this.total = tableData.length
         },
+        mounted() {
+            this.getPermissionList()
+        },
+        onLoad(){
+            this.getPermissionList()
+        },
         methods: {
-            change(e){
-                this.tableData = tableData.filter((item, index) => {
-                    const idx  = index - (e.current-1)*this.pageSize
-                    return idx < this.pageSize && idx >= 0
+             async getPermissionList(){
+                await this.$request('base/permission/getList', {
+                    limit: 10000,
+                    offset: 0,
+                    needTotal: true
+                }).then(res => {
+                    console.log(res)
+                    this.permissionList = res.permissionList
                 })
+            },
+            add(){
+                uni.navigateTo({
+                    url: './edit'
+                })
+            },
+            edit(item){
+                uni.navigateTo({
+                    url: `./edit?permissionID=${item.permission_id}&permissionName=${item.permission_name}&comment=${item.comment}`
+                })
+            },
+            async deletePermission(id){
+                await this.$request('base/permission/deletePermission', {permissionID: id})
+                this.getPermissionList()
             }
         }
     }
@@ -69,9 +84,5 @@
         display: flex;
         justify-content: center;
         margin-top: 20px;
-    }
-
-    .pagination {
-        /* width: 300px; */
     }
 </style>
