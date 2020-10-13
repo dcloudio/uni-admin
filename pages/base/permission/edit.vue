@@ -1,32 +1,31 @@
 <template>
-	<view>
+    <view>
         <view class="m-b-30">
-            {{isEdit ? '编辑权限' : '新增权限'}}
+            {{title}}
         </view>
         <uni-forms ref="form" :form-rules="rules" class="uni-forms">
-            <uni-field :disabled="isEdit" :clearable="!isEdit" label="权限id" name="permissionID" v-model="permission.permissionID" placeholder="请填写权限id" />
+            <uni-field :disabled="isEdit" :clearable="!isEdit" label="权限id" name="permissionID" v-model="permission.permissionID"
+                placeholder="请填写权限id" />
             <uni-field label="权限名称" name="permissionName" v-model="permission.permissionName" placeholder="请填写权限名称" />
             <uni-field label="备注" v-model="permission.comment" type="textarea" placeholder="请填写备注" />
             <view class="m-t-10 m-b-30">
                 <view v-if="isEdit" class="tips">* 编辑时不能修改权限id</view>
             </view>
-            <button v-if="!isEdit" form-type="submit" type="primary" size="mini" @click="add">保存</button>
-            <button v-if="isEdit" form-type="submit" type="primary" size="mini" @click="update">确定</button>
+            <button form-type="submit" type="primary" size="mini" @click="save">保存</button>
             <button type="primary" size="mini" @click="back">返回</button>
         </uni-forms>
-	</view>
+    </view>
 </template>
 
 <script>
-	export default {
-		data() {
-			return {
+    export default {
+        data() {
+            return {
                 permission: {
                     permissionID: '',
                     permissionName: '',
                     comment: '',
                 },
-                isEdit: false,
                 rules: {
                     permissionID: {
                         rules: [{
@@ -56,10 +55,15 @@
                         ]
                     }
                 }
-			}
-		},
-        onLoad(option){
-            if (Object.keys(option).length !== 0) {
+            }
+        },
+        computed: {
+            title() {
+                return this.isEdit ? '编辑权限' : '新增权限'
+            }
+        },
+        onLoad(option) {
+            if (option.permissionID) {
                 this.permission = {
                     permissionID: option.permissionID,
                     permissionName: option.permissionName,
@@ -69,21 +73,19 @@
             } else {
                 this.isEdit = false
             }
+            uni.setNavigationBarTitle({
+                title: this.title
+            })
         },
-		methods: {
-            async add(){
-                await this.$request('base/permission/add', this.permission)
+        methods: {
+            save() {
+                this.$request('base/permission/' + (this.isEdit ? 'update' : 'add'), this.permission)
             },
-            async update(){
-                await this.$request('base/permission/update', this.permission)
+            back() {
+                uni.navigateBack()
             },
-            back(){
-                uni.navigateBack({
-
-                })
-            },
-		}
-	}
+        }
+    }
 </script>
 
 
@@ -92,6 +94,7 @@
         background-color: #fff;
         padding: 20px;
     }
+
     .uni-forms button {
         width: 70px;
         margin: 0;

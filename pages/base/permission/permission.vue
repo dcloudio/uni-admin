@@ -35,19 +35,12 @@
                 permissionList: [],
             }
         },
-        onLoad() {
-            this.tableData = tableData.filter((item, index) => index < this.pageSize)
-            this.total = tableData.length
-        },
-        mounted() {
-            this.getPermissionList()
-        },
         onShow(){
             this.getPermissionList()
         },
         methods: {
-             async getPermissionList(){
-                await this.$request('base/permission/getList', {
+            getPermissionList(){
+                this.$request('base/permission/getList', {
                     limit: 10000,
                     offset: 0,
                     needTotal: true
