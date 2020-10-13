@@ -42,6 +42,12 @@
             }
 
         }, {
+            "path": "role/edit",
+            "style": {
+                "navigationBarTitleText": "修改角色"
+            }
+
+        }, {
             "path": "user/user",
             "style": {
                 "navigationBarTitleText": "用户管理"

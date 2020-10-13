@@ -2,7 +2,7 @@ const {
     Controller
 } = require('uni-cloud-router')
 const uniId = require('uni-id')
-module.exports = class PermissionController extends Controller {
+module.exports = class RoleController extends Controller {
     async add() {
         const role = this.ctx.data
         //  TODO
@@ -20,4 +20,13 @@ module.exports = class PermissionController extends Controller {
         return uniId.getRoleList(data)
     }
 
+	async update() {
+	    const data = this.ctx.data
+	    return uniId.updateRole(data)
+	}
+
+    async deleteRole() {
+        const data = this.ctx.data
+        return uniId.deleteRole(data)
+    }
 }

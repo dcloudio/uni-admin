@@ -12,7 +12,7 @@
                 <view v-if="isEdit" class="tips">* 编辑时不能修改权限id</view>
             </view>
             <button form-type="submit" type="primary" size="mini" @click="save">保存</button>
-            <button type="primary" size="mini" @click="back">返回</button>
+            <button type="default" size="mini" @click="back">返回</button>
         </uni-forms>
     </view>
 </template>
@@ -32,26 +32,15 @@
                                 required: true,
                                 errorMessage: '请输入权限id',
                                 trigger: 'blur'
-                            },
-                            {
-                                minLength: 2,
-                                maxLength: 30,
-                                errorMessage: '权限名称长度在{minLength}到{maxLength}个字符',
-                                trigger: 'change'
                             }
                         ]
                     },
                     permissionName: {
                         rules: [{
+                                required: true,
                                 errorMessage: '请输入备注',
                                 trigger: 'blur'
                             },
-                            {
-                                minLength: 3,
-                                maxLength: 30,
-                                errorMessage: '备注长度在{minLength}到{maxLength}个字符',
-                                trigger: 'change'
-                            }
                         ]
                     }
                 }

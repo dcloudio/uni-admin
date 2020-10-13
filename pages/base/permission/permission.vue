@@ -20,8 +20,10 @@
                 <uni-td>{{item.comment}}</uni-td>
                 <uni-td>{{item.create_date}}</uni-td>
                 <uni-td>
-                    <button class="button" size="mini" :plain="true" type="default" @click="edit(item)" style="margin-right: 10px;">编辑</button>
-                    <button class="button" size="mini" :plain="true"  type="warn" @click="deletePermission(item.permission_id)">删除</button>
+                    <view class="flex-cc">
+                        <button class="button" size="mini" :plain="true" type="default" @click="edit(item)" style="margin-right: 10px;">编辑</button>
+                        <button class="button" size="mini" :plain="true"  type="warn" @click="deletePermission(item.permission_id)">删除</button>
+                    </view>
                 </uni-td>
             </uni-tr>
         </uni-table>
@@ -76,5 +78,8 @@
         display: flex;
         justify-content: center;
         margin-top: 20px;
+    }
+    button {
+        margin: 0;
     }
 </style>
