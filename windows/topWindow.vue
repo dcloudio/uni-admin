@@ -1,5 +1,5 @@
 <template>
-    <view class="navbar">
+    <view class="header">
         <!-- #ifdef H5 -->
         <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" style="position: absolute; width: 0; height: 0">
             <symbol xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" id="icon-bug">
@@ -7,30 +7,44 @@
             </symbol>
         </svg>
         <!-- #endif -->
-        <view class="flex-s p-t-20" style="position: relative;">
-            <view v-if="!matchLeftWindow" class="left">
-                <view @click="taggleSidebar" class="pointer el-icon-s-unfold"></view>
+        <view class="navbar" :class="{'navbar-mini':!matchLeftWindow,'popup-menu':popupMenuOpened}">
+            <view class="navbar-left pointer">
+                <navigator class="logo" open-type="reLaunch" url="/pages/index/index">
+                    <image :src="logo" mode="heightFix"></image>
+                </navigator>
+                <view @click="toggleSidebar" class="menu-icon el-icon-s-unfold"></view>
             </view>
-            <view class="logo-image " :class="{'center': !matchLeftWindow}">
-                <image v-if="matchLeftWindow" :src="logo" mode="heightFix"></image>
-                <text v-if="!matchLeftWindow">{{navigationBarTitleText}}</text>
+            <view class="navbar-middle">
+                <text class="title-text">{{navigationBarTitleText}}</text>
             </view>
-            <view v-if="!matchLeftWindow" @click="taggleUserMenu" class="top-window-right right pointer">
-                <text class="user">{{userInfo.username}}</text>️
-                <uni-icons v-if="userInfo.username" class="arrowdown" type="arrowdown" color="#bbb" size="14"></uni-icons>
-            </view>
-            <view v-if="matchLeftWindow || userMenuOpen" :class="{'repalce-select flex-column':!matchLeftWindow}" class="top-window-right flex-end">
-                <!-- #ifdef H5 -->
-                <view v-if="logs.length" @click="showErrorLogs" class="debug pointer">
-                    <svg class="svg-icon">
-                        <use xlink:href="#icon-bug"></use>
-                    </svg>
-                    <uni-badge class="debug-badge" :text="logs.length" type="error"></uni-badge>
+            <view class="navbar-right pointer">
+                <view v-show="userInfo.username" @click="togglePopupMenu" class="navbar-user">
+                    <view class="username"><text>{{userInfo.username}}</text>️</view>
+                    <uni-icons class="arrowdown" type="arrowdown" color="#bbb" size="14"></uni-icons>
                 </view>
-                <!-- #endif -->
-                <uni-link v-for="link in links" :key="link.url" :href="link.url" :text="link.text" />
-                <text v-if="matchLeftWindow" class="user">{{userInfo.username}}</text>️
-                <text v-if="userInfo.username" class="logout pointer" @click="logout">退出</text>️
+                <view class="uni-mask" @click="togglePopupMenu"></view>
+                <view class="navbar-menu">
+                    <!-- #ifdef H5 -->
+                    <view v-if="logs.length" @click="showErrorLogs" class="menu-item debug pointer">
+                        <svg class="svg-icon">
+                            <use xlink:href="#icon-bug"></use>
+                        </svg>
+                        <uni-badge class="debug-badge" :text="logs.length" type="error"></uni-badge>
+                    </view>
+                    <!-- #endif -->
+                    <view v-for="link in links" :key="link.url" class="menu-item">
+                        <uni-link :href="link.url" :text="link.text" />
+                    </view>
+                    <template v-show="userInfo.username">
+                        <view class="menu-item username">
+                            <text>{{userInfo.username}}</text>️
+                        </view>
+                        <view class="menu-item">
+                            <text class="logout pointer" @click="logout">退出</text>️
+                        </view>
+                    </template>
+                    <view class="popup-menu__arrow"></view>
+                </view>
             </view>
         </view>
         <uni-popup ref="errorLogsPopup" type="center">
@@ -65,7 +79,7 @@
         data() {
             return {
                 ...config.navBar,
-                userMenuOpen: false
+                popupMenuOpened: false
             }
         },
         computed: {
@@ -79,6 +93,9 @@
                 }
             }),
             showErrorLogs() {
+                if (this.popupMenuOpened) {
+                    this.popupMenuOpened = false
+                }
                 this.$refs.errorLogsPopup.open()
             },
             logout() {
@@ -92,22 +109,22 @@
 
                     })
             },
-            taggleSidebar() {
+            toggleSidebar() {
                 if (!this.showLeftWindow) {
                     uni.showLeftWindow()
                 } else {
                     uni.hideLeftWindow()
                 }
             },
-            taggleUserMenu() {
-                this.userMenuOpen = !this.userMenuOpen
+            togglePopupMenu() {
+                this.popupMenuOpened = !this.popupMenuOpened
             }
         }
     }
 </script>
 
 <style lang="scss">
-    .navbar {
+    .header {
         height: 60px;
         width: 100%;
         box-sizing: border-box;
@@ -116,48 +133,164 @@
         color: $top-window-text-color;
     }
 
-    .flex-s {
+    .navbar {
+        font-size: 14px;
+        position: relative;
         height: 100%;
+        padding: 0 20px;
         display: flex;
         justify-content: space-between;
         align-items: center;
     }
 
-    .p-t-20 {
-        padding: 0 20px;
+    .logo image {
+        height: 30px;
     }
 
-    .logo-image {
+    .menu-icon {
+        width: 30px;
         height: 30px;
-        text-align: center;
-        overflow:hidden;
+        line-height: 30px;
+    }
+
+    .navbar-left,
+    .navbar-middle,
+    .navbar-right {
+        flex: 1;
+    }
+
+    .navbar-middle,
+    .username {
+        overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;
     }
 
-    .min-logo {
-        height: 25px;
+    .navbar-middle {
+        text-align: center;
     }
 
-    .logo-image image {
-        max-width: 100%;
-        max-height: 100%;
+    .username {
+        max-width: 150px;
     }
 
-    .logo-image text {
+    .title-text {
         font-size: 14px;
         line-height: 30px;
     }
 
-    .top-window-right {
-        font-size: 14px;
-        // overflow:hidden;
-        // text-overflow: ellipsis;
-        // white-space: nowrap;
+    .navbar-menu {
+        display: flex;
     }
 
-    .top-window-right * {
-        margin-left: 10px;
+    .menu-item {
+        padding: 5px;
+    }
+
+    .debug {
+        display: inline-block;
+        position: relative;
+    }
+
+    .debug-badge {
+        position: absolute;
+        top: 5px;
+        right: 14px;
+        transform: translateY(-50%) translateX(100%) scale(0.8);
+    }
+
+    .arrowdown {
+        margin-top: 4px;
+        margin-left: 3px;
+    }
+
+    .navbar-right {
+        display: flex;
+        justify-content: flex-end;
+    }
+
+    .navbar-right .uni-mask {
+        background-color: rgba(255, 255, 255, 0);
+    }
+
+    .popup-menu__arrow {
+        position: absolute;
+        top: -6px;
+        right: 20px;
+        border-width: 6px;
+        margin-right: 3px;
+        border-top-width: 0;
+        border-bottom-color: #ebeef5;
+        filter: drop-shadow(0 2px 12px rgba(0, 0, 0, .03));
+    }
+
+    .popup-menu__arrow::after {
+        content: " ";
+        position: absolute;
+        display: block;
+        width: 0;
+        height: 0;
+        border-color: transparent;
+        border-style: solid;
+        border-width: 6px;
+        top: 1px;
+        margin-left: -6px;
+        border-top-width: 0;
+        border-bottom-color: #fff;
+    }
+
+    /* 大屏时，隐藏的内容 */
+    .menu-icon,
+    .navbar-middle,
+    .navbar-user,
+    .popup-menu__arrow,
+    .navbar-right .uni-mask {
+        display: none;
+    }
+
+    /* 小屏，显示的内容 */
+    .navbar-mini .menu-icon,
+    .navbar-mini .navbar-middle {
+        display: block;
+    }
+
+    .navbar-mini .navbar-user {
+        display: flex;
+    }
+
+    /* 小屏时，隐藏的内容 */
+    .navbar-mini .logo,
+    .navbar-mini .debug,
+    .navbar-mini .navbar-menu,
+    .navbar-mini .navbar-menu .username {
+        display: none;
+    }
+
+    .navbar-mini .navbar-menu {
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        position: fixed;
+        right: 20px;
+        top: var(--window-top);
+        background-color: #fff;
+        z-index: 999;
+        padding: 5px 15px;
+        margin: 5px 0;
+        background-color: #fff;
+        border: 1px solid #ebeef5;
+        border-radius: 4px;
+        box-shadow: 0 2px 12px 0 rgba(0, 0, 0, .1);
+    }
+
+    /* 小屏时，弹出下拉菜单 */
+    .navbar-mini.popup-menu .navbar-menu {
+        display: flex;
+    }
+
+    .navbar-mini.popup-menu .popup-menu__arrow,
+    .navbar-mini.popup-menu .navbar-right .uni-mask {
+        display: block;
     }
 
     .logout:hover {
@@ -172,18 +305,6 @@
         overflow: hidden;
     }
 
-    .debug {
-        display: inline-block;
-        position: relative;
-    }
-
-    .debug-badge {
-        position: absolute;
-        top: 0;
-        right: 10px;
-        transform: translateY(-50%) translateX(100%) scale(0.8);
-    }
-
     .modal {
         width: 100%;
         max-width: 980px;
@@ -195,45 +316,5 @@
         padding: 15px;
         height: 500px;
         box-sizing: border-box;
-    }
-
-    .repalce-select {
-        position: absolute;
-        right: 20px;
-        top: 50px;
-        background-color: #f1f1f1;
-        padding: 15px;
-        padding-bottom: 0;
-        z-index: 999;
-        border-radius: 3px;
-    }
-
-    .repalce-select * {
-        margin: 0;
-        margin-bottom: 5px;
-    }
-
-    .arrowdown {
-        margin-top: 3px;
-        margin-left: 3px;
-    }
-
-    .center {
-        flex: 1;
-        // display: inline-flex;
-        justify-content: center;
-    }
-
-    .left {
-        flex: 1;
-        display: inline-flex;
-        justify-content: left;
-    }
-
-    .right {
-        flex: 1;
-        display: inline-flex;
-        justify-content: flex-end;
-        overflow: hidden;
     }
 </style>
