@@ -168,7 +168,7 @@
         watch: {
             current(val) {
                 this.currentIndex = val
-                console.log(this.currentIndex);
+                console.log(val);
             }
         },
         created() {

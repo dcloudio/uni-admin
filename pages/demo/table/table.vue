@@ -9,7 +9,7 @@
                 <input class="uni-search" type="text" v-model="searchVal" placeholder="请输入搜索内容" />
                 <button class="uni-button" type="default" @click="search">搜索</button>
                 <button class="uni-button" type="default">新增</button>
-                <button class="uni-button" type="default" @click="add">导出表格</button>
+                <button class="uni-button" type="default" @click="exportTable">导出表格</button>
             </view>
         </view>
         <view class="container">
@@ -60,48 +60,83 @@
                 currentPage: 1,
                 // 数据总量
                 total: 0,
-                loading: true
-            }
-        },
-        computed: {
-            selectedItems() {
-                return this.selectedIndexs.map(i => tableData[i])
+                loading: false
             }
         },
         onLoad() {
-            this.serachData = tableData
-            this.loading = true
             this.selectedIndexs = []
-            setTimeout(() => {
-                this.loading = false
-                this.getData()
-            }, 1000)
+            this.getData(1)
         },
         methods: {
+            // 多选处理
+            selectedItems() {
+                return this.selectedIndexs.map(i => this.tableData[i])
+            },
+            // 多选
             selectionChange(e) {
                 console.log(e.detail.index);
-                this.selectedIndexs= e.detail.index
+                this.selectedIndexs = e.detail.index
             },
+            //导出表格
+            exportTable() {
+                console.log(this.selectedItems());
+            },
+            // 分页触发
             change(e) {
-                this.tableData = this.serachData.filter((item, index) => {
-                    const idx = index - (e.current - 1) * this.pageSize
-                    return idx < this.pageSize && idx >= 0
-                })
+                this.getData(e.current)
             },
+            // 搜索
             search() {
-                this.serachData = []
-                this.currentPage = 1
-                tableData.forEach(item => {
-                    if (item.name.indexOf(this.searchVal) !== -1) {
-                        this.serachData.push(item)
+                this.getData(1, this.searchVal)
+            },
+            // 获取数据
+            getData(currentPage, value = "") {
+                this.loading = true
+                this.currentPage = currentPage
+                this.request({
+                    pageSize: this.pageSize,
+                    currentPage: currentPage,
+                    value: value,
+                    success: (res) => {
+                        console.log('data', res);
+                        this.tableData = res.data
+                        this.total = res.total
+                        this.loading = false
                     }
                 })
-                this.getData()
             },
-            getData() {
-                this.tableData = this.serachData.filter((item, index) => index < this.pageSize)
-                this.total = this.serachData.length
+            // 伪request请求
+            request(options) {
+                const {
+                    pageSize,
+                    currentPage,
+                    success,
+                    value
+                } = options
+                let total = tableData.length
+                let data = tableData.filter((item, index) => {
+                    const idx = index - (currentPage - 1) * pageSize
+                    return idx < pageSize && idx >= 0
+                })
+                if (value) {
+                    data = []
+                    tableData.forEach(item => {
+                        if (item.name.indexOf(value) !== -1) {
+                            data.push(item)
+                        }
+                    })
+                    total = data.length
+                }
+
+                setTimeout(() => {
+                    typeof success === 'function' && success({
+                        data: data,
+                        total: total
+                    })
+                }, 500)
+
             }
+
         }
     }
 </script>
