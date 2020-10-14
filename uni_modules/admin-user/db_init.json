@@ -1,0 +1,42 @@
+{
+    "uni-id-permissions": {
+        "data": [{
+            "_id": "base-user-list",
+            "permission_id": "base/user/list",
+            "permission_name": "查看后台用户列表",
+            "comment": "",
+            "create_date": 1602662469396
+        }, {
+            "_id": "base-user-add",
+            "permission_id": "base/user/add",
+            "permission_name": "新增后台用户",
+            "comment": "",
+            "create_date": 1602662469396
+        }, {
+            "_id": "base-user-update",
+            "permission_id": "base/user/update",
+            "permission_name": "修改后台用户",
+            "comment": "",
+            "create_date": 1602662469396
+        }, {
+            "_id": "base-user-delete",
+            "permission_id": "base/user/delete",
+            "permission_name": "删除后台用户",
+            "comment": "",
+            "create_date": 1602662469396
+        }]
+    },
+    "opendb-admin-menu": {
+        "data": [{
+            "_id": "base-user",
+            "name": "用户管理",
+            "icon": "",
+            "url": "/pages/base/user/user",
+            "sort": 1010,
+            "parent_id": "system",
+            "permission": ["base/user/list", "base/user/add", "base/user/update", "base/user/delete"],
+            "status": 1,
+            "create_date": 1602662469396
+        }]
+    }
+}
