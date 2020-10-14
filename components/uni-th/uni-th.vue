@@ -42,7 +42,7 @@
 					parentName = parent.$options.name;
 				}
 				return parent;
-			},
+			}
 		}
 	}
 </script>
@@ -54,10 +54,11 @@
 		// text-align: center;
 		color: #333;
 		font-weight: 500;
-		border-bottom: 1px #eee solid;
+		border-bottom: 1px #ddd solid;
 		font-size: 14px;
+        // background-color: #efefef;
 	}
 	.table--border {
-		border-right: 1px #eee solid;
+		border-right: 1px #ddd solid;
 	}
 </style>

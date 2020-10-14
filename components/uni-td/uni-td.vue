@@ -53,13 +53,13 @@
 		padding: 12px 10px;
 		// text-align: center;
 		vertical-align: middle;
-		border-bottom: 1px #eee solid;
+		border-bottom: 1px #ddd solid;
 		// min-width: 150px;
 		color: #666;
 		font-size: 14px;
 	}
 
 	.table--border {
-		border-right: 1px #eee solid;
+		border-right: 1px #ddd solid;
 	}
 </style>
