@@ -55,7 +55,8 @@ const parser = {
     },
 }
 
-function formatDate(date, format = 'yyyy/MM/dd hh:mm:ss') {
+export function formatDate(date, format = 'yyyy/MM/dd hh:mm:ss') {
+    date = date instanceof Date ? date : new Date(date)
     const dateObj = {
         year: date.getFullYear(),
         month: date.getMonth() + 1,
