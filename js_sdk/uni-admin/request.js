@@ -39,7 +39,7 @@ export function request(action, data, {
         if (debugOptions && debugOptions.enable === true) {
             store.dispatch('error/add', {
                 err: err.toString(),
-                info: '$http("' + action + '")',
+                info: '$request("' + action + '")',
                 route: '',
                 time: new Date().toLocaleTimeString()
             })
