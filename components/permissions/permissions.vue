@@ -35,14 +35,21 @@
                     return []
                 }
             }
-
         },
         methods: {
             checkboxChange: function(e) {
                 this.values = e.detail.value;
             },
             getValues() {
-                return this.values || []
+                if (!this.values) {
+                    return this.permissions.forEach(item => {
+                        if (item.checked) {
+                           item.permission_id
+                        }
+                    })
+                } else {
+                    return this.values
+                }
             }
         }
     }
