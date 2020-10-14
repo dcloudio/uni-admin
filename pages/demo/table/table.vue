@@ -1,44 +1,48 @@
 <template>
-    <view class="container">
-        <view class="header">
-            <view class="header-button">
-                <button class="button" type="default" @click="add">新增</button>
+    <view>
+        <view class="uni-header uni-header-between">
+            <view class="uni-button-group">
+                <view class="uni-title">表格</view>
+                <view class="uni-sub-title">高级表格内容，如多选、搜索等</view>
             </view>
-            <view class="search">
-                <input class="input-class" type="text" v-model="searchVal" placeholder="请输入搜索内容" />
-                <button class="button" type="default" @click="search">搜索</button>
+            <view class="uni-button-group">
+                <input class="uni-search" type="text" v-model="searchVal" placeholder="请输入搜索内容" />
+                <button class="uni-button" type="default" @click="search">搜索</button>
+                <button class="uni-button" type="default" @click="add">新增</button>
+                <button class="uni-button" type="default" @click="add">导出表格</button>
             </view>
         </view>
-        <uni-table border stripe type="selection" @selection-change="selectionChange">
-            <uni-tr>
-                <uni-th width="100" align="center">日期</uni-th>
-                <uni-th width="100" align="center">姓名</uni-th>
-                <uni-th align="center">地址</uni-th>
-                <uni-th width="160" align="center">设置</uni-th>
-            </uni-tr>
-            <template v-if="!loading && tableData.length > 0 ">
-                <uni-tr v-for="(item ,index) in tableData" :key="index">
-                    <uni-td>{{item.date}}</uni-td>
-                    <uni-td>
-                        <view class="name">{{item.name}}</view>
-                    </uni-td>
-                    <uni-td>{{item.address}}</uni-td>
-                    <uni-td>
-                        <view class="button-box">
-                            <button class="button" type="primary">修改</button>
-                            <button class="button" type="warn">删除</button>
-                        </view>
-                    </uni-td>
+        <view class="container">
+            <uni-table border stripe type="selection" @selection-change="selectionChange">
+                <uni-tr>
+                    <uni-th width="100" align="center">日期</uni-th>
+                    <uni-th width="100" align="center">姓名</uni-th>
+                    <uni-th align="center">地址</uni-th>
+                    <uni-th width="160" align="center">设置</uni-th>
                 </uni-tr>
-            </template>
-            <view v-else class="loading">
-                <text v-if="!loading && tableData.length === 0" class="text">没有更多数据</text>
-                <text v-else class="text">loading...</text>
+                <template v-if="!loading && tableData.length > 0 ">
+                    <uni-tr v-for="(item ,index) in tableData" :key="index">
+                        <uni-td>{{item.date}}</uni-td>
+                        <uni-td>
+                            <view class="name">{{item.name}}</view>
+                        </uni-td>
+                        <uni-td>{{item.address}}</uni-td>
+                        <uni-td>
+                            <view class="uni-button-group">
+                                <button class="uni-button" type="primary">修改</button>
+                                <button class="uni-button" type="warn">删除</button>
+                            </view>
+                        </uni-td>
+                    </uni-tr>
+                </template>
+                <view v-else class="uni-table-loading">
+                    <text v-if="!loading && tableData.length === 0" class="uni-table-text">没有更多数据</text>
+                    <text v-else class="uni-table-text">loading...</text>
+                </view>
+            </uni-table>
+            <view class="uni-pagination-box">
+                <uni-pagination show-icon :page-size="pageSize" :current.sync="current" :total="total" @change="change" />
             </view>
-        </uni-table>
-        <view class="pagination-box">
-            <uni-pagination class="pagination" show-icon :page-size="pageSize" :current.sync="current" :total="total"
-                @change="change" />
         </view>
     </view>
 </template>
@@ -73,7 +77,7 @@
             }, 1000)
         },
         methods: {
-            add(){
+            add() {
                 this.$refs.popup.open()
             },
             selectionChange(e) {
@@ -104,73 +108,5 @@
 </script>
 
 <style>
-    .container {
-        padding: 10px;
-    }
-    .header {
-        display: flex;
-        justify-content: space-between;
-        margin: 15px 0;
-    }
-    .header-button {
-        display: flex;
-    }
-    .search {
-        display: flex;
-        justify-content: flex-end;
-        align-items: center;
-        /* border: 1px red solid; */
-    }
 
-    .button-box {
-        display: flex;
-        justify-content: center;
-    }
-
-    .button {
-        margin: 0;
-        width: 80px;
-        height: 30px;
-        line-height: 30px;
-        font-size: 14px;
-        margin-right: 5px;
-    }
-
-    .button--danger {
-        color: #fff;
-        background-color: #ff5a5f;
-    }
-
-    .input-class {
-        /* width: 300px; */
-        height: 30px;
-        line-height: 30px;
-        font-size: 14px;
-        padding: 0 10px;
-        border: 1px #eee solid;
-        margin-right: 15px;
-    }
-
-    .pagination-box {
-        display: flex;
-        justify-content: center;
-        margin-top: 20px;
-    }
-
-    .pagination {
-        /* width: 300px; */
-    }
-
-    .loading {
-        position: relative;
-        display: table-row;
-        height: 50px;
-        line-height: 50px;
-    }
-
-    .text {
-        position: absolute;
-        right: 0;
-        left: 50%;
-    }
 </style>
