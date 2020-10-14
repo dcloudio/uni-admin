@@ -47,7 +47,6 @@
             check(child, check) {
                 const childDom = this.trChildren.find((item, index) => child === item)
                 const childDomIndex = this.trChildren.findIndex((item, index) => child === item)
-                // console.log(childDom.value,check,childDomIndex);
                 if (childDomIndex === 0) {
                     if (childDom.value !== check) {
                         this.backData = []
@@ -68,12 +67,9 @@
                         this.backData.push(childDomIndex - 1)
                     } else {
                         const index = this.backData.findIndex(item => item === (childDomIndex - 1))
-                        console.log(index);
                         this.backData.splice(index, 1)
                     }
-                    // console.log(childDomIndex);
                     const domCheckAll = this.trChildren.find((item, index) => index > 0 && !item.value)
-                    // console.log(domCheckAll);
                     if (!domCheckAll) {
                         this.trChildren[0].value = true
                     }
@@ -85,7 +81,6 @@
                         value:[]
                     }
                 })
-                console.log(this.backData);
 
             }
         }

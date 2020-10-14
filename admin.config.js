@@ -65,6 +65,10 @@ export default {
                 name: '表格',
                 url: '/pages/demo/table/table'
             }, {
+                _id: 'forms',
+                name: '表单',
+                url: '/pages/demo/forms/forms'
+            }, {
                 _id: 'errorLog',
                 name: '错误日志模拟',
                 url: '/pages/demo/error/error'

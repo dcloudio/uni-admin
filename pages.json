@@ -75,6 +75,12 @@
             "style": {
                 "navigationBarTitleText": "模拟错误"
             }
+        }, {
+            "path": "forms/forms",
+            "style": {
+                "navigationBarTitleText": "表单"
+            }
+
         }]
     }],
     "easycom": {

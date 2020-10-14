@@ -8,7 +8,7 @@
             <view class="uni-button-group">
                 <input class="uni-search" type="text" v-model="searchVal" placeholder="请输入搜索内容" />
                 <button class="uni-button" type="default" @click="search">搜索</button>
-                <button class="uni-button" type="default" @click="add">新增</button>
+                <button class="uni-button" type="default">新增</button>
                 <button class="uni-button" type="default" @click="add">导出表格</button>
             </view>
         </view>
@@ -41,7 +41,7 @@
                 </view>
             </uni-table>
             <view class="uni-pagination-box">
-                <uni-pagination show-icon :page-size="pageSize" :current.sync="current" :total="total" @change="change" />
+                <uni-pagination show-icon :page-size="pageSize" :current="currentPage" :total="total" @change="change" />
             </view>
         </view>
     </view>
@@ -57,7 +57,7 @@
                 // 每页数据量
                 pageSize: 10,
                 // 当前页
-                current: 1,
+                currentPage: 1,
                 // 数据总量
                 total: 0,
                 loading: true
@@ -71,17 +71,16 @@
         onLoad() {
             this.serachData = tableData
             this.loading = true
+            this.selectedIndexs = []
             setTimeout(() => {
                 this.loading = false
                 this.getData()
             }, 1000)
         },
         methods: {
-            add() {
-                this.$refs.popup.open()
-            },
             selectionChange(e) {
-                console.log(e.detail);
+                console.log(e.detail.index);
+                this.selectedIndexs= e.detail.index
             },
             change(e) {
                 this.tableData = this.serachData.filter((item, index) => {
@@ -91,7 +90,7 @@
             },
             search() {
                 this.serachData = []
-                this.current = 1
+                this.currentPage = 1
                 tableData.forEach(item => {
                     if (item.name.indexOf(this.searchVal) !== -1) {
                         this.serachData.push(item)
