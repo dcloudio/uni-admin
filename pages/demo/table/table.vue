@@ -18,7 +18,7 @@
                     <uni-th width="150" align="center">日期</uni-th>
                     <uni-th width="150" align="center">姓名</uni-th>
                     <uni-th align="center">地址</uni-th>
-                    <uni-th width="160" align="center">设置</uni-th>
+                    <uni-th width="204" align="center">设置</uni-th>
                 </uni-tr>
                 <uni-tr v-for="(item ,index) in tableData" :key="index">
                     <uni-td>{{item.date}}</uni-td>
@@ -49,7 +49,7 @@
                 searchVal: '',
                 tableData: [],
                 // 每页数据量
-                pageSize: 1,
+                pageSize: 10,
                 // 当前页
                 currentPage: 1,
                 // 数据总量
