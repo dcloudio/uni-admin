@@ -4,14 +4,14 @@
             {{title}}
         </view>
         <uni-forms ref="form" :form-rules="rules" class="uni-forms">
-            <uni-field :disabled="isEdit" :clearable="!isEdit" label="权限id" name="permissionID" v-model="permission.permissionID"
+            <uni-field :disabled="isEdit" :clearable="!isEdit" :required="true"  label="权限id" name="permissionID" v-model="permission.permissionID"
                 placeholder="请填写权限id" />
-            <uni-field label="权限名称" name="permissionName" v-model="permission.permissionName" placeholder="请填写权限名称" />
+            <uni-field :required="true" label="权限名称" name="permissionName" v-model="permission.permissionName" placeholder="请填写权限名称" />
             <uni-field label="备注" v-model="permission.comment" type="textarea" placeholder="请填写备注" />
             <view class="m-t-10 m-b-30">
                 <view v-if="isEdit" class="tips">* 编辑时不能修改权限id</view>
             </view>
-            <button form-type="submit" type="primary" size="mini" @click="save">保存</button>
+            <button type="primary" size="mini" :disabled="isLoading" :loading="isLoading" @click="submitForm('form')">保存</button>
             <button type="default" size="mini" @click="back">返回</button>
         </uni-forms>
     </view>
@@ -21,6 +21,7 @@
     export default {
         data() {
             return {
+                isLoading: false,
                 permission: {
                     permissionID: '',
                     permissionName: '',
@@ -67,12 +68,31 @@
             })
         },
         methods: {
+            submitForm() {
+                const {permissionID, permissionName} = this.permission
+                if (permissionID && permissionName) {
+                    this.save()
+                } else {
+                    uni.showModal({
+                        content: '请填写必填项',
+                        showCancel: false
+                    })
+                }
+            },
             save() {
+                let that = this
+                this.isLoading = true
                 this.$request('base/permission/' + (this.isEdit ? 'update' : 'add'), this.permission).then(res => {
+                    this.isLoading = false
                     uni.showModal({
                         title: '提示',
                         content: res.msg,
-                        showCancel: false
+                        showCancel: false,
+                        success: function (res) {
+                            if (res.confirm) {
+                                that.back()
+                            }
+                        }
                     });
                 })
             },
@@ -91,7 +111,6 @@
     }
 
     .uni-forms button {
-        width: 70px;
         margin: 0;
         margin-right: 20px;
     }

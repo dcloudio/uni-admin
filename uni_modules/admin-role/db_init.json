@@ -1,0 +1,42 @@
+{
+    "uni-id-permissions": {
+        "data": [{
+            "_id": "base-role-list",
+            "permission_id": "base/role/list",
+            "permission_name": "查看角色列表",
+            "comment": "",
+            "create_date": 1602662469396
+        }, {
+            "_id": "base-role-add",
+            "permission_id": "base/role/add",
+            "permission_name": "新增角色",
+            "comment": "",
+            "create_date": 1602662469396
+        }, {
+            "_id": "base-role-update",
+            "permission_id": "base/role/update",
+            "permission_name": "修改角色",
+            "comment": "",
+            "create_date": 1602662469396
+        }, {
+            "_id": "base-role-delete",
+            "permission_id": "base/role/delete",
+            "permission_name": "删除角色",
+            "comment": "",
+            "create_date": 1602662469396
+        }]
+    },
+    "opendb-admin-menu": {
+        "data": [{
+            "_id": "base-role",
+            "name": "角色管理",
+            "icon": "",
+            "url": "/pages/base/role/role",
+            "sort": 1010,
+            "parent_id": "system",
+            "permission": ["base/role/list", "base/role/add", "base/role/update", "base/role/delete"],
+            "status": 1,
+            "create_date": 1602662469396
+        }]
+    }
+}
