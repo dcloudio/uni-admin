@@ -57,6 +57,7 @@
 		border-bottom: 1px #ddd solid;
 		font-size: 14px;
         // background-color: #efefef;
+        box-sizing: border-box;
 	}
 	.table--border {
 		border-right: 1px #ddd solid;

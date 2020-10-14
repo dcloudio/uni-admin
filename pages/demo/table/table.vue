@@ -15,8 +15,8 @@
         <view class="container">
             <uni-table border stripe type="selection" @selection-change="selectionChange">
                 <uni-tr>
-                    <uni-th width="100" align="center">日期</uni-th>
-                    <uni-th width="100" align="center">姓名</uni-th>
+                    <uni-th width="150" align="center">日期</uni-th>
+                    <uni-th width="150" align="center">姓名</uni-th>
                     <uni-th align="center">地址</uni-th>
                     <uni-th width="160" align="center">设置</uni-th>
                 </uni-tr>
