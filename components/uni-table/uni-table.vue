@@ -1,6 +1,12 @@
 <template>
     <view class="uni-table" :class="{'table--border':border, 'table--stripe':stripe}">
         <slot></slot>
+        <view v-if="noData" class="uni-table-loading">
+            <text class="uni-table-text">{{emptyText}}</text>
+        </view>
+        <view v-show="loading" class="uni-table-mask">
+            <div class="uni-table--loader"></div>
+        </view>
     </view>
 </template>
 
@@ -31,12 +37,26 @@
             type: {
                 type: String,
                 default: ''
-            }
+            },
+            // 没有更多数据
+            emptyText: {
+                type: String,
+                default: '没有更多数据'
+            },
+            loading: {
+                type: Boolean,
+                default: false
+            },
         },
         data() {
             return {
-
+                noData: true
             };
+        },
+        watch: {
+            loading(val) {
+
+            }
         },
         created() {
             // 定义tr的实例数组
@@ -44,6 +64,13 @@
             this.backData = []
         },
         methods: {
+            isNodata() {
+                if (this.trChildren.length > 1) {
+                    this.noData = false
+                } else {
+                    this.noData = true
+                }
+            },
             check(child, check) {
                 const childDom = this.trChildren.find((item, index) => child === item)
                 const childDomIndex = this.trChildren.findIndex((item, index) => child === item)
@@ -75,10 +102,10 @@
                     }
                 }
 
-                this.$emit('selection-change',{
-                    detail:{
-                        index:this.backData.sort(),
-                        value:[]
+                this.$emit('selection-change', {
+                    detail: {
+                        index: this.backData.sort(),
+                        value: []
                     }
                 })
 
@@ -89,6 +116,7 @@
 
 <style lang="scss">
     .uni-table {
+        position: relative;
         width: 100%;
         display: table;
         box-sizing: border-box;
@@ -113,6 +141,92 @@
             background-color: #fafafa;
         }
 
+    }
 
+    /* 表格加载、无数据样式 */
+    .uni-table-loading {
+        position: relative;
+        display: table-row;
+        height: 50px;
+        line-height: 50px;
+    }
+
+    .uni-table-text {
+        position: absolute;
+        right: 0;
+        left: 50%;
+        font-size: 14px;
+        color: #999;
+    }
+
+    .uni-table-mask {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        margin: auto;
+        background-color: rgba(255, 255, 255, 0.8);
+        z-index: 99;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        transition: all 0.5s;
+    }
+
+    .uni-table--loader {
+        width: 30px;
+        height: 30px;
+        border: 2px solid #aaa;
+        // border-bottom-color: transparent;
+        border-radius: 50%;
+        animation: 2s uni-table--loader linear infinite;
+        position: relative;
+    }
+
+    @keyframes uni-table--loader {
+        0% {
+            transform: rotate(360deg);
+        }
+
+        10% {
+            border-left-color: transparent;
+        }
+
+        20% {
+            border-bottom-color: transparent;
+        }
+
+        30% {
+            border-right-color: transparent;
+        }
+
+        40% {
+            border-top-color: transparent;
+        }
+
+        50% {
+            transform: rotate(0deg);
+        }
+
+        60% {
+            border-top-color: transparent;
+        }
+
+        70% {
+            border-left-color: transparent;
+        }
+
+        80% {
+            border-bottom-color: transparent;
+        }
+
+        90% {
+            border-right-color: transparent;
+        }
+
+        100% {
+            transform: rotate(-360deg);
+        }
     }
 </style>

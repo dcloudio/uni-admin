@@ -168,21 +168,7 @@ html {
     border-radius: 5px;
 }
 
-/* 表格加载、无数据样式 */
-.uni-table-loading {
-    position: relative;
-    display: table-row;
-    height: 50px;
-    line-height: 50px;
-}
 
-.uni-table-text {
-    position: absolute;
-    right: 0;
-    left: 50%;
-    font-size: 14px;
-    color: #999;
-}
 
 /* 分页容器 */
 

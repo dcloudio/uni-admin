@@ -27,6 +27,12 @@
             this.border = this.root.border
             this.selection = this.root.type
             this.root.trChildren.push(this)
+            this.root.isNodata()
+        },
+        destroyed() {
+            const index = this.root.trChildren.findIndex(i=>i===this)
+            this.root.trChildren.splice(index,1)
+            this.root.isNodata()
         },
         methods: {
             change(e) {
