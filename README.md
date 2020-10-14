@@ -12,12 +12,6 @@
 -   [左侧窗口（菜单栏）](#左侧窗口菜单栏)
 -   [用户系统](#用户系统)
 -   [权限系统](#权限系统)
--   [数据库结构](#数据库结构)
--   [云函数](#云函数)
-    -   [uni-admin](#uni-admin)
-        -   [目录结构](#目录结构-1)
-        -   [如何在 uni-admin 中增加新的业务接口](#如何在-uni-admin-中增加新的业务接口)
-    -   [uni-clientDB](#uni-clientdb)
 -   [插件](#插件)
     -   [开发 admin 插件](#开发-admin-插件)
     -   [使用 admin 插件](#使用-admin-插件)
@@ -127,6 +121,12 @@ $menu-text-color: #333; /* 菜单前景色 */
 $menu-text-color-actived: #007aff; /* 菜单激活前景色 */
 ```
 
+### 新增页面
+
+1. 新增前端 vue 页面
+
+2. 新增后端 api 接口
+
 ### 用户系统
 
 > 基于 [uni-id](https://uniapp.dcloud.io/uniCloud/uni-id) 用户登录
@@ -144,20 +144,19 @@ export default {
 };
 ```
 
-2. 用户管理
-    > TODO
-
 ### 权限系统
 
 > 基于 [uni-id](https://uniapp.dcloud.io/uniCloud/uni-id?id=rbac-api) 角色权限
 
-1. 角色管理
-    > TODO
-2. 权限管理
-    > TODO
-3. 菜单管理
-    > TODO
-4. 权限验证
+1. 用户管理
+    > [详情](https://github.com/dcloudio/uni-template-admin/tree/master/uni_modules/admin-user)
+2. 角色管理
+    > [详情](https://github.com/dcloudio/uni-template-admin/tree/master/uni_modules/admin-role)
+3. 权限管理
+    > [详情](https://github.com/dcloudio/uni-template-admin/tree/master/uni_modules/admin-permission)
+4. 菜单管理
+    > [详情](https://github.com/dcloudio/uni-template-admin/tree/master/uni_modules/admin-menu)
+5. 权限验证
     ```html
     <template>
         <view>
@@ -168,73 +167,6 @@ export default {
         </view>
     </template>
     ```
-
-### 数据库结构
-
-1. [用户表（uni-id-users）](https://uniapp.dcloud.io/uniCloud/uni-id?id=%e7%94%a8%e6%88%b7%e8%a1%a8)
-2. [验证码表（uni-verify）](https://uniapp.dcloud.io/uniCloud/uni-id?id=%e9%aa%8c%e8%af%81%e7%a0%81%e8%a1%a8)
-3. [角色表（uni-id-roles）](https://uniapp.dcloud.io/uniCloud/uni-id?id=%e8%a7%92%e8%89%b2%e8%a1%a8)
-4. [权限表（uni-id-permissions）](https://uniapp.dcloud.io/uniCloud/uni-id?id=%e6%9d%83%e9%99%90%e8%a1%a8)
-5. 菜单表（opendb-admin-menu）
-   | 字段 | 类型 | 必填 | 描述 |
-   | ---------- | --------- | ---- | -------------------------------------- |
-   | \_id | Object ID | 是 | 系统自动生成的 Id |
-   | name | String | 是 | 菜单文字 |
-   | icon | String | 否 | 菜单图标 |
-   | url | String | 否 | 菜单对应的页面链接（只有没有子菜单的菜单项可以配置） |
-   | sort | Integer | 否 | 在同级菜单中的排序，数组越大越靠后 |
-   | parent_id | String | 否 | 父级菜单 Id |
-   | permission | Array | 否 | 菜单权限（只有没有子菜单的菜单项可以配置） |
-   | status | Integer | 是 | 菜单状态：0 禁用 1 启用 |
-   | created_date | Timestamp | 是 | 创建时间 |
-
-### 云函数
-
-#### uni-admin
-
-##### 目录结构
-
-```bash
-├── controller
-│   └── system.js               # 系统接口
-│   └── user.js                 # 用户接口
-├── middleware
-│   └── auth.js                 # uni-id 校验用户 token 中间件
-│   └── permission.js           # uni-id 校验用户 permission 中间件
-├── service
-│   └── menu.js                 # 菜单业务逻辑实现
-│   └── user.js                 # 用户业务逻辑实现
-├── config.js                   # uni-cloud-router 配置
-├── index.js                    # 云函数入口
-```
-
-##### 如何在 uni-admin 中增加新的业务接口
-
-在 `controller` 目录创建一个 js 文件，如 `post.js`，[如何编写 Controller](https://github.com/fxy060608/uni-cloud-router#%E5%A6%82%E4%BD%95%E7%BC%96%E5%86%99-controller)
-
-```js
-// controller/post.js
-const Controller = require("uni-cloud-router").Controller;
-// 必须继承 Controller 类
-module.exports = class PostController extends Controller {
-    async create() {
-        const { ctx, service } = this;
-        // 校验参数
-        // 组装参数
-        const author = ctx.auth.uid;
-        const post = Object.assign(ctx.data, { author });
-        // 建议调用 Service 进行业务处理
-        // return this.service.post.create(post)
-        return this.db.add(post); // 简单业务可以跳过 Service 直接操作 db 实现入库
-    }
-};
-```
-
-> 更多扩展详情，参考 [uni-cloud-router](https://github.com/fxy060608/uni-cloud-router) 文档
-
-#### uni-clientDB
-
-> [参考文档](https://uniapp.dcloud.io/uniCloud/uni-clientDB)
 
 ### 插件
 

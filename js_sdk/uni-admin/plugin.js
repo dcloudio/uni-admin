@@ -2,6 +2,9 @@ import {
     initApi
 } from './api.js'
 import {
+    initUtil
+} from './util.js'
+import {
     initError
 } from './error.js'
 import {
@@ -15,6 +18,7 @@ import {
 } from './interceptor.js'
 export default {
     install(Vue) {
+        initUtil(Vue)
         initError(Vue)
         initRequest(Vue)
         initPermission(Vue)

@@ -30,12 +30,6 @@
             }
 
         }, {
-            "path": "permission/add",
-            "style": {
-                "navigationBarTitleText": "新增权限"
-            }
-
-        }, {
             "path": "permission/edit",
             "style": {
                 "navigationBarTitleText": "修改权限"
@@ -45,6 +39,12 @@
             "path": "role/role",
             "style": {
                 "navigationBarTitleText": "角色管理"
+            }
+
+        }, {
+            "path": "role/edit",
+            "style": {
+                "navigationBarTitleText": "修改角色"
             }
 
         }, {

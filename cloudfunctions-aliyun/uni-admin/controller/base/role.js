@@ -1,23 +1,37 @@
 const {
     Controller
 } = require('uni-cloud-router')
-const uniId = require('uni-id')
-module.exports = class PermissionController extends Controller {
+const uniID = require('uni-id')
+module.exports = class RoleController extends Controller {
     async add() {
         const role = this.ctx.data
-        //  TODO
         if(!role.roleID){
             this.throw({
                 code:'VALIDATE_ERROR',
                 message: 'roleID不可为空'
             })
         }
-        return uniId.addRole(role)
+        return uniID.addRole(role)
     }
 
     async getList() {
         const data = this.ctx.data
-        return uniId.getRoleList(data)
+        return uniID.getRoleList(data)
     }
 
+    async getRole() {
+        const data = this.ctx.data
+        console.log(Object.keys(uniID))
+        return uniID.getRoleInfo(data.roleID)
+    }
+
+	async update() {
+	    const data = this.ctx.data
+	    return uniID.updateRole(data)
+	}
+
+    async deleteRole() {
+        const data = this.ctx.data
+        return uniID.deleteRole(data)
+    }
 }

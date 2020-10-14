@@ -20,8 +20,10 @@
                 <uni-td>{{item.comment}}</uni-td>
                 <uni-td>{{item.create_date}}</uni-td>
                 <uni-td>
-                    <button class="button" size="mini" type="default" @click="edit(item)">编辑</button>
-                    <button class="button" size="mini" type="default" @click="deletePermission(item.permission_id)">删除</button>
+                    <view class="flex-cc">
+                        <button class="button" size="mini" :plain="true" type="default" @click="edit(item)" style="margin-right: 10px;">编辑</button>
+                        <button class="button" size="mini" :plain="true"  type="warn" @click="remove(item.permission_id)">删除</button>
+                    </view>
                 </uni-td>
             </uni-tr>
         </uni-table>
@@ -29,26 +31,18 @@
 </template>
 
 <script>
-    import tableData from '../../demo/table/tableData.js'
     export default {
         data() {
             return {
                 permissionList: [],
             }
         },
-        onLoad() {
-            this.tableData = tableData.filter((item, index) => index < this.pageSize)
-            this.total = tableData.length
-        },
-        mounted() {
-            this.getPermissionList()
-        },
-        onLoad(){
+        onShow(){
             this.getPermissionList()
         },
         methods: {
-             async getPermissionList(){
-                await this.$request('base/permission/getList', {
+            getPermissionList(){
+                this.$request('base/permission/getList', {
                     limit: 10000,
                     offset: 0,
                     needTotal: true
@@ -70,6 +64,21 @@
             async deletePermission(id){
                 await this.$request('base/permission/deletePermission', {permissionID: id})
                 this.getPermissionList()
+            },
+            remove(id) {
+                const that = this
+                uni.showModal({
+                    title: '提示',
+                    content: '确认删除该角色？',
+                    success: function (res) {
+                        if (res.confirm) {
+                            that.deletePermission(id)
+                            console.log('用户点击确定');
+                        } else if (res.cancel) {
+                            console.log('用户点击取消');
+                        }
+                    }
+                })
             }
         }
     }
@@ -84,5 +93,8 @@
         display: flex;
         justify-content: center;
         margin-top: 20px;
+    }
+    button {
+        margin: 0;
     }
 </style>
