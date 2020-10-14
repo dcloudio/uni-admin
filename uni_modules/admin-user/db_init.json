@@ -32,7 +32,7 @@
             "name": "用户管理",
             "icon": "",
             "url": "/pages/base/user/user",
-            "sort": 1010,
+            "sort": 1030,
             "parent_id": "system",
             "permission": ["base/user/list", "base/user/add", "base/user/update", "base/user/delete"],
             "status": 1,

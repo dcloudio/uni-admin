@@ -26,7 +26,7 @@
             "name": "云存储管理",
             "icon": "",
             "url": "/pages/base/storage/storage",
-            "sort": 1010,
+            "sort": 1040,
             "parent_id": "system",
             "permission": ["base/storage/list", "base/storage/add", "base/storage/delete"],
             "status": 1,
