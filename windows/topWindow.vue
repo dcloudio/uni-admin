@@ -39,6 +39,9 @@
                         <view class="menu-item username">
                             <text>{{userInfo.username}}</text>️
                         </view>
+                        <view class="menu-item" @click="showPassword">
+                            <text>修改密码</text>️
+                        </view>
                         <view class="menu-item">
                             <text class="logout pointer" @click="logout">退出</text>️
                         </view>
@@ -52,6 +55,11 @@
                 <scroll-view class="modal-content" scroll-y="true">
                     <error class="error-table" />
                 </scroll-view>
+            </view>
+        </uni-popup>
+        <uni-popup ref="passwordPopup" type="center">
+            <view class="modal">
+                <password class="password-popup" />
             </view>
         </uni-popup>
     </view>
@@ -86,6 +94,9 @@
             ...mapState('user', ['userInfo']),
             ...mapState('error', ['logs'])
         },
+        mounted() {
+            console.log(22222,this.userInfo)
+        },
         methods: {
             ...mapMutations({
                 removeToken(commit) {
@@ -97,6 +108,12 @@
                     this.popupMenuOpened = false
                 }
                 this.$refs.errorLogsPopup.open()
+            },
+            showPassword() {
+                if (this.popupMenuOpened) {
+                    this.popupMenuOpened = false
+                }
+                this.$refs.passwordPopup.open()
             },
             logout() {
                 this.$request('user/logout')
@@ -119,6 +136,10 @@
             togglePopupMenu() {
                 this.popupMenuOpened = !this.popupMenuOpened
             }
+        },
+        onHide() {
+            console.log('======close====')
+            this.$refs.passwordPopup.close()
         }
     }
 </script>
@@ -316,5 +337,8 @@
         padding: 15px;
         height: 500px;
         box-sizing: border-box;
+    }
+    .password-popup {
+        padding: 30px;
     }
 </style>

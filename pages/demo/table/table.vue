@@ -9,6 +9,7 @@
                 <input class="uni-search" type="text" v-model="searchVal" placeholder="请输入搜索内容" />
                 <button class="uni-button" type="default" @click="search">搜索</button>
                 <button class="uni-button" type="default">新增</button>
+                <button class="uni-button" type="default">删除</button>
                 <button class="uni-button" type="default" @click="exportTable">导出表格</button>
             </view>
         </view>

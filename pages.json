@@ -9,6 +9,13 @@
                 "leftWindow": false,
                 "navigationBarTitleText": "登录"
             }
+        },  {
+            "path": "pages/init/init",
+            "style": {
+                "topWindow": false,
+                "leftWindow": false,
+                "navigationBarTitleText": "初始化"
+            }
         }, {
             "path": "pages/error/404",
             "style": {

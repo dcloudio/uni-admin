@@ -1,22 +1,23 @@
 <template>
     <view class="login-box">
         <view class="flex-cc m-b-30 login-title">
-            系统登录
+            创建超级管理员
         </view>
         <uni-forms ref="form" :form-rules="rules">
-            <uni-field class="p-lr-0" left-icon="person" name="username" v-model="formData.username" labelWidth="35"
-                placeholder="账户" :clearable="false" />
-            <uni-field class="m-b-30 p-lr-0" left-icon="locked" v-model="formData.password" name="password" type="password"
-                labelWidth="35" placeholder="密码" :clearable="false" />
-            <button class="login-button flex-cc m-b-30" type="primary" :loading="loading" :disabled="loading" @click="submitForm('form')">登录</button>
+            <uni-field left-icon="person" name="username" v-model="formData.username" labelWidth="35" placeholder="账户"
+                :clearable="false" />
+            <uni-field left-icon="locked" v-model="formData.password" name="password" type="password" labelWidth="35"
+                placeholder="密码" :clearable="false" />
+            <uni-field left-icon="locked" class="m-b-30" type="password" name="passwordConfirmation" labelWidth="35"
+                v-model="passwordConfirmation" placeholder="确认密码" />
+            <button class="login-button flex-cc m-b-30" type="primary" :loading="loading" :disabled="loading" @click="submitForm('form')">创建</button>
         </uni-forms>
         <view>
-            <!-- <text>账号：admin &nbsp;&nbsp; 密码：123456</text> -->
-            <text class="uni-tips pointer underline" @click="initAdmin">如无管理员账号，请先创建管理员...</text>
+            <!-- 账号：admin &nbsp;&nbsp; 密码：123456 -->
         </view>
     </view>
-</template>
 
+</template>
 <script>
     import {
         mapMutations,
@@ -27,9 +28,10 @@
             return {
                 loading: false,
                 formData: {
-                    username: '',
+                    username: 'admin',
                     password: '',
                 },
+                passwordConfirmation: '',
                 rules: {
                     // 对name字段进行必填验证
                     username: {
@@ -59,6 +61,19 @@
                                 trigger: 'change'
                             }
                         ]
+                    },
+                    passwordConfirmation: {
+                        rules: [{
+                                required: true,
+                                errorMessage: '请确认新密码',
+                                trigger: 'blur'
+                            },
+                            {
+                                minLength: 6,
+                                errorMessage: '密码长度最小{minLength}个字符',
+                                trigger: 'change'
+                            }
+                        ]
                     }
                 }
             }
@@ -67,71 +82,73 @@
             ...mapMutations({
                 setToken(commit, tokenInfo) {
                     commit('user/SET_TOKEN', tokenInfo)
-                },
-                setNavMenu(commit, navMenu) {
-                    commit('app/SET_NAV_MENU', navMenu)
-                },
-                setUserInfo(commit, userInfo) {
-                    commit('user/SET_USER_INFO', userInfo, {
-                        root: true
-                    })
                 }
             }),
-            submit(e) {
+            async hasAdmin() {
                 this.loading = true
-                this.$request('user/login', this.formData)
+                await this.$request('user/hasAdmin')
+                .then(res => {
+                    if (!res) {
+                        this.register()
+                    } else {
+                        uni.showModal({
+                            title: '提示',
+                            content: '超级管理员已存在，请登录...',
+                            success: (res) => {
+                                if (res.confirm) {
+                                    uni.navigateTo({
+                                        url: '/pages/login/login'
+                                    })
+                                }
+                            }
+                        })
+                    }
+                }).catch(err => {
+
+                }).finally(err => {
+                    this.loading = false
+                })
+            },
+            register(e) {
+                this.loading = true
+                this.$request('user/register', this.formData)
                     .then(res => {
                         this.setToken({
                             token: res.token,
                             tokenExpired: res.tokenExpired
                         })
-                        this.init()
+                        uni.showToast({
+                            title: '创建成功',
+                            icon: 'none'
+                        })
+                        uni.redirectTo({
+                            url: '/pages/login/login'
+                        })
                     }).catch(err => {
 
                     }).finally(err => {
                         this.loading = false
                     })
             },
-            init() {
-                this.$request('system/init')
-                .then(res => {
-                    const {
-                        navMenu,
-                        userInfo
-                    } = res
-                    if (!navMenu.length){
-                        uni.showToast({
-                            title: '该账号暂无权限登录',
-                            icon: 'none'
-                        })
-                    } else {
-                        uni.showToast({
-                            title: '登录成功',
-                            icon: 'none'
-                        })
-                        uni.redirectTo({
-                            url: '/pages/index/index'
-                        })
-                    }
-                    this.setNavMenu(navMenu)
-                    this.setUserInfo(userInfo)
-                })
-            },
             submitForm(form) {
+                const password = this.formData.password,
+                    passwordConfirmation = this.passwordConfirmation
                 this.$refs[form].submit((valid, values) => {
                     if (!valid) {
-                        this.submit()
+                        if (password === passwordConfirmation) {
+                            this.hasAdmin()
+                        } else {
+                            uni.showModal({
+                                content: '两次输入密码不相同',
+                                showCancel: false
+                            })
+                        }
                     } else {
                         uni.showModal({
                             content: '请填写正确的账户密码',
                             showCancel: false
                         })
                     }
-                })
-            },
-            initAdmin() {
-                uni.navigateTo({
-                    url: '/pages/init/init'
                 })
             }
         }
@@ -162,11 +179,8 @@
         height: 39px;
         width: 100%;
     }
-    .underline:hover {
-        text-decoration: underline;
-    }
-    .uni-tips {
-        font-size: 14px;
-        color: #666;
+
+    .m-b-30 {
+        margin-bottom: 30px;
     }
 </style>

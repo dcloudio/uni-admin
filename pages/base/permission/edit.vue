@@ -11,7 +11,7 @@
             <view class="m-t-10 m-b-30">
                 <view v-if="isEdit" class="tips">* 编辑时不能修改权限id</view>
             </view>
-            <button type="primary" size="mini" :disabled="isLoading" :loading="isLoading" @click="submitForm('form')">保存</button>
+            <button type="primary" size="mini" :disabled="isLoading" :loading="isLoading" @click="submitForm">保存</button>
             <button type="default" size="mini" @click="back">返回</button>
         </uni-forms>
     </view>
