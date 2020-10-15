@@ -69,13 +69,10 @@
                 const that = this
                 uni.showModal({
                     title: '提示',
-                    content: '确认删除该角色？',
+                    content: '确认删除该权限？',
                     success: function (res) {
                         if (res.confirm) {
                             that.deletePermission(id)
-                            console.log('用户点击确定');
-                        } else if (res.cancel) {
-                            console.log('用户点击取消');
                         }
                     }
                 })
