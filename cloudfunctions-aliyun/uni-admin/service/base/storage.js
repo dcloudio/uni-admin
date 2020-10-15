@@ -6,7 +6,7 @@ const db = uniCloud.database()
 const storageCollection = db.collection('opendb-admin-storage')
 
 module.exports = class StorageService extends Service {
-    async report({
+    async add({
         name,
         fileID,
         catagory,
@@ -25,7 +25,7 @@ module.exports = class StorageService extends Service {
             create_date: Date.now()
         })
         return {
-            msg: '上报成功'
+            fileID
         }
     }
 
@@ -80,7 +80,7 @@ module.exports = class StorageService extends Service {
             file_id: fileID,
         }).remove()
         return {
-            msg: '删除成功'
+            fileID
         }
     }
 }

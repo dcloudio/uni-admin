@@ -2,8 +2,8 @@ const {
     Controller
 } = require('uni-cloud-router')
 module.exports = class StorageController extends Controller {
-    async report() {
-        return this.service.base.storage.report(this.ctx.data)
+    async add() {
+        return this.service.base.storage.add(this.ctx.data)
     }
 
     async list() {
