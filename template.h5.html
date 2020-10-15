@@ -11,9 +11,6 @@
             var coverSupport = 'CSS' in window && typeof CSS.supports === 'function' && (CSS.supports('top: env(a)') || CSS.supports('top: constant(a)'))
             document.write('<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0' + (coverSupport ? ', viewport-fit=cover' : '') + '" />')
         </script>
-        <link rel="stylesheet" href="<%= BASE_URL %>static/element-ui/lib/theme-chalk/icon.css" />
-        <!-- 若使用了 element-ui 组件，可取消下一行的 css 引用注释，注意：不要在 js 中重复引入该 css -->
-        <!-- <link rel="stylesheet" href="<%= BASE_URL %>static/element-ui/lib/theme-chalk/index.css" /> -->
         <link rel="stylesheet" href="<%= BASE_URL %>static/index.<%= VUE_APP_INDEX_CSS_HASH %>.css" />
     </head>
 

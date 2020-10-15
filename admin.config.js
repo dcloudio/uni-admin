@@ -57,10 +57,6 @@ export default {
             name: '功能演示',
             icon: 'el-icon-menu',
             children: [{
-                _id: 'icon',
-                name: '图标',
-                url: '/pages/demo/icons/icons'
-            }, {
                 _id: 'table',
                 name: '表格',
                 url: '/pages/demo/table/table'
@@ -68,10 +64,6 @@ export default {
                 _id: 'forms',
                 name: '表单',
                 url: '/pages/demo/forms/forms'
-            }, {
-                _id: 'errorLog',
-                name: '错误日志模拟',
-                url: '/pages/demo/error/error'
             }]
         }]
     }
