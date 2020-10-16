@@ -2,38 +2,18 @@
 
 > 基于 uni-app，uniCloud 的 admin 管理项目模板
 
----
-
--   [使用](#使用)
-    -   [创建](#创建)
-    -   [运行](#运行)
--   [目录结构](#目录结构)
--   [顶部窗口（导航栏）](#顶部窗口导航栏)
--   [左侧窗口（菜单栏）](#左侧窗口菜单栏)
--   [用户系统](#用户系统)
--   [权限系统](#权限系统)
--   [插件](#插件)
-    -   [开发 admin 插件](#开发-admin-插件)
-    -   [使用 admin 插件](#使用-admin-插件)
-    -   [admin 插件列表](#admin-插件列表)
-
 ### 使用
 
 #### 创建
 
-方式一：[HBuilderX](https://www.dcloud.io/hbuilderx.html) 新建 uni-app 项目，选择 uniCloud admin 项目模板。
-
-方式二：[插件市场](https://ext.dcloud.net.cn/)，使用 HBuilderX 导入。
-
-方式三：[下载压缩包](https://github.com/dcloudio/uni-template-admin/archive/master.zip)，解压后，导入 HBuilderX。
+[HBuilderX](https://www.dcloud.io/hbuilderx.html) 新建 uni-app 项目，选择 admin 项目模板。
 
 #### 运行
 
 1. 进入 admin 项目
-2. 右键 cloudfuntions 绑定服务空间
-3. 右键 cloudfuntions 上传所有云函数及公共模块
-4. 右键 db_init.json 初始化云数据库
-5. 点击工具栏的运行 -> 运行到浏览器
+2. 右键 cloudfuntions 运行云服务空间初始化向导
+3. 点击工具栏的运行 -> 运行到浏览器
+4. 登录页面底部进入创建管理员页面（仅允许注册一次管理员账号）
 
 ### 目录结构
 
@@ -113,19 +93,13 @@ export default {
 2. 通过 [uni.scss](https://github.com/dcloudio/uni-template-admin/blob/master/uni.scss) 配置侧边栏样式
 
 ```css
-$left-window-bg-color: #fff; /* 侧边栏背景色 */
+$left-window-bg-color: #fff; /* 左侧窗口背景色 */
 $menu-bg-color: #fff; /* 一级菜单背景色 */
-$sub-menu-bg-color: darken($menu-bg-color, 10%); /* 二级以下菜单背景色 */
-$menu-bg-color-hover: darken($menu-bg-color, 13%); /* 菜单 hover 背景颜色 */
+$sub-menu-bg-color: darken($menu-bg-color, 8%); /* 二级以下菜单背景色 */
+$menu-bg-color-hover: darken($menu-bg-color, 15%); /* 菜单 hover 背景颜色 */
 $menu-text-color: #333; /* 菜单前景色 */
-$menu-text-color-actived: #007aff; /* 菜单激活前景色 */
+$menu-text-color-actived: #409eff; /* 菜单激活前景色 */
 ```
-
-### 新增页面
-
-1. 新增前端 vue 页面
-
-2. 新增后端 api 接口
 
 ### 用户系统
 
@@ -134,29 +108,30 @@ $menu-text-color-actived: #007aff; /* 菜单激活前景色 */
 1.  用户登录
 
 -   源码 [pages/login/login.vue](https://github.com/dcloudio/uni-template-admin/blob/master/pages/login/login.vue)
--   通过 [admin.config.js](https://github.com/dcloudio/uni-template-admin/blob/master/admin.config.js) 自定义登录页面路径
 
-```js
-export default {
-    login: {
-        url: "/pages/login/login", // 登录页面路径
-    },
-};
-```
+注意：首次使用，可以通过登录页面底部链接创建一个超级管理员（仅允许创建一次），注册完毕后，建议从登录页面移除该链接
 
 ### 权限系统
 
 > 基于 [uni-id](https://uniapp.dcloud.io/uniCloud/uni-id?id=rbac-api) 角色权限
 
-1. 用户管理
-    > [详情](https://github.com/dcloudio/uni-template-admin/tree/master/uni_modules/admin-user)
-2. 角色管理
-    > [详情](https://github.com/dcloudio/uni-template-admin/tree/master/uni_modules/admin-role)
-3. 权限管理
-    > [详情](https://github.com/dcloudio/uni-template-admin/tree/master/uni_modules/admin-permission)
-4. 菜单管理
-    > [详情](https://github.com/dcloudio/uni-template-admin/tree/master/uni_modules/admin-menu)
-5. 权限验证
+1. 角色表
+    > [详情](https://uniapp.dcloud.io/uniCloud/uni-id?id=%e8%a7%92%e8%89%b2%e8%a1%a8)
+2. 权限表
+    > [详情](https://uniapp.dcloud.io/uniCloud/uni-id?id=%e6%9d%83%e9%99%90%e8%a1%a8)
+3. 菜单表
+   | 字段 | 类型 | 必填 | 描述 |
+   | ---------- | --------- | ---- | -------------------------------------- |
+   | \_id | Object ID | 是 | 系统自动生成的 Id |
+   | name | String | 是 | 菜单文字 |
+   | icon | String | 否 | 菜单图标 |
+   | url | String | 否 | 菜单对应的页面链接（只有没有子菜单的菜单项可以配置） |
+   | sort | Integer | 否 | 在同级菜单中的排序，数组越大越靠后 |
+   | parent_id | String | 否 | 父级菜单 Id |
+   | permission | Array | 否 | 菜单权限（只有没有子菜单的菜单项可以配置） |
+   | status | Integer | 是 | 菜单状态：0 禁用 1 启用 |
+   | created_date | Timestamp | 是 | 创建时间 |
+4. 权限验证
     ```html
     <template>
         <view>
@@ -168,51 +143,16 @@ export default {
     </template>
     ```
 
-### 插件
+### 新增页面
 
-#### 开发 admin 插件
+1. 新增前端 vue 页面
 
-> TODO
+2. 新增后端 api 接口
 
-#### 使用 admin 插件
+### 云函数
 
-> TODO
+#### uni-clientDB
 
-#### admin 插件列表
+> [详情](https://uniapp.dcloud.io/uniCloud/uni-clientDB)
 
--   [菜单管理](https://github.com/dcloudio/uni-template-admin/tree/master/uni_modules/admin-menu)
--   [权限管理](https://github.com/dcloudio/uni-template-admin/tree/master/uni_modules/admin-permission)
--   [角色管理](https://github.com/dcloudio/uni-template-admin/tree/master/uni_modules/admin-role)
--   [用户管理](https://github.com/dcloudio/uni-template-admin/tree/master/uni_modules/admin-user)
--   [云存储管理](https://github.com/dcloudio/uni-template-admin/tree/master/uni_modules/admin-storage)
-
-### 进阶
-
-##### 如何使用 element-ui
-
-1. 根目录，命令行执行：`npm i element-ui -S`
-2. 根目录，修改 `template.h5.html`，引用 `element-ui` 的 `index.css` 文件
-
-    注：在 html 中直接引入后，请不要在 js 中再引入该 css 文件
-
-```html
-<!-- 若使用了 element-ui 组件，可取消下一行的 css 引用注释，注意：不要在 js 中重复引入该 css -->
-<link
-    rel="stylesheet"
-    href="<%= BASE_URL %>static/element-ui/lib/theme-chalk/index.css"
-/>
-```
-
-3. `pages.json` 中已内置 `element-ui` 的 `easycom` 配置，可以直接在 `template` 中使用 `el-` 开头的组件
-
-```html
-<template>
-    <view>
-        <el-tag>标签一</el-tag>
-        <el-tag type="success">标签二</el-tag>
-        <el-tag type="info">标签三</el-tag>
-        <el-tag type="warning">标签四</el-tag>
-        <el-tag type="danger">标签五</el-tag>
-    </view>
-</template>
-```
+### 使用三方组件库
