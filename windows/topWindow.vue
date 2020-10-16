@@ -59,7 +59,7 @@
             </view>
         </uni-popup>
         <uni-popup ref="passwordPopup" type="center">
-            <view class="modal">
+            <view class="modal" style="width: 375px">
                 <password class="password-popup" :isPhone="true" v-on:closePasswordPopup="closePasswordPopup" />
             </view>
         </uni-popup>

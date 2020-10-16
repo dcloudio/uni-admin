@@ -10,7 +10,7 @@
                 placeholder="请填写新密码" />
             <uni-field :required="true" label="确认新密码" :label-width="80" type="password" name="passwordConfirmation"
                 v-model="password.passwordConfirmation" placeholder="请确认新密码" />
-            <view :class="[isPhone ? 'button-group' : '']">
+            <view class="button-group">
                 <button class="button-save" type="primary" size="mini" :disabled="isLoading" @click="submitForm('form')">保存</button>
                 <button v-if="hasBackButton" class="button-save" type="default" size="mini" :disabled="isLoading"
                     @click="back">返回</button>
@@ -165,7 +165,7 @@
     }
 
     .uni-forms {
-        max-width: 400px;
+        width: 100%;
     }
 
     .uni-forms button {
