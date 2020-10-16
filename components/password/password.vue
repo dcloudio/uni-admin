@@ -87,15 +87,17 @@
                         if (newPassword === passwordConfirmation) {
                             this.save()
                         } else {
-                            uni.showModal({
-                                content: '两次输入密码不相同',
-                                showCancel: false
+                            uni.showToast({
+                                title: '两次输入密码不相同',
+                                icon: 'none',
+                                duration: 2000
                             })
                         }
                     } else {
-                        uni.showModal({
-                            content: '请填写正确的密码',
-                            showCancel: false
+                        uni.showToast({
+                            title: '请正确的填写密码',
+                            icon: 'none',
+                            duration: 2000
                         })
                     }
                 })
@@ -105,21 +107,30 @@
                 this.isLoading = true
                 this.$request('self/changePwd', this.password).then(res => {
                     this.isLoading = false
-                    uni.showModal({
-                        title: '提示',
-                        content: res.msg,
-                        showCancel: false,
-                        success: function(res) {
-                            if (res.confirm) {
-                                that.removeToken()
-                                uni.reLaunch({
-                                    url: config.login.url
-                                })
+                    if (res.code === 0) {
+                        uni.showModal({
+                            title: '提示',
+                            content: res.msg,
+                            showCancel: false,
+                            success: (res) => {
+                                if (res.confirm) {
+                                    this.$emit('closePasswordPopup')
+                                    this.removeToken()
+                                    uni.reLaunch({
+                                        url: config.login.url
+                                    })
+                                }
                             }
-                        }
-                    });
+                        });
+                    } else {
+                        uni.showToast({
+                            title: res.msg,
+                            icon: 'none',
+                            duration: 2000
+                        })
+                    }
                 }).catch(res => {
-                    
+
                 }).finally(err => {
                     this.isLoading = false
                 })

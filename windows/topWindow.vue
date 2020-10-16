@@ -59,7 +59,7 @@
         </uni-popup>
         <uni-popup ref="passwordPopup" type="center">
             <view class="modal">
-                <password class="password-popup" />
+                <password class="password-popup" v-on:closePasswordPopup="closePasswordPopup" />
             </view>
         </uni-popup>
     </view>
@@ -93,9 +93,6 @@
         computed: {
             ...mapState('user', ['userInfo']),
             ...mapState('error', ['logs'])
-        },
-        mounted() {
-            console.log(22222,this.userInfo)
         },
         methods: {
             ...mapMutations({
@@ -135,11 +132,10 @@
             },
             togglePopupMenu() {
                 this.popupMenuOpened = !this.popupMenuOpened
+            },
+            closePasswordPopup() {
+                this.$refs.passwordPopup.close()
             }
-        },
-        onHide() {
-            console.log('======close====')
-            this.$refs.passwordPopup.close()
         }
     }
 </script>

@@ -88,7 +88,7 @@
                 this.loading = true
                 await this.$request('user/hasAdmin')
                 .then(res => {
-                    if (!res) {
+                    if (res[0].role.indexOf("admin") === -1) {
                         this.register()
                     } else {
                         uni.showModal({
@@ -113,17 +113,29 @@
                 this.loading = true
                 this.$request('user/register', this.formData)
                     .then(res => {
-                        this.setToken({
-                            token: res.token,
-                            tokenExpired: res.tokenExpired
-                        })
-                        uni.showToast({
-                            title: '创建成功',
-                            icon: 'none'
-                        })
-                        uni.redirectTo({
-                            url: '/pages/login/login'
-                        })
+                        if (res.code === 0) {
+                            this.setToken({
+                                token: res.token,
+                                tokenExpired: res.tokenExpired
+                            })
+                            uni.showModal({
+                                title: '提示',
+                                content: res.msg,
+                                showCancel: false,
+                                success: (res) => {
+                                    if (res.confirm) {
+                                        uni.navigateTo({
+                                            url: '/pages/login/login'
+                                        })
+                                    }
+                                }
+                            })
+                        } else {
+                            uni.showToast({
+                                title: res.msg,
+                                icon: 'none',
+                            })
+                        }
                     }).catch(err => {
 
                     }).finally(err => {
