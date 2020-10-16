@@ -4,13 +4,17 @@
             {{title}}
         </view>
         <uni-forms ref="form" :form-rules="rules" class="uni-forms">
-            <uni-field :required="true" label="旧密码" type="password" :label-width="100" name="oldPassword" v-model="password.oldPassword"
+            <uni-field :required="true" label="旧密码" type="password" :label-width="80" name="oldPassword" v-model="password.oldPassword"
                 placeholder="请填写旧密码" />
-            <uni-field :required="true" label="新密码" type="password" :label-width="100" name="newPassword" v-model="password.newPassword"
+            <uni-field :required="true" label="新密码" type="password" :label-width="80" name="newPassword" v-model="password.newPassword"
                 placeholder="请填写新密码" />
-            <uni-field :required="true" label="确认新密码" :label-width="100" type="password" name="passwordConfirmation"
+            <uni-field :required="true" label="确认新密码" :label-width="80" type="password" name="passwordConfirmation"
                 v-model="password.passwordConfirmation" placeholder="请确认新密码" />
-            <button class="button-save" type="primary" size="mini" :disabled="isLoading" @click="submitForm('form')">保存</button>
+            <view :class="[isPhone ? 'button-group' : '']">
+                <button class="button-save" type="primary" size="mini" :disabled="isLoading" @click="submitForm('form')">保存</button>
+                <button v-if="hasBackButton" class="button-save" type="default" size="mini" :disabled="isLoading"
+                    @click="back">返回</button>
+            </view>
         </uni-forms>
     </view>
 </template>
@@ -66,6 +70,16 @@
                         ]
                     }
                 }
+            }
+        },
+        props: {
+            hasBackButton: {
+                type: Boolean,
+                default: false
+            },
+            isPhone: {
+                type: Boolean,
+                default: true
             }
         },
         computed: {
@@ -134,6 +148,9 @@
                 }).finally(err => {
                     this.isLoading = false
                 })
+            },
+            back() {
+                uni.navigateBack()
             }
 
         }
@@ -148,12 +165,17 @@
     }
 
     .uni-forms {
-        width: 400px;
+        max-width: 400px;
     }
 
     .uni-forms button {
         margin: 0;
         margin-right: 20px;
         margin-top: 40px;
+    }
+    .button-group {
+        display: flex;
+        align-items: center;
+        justify-content: center;
     }
 </style>

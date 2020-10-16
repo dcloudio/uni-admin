@@ -26,13 +26,13 @@ module.exports = class UserController extends Controller {
     }
 
     async hasAdmin() {
-        let {
-            data: admin
+        const {
+            total
         } = await this.db.collection('uni-id-users').where({
             role: 'admin'
-        }).limit(1000).get()
+        }).count()
 
-        return admin
+        return !!total
     }
 
     async logout() {

@@ -12,7 +12,8 @@
                 <navigator class="logo" open-type="reLaunch" url="/pages/index/index">
                     <image :src="logo" mode="heightFix"></image>
                 </navigator>
-                <view @click="toggleSidebar" class="menu-icon el-icon-s-unfold"></view>
+                <!-- <view @click="toggleSidebar" class="menu-icon el-icon-s-unfold"></view> -->
+                <uni-icons @click="toggleSidebar" type="bars" class="menu-icon" size="30" color="#999"></uni-icons>
             </view>
             <view class="navbar-middle">
                 <text class="title-text">{{navigationBarTitleText}}</text>
@@ -39,7 +40,7 @@
                         <view class="menu-item username">
                             <text>{{userInfo.username}}</text>️
                         </view>
-                        <view class="menu-item" @click="showPassword">
+                        <view class="menu-item" @click="chagePassword">
                             <text>修改密码</text>️
                         </view>
                         <view class="menu-item">
@@ -59,7 +60,7 @@
         </uni-popup>
         <uni-popup ref="passwordPopup" type="center">
             <view class="modal">
-                <password class="password-popup" v-on:closePasswordPopup="closePasswordPopup" />
+                <password class="password-popup" :isPhone="true" v-on:closePasswordPopup="closePasswordPopup" />
             </view>
         </uni-popup>
     </view>
@@ -106,7 +107,7 @@
                 }
                 this.$refs.errorLogsPopup.open()
             },
-            showPassword() {
+            showPasswordPopup() {
                 if (this.popupMenuOpened) {
                     this.popupMenuOpened = false
                 }
@@ -135,6 +136,15 @@
             },
             closePasswordPopup() {
                 this.$refs.passwordPopup.close()
+            },
+            toPasswordPage() {
+                console.log('toPasswordPage')
+                uni.navigateTo({
+                    url: '/pages/password/password'
+                })
+            },
+            chagePassword() {
+                !this.matchLeftWindow ? this.toPasswordPage() : this.showPasswordPopup()
             }
         }
     }
@@ -334,6 +344,7 @@
         height: 500px;
         box-sizing: border-box;
     }
+
     .password-popup {
         padding: 30px;
     }
