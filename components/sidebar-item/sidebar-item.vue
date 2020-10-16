@@ -47,7 +47,8 @@
                     return window.open(menu.url)
                 }
                 // #endif
-                uni.navigateTo({
+                // TODO 后续要调整
+                uni.redirectTo({
                     url: menu.url,
                 })
             },
