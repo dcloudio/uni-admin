@@ -11,29 +11,33 @@ export function request(action, data, {
             action,
             data
         }
-    }).then(res => {
-        if (res.result.code) {
-            if (typeof res.result.code === 'string' && res.result.code.indexOf('TOKEN_INVALID') === 0) {
+    }).then(({
+        result
+    }) => {
+        if (result.code) {
+            if (typeof result.code === 'string' && result.code.indexOf('TOKEN_INVALID') === 0) {
                 uni.reLaunch({
                     url: config.login.url
                 })
             }
-            return Promise.reject(new Error(res.result.message))
+            const err = new Error(result.message)
+            err.code = result.code
+            return Promise.reject(err)
         }
         const {
             token,
             tokenExpired
-        } = res.result
+        } = result
         if (token && tokenExpired) {
             store.commit('user/SET_TOKEN', {
                 token,
                 tokenExpired
             })
         }
-        return Promise.resolve(res.result)
+        return Promise.resolve(result)
     }).catch(err => {
         showModal && uni.showModal({
-            content: '请求服务失败:' + err.message,
+            content: err.message || '请求服务失败',
             showCancel: false
         })
         if (debugOptions && debugOptions.enable === true) {
@@ -44,7 +48,7 @@ export function request(action, data, {
                 time: new Date().toLocaleTimeString()
             })
         }
-        return Promise.reject(new Error(err.message))
+        return Promise.reject(err)
     })
 }
 

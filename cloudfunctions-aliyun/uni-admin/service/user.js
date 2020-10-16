@@ -41,4 +41,14 @@ module.exports = class UserService extends Service {
         }
         this.ctx.auth = auth // 设置当前请求的 auth 对象
     }
+
+    async hasAdmin() {
+        const {
+            total
+        } = await this.db.collection('uni-id-users').where({
+            role: 'admin'
+        }).count()
+
+        return !!total
+    }
 }

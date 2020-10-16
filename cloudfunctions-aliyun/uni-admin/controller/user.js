@@ -19,10 +19,10 @@ module.exports = class UserController extends Controller {
             username,
             password
         } = this.ctx.data
-        const admin = this.hasAdmin()
+        const admin = await this.service.user.hasAdmin()
         if (admin) {
             return {
-                // code: 0000,
+                code: 10001,
                 message: '超级管理员已存在，请登录...'
             }
         }
@@ -30,23 +30,10 @@ module.exports = class UserController extends Controller {
             username,
             password
         })
-
-
-    }
-
-    async hasAdmin() {
-        const {
-            total
-        } = await this.db.collection('uni-id-users').where({
-            role: 'admin'
-        }).count()
-
-        return !!total
     }
 
     async logout() {
         return this.service.user.logout(this.ctx.event.uniIdToken)
     }
-
 
 }

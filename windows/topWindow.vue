@@ -12,7 +12,6 @@
                 <navigator class="logo" open-type="reLaunch" url="/pages/index/index">
                     <image :src="logo" mode="heightFix"></image>
                 </navigator>
-                <!-- <view @click="toggleSidebar" class="menu-icon el-icon-s-unfold"></view> -->
                 <uni-icons @click="toggleSidebar" type="bars" class="menu-icon" size="30" color="#999"></uni-icons>
             </view>
             <view class="navbar-middle">
@@ -59,7 +58,7 @@
             </view>
         </uni-popup>
         <uni-popup ref="passwordPopup" type="center">
-            <view class="modal" style="width: 375px">
+            <view class="modal" style="width:375px">
                 <password class="password-popup" :isPhone="true" v-on:closePasswordPopup="closePasswordPopup" />
             </view>
         </uni-popup>
@@ -114,15 +113,10 @@
                 this.$refs.passwordPopup.open()
             },
             logout() {
-                this.$request('user/logout')
-                    .then(res => {
-                        this.removeToken()
-                        uni.reLaunch({
-                            url: config.login.url
-                        })
-                    }).catch(err => {
-
-                    })
+                this.removeToken()
+                uni.reLaunch({
+                    url: config.login.url
+                })
             },
             toggleSidebar() {
                 if (!this.showLeftWindow) {
@@ -138,7 +132,6 @@
                 this.$refs.passwordPopup.close()
             },
             toPasswordPage() {
-                console.log('toPasswordPage')
                 uni.navigateTo({
                     url: '/pages/password/password'
                 })

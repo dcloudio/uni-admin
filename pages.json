@@ -9,16 +9,14 @@
                 "leftWindow": false,
                 "navigationBarTitleText": "登录"
             }
-        },  {
+        }, {
             "path": "pages/error/404",
             "style": {
                 "navigationBarTitleText": "Not Found"
             }
-        }
-        ,{
-            "path" : "pages/password/password",
-            "style" :
-            {
+        }, {
+            "path": "pages/password/password",
+            "style": {
                 "navigationBarTitleText": "",
                 "enablePullDownRefresh": false
             }
@@ -73,11 +71,6 @@
             "path": "table/table",
             "style": {
                 "navigationBarTitleText": "表格"
-            }
-        }, {
-            "path": "forms/forms",
-            "style": {
-                "navigationBarTitleText": "表单"
             }
         }, {
             "path": "init/init",

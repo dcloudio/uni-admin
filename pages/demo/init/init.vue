@@ -13,9 +13,6 @@
             <button class="login-button flex-cc m-b-30" type="primary" :loading="loading" :disabled="loading" @click="submitForm('form')">创建</button>
             <button class="login-button flex-cc m-b-30" type="default" @click="back">返回</button>
         </uni-forms>
-        <view>
-            <!-- 账号：admin &nbsp;&nbsp; 密码：123456 -->
-        </view>
     </view>
 
 </template>
@@ -24,6 +21,7 @@
         mapMutations,
         mapActions
     } from 'vuex'
+    import config from '@/admin.config.js'
     export default {
         data() {
             return {
@@ -89,39 +87,19 @@
                 this.loading = true
                 this.$request('user/register', this.formData)
                     .then(res => {
-                        if (res.code === 0) {
-                            this.setToken({
-                                token: res.token,
-                                tokenExpired: res.tokenExpired
-                            })
-                            uni.showModal({
-                                title: '提示',
-                                content: res.msg,
-                                showCancel: false,
-                                success: (res) => {
-                                    if (res.confirm) {
-                                        uni.navigateTo({
-                                            url: '/pages/login/login'
-                                        })
-                                    }
+                        uni.showModal({
+                            title: '提示',
+                            content: res.msg,
+                            showCancel: false,
+                            success: (res) => {
+                                if (res.confirm) {
+                                    uni.navigateTo({
+                                        url: '/pages/login/login'
+                                    })
                                 }
-                            })
-                        } else {
-                            uni.showModal({
-                                title: '提示',
-                                content: res.message,
-                                success: (res) => {
-                                    if (res.confirm) {
-                                        uni.navigateTo({
-                                            url: '/pages/login/login'
-                                        })
-                                    }
-                                }
-                            })
-                        }
-                    }).catch(err => {
-
-                    }).finally(err => {
+                            }
+                        })
+                    }).catch(err => {}).finally(err => {
                         this.loading = false
                     })
             },
@@ -147,7 +125,9 @@
                 })
             },
             back() {
-                uni.navigateBack()
+                uni.redirectTo({
+                    url: config.login.url
+                })
             }
         }
     }
