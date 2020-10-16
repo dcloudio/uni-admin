@@ -25,7 +25,7 @@ module.exports = class UserService extends Service {
         }
         return {
             code: 10001,
-            message: '该账号暂无权限登录'
+            message: '该账号暂无权限登录:'+JSON.stringify(this.ctx.auth.role)
         }
     }
 

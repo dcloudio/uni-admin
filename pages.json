@@ -24,48 +24,6 @@
         }
     ],
     "subPackages": [{
-        "root": "pages/base",
-        "pages": [{
-            "path": "menu/menu",
-            "style": {
-                "navigationBarTitleText": "菜单管理"
-            }
-        }, {
-            "path": "permission/permission",
-            "style": {
-                "navigationBarTitleText": "权限管理"
-            }
-
-        }, {
-            "path": "permission/edit",
-            "style": {
-                "navigationBarTitleText": "修改权限"
-            }
-
-        }, {
-            "path": "role/role",
-            "style": {
-                "navigationBarTitleText": "角色管理"
-            }
-
-        }, {
-            "path": "role/edit",
-            "style": {
-                "navigationBarTitleText": "修改角色"
-            }
-
-        }, {
-            "path": "user/user",
-            "style": {
-                "navigationBarTitleText": "用户管理"
-            }
-        }, {
-            "path": "storage/storage",
-            "style": {
-                "navigationBarTitleText": "云存储管理"
-            }
-        }]
-    }, {
         "root": "pages/demo",
         "pages": [{
             "path": "table/table",
@@ -81,11 +39,6 @@
             }
         }]
     }],
-    "easycom": {
-        "custom": {
-            "^el-(.*)": "element-ui/lib/$1.js"
-        }
-    },
     "globalStyle": {
         "navigationStyle": "custom",
         "navigationBarTextStyle": "black",
@@ -99,7 +52,7 @@
             "height": "60px"
         },
         "matchMedia": {
-            "minWidth": 1
+            "minWidth": 0
         }
     },
     "leftWindow": {

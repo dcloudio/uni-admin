@@ -180,7 +180,17 @@
         }]
     },
     "opendb-admin-menu": {
-        "data": [],
+        "data": [{
+            "_id": "system",
+            "name": "系统管理",
+            "icon": "",
+            "url": "",
+            "sort": 1000,
+            "parent_id": "system",
+            "permission": [],
+            "status": 1,
+            "create_date": 1602662469396
+        }],
         "index": [{
             "IndexName": "parent_id",
             "MgoKeySchema": {
@@ -203,7 +213,7 @@
                 }],
                 "MgoIsUnique": false
             }
-        },{
+        }, {
             "IndexName": "cloud_id",
             "MgoKeySchema": {
                 "MgoIndexKeys": [{
@@ -212,7 +222,7 @@
                 }],
                 "MgoIsUnique": false
             }
-        },{
+        }, {
             "IndexName": "catagory",
             "MgoKeySchema": {
                 "MgoIndexKeys": [{
@@ -221,7 +231,7 @@
                 }],
                 "MgoIsUnique": false
             }
-        },{
+        }, {
             "IndexName": "create_date",
             "MgoKeySchema": {
                 "MgoIndexKeys": [{
