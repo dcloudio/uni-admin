@@ -60,10 +60,6 @@ export default {
                 _id: 'table',
                 name: '表格',
                 url: '/pages/demo/table/table'
-            }, {
-                _id: 'forms',
-                name: '表单',
-                url: '/pages/demo/forms/forms'
             }]
         }]
     }

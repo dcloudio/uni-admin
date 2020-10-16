@@ -3,14 +3,12 @@
         <view class="uni-header uni-header-between">
             <view class="uni-button-group">
                 <view class="uni-title">表格</view>
-                <view class="uni-sub-title">高级表格内容，如多选、搜索等</view>
             </view>
             <view class="uni-button-group">
                 <input class="uni-search" type="text" v-model="searchVal" placeholder="请输入搜索内容" />
                 <button class="uni-button" type="default" @click="search">搜索</button>
                 <button class="uni-button" type="default">新增</button>
-                <button class="uni-button" type="default">删除</button>
-                <button class="uni-button" type="default" @click="exportTable">导出表格</button>
+                <button class="uni-button" type="default" @click="delTable">批量删除</button>
             </view>
         </view>
         <view class="container">
@@ -72,8 +70,8 @@
                 console.log(e.detail.index);
                 this.selectedIndexs = e.detail.index
             },
-            //导出表格
-            exportTable() {
+            //批量删除
+            delTable() {
                 console.log(this.selectedItems());
             },
             // 分页触发

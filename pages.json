@@ -72,11 +72,6 @@
             "style": {
                 "navigationBarTitleText": "表格"
             }
-        }, {
-            "path": "forms/forms",
-            "style": {
-                "navigationBarTitleText": "表单"
-            }
         }]
     }],
     "easycom": {
