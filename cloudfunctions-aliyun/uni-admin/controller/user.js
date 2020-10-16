@@ -19,10 +19,19 @@ module.exports = class UserController extends Controller {
             username,
             password
         } = this.ctx.data
+        const admin = this.hasAdmin()
+        if (admin) {
+            return {
+                // code: 0000,
+                message: '超级管理员已存在，请登录...'
+            }
+        }
         return uniID.register({
             username,
             password
         })
+
+
     }
 
     async hasAdmin() {

@@ -85,31 +85,6 @@
                     commit('user/SET_TOKEN', tokenInfo)
                 }
             }),
-            async hasAdmin() {
-                this.loading = true
-                await this.$request('user/hasAdmin')
-                .then(res => {
-                    if (!res) {
-                        this.register()
-                    } else {
-                        uni.showModal({
-                            title: '提示',
-                            content: '超级管理员已存在，请登录...',
-                            success: (res) => {
-                                if (res.confirm) {
-                                    uni.navigateTo({
-                                        url: '/pages/login/login'
-                                    })
-                                }
-                            }
-                        })
-                    }
-                }).catch(err => {
-
-                }).finally(err => {
-                    this.loading = false
-                })
-            },
             register(e) {
                 this.loading = true
                 this.$request('user/register', this.formData)
@@ -132,9 +107,16 @@
                                 }
                             })
                         } else {
-                            uni.showToast({
-                                title: res.msg,
-                                icon: 'none',
+                            uni.showModal({
+                                title: '提示',
+                                content: res.message,
+                                success: (res) => {
+                                    if (res.confirm) {
+                                        uni.navigateTo({
+                                            url: '/pages/login/login'
+                                        })
+                                    }
+                                }
                             })
                         }
                     }).catch(err => {
@@ -149,7 +131,7 @@
                 this.$refs[form].submit((valid, values) => {
                     if (!valid) {
                         if (password === passwordConfirmation) {
-                            this.hasAdmin()
+                            this.register()
                         } else {
                             uni.showModal({
                                 content: '两次输入密码不相同',
@@ -164,7 +146,7 @@
                     }
                 })
             },
-            back(){
+            back() {
                 uni.navigateBack()
             }
         }
