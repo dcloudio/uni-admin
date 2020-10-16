@@ -67,55 +67,33 @@
             ...mapMutations({
                 setToken(commit, tokenInfo) {
                     commit('user/SET_TOKEN', tokenInfo)
-                },
-                setNavMenu(commit, navMenu) {
-                    commit('app/SET_NAV_MENU', navMenu)
-                },
-                setUserInfo(commit, userInfo) {
-                    commit('user/SET_USER_INFO', userInfo, {
-                        root: true
-                    })
                 }
+            }),
+            ...mapActions({
+                init: 'app/init'
             }),
             submit(e) {
                 this.loading = true
                 this.$request('user/login', this.formData)
                     .then(res => {
+                        uni.showToast({
+                            title: '登录成功',
+                            icon: 'none',
+                            duration: 2000
+                        })
                         this.setToken({
                             token: res.token,
                             tokenExpired: res.tokenExpired
                         })
                         this.init()
+                        uni.redirectTo({
+                            url: '/pages/index/index'
+                        })
                     }).catch(err => {
 
                     }).finally(err => {
                         this.loading = false
                     })
-            },
-            init() {
-                this.$request('system/init')
-                .then(res => {
-                    const {
-                        navMenu,
-                        userInfo
-                    } = res
-                    if (!navMenu.length){
-                        uni.showToast({
-                            title: '该账号暂无权限登录',
-                            icon: 'none'
-                        })
-                    } else {
-                        uni.showToast({
-                            title: '登录成功',
-                            icon: 'none'
-                        })
-                        uni.redirectTo({
-                            url: '/pages/index/index'
-                        })
-                    }
-                    this.setNavMenu(navMenu)
-                    this.setUserInfo(userInfo)
-                })
             },
             submitForm(form) {
                 this.$refs[form].submit((valid, values) => {
@@ -131,7 +109,7 @@
             },
             initAdmin() {
                 uni.navigateTo({
-                    url: '/pages/init/init'
+                    url: '/pages/demo/init/init'
                 })
             }
         }
@@ -162,9 +140,11 @@
         height: 39px;
         width: 100%;
     }
+
     .underline:hover {
         text-decoration: underline;
     }
+
     .uni-tips {
         font-size: 14px;
         color: #666;

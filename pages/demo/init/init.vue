@@ -89,7 +89,7 @@
                 this.loading = true
                 await this.$request('user/hasAdmin')
                 .then(res => {
-                    if (res[0].role.indexOf("admin") === -1) {
+                    if (!res) {
                         this.register()
                     } else {
                         uni.showModal({

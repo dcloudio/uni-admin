@@ -18,7 +18,7 @@ module.exports = {
             {
                 name: 'permission',
                 enable: true,
-                ignore: ['public', 'user', 'system']
+                ignore: ['self', 'user', 'system']
             }
         ]
     ]
