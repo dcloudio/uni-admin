@@ -28,7 +28,8 @@ module.exports = class UserController extends Controller {
         }
         return uniID.register({
             username,
-            password
+            password,
+            role: ["admin"]
         })
     }
 

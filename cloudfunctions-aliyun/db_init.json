@@ -4,15 +4,7 @@
 
 {
     "uni-id-users": {
-        "data": [{
-            "_id": "admin",
-            "username": "admin",
-            "password": "03caebb36670995fc261a275d212cad65e4bbebd",
-            "register_date": 1600678392087,
-            "role": [
-                "admin"
-            ]
-        }],
+        "data": [],
         "index": [{
             "IndexName": "username",
             "MgoKeySchema": {
@@ -186,7 +178,7 @@
             "icon": "",
             "url": "",
             "sort": 1000,
-            "parent_id": "system",
+            "parent_id": "",
             "permission": [],
             "status": 1,
             "create_date": 1602662469396

@@ -8,11 +8,16 @@
 	export default {
 		data() {
 			return {
-				
+
 			}
 		},
+        onShow() {
+            uni.setNavigationBarTitle({
+                title:'修改密码'
+            })
+        },
 		methods: {
-			
+
 		}
 	}
 </script>

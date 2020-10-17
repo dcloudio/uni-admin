@@ -1,6 +1,6 @@
 <template>
     <view>
-        <view class="m-b-30">
+        <view class="password-title">
             {{title}}
         </view>
         <uni-forms ref="form" :form-rules="rules" class="uni-forms">
@@ -177,5 +177,10 @@
         display: flex;
         align-items: center;
         justify-content: center;
+    }
+    .password-title {
+        margin-bottom: 50px;
+        text-align: center;
+        color: #333;
     }
 </style>

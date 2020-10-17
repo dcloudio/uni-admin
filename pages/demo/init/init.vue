@@ -9,7 +9,7 @@
             <uni-field left-icon="locked" v-model="formData.password" name="password" type="password" labelWidth="35"
                 placeholder="密码" :clearable="false" />
             <uni-field left-icon="locked" class="m-b-30" type="password" name="passwordConfirmation" labelWidth="35"
-                v-model="passwordConfirmation" placeholder="确认密码" />
+                v-model="passwordConfirmation" placeholder="确认密码" :clearable="false" />
             <button class="login-button flex-cc m-b-30" type="primary" :loading="loading" :disabled="loading" @click="submitForm('form')">创建</button>
             <button class="login-button flex-cc m-b-30" type="default" @click="back">返回</button>
         </uni-forms>
