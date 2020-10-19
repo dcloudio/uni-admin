@@ -22,7 +22,7 @@ export default {
         init({
             commit
         }) {
-            request('system/init')
+            request('app/init')
                 .then(res => {
                     const {
                         navMenu,

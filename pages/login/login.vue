@@ -92,7 +92,7 @@
                     })
             },
             init() {
-                this.$request('system/init')
+                this.$request('app/init')
                     .then(res => {
                         const {
                             navMenu,
