@@ -76,7 +76,7 @@ module.exports = class MenuService extends Service {
     async getAll() {
         const {
             data: menuList
-        } = await this.db.collection('opendb-admin-menu').get()
+        } = await this.db.collection('opendb-admin-menu').orderBy('sort', 'asc').get()
         return buildMenus(menuList)
     }
 }
