@@ -90,7 +90,7 @@
                 }
 
                 this.loading = true
-                this.$request('user/login', this.formData)
+                this.$request('user/login', value)
                     .then(res => {
                         this.setToken({
                             token: res.token,
