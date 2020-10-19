@@ -3,7 +3,7 @@
         <view class="flex-cc m-b-30 login-title">
             系统登录
         </view>
-        <uni-forms ref="form" :form-rules="rules">
+        <uni-forms ref="form" :form-rules="rules" @submit="submit">
             <uni-field class="p-lr-0" left-icon="person" name="username" v-model="formData.username" labelWidth="35"
                 placeholder="账户" :clearable="false" />
             <uni-field class="m-b-30 p-lr-0" left-icon="locked" v-model="formData.password" name="password" type="password"
@@ -76,7 +76,19 @@
                     })
                 }
             }),
-            submit(e) {
+            submit(event) {
+                const {
+                    errors,
+                    value
+                } = event.detail
+                if (errors) {
+                    uni.showModal({
+                        content: '请填写正确的账户密码',
+                        showCancel: false
+                    })
+                    return
+                }
+
                 this.loading = true
                 this.$request('user/login', this.formData)
                     .then(res => {
@@ -90,6 +102,7 @@
                     }).finally(err => {
                         this.loading = false
                     })
+
             },
             init() {
                 this.$request('app/init')
@@ -110,16 +123,7 @@
                     })
             },
             submitForm(form) {
-                this.$refs[form].submit((valid, values) => {
-                    if (!valid) {
-                        this.submit()
-                    } else {
-                        uni.showModal({
-                            content: '请填写正确的账户密码',
-                            showCancel: false
-                        })
-                    }
-                })
+                this.$refs[form].submit()
             },
             initAdmin() {
                 uni.redirectTo({

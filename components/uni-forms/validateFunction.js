@@ -51,7 +51,6 @@ class RuleValidator {
 
   validateRule(key, value, data) {
     var result = null
-
     let rules = key.rules
 
     let hasRequired = rules.findIndex((item) => { return item.required })
@@ -274,7 +273,7 @@ class SchemaValidator extends RuleValidator {
     let schema = this._schema
     for (let key in schema) {
       let value = schema[key]
-
+			if(!data[key]) continue
       let vir = this.validateRule(value, data[key], data)
       if (vir != null) {
         result.push({
@@ -285,13 +284,11 @@ class SchemaValidator extends RuleValidator {
         if (!all) break
       }
     }
-
     return result
   }
 
   invokeValidateUpdate(data, all) {
     let result = []
-
     for (let key in data) {
       let vir = this.validateRule(this._schema[key], data[key], data)
       if (vir != null) {
