@@ -34,7 +34,7 @@
                 </uni-tr>
             </uni-table>
             <view class="uni-pagination-box">
-                <uni-pagination show-icon :page-size="pageSize" :current="currentPage" :total="total" @change="change" />
+                <uni-pagination show-icon :page-size="pageSize" :current="pageCurrent" :total="total" @change="change" />
             </view>
         </view>
     </view>
@@ -50,7 +50,7 @@
                 // 每页数据量
                 pageSize: 10,
                 // 当前页
-                currentPage: 1,
+                pageCurrent: 1,
                 // 数据总量
                 total: 0,
                 loading: false
@@ -83,12 +83,12 @@
                 this.getData(1, this.searchVal)
             },
             // 获取数据
-            getData(currentPage, value = "") {
+            getData(pageCurrent, value = "") {
                 this.loading = true
-                this.currentPage = currentPage
+                this.pageCurrent = pageCurrent
                 this.request({
                     pageSize: this.pageSize,
-                    currentPage: currentPage,
+                    pageCurrent: pageCurrent,
                     value: value,
                     success: (res) => {
                         // console.log('data', res);
@@ -102,13 +102,13 @@
             request(options) {
                 const {
                     pageSize,
-                    currentPage,
+                    pageCurrent,
                     success,
                     value
                 } = options
                 let total = tableData.length
                 let data = tableData.filter((item, index) => {
-                    const idx = index - (currentPage - 1) * pageSize
+                    const idx = index - (pageCurrent - 1) * pageSize
                     return idx < pageSize && idx >= 0
                 })
                 if (value) {
