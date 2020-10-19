@@ -91,7 +91,7 @@
                     currentPage: currentPage,
                     value: value,
                     success: (res) => {
-                        console.log('data', res);
+                        // console.log('data', res);
                         this.tableData = res.data
                         this.total = res.total
                         this.loading = false

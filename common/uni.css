@@ -5,7 +5,10 @@ html {
     -webkit-user-select: auto;
     user-select: auto;
 }
-
+/* TODO 先这样梳理，需要在小屏幕生效 */
+uni-main {
+	width: 100%;
+}
 .uni-app--showleftwindow uni-main {
     position: relative;
     background-color: #f5f5f5;

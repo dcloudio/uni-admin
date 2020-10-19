@@ -1,4 +1,5 @@
 <template>
+    <!-- :class="{'table--border':border}"  -->
 	<view class="uni-table-td" :class="{'table--border':border}" :style="{width:width + 'px','text-align':align}">
 		<slot></slot>
 	</view>
@@ -63,4 +64,5 @@
 	.table--border {
 		border-right: 1px #ddd solid;
 	}
+
 </style>

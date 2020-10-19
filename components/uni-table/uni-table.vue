@@ -1,11 +1,13 @@
 <template>
-    <view class="uni-table" :class="{'table--border':border, 'table--stripe':stripe}">
-        <slot></slot>
-        <view v-if="noData" class="uni-table-loading">
-            <text class="uni-table-text">{{emptyText}}</text>
-        </view>
-        <view v-show="loading" class="uni-table-mask">
-            <div class="uni-table--loader"></div>
+    <view class="uni-table-scroll" :class="{'table--border':border,'border-none':!noData}">
+        <view class="uni-table" :style="{'min-width':minWidth+'px'}" :class="{ 'table--stripe':stripe}">
+            <slot></slot>
+            <view v-if="noData" class="uni-table-loading">
+                <view class="uni-table-text">{{emptyText}}</view>
+            </view>
+            <view v-show="loading" class="uni-table-mask">
+                <div class="uni-table--loader"></div>
+            </view>
         </view>
     </view>
 </template>
@@ -50,7 +52,8 @@
         },
         data() {
             return {
-                noData: true
+                noData: true,
+                minWidth:0
             };
         },
         watch: {
@@ -115,6 +118,11 @@
 </script>
 
 <style lang="scss">
+    .uni-table-scroll {
+        width: 100%;
+        overflow-x: auto;
+    }
+
     .uni-table {
         position: relative;
         width: 100%;
@@ -132,8 +140,11 @@
     }
 
     .table--border {
-        border-top: 1px #ddd solid;
-        border-left: 1px #ddd solid;
+        border: 1px #ddd solid;
+    }
+
+    .border-none {
+        border-bottom: none;
     }
 
     .table--stripe {
@@ -154,7 +165,8 @@
     .uni-table-text {
         position: absolute;
         right: 0;
-        left: 50%;
+        left: 0;
+        text-align: center;
         font-size: 14px;
         color: #999;
     }

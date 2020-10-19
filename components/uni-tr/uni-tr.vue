@@ -1,6 +1,6 @@
 <template>
     <view class="uni-table-tr">
-        <checkbox-group v-if="selection === 'selection'" class="checkbox" :class="{'table--border':border}" @change="change">
+        <checkbox-group v-if="selection === 'selection'" class="checkbox" :class="{'tr-table--border':border}" @change="change">
             <label>
                 <checkbox value="check" :checked="value"/>
             </label>
@@ -19,7 +19,8 @@
             return {
                 value: false,
                 border: false,
-                selection:false
+                selection:false,
+                widthThArr:[]
             };
         },
         created() {
@@ -29,12 +30,21 @@
             this.root.trChildren.push(this)
             this.root.isNodata()
         },
+        mounted() {
+            if(this.widthThArr.length > 0){
+                const selectionWidth = this.selection === 'selection'? 50:0
+                this.root.minWidth =  this.widthThArr.reduce((a,b)=> Number(a) + Number(b)) + selectionWidth
+            }
+        },
         destroyed() {
             const index = this.root.trChildren.findIndex(i=>i===this)
             this.root.trChildren.splice(index,1)
             this.root.isNodata()
         },
         methods: {
+            minWidthUpdate(width){
+                this.widthThArr.push(width)
+            },
             change(e) {
                 this.root.trChildren.forEach((item) => {
                     if (item === this) {
@@ -79,7 +89,24 @@
         font-size: 14px;
     }
 
-    .table--border {
+    .tr-table--border {
         border-right: 1px #ddd solid;
     }
+
+    .uni-table-tr {
+        /deep/ .uni-table-th {
+            &.table--border:last-child {
+                border-right: none;
+            }
+        }
+        /deep/ .uni-table-td {
+            &.table--border:last-child {
+                border-right: none;
+            }
+        }
+    }
+
+
+
+
 </style>

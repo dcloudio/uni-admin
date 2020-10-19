@@ -26,17 +26,19 @@
 			};
 		},
 		created() {
-			this.root = this.getTable()
+			this.root = this.getTable('uniTable')
+			this.rootTr = this.getTable('uniTr')
+            this.rootTr.minWidthUpdate(this.width?this.width:140)
 			this.border = this.root.border
 		},
 		methods:{
 			/**
 			 * 获取父元素实例
 			 */
-			getTable() {
+			getTable(name) {
 				let parent = this.$parent;
 				let parentName = parent.$options.name;
-				while (parentName !== 'uniTable') {
+				while (parentName !== name) {
 					parent = parent.$parent;
 					if (!parent) return false;
 					parentName = parent.$options.name;
