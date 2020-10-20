@@ -7,12 +7,13 @@
         </view>
         <uni-forms ref="form" :form-rules="rules" @submit="submit">
             <uni-forms-item left-icon="person" name="username" labelWidth="35">
-                <input class="uni-input-border" type="text" placeholder="账户" @blur="uniFormsValidate('username',$event.detail.value)"/>
+                <input class="uni-input-border" type="text" placeholder="账户" @blur="uniFormsValidate('username',$event.detail.value)" />
             </uni-forms-item>
             <uni-forms-item left-icon="locked" name="password" labelWidth="35">
-                <input @confirm="submitForm('form')" class="uni-input-border" type="password" placeholder="密码" @blur="uniFormsValidate('password',$event.detail.value)"/>
+                <input @confirm="confirmForm('password',$event.detail.value)" class="uni-input-border" type="password"
+                    placeholder="密码" @blur="uniFormsValidate('password',$event.detail.value)" />
             </uni-forms-item>
-            <button class="uni-button-full" type="primary" :loading="loading" :disabled="loading" @click="submitForm('form')">登录</button>
+            <button class="uni-button-full" type="primary" :loading="loading" :disabled="loading" @click="submitForm">登录</button>
         </uni-forms>
         <view class="uni-tips">
             <text class="uni-tips-text" @click="initAdmin">如无管理员账号，请先创建管理员...</text>
@@ -38,13 +39,13 @@
                     username: {
                         rules: [{
                                 required: true,
-                                errorMessage: '请输入姓名',
+                                errorMessage: '请输入账户',
                                 trigger: 'blur'
                             },
                             {
                                 minLength: 3,
                                 maxLength: 30,
-                                errorMessage: '姓名长度在{minLength}到{maxLength}个字符',
+                                errorMessage: '账户长度在{minLength}到{maxLength}个字符',
                                 trigger: 'change'
                             }
                         ]
@@ -110,17 +111,20 @@
                     })
 
             },
-
-            submitForm(form) {
-                this.$refs[form].submit()
+            confirmForm(name, value) {
+                this.uniFormsValidate(name, value)
+                this.submitForm()
+            },
+            submitForm() {
+                this.$refs.form.submit()
             },
             initAdmin() {
                 uni.redirectTo({
                     url: '/pages/demo/init/init'
                 })
             },
-            enter(e){
-                if(e.keyCode == 13){
+            enter(e) {
+                if (e.keyCode == 13) {
                     this.submitForm('form')
                 }
             }

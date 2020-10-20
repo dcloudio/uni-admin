@@ -7,17 +7,18 @@
         </view>
         <uni-forms ref="form" :form-rules="rules" @submit="submit">
             <uni-forms-item left-icon="person" name="username" labelWidth="35">
-                <input class="uni-input-border" type="text" placeholder="账户" @blur="uniFormsValidate('username',$event.detail.value)"/>
+                <input class="uni-input-border" type="text" placeholder="账户" @blur="uniFormsValidate('username',$event.detail.value)" />
             </uni-forms-item>
 
             <uni-forms-item left-icon="locked" name="password" labelWidth="35">
-                <input class="uni-input-border" type="password" placeholder="密码" @blur="uniFormsValidate('password',$event.detail.value)"/>
+                <input class="uni-input-border" type="password" placeholder="密码" @blur="uniFormsValidate('password',$event.detail.value)" />
             </uni-forms-item>
 
             <uni-forms-item left-icon="locked" name="passwordConfirmation" labelWidth="35" :errorMessage="errorMessage">
-                <input @confirm="submitForm('form')" class="uni-input-border" type="password" placeholder="确认密码" @blur="uniFormsValidate('passwordConfirmation',$event.detail.value)"/>
+                <input @confirm="confirmForm('passwordConfirmation',$event.detail.value)" @blur="uniFormsValidate('passwordConfirmation',$event.detail.value)" class="uni-input-border" type="password"
+                    placeholder="确认密码" />
             </uni-forms-item>
-            <button class="login-button" type="primary" :loading="loading" :disabled="loading" @click="submitForm('form')">创建</button>
+            <button class="login-button" type="primary" :loading="loading" :disabled="loading" @click="submitForm">创建</button>
             <button class="login-button login-button-margin" type="default" @click="back">返回</button>
         </uni-forms>
     </view>
@@ -33,7 +34,7 @@
         data() {
             return {
                 loading: false,
-                errorMessage:'',
+                errorMessage: '',
                 formData: {
                     username: 'admin',
                     password: ''
@@ -44,13 +45,13 @@
                     username: {
                         rules: [{
                                 required: true,
-                                errorMessage: '请输入姓名',
+                                errorMessage: '请输入账户',
                                 trigger: 'blur'
                             },
                             {
                                 minLength: 3,
                                 maxLength: 30,
-                                errorMessage: '姓名长度在{minLength}到{maxLength}个字符',
+                                errorMessage: '账户长度在{minLength}到{maxLength}个字符',
                                 trigger: 'blur'
                             }
                         ]
@@ -59,7 +60,7 @@
                     password: {
                         rules: [{
                                 required: true,
-                                errorMessage: '请输入正确的密码',
+                                errorMessage: '请输入密码',
                                 trigger: 'blur'
                             },
                             {
@@ -72,7 +73,7 @@
                     passwordConfirmation: {
                         rules: [{
                                 required: true,
-                                errorMessage: '请确认新密码',
+                                errorMessage: '请输入确认密码',
                                 trigger: 'blur'
                             },
                             {
@@ -111,15 +112,22 @@
                         this.loading = false
                     })
             },
-            submit(event){
-                const {errors,value} = event.detail
-                if(errors) return
+            submit(event) {
+                const {
+                    errors,
+                    value
+                } = event.detail
+                if (errors) return
                 if (value.password === value.passwordConfirmation) {
                     this.register(value)
                 } else {
                     this.errorMessage = '两次输入密码不相同'
                 }
 
+            },
+            confirmForm(name, value) {
+                this.uniFormsValidate(name, value)
+                this.submitForm()
             },
             submitForm() {
                 this.errorMessage = ''
