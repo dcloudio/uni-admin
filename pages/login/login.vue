@@ -66,18 +66,19 @@
                 }
             }
         },
+        onShow() {
+            document.addEventListener('keydown', this.enter)
+        },
+        onHide() {
+            document.removeEventListener('keydown', that.enter)
+        },
         methods: {
+            ...mapActions({
+                init: 'app/init'
+            }),
             ...mapMutations({
                 setToken(commit, tokenInfo) {
                     commit('user/SET_TOKEN', tokenInfo)
-                },
-                setNavMenu(commit, navMenu) {
-                    commit('app/SET_NAV_MENU', navMenu)
-                },
-                setUserInfo(commit, userInfo) {
-                    commit('user/SET_USER_INFO', userInfo, {
-                        root: true
-                    })
                 }
             }),
             submit(event) {
@@ -101,6 +102,15 @@
                             tokenExpired: res.tokenExpired
                         })
                         this.init()
+                        uni.showToast({
+                            title: '登录成功',
+                            icon: 'none'
+                        })
+                        uni.redirectTo({
+                            url: '/pages/index/index',
+                        })
+                        
+                        document.removeEventListener('keydown', this.enter)
                     }).catch(err => {
 
                     }).finally(err => {
@@ -108,24 +118,7 @@
                     })
 
             },
-            init() {
-                this.$request('app/init')
-                    .then(res => {
-                        const {
-                            navMenu,
-                            userInfo
-                        } = res
-                        uni.showToast({
-                            title: '登录成功',
-                            icon: 'none'
-                        })
-                        uni.redirectTo({
-                            url: '/pages/index/index'
-                        })
-                        this.setNavMenu(navMenu)
-                        this.setUserInfo(userInfo)
-                    })
-            },
+
             submitForm(form) {
                 this.$refs[form].submit()
             },
@@ -133,6 +126,11 @@
                 uni.redirectTo({
                     url: '/pages/demo/init/init'
                 })
+            },
+            enter(e){
+                if(e.keyCode == 13){
+                    this.submitForm('form')
+                }
             }
         }
     }

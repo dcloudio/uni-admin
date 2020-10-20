@@ -51,7 +51,7 @@
                                 minLength: 3,
                                 maxLength: 30,
                                 errorMessage: '姓名长度在{minLength}到{maxLength}个字符',
-                                trigger: 'change'
+                                trigger: 'blur'
                             }
                         ]
                     },
@@ -65,7 +65,7 @@
                             {
                                 minLength: 6,
                                 errorMessage: '密码长度大于{minLength}个字符',
-                                trigger: 'change'
+                                trigger: 'blur'
                             }
                         ]
                     },
@@ -78,7 +78,7 @@
                             {
                                 minLength: 6,
                                 errorMessage: '密码长度最小{minLength}个字符',
-                                trigger: 'change'
+                                trigger: 'blur'
                             }
                         ]
                     }
