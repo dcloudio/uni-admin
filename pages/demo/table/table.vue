@@ -1,6 +1,6 @@
 <template>
     <view>
-        <view class="uni-header uni-header-between">
+        <view class="uni-header">
             <view class="uni-button-group">
                 <view class="uni-title">表格</view>
             </view>

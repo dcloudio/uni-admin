@@ -5,10 +5,12 @@ html {
     -webkit-user-select: auto;
     user-select: auto;
 }
+
 /* TODO 先这样梳理，需要在小屏幕生效 */
 uni-main {
-	width: 100%;
+    width: 100%;
 }
+
 .uni-app--showleftwindow uni-main {
     position: relative;
     background-color: #f5f5f5;
@@ -38,65 +40,6 @@ uni-main {
     cursor: pointer;
 }
 
-.flex-common {
-    display: flex;
-}
-
-.flex-cc {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.flex-cl {
-    display: flex;
-    align-items: center;
-    justify-content: left;
-}
-
-.flex-c-between {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-}
-
-.flex-column {
-    display: flex;
-    flex-direction: column;
-}
-
-.flex-end {
-    display: flex;
-    align-items: center;
-    justify-content: flex-end;
-}
-
-.m-t-10 {
-    margin-top: 10px;
-}
-
-.m-t-30 {
-    margin-top: 30px;
-}
-
-.m-b-10 {
-    margin-bottom: 10px;
-}
-
-.m-b-30 {
-    margin-bottom: 30px;
-}
-
-.login-title {
-    font-size: 24px;
-    color: #333;
-}
-
-.p-lr-0 {
-    padding-left: 0;
-    padding-right: 0;
-}
-
 .uni-top-window {
     z-index: 998;
     overflow: visible;
@@ -120,11 +63,8 @@ uni-main {
     /* margin: 0 -10px;
     margin-top: -10px; */
     align-items: center;
-    border-bottom: 1px #f5f5f5 solid;
-}
-
-.uni-header-between {
     justify-content: space-between;
+    border-bottom: 1px #f5f5f5 solid;
 }
 
 .uni-title {
@@ -171,10 +111,7 @@ uni-main {
     border-radius: 5px;
 }
 
-
-
 /* 分页容器 */
-
 .uni-pagination-box {
     display: flex;
     justify-content: center;

@@ -1,7 +1,9 @@
 <template>
     <view class="login-box">
-        <view class="flex-cc m-b-30 login-title">
-            系统登录
+        <view class="uni-header">
+            <view class="uni-button-group">
+                <view class="uni-title">系统登录</view>
+            </view>
         </view>
         <uni-forms ref="form" :form-rules="rules" @submit="submit">
             <uni-field class="p-lr-0" left-icon="person" name="username" v-model="formData.username" labelWidth="35"

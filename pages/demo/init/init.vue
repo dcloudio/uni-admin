@@ -1,7 +1,9 @@
 <template>
     <view class="login-box">
-        <view class="flex-cc m-b-30 login-title">
-            创建超级管理员
+        <view class="uni-header">
+            <view class="uni-button-group">
+                <view class="uni-title">创建超级管理员</view>
+            </view>
         </view>
         <uni-forms ref="form" :form-rules="rules">
             <uni-field left-icon="person" name="username" v-model="formData.username" labelWidth="35" placeholder="账户"
