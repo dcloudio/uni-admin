@@ -1,6 +1,6 @@
 {
     "name": "uni-cloud-router",
-    "version": "0.0.6",
+    "version": "0.0.7",
     "description": "uni-cloud router",
     "main": "dist/index.js",
     "files": [
