@@ -5,23 +5,21 @@
                 <view class="uni-title">修改密码</view>
             </view>
         </view>
-        <uni-forms ref="form" :form-rules="rules" class="uni-forms">
-            <uni-forms-item left-icon="person" name="username" labelWidth="35">
-                <input class="uni-input-border" type="text" placeholder="账户" @blur="uniFormsValidate('username',$event.detail.value)"/>
+        <uni-forms ref="form" :form-rules="rules" @submit="submit">
+            <uni-forms-item left-icon="person" name="oldPassword" labelWidth="35">
+                <input class="uni-input-border" type="password" placeholder="账户" @blur="uniFormsValidate('oldPassword',$event.detail.value)" />
             </uni-forms-item>
-            
-            <uni-forms-item left-icon="locked" name="password" labelWidth="35">
-                <input class="uni-input-border" type="password" placeholder="密码" @blur="uniFormsValidate('password',$event.detail.value)"/>
+
+            <uni-forms-item left-icon="locked" name="newPassword" labelWidth="35">
+                <input class="uni-input-border" type="password" placeholder="密码" @blur="uniFormsValidate('newPassword',$event.detail.value)" />
             </uni-forms-item>
-            
+
             <uni-forms-item left-icon="locked" name="passwordConfirmation" labelWidth="35" :errorMessage="errorMessage">
-                <input class="uni-input-border" type="password" placeholder="确认密码" @blur="uniFormsValidate('passwordConfirmation',$event.detail.value)"/>
+                <input class="uni-input-border" type="password" placeholder="确认密码" @blur="uniFormsValidate('passwordConfirmation',$event.detail.value)" />
             </uni-forms-item>
-            <view class="button-group">
-                <button class="button-save" type="primary" size="mini" :disabled="isLoading" @click="submitForm('form')">保存</button>
-                <button v-if="hasBackButton" class="button-save" type="default" size="mini" :disabled="isLoading"
-                    @click="back">返回</button>
-            </view>
+            <button class="login-button" type="primary" size="mini" :disabled="isLoading" @click="submitForm('form')">保存</button>
+            <button v-if="hasBackButton" class="login-button login-button-margin" type="default" size="mini" :disabled="isLoading"
+                @click="back">返回</button>
         </uni-forms>
     </view>
 </template>
@@ -36,6 +34,7 @@
         data() {
             return {
                 isLoading: false,
+                errorMessage: '',
                 password: {
                     oldPassword: '',
                     newPassword: '',
@@ -97,35 +96,26 @@
                     commit('user/REMOVE_TOKEN')
                 }
             }),
-            submitForm(form) {
+            submit(event) {
                 const {
-                    newPassword,
-                    passwordConfirmation
-                } = this.password
-                this.$refs[form].submit((valid, values) => {
-                    if (!valid) {
-                        if (newPassword === passwordConfirmation) {
-                            this.save()
-                        } else {
-                            uni.showToast({
-                                title: '两次输入密码不相同',
-                                icon: 'none',
-                                duration: 2000
-                            })
-                        }
-                    } else {
-                        uni.showToast({
-                            title: '请正确的填写密码',
-                            icon: 'none',
-                            duration: 2000
-                        })
-                    }
-                })
+                    errors,
+                    value
+                } = event.detail
+                if (errors) return
+                if (value.newPassword === value.passwordConfirmation) {
+                    this.save(value)
+                } else {
+                    this.errorMessage = '两次输入密码不相同'
+                }
             },
-            save() {
+            submitForm() {
+                this.errorMessage = ''
+                this.$refs.form.submit()
+            },
+            save(formData) {
                 let that = this
                 this.isLoading = true
-                this.$request('self/changePwd', this.password).then(res => {
+                this.$request('self/changePwd', formData).then(res => {
                     this.isLoading = false
                     if (res.code === 0) {
                         uni.showModal({
@@ -174,31 +164,28 @@
         width: 100%;
     }
 
-    .uni-forms button {
-        margin: 0;
-        margin-right: 20px;
-        margin-top: 40px;
+    .uni-header {
+        margin-bottom: 15px;
     }
 
-    .button-group {
-        display: flex;
-        align-items: center;
-        justify-content: center;
+    .uni-input-border {
+        padding: 0 10px;
+        width: 100%;
+        height: 35px;
+        font-size: 14px;
+        color: #666;
+        border: 1px #e5e5e5 solid;
+        border-radius: 5px;
     }
 
-    .password-title {
-        margin-bottom: 50px;
-        text-align: center;
-        color: #333;
+    .login-button {
+        margin-top: 30px;
+        height: 40px;
+        width: 100%;
+        font-size: 16px;
     }
-    .button-group {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
-    .password-title {
-        margin-bottom: 50px;
-        text-align: center;
-        color: #333;
+
+    .login-button-margin {
+        margin-top: 15px;
     }
 </style>
