@@ -1,10 +1,10 @@
 <template>
-	<view class="uni-field" :class="{'uni-border-top': borderTop &&!custom, 'uni-border-bottom': borderBottom &&!custom ,'uni-field-custom':custom}"
+	<view class="uni-forms-item" :class="{'uni-forms-item-custom':custom}"
 	 :style="[fieldStyle]">
 		<template v-if="!custom">
-			<view class="uni-field-inner" :class="[ 'uni-label-postion-' + labelPos]">
+			<view class="uni-forms-item-inner" :class="[ 'uni-label-postion-' + labelPos]">
 				<view :class="errorTop ? 'uni-error-in-label' : ''">
-					<view class="uni-field-label" :class="[required ? 'uni-required' : '']" :style="{
+					<view class="uni-forms-item-label" :class="[required ? 'uni-required' : '']" :style="{
 			            justifyContent: justifyContent,
 			            width: labelWid +'px',
 			            marginBottom: labelMarginBottom,
@@ -270,15 +270,16 @@
 </script>
 
 <style lang="scss" scoped>
-	.uni-field {
-		padding: 16px 14px;
+	.uni-forms-item {
+		position: relative;
+		// padding: 10px 14px;
 		text-align: left;
 		color: #333;
 		font-size: 14px;
-		background-color: #fff;
+		margin-bottom: 22px;
 	}
 
-	.uni-field-inner {
+	.uni-forms-item-inner {
 		display: flex;
 		align-items: center;
 	}
@@ -318,7 +319,7 @@
 		flex: 1;
 	}
 
-	.uni-field-label {
+	.uni-forms-item-label {
 		width: 65px;
 		flex: 1 1 65px;
 		text-align: left;
@@ -337,7 +338,7 @@
 		line-height: 1;
 	}
 
-	.uni-field__input-wrap {
+	.uni-forms-item__input-wrap {
 		position: relative;
 		overflow: hidden;
 		font-size: 14px;
@@ -352,9 +353,12 @@
 	}
 
 	.uni-error-message {
+		position: absolute;
+		bottom: -17px;
+		left: 0;
 		line-height: 12px;
-		padding-top: 2px;
-		padding-bottom: 2px;
+		// padding-top: 2px;
+		// padding-bottom: 2px;
 		color: $uni-color-error;
 		font-size: 12px;
 		text-align: left;
@@ -481,7 +485,7 @@
 		flex-direction: row;
 	}
 
-	.uni-field-custom {
+	.uni-forms-item-custom {
 		padding: 0;
 		border: none;
 	}
