@@ -15,7 +15,7 @@
             </uni-forms-item>
 
             <uni-forms-item left-icon="locked" name="passwordConfirmation" labelWidth="35" :errorMessage="errorMessage">
-                <input class="uni-input-border" type="password" placeholder="确认密码" @blur="uniFormsValidate('passwordConfirmation',$event.detail.value)"/>
+                <input @confirm="submitForm('form')" class="uni-input-border" type="password" placeholder="确认密码" @blur="uniFormsValidate('passwordConfirmation',$event.detail.value)"/>
             </uni-forms-item>
             <button class="login-button" type="primary" :loading="loading" :disabled="loading" @click="submitForm('form')">创建</button>
             <button class="login-button login-button-margin" type="default" @click="back">返回</button>

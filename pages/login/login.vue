@@ -10,7 +10,7 @@
                 <input class="uni-input-border" type="text" placeholder="账户" @blur="uniFormsValidate('username',$event.detail.value)"/>
             </uni-forms-item>
             <uni-forms-item left-icon="locked" name="password" labelWidth="35">
-                <input class="uni-input-border" type="password" placeholder="密码" @blur="uniFormsValidate('password',$event.detail.value)"/>
+                <input @confirm="submitForm('form')" class="uni-input-border" type="password" placeholder="密码" @blur="uniFormsValidate('password',$event.detail.value)"/>
             </uni-forms-item>
             <button class="uni-button-full" type="primary" :loading="loading" :disabled="loading" @click="submitForm('form')">登录</button>
         </uni-forms>
@@ -66,12 +66,6 @@
                 }
             }
         },
-        onShow() {
-            document.addEventListener('keydown', this.enter)
-        },
-        onHide() {
-            document.removeEventListener('keydown', that.enter)
-        },
         methods: {
             ...mapActions({
                 init: 'app/init'
@@ -109,8 +103,6 @@
                         uni.redirectTo({
                             url: '/pages/index/index',
                         })
-                        
-                        document.removeEventListener('keydown', this.enter)
                     }).catch(err => {
 
                     }).finally(err => {
