@@ -1,25 +1,29 @@
 <template>
-	<view style="padding: 20px">
-		<password :hasBackButton="true"/>
-	</view>
+    <view style="padding: 20px">
+        <update-password :hasBackButton="true" />
+    </view>
 </template>
 
 <script>
-	export default {
-		data() {
-			return {
+    import updatePassword from '@/windows/components/update-password.vue'
+    export default {
+        components: {
+            updatePassword
+        },
+        data() {
+            return {
 
-			}
-		},
+            }
+        },
         onShow() {
             uni.setNavigationBarTitle({
-                title:'修改密码'
+                title: '修改密码'
             })
         },
-		methods: {
+        methods: {
 
-		}
-	}
+        }
+    }
 </script>
 
 <style>

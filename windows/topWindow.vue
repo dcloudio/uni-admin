@@ -35,7 +35,7 @@
                     <view v-for="link in links" :key="link.url" class="menu-item">
                         <uni-link :href="link.url" :text="link.text" />
                     </view>
-                    <template v-show="userInfo.username">
+                    <template v-if="userInfo.username">
                         <view class="menu-item username">
                             <text>{{userInfo.username}}</text>️
                         </view>
@@ -53,13 +53,13 @@
         <uni-popup ref="errorLogsPopup" type="center">
             <view class="modal">
                 <scroll-view class="modal-content" scroll-y="true">
-                    <error class="error-table" />
+                    <error-log class="error-table" />
                 </scroll-view>
             </view>
         </uni-popup>
         <uni-popup ref="passwordPopup" type="center">
             <view class="modal" style="width:400px; padding: 20px;">
-                <password class="password-popup" :isPhone="true" v-on:closePasswordPopup="closePasswordPopup" />
+                <update-password class="password-popup" :isPhone="true" v-on:closePasswordPopup="closePasswordPopup" />
             </view>
         </uni-popup>
     </view>
@@ -70,9 +70,16 @@
         mapMutations,
         mapState
     } from 'vuex'
+
+    import errorLog from '@/windows/components/error-log.vue'
+    import updatePassword from '@/windows/components/update-password.vue'
     import config from '@/admin.config.js'
 
     export default {
+        components: {
+            errorLog,
+            updatePassword
+        },
         props: {
             navigationBarTitleText: {
                 type: String

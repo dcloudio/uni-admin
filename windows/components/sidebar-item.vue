@@ -17,7 +17,7 @@
 </template>
 
 <script>
-    import sidebarItem from '@/components/sidebar-item/sidebar-item.vue'
+    import sidebarItem from '@/windows/components/sidebar-item.vue'
     import {
         mapState,
     } from 'vuex'
