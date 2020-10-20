@@ -64,8 +64,11 @@
                 }
             }
         },
-        mounted() {
+        onShow() {
             document.addEventListener('keydown', this.enter)
+        },
+        onHide() {
+            document.removeEventListener('keydown', that.enter)
         },
         methods: {
             ...mapMutations({
