@@ -53,7 +53,7 @@
                             {
                                 minLength: 6,
                                 errorMessage: '密码长度最小{minLength}个字符',
-                                trigger: 'change'
+                                trigger: 'blur'
                             }
                         ]
                     },
@@ -66,7 +66,7 @@
                             {
                                 minLength: 6,
                                 errorMessage: '密码长度最小{minLength}个字符',
-                                trigger: 'change'
+                                trigger: 'blur'
                             }
                         ]
                     }
@@ -181,6 +181,16 @@
         justify-content: center;
     }
 
+    .password-title {
+        margin-bottom: 50px;
+        text-align: center;
+        color: #333;
+    }
+    .button-group {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
     .password-title {
         margin-bottom: 50px;
         text-align: center;

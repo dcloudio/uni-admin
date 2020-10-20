@@ -10,7 +10,7 @@
                 placeholder="账户" :clearable="false" />
             <uni-field class="m-b-30 p-lr-0" left-icon="locked" v-model="formData.password" name="password" type="password"
                 labelWidth="35" placeholder="密码" :clearable="false" />
-            <button class="login-button flex-cc m-b-30" type="primary" :loading="loading" :disabled="loading" @click="submitForm('form')">登录</button>
+            <button class="login-button flex-cc m-b-30" type="primary" :loading="loading" :disabled="loading" v-on:click="submitForm('form')">登录</button>
         </uni-forms>
         <view>
             <text class="uni-tips pointer underline" @click="initAdmin">如无管理员账号，请先创建管理员...</text>
@@ -64,6 +64,9 @@
                 }
             }
         },
+        mounted() {
+            document.addEventListener('keydown', this.enter)
+        },
         methods: {
             ...mapMutations({
                 setToken(commit, tokenInfo) {
@@ -107,7 +110,8 @@
 
             },
             init() {
-                this.$request('app/init')
+                const that = this
+                this.$request('system/init')
                     .then(res => {
                         const {
                             navMenu,
@@ -118,10 +122,11 @@
                             icon: 'none'
                         })
                         uni.redirectTo({
-                            url: '/pages/index/index'
+                            url: '/pages/index/index',
                         })
                         this.setNavMenu(navMenu)
                         this.setUserInfo(userInfo)
+                        document.removeEventListener('keydown', that.enter)
                     })
             },
             submitForm(form) {
@@ -131,6 +136,11 @@
                 uni.redirectTo({
                     url: '/pages/demo/init/init'
                 })
+            },
+            enter(e){
+                if(e.keyCode == 13){
+                    this.submitForm('form')
+                }
             }
         }
     }
