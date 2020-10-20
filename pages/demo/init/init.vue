@@ -5,15 +5,20 @@
                 <view class="uni-title">创建超级管理员</view>
             </view>
         </view>
-        <uni-forms ref="form" :form-rules="rules">
-            <uni-field left-icon="person" name="username" v-model="formData.username" labelWidth="35" placeholder="账户"
-                :clearable="false" />
-            <uni-field left-icon="locked" v-model="formData.password" name="password" type="password" labelWidth="35"
-                placeholder="密码" :clearable="false" />
-            <uni-field left-icon="locked" class="m-b-30" type="password" name="passwordConfirmation" labelWidth="35"
-                v-model="passwordConfirmation" placeholder="确认密码" :clearable="false" />
-            <button class="login-button flex-cc m-b-30" type="primary" :loading="loading" :disabled="loading" @click="submitForm('form')">创建</button>
-            <button class="login-button flex-cc m-b-30" type="default" @click="back">返回</button>
+        <uni-forms ref="form" :form-rules="rules" @submit="submit">
+            <uni-forms-item left-icon="person" name="username" labelWidth="35">
+                <input class="uni-input-border" type="text" placeholder="账户" @blur="uniFormsValidate('username',$event.detail.value)"/>
+            </uni-forms-item>
+
+            <uni-forms-item left-icon="locked" name="password" labelWidth="35">
+                <input class="uni-input-border" type="password" placeholder="密码" @blur="uniFormsValidate('password',$event.detail.value)"/>
+            </uni-forms-item>
+
+            <uni-forms-item left-icon="locked" name="passwordConfirmation" labelWidth="35" :errorMessage="errorMessage">
+                <input class="uni-input-border" type="password" placeholder="确认密码" @blur="uniFormsValidate('passwordConfirmation',$event.detail.value)"/>
+            </uni-forms-item>
+            <button class="login-button" type="primary" :loading="loading" :disabled="loading" @click="submitForm('form')">创建</button>
+            <button class="login-button login-button-margin" type="default" @click="back">返回</button>
         </uni-forms>
     </view>
 
@@ -28,9 +33,10 @@
         data() {
             return {
                 loading: false,
+                errorMessage:'',
                 formData: {
                     username: 'admin',
-                    password: '',
+                    password: ''
                 },
                 passwordConfirmation: '',
                 rules: {
@@ -85,9 +91,9 @@
                     commit('user/SET_TOKEN', tokenInfo)
                 }
             }),
-            register(e) {
+            register(formData) {
                 this.loading = true
-                this.$request('user/register', this.formData)
+                this.$request('user/register', formData)
                     .then(res => {
                         uni.showModal({
                             title: '提示',
@@ -105,26 +111,19 @@
                         this.loading = false
                     })
             },
-            submitForm(form) {
-                const password = this.formData.password,
-                    passwordConfirmation = this.passwordConfirmation
-                this.$refs[form].submit((valid, values) => {
-                    if (!valid) {
-                        if (password === passwordConfirmation) {
-                            this.register()
-                        } else {
-                            uni.showModal({
-                                content: '两次输入密码不相同',
-                                showCancel: false
-                            })
-                        }
-                    } else {
-                        uni.showModal({
-                            content: '请填写正确的账户密码',
-                            showCancel: false
-                        })
-                    }
-                })
+            submit(event){
+                const {errors,value} = event.detail
+                if(errors) return
+                if (value.password === value.passwordConfirmation) {
+                    this.register(value)
+                } else {
+                    this.errorMessage = '两次输入密码不相同'
+                }
+
+            },
+            submitForm() {
+                this.errorMessage = ''
+                this.$refs.form.submit()
             },
             back() {
                 uni.redirectTo({
@@ -155,12 +154,28 @@
         /* background-color: #F5F5F5; */
     }
 
-    .login-button {
-        height: 39px;
-        width: 100%;
+    .uni-header {
+        margin-bottom: 15px;
     }
 
-    .m-b-30 {
-        margin-bottom: 30px;
+    .uni-input-border {
+        padding: 0 10px;
+        width: 100%;
+        height: 35px;
+        font-size: 14px;
+        color: #666;
+        border: 1px #e5e5e5 solid;
+        border-radius: 5px;
+    }
+
+    .login-button {
+        margin-top: 30px;
+        height: 40px;
+        width: 100%;
+        font-size: 16px;
+    }
+
+    .login-button-margin {
+        margin-top: 15px;
     }
 </style>

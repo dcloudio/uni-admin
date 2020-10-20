@@ -6,14 +6,16 @@
             </view>
         </view>
         <uni-forms ref="form" :form-rules="rules" @submit="submit">
-            <uni-field class="p-lr-0" left-icon="person" name="username" v-model="formData.username" labelWidth="35"
-                placeholder="账户" :clearable="false" />
-            <uni-field class="m-b-30 p-lr-0" left-icon="locked" v-model="formData.password" name="password" type="password"
-                labelWidth="35" placeholder="密码" :clearable="false" />
-            <button class="login-button flex-cc m-b-30" type="primary" :loading="loading" :disabled="loading" @click="submitForm('form')">登录</button>
+            <uni-forms-item left-icon="person" name="username" labelWidth="35">
+                <input class="uni-input-border" type="text" placeholder="账户" @blur="uniFormsValidate('username',$event.detail.value)"/>
+            </uni-forms-item>
+            <uni-forms-item left-icon="locked" name="password" labelWidth="35">
+                <input class="uni-input-border" type="password" placeholder="密码" @blur="uniFormsValidate('password',$event.detail.value)"/>
+            </uni-forms-item>
+            <button class="uni-button-full" type="primary" :loading="loading" :disabled="loading" @click="submitForm('form')">登录</button>
         </uni-forms>
-        <view>
-            <text class="uni-tips pointer underline" @click="initAdmin">如无管理员账号，请先创建管理员...</text>
+        <view class="uni-tips">
+            <text class="uni-tips-text" @click="initAdmin">如无管理员账号，请先创建管理员...</text>
         </view>
     </view>
 </template>
@@ -84,10 +86,10 @@
                     value
                 } = event.detail
                 if (errors) {
-                    uni.showModal({
-                        content: '请填写正确的账户密码',
-                        showCancel: false
-                    })
+                    // uni.showModal({
+                    //     content: '请填写正确的账户密码',
+                    //     showCancel: false
+                    // })
                     return
                 }
 
@@ -141,7 +143,6 @@
         width: 100%;
         height: 100%;
         display: flex;
-        /* align-items: center; */
         justify-content: center;
         background-color: #fff;
     }
@@ -156,9 +157,22 @@
         /* background-color: #F5F5F5; */
     }
 
-    .login-button {
-        height: 39px;
+    .uni-header {
+        margin-bottom: 15px;
+    }
+
+    .uni-input-border {
+        padding: 0 10px;
         width: 100%;
+        height: 35px;
+        font-size: 14px;
+        color: #666;
+        border: 1px #e5e5e5 solid;
+        border-radius: 5px;
+    }
+
+    .uni-button-full {
+        margin-top: 30px;
     }
 
     .underline:hover {
@@ -166,7 +180,16 @@
     }
 
     .uni-tips {
+        display: flex;
+        justify-content: flex-end;
+        margin-top: 15px;
+    }
+
+    .uni-tips-text {
+        cursor: pointer;
+        text-decoration: underline;
         font-size: 14px;
-        color: #666;
+        color: #007AFF;
+        opacity: 0.8;
     }
 </style>

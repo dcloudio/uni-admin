@@ -238,6 +238,7 @@
 					value = value === '' ? value : Number(value)
 				}
 				this.form.formData[this.name] = value
+                this.errMsg = ''
 				const result = this.validator && this.validator.validateUpdate({
 					[this.name]: value
 				})
