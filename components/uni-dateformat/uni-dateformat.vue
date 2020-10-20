@@ -7,6 +7,7 @@
         friendlyDate
     } from '../common/date-format.js'
     export default {
+        name: 'uniDateformat',
         props: {
             date: {
                 type: [Object, Number],
