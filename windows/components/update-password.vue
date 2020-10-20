@@ -6,16 +6,16 @@
             </view>
         </view>
         <uni-forms ref="form" :form-rules="rules" @submit="submit">
-            <uni-forms-item left-icon="person" name="oldPassword" labelWidth="35">
-                <input class="uni-input-border" type="password" placeholder="账户" @blur="uniFormsValidate('oldPassword',$event.detail.value)" />
+            <uni-forms-item label="旧密码" name="oldPassword" labelWidth="85">
+                <input class="uni-input-border" type="password" placeholder="旧密码" @blur="uniFormsValidate('oldPassword',$event.detail.value)" />
             </uni-forms-item>
 
-            <uni-forms-item left-icon="locked" name="newPassword" labelWidth="35">
-                <input class="uni-input-border" type="password" placeholder="密码" @blur="uniFormsValidate('newPassword',$event.detail.value)" />
+            <uni-forms-item label="新密码"  name="newPassword" labelWidth="85">
+                <input class="uni-input-border" type="password" placeholder="新密码" @blur="uniFormsValidate('newPassword',$event.detail.value)" />
             </uni-forms-item>
 
-            <uni-forms-item left-icon="locked" name="passwordConfirmation" labelWidth="35" :errorMessage="errorMessage">
-                <input class="uni-input-border" type="password" placeholder="确认密码" @blur="uniFormsValidate('passwordConfirmation',$event.detail.value)" />
+            <uni-forms-item label="确认新密码" name="passwordConfirmation" labelWidth="85" :errorMessage="errorMessage">
+                <input class="uni-input-border" type="password" placeholder="确认新密码" @blur="uniFormsValidate('passwordConfirmation',$event.detail.value)" />
             </uni-forms-item>
             <button class="login-button" type="primary" size="mini" :disabled="isLoading" @click="submitForm('form')">保存</button>
             <button v-if="hasBackButton" class="login-button login-button-margin" type="default" size="mini" :disabled="isLoading"
