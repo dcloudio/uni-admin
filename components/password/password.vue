@@ -1,7 +1,9 @@
 <template>
     <view>
-        <view class="password-title">
-            {{title}}
+        <view class="uni-header">
+            <view class="uni-button-group">
+                <view class="uni-title">修改密码</view>
+            </view>
         </view>
         <uni-forms ref="form" :form-rules="rules" class="uni-forms">
             <uni-field :required="true" label="旧密码" type="password" :label-width="80" name="oldPassword" v-model="password.oldPassword"
@@ -28,7 +30,6 @@
     export default {
         data() {
             return {
-                title: '修改密码',
                 isLoading: false,
                 password: {
                     oldPassword: '',
@@ -173,11 +174,13 @@
         margin-right: 20px;
         margin-top: 40px;
     }
+
     .button-group {
         display: flex;
         align-items: center;
         justify-content: center;
     }
+
     .password-title {
         margin-bottom: 50px;
         text-align: center;
