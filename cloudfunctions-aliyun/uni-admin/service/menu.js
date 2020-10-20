@@ -27,9 +27,7 @@ function buildMenus(menuList) {
             menuList.splice(i, 1)
         }
     }
-    const menu = menuList.filter(item => !item.parent_id).sort((a, b) => {
-        return a.sort - b.sort
-    })
+    const menu = menuList.filter(item => !item.parent_id)
 
     function buildMenu(menu) {
         let nextLayer = []
@@ -38,9 +36,7 @@ function buildMenus(menuList) {
             if (currentMenu.url) {
                 continue
             }
-            const subMenu = menuList.filter(item => item.parent_id === currentMenu._id).sort((a, b) => {
-                return a.sort - b.sort
-            })
+            const subMenu = menuList.filter(item => item.parent_id === currentMenu._id)
             nextLayer = nextLayer.concat(subMenu)
             currentMenu.children = subMenu
         }
@@ -59,7 +55,7 @@ module.exports = class MenuService extends Service {
             data: menuList
         } = await this.db.collection('opendb-admin-menu').where({
             status: 1
-        }).limit(1000).get()
+        }).orderBy('sort', 'asc').limit(1000).get()
 
         // 删除无权限访问的菜单
         if (!this.ctx.auth.role.includes('admin')) {
