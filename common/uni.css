@@ -147,12 +147,23 @@ uni-main {
 }
 
 
-.uni-input-border {
-    padding: 0 10px;
+.uni-input-border,
+.uni-textarea-border {
     width: 100%;
-    height: 35px;
     font-size: 14px;
     color: #666;
     border: 1px #e5e5e5 solid;
     border-radius: 5px;
+    box-sizing: border-box;
+}
+
+.uni-input-border {
+    padding: 0 10px;
+    height: 35px;
+
+}
+
+.uni-textarea-border {
+    padding: 10px;
+    height: 80px;
 }
