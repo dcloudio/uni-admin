@@ -47,9 +47,6 @@ const parser = {
     SSS: (dateObj) => {
         return pad(dateObj.millisecond, 3)
     },
-    SS: (dateObj) => {
-        return pad(dateObj.millisecond)
-    },
     S: (dateObj) => {
         return dateObj.millisecond
     },
@@ -80,23 +77,40 @@ export function formatDate(date, format = 'yyyy/MM/dd hh:mm:ss') {
 }
 
 export function friendlyDate(time, {
-    text = {},
+    locale = 'zh',
     threshold = [60000, 3600000],
     format = 'yyyy/MM/dd hh:mm:ss'
 }) {
-    text = Object.assign({
-        year: '年',
-        month: '月',
-        day: '天',
-        hour: '小时',
-        minute: '分钟',
-        second: '秒',
-        before: '前',
-        after: '后',
-        justNow: '刚刚',
-        soon: '马上',
-        template: '{num}{unit}{suffix}'
-    }, text)
+
+    const localeText = {
+        zh: {
+            year: '年',
+            month: '月',
+            day: '天',
+            hour: '小时',
+            minute: '分钟',
+            second: '秒',
+            ago: '前',
+            later: '后',
+            justNow: '刚刚',
+            soon: '马上',
+            template: '{num}{unit}{suffix}'
+        },
+        en: {
+            year: 'year',
+            month: 'month',
+            day: 'day',
+            hour: 'hour',
+            minute: 'minute',
+            second: 'second',
+            ago: 'ago',
+            later: 'later',
+            justNow: 'just now',
+            soon: 'soon',
+            template: '{num} {unit} {suffix}'
+        }
+    }
+    const text = localeText[locale] || localeText.zh
     let date = new Date(time)
     let ms = date.getTime() - Date.now()
     let absMs = Math.abs(ms)
@@ -108,9 +122,9 @@ export function friendlyDate(time, {
     }
     let num
     let unit
-    let suffix = text.after
+    let suffix = text.later
     if (ms < 0) {
-        suffix = text.before
+        suffix = text.ago
         ms = -ms
     }
     const seconds = Math.floor((ms) / 1000)
@@ -144,6 +158,14 @@ export function friendlyDate(time, {
             num = seconds
             unit = text.second
             break
+    }
+
+    if (locale === 'en') {
+        if (num === 1) {
+            num = 'a'
+        } else {
+            unit += 's'
+        }
     }
 
     return text.template.replace(/{\s*num\s*}/g, num + '').replace(/{\s*unit\s*}/g, unit).replace(/{\s*suffix\s*}/g,
