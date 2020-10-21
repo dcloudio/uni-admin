@@ -1,5 +1,5 @@
 <template>
-	<view class="uni-form">
+	<view class="uni-forms">
 		<form @submit.stop="submitForm" @reset="resetForm">
 			<slot></slot>
 		</form>
@@ -268,7 +268,7 @@
 </script>
 
 <style lang="scss">
-	.uni-form {
+	.uni-forms {
 		background-color: #fff;
 	}
 </style>
