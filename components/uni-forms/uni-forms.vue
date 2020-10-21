@@ -72,11 +72,6 @@
 				default: 'left'
 			}
 		},
-		provide() {
-			return {
-				form: this
-			}
-		},
 		data() {
 			return {
 				rules: {},
@@ -94,7 +89,6 @@
 		created() {
 			let _this = this
 			this.childrens = []
-
 			this.init(this.formRules)
 
 		},
@@ -103,9 +97,18 @@
 				if (Object.keys(formRules).length > 0) {
 					this.formTrigger = this.trigger
 					this.validator = new Validator(formRules)
+					this.childrens.forEach((item)=>{
+						item.init()
+					})
 				}
 			},
-
+			/**
+			 * 设置校验规则
+			 * @param {Object} formRules
+			 */
+			setRules(formRules){
+				this.init(formRules)
+			},
 			/**
 			 * 公开给用户使用
 			 * 设置自定义表单组件 value 值

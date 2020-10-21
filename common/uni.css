@@ -44,10 +44,12 @@ html {
     font-size: 12px;
     color: #666;
 }
+
 /* 容器 */
 .uni-container {
     padding: 15px;
 }
+
 /* 标题栏 */
 .uni-header {
     padding: 0 15px;
@@ -159,4 +161,7 @@ html {
     height: 80px;
 }
 
-
+.uni-disabled {
+    background-color: #F5F7FA;
+    color: #C0C4CC;
+}
