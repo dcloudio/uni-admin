@@ -120,7 +120,7 @@
                     al.push(this[key])
                 })
                 return al
-            }, () => {
+            }, (val, oldVal) => {
                 this.clear()
                 this.reset()
                 this._execLoadData()

@@ -30,7 +30,6 @@ export default {
         secondaryMenus: [{
             _id: 'demo',
             name: '功能演示',
-            icon: 'el-icon-menu',
             children: [{
                 _id: 'table',
                 name: '表格',
