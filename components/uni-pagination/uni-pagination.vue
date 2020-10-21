@@ -62,6 +62,10 @@
             uniIcons
         },
         props: {
+            value: {
+                type: [Number, String],
+                default: 1
+            },
             prevText: {
                 type: String,
                 default: '上一页'
@@ -153,9 +157,7 @@
                     showPagerArr.push(totalArr[totalArr.length - 1])
                 } else {
 
-                    if ((pagerCount + 1) / 2 >= num) {
-                    } else if (num + 2 <= totalNum) {
-                    } else {
+                    if ((pagerCount + 1) / 2 >= num) {} else if (num + 2 <= totalNum) {} else {
                         showPagerArr.shift()
                         showPagerArr.push(totalArr[totalArr.length - 1])
                     }
@@ -168,10 +170,17 @@
         watch: {
             current(val) {
                 this.currentIndex = val
+            },
+            value(val) {
+                if (val < 1) {
+                    this.currentIndex = 1
+                } else {
+                    this.currentIndex = val
+                }
             }
         },
         created() {
-            this.currentIndex = +this.current
+            this.currentIndex = +this.value
         },
         methods: {
             // 选择标签
@@ -184,18 +193,18 @@
                     // let pagerNum = Math.ceil(181 / this.pageSize)
                     // 上一页
                     if (index <= 1) {
-                        if(this.currentIndex - 5  > 1){
+                        if (this.currentIndex - 5 > 1) {
                             this.currentIndex -= 5
-                        }else{
-                            this.currentIndex =  1
+                        } else {
+                            this.currentIndex = 1
                         }
                         return
                     }
                     // 下一页
                     if (index >= 6) {
-                        if(this.currentIndex + 5  > pagerNum){
+                        if (this.currentIndex + 5 > pagerNum) {
                             this.currentIndex = pagerNum
-                        }else{
+                        } else {
                             this.currentIndex += 5
                         }
                         return
@@ -218,6 +227,7 @@
                 this.change('next')
             },
             change(e) {
+                this.$emit('input', this.currentIndex)
                 this.$emit('change', {
                     type: e,
                     current: this.currentIndex
