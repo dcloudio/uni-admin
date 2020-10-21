@@ -31,6 +31,11 @@ html {
     background-color: #fff;
 }
 
+.uni-app--showleftwindow .uni-container .uni-forms {
+    padding: 15px;
+    max-width: 460px;
+}
+
 .pointer {
     cursor: pointer;
 }
