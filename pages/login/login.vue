@@ -13,7 +13,7 @@
                 <input @confirm="confirmForm('password',$event.detail.value)" class="uni-input-border" type="password"
                     placeholder="密码" @blur="uniFormsValidate('password',$event.detail.value)" />
             </uni-forms-item>
-            <button class="uni-button-full" type="primary" :loading="loading" :disabled="loading" @click="submitForm">登录</button>
+            <button class="uni-button" type="primary" :loading="loading" :disabled="loading" @click="submitForm">登录</button>
         </uni-forms>
         <view class="uni-tips">
             <text class="uni-tips-text" @click="initAdmin">如无管理员账号，请先创建管理员...</text>

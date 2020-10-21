@@ -90,19 +90,32 @@ uni-main {
 .uni-button-group {
     display: flex;
     align-items: center;
+    justify-content: center;
 }
 
 .uni-button {
-    min-width: 80px;
-    height: 30px;
-    line-height: 30px;
+    padding: 12px 20px;
     font-size: 14px;
-    margin: 0 5px;
+    border-radius: 4px;
+    line-height: 1;
+    margin: 0;
+}
+
+.uni-button+.uni-button {
+    margin-left: 10px;
+}
+
+
+.uni-button:hover, .uni-button:focus {
+    opacity: 0.9;
+}
+
+.uni-button:active {
+    opacity: 1;
 }
 
 .uni-button-full {
-    font-size: 16px;
-    margin-top: 15px;
+    width: 100%;
 }
 
 /* 搜索框样式 */
