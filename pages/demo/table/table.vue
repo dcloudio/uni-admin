@@ -1,17 +1,17 @@
 <template>
     <view>
         <view class="uni-header">
-            <view class="uni-button-group">
+            <view class="uni-group">
                 <view class="uni-title">表格</view>
             </view>
-            <view class="uni-button-group">
+            <view class="uni-group">
                 <input class="uni-search" type="text" v-model="searchVal" placeholder="请输入搜索内容" />
-                <button class="uni-button" type="default" @click="search">搜索</button>
-                <button class="uni-button" type="default">新增</button>
-                <button class="uni-button" type="default" @click="delTable">批量删除</button>
+                <button class="uni-button" type="default" size="mini" @click="search">搜索</button>
+                <button class="uni-button" type="default" size="mini">新增</button>
+                <button class="uni-button" type="default" size="mini" @click="delTable">批量删除</button>
             </view>
         </view>
-        <view class="container">
+        <view class="uni-container">
             <uni-table :loading="loading" border stripe type="selection" emptyText="暂无更多数据" @selection-change="selectionChange">
                 <uni-tr>
                     <uni-th width="150" align="center">日期</uni-th>
@@ -26,7 +26,7 @@
                     </uni-td>
                     <uni-td>{{item.address}}</uni-td>
                     <uni-td>
-                        <view class="uni-button-group">
+                        <view class="uni-group">
                             <button class="uni-button" size="mini" type="primary">修改</button>
                             <button class="uni-button" size="mini" type="warn">删除</button>
                         </view>

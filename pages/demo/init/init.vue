@@ -5,25 +5,27 @@
                 <view class="uni-title">创建超级管理员</view>
             </view>
         </view>
-        <uni-forms ref="form" :form-rules="rules" @submit="submit">
-            <uni-forms-item left-icon="person" name="username" labelWidth="35">
-                <input class="uni-input-border" type="text" placeholder="账户" @blur="uniFormsValidate('username',$event.detail.value)" />
-            </uni-forms-item>
+        <view class="uni-container">
+            <uni-forms ref="form" :form-rules="rules" @submit="submit">
+                <uni-forms-item left-icon="person" name="username" labelWidth="35">
+                    <input class="uni-input-border" type="text" placeholder="账户" @blur="uniFormsValidate('username',$event.detail.value)" />
+                </uni-forms-item>
 
-            <uni-forms-item left-icon="locked" name="password" labelWidth="35">
-                <input class="uni-input-border" type="password" placeholder="密码" @blur="uniFormsValidate('password',$event.detail.value)" />
-            </uni-forms-item>
+                <uni-forms-item left-icon="locked" name="password" labelWidth="35">
+                    <input class="uni-input-border" type="password" placeholder="密码" @blur="uniFormsValidate('password',$event.detail.value)" />
+                </uni-forms-item>
 
-            <uni-forms-item left-icon="locked" name="passwordConfirmation" labelWidth="35" :errorMessage="errorMessage">
-                <input @confirm="confirmForm('passwordConfirmation',$event.detail.value)" @blur="uniFormsValidate('passwordConfirmation',$event.detail.value)"
-                    class="uni-input-border" type="password" placeholder="确认密码" />
-            </uni-forms-item>
-            <view class="uni-button-group">
-                <button class="uni-button" type="primary" :loading="loading" :disabled="loading" @click="submitForm">创建</button>
-                <button class="uni-button" type="default" @click="back">返回</button>
-            </view>
+                <uni-forms-item left-icon="locked" name="passwordConfirmation" labelWidth="35" :errorMessage="errorMessage">
+                    <input @confirm="confirmForm('passwordConfirmation',$event.detail.value)" @blur="uniFormsValidate('passwordConfirmation',$event.detail.value)"
+                        class="uni-input-border" type="password" placeholder="确认密码" />
+                </uni-forms-item>
+                <view class="uni-button-group">
+                    <button class="uni-button" type="primary" :loading="loading" :disabled="loading" @click="submitForm">创建</button>
+                    <button class="uni-button" type="default" @click="back">返回</button>
+                </view>
 
-        </uni-forms>
+            </uni-forms>
+        </view>
     </view>
 
 </template>
@@ -165,7 +167,6 @@
     }
 
     .uni-button {
-       width: 184px;
+        width: 184px;
     }
-
 </style>

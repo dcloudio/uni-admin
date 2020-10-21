@@ -5,25 +5,27 @@
                 <view class="uni-title">修改密码</view>
             </view>
         </view>
-        <uni-forms ref="form" :form-rules="rules" @submit="submit">
-            <uni-forms-item label="旧密码" name="oldPassword" labelWidth="85">
-                <input class="uni-input-border" type="password" placeholder="旧密码" @blur="uniFormsValidate('oldPassword',$event.detail.value)" />
-            </uni-forms-item>
+        <view class="uni-container">
+            <uni-forms ref="form" :form-rules="rules" @submit="submit">
+                <uni-forms-item label="旧密码" name="oldPassword" labelWidth="85">
+                    <input class="uni-input-border" type="password" placeholder="旧密码" @blur="uniFormsValidate('oldPassword',$event.detail.value)" />
+                </uni-forms-item>
 
-            <uni-forms-item label="新密码" name="newPassword" labelWidth="85">
-                <input class="uni-input-border" type="password" placeholder="新密码" @blur="uniFormsValidate('newPassword',$event.detail.value)" />
-            </uni-forms-item>
+                <uni-forms-item label="新密码" name="newPassword" labelWidth="85">
+                    <input class="uni-input-border" type="password" placeholder="新密码" @blur="uniFormsValidate('newPassword',$event.detail.value)" />
+                </uni-forms-item>
 
-            <uni-forms-item label="确认新密码" name="passwordConfirmation" labelWidth="85" :errorMessage="errorMessage">
-                <input @confirm="confirmForm('passwordConfirmation',$event.detail.value)" class="uni-input-border" type="password"
-                    placeholder="确认新密码" @blur="uniFormsValidate('passwordConfirmation',$event.detail.value)" />
-            </uni-forms-item>
-            <view class="uni-button-group">
-                <button class="uni-button uni-button-full" type="primary" :disabled="isLoading" @click="submitForm">保存</button>
-                <button v-if="hasBackButton" class="uni-button login-button-width" type="default" :disabled="isLoading"
-                    @click="back">返回</button>
-            </view>
-        </uni-forms>
+                <uni-forms-item label="确认新密码" name="passwordConfirmation" labelWidth="85" :errorMessage="errorMessage">
+                    <input @confirm="confirmForm('passwordConfirmation',$event.detail.value)" class="uni-input-border" type="password"
+                        placeholder="确认新密码" @blur="uniFormsValidate('passwordConfirmation',$event.detail.value)" />
+                </uni-forms-item>
+                <view class="uni-button-group">
+                    <button class="uni-button uni-button-full" type="primary" :disabled="isLoading" @click="submitForm">保存</button>
+                    <button v-if="hasBackButton" class="uni-button login-button-width" type="default" :disabled="isLoading"
+                        @click="back">返回</button>
+                </view>
+            </uni-forms>
+        </view>
     </view>
 </template>
 

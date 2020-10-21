@@ -5,20 +5,22 @@
                 <view class="uni-title">系统登录</view>
             </view>
         </view>
-        <uni-forms ref="form" :form-rules="rules" @submit="submit">
-            <uni-forms-item left-icon="person" name="username" labelWidth="35">
-                <input class="uni-input-border" type="text" placeholder="账户" @blur="uniFormsValidate('username',$event.detail.value)" />
-            </uni-forms-item>
-            <uni-forms-item left-icon="locked" name="password" labelWidth="35">
-                <input @confirm="confirmForm('password',$event.detail.value)" class="uni-input-border" type="password"
-                    placeholder="密码" @blur="uniFormsValidate('password',$event.detail.value)" />
-            </uni-forms-item>
-            <view class="uni-button-group">
-                <button class="uni-button uni-button-full" type="primary" :loading="loading" :disabled="loading" @click="submitForm">登录</button>
+        <view class="uni-container">
+            <uni-forms class="" ref="form" :form-rules="rules" @submit="submit">
+                <uni-forms-item left-icon="person" name="username" labelWidth="35">
+                    <input class="uni-input-border" type="text" placeholder="账户" @blur="uniFormsValidate('username',$event.detail.value)" />
+                </uni-forms-item>
+                <uni-forms-item left-icon="locked" name="password" labelWidth="35">
+                    <input @confirm="confirmForm('password',$event.detail.value)" class="uni-input-border" type="password"
+                        placeholder="密码" @blur="uniFormsValidate('password',$event.detail.value)" />
+                </uni-forms-item>
+                <view class="uni-button-group">
+                    <button class="uni-button uni-button-full" type="primary" :loading="loading" :disabled="loading" @click="submitForm">登录</button>
+                </view>
+            </uni-forms>
+            <view class="uni-tips">
+                <text class="uni-tips-text" @click="initAdmin">如无管理员账号，请先创建管理员...</text>
             </view>
-        </uni-forms>
-        <view class="uni-tips">
-            <text class="uni-tips-text" @click="initAdmin">如无管理员账号，请先创建管理员...</text>
         </view>
     </view>
 </template>
@@ -83,6 +85,7 @@
                     errors,
                     value
                 } = event.detail
+                console.log(event.detail);
                 if (errors) {
                     // uni.showModal({
                     //     content: '请填写正确的账户密码',

@@ -8,31 +8,36 @@
 
 <script>
 	/**
-	 * Forms 自动校验的表单
+	 * Forms 表单
 	 * @description 由输入框、选择器、单选框、多选框等控件组成，用以收集、校验、提交数据
 	 * @tutorial https://ext.dcloud.net.cn/plugin?id=2773
-	 * @property {Object} formRules  表单校验规则
-	 * @property {String} trigger  校验触发器方式 默认 blur 可选 [blur|change|submit]
-	 * @property {String} labelPosition	 label 位置 默认 left 可选 [top|left]
-	 * @property {String|Number} labelWidth  label 宽度，默认 65px
-	 * @property {String} labelAlign  label 居中方式  默认 left 可选 [left|center|right]
-	 * @property {String} errorMessageType  错误提示类型 默认 bottom 可选 [none|top|bottom|toast|alert]
+	 * @property {Object} formRules  							表单校验规则
+	 * @property {String} trigger = [blur|change|submit]	校验触发器方式 默认 blur 可选
+	 * 	@value blur 	失去焦点
+	 * 	@value change 	发生变化时触发
+	 * 	@value submit 	提交时触发
+	 * @property {String} labelPosition = [top|left]				label 位置 默认 left 可选
+	 * @value top		顶部显示 label
+	 * @value left		左侧显示 label
+	 * @property {String} labelWidth  							label 宽度，默认 65px
+	 * @property {String} labelAlign = [left|center|right]		label 居中方式  默认 left 可选
+	 * 	@value left		label 左侧显示
+	 * 	@value center	label 居中
+	 * 	@value right		label 右侧对齐
 	 */
 	import Vue from 'vue'
-	Vue.prototype.uniFormsValidate = function(name, value,formName) {
-		if(formName){
-			this.$refs[formName].setValue(name, value)
-		}else{
-			const children = this.$children[0].$children
-			for(let i = 0 ; i< children.length ;i++){
-				const item = children[i]
-				const componentName = item.$options.name
-				if(componentName === 'uniForms'){
-						item.setValue(name, value)
-						break
-					}
-			}
-		}
+	Vue.prototype.uniFormsValidate = function(name, value, formName) {
+	    if (formName) {
+	        this.$refs[formName].setValue(name, value)
+	    } else {
+	        let refName = null
+	        for(let  i in this.$refs){
+	            refName= i
+	            break
+	        }
+	        if(!refName) return console.error('当前 uni-froms 组件缺少 ref 属性')
+	        this.$refs[refName].setValue(name, value)
+	    }
 	}
 	import Validator from './validateFunction.js'
 
@@ -65,11 +70,6 @@
 			labelAlign: {
 				type: String,
 				default: 'left'
-			},
-			// 错误提示类型 可选值 none/ top / bottom /toast / alert
-			errorMessageType: {
-				type: String,
-				default: 'bottom'
 			}
 		},
 		provide() {
@@ -174,7 +174,7 @@
 						};
 					});
 				}
-				
+
 				let result = this.validator.invokeValidateUpdate(invalidFields, true)
 
 				if (Array.isArray(result)) {
@@ -268,5 +268,7 @@
 </script>
 
 <style lang="scss">
-	.uni-form {}
+	.uni-form {
+		background-color: #fff;
+	}
 </style>
