@@ -53,6 +53,7 @@ html {
 /* 容器 */
 .uni-container {
     padding: 15px;
+    box-sizing: border-box;
 }
 
 /* 标题栏 */

@@ -273,5 +273,6 @@
 <style lang="scss">
 	.uni-forms {
 		background-color: #fff;
+        box-sizing: border-box;
 	}
 </style>
