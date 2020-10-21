@@ -8,14 +8,16 @@
         <view class="uni-container">
             <uni-forms class="" ref="form" :form-rules="rules" @submit="submit">
                 <uni-forms-item left-icon="person" name="username" labelWidth="35">
-                    <input class="uni-input-border" type="text" placeholder="账户" @blur="uniFormsValidate('username',$event.detail.value)" />
+                    <input @confirm="confirmForm('username',$event.detail.value)" class="uni-input-border" type="text"
+                        placeholder="账户" @blur="uniFormsValidate('username',$event.detail.value)" />
                 </uni-forms-item>
                 <uni-forms-item left-icon="locked" name="password" labelWidth="35">
                     <input @confirm="confirmForm('password',$event.detail.value)" class="uni-input-border" type="password"
                         placeholder="密码" @blur="uniFormsValidate('password',$event.detail.value)" />
                 </uni-forms-item>
                 <view class="uni-button-group">
-                    <button class="uni-button uni-button-full" type="primary" :loading="loading" :disabled="loading" @click="submitForm">登录</button>
+                    <button class="uni-button uni-button-full" type="primary" :loading="loading" :disabled="loading"
+                        @click="submitForm">登录</button>
                 </view>
             </uni-forms>
             <view class="uni-tips">
@@ -174,5 +176,4 @@
         color: #007AFF;
         opacity: 0.8;
     }
-
 </style>
