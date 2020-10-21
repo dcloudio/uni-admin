@@ -27,8 +27,8 @@
                     <uni-td>{{item.address}}</uni-td>
                     <uni-td>
                         <view class="uni-button-group">
-                            <button class="uni-button" type="primary">修改</button>
-                            <button class="uni-button" type="warn">删除</button>
+                            <button class="uni-button" size="mini" type="primary">修改</button>
+                            <button class="uni-button" size="mini" type="warn">删除</button>
                         </view>
                     </uni-td>
                 </uni-tr>

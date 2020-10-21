@@ -1,7 +1,7 @@
 <template>
     <view class="login-box">
         <view class="uni-header">
-            <view class="uni-button-group">
+            <view class="uni-group">
                 <view class="uni-title">系统登录</view>
             </view>
         </view>
@@ -13,7 +13,9 @@
                 <input @confirm="confirmForm('password',$event.detail.value)" class="uni-input-border" type="password"
                     placeholder="密码" @blur="uniFormsValidate('password',$event.detail.value)" />
             </uni-forms-item>
-            <button class="uni-button" type="primary" :loading="loading" :disabled="loading" @click="submitForm">登录</button>
+            <view class="uni-button-group">
+                <button class="uni-button uni-button-full" type="primary" :loading="loading" :disabled="loading" @click="submitForm">登录</button>
+            </view>
         </uni-forms>
         <view class="uni-tips">
             <text class="uni-tips-text" @click="initAdmin">如无管理员账号，请先创建管理员...</text>
@@ -151,23 +153,6 @@
         /* background-color: #F5F5F5; */
     }
 
-    .uni-header {
-        margin-bottom: 15px;
-    }
-
-    .uni-input-border {
-        padding: 0 10px;
-        width: 100%;
-        height: 35px;
-        font-size: 14px;
-        color: #666;
-        border: 1px #e5e5e5 solid;
-        border-radius: 5px;
-    }
-
-    .uni-button-full {
-        margin-top: 30px;
-    }
 
     .underline:hover {
         text-decoration: underline;

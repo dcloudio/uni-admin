@@ -1,7 +1,7 @@
 <template>
     <view class="login-box">
         <view class="uni-header">
-            <view class="uni-button-group">
+            <view class="uni-group">
                 <view class="uni-title">创建超级管理员</view>
             </view>
         </view>
@@ -15,11 +15,14 @@
             </uni-forms-item>
 
             <uni-forms-item left-icon="locked" name="passwordConfirmation" labelWidth="35" :errorMessage="errorMessage">
-                <input @confirm="confirmForm('passwordConfirmation',$event.detail.value)" @blur="uniFormsValidate('passwordConfirmation',$event.detail.value)" class="uni-input-border" type="password"
-                    placeholder="确认密码" />
+                <input @confirm="confirmForm('passwordConfirmation',$event.detail.value)" @blur="uniFormsValidate('passwordConfirmation',$event.detail.value)"
+                    class="uni-input-border" type="password" placeholder="确认密码" />
             </uni-forms-item>
-            <button class="login-button" type="primary" :loading="loading" :disabled="loading" @click="submitForm">创建</button>
-            <button class="login-button login-button-margin" type="default" @click="back">返回</button>
+            <view class="uni-button-group">
+                <button class="uni-button" type="primary" :loading="loading" :disabled="loading" @click="submitForm">创建</button>
+                <button class="uni-button" type="default" @click="back">返回</button>
+            </view>
+
         </uni-forms>
     </view>
 
@@ -159,31 +162,10 @@
         padding: 180px 35px 0;
         margin: 0 auto;
         overflow: hidden;
-        /* background-color: #F5F5F5; */
     }
 
-    .uni-header {
-        margin-bottom: 15px;
+    .uni-button {
+       width: 184px;
     }
 
-    .uni-input-border {
-        padding: 0 10px;
-        width: 100%;
-        height: 35px;
-        font-size: 14px;
-        color: #666;
-        border: 1px #e5e5e5 solid;
-        border-radius: 5px;
-    }
-
-    .login-button {
-        margin-top: 30px;
-        height: 40px;
-        width: 100%;
-        font-size: 16px;
-    }
-
-    .login-button-margin {
-        margin-top: 15px;
-    }
 </style>
