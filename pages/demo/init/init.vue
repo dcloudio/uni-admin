@@ -12,13 +12,15 @@
                 </uni-forms-item>
 
                 <uni-forms-item left-icon="locked" name="password" labelWidth="35">
-                    <input class="uni-input-border" type="password" placeholder="密码" @blur="uniFormsValidate('password',$event.detail.value)" />
-                </uni-forms-item>
+                    <input class="uni-input-border" :password="showPassword" placeholder="密码" @blur="uniFormsValidate('password',$event.detail.value)" />
+					<text class="uni-icon pointer" :class="[!showPassword ? 'uni-eye-active' : '']" @click="changePassword">&#xe568;</text>
+				</uni-forms-item>
 
                 <uni-forms-item left-icon="locked" name="passwordConfirmation" labelWidth="35" :errorMessage="errorMessage">
                     <input @confirm="confirmForm('passwordConfirmation',$event.detail.value)" @blur="uniFormsValidate('passwordConfirmation',$event.detail.value)"
-                        class="uni-input-border" type="password" placeholder="确认密码" />
-                </uni-forms-item>
+                        class="uni-input-border" :password="showPasswordAgain" placeholder="确认密码" />
+					<text class="uni-icon pointer" :class="[!showPasswordAgain ? 'uni-eye-active' : '']" @click="changePasswordAgain">&#xe568;</text>
+				</uni-forms-item>
                 <view class="uni-button-group">
                     <button class="uni-button" type="primary" :loading="loading" :disabled="loading" @click="submitForm">创建</button>
                     <button class="uni-button" type="default" @click="back">返回</button>
@@ -38,6 +40,8 @@
     export default {
         data() {
             return {
+				showPassword: true,
+				showPasswordAgain: true,
                 loading: false,
                 errorMessage: '',
                 formData: {
@@ -142,7 +146,13 @@
                 uni.redirectTo({
                     url: config.login.url
                 })
-            }
+            },
+			changePassword: function() {
+				this.showPassword = !this.showPassword;
+			},
+			changePasswordAgain: function() {
+				this.showPasswordAgain = !this.showPasswordAgain;
+			}
         }
     }
 </script>
@@ -169,4 +179,20 @@
     .uni-button {
         width: 184px;
     }
+	.uni-icon {
+		position: absolute;
+		right: 8px;
+		font-family: uniicons;
+		font-size: 20px;
+		font-weight: normal;
+		font-style: normal;
+		width: 24px;
+		height: 24px;
+		line-height: 24px;
+		color: #999999;
+	}
+
+	.uni-eye-active {
+		color: #007AFF;
+	}
 </style>

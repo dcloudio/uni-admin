@@ -140,7 +140,7 @@
             },
             toPasswordPage() {
                 uni.navigateTo({
-                    url: '/pages/password/password'
+                    url: '/pages/changepwd/changepwd'
                 })
             },
             chagePassword() {

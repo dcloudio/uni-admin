@@ -8,11 +8,11 @@ export default {
     navBar: { // 顶部导航
         logo: '/static/logo.png', // 左侧 Logo
         links: [{ // 右侧链接
-            text: '项目文档',
-            url: 'https://github.com/dcloudio/uni-template-admin/blob/master/README.md'
+            text: 'Admin框架文档 ',
+            url: 'https://uniapp.dcloud.net.cn/uniCloud/admin'
         }, {
-            text: '插件市场',
-            url: 'https://ext.dcloud.net.cn/'
+            text: '浏览更多Admin插件',
+            url: 'https://ext.dcloud.net.cn/?cat1=7&cat2=74'
         }],
         debug: {
             enable: process.env.NODE_ENV !== 'production', //是否显示错误信息
@@ -29,7 +29,7 @@ export default {
         // 配置静态菜单列表（放置在用户被授权的菜单列表下边）
         secondaryMenus: [{
             _id: 'demo',
-            name: '功能演示',
+            name: '静态功能演示',
             children: [{
                 _id: 'table',
                 name: '表格',
