@@ -36,7 +36,9 @@
 	 * @description 此组件可以实现表单的输入与校验，包括 "text" 和 "textarea" 类型。
 	 * @tutorial https://ext.dcloud.net.cn/plugin?id=21001
 	 * @property {Boolean} 	required 			是否必填，左边显示红色"*"号（默认false）
-	 * @property {Boolean} 	trigger 			表单校验时机（默认blur）
+	 * @property {String} validateTrigger = [bind|submit]	校验触发器方式 默认 submit 可选
+	 * 	@value bind 	发生变化时触发
+	 * 	@value submit 	提交时触发
 	 * @property {String } 	leftIcon 			label左边的图标，限uni-ui的图标名称
 	 * @property {String } 	iconColor 			左边通过icon配置的图标的颜色（默认#606266）
 	 * @property {String } 	label 				输入框左边的文字提示
@@ -66,8 +68,8 @@
 			},
 			name: String,
 			required: Boolean,
-			trigger: {
-				type: [Boolean, String],
+			validateTrigger: {
+				type: String,
 				default: ''
 			},
 			leftIcon: String,
@@ -144,14 +146,14 @@
 
 		},
 		watch: {
-			trigger(trigger) {
+			validateTrigger(trigger) {
 				this.formTrigger = trigger
 			}
 		},
 		created() {
 			this.form = this.getForm()
 			this.formRules = []
-			this.formTrigger = this.trigger
+			this.formTrigger = this.validateTrigger
 			if (this.form) {
 				this.form.childrens.push(this)
 			}
@@ -249,9 +251,23 @@
 				let result = this.validator && this.validator.validateUpdate({
 					[this.name]: value
 				})
-				let isTrigger = this.isTrigger(this.formRules.trigger, this.trigger, this.form.trigger)
+				let isTrigger = this.isTrigger(this.formRules.validateTrigger, this.validateTrigger, this.form.validateTrigger)
 				if (!isTrigger) {
 					result = null
+				}
+				if (isTrigger && result&& result.errorMessage) {
+					if (this.form.errShowType === 'toast') {
+						uni.showToast({
+							title: result.errorMessage || '校验错误',
+							icon: 'none'
+						})
+					}
+					if (this.form.errShowType === 'modal') {
+						uni.showModal({
+							title: '提示',
+							content: result.errorMessage || '校验错误'
+						})
+					}
 				}
 
 				this.errMsg = !result ? '' : result.errorMessage
@@ -266,11 +282,12 @@
 			 */
 			isTrigger(rule, itemRlue, parentRule) {
 				let rl = true;
-				if (!rule) {
+				//  bind  submit
+				if (rule === 'submit' || !rule) {
 					if (rule === undefined) {
-						if (!itemRlue) {
-							if (itemRlue === '') {
-								return parentRule ? true : false
+						if (itemRlue !== 'bind') {
+							if (!itemRlue) {
+								return parentRule === 'bind' ? true : false
 							}
 							return false
 						}
