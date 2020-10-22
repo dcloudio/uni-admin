@@ -171,7 +171,7 @@
         position: relative;
         max-width: 420px;
         flex: 1;
-        padding: 180px 35px 0;
+        padding: 140px 35px 0;
         margin: 0 auto;
         overflow: hidden;
     }

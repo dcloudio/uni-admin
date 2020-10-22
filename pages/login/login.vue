@@ -155,7 +155,7 @@
 		position: relative;
 		max-width: 420px;
 		flex: 1;
-		padding: 180px 35px 0;
+		padding: 140px 35px 0;
 		margin: 0 auto;
 		overflow: hidden;
 		/* background-color: #F5F5F5; */
@@ -175,7 +175,7 @@
 	.uni-tips-text {
 		cursor: pointer;
 		text-decoration: underline;
-		font-size: 14px;
+		font-size: 13px;
 		color: #007AFF;
 		opacity: 0.8;
 	}
