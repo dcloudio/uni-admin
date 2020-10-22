@@ -1,5 +1,4 @@
 export default {
-	launch_path: '/pages/index/index', // 登录后跳转至的页面地址（若配置为空，则自动跳转至左侧菜单第一个页面）
 	login: {
 		url: '/pages/login/login' // 登录页面路径
 	},

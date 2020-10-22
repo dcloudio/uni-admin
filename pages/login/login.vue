@@ -102,13 +102,13 @@
 							token: res.token,
 							tokenExpired: res.tokenExpired
 						})
-						return this.init().then((url) => {
+						return this.init().then(() => {
 							uni.showToast({
 								title: '登录成功',
 								icon: 'none'
 							})
 							uni.redirectTo({
-								url
+								url: '/'
 							})
 						})
 					}).catch(err => {
