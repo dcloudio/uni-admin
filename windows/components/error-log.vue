@@ -52,8 +52,6 @@
 </script>
 
 <style>
-    .uni-table {}
-
     .err-msg {
         color: #FF0000;
     }
