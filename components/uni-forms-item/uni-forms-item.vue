@@ -1,6 +1,5 @@
 <template>
-	<view class="uni-forms-item" :class="{'uni-forms-item-custom':custom}"
-	 :style="[fieldStyle]">
+	<view class="uni-forms-item" :class="{'uni-forms-item-custom':custom}" :style="[fieldStyle]">
 		<template v-if="!custom">
 			<view class="uni-forms-item-inner" :class="[ 'uni-label-postion-' + labelPos]">
 				<view :class="errorTop ? 'uni-error-in-label' : ''">
@@ -15,7 +14,7 @@
 						<slot name="leftIcon"></slot>
 						<text class="uni-label-text" :class="[leftIcon ? 'uni-label-left-gap' : '']">{{ label }}</text>
 					</view>
-					<view v-if="errorTop && showMessage" class="uni-error-message" :style="{paddingLeft: '4px'}">{{ msg }}</view>
+					<view v-if="errorTop && showMessage" class="uni-error-message" :style="{paddingLeft: '4px'}">{{ showMsg === 'undertext' ? msg:'' }}</view>
 				</view>
 				<view class="fild-body">
 					<slot></slot>
@@ -23,7 +22,7 @@
 			</view>
 			<view v-if="errorBottom && showMessage" class="uni-error-message" :style="{
 				paddingLeft: Number(labelWid) + 4 + 'px'
-			}">{{ msg }}</view>
+			}">{{ showMsg === 'undertext' ? msg:'' }}</view>
 		</template>
 		<template v-else>
 			<slot></slot>
@@ -68,7 +67,7 @@
 			name: String,
 			required: Boolean,
 			trigger: {
-				type: String,
+				type: [Boolean, String],
 				default: ''
 			},
 			leftIcon: String,
@@ -107,7 +106,8 @@
 				val: '',
 				labelPos: '',
 				labelWid: '',
-				labelAli: ''
+				labelAli: '',
+				showMsg: 'undertext'
 			};
 		},
 		computed: {
@@ -152,10 +152,22 @@
 			this.form = this.getForm()
 			this.formRules = []
 			this.formTrigger = this.trigger
-			if(this.form){
+			if (this.form) {
 				this.form.childrens.push(this)
 			}
 			this.init()
+		},
+		destroyed() {
+			if (this.name) {
+				delete this.form.formData[this.name]
+			}
+			if (this.form) {
+				this.form.childrens.forEach((item, index) => {
+					if (item === this) {
+						this.form.childrens.splice(index, 1)
+					}
+				})
+			}
 		},
 		methods: {
 			init() {
@@ -163,11 +175,12 @@
 					this.labelPos = this.labelPosition ? this.labelPosition : this.form.labelPosition
 					this.labelWid = this.labelWidth ? this.labelWidth : this.form.labelWidth
 					this.labelAli = this.labelAlign ? this.labelAlign : this.form.labelAlign
+					this.showMsg = this.form.errShowType
 					if (this.form.formRules) {
 						this.formRules = this.form.formRules[this.name] || {}
 					}
 					this.validator = this.form.validator
-					if(this.name){
+					if (this.name) {
 						this.form.formData[this.name] = ''
 					}
 				} else {
@@ -232,10 +245,15 @@
 					value = value === '' ? value : Number(value)
 				}
 				this.form.formData[this.name] = value
-                this.errMsg = ''
-				const result = this.validator && this.validator.validateUpdate({
+				this.errMsg = ''
+				let result = this.validator && this.validator.validateUpdate({
 					[this.name]: value
 				})
+				let isTrigger = this.isTrigger(this.formRules.trigger, this.trigger, this.form.trigger)
+				if (!isTrigger) {
+					result = null
+				}
+
 				this.errMsg = !result ? '' : result.errorMessage
 				this.form.validateCheck(result ? result : null)
 				typeof callback === 'function' && callback(result ? result : null);
@@ -246,20 +264,23 @@
 			 * 触发时机
 			 * @param {Object} event
 			 */
-			isTrigger(parentRule, itemRlue, rule) {
-				let rl = 'none'
-				if (rule) {
-					rl = rule
-				} else if (itemRlue) {
-					rl = itemRlue
-				} else if (parentRule) {
-					rl = parentRule
-				} else {
-					rl = 'blur'
+			isTrigger(rule, itemRlue, parentRule) {
+				let rl = true;
+				if (!rule) {
+					if (rule === undefined) {
+						if (!itemRlue) {
+							if (itemRlue === '') {
+								return parentRule ? true : false
+							}
+							return false
+						}
+						return true
+					}
+					return false
 				}
-				return rl
-			}
 
+				return true;
+			}
 		}
 	};
 </script>

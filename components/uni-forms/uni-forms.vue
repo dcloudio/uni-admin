@@ -11,7 +11,7 @@
 	 * Forms 表单
 	 * @description 由输入框、选择器、单选框、多选框等控件组成，用以收集、校验、提交数据
 	 * @tutorial https://ext.dcloud.net.cn/plugin?id=2773
-	 * @property {Object} formRules  							表单校验规则
+	 * @property {Object} rules  							表单校验规则
 	 * @property {String} trigger = [blur|change|submit]	校验触发器方式 默认 blur 可选
 	 * 	@value blur 	失去焦点
 	 * 	@value change 	发生变化时触发
@@ -24,28 +24,32 @@
 	 * 	@value left		label 左侧显示
 	 * 	@value center	label 居中
 	 * 	@value right		label 右侧对齐
+	 * @property {String} errShowType = [undertext|toast|modal]		label 居中方式  默认 left 可选
+	 * 	@value left		label 左侧显示
+	 * 	@value center	label 居中
+	 * 	@value right		label 右侧对齐
 	 */
 	import Vue from 'vue'
-	Vue.prototype.uniFormsValidate = function(name, value, formName) {
-	    if (formName) {
-	        this.$refs[formName].setValue(name, value)
-	    } else {
-	        let refName = null
-	        for(let  i in this.$refs){
-	            refName= i
-	            break
-	        }
-	        if(!refName) return console.error('当前 uni-froms 组件缺少 ref 属性')
-	        this.$refs[refName].setValue(name, value)
-	    }
+	Vue.prototype.binddata = function(name, value, formName) {
+		if (formName) {
+			this.$refs[formName].setValue(name, value)
+		} else {
+			let refName = null
+			for (let i in this.$refs) {
+				refName = i
+				break
+			}
+			if (!refName) return console.error('当前 uni-froms 组件缺少 ref 属性')
+			this.$refs[refName].setValue(name, value)
+		}
 	}
-	import Validator from './validateFunction.js'
+	import Validator from './validate.js'
 
 	export default {
 		name: 'uniForms',
 		props: {
 			// 表单校验规则
-			formRules: {
+			rules: {
 				type: Object,
 				default () {
 					return {}
@@ -53,7 +57,7 @@
 			},
 			// 校验触发器方式，默认 关闭
 			trigger: {
-				type: String,
+				type: [Boolean, String],
 				default: ''
 			},
 			// label 位置，可选值 top/left
@@ -70,16 +74,19 @@
 			labelAlign: {
 				type: String,
 				default: 'left'
+			},
+			errShowType: {
+				type: String,
+				default: 'undertext'
 			}
 		},
 		data() {
 			return {
-				rules: {},
 				formData: {}
 			};
 		},
 		watch: {
-			formRules(newVal) {
+			rules(newVal) {
 				this.init(newVal)
 			},
 			trigger(trigger) {
@@ -89,15 +96,17 @@
 		created() {
 			let _this = this
 			this.childrens = []
-			this.init(this.formRules)
+			this.formRules = []
+			this.init(this.rules)
 
 		},
 		methods: {
 			init(formRules) {
 				if (Object.keys(formRules).length > 0) {
 					this.formTrigger = this.trigger
+					this.formRules = formRules
 					this.validator = new Validator(formRules)
-					this.childrens.forEach((item)=>{
+					this.childrens.forEach((item) => {
 						item.init()
 					})
 				}
@@ -106,7 +115,7 @@
 			 * 设置校验规则
 			 * @param {Object} formRules
 			 */
-			setRules(formRules){
+			setRules(formRules) {
 				this.init(formRules)
 			},
 			/**
@@ -169,7 +178,6 @@
 				})
 
 				let promise;
-				// if no callback, return promise
 				if (callback && typeof callback !== 'function' && Promise) {
 					promise = new Promise((resolve, reject) => {
 						callback = function(valid, invalidFields) {
@@ -177,17 +185,46 @@
 						};
 					});
 				}
-
-				let result = this.validator.invokeValidateUpdate(invalidFields, true)
+				let fieldsValue = {}
+				for (let i in this.formRules) {
+					for (let j in invalidFields) {
+						if (i === j) {
+							fieldsValue[i] = invalidFields[i]
+						}
+					}
+				}
+				let result = this.validator.invokeValidateUpdate(fieldsValue, true)
 
 				if (Array.isArray(result)) {
 					if (result.length === 0) result = null
 				}
 				let example = null
-				result && result.forEach(item => {
-					example = this.childrens.find(child => child.name === item.key)
-					if (example) example.errMsg = item.errorMessage
-				})
+
+				if (result) {
+					for (let i = 0; i < result.length; i++) {
+						const item = result[i]
+						example = this.childrens.find(child => child.name === item.key)
+						if (this.errShowType === 'undertext') {
+							if (example) example.errMsg = item.errorMessage
+						} else {
+							if (this.errShowType === 'toast') {
+								uni.showToast({
+									title: item.errorMessage || '校验错误',
+									icon: 'none'
+								})
+								break
+							} else if (this.errShowType === 'modal') {
+								uni.showModal({
+									title: '提示',
+									content: item.errorMessage || '校验错误'
+								})
+								break
+							} else {
+								if (example) example.errMsg = item.errorMessage
+							}
+						}
+					}
+				}
 
 				if (type === 'submit') {
 					this.$emit('submit', {
@@ -273,6 +310,5 @@
 <style lang="scss">
 	.uni-forms {
 		background-color: #fff;
-        box-sizing: border-box;
 	}
 </style>
