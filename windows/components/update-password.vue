@@ -6,19 +6,19 @@
             </view>
         </view>
         <view class="uni-container">
-            <uni-forms ref="form" :form-rules="rules" @submit="submit">
+            <uni-forms ref="form" :rules="rules" @submit="submit">
                 <uni-forms-item label="旧密码" name="oldPassword" labelWidth="85">
-                    <input class="uni-input-border" type="password" placeholder="旧密码" @blur="uniFormsValidate('oldPassword',$event.detail.value)" />
+                    <input class="uni-input-border" type="password" placeholder="旧密码" @blur="binddata('oldPassword',$event.detail.value)" />
                 </uni-forms-item>
 
                 <uni-forms-item label="新密码" name="newPassword" labelWidth="85">
-                    <input class="uni-input-border" :password="showPassword" placeholder="新密码" @blur="uniFormsValidate('newPassword',$event.detail.value)" />
+                    <input class="uni-input-border" :password="showPassword" placeholder="新密码" @blur="binddata('newPassword',$event.detail.value)" />
 					<text class="uni-icon-password-eye pointer" :class="[!showPassword ? 'uni-eye-active' : '']" @click="changePassword">&#xe568;</text>
                 </uni-forms-item>
 
                 <uni-forms-item label="确认新密码" name="passwordConfirmation" labelWidth="85" :errorMessage="errorMessage">
                     <input @confirm="confirmForm('passwordConfirmation',$event.detail.value)" class="uni-input-border" :password="showPasswordAgain"
-                        placeholder="确认新密码" @blur="uniFormsValidate('passwordConfirmation',$event.detail.value)" />
+                        placeholder="确认新密码" @blur="binddata('passwordConfirmation',$event.detail.value)" />
 					<text class="uni-icon-password-eye pointer" :class="[!showPasswordAgain ? 'uni-eye-active' : '']" @click="changePasswordAgain">&#xe568;</text>
                 </uni-forms-item>
                 <view class="uni-button-group pointer">
@@ -118,7 +118,7 @@
                 }
             },
             confirmForm(name, value) {
-                this.uniFormsValidate(name, value)
+                this.binddata(name, value)
                 this.submitForm()
             },
             submitForm() {

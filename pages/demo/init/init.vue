@@ -6,18 +6,18 @@
             </view>
         </view>
         <view class="uni-container">
-            <uni-forms ref="form" :form-rules="rules" @submit="submit">
+            <uni-forms ref="form" :rules="rules" @submit="submit">
                 <uni-forms-item left-icon="person" name="username" labelWidth="35">
-                    <input class="uni-input-border" type="text" placeholder="账户" @blur="uniFormsValidate('username',$event.detail.value)" />
+                    <input class="uni-input-border" type="text" placeholder="账户" @blur="binddata('username',$event.detail.value)" />
                 </uni-forms-item>
 
                 <uni-forms-item left-icon="locked" name="password" labelWidth="35">
-                    <input class="uni-input-border" :password="showPassword" placeholder="密码" @blur="uniFormsValidate('password',$event.detail.value)" />
+                    <input class="uni-input-border" :password="showPassword" placeholder="密码" @blur="binddata('password',$event.detail.value)" />
 					<text class="uni-icon-password-eye pointer" :class="[!showPassword ? 'uni-eye-active' : '']" @click="changePassword">&#xe568;</text>
 				</uni-forms-item>
 
                 <uni-forms-item left-icon="locked" name="passwordConfirmation" labelWidth="35" :errorMessage="errorMessage">
-                    <input @confirm="confirmForm('passwordConfirmation',$event.detail.value)" @blur="uniFormsValidate('passwordConfirmation',$event.detail.value)"
+                    <input @confirm="confirmForm('passwordConfirmation',$event.detail.value)" @blur="binddata('passwordConfirmation',$event.detail.value)"
                         class="uni-input-border" :password="showPasswordAgain" placeholder="确认密码" />
 					<text class="uni-icon-password-eye pointer" :class="[!showPasswordAgain ? 'uni-eye-active' : '']" @click="changePasswordAgain">&#xe568;</text>
 				</uni-forms-item>
@@ -135,7 +135,7 @@
 
             },
             confirmForm(name, value) {
-                this.uniFormsValidate(name, value)
+                this.binddata(name, value)
                 this.submitForm()
             },
             submitForm() {
