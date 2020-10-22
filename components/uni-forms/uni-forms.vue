@@ -24,10 +24,10 @@
 	 * 	@value left		label 左侧显示
 	 * 	@value center	label 居中
 	 * 	@value right		label 右侧对齐
-	 * @property {String} errShowType = [undertext|toast|modal]		label 居中方式  默认 left 可选
-	 * 	@value left		label 左侧显示
-	 * 	@value center	label 居中
-	 * 	@value right		label 右侧对齐
+	 * @property {String} errShowType = [undertext|toast|modal]	校验错误信息提示方式
+	 * 	@value undertext	错误信息在底部显示
+	 * 	@value toast		错误信息toast显示
+	 * 	@value modal		错误信息modal显示
 	 */
 	import Vue from 'vue'
 	Vue.prototype.binddata = function(name, value, formName) {
