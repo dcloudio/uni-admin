@@ -14,7 +14,7 @@
 				</uni-forms-item>
 				<uni-forms-item left-icon="locked" class="icon-container" name="password" labelWidth="35">
 					<input @confirm="confirmForm('password',$event.detail.value)" class="uni-input-border" :password="showPassword" placeholder="密码" @blur="uniFormsValidate('password',$event.detail.value)" />
-					<text class="uni-icon pointer" :class="[!showPassword ? 'uni-eye-active' : '']" @click="changePassword">&#xe568;</text>
+					<text class="uni-icon-password-eye pointer" :class="[!showPassword ? 'uni-eye-active' : '']" @click="changePassword">&#xe568;</text>
 				</uni-forms-item>
 				<view class="uni-button-group">
 					<button class="uni-button uni-button-full" type="primary" :loading="loading" :disabled="loading" @click="submitForm">登录</button>

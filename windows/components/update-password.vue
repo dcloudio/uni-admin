@@ -13,13 +13,13 @@
 
                 <uni-forms-item label="新密码" name="newPassword" labelWidth="85">
                     <input class="uni-input-border" :password="showPassword" placeholder="新密码" @blur="uniFormsValidate('newPassword',$event.detail.value)" />
-					<text class="uni-icon pointer" :class="[!showPassword ? 'uni-eye-active' : '']" @click="changePassword">&#xe568;</text>
+					<text class="uni-icon-password-eye pointer" :class="[!showPassword ? 'uni-eye-active' : '']" @click="changePassword">&#xe568;</text>
                 </uni-forms-item>
 
                 <uni-forms-item label="确认新密码" name="passwordConfirmation" labelWidth="85" :errorMessage="errorMessage">
                     <input @confirm="confirmForm('passwordConfirmation',$event.detail.value)" class="uni-input-border" :password="showPasswordAgain"
                         placeholder="确认新密码" @blur="uniFormsValidate('passwordConfirmation',$event.detail.value)" />
-					<text class="uni-icon pointer" :class="[!showPasswordAgain ? 'uni-eye-active' : '']" @click="changePasswordAgain">&#xe568;</text>
+					<text class="uni-icon-password-eye pointer" :class="[!showPasswordAgain ? 'uni-eye-active' : '']" @click="changePasswordAgain">&#xe568;</text>
                 </uni-forms-item>
                 <view class="uni-button-group pointer">
                     <button class="uni-button uni-button-full" type="primary" :disabled="isLoading" @click="submitForm">保存</button>
