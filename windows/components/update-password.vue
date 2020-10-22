@@ -12,12 +12,14 @@
                 </uni-forms-item>
 
                 <uni-forms-item label="新密码" name="newPassword" labelWidth="85">
-                    <input class="uni-input-border" type="password" placeholder="新密码" @blur="uniFormsValidate('newPassword',$event.detail.value)" />
+                    <input class="uni-input-border" :password="showPassword" placeholder="新密码" @blur="uniFormsValidate('newPassword',$event.detail.value)" />
+					<text class="uni-icon" :class="[!showPassword ? 'uni-eye-active' : '']" @click="changePassword">&#xe568;</text>
                 </uni-forms-item>
 
                 <uni-forms-item label="确认新密码" name="passwordConfirmation" labelWidth="85" :errorMessage="errorMessage">
-                    <input @confirm="confirmForm('passwordConfirmation',$event.detail.value)" class="uni-input-border" type="password"
+                    <input @confirm="confirmForm('passwordConfirmation',$event.detail.value)" class="uni-input-border" :password="showPasswordAgain"
                         placeholder="确认新密码" @blur="uniFormsValidate('passwordConfirmation',$event.detail.value)" />
+					<text class="uni-icon" :class="[!showPasswordAgain ? 'uni-eye-active' : '']" @click="changePasswordAgain">&#xe568;</text>
                 </uni-forms-item>
                 <view class="uni-button-group">
                     <button class="uni-button uni-button-full" type="primary" :disabled="isLoading" @click="submitForm">保存</button>
@@ -39,6 +41,8 @@
         data() {
             return {
                 isLoading: false,
+				showPassword: true,
+				showPasswordAgain: true,
                 errorMessage: '',
                 password: {
                     oldPassword: '',
@@ -156,8 +160,13 @@
             },
             back() {
                 uni.navigateBack()
-            }
-
+            },
+			changePassword: function() {
+				this.showPassword = !this.showPassword;
+			},
+			changePasswordAgain: function() {
+				this.showPasswordAgain = !this.showPasswordAgain;
+			}
         }
     }
 </script>
@@ -176,4 +185,21 @@
     .login-button-width {
         width: 184px;
     }
+
+	.uni-icon {
+		position: absolute;
+		right: 8px;
+		font-family: uniicons;
+		font-size: 20px;
+		font-weight: normal;
+		font-style: normal;
+		width: 24px;
+		height: 24px;
+		line-height: 24px;
+		color: #999999;
+	}
+
+	.uni-eye-active {
+		color: #007AFF;
+	}
 </style>

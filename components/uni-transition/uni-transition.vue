@@ -204,10 +204,6 @@
 					return mode + '-' + type
 				}
 			},
-			// getEl(el) {
-			// 	console.log(el || el.ref || null);
-			// 	return el || el.ref || null
-			// },
 			toLine(name) {
 				return name.replace(/([A-Z])/g, "-$1").toLowerCase();
 			}

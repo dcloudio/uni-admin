@@ -15,9 +15,9 @@
                 "navigationBarTitleText": "Not Found"
             }
         }, {
-            "path": "pages/password/password",
+            "path": "pages/changepwd/changepwd",
             "style": {
-                "navigationBarTitleText": "",
+                "navigationBarTitleText": "修改密码",
                 "enablePullDownRefresh": false
             }
 
