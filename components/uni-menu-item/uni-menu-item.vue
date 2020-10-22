@@ -5,7 +5,7 @@
 </template>
 
 <script>
-	import rootParent from '@/components/common/mixins/rootParent.js'
+	import rootParent from '../uni-nav-menu/mixins/rootParent.js'
 	export default {
 		name: 'uniMenuItem',
 		mixins:[rootParent],
