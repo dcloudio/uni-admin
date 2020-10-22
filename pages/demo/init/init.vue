@@ -6,7 +6,7 @@
             </view>
         </view>
         <view class="uni-container">
-            <uni-forms ref="form" :rules="rules" @submit="submit">
+            <uni-forms ref="form" validateTrigger="bind" :rules="rules" @submit="submit">
                 <uni-forms-item left-icon="person" name="username" labelWidth="35">
                     <input class="uni-input-border" type="text" placeholder="账户" @blur="binddata('username',$event.detail.value)" />
                 </uni-forms-item>
