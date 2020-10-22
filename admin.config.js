@@ -27,7 +27,7 @@ export default {
     },
     sideBar: { // 左侧菜单
         // 配置静态菜单列表（放置在用户被授权的菜单列表下边）
-        secondaryMenus: [{
+        staticMenu: [{
             _id: 'demo',
             name: '静态功能演示',
             children: [{

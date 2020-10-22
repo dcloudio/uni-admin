@@ -5,7 +5,7 @@
                 <sidebar-item v-for="menu in navMenu" :key="menu._id" :item="menu" />
             </uni-nav-menu>
             <uni-nav-menu>
-                <sidebar-item v-for="menu in secondaryMenus" :key="menu._id" :item="menu" />
+                <sidebar-item v-for="menu in staticMenu" :key="menu._id" :item="menu" />
             </uni-nav-menu>
         </template>
     </scroll-view>

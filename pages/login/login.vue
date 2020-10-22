@@ -196,21 +196,4 @@
 	.admin-logo image {
 		height: 40px;
 	}
-
-	.uni-icon {
-		position: absolute;
-		right: 8px;
-		font-family: uniicons;
-		font-size: 20px;
-		font-weight: normal;
-		font-style: normal;
-		width: 24px;
-		height: 24px;
-		line-height: 24px;
-		color: #999999;
-	}
-
-	.uni-eye-active {
-		color: #007AFF;
-	}
 </style>
