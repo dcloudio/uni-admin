@@ -26,9 +26,16 @@
 				isOpen: this.active
 			};
 		},
-        props: {
-            active: false,
-        },
+		props: {
+			active: {
+				type: Boolean
+			},
+		},
+		watch: {
+			active(val) {
+				this.isOpen = val
+			}
+		},
 		computed: {
 			paddingLeft() {
 				return 20 + 20 * this.rootMenu.SubMenu.length + 'px'
@@ -97,6 +104,7 @@
 	.uni-sub-menu__icon {
 		transition: all 0.2s;
 	}
+
 	.transition {
 		transform: rotate(-180deg);
 	}

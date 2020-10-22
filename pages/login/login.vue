@@ -13,7 +13,8 @@
 					 @blur="uniFormsValidate('username',$event.detail.value)" />
 				</uni-forms-item>
 				<uni-forms-item left-icon="locked" class="icon-container" name="password" labelWidth="35">
-					<input @confirm="confirmForm('password',$event.detail.value)" class="uni-input-border" :password="showPassword" placeholder="密码" @blur="uniFormsValidate('password',$event.detail.value)" />
+					<input @confirm="confirmForm('password',$event.detail.value)" class="uni-input-border" :password="showPassword"
+					 placeholder="密码" @blur="uniFormsValidate('password',$event.detail.value)" />
 					<text class="uni-icon-password-eye pointer" :class="[!showPassword ? 'uni-eye-active' : '']" @click="changePassword">&#xe568;</text>
 				</uni-forms-item>
 				<view class="uni-button-group">
@@ -106,13 +107,14 @@
 							token: res.token,
 							tokenExpired: res.tokenExpired
 						})
-						this.init()
-						uni.showToast({
-							title: '登录成功',
-							icon: 'none'
-						})
-						uni.redirectTo({
-							url: '/pages/index/index',
+						return this.init().then((url) => {
+							uni.showToast({
+								title: '登录成功',
+								icon: 'none'
+							})
+							uni.redirectTo({
+								url
+							})
 						})
 					}).catch(err => {
 
