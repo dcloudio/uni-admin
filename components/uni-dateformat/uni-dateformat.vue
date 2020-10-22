@@ -16,7 +16,7 @@
 	 */
 	import {
 		friendlyDate
-	} from '../common/date-format.js'
+	} from '../date-format.js'
 	export default {
 		name: 'uniDateformat',
 		props: {
