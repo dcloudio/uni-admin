@@ -53,7 +53,7 @@ module.exports = class MenuService extends Service {
         const permission = this.ctx.auth.permission
         let {
             data: menuList
-        } = await this.db.collection('opendb-admin-menu').where({
+        } = await this.db.collection('opendb-admin-menus').where({
             status: 1
         }).orderBy('sort', 'asc').limit(1000).get()
 
@@ -72,7 +72,7 @@ module.exports = class MenuService extends Service {
     async getAll() {
         const {
             data: menuList
-        } = await this.db.collection('opendb-admin-menu').orderBy('sort', 'asc').get()
+        } = await this.db.collection('opendb-admin-menus').orderBy('sort', 'asc').get()
         return buildMenus(menuList)
     }
 }

@@ -214,7 +214,7 @@
             }
         }]
     },
-    "opendb-admin-menu": {
+    "opendb-admin-menus": {
         "data": [{
             "_id": "system",
             "name": "系统管理",
