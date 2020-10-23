@@ -9,7 +9,7 @@
 		<!-- #endif -->
 		<view class="navbar" :class="{'navbar-mini':!matchLeftWindow,'popup-menu':popupMenuOpened}">
 			<view class="navbar-left pointer">
-				<navigator class="logo" open-type="reLaunch" url="/pages/index/index">
+				<navigator class="logo" open-type="reLaunch" url="/">
 					<image :src="logo" mode="heightFix"></image>
 					<text>{{appName}}</text>
 				</navigator>

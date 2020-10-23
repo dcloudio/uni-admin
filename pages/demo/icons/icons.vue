@@ -8,8 +8,8 @@
 		<view class="uni-container">
 			<view class="icons">
 				<view v-for="icon in icons" :key="icon" class="icon-item pointer">
-					<view @click="setClipboardData('tag',icon)" :class="'uni-icon-'+icon"></view>
-					<text @click="setClipboardData('class',icon)" class="icon-text">uni-icon-{{icon}}</text>
+					<view @click="setClipboardData('tag',icon)" :class="'uni-icons-'+icon"></view>
+					<text @click="setClipboardData('class',icon)" class="icon-text">uni-icons-{{icon}}</text>
 				</view>
 			</view>
 		</view>
@@ -26,7 +26,7 @@
 		},
 		methods: {
 			setClipboardData(type, icon) {
-				let data = 'uni-icon-' + icon
+				let data = 'uni-icons-' + icon
 				if (type === 'tag') {
 					data = '<view class="' + data + '"></view>'
 				}

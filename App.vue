@@ -41,5 +41,5 @@
 
 <style>
 	@import '@/common/uni.css';
-	@import '@/common/uni-icon.css';
+	@import '@/common/uni-icons.css';
 </style>
