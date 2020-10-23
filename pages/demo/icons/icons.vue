@@ -80,4 +80,13 @@
 		line-height: 1em;
 		margin-top: 15px;
 	}
+
+	/* #ifdef H5 */
+	@media only screen and (max-width: 500px) {
+		.icon-item {
+			width: 33.3%;
+		}
+	}
+
+	/* #endif */
 </style>
