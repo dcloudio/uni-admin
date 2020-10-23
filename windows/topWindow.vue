@@ -11,6 +11,7 @@
             <view class="navbar-left pointer">
                 <navigator class="logo" open-type="reLaunch" url="/pages/index/index">
                     <image :src="logo" mode="heightFix"></image>
+					<text>订单管理后台</text>
                 </navigator>
                 <uni-icons @click="toggleSidebar" type="bars" class="menu-icon" size="30" color="#999"></uni-icons>
             </view>
@@ -170,9 +171,19 @@
         align-items: center;
     }
 
-    .logo image {
-        height: 30px;
-    }
+    .logo {
+
+		display: flex;
+		align-items: center;
+
+		image {
+			height: 30px;
+		}
+
+		text {
+			margin-left: 8px;
+		}
+	}
 
     .menu-icon {
         width: 30px;
