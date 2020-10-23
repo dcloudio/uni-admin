@@ -218,7 +218,7 @@
         "data": [{
             "_id": "system",
             "name": "系统管理",
-            "icon": "",
+            "icon": "uni-icons-gear",
             "url": "",
             "sort": 1000,
             "parent_id": "",

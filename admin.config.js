@@ -30,16 +30,14 @@ export default {
 		staticMenu: [{
 			_id: 'demo',
 			name: '静态功能演示',
-			icon: 'uni-icons-gear',
+			icon: 'uni-icons-list',
 			children: [{
 				_id: 'icons',
 				name: '图标',
-				icon: 'uni-icons-cart',
 				url: '/pages/demo/icons/icons'
 			}, {
 				_id: 'table',
 				name: '表格',
-				icon: 'uni-icons-list',
 				url: '/pages/demo/table/table'
 			}]
 		}]
