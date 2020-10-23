@@ -31,6 +31,10 @@ export default {
 			_id: 'demo',
 			name: '静态功能演示',
 			children: [{
+				_id: 'icons',
+				name: '图标',
+				url: '/pages/demo/icons/icons'
+			}, {
 				_id: 'table',
 				name: '表格',
 				url: '/pages/demo/table/table'
