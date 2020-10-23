@@ -7,9 +7,13 @@ export default {
 	state: {
 		inited: false,
 		navMenu: [],
-		active: ''
+		active: '',
+		appName: process.env.VUE_APP_NAME || ''
 	},
 	mutations: {
+		SET_APP_NAME: (state, appName) => {
+			state.appName = appName
+		},
 		SET_NAV_MENU: (state, navMenu) => {
 			state.inited = true
 			state.navMenu = navMenu
@@ -33,6 +37,11 @@ export default {
 						root: true
 					})
 				})
+		},
+		setAppName({
+			commit
+		}, appName) {
+			commit('SET_APP_NAME', appName)
 		},
 		changeMenuActive({
 			commit
