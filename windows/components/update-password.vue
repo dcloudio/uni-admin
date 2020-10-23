@@ -52,33 +52,28 @@
 					oldPassword: {
 						rules: [{
 							required: true,
-							errorMessage: '请输入旧密码',
-							trigger: 'blur'
+							errorMessage: '请输入旧密码'
 						}]
 					},
 					newPassword: {
 						rules: [{
 								required: true,
-								errorMessage: '请输入新密码',
-								trigger: 'blur'
+								errorMessage: '请输入新密码'
 							},
 							{
 								minLength: 6,
-								errorMessage: '密码长度最小{minLength}个字符',
-								trigger: 'blur'
+								errorMessage: '密码长度最小{minLength}个字符'
 							}
 						]
 					},
 					passwordConfirmation: {
 						rules: [{
 								required: true,
-								errorMessage: '请确认新密码',
-								trigger: 'blur'
+								errorMessage: '请确认新密码'
 							},
 							{
 								minLength: 6,
-								errorMessage: '密码长度最小{minLength}个字符',
-								trigger: 'blur'
+								errorMessage: '密码长度最小{minLength}个字符'
 							}
 						]
 					}

@@ -55,13 +55,11 @@
                         rules: [{
                                 required: true,
                                 errorMessage: '请输入账户',
-                                trigger: 'blur'
                             },
                             {
                                 minLength: 3,
                                 maxLength: 30,
-                                errorMessage: '账户长度在{minLength}到{maxLength}个字符',
-                                trigger: 'blur'
+                                errorMessage: '账户长度在{minLength}到{maxLength}个字符'
                             }
                         ]
                     },
@@ -70,12 +68,10 @@
                         rules: [{
                                 required: true,
                                 errorMessage: '请输入密码',
-                                trigger: 'blur'
                             },
                             {
                                 minLength: 6,
-                                errorMessage: '密码长度大于{minLength}个字符',
-                                trigger: 'blur'
+                                errorMessage: '密码长度大于{minLength}个字符'
                             }
                         ]
                     },
@@ -83,12 +79,10 @@
                         rules: [{
                                 required: true,
                                 errorMessage: '请输入确认密码',
-                                trigger: 'blur'
                             },
                             {
                                 minLength: 6,
-                                errorMessage: '密码长度最小{minLength}个字符',
-                                trigger: 'blur'
+                                errorMessage: '密码长度最小{minLength}个字符'
                             }
                         ]
                     }
