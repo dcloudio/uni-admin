@@ -1,7 +1,7 @@
 <template>
     <scroll-view class="sidebar" scroll-y="true">
         <template v-if="inited">
-            <uni-nav-menu :active="active" @select="select">
+            <uni-nav-menu :active="active" activeTextColor="#409eff" @select="select">
 				<uni-menu-sidebar :data="navMenu"></uni-menu-sidebar>
 				<uni-menu-sidebar :data="staticMenu"></uni-menu-sidebar>
             </uni-nav-menu>
@@ -33,7 +33,6 @@
             $route: {
                 immediate: true,
                 handler(newRoute, oldRoute) {
-					// console.log('页面发生变化',newRoute.path);
                     this.changeMenuActive(newRoute.path)
                 }
             }
@@ -43,6 +42,9 @@
                 changeMenuActive: 'app/changeMenuActive'
             }),
 			select(url){
+				if(!url) {
+					url = this.active
+				}
 				this.clickMenuItem(url)
 			},
 			clickMenuItem(url) {

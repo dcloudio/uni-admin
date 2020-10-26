@@ -8,11 +8,11 @@
 
 <script>
 	export default {
-		name:'uniNavMenu',
+		name: 'uniNavMenu',
 		props: {
-			data:{
-				type:Array,
-				default(){
+			data: {
+				type: Array,
+				default () {
 					return []
 				}
 			},
@@ -84,18 +84,24 @@
 
 			};
 		},
-		watch:{
-			active(newVal){
-				console.log('active',newVal);
+		watch: {
+			active(newVal) {
 				// 动态修改选中 index
-				if(this.itemChildrens.length > 0){
-					this.itemChildrens.forEach(item=>{
-						if(item.index === newVal){
-							item.init()
-						}else{
+				if (this.itemChildrens.length > 0) {
+					let isActive = false
+					this.itemChildrens.forEach(item => {
+						if (item.index === newVal) {
+							isActive = true
+							item.isActive()
+						} else {
 							item.active = false
 						}
 					})
+					// 没有任何选中
+					if (!isActive) {
+						this.$emit('select', '', [])
+						this.closeAll()
+					}
 				}
 			}
 		},
@@ -103,28 +109,36 @@
 			this.itemChildrens = []
 			this.subChildrens = []
 		},
-		methods:{
+		methods: {
 			// menu 菜单激活回调
-			select(key,keyPath){
-				this.$emit('select',key,keyPath)
+			select(key, keyPath) {
+				this.$emit('select', key, keyPath)
 			},
 			// sub-menu 展开的回调
-			open(key,keyPath){
-				this.$emit('open',key,keyPath)
+			open(key, keyPath) {
+				this.$emit('open', key, keyPath)
 			},
 			// sub-menu 收起的回调
-			close(key,keyPath){
-				this.$emit('close',key,keyPath)
+			close(key, keyPath) {
+				this.$emit('close', key, keyPath)
+			},
+			// 关闭所有
+			closeAll() {
+				this.subChildrens.forEach((item) => {
+					if (item.isOpen) {
+						item.isOpen = false
+					}
+				})
 			}
 		}
 	}
 </script>
 
 <style lang="scss">
-.uni-nav-menu {
-	width: 240px;
-	min-height: 500px;
-	background-color: #FFFFFF;
-	font-size: 14px;
-}
+	.uni-nav-menu {
+		width: 240px;
+		min-height: 500px;
+		background-color: #FFFFFF;
+		font-size: 14px;
+	}
 </style>

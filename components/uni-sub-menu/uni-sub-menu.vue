@@ -4,10 +4,8 @@
 			<view class="uni-sub-menu__title-sub" :style="{color:disabled?'#999':textColor}">
 				<slot name="title"></slot>
 			</view>
-			<!-- :class="{transition:height!==0}" -->
 			<uni-icons class="uni-sub-menu__icon" :class="{transition:isOpen}" type="arrowdown" color="#bbb" size="14"></uni-icons>
 		</view>
-		<!--  :style="{height:height+'px'}"-->
 		<view class="uni-sub-menu__content" :class="{'uni-sub-menu--close':!isOpen}" :style="{'background-color':backgroundColor}">
 			<view id="content--hook">
 				<slot></slot>
@@ -71,29 +69,20 @@
 				this.getParentAll('SubMenu', this)
 				this.$menuParent = this.getParent('uniNavMenu', this)
 				this.textColor = this.$menuParent.textColor
-				// this.getParentAll('NavMenu', this)
 				// 直系父元素 SubMenu
 				this.$subMenu = this.rootMenu.SubMenu
 
 				this.$subMenuSelf = this.$subMenu[0]
-				if (this.$subMenuSelf) {
-					// console.log(this.$subMenuSelf.index);
-				}
-				// TODO 是否开启折叠面板功能，逻辑需要在处理
-				// this.transition = !this.rootMenu.NavMenu[0].collapseTransition
+
 				// 将当前的示例插入到最外层 subMenu 数组中
 				if (this.$subMenuSelf) {
 					this.$subMenuSelf.childrens && this.$subMenuSelf.childrens.push(this)
 				}
-				
+
 				// 将当前插入到menu数组中
 				if(this.$menuParent){
 					this.$menuParent.subChildrens.push(this)
 				}
-				
-				// setTimeout(() => {
-				// 	this.getQuery()
-				// }, 20)
 			},
 			select() {
 				if(this.disabled) return
@@ -106,7 +95,7 @@
 						if(item.isOpen && subMenu.uniqueOpened) item.isOpen = false
 					}
 				})
-				
+
 				this.$subMenu.forEach((sub,idx)=>{
 						sub.isOpen = true
 						this.indexPath.unshift(sub.index)
@@ -117,40 +106,13 @@
 					subMenu.close(this.indexPath[this.indexPath.length-1],this.indexPath)
 				}
 				this.indexPath = []
-				// TODO 
-				// if (this.height === 0) {
-				// 	this.height = this.oldheight
-				// 	this.open()
-				// } else {
-				// 	// 处理父元素的高度
-				// 	this.$subMenu.forEach(item => {
-				// 		item.height -= this.height
-				// 	})
-				// 	this.height = 0
-				// 	this.close()
-				// }
 			},
 			open() {
 				this.isOpen = true
-				// this.$subMenu.forEach(item => {
-				// 	item.height += this.oldheight
-				// })
 			},
 			close() {
 				this.isOpen = false
-				// // 处理子元素的高度
-				// this.childrens.forEach((item) => {
-				// 	item.height = 0
-				// 	item.close()
-				// })
-			},
-			getQuery() {
-				const query = uni.createSelectorQuery().in(this);
-				query.select('#content--hook').boundingClientRect(data => {
-					this.oldheight = data.height
-				}).exec();
 			}
-
 		}
 	}
 </script>
@@ -202,7 +164,7 @@
 	.transition {
 		transform: rotate(-180deg);
 	}
-	
+
 	.is-disabled {
 		/* background-color: #f5f5f5; */
 		color: red;
@@ -212,5 +174,5 @@
 		color: #999;
 		cursor: not-allowed;
 	}
-	
+
 </style>

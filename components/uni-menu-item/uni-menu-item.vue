@@ -52,25 +52,26 @@
 				// 将当前插入到menu数组中
 				if(this.$menuParent){
 					this.$menuParent.itemChildrens.push(this)
-
-					// 判断当前选中
-					if(this.index && this.$menuParent.active === this.index){
-						this.rootMenu.SubMenu.forEach((item,index)=>{
-							if(!item.disabled) {
-								this.indexPath.push(item.index)
-								if(index === 0){
-									item.select()
-								}
-								item.isOpen = true
-								
-							}
-						})
-						this.onClickItem('init')
-					}
-					
+					this.isActive()
 				}
 			},
-			// 点击 menuItem 
+			// 判断当前选中
+			isActive(){
+				if(this.index && this.$menuParent.active === this.index){
+					this.rootMenu.SubMenu.forEach((item,index)=>{
+						if(!item.disabled) {
+							this.indexPath.push(item.index)
+							if(index === 0){
+								item.select()
+							}
+							item.isOpen = true
+
+						}
+					})
+					this.onClickItem('init')
+				}
+			},
+			// 点击 menuItem
 			onClickItem(e){
 				if(this.disabled) return
 				this.closeOtherActive()
@@ -83,6 +84,7 @@
 					this.$menuParent.open(this.indexPath[this.indexPath.length-1],this.indexPath)
 				}
 			},
+			// 关闭其他选中
 			closeOtherActive(){
 				let parents = this.$menuParent
 				this.indexPath = []
@@ -114,13 +116,13 @@
 		cursor: pointer;
 		// border-bottom: 1px #f5f5f5 solid;
 	}
-	
+
 	.uni-menu-item:hover {
 		outline: none;
 		background-color: $sub-menu-bg-color;
 		transition: all 0.3s;
 	}
-	
+
 	.is-active {
 		color: #42B983;
 		// background-color: #ecf8f3;
