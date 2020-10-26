@@ -101,7 +101,7 @@
                     .then(res => {
                         uni.showModal({
                             title: '提示',
-                            content: res.msg,
+                            content: res.msg === '注册成功' ? '创建成功' : res.msg,
                             showCancel: false,
                             success: (res) => {
                                 if (res.confirm) {
