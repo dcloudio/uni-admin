@@ -217,13 +217,14 @@
     "opendb-admin-menus": {
         "data": [{
             "_id": "system",
+            "menu_id": "system_management",
             "name": "系统管理",
             "icon": "uni-icons-gear",
             "url": "",
             "sort": 1000,
             "parent_id": "",
             "permission": [],
-            "status": 1,
+            "enable": true,
             "create_date": 1602662469396
         }],
         "index": [{
