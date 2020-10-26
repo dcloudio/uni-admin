@@ -2,10 +2,10 @@
     <scroll-view class="sidebar" scroll-y="true">
         <template v-if="inited">
             <uni-nav-menu>
-                <sidebar-item v-for="menu in navMenu" :key="menu._id" :item="menu" />
+                <sidebar-item v-for="menu in navMenu" :key="menu.menu_id" :item="menu" />
             </uni-nav-menu>
             <uni-nav-menu>
-                <sidebar-item v-for="menu in staticMenu" :key="menu._id" :item="menu" />
+                <sidebar-item v-for="menu in staticMenu" :key="menu.menu_id" :item="menu" />
             </uni-nav-menu>
         </template>
     </scroll-view>

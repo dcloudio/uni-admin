@@ -11,7 +11,7 @@
 				<view :class="item.icon"></view>
 				<text :class="{title: item.icon}">{{item.name}}</text>
 			</template>
-			<sidebar-item class="item-bg" v-for="child in item.children" :item="child" :key="child._id" />
+			<sidebar-item class="item-bg" v-for="child in item.children" :item="child" :key="child.menu_id" />
 		</uni-sub-menu>
 	</view>
 </template>

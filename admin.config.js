@@ -28,17 +28,20 @@ export default {
 	sideBar: { // 左侧菜单
 		// 配置静态菜单列表（放置在用户被授权的菜单列表下边）
 		staticMenu: [{
-			_id: 'demo',
+			menu_id: "demo",
 			name: '静态功能演示',
 			icon: 'uni-icons-list',
+			url: "",
 			children: [{
-				_id: 'icons',
+				menu_id: "icons",
 				name: '图标',
-				url: '/pages/demo/icons/icons'
+				icon: '',
+				url: '/pages/demo/icons/icons',
 			}, {
-				_id: 'table',
+				menu_id: "table",
 				name: '表格',
-				url: '/pages/demo/table/table'
+				icon: '',
+				url: '/pages/demo/table/table',
 			}]
 		}]
 	}
