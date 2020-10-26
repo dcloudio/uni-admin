@@ -14,12 +14,8 @@
         mapState,
         mapActions
     } from 'vuex'
-    import sidebarItem from '@/windows/components/sidebar-item.vue'
     import config from '@/admin.config.js'
     export default {
-        components: {
-            sidebarItem
-        },
         data() {
             return {
                 ...config.sideBar,
