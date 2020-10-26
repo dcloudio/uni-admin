@@ -8,7 +8,7 @@
         <view class="uni-container">
             <uni-forms ref="form" validateTrigger="bind" :rules="rules" @submit="submit">
                 <uni-forms-item left-icon="person" name="username" labelWidth="35">
-                    <input class="uni-input-border" type="text" placeholder="账户" @blur="binddata('username',$event.detail.value)" />
+                    <input ref="usernameInput" class="uni-input-border" type="text" placeholder="账户" @blur="binddata('username',$event.detail.value)" />
                 </uni-forms-item>
 
                 <uni-forms-item left-icon="locked" name="password" labelWidth="35">
@@ -89,6 +89,9 @@
                 }
             }
         },
+		mounted() {
+			this.focus()
+		},
         methods: {
             ...mapMutations({
                 setToken(commit, tokenInfo) {
@@ -146,6 +149,9 @@
 			},
 			changePasswordAgain: function() {
 				this.showPasswordAgain = !this.showPasswordAgain;
+			},
+			focus: function () {
+			    this.$refs.usernameInput.$refs.input.focus()
 			}
         }
     }

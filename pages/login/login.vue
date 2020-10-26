@@ -9,7 +9,7 @@
 		<view class="uni-container">
 			<uni-forms ref="form" validateTrigger="bind" :rules="rules" @submit="submit">
 				<uni-forms-item left-icon="person" name="username" labelWidth="35">
-					<input @confirm="confirmForm('username',$event.detail.value)" class="uni-input-border" type="text" placeholder="账户"
+					<input ref="usernameInput" @confirm="confirmForm('username',$event.detail.value)" class="uni-input-border" type="text" placeholder="账户"
 					 @blur="binddata('username',$event.detail.value)" />
 				</uni-forms-item>
 				<uni-forms-item left-icon="locked" class="icon-container" name="password" labelWidth="35">
@@ -73,6 +73,9 @@
 				}
 			}
 		},
+		mounted(){
+			this.focus()
+		},
 		methods: {
 			...mapActions({
 				init: 'app/init'
@@ -134,6 +137,9 @@
 			changePassword: function() {
 				this.showPassword = !this.showPassword;
 			},
+			focus: function () {
+			    this.$refs.usernameInput.$refs.input.focus()
+			}
 		}
 	}
 </script>
