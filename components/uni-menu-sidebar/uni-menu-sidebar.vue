@@ -2,7 +2,7 @@
 	<view class="pointer">
 		<template v-for="(item,index) in data">
 			<template v-if="!item.children || !item.children.length">
-				<uni-menu-item :index="item.url || 'url' + index" @click="clickMenuItem(item)">
+				<uni-menu-item :index="item.url || 'url' + index">
 					<view :class="item.icon"></view>
 					<text :class="{title: item.icon}">{{item.name}}</text>
 				</uni-menu-item>
@@ -34,46 +34,13 @@
 			}
 		},
 		data() {
-			return {
-				route: ''
-			};
+			return {};
 		},
 		computed: {
-			// hasChildActive() {
-			// 	return this.activeUrl(this.active, this.item)
-			// }
+			
 		},
 		methods: {
-			clickMenuItem(menu) {
-				// #ifdef H5
-				if (menu.url.indexOf('http') === 0) {
-					return window.open(menu.url)
-				}
-				// #endif
-				// TODO 后续要调整
-				uni.redirectTo({
-					url: menu.url,
-					fail() {
-						uni.showModal({
-							title: '提示',
-							content: '页面 ' + menu.url + ' 跳转失败',
-							showCancel: false
-						})
-					}
-				})
-			},
-			activeUrl(active, item) {
-				if (item.url === active) {
-					return true
-				}
-				const children = item.children
-				if (children && children.length) {
-					const childItem = children.find(item => this.activeUrl(active, item))
-					if (childItem) {
-						return true
-					}
-				}
-			}
+		
 		}
 	}
 </script>
