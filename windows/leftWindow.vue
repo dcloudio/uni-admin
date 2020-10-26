@@ -1,11 +1,9 @@
 <template>
     <scroll-view class="sidebar" scroll-y="true">
         <template v-if="inited">
-            <uni-nav-menu>
-                <sidebar-item v-for="menu in navMenu" :key="menu.menu_id" :item="menu" />
-            </uni-nav-menu>
-            <uni-nav-menu>
-                <sidebar-item v-for="menu in staticMenu" :key="menu.menu_id" :item="menu" />
+            <uni-nav-menu :active="active" @select="select">
+				<uni-menu-sidebar :data="navMenu"></uni-menu-sidebar>
+				<uni-menu-sidebar :data="staticMenu"></uni-menu-sidebar>
             </uni-nav-menu>
         </template>
     </scroll-view>
@@ -24,16 +22,18 @@
         },
         data() {
             return {
-                ...config.sideBar
+                ...config.sideBar,
+				defaultValue:''
             }
         },
         computed: {
-            ...mapState('app', ['inited', 'navMenu'])
+            ...mapState('app', ['inited', 'navMenu','active'])
         },
         watch: {
             $route: {
                 immediate: true,
                 handler(newRoute, oldRoute) {
+					// console.log('页面发生变化',newRoute.path);
                     this.changeMenuActive(newRoute.path)
                 }
             }
@@ -41,7 +41,28 @@
         methods: {
             ...mapActions({
                 changeMenuActive: 'app/changeMenuActive'
-            })
+            }),
+			select(url){
+				this.clickMenuItem(url)
+			},
+			clickMenuItem(url) {
+				// #ifdef H5
+				if (url.indexOf('http') === 0) {
+					return window.open(url)
+				}
+				// #endif
+				// TODO 后续要调整
+				uni.redirectTo({
+					url: url,
+					fail() {
+						uni.showModal({
+							title: '提示',
+							content: '页面 ' + url + ' 跳转失败',
+							showCancel: false
+						})
+					}
+				})
+			},
         }
     }
 </script>

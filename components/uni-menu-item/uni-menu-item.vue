@@ -1,5 +1,5 @@
 <template>
-	<view class="uni-menu-item" :style="{paddingLeft:paddingLeft}" @click="menuItemClick">
+	<view class="uni-menu-item" :class="{'is-active':active,'is-disabled':disabled}" :style="{paddingLeft:paddingLeft,'color':disabled?'#999':(active?activeTextColor:textColor),'background-color':active?activeBackgroundColor:''}" @click="onClickItem">
 		<slot></slot>
 	</view>
 </template>
@@ -9,9 +9,24 @@
 	export default {
 		name: 'uniMenuItem',
 		mixins:[rootParent],
+		props:{
+			// 唯一标识
+			index: {
+				type:String,
+				default:''
+			},
+			// TODO 是否禁用
+			disabled:{
+				type:Boolean,
+				default:false
+			}
+		},
 		data() {
 			return {
-
+				active:false,
+				activeTextColor:'#42B983',
+				textColor:'#303133',
+				activeBackgroundColor:''
 			};
 		},
 		computed: {
@@ -28,12 +43,61 @@
 					NavMenu: [],
 					SubMenu: []
 				}
+				this.indexPath = []
 				this.getParentAll('SubMenu', this)
-				this.getParentAll('Menu', this)
+				this.$menuParent = this.getParent('uniNavMenu', this)
+				this.activeTextColor = this.$menuParent.activeTextColor
+				this.textColor = this.$menuParent.textColor
+				this.activeBackgroundColor =  this.$menuParent.activeBackgroundColor
+				// 将当前插入到menu数组中
+				if(this.$menuParent){
+					this.$menuParent.itemChildrens.push(this)
+
+					// 判断当前选中
+					if(this.index && this.$menuParent.active === this.index){
+						this.rootMenu.SubMenu.forEach((item,index)=>{
+							if(!item.disabled) {
+								this.indexPath.push(item.index)
+								if(index === 0){
+									item.select()
+								}
+								item.isOpen = true
+								
+							}
+						})
+						this.onClickItem('init')
+					}
+					
+				}
 			},
-			menuItemClick() {
-				this.$emit('click');
+			// 点击 menuItem 
+			onClickItem(e){
+				if(this.disabled) return
+				this.closeOtherActive()
+				this.active = true
+				this.indexPath.unshift(this.index)
+				this.indexPath.reverse()
+				this.$menuParent.select(this.index,this.indexPath)
+				if(e === 'init'){
+					this.indexPath.pop()
+					this.$menuParent.open(this.indexPath[this.indexPath.length-1],this.indexPath)
+				}
 			},
+			closeOtherActive(){
+				let parents = this.$menuParent
+				this.indexPath = []
+				this.rootMenu.SubMenu.forEach((item)=>{
+					if(!item.disabled) {
+						this.indexPath.push(item.index)
+					}
+				})
+				parents&&parents.itemChildrens.map((item)=>{
+					if(item.active) {
+						item.active= false
+					}
+					return item
+				})
+			}
 		}
 	}
 </script>
@@ -45,12 +109,29 @@
 		padding: 0 20px;
 		height: 56px;
 		line-height: 56px;
-		// color: $menu-text-color;
+		color: #303133;
+		transition: all 0.3s;
+		cursor: pointer;
 		// border-bottom: 1px #f5f5f5 solid;
 	}
-
+	
 	.uni-menu-item:hover {
 		outline: none;
-		background-color: $menu-bg-color-hover;
+		background-color: $sub-menu-bg-color;
+		transition: all 0.3s;
+	}
+	
+	.is-active {
+		color: #42B983;
+		// background-color: #ecf8f3;
+	}
+	.is-disabled {
+		// background-color: #f5f5f5;
+		color: #999;
+	}
+	.uni-menu-item.is-disabled:hover {
+		background-color: inherit;
+		color: #999;
+		cursor: not-allowed;
 	}
 </style>

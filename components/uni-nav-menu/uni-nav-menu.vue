@@ -1,6 +1,8 @@
 <template>
-	<view class="uni-nav-menu">
-		<slot></slot>
+	<view class="uni-nav-menu" :style="{'background-color':backgroundColor}">
+		<slot>
+			<uni-menu-sidebar :data="data"></uni-menu-sidebar>
+		</slot>
 	</view>
 </template>
 
@@ -8,6 +10,12 @@
 	export default {
 		name:'uniNavMenu',
 		props: {
+			data:{
+				type:Array,
+				default(){
+					return []
+				}
+			},
 			// 模式	可选值 horizontal / vertical
 			mode: {
 				type: String,
@@ -21,7 +29,7 @@
 			// 菜单的背景色
 			backgroundColor: {
 				type: String,
-				default: '#ffffff'
+				default: '#fff'
 			},
 			// 菜单的文字颜色
 			textColor: {
@@ -31,15 +39,21 @@
 			// 当前激活菜单的文字颜色
 			activeTextColor: {
 				type: String,
-				default: ''
+				default: '#42B983'
 			},
+			// 当前激活菜单的背景色
+			activeBackgroundColor: {
+				type: String,
+				default: 'inherit'
+			},
+
 			// 当前激活菜单的 index
-			defaultActive: {
+			active: {
 				type: String,
 				default: ''
 			},
-			// 是否只保持一个子菜单的展开
-			defaultOpened: {
+			// 当前打开的 sub-menu 的 index 的数组
+			defaultOpeneds: {
 				type: Array,
 				default () {
 					return []
@@ -50,7 +64,7 @@
 				type: Boolean,
 				default: false
 			},
-			// 子菜单打开的触发方式(只在 mode 为 horizontal 时有效) ，可选值 	 hover / click
+			// TODO 子菜单打开的触发方式(只在 mode 为 horizontal 时有效) ，可选值 	 hover / click
 			menuTrigger: {
 				type: String,
 				default: 'hover'
@@ -69,6 +83,39 @@
 			return {
 
 			};
+		},
+		watch:{
+			active(newVal){
+				console.log('active',newVal);
+				// 动态修改选中 index
+				if(this.itemChildrens.length > 0){
+					this.itemChildrens.forEach(item=>{
+						if(item.index === newVal){
+							item.init()
+						}else{
+							item.active = false
+						}
+					})
+				}
+			}
+		},
+		created() {
+			this.itemChildrens = []
+			this.subChildrens = []
+		},
+		methods:{
+			// menu 菜单激活回调
+			select(key,keyPath){
+				this.$emit('select',key,keyPath)
+			},
+			// sub-menu 展开的回调
+			open(key,keyPath){
+				this.$emit('open',key,keyPath)
+			},
+			// sub-menu 收起的回调
+			close(key,keyPath){
+				this.$emit('close',key,keyPath)
+			}
 		}
 	}
 </script>
@@ -76,9 +123,8 @@
 <style lang="scss">
 .uni-nav-menu {
 	width: 240px;
-	background-color: $menu-bg-color;
-	// border: 1px red solid;\
+	min-height: 500px;
+	background-color: #FFFFFF;
 	font-size: 14px;
-    color: $menu-text-color;
 }
 </style>
