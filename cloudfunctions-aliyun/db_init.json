@@ -216,7 +216,6 @@
     },
     "opendb-admin-menus": {
         "data": [{
-            "_id": "system",
             "menu_id": "system_management",
             "name": "系统管理",
             "icon": "uni-icons-gear",
