@@ -44,7 +44,6 @@
 				if (!url) {
 					url = this.active
 				}
-				console.log('select----',url);
 				this.clickMenuItem(url)
 			},
 			clickMenuItem(url) {
