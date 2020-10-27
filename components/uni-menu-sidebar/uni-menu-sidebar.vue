@@ -2,12 +2,12 @@
 	<view class="pointer">
 		<template v-for="(item,index) in data">
 			<template v-if="!item.children || !item.children.length">
-				<uni-menu-item :index="item.url || 'url' + index">
+				<uni-menu-item :index="item">
 					<view :class="item.icon"></view>
 					<text :class="{title: item.icon}">{{item.name}}</text>
 				</uni-menu-item>
 			</template>
-			<uni-sub-menu v-else :index="item.menu_id || 'url' + index">
+			<uni-sub-menu v-else :index="item">
 				<template v-slot:title>
 					<view :class="item.icon"></view>
 					<text :class="{title: item.icon}">{{item.name}}</text>
@@ -37,10 +37,10 @@
 			return {};
 		},
 		computed: {
-			
+
 		},
 		methods: {
-		
+
 		}
 	}
 </script>

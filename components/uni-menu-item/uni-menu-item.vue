@@ -1,5 +1,6 @@
 <template>
-	<view class="uni-menu-item" :class="{'is-active':active,'is-disabled':disabled}" :style="{paddingLeft:paddingLeft,'color':disabled?'#999':(active?activeTextColor:textColor),'background-color':active?activeBackgroundColor:''}" @click="onClickItem">
+	<view class="uni-menu-item" :class="{'is-active':active,'is-disabled':disabled}" :style="{paddingLeft:paddingLeft,'color':disabled?'#999':(active?activeTextColor:textColor),'background-color':active?activeBackgroundColor:''}"
+	 @click="onClickItem">
 		<slot></slot>
 	</view>
 </template>
@@ -8,34 +9,42 @@
 	import rootParent from '../uni-nav-menu/mixins/rootParent.js'
 	export default {
 		name: 'uniMenuItem',
-		mixins:[rootParent],
-		props:{
+		mixins: [rootParent],
+		props: {
 			// 唯一标识
 			index: {
-				type:String,
-				default:''
+				type: [String,Object],
+				default(){
+					return ''
+				}
 			},
 			// TODO 是否禁用
-			disabled:{
-				type:Boolean,
-				default:false
+			disabled: {
+				type: Boolean,
+				default: false
 			}
 		},
 		data() {
 			return {
-				active:false,
-				activeTextColor:'#42B983',
-				textColor:'#303133',
-				activeBackgroundColor:''
+				active: false,
+				activeTextColor: '#42B983',
+				textColor: '#303133',
+				activeBackgroundColor: ''
 			};
 		},
 		computed: {
 			paddingLeft() {
-				return 20+20 * this.rootMenu.SubMenu.length + 'px'
+				return 20 + 20 * this.rootMenu.SubMenu.length + 'px'
 			}
 		},
 		created() {
 			this.init()
+		},
+		destroyed() {
+			if (this.$menuParent) {
+				const menuIndex = this.$menuParent.itemChildrens.findIndex(item => item === this)
+				this.$menuParent.itemChildrens.splice(menuIndex, 1)
+			}
 		},
 		methods: {
 			init() {
@@ -44,62 +53,37 @@
 					SubMenu: []
 				}
 				this.indexPath = []
+				// 获取直系的所有父元素实例
 				this.getParentAll('SubMenu', this)
+				// 获取最外层父元素实例
 				this.$menuParent = this.getParent('uniNavMenu', this)
+				this.$subMenu = this.rootMenu.SubMenu
+
 				this.activeTextColor = this.$menuParent.activeTextColor
 				this.textColor = this.$menuParent.textColor
-				this.activeBackgroundColor =  this.$menuParent.activeBackgroundColor
-				// 将当前插入到menu数组中
-				if(this.$menuParent){
-					this.$menuParent.itemChildrens.push(this)
-					this.isActive()
-				}
-			},
-			// 判断当前选中
-			isActive(){
-				if(this.index && this.$menuParent.active === this.index){
-					this.rootMenu.SubMenu.forEach((item,index)=>{
-						if(!item.disabled) {
-							this.indexPath.push(item.index)
-							if(index === 0){
-								item.select()
-							}
-							item.isOpen = true
+				this.activeBackgroundColor = this.$menuParent.activeBackgroundColor
 
-						}
-					})
-					this.onClickItem('init')
+				// 将当前插入到menu数组中
+				if (this.$menuParent) {
+					this.$menuParent.itemChildrens.push(this)
+					this.$menuParent.isActive(this)
 				}
 			},
+
 			// 点击 menuItem
-			onClickItem(e){
-				if(this.disabled) return
-				this.closeOtherActive()
+			onClickItem(e) {
+				if (this.disabled) return
+				// 关闭其他已经选中的 itemMenu
+				this.$menuParent.closeOtherActive(this)
 				this.active = true
 				this.indexPath.unshift(this.index)
 				this.indexPath.reverse()
-				this.$menuParent.select(this.index,this.indexPath)
-				if(e === 'init'){
-					this.indexPath.pop()
-					this.$menuParent.open(this.indexPath[this.indexPath.length-1],this.indexPath)
+				if(e !== 'init'){
+					// this.$menuParent.activeIndex=this.index
+					this.$menuParent.select(this.index, this.indexPath)
 				}
-			},
-			// 关闭其他选中
-			closeOtherActive(){
-				let parents = this.$menuParent
-				this.indexPath = []
-				this.rootMenu.SubMenu.forEach((item)=>{
-					if(!item.disabled) {
-						this.indexPath.push(item.index)
-					}
-				})
-				parents&&parents.itemChildrens.map((item)=>{
-					if(item.active) {
-						item.active= false
-					}
-					return item
-				})
 			}
+
 		}
 	}
 </script>
@@ -127,10 +111,12 @@
 		color: #42B983;
 		// background-color: #ecf8f3;
 	}
+
 	.is-disabled {
 		// background-color: #f5f5f5;
 		color: #999;
 	}
+
 	.uni-menu-item.is-disabled:hover {
 		background-color: inherit;
 		color: #999;

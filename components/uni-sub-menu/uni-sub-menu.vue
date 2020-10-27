@@ -22,8 +22,10 @@
 		props: {
 			// 唯一标识
 			index: {
-				type: String,
-				default: ''
+				type: [String,Object],
+				default(){
+					return ''
+				}
 			},
 			// TODO 自定义类名
 			popperClass: {
@@ -57,6 +59,13 @@
 		created() {
 			this.init()
 		},
+		destroyed() {
+			// 销毁页面后，将当前页面实例从数据中删除
+			if (this.$menuParent) {
+				const menuIndex = this.$menuParent.subChildrens.findIndex(item => item === this)
+				this.$menuParent.subChildrens.splice(menuIndex, 1)
+			}
+		},
 		methods: {
 			init() {
 				// 所有父元素
@@ -66,18 +75,13 @@
 				}
 				this.childrens = []
 				this.indexPath = []
+				// 获取直系的所有父元素实例
 				this.getParentAll('SubMenu', this)
+				// 获取最外层父元素实例
 				this.$menuParent = this.getParent('uniNavMenu', this)
 				this.textColor = this.$menuParent.textColor
 				// 直系父元素 SubMenu
 				this.$subMenu = this.rootMenu.SubMenu
-
-				this.$subMenuSelf = this.$subMenu[0]
-
-				// 将当前的示例插入到最外层 subMenu 数组中
-				if (this.$subMenuSelf) {
-					this.$subMenuSelf.childrens && this.$subMenuSelf.childrens.push(this)
-				}
 
 				// 将当前插入到menu数组中
 				if(this.$menuParent){
@@ -86,26 +90,8 @@
 			},
 			select() {
 				if(this.disabled) return
-				const subMenu = this.$menuParent
-				subMenu&&subMenu.subChildrens.forEach((item,index)=>{
-					if(item === this){
-						this.isOpen = !this.isOpen
-						this.indexPath.push(this.index)
-					}else{
-						if(item.isOpen && subMenu.uniqueOpened) item.isOpen = false
-					}
-				})
-
-				this.$subMenu.forEach((sub,idx)=>{
-						sub.isOpen = true
-						this.indexPath.unshift(sub.index)
-				})
-				if(this.isOpen){
-					subMenu.open(this.indexPath[this.indexPath.length-1],this.indexPath)
-				}else{
-					subMenu.close(this.indexPath[this.indexPath.length-1],this.indexPath)
-				}
-				this.indexPath = []
+				// 手动开关 sunMenu
+				this.$menuParent.selectMenu(this)
 			},
 			open() {
 				this.isOpen = true

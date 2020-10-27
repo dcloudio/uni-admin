@@ -16,6 +16,7 @@
 					return []
 				}
 			},
+
 			// 模式	可选值 horizontal / vertical
 			mode: {
 				type: String,
@@ -46,7 +47,11 @@
 				type: String,
 				default: 'inherit'
 			},
-
+			// 如果 index 为 Object ，需要指定选中字段的名称
+			activeKey: {
+				type: String,
+				default: 'id'
+			},
 			// 当前激活菜单的 index
 			active: {
 				type: String,
@@ -81,25 +86,22 @@
 		},
 		data() {
 			return {
-
+				activeIndex: this.active
 			};
 		},
 		watch: {
 			active(newVal) {
-				// 动态修改选中 index
+				this.activeIndex=newVal
+			},
+			activeIndex(newVal, oldVal) {
 				if (this.itemChildrens.length > 0) {
 					let isActive = false
-					this.itemChildrens.forEach(item => {
-						if (item.index === newVal) {
-							isActive = true
-							item.isActive()
-						} else {
-							item.active = false
-						}
-					})
-					// 没有任何选中
-					if (!isActive) {
-						this.$emit('select', '', [])
+					for(let i = 0 ; i < this.itemChildrens.length ;i++){
+						const item  = this.itemChildrens[i]
+						isActive = this.isActive(item)
+						if(isActive) break
+					}
+					if(!isActive){
 						this.closeAll()
 					}
 				}
@@ -108,6 +110,7 @@
 		created() {
 			this.itemChildrens = []
 			this.subChildrens = []
+			// this.activeIndex = this.active
 		},
 		methods: {
 			// menu 菜单激活回调
@@ -121,6 +124,68 @@
 			// sub-menu 收起的回调
 			close(key, keyPath) {
 				this.$emit('close', key, keyPath)
+			},
+			// 判断当前选中,只有初始值会使用
+			isActive(subItem) {
+				let active = ''
+				let isActive = false
+				if(typeof(subItem.index) === 'object'){
+					active = subItem.index[this.activeKey] || ''
+				}else{
+					active = subItem.index
+				}
+				if (subItem.index && this.activeIndex === active) {
+					isActive = true
+					subItem.$subMenu.forEach((item, index) => {
+						if (!item.disabled && !subItem.disabled ) {
+							subItem.indexPath.push(item.index)
+							item.isOpen = true
+						}
+					})
+					if(!subItem.active){
+						subItem.onClickItem('init')
+					}
+				}
+				return isActive
+			},
+			// 打开关闭 sunMenu
+			selectMenu(subMenu){
+				// const subMenu = this.$menuParent
+				this.subChildrens.forEach((item,index)=>{
+					if(item === subMenu){
+						subMenu.isOpen = !subMenu.isOpen
+						subMenu.indexPath.push(subMenu.index)
+					}else{
+						if(item.isOpen && this.uniqueOpened) item.isOpen = false
+					}
+				})
+
+				subMenu.$subMenu.forEach((sub,idx)=>{
+						sub.isOpen = true
+						subMenu.indexPath.unshift(sub.index)
+				})
+				if(subMenu.isOpen){
+					this.open(subMenu.indexPath[subMenu.indexPath.length-1],subMenu.indexPath)
+				}else{
+					this.close(subMenu.indexPath[subMenu.indexPath.length-1],subMenu.indexPath)
+				}
+				subMenu.indexPath = []
+			},
+			// 关闭其他选中
+			closeOtherActive(itemMenu) {
+				// let parents = this.$menuParent
+				itemMenu.indexPath = []
+				itemMenu.$subMenu.forEach((item) => {
+					if (!item.disabled) {
+						itemMenu.indexPath.push(item.index)
+					}
+				})
+				this.itemChildrens.map((item) => {
+					if (item.active) {
+						item.active = false
+					}
+					return item
+				})
 			},
 			// 关闭所有
 			closeAll() {
