@@ -74,7 +74,9 @@
 			}
 		},
 		mounted(){
+			// #ifdef H5
 			this.focus()
+			// #endif
 		},
 		methods: {
 			...mapActions({
@@ -137,9 +139,11 @@
 			changePassword: function() {
 				this.showPassword = !this.showPassword;
 			},
+			// #ifdef H5
 			focus: function () {
 			    this.$refs.usernameInput.$refs.input.focus()
 			}
+			// #endif
 		}
 	}
 </script>

@@ -90,7 +90,9 @@
             }
         },
 		mounted() {
+			// #ifdef H5 
 			this.focus()
+			// #endif
 		},
         methods: {
             ...mapMutations({
@@ -150,9 +152,11 @@
 			changePasswordAgain: function() {
 				this.showPasswordAgain = !this.showPasswordAgain;
 			},
+			// #ifdef H5
 			focus: function () {
 			    this.$refs.usernameInput.$refs.input.focus()
 			}
+			// #endif
         }
     }
 </script>
