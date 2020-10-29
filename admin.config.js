@@ -6,7 +6,7 @@ export default {
 		url: '/pages/error/404' // 404 Not Found 错误页面路径
 	},
 	navBar: { // 顶部导航
-		logo: 'https://img.cdn.aliyun.dcloud.net.cn/uni-app/uniCloud/unicloudlogo.png', // 左侧 Logo
+		logo: '/static/logo.png', // 左侧 Logo
 		links: [{ // 右侧链接
 			text: 'Admin框架文档',
 			url: 'https://uniapp.dcloud.net.cn/uniCloud/admin'
