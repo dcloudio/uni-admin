@@ -41,9 +41,7 @@ function initPlugins(config) {
 module.exports = initPlugins({
 	debug: true, // 输出调试信息
 	baseDir: __dirname, // 项目根目录
-	plugin: {
-		test: false
-	}, // 插件配置，可设置是否启用某插件及插件所有参数
+	plugin: {}, // 插件配置，可设置是否启用某插件及插件所有参数
 	middleware: [
 		[
 			auth(), // uniId 校验 token 中间件
