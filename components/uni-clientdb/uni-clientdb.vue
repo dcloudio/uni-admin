@@ -31,18 +31,24 @@
 	/**
 	 * uni-clientdb
 	 * @description uni-clientdb是一个数据库查询组件，它是对uni-clientdb的js库的再封装。
-	 * @tutorial https://uniapp.dcloud.net.cn/uniCloud/uni-clientDB?id=uni-clientdb-component
+	 * @tutorial https://uniapp.dcloud.net.cn/uniCloud/uni-clientdb-component
 	 * @property {String} collection 表名
 	 * @property {String} action 云端执行数据库查询的前或后，触发某个action函数操作，进行预处理或后处理
 	 * @property {String} field 查询字段，多个字段用 `,` 分割
 	 * @property {String} orderby 排序字段及正序倒叙设置
 	 * @property {String} where 查询条件
-	 * @property {String} pageData `add` 多次查询的集合, `replace` 当前查询的集合
+	 * @property {String} pageData = [add|replace] `add` 多次查询的集合, `replace` 当前查询的集合
+	 * @value add 多次查询的集合
+	 * @value replace 当前查询的集合
 	 * @property {Number} pageCurrent 当前页
 	 * @property {Number} pageSize 每页数据数量
-	 * @property {Boolean} getone 指定查询结果是否返回数组第一条数据，默认 false。在false情况下返回的是数组，即便只有一条结果，也需要[0]的方式获取。在true下，直接返回结果数据，少一层数组
+	 * @property {Boolean} getone = [true|false] 指定查询结果是否返回数组第一条数据，默认 false。在false情况下返回的是数组，即便只有一条结果，也需要[0]的方式获取。在true下，直接返回结果数据，少一层数组
+	 * @value true 返回数组第一条数据
+	 * @value false 返回类型是数组，即便只有一条结果
 	 * @property {Boolean} getcount 是否查询总数量
 	 * @property {Boolean} manual 是否手动加载数据，默认为 false，页面onready时自动联网加载数据
+	 * @value true 开启后需要手动加载数据
+	 * @value false 页面onready时自动联网加载数据
 	 * @event {Function} load 成功回调。如联网返回结果后，想修改下数据再渲染界面，则在本方法里对data进行修改
 	 * @event {Function} error 失败回调
 	 */
