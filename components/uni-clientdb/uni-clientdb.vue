@@ -182,7 +182,7 @@
 			if (process.env.NODE_ENV === 'development' && window.unidev) {
 				var cd = this._debugDataList
 				var dl = unidev.clientDB.data
-				for (var i = dl.length; i >= 0; i--) {
+				for (var i = dl.length - 1; i >= 0; i--) {
 					if (dl[i] === cd) {
 						dl.splice(i, 1)
 						break
@@ -340,7 +340,11 @@
 					_id: dbCmd.in(ids)
 				}).remove().then((res) => {
 					callback && callback(res)
-					this.refresh()
+					if (this.pageData === pageMode.replace) {
+						this.refresh()
+					} else {
+						this.removeData(ids)
+					}
 				}).catch((err) => {
 					uni.showModal({
 						content: err.message,
@@ -349,6 +353,17 @@
 				}).finally(() => {
 					uni.hideLoading()
 				})
+			},
+			removeData(ids) {
+				let il = ids.slice(0)
+				let dl = this.dataList
+				for (let i = dl.length - 1; i >= 0; i--) {
+					let index = il.indexOf(dl[i]._id)
+					if (index >= 0) {
+						dl.splice(i, 1)
+						il.splice(index, 1)
+					}
+				}
 			},
 			_dispatchEvent(type, data) {
 				if (this._changeDataFunction) {
