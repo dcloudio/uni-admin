@@ -17,7 +17,7 @@
 				</uni-forms-item>
 
                 <uni-forms-item left-icon="locked" name="passwordConfirmation" labelWidth="35" :errorMessage="errorMessage">
-                    <input @confirm="confirmForm('passwordConfirmation',$event.detail.value)" @blur="binddata('passwordConfirmation',$event.detail.value)"
+                    <input ref="passwordInput" @confirm="confirmForm('passwordConfirmation',$event.detail.value)" @blur="binddata('passwordConfirmation',$event.detail.value)"
                         class="uni-input-border" :password="showPasswordAgain" placeholder="确认密码" />
 					<text class="uni-icon-password-eye pointer" :class="[!showPasswordAgain ? 'uni-eye-active' : '']" @click="changePasswordAgain">&#xe568;</text>
 				</uni-forms-item>
@@ -90,7 +90,7 @@
             }
         },
 		mounted() {
-			// #ifdef H5 
+			// #ifdef H5
 			this.focus()
 			// #endif
 		},
@@ -101,6 +101,9 @@
                 }
             }),
             register(formData) {
+				// #ifdef H5
+				this.$refs.passwordInput.$refs.input.blur()
+				// #endif
                 this.loading = true
                 this.$request('user/register', formData)
                     .then(res => {
@@ -121,6 +124,9 @@
                     })
             },
             submit(event) {
+				if (this.loading) {
+					return
+				}
                 const {
                     errors,
                     value

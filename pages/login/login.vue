@@ -13,7 +13,7 @@
 					 @blur="binddata('username',$event.detail.value)" />
 				</uni-forms-item>
 				<uni-forms-item left-icon="locked" class="icon-container" name="password" labelWidth="35">
-					<input @confirm="confirmForm('password',$event.detail.value)" class="uni-input-border" :password="showPassword"
+					<input ref="passwordInput" @confirm="confirmForm('password',$event.detail.value)" class="uni-input-border" :password="showPassword"
 					 placeholder="密码" @blur="binddata('password',$event.detail.value)" />
 					<text class="uni-icon-password-eye pointer" :class="[!showPassword ? 'uni-eye-active' : '']" @click="changePassword">&#xe568;</text>
 				</uni-forms-item>
@@ -88,6 +88,9 @@
 				}
 			}),
 			submit(event) {
+				if (this.loading) {
+					return
+				}
 				const {
 					errors,
 					value
@@ -95,7 +98,9 @@
 				if (errors) {
 					return
 				}
-
+				// #ifdef H5
+				this.$refs.passwordInput.$refs.input.blur()
+				// #endif
 				this.loading = true
 				this.$request('user/login', value)
 					.then(res => {
@@ -131,17 +136,12 @@
 					url: '/pages/demo/init/init'
 				})
 			},
-			enter(e) {
-				if (e.keyCode == 13) {
-					this.submitForm('form')
-				}
-			},
 			changePassword: function() {
 				this.showPassword = !this.showPassword;
 			},
 			// #ifdef H5
 			focus: function () {
-			    this.$refs.usernameInput.$refs.input.focus()
+				this.$refs.usernameInput.$refs.input.focus()
 			}
 			// #endif
 		}
