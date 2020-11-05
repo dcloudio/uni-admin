@@ -23,6 +23,39 @@
 		}
 	],
 	"subPackages": [{
+		"root": "pages/system",
+		"pages": [{
+			"path": "menu/list",
+			"style": {
+				"navigationBarTitleText": "菜单管理"
+			}
+		}, {
+			"path": "menu/add",
+			"style": {
+				"navigationBarTitleText": "新增菜单"
+			}
+		}, {
+			"path": "menu/edit",
+			"style": {
+				"navigationBarTitleText": "修改菜单"
+			}
+		}, {
+			"path": "permission/list",
+			"style": {
+				"navigationBarTitleText": "权限管理"
+			}
+		}, {
+			"path": "permission/add",
+			"style": {
+				"navigationBarTitleText": "新增权限"
+			}
+		}, {
+			"path": "permission/edit",
+			"style": {
+				"navigationBarTitleText": "修改权限"
+			}
+		}]
+	}, {
 		"root": "pages/demo",
 		"pages": [{
 			"path": "init/init",
