@@ -2,7 +2,7 @@
     <view>
         <view class="uni-header">
             <view class="uni-group">
-                <view class="uni-title"></view>
+                <view class="uni-title">权限管理</view>
                 <view class="uni-sub-title"></view>
             </view>
             <view class="uni-group">
