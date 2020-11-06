@@ -30,7 +30,7 @@
 						<!-- <uni-td align="center">{{item.password}}</uni-td> -->
 						<uni-td align="center">{{item.mobile}}</uni-td>
 						<uni-td align="center">{{item.email}}</uni-td>
-						<uni-td align="center">{{item.status ? '启用' : '禁用'}}</uni-td>
+						<uni-td align="center">{{item.status || item.username === 'admin' ? '启用' : '禁用'}}</uni-td>
 						<uni-td align="center">
 							<view class="uni-group">
 								<button @click="navigateTo('./edit?id='+item._id)" class="uni-button" size="mini" type="primary">修改</button>

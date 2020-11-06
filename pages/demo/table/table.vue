@@ -2,9 +2,9 @@
     <view>
         <view class="uni-header">
             <view class="uni-group">
-                <view class="uni-title" style="word-break: keep-all;">表格</view>
+                <view class="uni-title">表格</view>
             </view>
-            <view class="uni-group" style="word-break: keep-all;">
+            <view class="uni-group">
                 <input class="uni-search" type="text" v-model="searchVal" placeholder="请输入搜索内容" />
                 <button class="uni-button" type="default" size="mini" @click="search">搜索</button>
                 <button class="uni-button" type="default" size="mini">新增</button>

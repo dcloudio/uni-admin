@@ -14,7 +14,7 @@
 				<input placeholder="邮箱" @input="binddata('email', $event.detail.value)" class="uni-input-border" :value="formData.email" />
 			</uni-forms-item>
 			<uni-forms-item name="status" label="是否启用">
-				<switch @change="binddata('status', $event.detail.value)" :checked="Number(formData.status)" />
+				<switch @change="binddata('status', $event.detail.value)" :checked="formData.status" />
 			</uni-forms-item>
 
 			<view class="uni-button-group">
@@ -83,35 +83,20 @@
 					title: '提交中...',
 					mask: true
 				})
-				// 使用 uni-clientDB 提交数据
-				// db.collection(dbCollectionName).add(value).then((res) => {
-				// 	uni.showToast({
-				// 		title: '新增成功'
-				// 	})
-				// 	this.getOpenerEventChannel().emit('refreshData')
-				// 	setTimeout(() => uni.navigateBack(), 500)
-				// }).catch((err) => {
-				// 	uni.showModal({
-				// 		content: err.message || '请求服务失败',
-				// 		showCancel: false
-				// 	})
-				// }).finally(() => {
-				// 	uni.hideLoading()
-				// })
 
 				this.$request('user/addUser', value)
 				    .then(res => {
-				        uni.showModal({
-				            title: '提示',
-				            content: res.msg === '注册成功' ? '创建成功' : res.msg,
-				            showCancel: false,
-				            success: (res) => {
-				                if (res.confirm) {
-									uni.navigateBack()
-				                }
-				            }
-				        })
-				    }).catch(err => {}).finally(err => {
+						uni.showToast({
+							title: '新增成功'
+						})
+						this.getOpenerEventChannel().emit('refreshData')
+						setTimeout(() => uni.navigateBack(), 500)
+				    }).catch(err => {
+						uni.showModal({
+							content: err.message || '请求服务失败',
+							showCancel: false
+						})
+					}).finally(err => {
 				        uni.hideLoading()
 				    })
 			}

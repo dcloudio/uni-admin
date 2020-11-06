@@ -42,13 +42,17 @@ module.exports = class UserController extends Controller {
 			status
 	    } = this.ctx.data
 
-	    return uniID.register({
+	    const result = await uniID.register({
 	        username,
 	        password,
 			mobile,
 			email,
 			status
 	    })
+		delete result.token
+		delete result.tokenExpired
+		
+		return result
 	}
 
     async logout() {
