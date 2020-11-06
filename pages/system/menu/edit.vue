@@ -23,7 +23,7 @@
 			<uni-forms-item name="parent_id" label="父菜单标识">
 				<input placeholder="父级菜单标识" @input="binddata('parent_id', $event.detail.value)" class="uni-input-border" :value="formData.parent_id" />
 			</uni-forms-item>
-			<uni-forms-item v-if="permissions.length" name="permission" label="权限列表" style="margin-bottom: 40px;">
+			<uni-forms-item v-if="permissions.length" name="permission" label="权限列表" style="margin-bottom: 60px;">
 				<uni-data-checklist multiple :value="formData.permission" :range="permissions" @change="binddata('permission', $event.detail.value)"></uni-data-checklist>
 				<view class="uni-form-item-tips">
 					当用户拥有以上被选中的权限时，可以访问此菜单，建议仅对子菜单配置权限，父菜单会自动包含。
