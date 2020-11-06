@@ -52,7 +52,7 @@
 								errorMessage: '请输入账户',
 							},
 							{
-								minLength: 3,
+								minLength: 1,
 								maxLength: 30,
 								errorMessage: '账户长度在{minLength}到{maxLength}个字符',
 							}
