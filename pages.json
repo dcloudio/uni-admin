@@ -1,24 +1,24 @@
 {
-	"pages": [ //pages数组中第一项表示应用启动页，参考：https://uniapp.dcloud.io/collocation/pages
-		{
-			"path": "pages/index/index"
-		}, {
-			"path": "pages/login/login",
-			"style": {
-				"topWindow": false,
-				"leftWindow": false,
-				"navigationBarTitleText": "登录"
-			}
-		}, {
-			"path": "pages/error/404",
-			"style": {
-				"navigationBarTitleText": "Not Found"
-			}
-		}, {
-			"path": "pages/changepwd/changepwd",
-			"style": {
-				"navigationBarTitleText": "修改密码"
-			}
+    "pages": [ //pages数组中第一项表示应用启动页，参考：https://uniapp.dcloud.io/collocation/pages
+        {
+            "path": "pages/index/index"
+        }, {
+            "path": "pages/login/login",
+            "style": {
+                "topWindow": false,
+                "leftWindow": false,
+                "navigationBarTitleText": "登录"
+            }
+        }, {
+            "path": "pages/error/404",
+            "style": {
+                "navigationBarTitleText": "Not Found"
+            }
+        }, {
+            "path": "pages/changepwd/changepwd",
+            "style": {
+                "navigationBarTitleText": "修改密码"
+            }
 
 		}
 	],
@@ -54,7 +54,38 @@
 			"style": {
 				"navigationBarTitleText": "修改权限"
 			}
-		}]
+		}, {
+            "path": "role/add",
+            "style": {
+                "navigationBarTitleText": "新增角色"
+            }
+        }, {
+            "path": "role/edit",
+            "style": {
+                "navigationBarTitleText": "修改角色"
+            }
+        }, {
+            "path": "role/list",
+            "style": {
+                "navigationBarTitleText": "角色管理"
+            }
+        }
+        , {
+            "path": "user/add",
+            "style": {
+                "navigationBarTitleText": "新增用户"
+            }
+        }, {
+            "path": "user/edit",
+		    "style": {
+			    "navigationBarTitleText": "修改用户"
+		    }
+        }, {
+            "path": "user/list",
+            "style": {
+                "navigationBarTitleText": "用户管理"
+            }
+        }]
 	}, {
 		"root": "pages/demo",
 		"pages": [{

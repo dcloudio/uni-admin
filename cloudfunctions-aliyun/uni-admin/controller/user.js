@@ -33,6 +33,24 @@ module.exports = class UserController extends Controller {
         })
     }
 
+	async addUser() {
+	    const {
+	        username,
+	        password,
+			mobile,
+			email,
+			status
+	    } = this.ctx.data
+
+	    return uniID.register({
+	        username,
+	        password,
+			mobile,
+			email,
+			status
+	    })
+	}
+
     async logout() {
         return this.service.user.logout(this.ctx.event.uniIdToken)
     }

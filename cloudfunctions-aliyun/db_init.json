@@ -245,6 +245,30 @@
 			"permission": [],
 			"enable": true,
 			"create_date": 1602662469396
+		}, {
+			"menu_id": "system_role",
+			"name": "角色管理",
+			"icon": "",
+			"url": "/pages/system/role/list",
+			"sort": 1021,
+			"parent_id": "system_management",
+			"permission": [
+				"admin"
+			],
+			"enable": true,
+			"create_date": 1602662469397
+		}, {
+			"menu_id": "system_user",
+			"name": "用户管理",
+			"icon": "",
+			"url": "/pages/system/user/list",
+			"sort": 1022,
+			"parent_id": "system_management",
+			"permission": [
+				"admin"
+			],
+			"enable": true,
+			"create_date": 1602662469398
 		}],
 		"index": [{
 			"IndexName": "menu_id",
