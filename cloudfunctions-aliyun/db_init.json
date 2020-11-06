@@ -5,6 +5,96 @@
 {
 	"uni-id-users": {
 		"data": [],
+		"schema": {
+			"bsonType": "object",
+			"required": [
+				"username",
+				"password"
+			],
+			"permission": {
+				"read": false,
+				"create": false,
+				"update": false,
+				"delete": false
+			},
+			"properties": {
+				"_id": {
+					"description": "ID，系统自动生成"
+				},
+				"username": {
+					"bsonType": "string",
+					"label": "用户名",
+					"minLength": 2,
+					"maxLength": 10,
+					"errorMessage": {
+						"required": "{label}必填",
+						"minLength": "{label}不能小于{minLength}个字符"
+					},
+					"permission": {
+						"read": false,
+						"write": false
+					},
+					"component": {
+						"name": "input",
+						"props": {
+							"placeholder": "请输入用户名"
+						}
+					}
+				},
+				"password": {
+					"bsonType": "string",
+					"label": "初始密码",
+					"minLength": 6,
+					"errorMessage": {
+						"required": "{label}必填",
+						"minLength": "{label}不能小于{minLength}个字符"
+					},
+					"permission": {
+						"read": false,
+						"write": false
+					},
+					"component": {
+						"name": "input",
+						"props": {
+							"placeholder": "请输入初始密码"
+						}
+					}
+				},
+				"mobile": {
+					"bsonType": "string",
+					"label": "手机号",
+					"minLength": 11,
+					"permission": {
+						"read": false,
+						"write": false
+					},
+					"component": {
+						"name": "input",
+						"props": {
+							"placeholder": "手机号"
+						}
+					}
+				},
+				"email": {
+					"bsonType": "string",
+					"label": "邮箱",
+					"permission": {
+						"read": false,
+						"write": false
+					},
+					"component": {
+						"name": "input",
+						"props": {
+							"placeholder": "邮箱"
+						}
+					}
+				},
+				"status": {
+					"bsonType": "bool",
+					"label": "是否启用"
+				}
+			}
+		},
 		"index": [{
 			"IndexName": "username",
 			"MgoKeySchema": {
@@ -136,6 +226,77 @@
 	},
 	"uni-id-roles": {
 		"data": [],
+		"schema": {
+			"bsonType": "object",
+			"required": [
+				"role_id"
+			],
+			"permission": {
+				"read": false,
+				"create": false,
+				"update": false,
+				"delete": false
+			},
+			"properties": {
+				"_id": {
+					"description": "ID，系统自动生成"
+				},
+				"role_id": {
+					"bsonType": "string",
+					"label": "角色Id",
+					"minLength": 2,
+					"maxLength": 10,
+					"errorMessage": {
+						"required": "{label}必填",
+						"minLength": "{label}不能小于{minLength}个字符"
+					},
+					"permission": {
+						"read": false,
+						"write": false
+					},
+					"component": {
+						"name": "input",
+						"props": {
+							"placeholder": "请输入姓名"
+						}
+					}
+				},
+				"role_name": {
+					"bsonType": "string",
+					"label": "角色名",
+					"minLength": 2,
+					"maxLength": 10,
+					"errorMessage": {
+						"required": "{label}必填",
+						"minLength": "{label}不能小于{minLength}个字符"
+					},
+					"permission": {
+						"read": false,
+						"write": false
+					},
+					"component": {
+						"name": "input",
+						"props": {
+							"placeholder": "请输入角色名"
+						}
+					}
+				},
+				"comment": {
+					"bsonType": "string",
+					"label": "备注",
+					"permission": {
+						"read": false,
+						"write": false
+					},
+					"component": {
+						"name": "textarea",
+						"props": {
+							"placeholder": "请输入备注"
+						}
+					}
+				}
+			}
+		},
 		"index": [{
 				"IndexName": "role_id",
 				"MgoKeySchema": {
@@ -226,15 +387,29 @@
 			"enable": true,
 			"create_date": 1602662469396
 		}, {
-			"menu_id": "system_menu",
-			"name": "菜单管理",
+			"menu_id": "system_user",
+			"name": "用户管理",
 			"icon": "",
-			"url": "/pages/system/menu/list",
+			"url": "/pages/system/user/list",
+			"sort": 1010,
+			"parent_id": "system_management",
+			"permission": [
+
+			],
+			"enable": true,
+			"create_date": 1602662469398
+		}, {
+			"menu_id": "system_role",
+			"name": "角色管理",
+			"icon": "",
+			"url": "/pages/system/role/list",
 			"sort": 1020,
 			"parent_id": "system_management",
-			"permission": [],
+			"permission": [
+
+			],
 			"enable": true,
-			"create_date": 1602662469396
+			"create_date": 1602662469397
 		}, {
 			"menu_id": "system_permission",
 			"name": "权限管理",
@@ -246,29 +421,15 @@
 			"enable": true,
 			"create_date": 1602662469396
 		}, {
-			"menu_id": "system_role",
-			"name": "角色管理",
+			"menu_id": "system_menu",
+			"name": "菜单管理",
 			"icon": "",
-			"url": "/pages/system/role/list",
-			"sort": 1021,
+			"url": "/pages/system/menu/list",
+			"sort": 1040,
 			"parent_id": "system_management",
-			"permission": [
-				"admin"
-			],
+			"permission": [],
 			"enable": true,
-			"create_date": 1602662469397
-		}, {
-			"menu_id": "system_user",
-			"name": "用户管理",
-			"icon": "",
-			"url": "/pages/system/user/list",
-			"sort": 1022,
-			"parent_id": "system_management",
-			"permission": [
-				"admin"
-			],
-			"enable": true,
-			"create_date": 1602662469398
+			"create_date": 1602662469396
 		}],
 		"index": [{
 			"IndexName": "menu_id",
