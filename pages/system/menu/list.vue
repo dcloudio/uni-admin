@@ -169,7 +169,9 @@
 			},
 			loadData() {
 				this.loading = true
-				this.$request('system/menu/list').then(res => {
+				this.$request('system/menu/list', {}, {
+					showModal: false
+				}).then(res => {
 					this.menus = flatMenus(res)
 				}).catch(err => {
 					this.errMsg = err.message
