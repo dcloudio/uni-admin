@@ -234,3 +234,11 @@ html {
 	border-right-color: #dcdfe6;
 	border-left-color: #dcdfe6;
 }
+
+.uni-form-item-tips {
+	color: #999;
+	font-size: 12px;
+	margin-top: 3px;
+	position: absolute;
+
+}

@@ -8,8 +8,10 @@
 			<uni-forms-item name="name" label="名称">
 				<input placeholder="菜单名称" @input="binddata('name', $event.detail.value)" class="uni-input-border" :value="formData.name" />
 			</uni-forms-item>
-			<uni-forms-item name="icon" label="图标">
+			<uni-forms-item name="icon" label="图标" style="margin-bottom: 40px;">
 				<input placeholder="菜单图标" @input="binddata('icon', $event.detail.value)" class="uni-input-border" :value="formData.icon" />
+				<uni-link font-size="12" href="https://uniapp.dcloud.net.cn/uniCloud/admin?id=icon-%e5%9b%be%e6%a0%87" text="如何获取内置图标或使用自定义图标？"
+				 class="uni-form-item-tips"></uni-link>
 			</uni-forms-item>
 			<uni-forms-item name="url" label="URL">
 				<input placeholder="菜单url" @input="binddata('url', $event.detail.value)" class="uni-input-border" :value="formData.url" />
@@ -23,7 +25,7 @@
 			</uni-forms-item>
 			<uni-forms-item v-if="permissions.length" name="permission" label="权限列表" style="margin-bottom: 40px;">
 				<uni-data-checklist multiple :value="formData.permission" :range="permissions" @change="binddata('permission', $event.detail.value)"></uni-data-checklist>
-				<view class="uni-sub-title" style="position: absolute;font-size: 12px;">
+				<view class="uni-form-item-tips">
 					当用户拥有以上被选中的权限时，可以访问此菜单
 				</view>
 			</uni-forms-item>
