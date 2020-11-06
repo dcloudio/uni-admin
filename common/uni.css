@@ -175,6 +175,7 @@ html {
 .uni-icon-password-eye {
 	position: absolute;
 	right: 8px;
+	top: 6px;
 	font-family: uniicons;
 	font-size: 20px;
 	font-weight: normal;
