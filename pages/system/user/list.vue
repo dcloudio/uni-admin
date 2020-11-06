@@ -32,7 +32,8 @@
 						<uni-td align="center">{{item.email}}</uni-td>
 						<uni-td align="center">{{item.status || item.username === 'admin' ? '启用' : '禁用'}}</uni-td>
 						<uni-td align="center">
-							<view class="uni-group">
+							<view v-if="item.username === 'admin'">无</view>
+							<view v-else class="uni-group">
 								<button @click="navigateTo('./edit?id='+item._id)" class="uni-button" size="mini" type="primary">修改</button>
 								<button @click="confirmDelete(item._id)" class="uni-button" size="mini" type="warn">删除</button>
 							</view>
