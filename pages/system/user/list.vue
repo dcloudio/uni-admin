@@ -20,6 +20,7 @@
 					<uni-tr>
 						<uni-th align="center">用户名</uni-th>
 						<!-- <uni-th align="center">初始密码</uni-th> -->
+						<uni-th align="center">角色</uni-th>
 						<uni-th align="center">手机号</uni-th>
 						<uni-th align="center">邮箱</uni-th>
 						<uni-th align="center">是否启用</uni-th>
@@ -28,11 +29,12 @@
 					<uni-tr v-for="(item,index) in data" :key="index">
 						<uni-td align="center">{{item.username}}</uni-td>
 						<!-- <uni-td align="center">{{item.password}}</uni-td> -->
+						<uni-td align="center">{{item.role ? item.role.join('，') : '-'}}</uni-td>
 						<uni-td align="center">{{item.mobile}}</uni-td>
 						<uni-td align="center">{{item.email}}</uni-td>
 						<uni-td align="center">{{item.status || item.username === 'admin' ? '启用' : '禁用'}}</uni-td>
 						<uni-td align="center">
-							<view v-if="item.username === 'admin'">无</view>
+							<view v-if="item.role ? item.role.includes('admin') : false">-</view>
 							<view v-else class="uni-group">
 								<button @click="navigateTo('./edit?id='+item._id)" class="uni-button" size="mini" type="primary">修改</button>
 								<button @click="confirmDelete(item._id)" class="uni-button" size="mini" type="warn">删除</button>

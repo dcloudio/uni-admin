@@ -253,3 +253,6 @@ html {
 	position: absolute;
 
 }
+.uni-form-item-empty {
+	top: -2px;
+}

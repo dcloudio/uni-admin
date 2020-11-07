@@ -7,10 +7,12 @@
 			<uni-forms-item name="role_name" label="角色名">
 				<input placeholder="请输入角色名" @input="binddata('role_name', $event.detail.value)" class="uni-input-border" :value="formData.role_name" />
 			</uni-forms-item>
+			<uni-forms-item v-if="permissions.length" name="permission" label="权限列表" style="margin-bottom: 60px;">
+				<uni-data-checklist multiple :value="formData.permission" :range="permissions" @change="binddata('permission', $event.detail.value)"></uni-data-checklist>
+			</uni-forms-item>
 			<uni-forms-item name="comment" label="备注">
 				<textarea placeholder="请输入备注" @input="binddata('comment', $event.detail.value)" class="uni-textarea-border" :value="formData.comment"></textarea>
 			</uni-forms-item>
-
 			<view class="uni-button-group">
 				<button style="width: 100px;" type="primary" class="uni-button" @click="submitForm">提交</button>
 				<navigator open-type="navigateBack" style="margin-left: 15px;"><button style="width: 100px;" class="uni-button">返回</button></navigator>
@@ -42,17 +44,20 @@
 				formData: {
 					"role_id": "",
 					"role_name": "",
+					"permission": [],
 					"comment": ""
 				},
 				rules: {
-					...getValidator(["role_id", "role_name", "comment"])
-				}
+					...getValidator(["role_id", "role_name", "permission", "comment"])
+				},
+				permissions: []
 			}
 		},
 		onLoad(e) {
 			const id = e.id
 			this.formDataId = id
 			this.getDetail(id)
+			this.loadPermissions()
 		},
 		methods: {
 			/**
@@ -126,6 +131,22 @@
 					})
 				}).finally(() => {
 					uni.hideLoading()
+				})
+			},
+			loadPermissions() {
+				db.collection('uni-id-permissions').limit(500).get().then(res => {
+					this.permissions = res.result.data.map(item => {
+						return {
+							value: item.permission_id,
+							text: item.permission_name
+						}
+					})
+				}).catch(err => {
+					uni.showModal({
+						title: '提示',
+						content: err.message,
+						showCancel: false
+					})
 				})
 			}
 		}

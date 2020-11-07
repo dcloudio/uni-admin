@@ -7,6 +7,12 @@
 			<!-- <uni-forms-item name="password" label="初始密码">
 				<input placeholder="请输入初始密码" @input="binddata('password', $event.detail.value)" class="uni-input-border" :value="formData.password" />
 			</uni-forms-item> -->
+			<uni-forms-item v-if="roles.length" name="role" label="角色列表" style="margin-bottom: 60px;">
+				<uni-data-checklist multiple :value="formData.role" :range="roles" @change="binddata('role', $event.detail.value)"></uni-data-checklist>
+				<view class="uni-form-item-tips">
+					当用户拥有以上被选中的角色时
+				</view>
+			</uni-forms-item>
 			<uni-forms-item name="mobile" label="手机号">
 				<input placeholder="手机号" @input="binddata('mobile', $event.detail.value)" class="uni-input-border" :value="formData.mobile" />
 			</uni-forms-item>
@@ -16,7 +22,6 @@
 			<uni-forms-item name="status" label="是否启用">
 				<switch @change="binddata('status', $event.detail.value)" :checked="formData.status" />
 			</uni-forms-item>
-
 			<view class="uni-button-group">
 				<button style="width: 100px;" type="primary" class="uni-button" @click="submitForm">提交</button>
 				<navigator open-type="navigateBack" style="margin-left: 15px;"><button style="width: 100px;" class="uni-button">返回</button></navigator>
@@ -48,19 +53,23 @@
 				formData: {
 					"username": "",
 					"password": "",
+					"role": [],
 					"mobile": "",
 					"email": "",
 					"status": null
 				},
 				rules: {
-					...getValidator(["username", "password", "mobile", "email", "status"])
-				}
+					...getValidator(["username", "password", "role", "mobile", "email", "status"])
+				},
+				roles: []
 			}
 		},
 		onLoad(e) {
 			const id = e.id
 			this.formDataId = id
 			this.getDetail(id)
+			this.loadroles()
+
 		},
 		methods: {
 			/**
@@ -135,7 +144,28 @@
 				}).finally(() => {
 					uni.hideLoading()
 				})
+			},
+			loadroles() {
+				db.collection('uni-id-roles').limit(500).get().then(res => {
+					this.roles = res.result.data.map(item => {
+						return {
+							value: item.role_id,
+							text: item.role_name
+						}
+					})
+					this.roles.unshift({
+						value: 'admin',
+						text: 'admin'
+					})
+				}).catch(err => {
+					uni.showModal({
+						title: '提示',
+						content: err.message,
+						showCancel: false
+					})
+				})
 			}
+
 		}
 	}
 </script>
