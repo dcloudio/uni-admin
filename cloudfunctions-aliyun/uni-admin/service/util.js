@@ -29,10 +29,12 @@ function getParentIds(menuItem, menuList) {
 function buildMenus(menuList, trim = true) {
 	// 保证父子级顺序
 	menuList = menuList.sort(function(a, b) {
-		if (getParentIds(a, menuList).includes(b.menu_id)) {
+		const parentIdsA = getParentIds(a, menuList)
+		const parentIdsB = getParentIds(b, menuList)
+		if (parentIdsA.includes(b.menu_id)) {
 			return 1
 		}
-		return a.sort - b.sort
+		return parentIdsA.length - parentIdsB.length || a.sort - b.sort
 	})
 	// 删除无subMenu且非子节点的菜单项
 	if (trim) {
