@@ -32,7 +32,7 @@ function buildMenus(menuList, trim = true) {
 		if (getParentIds(a, menuList).includes(b.menu_id)) {
 			return 1
 		}
-		return a.menu_id > b.menu_id ? 1 : -1
+		return a.sort - b.sort
 	})
 	// 删除无subMenu且非子节点的菜单项
 	if (trim) {
