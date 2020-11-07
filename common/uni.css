@@ -11,6 +11,15 @@ html {
 	background-color: #f5f5f5;
 }
 
+.uni-app--showleftwindow uni-page-head .uni-page-head {
+	margin: 15px;
+	border-radius: 5px 5px 0 0;
+}
+
+.uni-app--showleftwindow uni-page-head ~ uni-page-wrapper  uni-page-body {
+	padding-top: 44px;
+}
+
 .uni-app--showleftwindow uni-page-wrapper {
 	position: absolute;
 	width: 100%;

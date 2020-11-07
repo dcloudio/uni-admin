@@ -9,7 +9,7 @@
 				<input class="uni-search" type="text" v-model="query" placeholder="请输入搜索内容" />
 				<button class="uni-button" type="default" size="mini" @click="search">搜索</button>
 				<button class="uni-button" type="default" size="mini" @click="navigateTo('./add')">新增</button>
-				<button class="uni-button" type="default" size="mini" @click="delTable">批量删除</button>
+				<!-- <button class="uni-button" type="default" size="mini" @click="delTable">批量删除</button> -->
 			</view>
 		</view>
 		<view class="uni-container">

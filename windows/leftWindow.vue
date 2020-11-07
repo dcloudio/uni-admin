@@ -74,9 +74,9 @@
 <style lang="scss">
 	.sidebar {
 		position: fixed;
-		top: var(--window-top);
+		top: var(--top-window-height);
 		width: 240px;
-		height: calc(100vh - (var(--window-top)));
+		height: calc(100vh - (var(--top-window-height)));
 		box-sizing: border-box;
 		border-right: 1px solid darken($left-window-bg-color, 8%);
 		background-color: $left-window-bg-color;

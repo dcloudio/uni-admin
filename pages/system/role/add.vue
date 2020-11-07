@@ -1,7 +1,7 @@
 <template>
 	<view class="uni-container">
 		<uni-forms ref="form" v-model="formData" :rules="rules" validateTrigger="bind" @submit="submit">
-			<uni-forms-item name="role_id" label="角色Id">
+			<uni-forms-item name="role_id" label="角色id">
 				<input placeholder="请输入姓名" @input="binddata('role_id', $event.detail.value)" class="uni-input-border" :value="formData.role_id" />
 			</uni-forms-item>
 			<uni-forms-item name="role_name" label="角色名">

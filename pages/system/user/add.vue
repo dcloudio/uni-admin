@@ -50,7 +50,7 @@
 					"password": "",
 					"mobile": "",
 					"email": "",
-					"status": null
+					"status": true
 				},
 				rules: {
 					...getValidator(["username", "password", "mobile", "email", "status"])
