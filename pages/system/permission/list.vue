@@ -21,7 +21,7 @@
                         <uni-th width="150" align="center">名称</uni-th>
                         <uni-th align="center">备注</uni-th>
                         <uni-th width="170" align="center">创建时间</uni-th>
-                        <uni-th width="204" align="center">操作</uni-th>
+                        <uni-th width="160" align="center">操作</uni-th>
                     </uni-tr>
                     <uni-tr v-for="(item,index) in data" :key="index">
                         <uni-td align="center">{{item.permission_id}}</uni-td>
