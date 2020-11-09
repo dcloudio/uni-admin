@@ -18,11 +18,11 @@
 	}
 
 	const attrs = [
+		'pageCurrent',
+		'pageSize',
 		'collection',
 		'action',
 		'field',
-		'pageCurrent',
-		'pageSize',
 		'getcount',
 		'orderby',
 		'where'
@@ -109,7 +109,7 @@
 		data() {
 			return {
 				loading: false,
-				dataList: [],
+				dataList: this.getone ? {} : [],
 				paginationInternal: {
 					current: this.pageCurrent,
 					size: this.pageSize,
@@ -127,9 +127,24 @@
 					al.push(this[key])
 				})
 				return al
-			}, () => {
-				this.clear()
-				this.reset()
+			}, (newValue, oldValue) => {
+				this.paginationInternal.pageSize = this.pageSize
+
+				let needReset = false
+				for (let i = 2; i < newValue.length; i++) {
+					if (newValue[i] != oldValue[i]) {
+						needReset = true
+						break
+					}
+				}
+				if (needReset) {
+					this.clear()
+					this.reset()
+				}
+				if (newValue[0] != oldValue[0]) {
+					this.paginationInternal.current = this.pageCurrent
+				}
+
 				this._execLoadData()
 			})
 
@@ -234,6 +249,9 @@
 				confirmTitle,
 				confirmContent
 			} = {}) {
+				if (!id || !id.length) {
+					return
+				}
 				uni.showModal({
 					title: confirmTitle || '提示',
 					content: confirmContent || '是否删除该数据',
@@ -339,7 +357,7 @@
 				exec.collection(this.collection).where({
 					_id: dbCmd.in(ids)
 				}).remove().then((res) => {
-					callback && callback(res)
+					callback && callback(res.result)
 					if (this.pageData === pageMode.replace) {
 						this.refresh()
 					} else {
