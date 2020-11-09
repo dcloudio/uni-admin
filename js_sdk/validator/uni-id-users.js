@@ -62,13 +62,5 @@ export default {
         "format": "array"
       }
     ]
-  },
-  "status": {
-    "rules": [
-      {
-        "format": "bool"
-      }
-    ],
-    "label": "是否启用"
   }
 }
