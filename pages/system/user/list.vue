@@ -32,7 +32,7 @@
 						<uni-td align="center">{{item.role ? item.role.join('，') : '-'}}</uni-td>
 						<uni-td align="center">{{item.mobile}}</uni-td>
 						<uni-td align="center">{{item.email}}</uni-td>
-						<uni-td align="center">{{item.role.includes('admin') ? '启用' : parseUserStatus(item.status)}}</uni-td>
+						<uni-td align="center">{{item.role && item.role.includes('admin') ? '启用' : parseUserStatus(item.status)}}</uni-td>
 						<uni-td align="center">
 							<view v-if="item.role ? item.role.includes('admin') : false">-</view>
 							<view v-else class="uni-group">
