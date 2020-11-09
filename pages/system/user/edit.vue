@@ -20,7 +20,7 @@
 				<input placeholder="邮箱" @input="binddata('email', $event.detail.value)" class="uni-input-border" :value="formData.email" />
 			</uni-forms-item>
 			<uni-forms-item name="status" label="是否启用">
-				<switch @change="binddata('status', $event.detail.value)" :checked="formData.status" />
+				<switch @change="binddata('status', $event.detail.value)" :checked="!Boolean(formData.status)" />
 			</uni-forms-item>
 			<view class="uni-button-group">
 				<button style="width: 100px;" type="primary" class="uni-button" @click="submitForm">提交</button>
@@ -56,7 +56,7 @@
 					"role": [],
 					"mobile": "",
 					"email": "",
-					"status": null
+					"status": 1
 				},
 				rules: {
 					...getValidator(["username", "password", "role", "mobile", "email", "status"])
@@ -93,12 +93,19 @@
 				if (errors) {
 					return
 				}
-
 				uni.showLoading({
 					title: '修改中...',
 					mask: true
 				})
 
+				// 是否启用功能的数据类型转换， 0 正常， 1 禁用
+				// 编辑默认禁用，初始值不处理
+				console.log('======this.formData.status=======', this.formData.status)
+				console.log(11111111, value.status)
+				if (typeof value.status === "boolean") {
+					value.status = Number(!value.status)
+				}
+				console.log(2222222222, value.status)
 				// 使用 uni-clientDB 提交数据
 				db.collection(dbCollectionName).where({
 					_id: this.formDataId

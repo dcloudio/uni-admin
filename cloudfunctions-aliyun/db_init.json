@@ -7,33 +7,39 @@
 		"data": [],
 		"schema": {
 			"bsonType": "object",
-			"required": [],
 			"properties": {
 				"_id": {
 					"description": "存储文档 ID（用户 ID），系统自动生成"
 				},
-				"username": {
+				"ali_openid": {
 					"bsonType": "string",
-					"title": "用户名",
-					"description": "用户名，不允许重复"
+					"description": "支付宝平台openid"
 				},
-				"password": {
+				"avatar": {
 					"bsonType": "string",
-					"title": "密码",
-					"description": "密码，加密存储"
+					"description": "头像地址",
+					"title": "头像地址"
 				},
-				"nickname": {
+				"comment": {
 					"bsonType": "string",
-					"title": "昵称",
-					"description": "用户昵称"
+					"description": "备注",
+					"title": "备注"
+				},
+				"email": {
+					"bsonType": "string",
+					"description": "邮箱地址",
+					"format": "email",
+					"title": "邮箱"
+				},
+				"email_confirmed": {
+					"bsonType": "int",
+					"description": "邮箱验证状态：0 未验证 1 已验证",
+					"maximum": 1,
+					"minimum": 0
 				},
 				"gender": {
 					"bsonType": "int",
-					"title": "性别",
-					"description": "用户性别：0 未知 1 男性 2 女性",
-					"defaultValue": 0,
 					"component": {
-						"name": "radio-group",
 						"childrenData": [{
 								"label": "未知",
 								"value": 0
@@ -46,108 +52,88 @@
 								"label": "女",
 								"value": 2
 							}
-						]
-					}
+						],
+						"name": "radio-group"
+					},
+					"defaultValue": 0,
+					"description": "用户性别：0 未知 1 男性 2 女性",
+					"title": "性别"
 				},
-				"status": {
-					"bsonType": "int",
-					"description": "用户状态：0 正常 1 禁用 2 审核中 3 审核拒绝"
+				"inviter_uid": {
+					"bsonType": "array",
+					"description": "用户全部上级邀请者"
+				},
+				"last_login_date": {
+					"bsonType": "timestamp",
+					"description": "最后登录时间"
+				},
+				"last_login_ip": {
+					"bsonType": "string",
+					"description": "最后登录时 IP 地址"
 				},
 				"mobile": {
 					"bsonType": "string",
-					"title": "手机号码",
 					"description": "手机号码",
-					"pattern": "^\\+?[0-9-]{3,20}$"
+					"pattern": "^\\+?[0-9-]{3,20}$",
+					"title": "手机号码"
 				},
 				"mobile_confirmed": {
 					"bsonType": "int",
-					"minimum": 0,
+					"description": "手机号验证状态：0 未验证 1 已验证",
 					"maximum": 1,
-					"description": "手机号验证状态：0 未验证 1 已验证"
+					"minimum": 0
 				},
-				"email": {
+				"my_invite_code": {
 					"bsonType": "string",
-					"format": "email",
-					"title": "邮箱",
-					"description": "邮箱地址"
+					"description": "用户自身邀请码"
 				},
-				"email_confirmed": {
-					"bsonType": "int",
-					"minimum": 0,
-					"maximum": 1,
-					"description": "邮箱验证状态：0 未验证 1 已验证"
-				},
-				"avatar": {
+				"nickname": {
 					"bsonType": "string",
-					"title": "头像地址",
-					"description": "头像地址"
+					"description": "用户昵称",
+					"title": "昵称"
 				},
-				"wx_unionid": {
+				"password": {
 					"bsonType": "string",
-					"description": "微信unionid"
-				},
-				"wx_openid": {
-					"bsonType": "object",
-					"description": "微信各个平台openid",
-					"properties": {
-						"app-plus": {
-							"bsonType": "string",
-							"description": "app平台微信openid"
-						},
-						"mp-weixin": {
-							"bsonType": "string",
-							"description": "微信小程序平台openid"
-						}
-					}
-				},
-				"ali_openid": {
-					"bsonType": "string",
-					"description": "支付宝平台openid"
-				},
-				"comment": {
-					"bsonType": "string",
-					"title": "备注",
-					"description": "备注"
+					"description": "密码，加密存储",
+					"title": "密码"
 				},
 				"realname_auth": {
 					"bsonType": "object",
 					"description": "实名认证信息",
-					"required": [
-						"type",
-						"auth_status"
-					],
 					"properties": {
-						"type": {
-							"bsonType": "int",
-							"minimum": 0,
-							"maximum": 1,
-							"description": "用户类型：0 个人用户 1 企业用户"
-						},
-						"auth_status": {
-							"bsonType": "int",
-							"minimum": 0,
-							"maximum": 3,
-							"description": "认证状态：0 未认证 1 等待认证 2 认证通过 3 认证失败"
-						},
 						"auth_date": {
 							"bsonType": "timestamp",
 							"description": "认证通过时间"
 						},
-						"real_name": {
-							"bsonType": "string",
-							"description": "真实姓名/企业名称"
+						"auth_status": {
+							"bsonType": "int",
+							"description": "认证状态：0 未认证 1 等待认证 2 认证通过 3 认证失败",
+							"maximum": 3,
+							"minimum": 0
 						},
-						"identity": {
+						"contact_email": {
 							"bsonType": "string",
-							"description": "身份证号码/营业执照号码"
+							"description": "联系人邮箱"
+						},
+						"contact_mobile": {
+							"bsonType": "string",
+							"description": "联系人手机号码"
+						},
+						"contact_person": {
+							"bsonType": "string",
+							"description": "联系人姓名"
+						},
+						"id_card_back": {
+							"bsonType": "string",
+							"description": "身份证反面照 URL"
 						},
 						"id_card_front": {
 							"bsonType": "string",
 							"description": "身份证正面照 URL"
 						},
-						"id_card_back": {
+						"identity": {
 							"bsonType": "string",
-							"description": "身份证反面照 URL"
+							"description": "身份证号码/营业执照号码"
 						},
 						"in_hand": {
 							"bsonType": "string",
@@ -157,19 +143,21 @@
 							"bsonType": "string",
 							"description": "营业执照 URL"
 						},
-						"contact_person": {
+						"real_name": {
 							"bsonType": "string",
-							"description": "联系人姓名"
+							"description": "真实姓名/企业名称"
 						},
-						"contact_mobile": {
-							"bsonType": "string",
-							"description": "联系人手机号码"
-						},
-						"contact_email": {
-							"bsonType": "string",
-							"description": "联系人邮箱"
+						"type": {
+							"bsonType": "int",
+							"description": "用户类型：0 个人用户 1 企业用户",
+							"maximum": 1,
+							"minimum": 0
 						}
-					}
+					},
+					"required": [
+						"type",
+						"auth_status"
+					]
 				},
 				"register_date": {
 					"bsonType": "timestamp",
@@ -185,27 +173,42 @@
 						"$env": "clientIP"
 					}
 				},
-				"last_login_date": {
-					"bsonType": "timestamp",
-					"description": "最后登录时间"
-				},
-				"last_login_ip": {
-					"bsonType": "string",
-					"description": "最后登录时 IP 地址"
+				"status": {
+					"bsonType": "int",
+					"description": "用户状态：0 正常 1 禁用 2 审核中 3 审核拒绝"
 				},
 				"token": {
 					"bsonType": "array",
 					"description": "用户token"
 				},
-				"inviter_uid": {
-					"bsonType": "array",
-					"description": "用户全部上级邀请者"
-				},
-				"my_invite_code": {
+				"username": {
 					"bsonType": "string",
-					"description": "用户自身邀请码"
+					"description": "用户名，不允许重复",
+					"title": "用户名"
+				},
+				"role": {
+					"bsonType": "array"
+				},
+				"wx_openid": {
+					"bsonType": "object",
+					"description": "微信各个平台openid",
+					"properties": {
+						"app-plus": {
+							"bsonType": "string",
+							"description": "app平台微信openid"
+						},
+						"mp-weixin": {
+							"bsonType": "string",
+							"description": "微信小程序平台openid"
+						}
+					}
+				},
+				"wx_unionid": {
+					"bsonType": "string",
+					"description": "微信unionid"
 				}
-			}
+			},
+			"required": []
 		},
 		"index": [{
 			"IndexName": "username",

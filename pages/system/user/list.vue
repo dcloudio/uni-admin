@@ -32,7 +32,7 @@
 						<uni-td align="center">{{item.role ? item.role.join('，') : '-'}}</uni-td>
 						<uni-td align="center">{{item.mobile}}</uni-td>
 						<uni-td align="center">{{item.email}}</uni-td>
-						<uni-td align="center">{{item.status || item.username === 'admin' ? '启用' : '禁用'}}</uni-td>
+						<uni-td align="center">{{item.role.includes('admin') ? '启用' : parseUserStatus(item.status)}}</uni-td>
 						<uni-td align="center">
 							<view v-if="item.role ? item.role.includes('admin') : false">-</view>
 							<view v-else class="uni-group">
@@ -126,6 +126,19 @@
 			},
 			confirmDelete(id) {
 				this.$refs.udb.remove(id)
+			},
+			parseUserStatus(status) {
+				if (status === 0) {
+					return '启用'
+				} else if (status === 1) {
+					return '禁用'
+				} else if (status === 2) {
+					return '审核中'
+				} else if (status === 3) {
+					return '审核拒绝'
+				} else {
+					return '未知'
+				}
 			}
 		}
 	}

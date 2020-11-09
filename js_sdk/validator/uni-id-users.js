@@ -14,8 +14,7 @@ export default {
         "format": "string"
       },
       {
-        "minLength": 2,
-        "maxLength": 10
+        "minLength": 2
       }
     ],
     "label": "用户名"
@@ -41,7 +40,7 @@ export default {
         "format": "string"
       },
       {
-        "minLength": 11
+        "pattern": "^\\+?[0-9-]{3,20}$"
       }
     ],
     "label": "手机号"
@@ -50,9 +49,19 @@ export default {
     "rules": [
       {
         "format": "string"
-      }
+      },
+	  {
+	    "format": "email"
+	  }
     ],
     "label": "邮箱"
+  },
+  "role": {
+    "rules": [
+      {
+        "format": "array"
+      }
+    ]
   },
   "status": {
     "rules": [

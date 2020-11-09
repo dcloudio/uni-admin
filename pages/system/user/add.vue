@@ -20,7 +20,7 @@
 				<input placeholder="邮箱" @input="binddata('email', $event.detail.value)" class="uni-input-border" :value="formData.email" />
 			</uni-forms-item>
 			<uni-forms-item name="status" label="是否启用">
-				<switch @change="binddata('status', $event.detail.value)" :checked="formData.status" />
+				<switch @change="binddata('status', $event.detail.value)" :checked="!Boolean(formData.status)" />
 			</uni-forms-item>
 			<view class="uni-button-group">
 				<button style="width: 100px;" type="primary" class="uni-button" @click="submitForm">提交</button>
@@ -56,10 +56,10 @@
 					"role": [],
 					"mobile": "",
 					"email": "",
-					"status": true
+					"status": 0  //默认启用
 				},
 				rules: {
-					...getValidator(["username", "password", "role", "mobile", "email", "status"])
+					...getValidator(["username", "password", "role", "mobile", "email"])
 				},
 				roles: []
 			}
@@ -93,8 +93,12 @@
 					title: '提交中...',
 					mask: true
 				})
-
-				this.$request('user/addUser', value)
+				// 是否启用功能的数据类型转换， 0 正常， 1 禁用
+				// 默认开启，初始值不处理
+				if (typeof value.status === "boolean") {
+					value.status = Number(!value.status)
+				}
+				this.$request('system/user/addUser', value)
 				    .then(res => {
 						uni.showToast({
 							title: '新增成功'
