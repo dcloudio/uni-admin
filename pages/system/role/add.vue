@@ -9,7 +9,7 @@
 			</uni-forms-item>
 			<uni-forms-item name="permission" label="权限列表">
 				<uni-data-checklist v-if="permissions.length" multiple :range="permissions" @change="binddata('permission', $event.detail.value)"></uni-data-checklist>
-				<view v-else class="uni-form-item-tips uni-form-item-empty">
+				<view v-else class="uni-form-item-empty">
 					暂无
 				</view>
 			</uni-forms-item>

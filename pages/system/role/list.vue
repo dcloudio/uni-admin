@@ -13,7 +13,7 @@
 			</view>
 		</view>
 		<view class="uni-container">
-			<uni-clientdb ref="udb" :collection="collectionName" :options="options" :where="where" page-data="replace" :orderby="orderby"
+			<uni-clientdb ref="udb" :collection="collectionName" :options="options" :where="where" field="role_id,role_name,permission{permission_id,permission_name},comment,create_date" page-data="replace" :orderby="orderby"
 			 :getcount="true" :page-size="options.pageSize" :page-current="options.pageCurrent" v-slot:default="{data,pagination,loading,error}">
 				<uni-table :loading="loading" :emptyText="error.message || '没有更多数据'" border stripe type="selection"
 				 @selection-change="selectionChange">
@@ -22,17 +22,21 @@
 						<uni-th align="center">角色名</uni-th>
 						<uni-th align="center">权限</uni-th>
 						<uni-th align="center">备注</uni-th>
+						<uni-th width="170" align="center">创建时间</uni-th>
 						<uni-th width="204" align="center">操作</uni-th>
 					</uni-tr>
 					<uni-tr v-for="(item,index) in data" :key="index">
 						<uni-td align="center">{{item.role_id}}</uni-td>
 						<uni-td align="center">{{item.role_name}}</uni-td>
-						<uni-td align="center">{{item.permission ? item.permission.join('，') : '-'}}</uni-td>
+						<uni-td align="center">{{item.permission ? item.permission.map(pItem => pItem.permission_name).join('、') : '-'}}</uni-td>
 						<uni-td align="center">{{item.comment}}</uni-td>
+						<uni-td align="center">
+						    <uni-dateformat :date="item.create_date" :threshold="[0, 0]" />
+						</uni-td>
 						<uni-td align="center">
 							<view class="uni-group">
 								<button @click="navigateTo('./edit?id='+item._id)" class="uni-button" size="mini" type="primary">修改</button>
-								<button @click="confirmDelete(item._id)" class="uni-button" size="mini" type="warn">删除</button>
+								<button @click="confirmDelete(item.role_id)" class="uni-button" size="mini" type="warn">删除</button>
 							</view>
 						</uni-td>
 					</uni-tr>
@@ -49,7 +53,7 @@
 <script>
 	const db = uniCloud.database()
 	// 表查询配置
-	const dbCollectionName = 'uni-id-roles'
+	const dbCollectionName = 'uni-id-roles,uni-id-permissions'
 	const dbOrderBy = '' // 排序字段
 	const dbSearchFields = [] // 支持模糊搜索的字段列表
 	// 分页配置
@@ -109,18 +113,49 @@
 			// 多选处理
 			selectedItems() {
 				var dataList = this.$refs.udb.dataList
-				return this.selectedIndexs.map(i => dataList[i]._id)
+				return this.selectedIndexs.map(i => dataList[i].role_id)
 			},
 			//批量删除
 			delTable() {
-				this.$refs.udb.remove(this.selectedItems())
+				uni.showModal({
+				    title: '提示',
+				    content: '确认删除多条记录？',
+				    success: (res) => {
+				        res.confirm && this.delete(this.selectedItems())
+				    }
+				})
 			},
 			// 多选
 			selectionChange(e) {
 				this.selectedIndexs = e.detail.index
 			},
 			confirmDelete(id) {
-				this.$refs.udb.remove(id)
+				uni.showModal({
+				    title: '提示',
+				    content: '确认删除该记录？',
+				    success: (res) => {
+				        res.confirm && this.delete(id)
+				    }
+				})
+			},
+			async delete(id) {
+				uni.showLoading({
+				    mask: true
+				})
+				await this.$request('system/role/remove', {id})
+				    .then(res => {
+						uni.showToast({
+							title: '删除成功'
+						})
+				    }).catch(err => {
+						uni.showModal({
+							content: err.message || '请求服务失败',
+							showCancel: false
+						})
+					}).finally(err => {
+				        uni.hideLoading()
+				    })
+				this.loadData(false)
 			}
 		}
 	}

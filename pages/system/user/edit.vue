@@ -7,10 +7,10 @@
 			<!-- <uni-forms-item name="password" label="初始密码">
 				<input placeholder="请输入初始密码" @input="binddata('password', $event.detail.value)" class="uni-input-border" :value="formData.password" />
 			</uni-forms-item> -->
-			<uni-forms-item v-if="roles.length" name="role" label="角色列表" style="margin-bottom: 60px;">
-				<uni-data-checklist multiple :value="formData.role" :range="roles" @change="binddata('role', $event.detail.value)"></uni-data-checklist>
-				<view class="uni-form-item-tips">
-					当用户拥有以上被选中的角色时
+			<uni-forms-item name="role" label="角色列表">
+				<uni-data-checklist multiple v-if="roles.length" :value="formData.role" :range="roles" @change="binddata('role', $event.detail.value)"></uni-data-checklist>
+				<view v-else class="uni-form-item-empty">
+					暂无
 				</view>
 			</uni-forms-item>
 			<uni-forms-item name="mobile" label="手机号">
@@ -21,7 +21,7 @@
 			</uni-forms-item>
 			<uni-forms-item name="status" label="是否启用">
 				<switch v-if="typeof formData.status === 'boolean'" @change="binddata('status', $event.detail.value)" :checked="formData.status" />
-				<view v-else class="uni-form-item-tips uni-form-item-empty">{{formData.status}}</view>
+				<view v-else class="uni-form-item-empty">{{formData.status}}</view>
 			</uni-forms-item>
 			<view class="uni-button-group">
 				<button style="width: 100px;" type="primary" class="uni-button" @click="submitForm">提交</button>
@@ -57,7 +57,7 @@
 					"role": [],
 					"mobile": "",
 					"email": "",
-					"status": false  //默认开启
+					"status": false //默认开启
 				},
 				rules: {
 					...getValidator(["username", "password", "role", "mobile", "email"])

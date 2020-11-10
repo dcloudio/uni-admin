@@ -9,7 +9,7 @@
 			</uni-forms-item>
 			<uni-forms-item name="role" label="角色列表">
 				<uni-data-checklist v-if="roles.length" multiple :range="roles" @change="binddata('role', $event.detail.value)"></uni-data-checklist>
-				<view v-else class="uni-form-item-tips uni-form-item-empty">
+				<view v-else class="uni-form-item-empty">
 					暂无
 				</view>
 			</uni-forms-item>

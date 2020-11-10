@@ -187,7 +187,8 @@
 					"title": "用户名"
 				},
 				"role": {
-					"bsonType": "array"
+					"bsonType": "array",
+					"foreignKey": "uni-id-roles.role_id"
 				},
 				"wx_openid": {
 					"bsonType": "object",
@@ -369,7 +370,8 @@
 				"permission": {
 					"title": "权限",
 					"bsonType": "array",
-					"description": "角色拥有的权限列表"
+					"description": "角色拥有的权限列表",
+					"foreignKey": "uni-id-permissions.permission_id"
 				},
 				"comment": {
 					"title": "备注",

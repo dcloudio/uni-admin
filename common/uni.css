@@ -254,5 +254,7 @@ html {
 
 }
 .uni-form-item-empty {
-	top: -2px;
+	color: #999;
+	min-height: 30px;
+	line-height: 30px;
 }

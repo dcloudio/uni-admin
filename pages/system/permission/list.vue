@@ -9,13 +9,15 @@
                 <input class="uni-search" type="text" v-model="query" placeholder="权限标识/名称" />
                 <button class="uni-button" type="default" @click="search">搜索</button>
                 <button @click="navigateTo('./add')" class="uni-button" type="default">新增</button>
+				<button class="uni-button" type="default" size="mini" @click="delTable">批量删除</button>
             </view>
         </view>
         <view class="uni-container">
             <uni-clientdb ref="dataQuery" :collection="collectionName" :options="options" :where="where" page-data="replace"
                 :orderby="orderby" :getcount="true" :page-size="options.pageSize" :page-current="options.pageCurrent"
                 v-slot:default="{data,pagination,loading,error}">
-                <uni-table :loading="loading" :emptyText="error.message || '没有更多数据'" border stripe>
+                <uni-table :loading="loading" :emptyText="error.message || '没有更多数据'" border stripe type="selection"
+				 @selection-change="selectionChange">
                     <uni-tr>
                         <uni-th width="250" align="center">标识</uni-th>
                         <uni-th width="150" align="center">名称</uni-th>
@@ -33,7 +35,7 @@
                         <uni-td align="center">
                             <view class="uni-group">
                                 <button size="mini" @click="navigateTo('./edit?id='+item._id)" class="uni-button" type="primary">修改</button>
-                                <button size="mini" @click="confirmDelete(item._id)" class="uni-button" type="warn">删除</button>
+                                <button size="mini" @click="confirmDelete(item.permission_id)" class="uni-button" type="warn">删除</button>
                             </view>
                         </uni-td>
                     </uni-tr>
@@ -107,6 +109,25 @@
                     }
                 })
             },
+			// 多选处理
+			selectedItems() {
+				var dataList = this.$refs.dataQuery.dataList
+				return this.selectedIndexs.map(i => dataList[i].permission_id)
+			},
+			//批量删除
+			delTable() {
+				uni.showModal({
+				    title: '提示',
+				    content: '确认删除多条记录？',
+				    success: (res) => {
+				        res.confirm && this.delete(this.selectedItems())
+				    }
+				})
+			},
+			// 多选
+			selectionChange(e) {
+				this.selectedIndexs = e.detail.index
+			},
             confirmDelete(id) {
                 uni.showModal({
                     title: '提示',
@@ -120,15 +141,19 @@
                 uni.showLoading({
                     mask: true
                 })
-                try {
-                    await db.collection(this.collectionName).doc(id).remove()
-                } catch (e) {
-                    uni.showModal({
-                        title: '提示',
-                        content: e.message
-                    })
-                }
-                uni.hideLoading()
+				await this.$request('system/permission/remove', {id})
+				    .then(res => {
+						uni.showToast({
+							title: '删除成功'
+						})
+				    }).catch(err => {
+						uni.showModal({
+							content: err.message || '请求服务失败',
+							showCancel: false
+						})
+					}).finally(err => {
+				        uni.hideLoading()
+				    })
                 this.loadData(false)
             }
         }
