@@ -157,7 +157,7 @@ register_date" :threshold="[0, 0]" />
 					})
 					return
 				}
-				this.$refs.udb.remove(id)
+				this.$refs.udb.remove(item._id)
 			},
 			parseUserStatus(status) {
 				if (status === 0) {
