@@ -16,7 +16,11 @@ html {
 	border-radius: 5px 5px 0 0;
 }
 
-.uni-app--showleftwindow uni-page-head ~ uni-page-wrapper  uni-page-body {
+.uni-app--showleftwindow uni-page-head[uni-page-head-type=default]~uni-page-wrapper {
+	height: auto;
+}
+
+.uni-app--showleftwindow uni-page-head~uni-page-wrapper uni-page-body {
 	padding-top: 44px;
 }
 
@@ -253,6 +257,7 @@ html {
 	position: absolute;
 
 }
+
 .uni-form-item-empty {
 	color: #999;
 	min-height: 30px;
