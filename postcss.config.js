@@ -15,7 +15,7 @@ module.exports = {
             }
         },
         'autoprefixer': {
-            overrideBrowserslist: ["> 1%", "last 2 versions"],
+            overrideBrowserslist: ["> 1%", "last 2 versions", "not dead"],
             remove: process.env.UNI_PLATFORM !== 'h5',
 			ignoreUnknownVersions: true
         },
