@@ -6,6 +6,8 @@ html {
 	user-select: auto;
 }
 
+/* #ifdef H5 */
+
 .uni-app--showleftwindow uni-main {
 	position: relative;
 	background-color: #f5f5f5;
@@ -48,6 +50,8 @@ html {
 	padding: 15px;
 	max-width: 460px;
 }
+
+/* #endif */
 
 .pointer {
 	cursor: pointer;
