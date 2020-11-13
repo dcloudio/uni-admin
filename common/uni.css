@@ -13,6 +13,10 @@ html {
 	background-color: #f5f5f5;
 }
 
+.uni-mask+.uni-left-window, .uni-mask+.uni-right-window{
+	position: fixed;
+}
+
 .uni-app--showleftwindow uni-page-head .uni-page-head {
 	margin: 15px;
 	border-radius: 5px 5px 0 0;
