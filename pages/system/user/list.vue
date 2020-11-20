@@ -13,8 +13,7 @@
 			</view>
 		</view>
 		<view class="uni-container">
-			<uni-clientdb ref="udb" :collection="collectionName" :options="options" :where="where" field="username,role{role_id,role_name},mobile,email,status,
-register_date"
+			<uni-clientdb ref="udb" :collection="collectionName" :options="options" :where="where" field="username,role{role_id,role_name},mobile,email,status,register_date"
 			 page-data="replace" :orderby="orderby" :getcount="true" :page-size="options.pageSize" :page-current="options.pageCurrent"
 			 v-slot:default="{data,pagination,loading,error}">
 				<uni-table :loading="loading" :emptyText="error.message || '没有更多数据'" border stripe type="selection"
