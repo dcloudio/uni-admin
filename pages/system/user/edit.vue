@@ -130,9 +130,11 @@
 				uni.showLoading({
 					mask: true
 				})
-				db.collection(dbCollectionName).where({
-					_id: id
-				}).get().then((res) => {
+				db.collection(dbCollectionName)
+				.doc(id)
+				.field('username,role,mobile,email,status')
+				.get()
+				.then((res) => {
 					const data = res.result.data[0]
 					if (data) {
 						// Object.keys(this.formData).forEach(name => {
