@@ -114,7 +114,7 @@
 								icon: 'none'
 							})
 							uni.redirectTo({
-								url: '/'
+								url: '/pages/index/index'
 							})
 						})
 					}).catch(err => {
