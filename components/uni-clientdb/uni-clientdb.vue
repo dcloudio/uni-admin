@@ -313,7 +313,7 @@
 					exec = exec.action(this.action)
 				}
 
-				exec = db.collection(this.collection)
+				exec = exec.collection(this.collection)
 
 				if (!(!this.where || !Object.keys(this.where).length)) {
 					exec = exec.where(this.where)
