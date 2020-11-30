@@ -1,11 +1,9 @@
 <template>
 	<scroll-view class="sidebar" scroll-y="true">
-		<template v-if="inited">
 			<uni-nav-menu :active="active" activeKey="url" activeTextColor="#409eff" @select="select">
 				<uni-menu-sidebar :data="navMenu"></uni-menu-sidebar>
 				<uni-menu-sidebar :data="staticMenu"></uni-menu-sidebar>
 			</uni-nav-menu>
-		</template>
 	</scroll-view>
 </template>
 
@@ -25,16 +23,18 @@
 		computed: {
 			...mapState('app', ['inited', 'navMenu', 'active'])
 		},
+		// #ifdef H5
 		watch: {
 			$route: {
 				immediate: true,
 				handler(newRoute, oldRoute) {
-					if(newRoute.path !== (oldRoute&&oldRoute.path)){
+					if (newRoute.path !== (oldRoute && oldRoute.path)) {
 						this.changeMenuActive(newRoute.path)
 					}
 				}
 			}
 		},
+		// #endif
 		methods: {
 			...mapActions({
 				changeMenuActive: 'app/changeMenuActive'
@@ -55,10 +55,10 @@
 				// TODO 后续要调整
 				uni.redirectTo({
 					url: url,
-					success:()=> {
+					success: () => {
 						this.changeMenuActive(url)
 					},
-					fail:()=> {
+					fail: () => {
 						uni.showModal({
 							title: '提示',
 							content: '页面 ' + url + ' 跳转失败',

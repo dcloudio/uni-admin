@@ -37,6 +37,9 @@
                 <uni-pagination show-icon :page-size="pageSize" :current="pageCurrent" :total="total" @change="change" />
             </view>
         </view>
+		<!-- #ifndef H5 -->
+		<fix-window />
+		<!-- #endif -->
     </view>
 </template>
 
@@ -135,5 +138,9 @@
 </script>
 
 <style>
-
+	/* #ifndef H5 */
+	page {
+		padding-top: 85px;
+	}
+	/* #endif */
 </style>

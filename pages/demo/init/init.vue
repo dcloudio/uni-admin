@@ -28,8 +28,10 @@
 
             </uni-forms>
         </view>
+		<!-- #ifndef H5 -->
+		<fix-window />
+		<!-- #endif -->
     </view>
-
 </template>
 <script>
     import {
@@ -175,6 +177,9 @@
         /* align-items: center; */
         justify-content: center;
         background-color: #fff;
+		/* #ifndef H5 */
+		padding-top: 85px;
+		/* #endif */
     }
 
     .login-box {

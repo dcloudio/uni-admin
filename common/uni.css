@@ -57,6 +57,12 @@ html {
 
 /* #endif */
 
+/* #ifndef H5 */
+.uni-nav-menu {
+	height: 100vh;
+}
+/* #endif */
+
 .pointer {
 	cursor: pointer;
 }

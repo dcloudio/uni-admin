@@ -1,6 +1,9 @@
 <template>
     <view style="padding: 20px">
         <update-password :hasBackButton="true" />
+		<!-- #ifndef H5 -->
+		<fix-window />
+		<!-- #endif -->
     </view>
 </template>
 
@@ -27,5 +30,9 @@
 </script>
 
 <style>
-
+	/* #ifndef H5 */
+	page {
+		padding-top: 85px;
+	}
+	/* #endif */
 </style>

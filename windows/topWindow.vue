@@ -95,13 +95,21 @@
 		data() {
 			return {
 				...config.navBar,
-				popupMenuOpened: false
+				popupMenuOpened: false,
+				mpCapsule: 0
 			}
 		},
 		computed: {
 			...mapState('app', ['appName']),
 			...mapState('user', ['userInfo']),
 			...mapState('error', ['logs'])
+		},
+		mounted() {
+			// #ifdef MP
+			let menuButtonInfo = uni.getMenuButtonBoundingClientRect()
+			this.mpCapsule = menuButtonInfo.width
+			// console.log(111111111,this.mpCapsule)
+			// #endif
 		},
 		methods: {
 			...mapMutations({
@@ -196,6 +204,9 @@
 	.navbar-middle,
 	.navbar-right {
 		flex: 1;
+		/* #ifdef MP */
+		margin-right: 97px;
+		/* #endif */
 	}
 
 	.navbar-middle,
@@ -249,7 +260,13 @@
 	}
 
 	.navbar-right .uni-mask {
+		position: fixed;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
 		background-color: rgba(255, 255, 255, 0);
+		z-index: 999;
 	}
 
 	.popup-menu__arrow {
@@ -311,7 +328,13 @@
 		justify-content: center;
 		position: fixed;
 		right: 20px;
+		/* #ifdef MP */
+		right: 97px;
+		/* #endif */
 		top: var(--window-top);
+		/* #ifndef H5 */
+		top: 85px;
+		/* #endif */
 		background-color: #fff;
 		z-index: 999;
 		padding: 5px 15px;

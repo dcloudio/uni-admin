@@ -54,6 +54,9 @@ register_date" :threshold="[0, 0]" />
 				</view>
 			</uni-clientdb>
 		</view>
+		<!-- #ifndef H5 -->
+		<fix-window />
+		<!-- #endif -->
 	</view>
 </template>
 
@@ -175,4 +178,9 @@ register_date" :threshold="[0, 0]" />
 	}
 </script>
 <style>
+	/* #ifndef H5 */
+	page {
+		padding-top: 85px;
+	}
+	/* #endif */
 </style>

@@ -279,11 +279,11 @@
 				let classes = []
 				item.disable && classes.push('is-' + name + '-disabled' + type)
 				item.selected && classes.push('is-' + name + '-checked' + type)
-				
+
 				if(this.mode !== 'button' || name === 'button'){
 					item.selected && item.disable && classes.push('is-' + name + '-disabled-checked' + type)
 				}
-				
+
 				return classes
 			},
 			/**
@@ -306,17 +306,13 @@
 
 <style>
 	.checklist-group {
-		/* #ifndef APP-PLUS */
 		display: flex;
-		/* #endif */
 		flex-direction: row;
 		flex-wrap: wrap;
 	}
 
 	.checklist-box {
-		/* #ifndef APP-PLUS */
 		display: flex;
-		/* #endif */
 		flex-direction: row;
 		align-items: center;
 		margin: 5px 0;
@@ -479,7 +475,7 @@
 	.is-default-multiple-disabled {
 		border-color: #F2F6FC;
 	}
-	
+
 	.is-list-disabled {
 		/* #ifdef H5 */
 		cursor: not-allowed;
@@ -523,38 +519,38 @@
 	.is-default-checked-bg {
 		border-color: #007aff;
 	}
-	
+
 	.is-default-multiple-checked-bg {
 		border-color: #007aff;
 		background-color: #007aff;
 	}
-	
+
 	.is-default-checked {
 		opacity: 1;
 		background-color: #007aff;
 		transform: rotate(45deg) scaleY(1);
 	}
-	
+
 	.is-default-multiple-checked {
 		opacity: 1;
 		transform: rotate(45deg) scaleY(1);
 	}
-	
+
 	.is-default-disabled-checked-bg {
 		opacity: 0.4;
 	}
-	
+
 	.is-default-multiple-disabled-checked-bg {
 		opacity: 0.4;
 	}
-	
-	
+
+
 	.is-default-checked-list {
 		border-color: #007aff;
 		opacity: 1;
 		transform: rotate(45deg) scaleY(1);
 	}
-	
+
 	.is-default-multiple-checked-list {
 		border-color: #007aff;
 		opacity: 1;
@@ -563,40 +559,40 @@
 	.is-list-disabled-checked {
 		opacity: 0.4;
 	}
-	
+
 	.is-default-disabled-checked-list {
 		opacity: 0.4;
 	}
-	
+
 	.is-default-multiple-disabled-checked-list {
 		opacity: 0.4;
 	}
 	.is-button-checked {
 		border-color: #007aff;
 	}
-	
+
 	.is-button-disabled-checked {
 		opacity: 0.4;
 	}
-	
+
 	.is-list-checked {
 		color: #007aff;
 	}
-	
+
 	.is-tag-checked {
 		border-color: #007aff;
 		background-color: #007aff;
 	}
-	
+
 	.is-tag-text-checked {
 		color: #fff;
 	}
-	
+
 	.is-tag-disabled-checked {
 		opacity: 0.4;
 	}
-	
-	
+
+
 	.disabled-cursor {
 		/* #ifdef H5 */
 		cursor: not-allowed;

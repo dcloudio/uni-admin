@@ -167,11 +167,6 @@
 
 
 <style>
-	page {
-		background-color: #fff;
-		padding: 20px;
-	}
-
 	.uni-forms {
 		width: 100%;
 	}
