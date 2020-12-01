@@ -20,12 +20,6 @@
 				visible: false
 			};
 		},
-		mounted() {
-			function setStatusbarRed(){  
-			        // 设置系统状态栏背景色为红色  
-			        plus.navigator.setStatusBarBackground("#FF0000");  
-			}
-		},
 		methods: {
 			tiggerWindow() {
 				this.visible = !this.visible

@@ -20,8 +20,8 @@
 				<input placeholder="邮箱" @input="binddata('email', $event.detail.value)" class="uni-input-border" :value="formData.email" />
 			</uni-forms-item>
 			<uni-forms-item name="status" label="是否启用">
-				<!-- <switch v-if="typeof formData.status === 'boolean'" @change="binddata('status', $event.detail.value)" :checked="formData.status" />
-				<view v-else class="uni-form-item-empty">{{formData.status}}</view> -->
+				<switch v-if="Number(formData.status) <= 1" @change="binddata('status', $event.detail.value)" :checked="formData.status" />
+				<view v-else class="uni-form-item-empty">{{formData.status}}</view>
 			</uni-forms-item>
 			<view class="uni-button-group">
 				<button style="width: 100px;" type="primary" class="uni-button" @click="submitForm">提交</button>
