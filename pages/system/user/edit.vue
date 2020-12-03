@@ -52,8 +52,8 @@
 		data() {
 			return {
 				formData: {
+					"uid": "",
 					"username": "",
-					"password": "",
 					"role": [],
 					"mobile": "",
 					"email": "",
@@ -68,6 +68,7 @@
 		onLoad(e) {
 			const id = e.id
 			this.formDataId = id
+			this.uid = id
 			this.getDetail(id)
 			this.loadroles()
 
@@ -103,23 +104,44 @@
 				if (typeof value.status === "boolean") {
 					value.status = Number(!value.status)
 				}
+
+				value.uid = this.uid
+				
 				// 使用 uni-clientDB 提交数据
-				db.collection(dbCollectionName).where({
-					_id: this.formDataId
-				}).update(value).then((res) => {
-					uni.showToast({
-						title: '修改成功'
-					})
-					this.getOpenerEventChannel().emit('refreshData')
-					setTimeout(() => uni.navigateBack(), 500)
-				}).catch((err) => {
-					uni.showModal({
-						content: err.message || '请求服务失败',
-						showCancel: false
-					})
-				}).finally(() => {
-					uni.hideLoading()
-				})
+				// db.collection(dbCollectionName).where({
+				// 	_id: this.formDataId
+				// }).update(value).then((res) => {
+				// 	uni.showToast({
+				// 		title: '修改成功'
+				// 	})
+				// 	this.getOpenerEventChannel().emit('refreshData')
+				// 	setTimeout(() => uni.navigateBack(), 500)
+				// }).catch((err) => {
+				// 	console.log('---err', err)
+				// 	uni.showModal({
+				// 		content: err.message || '请求服务失败',
+				// 		showCancel: false
+				// 	})
+				// }).finally(() => {
+				// 	uni.hideLoading()
+				// })
+				
+				// admin 不能通过 clientDB 的校验， 使用 uni-id api 提交
+				this.$request('system/user/updateUser', value)
+				    .then(res => {
+						uni.showToast({
+							title: '修改成功'
+						})
+						this.getOpenerEventChannel().emit('refreshData')
+						setTimeout(() => uni.navigateBack(), 500)
+				    }).catch(err => {
+						uni.showModal({
+							content: err.message || '请求服务失败',
+							showCancel: false
+						})
+					}).finally(err => {
+				        uni.hideLoading()
+				    })
 			},
 
 			/**

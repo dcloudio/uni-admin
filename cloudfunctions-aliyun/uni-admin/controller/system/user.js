@@ -26,4 +26,14 @@ module.exports = class UserController extends Controller {
 
 		return result
 	}
+
+	async updateUser() {
+	    const data = this.ctx.data
+
+		const result = await uniID.updateUser({
+	        ...data
+	    })
+
+		return result
+	}
 }
