@@ -115,16 +115,20 @@
 			},
 			loadroles() {
 				db.collection('uni-id-roles').limit(500).get().then(res => {
+					const roleIds = []
 					this.roles = res.result.data.map(item => {
+						roleIds.push(item.role_id)
 						return {
 							value: item.role_id,
 							text: item.role_name
 						}
 					})
-					this.roles.unshift({
-						value: 'admin',
-						text: 'admin'
-					})
+					if (roleIds.indexOf('admin') === -1) {
+						this.roles.unshift({
+							value: 'admin',
+							text: '超级管理员'
+						})
+					}
 				}).catch(err => {
 					uni.showModal({
 						title: '提示',

@@ -34,7 +34,8 @@
 						    <uni-dateformat :date="item.create_date" :threshold="[0, 0]" />
 						</uni-td>
 						<uni-td align="center">
-							<view class="uni-group">
+							<view v-if="item.role_id === 'admin'">-</view>
+							<view v-else class="uni-group">
 								<button @click="navigateTo('./edit?id='+item._id)" class="uni-button" size="mini" type="primary">修改</button>
 								<button @click="confirmDelete(item.role_id)" class="uni-button" size="mini" type="warn">删除</button>
 							</view>
