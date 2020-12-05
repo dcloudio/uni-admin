@@ -59,7 +59,12 @@
 					"status": true  //默认启用
 				},
 				rules: {
-					...getValidator(["username", "password", "role", "mobile", "email"])
+					...getValidator(["username", "password", "role", "mobile", "email"]),
+					"status": {
+						"rules": [{
+							"format": "bool"
+						}]
+					}
 				},
 				roles: []
 			}

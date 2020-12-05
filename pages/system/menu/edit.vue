@@ -21,7 +21,7 @@
 				 :value="formData.sort" />
 			</uni-forms-item>
 			<uni-forms-item name="parent_id" label="父菜单标识">
-				<input placeholder="父级菜单标识" @input="binddata('parent_id', $event.detail.value)" class="uni-input-border" :value="formData.parent_id" />
+				<input placeholder="父级菜单标识, 一级菜单不需要填写" @input="binddata('parent_id', $event.detail.value)" class="uni-input-border" :value="formData.parent_id" />
 			</uni-forms-item>
 			<uni-forms-item v-if="permissions.length" name="permission" label="权限列表" style="margin-bottom: 60px;">
 				<uni-data-checklist multiple :value="formData.permission" :range="permissions" @change="binddata('permission', $event.detail.value)"></uni-data-checklist>

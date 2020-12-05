@@ -23,7 +23,7 @@
 		onLaunch: function() {
 			console.log('App Launch')
 			if (!this.isTokenValid) {
-				uni.navigateTo({
+				uni.redirectTo({
 					url: config.login.url
 				})
 			} else {
