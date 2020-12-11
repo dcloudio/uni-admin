@@ -6,7 +6,7 @@
 				<view class="uni-sub-title"></view>
 			</view>
 			<view class="uni-group">
-				<input class="uni-search" type="text" v-model="query" placeholder="请输入搜索内容" />
+				<input class="uni-search" type="text" v-model="query" @confirm="search"  placeholder="请输入搜索内容" />
 				<button class="uni-button" type="default" size="mini" @click="search">搜索</button>
 				<button class="uni-button" type="default" size="mini" @click="navigateTo('./add')">新增</button>
 				<button class="uni-button" type="default" size="mini" @click="delTable">批量删除</button>
@@ -58,8 +58,8 @@
 	const db = uniCloud.database()
 	// 表查询配置
 	const dbCollectionName = 'uni-id-roles,uni-id-permissions'
-	const dbOrderBy = '' // 排序字段
-	const dbSearchFields = [] // 支持模糊搜索的字段列表
+	const dbOrderBy = 'create_date desc' // 排序字段
+	const dbSearchFields = ['role_id', 'role_name'] // 支持模糊搜索的字段列表
 	// 分页配置
 	const pageSize = 20
 	const pageCurrent = 1

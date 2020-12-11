@@ -6,7 +6,7 @@
                 <view class="uni-sub-title"></view>
             </view>
             <view class="uni-group">
-                <input class="uni-search" type="text" v-model="query" placeholder="权限标识/名称" />
+                <input class="uni-search" type="text" v-model="query" @confirm="search" placeholder="权限标识/名称" />
                 <button class="uni-button" type="default" size="mini" @click="search">搜索</button>
                 <button @click="navigateTo('./add')" size="mini" class="uni-button" type="default">新增</button>
 				<button class="uni-button" type="default" size="mini" @click="delTable">批量删除</button>
