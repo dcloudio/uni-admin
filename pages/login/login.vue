@@ -99,6 +99,7 @@
 					return
 				}
 				// #ifdef H5
+				this.$refs.usernameInput.$refs.input.blur()
 				this.$refs.passwordInput.$refs.input.blur()
 				// #endif
 				this.loading = true

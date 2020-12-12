@@ -39,9 +39,18 @@ export function request(action, data, {
 		}
 		return Promise.resolve(result)
 	}).catch(err => {
+		const that = this
 		showModal && uni.showModal({
 			content: err.message || '请求服务失败',
-			showCancel: false
+			showCancel: false,
+			success: function(){
+				if (that.$refs.usernameInput && err.code === 10101) {
+					that.$refs.usernameInput.$refs.input.focus()
+				}
+				if (that.$refs.passwordInput && err.code === 10102) {
+					that.$refs.passwordInput.$refs.input.focus()
+				}
+			}
 		})
 		if (debugOptions && debugOptions.enable === true) {
 			store.dispatch('error/add', {
