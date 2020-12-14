@@ -114,9 +114,14 @@
 								title: '登录成功',
 								icon: 'none'
 							})
+							// #ifdef H5
+							window.open('/pages/index/index')
+							// #endif
+							// #ifndef H5
 							uni.redirectTo({
 								url: '/pages/index/index'
 							})
+							// #endif
 						})
 					}).catch(err => {
 
