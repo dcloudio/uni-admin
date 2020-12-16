@@ -36,7 +36,7 @@
 						<uni-td align="center">
 							<view v-if="item.role_id === 'admin'">-</view>
 							<view v-else class="uni-group">
-								<button @click="navigateTo('./edit?id='+item._id)" class="uni-button" size="mini" type="primary">修改</button>
+								<button @click="navigateTo('./edit?id='+item._id, false)" class="uni-button" size="mini" type="primary">修改</button>
 								<button @click="confirmDelete(item.role_id)" class="uni-button" size="mini" type="warn">删除</button>
 							</view>
 						</uni-td>
@@ -104,12 +104,12 @@
 					current: e.current
 				})
 			},
-			navigateTo(url) {
+			navigateTo(url, clear) { // clear 表示刷新列表时是否清除当前页码，true 表示刷新并回到列表第 1 页，默认为 true
 				uni.navigateTo({
 					url,
 					events: {
 						refreshData: () => {
-							this.loadData()
+							this.loadData(clear)
 						}
 					}
 				})

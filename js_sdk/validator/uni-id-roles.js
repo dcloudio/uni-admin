@@ -11,10 +11,6 @@ export default {
 			},
 			{
 				"format": "string"
-			},
-			{
-				"minLength": 2,
-				"maxLength": 10
 			}
 		],
 		"label": "角色Id"
@@ -22,10 +18,6 @@ export default {
 	"role_name": {
 		"rules": [{
 				"format": "string"
-			},
-			{
-				"minLength": 2,
-				"maxLength": 10
 			}
 		],
 		"label": "角色名"

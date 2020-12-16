@@ -42,7 +42,7 @@ register_date" :threshold="[0, 0]" />
 						<uni-td align="center">
 							<view v-if="item._id === userInfo._id">-</view>
 							<view v-else class="uni-group">
-								<button @click="navigateTo('./edit?id='+item._id)" class="uni-button" size="mini" type="primary">修改</button>
+								<button @click="navigateTo('./edit?id='+item._id, false)" class="uni-button" size="mini" type="primary">修改</button>
 								<button @click="confirmDelete(item)" class="uni-button" size="mini" type="warn">删除</button>
 							</view>
 						</uni-td>
@@ -67,7 +67,7 @@ register_date" :threshold="[0, 0]" />
 	const dbOrderBy = 'register_date desc' // 排序字段
 	const dbSearchFields = ['username', 'role_name', 'mobile', 'email'] // 支持模糊搜索的字段列表
 	// 分页配置
-	const pageSize = 10
+	const pageSize = 20
 	const pageCurrent = 1
 
 	import {
@@ -116,12 +116,12 @@ register_date" :threshold="[0, 0]" />
 					current: e.current
 				})
 			},
-			navigateTo(url) {
+			navigateTo(url, clear) { // clear 表示刷新列表时是否清除当前页码，true 表示刷新并回到列表第 1 页，默认为 true
 				uni.navigateTo({
 					url,
 					events: {
 						refreshData: () => {
-							this.loadData()
+							this.loadData(clear)
 						}
 					}
 				})

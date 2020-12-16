@@ -43,7 +43,7 @@
 						<uni-td align="center" :class="{'menu-disable':!item.enable}">{{item.enable?'已启用':'未启用'}}</uni-td>
 						<uni-td align="center">
 							<view class="uni-group">
-								<button @click="navigateTo('./edit?id='+item._id)" class="uni-button" size="mini" type="primary">修改</button>
+								<button @click="navigateTo('./edit?id='+item._id, false)" class="uni-button" size="mini" type="primary">修改</button>
 								<button :style="{visibility:item.menu_id==='system_menu'||item.menu_id==='system_management'?'hidden':'initial'}"
 								 @click="confirmDelete(item)" class="uni-button" size="mini" type="warn">删除</button>
 							</view>
@@ -182,12 +182,12 @@
 					this.loading = false
 				})
 			},
-			navigateTo(url) {
+			navigateTo(url, clear) { // clear 表示刷新列表时是否清除当前页码，true 表示刷新并回到列表第 1 页，默认为 true
 				uni.navigateTo({
 					url,
 					events: {
 						refreshData: () => {
-							this.loadData()
+							this.loadData(clear)
 						}
 					}
 				})

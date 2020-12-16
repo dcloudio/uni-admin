@@ -34,14 +34,14 @@
                         </uni-td>
                         <uni-td align="center">
                             <view class="uni-group">
-                                <button size="mini" @click="navigateTo('./edit?id='+item._id)" class="uni-button" type="primary">修改</button>
+                                <button size="mini" @click="navigateTo('./edit?id='+item._id, false)" class="uni-button" type="primary">修改</button>
                                 <button size="mini" @click="confirmDelete(item.permission_id)" class="uni-button" type="warn">删除</button>
                             </view>
                         </uni-td>
                     </uni-tr>
                 </uni-table>
                 <view class="uni-pagination-box">
-                    <uni-pagination show-icon :page-size="pagination.size" v-model="pagination.current" :total="pagination.total"
+                    <uni-pagination show-icon :page-size="pagination.size" v-model="pagination.current" :total="pagination.count"
                         @change="onPageChanged" />
                 </view>
             </uni-clientdb>
@@ -102,15 +102,15 @@
                     current: e.current
                 })
             },
-            navigateTo(url) {
-                uni.navigateTo({
-                    url,
-                    events: {
-                        refreshData: () => {
-                            this.loadData()
-                        }
-                    }
-                })
+            navigateTo(url, clear) { // clear 表示刷新列表时是否清除当前页码，true 表示刷新并回到列表第 1 页，默认为 true
+            	uni.navigateTo({
+            		url,
+            		events: {
+            			refreshData: () => {
+            				this.loadData(clear)
+            			}
+            		}
+            	})
             },
 			// 多选处理
 			selectedItems() {
