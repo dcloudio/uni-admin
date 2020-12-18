@@ -44,12 +44,14 @@ export function request(action, data, {
 			content: err.message || '请求服务失败',
 			showCancel: false,
 			success: function(){
-				if (that.$refs.usernameInput && err.code === 10101) {
+				// #ifdef H5
+				if (err.code === 10101 && that.$refs.usernameInput) {
 					that.$refs.usernameInput.$refs.input.focus()
 				}
-				if (that.$refs.passwordInput && err.code === 10102) {
+				if (err.code === 10102 && that.$refs.passwordInput ) {
 					that.$refs.passwordInput.$refs.input.focus()
 				}
+				// #endif
 			}
 		})
 		if (debugOptions && debugOptions.enable === true) {
