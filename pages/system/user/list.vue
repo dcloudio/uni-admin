@@ -13,7 +13,7 @@
 			</view>
 		</view>
 		<view class="uni-container">
-			<uni-clientdb ref="udb" :collection="collectionName" :options="options" :where="where" field="username,role{role_id,role_name},mobile,email,status,register_date"
+			<uni-clientdb ref="udb" collection="uni-id-users,uni-id-roles" :options="options" :where="where" field="_id,username,role{role_id,role_name},mobile,email,status,register_date"
 			 page-data="replace" :orderby="orderby" :getcount="true" :page-size="options.pageSize" :page-current="options.pageCurrent"
 			 v-slot:default="{data,pagination,loading,error}">
 				<uni-table :loading="loading" :emptyText="error.message || '没有更多数据'" border stripe type="selection"
@@ -40,8 +40,7 @@
 register_date" :threshold="[0, 0]" />
 						</uni-td>
 						<uni-td align="center">
-							<view v-if="item._id === userInfo._id">-</view>
-							<view v-else class="uni-group">
+							<view class="uni-group">
 								<button @click="navigateTo('./edit?id='+item._id, false)" class="uni-button" size="mini" type="primary">修改</button>
 								<button @click="confirmDelete(item)" class="uni-button" size="mini" type="warn">删除</button>
 							</view>
@@ -63,7 +62,6 @@ register_date" :threshold="[0, 0]" />
 <script>
 	const db = uniCloud.database()
 	// 表查询配置
-	const dbCollectionName = 'uni-id-users,uni-id-roles'
 	const dbOrderBy = 'register_date desc' // 排序字段
 	const dbSearchFields = ['username', 'role_name', 'mobile', 'email'] // 支持模糊搜索的字段列表
 	// 分页配置
@@ -79,7 +77,6 @@ register_date" :threshold="[0, 0]" />
 				query: '',
 				where: '',
 				orderby: dbOrderBy,
-				collectionName: dbCollectionName,
 				options: {
 					pageSize,
 					pageCurrent
@@ -171,7 +168,7 @@ register_date" :threshold="[0, 0]" />
 				} else if (status === 3) {
 					return '审核拒绝'
 				} else {
-					return '未知'
+					return '启用'
 				}
 			}
 		}

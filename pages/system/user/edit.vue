@@ -19,9 +19,9 @@
 			<uni-forms-item name="email" label="邮箱">
 				<input placeholder="邮箱" @input="binddata('email', $event.detail.value)" class="uni-input-border" :value="formData.email" />
 			</uni-forms-item>
-			<uni-forms-item name="status" label="是否启用">
-				<switch v-if="Number(formData.status) <= 1" @change="binddata('status', $event.detail.value)" :checked="formData.status" />
-				<view v-else class="uni-form-item-empty">{{formData.status}}</view>
+			<uni-forms-item name="status" label="用户状态">
+				<switch v-if="Number(formData.status) < 2" @change="binddata('status', $event.detail.value)" :checked="formData.status" />
+				<view v-else class="uni-form-item-empty">{{parseUserStatus(formData.status)}}</view>
 			</uni-forms-item>
 			<view class="uni-button-group">
 				<button style="width: 100px;" type="primary" class="uni-button" @click="submitForm">提交</button>
@@ -56,7 +56,7 @@
 					"role": [],
 					"mobile": "",
 					"email": "",
-					"status": false //默认开启
+					"status": false //默认禁用
 				},
 				rules: {
 					...getValidator(["username", "password", "role", "mobile", "email"]),
@@ -143,21 +143,16 @@
 				.then((res) => {
 					const data = res.result.data[0]
 					if (data) {
-						// Object.keys(this.formData).forEach(name => {
-						// 	this.binddata(name, data[name])
-						// })
-						const status = data.status
-						if (status < 2) {
-							data.status = !status
-							this.formData = data
-						} else if (status === 2) {
-							this.formData.status = '审核中'
-						} else if (status === 3) {
-							this.formData.status = '审核拒绝'
-						} else {
-							this.formData.status = '未知状态'
+						if (data.status === undefined) {
+							data.status = true
 						}
-
+						if (data.status === 0) {
+							data.status = true
+						}
+						if (data.status === 1) {
+							data.status = false
+						}
+						this.formData = data
 					}
 				}).catch((err) => {
 					uni.showModal({
@@ -191,6 +186,20 @@
 						showCancel: false
 					})
 				})
+			},
+			// status 对应文字显示
+			parseUserStatus(status) {
+				if (status === 0) {
+					return '启用'
+				} else if (status === 1) {
+					return '禁用'
+				} else if (status === 2) {
+					return '审核中'
+				} else if (status === 3) {
+					return '审核拒绝'
+				} else {
+					return '启用'
+				}
 			}
 		}
 	}
