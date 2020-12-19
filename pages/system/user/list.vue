@@ -13,7 +13,7 @@
 			</view>
 		</view>
 		<view class="uni-container">
-			<uni-clientdb ref="udb" collection="uni-id-users,uni-id-roles" :options="options" :where="where" field="_id,username,role{role_id,role_name},mobile,email,status,register_date"
+			<uni-clientdb ref="udb" @load="onqueryload" collection="uni-id-users,uni-id-roles" :options="options" :where="where" field="_id,username,role{role_id,role_name},mobile,email,status,register_date"
 			 page-data="replace" :orderby="orderby" :getcount="true" :page-size="options.pageSize" :page-current="options.pageCurrent"
 			 v-slot:default="{data,pagination,loading,error}">
 				<uni-table :loading="loading" :emptyText="error.message || '没有更多数据'" border stripe type="selection"
@@ -31,10 +31,10 @@
 					<uni-tr v-for="(item,index) in data" :key="index">
 						<uni-td align="center">{{item.username}}</uni-td>
 						<!-- <uni-td align="center">{{item.password}}</uni-td> -->
-						<uni-td align="center">{{item.role ? item.role.map(item => item.role_name).join('、') : '-'}}</uni-td>
+						<uni-td align="center">{{item.role}}</uni-td>
 						<uni-td align="center">{{item.mobile}}</uni-td>
 						<uni-td align="center">{{item.email}}</uni-td>
-						<uni-td align="center">{{item.role && item.role.includes('admin') ? '启用' : parseUserStatus(item.status)}}</uni-td>
+						<uni-td align="center">{{item.status}}</uni-td>
 						<uni-td align="center">
 							<uni-dateformat :date="item.
 register_date" :threshold="[0, 0]" />
@@ -87,6 +87,13 @@ register_date" :threshold="[0, 0]" />
 			...mapState('user', ['userInfo']),
 		},
 		methods: {
+			onqueryload(data) {
+				for (var i = 0; i < data.length; i++) {
+					let item = data[i]
+					item.role = item.role.map(item => item.role_name).join('、')
+					item.status = this.parseUserStatus(item.status)
+				}
+			},
 			getWhere() {
 				const query = this.query.trim()
 				if (!query) {

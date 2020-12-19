@@ -13,7 +13,7 @@
             </view>
         </view>
         <view class="uni-container">
-            <uni-clientdb ref="dataQuery" :collection="collectionName" :options="options" :where="where" page-data="replace"
+            <uni-clientdb ref="dataQuery" collection="uni-id-permissions" :options="options" :where="where" page-data="replace"
                 :orderby="orderby" :getcount="true" :page-size="options.pageSize" :page-current="options.pageCurrent"
                 v-slot:default="{data,pagination,loading,error}">
                 <uni-table :loading="loading" :emptyText="error.message || '没有更多数据'" border stripe type="selection"
@@ -55,7 +55,6 @@
 <script>
     const db = uniCloud.database()
     // 表查询配置
-    const dbCollectionName = 'uni-id-permissions'
     const dbOrderBy = 'create_date desc'
     const dbSearchFields = ['permission_id', 'permission_name'] // 支持模糊搜索的字段列表
     // 分页配置
@@ -68,7 +67,6 @@
                 query: '',
                 where: '',
                 orderby: dbOrderBy,
-                collectionName: dbCollectionName,
                 options: {
                     pageSize,
                     pageCurrent

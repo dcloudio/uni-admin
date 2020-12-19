@@ -13,7 +13,7 @@
 			</view>
 		</view>
 		<view class="uni-container">
-			<uni-clientdb ref="udb" :collection="collectionName" :options="options" :where="where" field="role_id,role_name,permission{permission_id,permission_name},comment,create_date" page-data="replace" :orderby="orderby"
+			<uni-clientdb ref="udb" @load="onqueryload" collection="uni-id-roles,uni-id-permissions" :options="options" :where="where" field="role_id,role_name,permission{permission_id,permission_name},comment,create_date" page-data="replace" :orderby="orderby"
 			 :getcount="true" :page-size="options.pageSize" :page-current="options.pageCurrent" v-slot:default="{data,pagination,loading,error}">
 				<uni-table :loading="loading" :emptyText="error.message || '没有更多数据'" border stripe type="selection"
 				 @selection-change="selectionChange">
@@ -28,7 +28,7 @@
 					<uni-tr v-for="(item,index) in data" :key="index">
 						<uni-td align="center">{{item.role_id}}</uni-td>
 						<uni-td align="center">{{item.role_name}}</uni-td>
-						<uni-td align="center">{{item.permission ? item.permission.map(pItem => pItem.permission_name).join('、') : '-'}}</uni-td>
+						<uni-td align="center">{{item.permission}}</uni-td>
 						<uni-td align="center">{{item.comment}}</uni-td>
 						<uni-td align="center">
 						    <uni-dateformat :date="item.create_date" :threshold="[0, 0]" />
@@ -57,7 +57,6 @@
 <script>
 	const db = uniCloud.database()
 	// 表查询配置
-	const dbCollectionName = 'uni-id-roles,uni-id-permissions'
 	const dbOrderBy = 'create_date desc' // 排序字段
 	const dbSearchFields = ['role_id', 'role_name'] // 支持模糊搜索的字段列表
 	// 分页配置
@@ -70,7 +69,6 @@
 				query: '',
 				where: '',
 				orderby: dbOrderBy,
-				collectionName: dbCollectionName,
 				options: {
 					pageSize,
 					pageCurrent
@@ -78,6 +76,12 @@
 			}
 		},
 		methods: {
+			onqueryload(data, ended) {
+				for (var i = 0; i < data.length; i++) {
+					let item = data[i]
+					item.permission = item.permission.map(pItem => pItem.permission_name).join('、')
+				}
+			},
 			getWhere() {
 				const query = this.query.trim()
 				if (!query) {
@@ -160,6 +164,9 @@
 				        uni.hideLoading()
 				    })
 				this.loadData(false)
+			},
+			praseRoleArr(permission) {
+				return permission ? permission.map(pItem => pItem.permission_name).join('、') : '-'
 			}
 		}
 	}
