@@ -6,14 +6,14 @@
 				<view class="uni-sub-title"></view>
 			</view>
 			<view class="uni-group">
-				<input class="uni-search" type="text" v-model="query" placeholder="请输入搜索内容" />
+				<input class="uni-search" type="text" v-model="query" @confirm="search"  placeholder="请输入搜索内容" />
 				<button class="uni-button" type="default" size="mini" @click="search">搜索</button>
 				<button class="uni-button" type="default" size="mini" @click="navigateTo('./add')">新增</button>
 				<button class="uni-button" type="default" size="mini" @click="delTable">批量删除</button>
 			</view>
 		</view>
 		<view class="uni-container">
-			<uni-clientdb ref="udb" :collection="collectionName" :options="options" :where="where" field="username,role{role_id,role_name},mobile,email,status,register_date"
+			<uni-clientdb ref="udb" @load="onqueryload" collection="uni-id-users,uni-id-roles" :options="options" :where="where" field="_id,username,role{role_id,role_name},mobile,email,status,register_date"
 			 page-data="replace" :orderby="orderby" :getcount="true" :page-size="options.pageSize" :page-current="options.pageCurrent"
 			 v-slot:default="{data,pagination,loading,error}">
 				<uni-table :loading="loading" :emptyText="error.message || '没有更多数据'" border stripe type="selection"
@@ -31,18 +31,17 @@
 					<uni-tr v-for="(item,index) in data" :key="index">
 						<uni-td align="center">{{item.username}}</uni-td>
 						<!-- <uni-td align="center">{{item.password}}</uni-td> -->
-						<uni-td align="center">{{item.role ? item.role.map(item => item.role_name).join('、') : '-'}}</uni-td>
+						<uni-td align="center">{{item.role}}</uni-td>
 						<uni-td align="center">{{item.mobile}}</uni-td>
 						<uni-td align="center">{{item.email}}</uni-td>
-						<uni-td align="center">{{item.role && item.role.includes('admin') ? '启用' : parseUserStatus(item.status)}}</uni-td>
+						<uni-td align="center">{{item.status}}</uni-td>
 						<uni-td align="center">
 							<uni-dateformat :date="item.
 register_date" :threshold="[0, 0]" />
 						</uni-td>
 						<uni-td align="center">
-							<view v-if="item._id === userInfo._id">-</view>
-							<view v-else class="uni-group">
-								<button @click="navigateTo('./edit?id='+item._id)" class="uni-button" size="mini" type="primary">修改</button>
+							<view class="uni-group">
+								<button @click="navigateTo('./edit?id='+item._id, false)" class="uni-button" size="mini" type="primary">修改</button>
 								<button @click="confirmDelete(item)" class="uni-button" size="mini" type="warn">删除</button>
 							</view>
 						</uni-td>
@@ -63,11 +62,10 @@ register_date" :threshold="[0, 0]" />
 <script>
 	const db = uniCloud.database()
 	// 表查询配置
-	const dbCollectionName = 'uni-id-users,uni-id-roles'
-	const dbOrderBy = '' // 排序字段
-	const dbSearchFields = [] // 支持模糊搜索的字段列表
+	const dbOrderBy = 'register_date desc' // 排序字段
+	const dbSearchFields = ['username', 'role_name', 'mobile', 'email'] // 支持模糊搜索的字段列表
 	// 分页配置
-	const pageSize = 10
+	const pageSize = 20
 	const pageCurrent = 1
 
 	import {
@@ -79,7 +77,6 @@ register_date" :threshold="[0, 0]" />
 				query: '',
 				where: '',
 				orderby: dbOrderBy,
-				collectionName: dbCollectionName,
 				options: {
 					pageSize,
 					pageCurrent
@@ -90,6 +87,13 @@ register_date" :threshold="[0, 0]" />
 			...mapState('user', ['userInfo']),
 		},
 		methods: {
+			onqueryload(data) {
+				for (var i = 0; i < data.length; i++) {
+					let item = data[i]
+					item.role = item.role.map(item => item.role_name).join('、')
+					item.status = this.parseUserStatus(item.status)
+				}
+			},
 			getWhere() {
 				const query = this.query.trim()
 				if (!query) {
@@ -98,7 +102,7 @@ register_date" :threshold="[0, 0]" />
 				const queryRe = new RegExp(query, 'i')
 				return dbSearchFields.map(name => queryRe + '.test(' + name + ')').join(' || ')
 			},
-			search() {
+			search(e) {
 				const newWhere = this.getWhere()
 				const isSameWhere = newWhere === this.where
 				this.where = newWhere
@@ -116,12 +120,12 @@ register_date" :threshold="[0, 0]" />
 					current: e.current
 				})
 			},
-			navigateTo(url) {
+			navigateTo(url, clear) { // clear 表示刷新列表时是否清除当前页码，true 表示刷新并回到列表第 1 页，默认为 true
 				uni.navigateTo({
 					url,
 					events: {
 						refreshData: () => {
-							this.loadData()
+							this.loadData(clear)
 						}
 					}
 				})
@@ -171,7 +175,7 @@ register_date" :threshold="[0, 0]" />
 				} else if (status === 3) {
 					return '审核拒绝'
 				} else {
-					return '未知'
+					return '启用'
 				}
 			}
 		}

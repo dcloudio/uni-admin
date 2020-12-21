@@ -8,10 +8,7 @@
 				<input placeholder="请输入角色名" @input="binddata('role_name', $event.detail.value)" class="uni-input-border" :value="formData.role_name" />
 			</uni-forms-item>
 			<uni-forms-item name="permission" label="权限列表">
-				<uni-data-checklist v-if="permissions.length" multiple :range="permissions" @change="binddata('permission', $event.detail.value)"></uni-data-checklist>
-				<view v-else class="uni-form-item-empty">
-					暂无
-				</view>
+				<uni-data-checkbox :multiple="true" v-model="formData.permission" collection="uni-id-permissions" field="permission_name as text, permission_id as value"/>
 			</uni-forms-item>
 			<uni-forms-item name="comment" label="备注">
 				<textarea placeholder="请输入备注" @input="binddata('comment', $event.detail.value)" class="uni-textarea-border" :value="formData.comment"></textarea>

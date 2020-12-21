@@ -37,14 +37,17 @@
 						<uni-link :href="link.url" :text="link.text" />
 					</view>
 					<template v-if="userInfo.username">
-						<view class="menu-item username">
+						<!-- <view class="menu-item username">
 							<text>{{userInfo.username}}</text>️
+						</view> -->
+						<view class="menu-item username">
+							<text>{{userInfo.username}}</text>
 						</view>
 						<view class="menu-item" @click="chagePassword">
-							<text>修改密码</text>️
+							<text>修改密码</text>
 						</view>
-						<view class="menu-item">
-							<text class="logout pointer" @click="logout">退出</text>️
+						<view class="menu-item ">
+							<text class="logout pointer" @click="logout">退出</text>
 						</view>
 					</template>
 					<view class="popup-menu__arrow"></view>

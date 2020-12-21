@@ -99,6 +99,7 @@
 					return
 				}
 				// #ifdef H5
+				this.$refs.usernameInput.$refs.input.blur()
 				this.$refs.passwordInput.$refs.input.blur()
 				// #endif
 				this.loading = true
@@ -116,6 +117,9 @@
 							uni.redirectTo({
 								url: '/pages/index/index'
 							})
+							// #ifdef H5
+							window.location.reload();
+							// #endif
 						})
 					}).catch(err => {
 

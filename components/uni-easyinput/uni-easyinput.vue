@@ -21,9 +21,15 @@
 			<template v-else-if="suffixIcon">
 				<uni-icons v-if="suffixIcon" class="content-clear-icon" :type="suffixIcon" color="#c0c4cc"></uni-icons>
 			</template>
+<<<<<<< HEAD
 			<template v-else>
 				<uni-icons class="content-clear-icon" :class="{'is-textarea-icon':type==='textarea'}" type="clear" :size="clearSize"
 				 v-if="clearable && focused && val != '' " color="#c0c4cc" @click="onClear"></uni-icons>
+=======
+			<template v-else>
+				<uni-icons class="content-clear-icon" :class="{'is-textarea-icon':type==='textarea'}" type="clear" :size="clearSize"
+				 v-if="clearable && focused && val " color="#c0c4cc" @click="onClear"></uni-icons>
+>>>>>>> dev
 			</template>
 		</view>
 	</view>
@@ -173,7 +179,11 @@
 
 		},
 		mounted() {
+<<<<<<< HEAD
 			this.onInput = throttle(this.input, 500)
+=======
+			// this.onInput = throttle(this.input, 500)
+>>>>>>> dev
 			this.$nextTick(() => {
 				this.focused = this.focus
 			})
@@ -202,7 +212,7 @@
 			onEyes() {
 				this.showPassword = !this.showPassword
 			},
-			input(event) {
+			onInput(event) {
 				let value = event.detail.value;
 				// 判断是否去除空格
 				if (this.trim) value = this.trimStr(value);

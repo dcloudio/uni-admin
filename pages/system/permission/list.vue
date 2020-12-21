@@ -6,14 +6,14 @@
                 <view class="uni-sub-title"></view>
             </view>
             <view class="uni-group">
-                <input class="uni-search" type="text" v-model="query" placeholder="权限标识/名称" />
+                <input class="uni-search" type="text" v-model="query" @confirm="search" placeholder="权限标识/名称" />
                 <button class="uni-button" type="default" size="mini" @click="search">搜索</button>
                 <button @click="navigateTo('./add')" size="mini" class="uni-button" type="default">新增</button>
 				<button class="uni-button" type="default" size="mini" @click="delTable">批量删除</button>
             </view>
         </view>
         <view class="uni-container">
-            <uni-clientdb ref="dataQuery" :collection="collectionName" :options="options" :where="where" page-data="replace"
+            <uni-clientdb ref="dataQuery" collection="uni-id-permissions" :options="options" :where="where" page-data="replace"
                 :orderby="orderby" :getcount="true" :page-size="options.pageSize" :page-current="options.pageCurrent"
                 v-slot:default="{data,pagination,loading,error}">
                 <uni-table :loading="loading" :emptyText="error.message || '没有更多数据'" border stripe type="selection"
@@ -34,14 +34,14 @@
                         </uni-td>
                         <uni-td align="center">
                             <view class="uni-group">
-                                <button size="mini" @click="navigateTo('./edit?id='+item._id)" class="uni-button" type="primary">修改</button>
+                                <button size="mini" @click="navigateTo('./edit?id='+item._id, false)" class="uni-button" type="primary">修改</button>
                                 <button size="mini" @click="confirmDelete(item.permission_id)" class="uni-button" type="warn">删除</button>
                             </view>
                         </uni-td>
                     </uni-tr>
                 </uni-table>
                 <view class="uni-pagination-box">
-                    <uni-pagination show-icon :page-size="pagination.size" v-model="pagination.current" :total="pagination.total"
+                    <uni-pagination show-icon :page-size="pagination.size" v-model="pagination.current" :total="pagination.count"
                         @change="onPageChanged" />
                 </view>
             </uni-clientdb>
@@ -55,7 +55,6 @@
 <script>
     const db = uniCloud.database()
     // 表查询配置
-    const dbCollectionName = 'uni-id-permissions'
     const dbOrderBy = 'create_date desc'
     const dbSearchFields = ['permission_id', 'permission_name'] // 支持模糊搜索的字段列表
     // 分页配置
@@ -68,7 +67,6 @@
                 query: '',
                 where: '',
                 orderby: dbOrderBy,
-                collectionName: dbCollectionName,
                 options: {
                     pageSize,
                     pageCurrent
@@ -102,15 +100,15 @@
                     current: e.current
                 })
             },
-            navigateTo(url) {
-                uni.navigateTo({
-                    url,
-                    events: {
-                        refreshData: () => {
-                            this.loadData()
-                        }
-                    }
-                })
+            navigateTo(url, clear) { // clear 表示刷新列表时是否清除当前页码，true 表示刷新并回到列表第 1 页，默认为 true
+            	uni.navigateTo({
+            		url,
+            		events: {
+            			refreshData: () => {
+            				this.loadData(clear)
+            			}
+            		}
+            	})
             },
 			// 多选处理
 			selectedItems() {

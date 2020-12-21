@@ -39,9 +39,20 @@ export function request(action, data, {
 		}
 		return Promise.resolve(result)
 	}).catch(err => {
+		const that = this
 		showModal && uni.showModal({
 			content: err.message || '请求服务失败',
-			showCancel: false
+			showCancel: false,
+			success: function(){
+				// #ifdef H5
+				if (err.code === 10101 && that.$refs.usernameInput) {
+					that.$refs.usernameInput.$refs.input.focus()
+				}
+				if (err.code === 10102 && that.$refs.passwordInput ) {
+					that.$refs.passwordInput.$refs.input.focus()
+				}
+				// #endif
+			}
 		})
 		if (debugOptions && debugOptions.enable === true) {
 			store.dispatch('error/add', {
