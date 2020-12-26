@@ -1,18 +1,15 @@
 <template>
     <view class="uni-container">
         <uni-forms ref="form" validateTrigger="bind" :rules="rules" @submit="submit">
-            <uni-forms-item name="permission_id" label="权限标识">
-                <input disabled v-model="formData.permission_id" @input="binddata('permission_id', $event.detail.value)"
-                    class="uni-input-border uni-disabled" />
-            </uni-forms-item>
-            <uni-forms-item name="permission_name" label="权限名称">
-                <input v-model="formData.permission_name" @input="binddata('permission_name', $event.detail.value)"
-                    class="uni-input-border" />
-            </uni-forms-item>
-            <uni-forms-item name="comment" label="备注">
-                <textarea v-model="formData.comment" @input="binddata('comment', $event.detail.value)" class="uni-textarea-border"></textarea>
-            </uni-forms-item>
-
+			<uni-forms-item name="permission_id" label="权限标识" required>
+				<uni-easyinput v-model="formData.permission_id" :clearable="false" placeholder="请输入权限标识" />
+			</uni-forms-item>
+			<uni-forms-item name="permission_name" label="权限名称" required>
+				<uni-easyinput v-model="formData.permission_name" :clearable="false" placeholder="请输入权限名称" />
+			</uni-forms-item>
+			<uni-forms-item name="comment" label="备注">
+				<uni-easyinput type="textarea" v-model="formData.comment" :clearable="false" placeholder="请输入备注" />
+			</uni-forms-item>
             <view class="uni-button-group">
                 <button style="width: 100px;" type="primary" class="uni-button" @click="submitForm">提交</button>
                 <navigator open-type="navigateBack" style="margin-left: 15px;"><button style="width: 100px;" class="uni-button">返回</button></navigator>

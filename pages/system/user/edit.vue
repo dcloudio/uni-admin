@@ -1,23 +1,20 @@
 <template>
 	<view class="uni-container">
 		<uni-forms ref="form" v-model="formData" :rules="rules" validateTrigger="bind" @submit="submit">
-			<uni-forms-item name="username" label="用户名">
-				<input placeholder="请输入用户名" @input="binddata('username', $event.detail.value)" class="uni-input-border" :value="formData.username" />
+			<uni-forms-item name="username" label="用户名" required>
+				<uni-easyinput v-model="formData.username" :clearable="false" placeholder="请输入用户名" />
 			</uni-forms-item>
-			<!-- <uni-forms-item name="password" label="初始密码">
-				<input placeholder="请输入初始密码" @input="binddata('password', $event.detail.value)" class="uni-input-border" :value="formData.password" />
-			</uni-forms-item> -->
 			<uni-forms-item name="role" label="角色列表">
 				<uni-data-checklist multiple v-if="roles.length" :value="formData.role" :range="roles" @change="binddata('role', $event.detail.value)"></uni-data-checklist>
 				<view v-else class="uni-form-item-empty">
 					暂无
 				</view>
 			</uni-forms-item>
-			<uni-forms-item name="mobile" label="手机号">
-				<input placeholder="手机号" @input="binddata('mobile', $event.detail.value)" class="uni-input-border" :value="formData.mobile" />
+			<uni-forms-item  name="mobile" label="手机号">
+				<uni-easyinput v-model="formData.mobile" :clearable="false" placeholder="请输入手机号" />
 			</uni-forms-item>
 			<uni-forms-item name="email" label="邮箱">
-				<input placeholder="邮箱" @input="binddata('email', $event.detail.value)" class="uni-input-border" :value="formData.email" />
+				<uni-easyinput v-model="formData.email" :clearable="false" placeholder="请输入邮箱" />
 			</uni-forms-item>
 			<uni-forms-item name="status" label="用户状态">
 				<switch v-if="Number(formData.status) < 2" @change="binddata('status', $event.detail.value)" :checked="formData.status" />
