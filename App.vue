@@ -4,6 +4,7 @@
 		mapActions
 	} from 'vuex'
 	import config from '@/admin.config.js'
+	import { version } from './package.json'
 	export default {
 		computed: {
 			...mapGetters({
@@ -22,6 +23,7 @@
 		},
 		onLaunch: function() {
 			console.log('App Launch')
+			console.log('uniCloud admin 当前版本号:', version)
 			if (!this.isTokenValid) {
 				uni.redirectTo({
 					url: config.login.url
