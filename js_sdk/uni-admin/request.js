@@ -54,7 +54,9 @@ export function request(action, data, {
 				// #endif
 			}
 		})
-		if (debugOptions && debugOptions.enable === true) {
+		const noDebugPages = ['/pages/login/login', '/pages/init/init']
+		const { path } = this.$route
+		if (debugOptions && debugOptions.enable === true && noDebugPages.indexOf(path) === -1) {
 			store.dispatch('error/add', {
 				err: err.toString(),
 				info: '$request("' + action + '")',

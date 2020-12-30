@@ -38,6 +38,7 @@
 		data() {
 			return {
 				...config.navBar,
+				indexPage: config.index.url,
 				showPassword: true,
 				loading: false,
 				formData: {
@@ -115,11 +116,8 @@
 								icon: 'none'
 							})
 							uni.redirectTo({
-								url: '/pages/index/index'
+								url: this.indexPage,
 							})
-							// #ifdef H5
-							window.location.reload();
-							// #endif
 						})
 					}).catch(err => {
 
