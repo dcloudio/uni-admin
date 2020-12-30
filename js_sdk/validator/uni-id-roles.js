@@ -8,8 +8,7 @@ export default {
 		"rules": [{
 				"required": true,
 				"errorMessage": "{label}必填"
-			},
-			{
+			}, {
 				"format": "string"
 			}
 		],
@@ -17,9 +16,11 @@ export default {
 	},
 	"role_name": {
 		"rules": [{
-				"format": "string"
-			}
-		],
+			"required": true,
+			"errorMessage": "{label}必填"
+		}, {
+			"format": "string"
+		}],
 		"label": "角色名"
 	},
 	"permission": {

@@ -1,19 +1,18 @@
 <template>
 	<view class="uni-container">
 		<uni-forms ref="form" v-model="formData" :rules="rules" validateTrigger="bind" @submit="submit">
-			<uni-forms-item name="role_id" label="角色id">
-				<input placeholder="请输入姓名" @input="binddata('role_id', $event.detail.value)" class="uni-input-border" :value="formData.role_id" />
+			<uni-forms-item name="role_id" label="角色Id" required>
+				<uni-easyinput v-model="formData.role_id" :clearable="false" placeholder="请输入角色Id" />
 			</uni-forms-item>
-			<uni-forms-item name="role_name" label="角色名">
-				<input placeholder="请输入角色名" @input="binddata('role_name', $event.detail.value)" class="uni-input-border" :value="formData.role_name" />
+			<uni-forms-item name="role_name" label="角色名" required>
+				<uni-easyinput v-model="formData.role_name" :clearable="false" placeholder="请输入角色名" />
 			</uni-forms-item>
 			<uni-forms-item name="permission" label="权限列表">
-				<uni-data-checkbox :multiple="true" v-model="formData.permission" collection="uni-id-permissions" field="permission_name as text, permission_id as value"/>
+				<uni-data-checkbox :multiple="true" v-model="formData.permission" collection="uni-id-permissions" field="permission_name as text, permission_id as value" />
 			</uni-forms-item>
 			<uni-forms-item name="comment" label="备注">
-				<textarea placeholder="请输入备注" @input="binddata('comment', $event.detail.value)" class="uni-textarea-border" :value="formData.comment"></textarea>
+				<uni-easyinput type="textarea" v-model="formData.comment" :clearable="false" placeholder="请输入备注" />
 			</uni-forms-item>
-
 			<view class="uni-button-group">
 				<button style="width: 100px;" type="primary" class="uni-button" @click="submitForm">提交</button>
 				<navigator open-type="navigateBack" style="margin-left: 15px;"><button style="width: 100px;" class="uni-button">返回</button></navigator>

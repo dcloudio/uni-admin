@@ -1,30 +1,28 @@
 <template>
 	<view class="uni-container">
 		<uni-forms labelWidth="80" ref="form" v-model="formData" :rules="rules" validateTrigger="bind" @submit="submit">
-			<uni-forms-item name="menu_id" label="标识">
-				<input disabled placeholder="菜单项的ID，不可重复" @input="binddata('menu_id', $event.detail.value)" class="uni-input-border uni-disabled"
-				 :value="formData.menu_id" />
+			<uni-forms-item name="menu_id" label="标识" required>
+				<uni-easyinput v-model="formData.menu_id" :clearable="false" placeholder="请输入菜单项的ID，不可重复" />
 			</uni-forms-item>
-			<uni-forms-item name="name" label="名称">
-				<input placeholder="菜单名称" @input="binddata('name', $event.detail.value)" class="uni-input-border" :value="formData.name" />
+			<uni-forms-item name="name" label="名称" required>
+				<uni-easyinput v-model="formData.name" :clearable="false" placeholder="请输入菜单名称" />
 			</uni-forms-item>
 			<uni-forms-item name="icon" label="图标" style="margin-bottom: 40px;">
-				<input placeholder="菜单图标" @input="binddata('icon', $event.detail.value)" class="uni-input-border" :value="formData.icon" />
+				<uni-easyinput v-model="formData.icon" :clearable="false" placeholder="请输入菜单图标" />
 				<uni-link font-size="12" href="https://uniapp.dcloud.net.cn/uniCloud/admin?id=icon-%e5%9b%be%e6%a0%87" text="如何获取内置图标或使用自定义图标？"
 				 class="uni-form-item-tips"></uni-link>
 			</uni-forms-item>
 			<uni-forms-item name="url" label="URL">
-				<input placeholder="菜单url" @input="binddata('url', $event.detail.value)" class="uni-input-border" :value="formData.url" />
+				<uni-easyinput v-model="formData.url" :clearable="false" placeholder="请输入菜单url" />
 			</uni-forms-item>
 			<uni-forms-item name="sort" label="序号">
-				<input placeholder="菜单序号（越大越靠后）" type="number" @input="binddata('sort', $event.detail.value)" class="uni-input-border"
-				 :value="formData.sort" />
+				<uni-easyinput v-model="formData.sort" :clearable="false" placeholder="请输入菜单序号（越大越靠后）" />
 			</uni-forms-item>
 			<uni-forms-item name="parent_id" label="父菜单标识">
-				<input placeholder="父级菜单标识, 一级菜单不需要填写" @input="binddata('parent_id', $event.detail.value)" class="uni-input-border" :value="formData.parent_id" />
+				<uni-easyinput v-model="formData.parent_id" :clearable="false" placeholder="请输入父级菜单标识, 一级菜单不需要填写" />
 			</uni-forms-item>
-			<uni-forms-item v-if="permissions.length" name="permission" label="权限列表" style="margin-bottom: 60px;">
-				<uni-data-checklist multiple :value="formData.permission" :range="permissions" @change="binddata('permission', $event.detail.value)"></uni-data-checklist>
+			<uni-forms-item name="permission" label="权限列表" style="margin-bottom: 60px;">
+				<uni-data-checkbox :multiple="true" v-model="formData.permission" collection="uni-id-permissions" field="permission_name as text, permission_id as value" />
 				<view class="uni-form-item-tips">
 					当用户拥有以上被选中的权限时，可以访问此菜单，建议仅对子菜单配置权限，父菜单会自动包含。
 				</view>
@@ -73,15 +71,13 @@
 				},
 				rules: {
 					...getValidator(["menu_id", "name", "icon", "url", "sort", "parent_id", "permission", "enable"])
-				},
-				permissions: []
+				}
 			}
 		},
 		onLoad(e) {
 			const id = e.id
 			this.formDataId = id
 			this.getDetail(id)
-			this.loadPermissions()
 		},
 		methods: {
 			/**
@@ -146,22 +142,6 @@
 					})
 				}).finally(() => {
 					uni.hideLoading()
-				})
-			},
-			loadPermissions() {
-				db.collection('uni-id-permissions').limit(500).get().then(res => {
-					this.permissions = res.result.data.map(item => {
-						return {
-							value: item.permission_id,
-							text: item.permission_name
-						}
-					})
-				}).catch(err => {
-					uni.showModal({
-						title: '提示',
-						content: err.message,
-						showCancel: false
-					})
 				})
 			}
 		}

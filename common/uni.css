@@ -18,16 +18,16 @@ html {
 }
 
 .uni-app--showleftwindow uni-page-head .uni-page-head {
-	margin: 15px;
-	border-radius: 5px 5px 0 0;
+	/* margin-right: 15px; */
 }
 
 .uni-app--showleftwindow uni-page-head[uni-page-head-type=default]~uni-page-wrapper {
 	height: auto;
+	padding-top: 59px;
 }
 
 .uni-app--showleftwindow uni-page-head~uni-page-wrapper uni-page-body {
-	padding-top: 44px;
+	/* padding-top: 44px; */
 }
 
 .uni-app--showleftwindow uni-page-wrapper {
