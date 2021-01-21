@@ -34,12 +34,20 @@ module.exports = class UserService extends Service {
 	}
 
 	async checkToken(token) {
-		const auth = await uniID.checkToken(token)
+		const auth = await uniID.checkToken(token, {
+			needPermission: true
+		})
 		if (auth.code) {
 			// 校验失败，抛出错误信息
 			this.ctx.throw('TOKEN_INVALID', `${auth.message}，${auth.code}`)
 		}
 		this.ctx.auth = auth // 设置当前请求的 auth 对象
+	}
+
+	async getCurrentUserInfo() {
+		return uniID.getUserInfo({
+			uid: this.ctx.auth.uid
+		})
 	}
 
 	async hasAdmin() {
