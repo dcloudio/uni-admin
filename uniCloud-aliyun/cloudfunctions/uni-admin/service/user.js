@@ -15,7 +15,10 @@ module.exports = class UserService extends Service {
 		if (res.code) {
 			return res
 		}
-		await this.checkToken(res.token)
+		await this.checkToken(res.token, {
+			needPermission: true,
+			needUserInfo: false
+		})
 		if (this.ctx.auth.role.includes('admin')) {
 			return res
 		}
@@ -34,7 +37,10 @@ module.exports = class UserService extends Service {
 	}
 
 	async checkToken(token) {
-		const auth = await uniID.checkToken(token)
+		const auth = await uniID.checkToken(token, {
+			needPermission: true,
+			needUserInfo: false
+		})
 		if (auth.code) {
 			// 校验失败，抛出错误信息
 			this.ctx.throw('TOKEN_INVALID', `${auth.message}，${auth.code}`)
@@ -50,5 +56,12 @@ module.exports = class UserService extends Service {
 		}).count()
 
 		return !!total
+	}
+
+	async getCurrentUserInfo(field = []) {
+		return uniID.getUserInfo({
+			uid: this.ctx.auth.uid,
+			field
+		})
 	}
 }
