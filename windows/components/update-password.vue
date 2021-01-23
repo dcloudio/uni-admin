@@ -127,7 +127,7 @@
 					if (res.code === 0) {
 						uni.showModal({
 							title: '提示',
-							content: res.msg,
+							content: res.message,
 							showCancel: false,
 							success: (res) => {
 								if (res.confirm) {
@@ -141,7 +141,7 @@
 						});
 					} else {
 						uni.showToast({
-							title: res.msg,
+							title: res.message,
 							icon: 'none',
 							duration: 2000
 						})
