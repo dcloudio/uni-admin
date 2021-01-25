@@ -1,9 +1,10 @@
 <template>
 	<scroll-view class="sidebar" scroll-y="true">
-			<uni-nav-menu :active="active" activeKey="url" activeTextColor="#409eff" @select="select">
-				<uni-menu-sidebar :data="navMenu"></uni-menu-sidebar>
-				<uni-menu-sidebar :data="staticMenu"></uni-menu-sidebar>
-			</uni-nav-menu>
+		<!-- <uni-nav-menu :active="active" activeKey="url" activeTextColor="#409eff" @select="select">
+			<uni-menu-sidebar :data="navMenu"></uni-menu-sidebar>
+			<uni-menu-sidebar :data="staticMenu"></uni-menu-sidebar>
+		</uni-nav-menu> -->
+		<uni-data-menu ></uni-data-menu>
 	</scroll-view>
 </template>
 
