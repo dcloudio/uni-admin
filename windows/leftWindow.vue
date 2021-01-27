@@ -1,10 +1,12 @@
 <template>
 	<scroll-view class="sidebar" scroll-y="true">
-		<!-- <uni-nav-menu :active="active" activeKey="url" activeTextColor="#409eff" @select="select">
+		<uni-data-menu collection="opendb-admin-menus" gettree field="url, name, menu_id, icon" orderby="value asc" :active="active" active-text-color="#409eff" @select="select">
+			<uni-menu-sidebar :data="staticMenu"></uni-menu-sidebar>
+		</uni-data-menu>
+		<!-- <uni-nav-menu :uniqueOpened="true" :active="active" activeKey="url" activeTextColor="#409eff" @select="select">
 			<uni-menu-sidebar :data="navMenu"></uni-menu-sidebar>
 			<uni-menu-sidebar :data="staticMenu"></uni-menu-sidebar>
 		</uni-nav-menu> -->
-		<uni-data-menu ></uni-data-menu>
 	</scroll-view>
 </template>
 
