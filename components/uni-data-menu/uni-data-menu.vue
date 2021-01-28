@@ -1,6 +1,6 @@
 <template>
 	<view>
-		<uni-nav-menu :active="active" activeKey="url" :activeTextColor="activeTextColor" :uniqueOpened="uniqueOpened"
+		<uni-nav-menu :active="value" activeKey="value" :activeTextColor="activeTextColor" :uniqueOpened="uniqueOpened"
 		 @select="onSelect">
 			<uni-menu-sidebar :data="mixinDatacomResData"></uni-menu-sidebar>
 			<slot></slot>
@@ -17,8 +17,8 @@
 		},
 		mixins: [uniCloud.mixinDatacom],
 		props: {
-			// 当前激活菜单的 index
-			active: {
+			// 当前激活菜单的 url
+			value: {
 				type: String,
 				default: ''
 			},
@@ -48,8 +48,9 @@
 			this.load()
 		},
 		methods: {
-			onSelect(e) {
-				this.$emit('select', e)
+			onSelect(menu) {
+				this.$emit('select', menu)
+				this.$emit('input', menu.value)
 			},
 			hasLocalData(value) {
 				return Array.isArray(value) && value.length > 0
