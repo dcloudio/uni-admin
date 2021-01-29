@@ -1,6 +1,7 @@
 <template>
-	<view v-if="showPopup" class="uni-popup" :class="[popupstyle]" @touchmove.stop.prevent="clear">
-		<uni-transition v-if="maskShow" class="uni-mask--hook" :mode-class="['fade']" :styles="maskClass" :duration="duration" :show="showTrans" @click="onTap" />
+	<view v-if="showPopup" class="uni-popup" :class="[popupstyle, isDesktop ? 'fixforpc-z-index' : '']" @touchmove.stop.prevent="clear">
+		<uni-transition v-if="maskShow" class="uni-mask--hook" :mode-class="['fade']" :styles="maskClass" :duration="duration"
+		 :show="showTrans" @click="onTap" />
 		<uni-transition :mode-class="ani" :styles="transClass" :duration="duration" :show="showTrans" @click="onTap">
 			<view class="uni-popup__wrapper-box" @click.stop="clear">
 				<slot />
@@ -63,7 +64,13 @@
 			 */
 			type: {
 				handler: function(newVal) {
-					this[this.config[newVal]]()
+						this[this.config[newVal]]()
+				},
+				immediate: true
+			},
+			isDesktop: {
+				handler: function(newVal) {
+					this[this.config[this.type]]()
 				},
 				immediate: true
 			},
@@ -99,7 +106,7 @@
 				},
 				maskShow: true,
 				mkclick: true,
-				popupstyle: 'top'
+				popupstyle: this.isDesktop ? 'fixforpc-top' : 'top'
 			}
 		},
 		created() {
@@ -163,7 +170,7 @@
 			 * 顶部弹出样式处理
 			 */
 			top() {
-				this.popupstyle = 'top'
+				this.popupstyle = this.isDesktop ? 'fixforpc-top' : 'top'
 				this.ani = ['slide-top']
 				this.transClass = {
 					'position': 'fixed',
@@ -207,13 +214,17 @@
 		}
 	}
 </script>
-<style scoped>
-	@charset "UTF-8";
-
+<style lang="scss" scoped>
 	.uni-popup {
 		position: fixed;
 		/* #ifndef APP-NVUE */
-		z-index: 99;
+		z-index: 998;
+		/* #endif */
+	}
+
+	.fixforpc-z-index {
+		/* #ifndef APP-NVUE */
+		z-index: 999;
 		/* #endif */
 	}
 
@@ -223,7 +234,7 @@
 		bottom: 0;
 		left: 0;
 		right: 0;
-		background-color: rgba(0, 0, 0, 0.4);
+		background-color: $uni-bg-color-mask;
 		opacity: 0;
 	}
 
@@ -260,6 +271,10 @@
 		/* #endif */
 	}
 
+	.fixforpc-top {
+		top: 0;
+	}
+
 	.bottom {
 		bottom: 0;
 	}
@@ -277,9 +292,11 @@
 	}
 
 	.content-ani {
+		// transition: transform 0.3s;
 		transition-property: transform, opacity;
 		transition-duration: 0.2s;
 	}
+
 
 	.uni-top-content {
 		transform: translateY(0);
