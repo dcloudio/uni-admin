@@ -1,6 +1,18 @@
 import store from '@/store'
 import config from '@/admin.config.js'
 const debugOptions = config.navBar.debug
+
+const db = uniCloud.database()
+db.on('refreshToken', function({
+	token,
+	tokenExpired
+}) {
+	store.commit('user/SET_TOKEN', {
+		token,
+		tokenExpired
+	})
+})
+
 export function request(action, data, {
 	functionName = 'uni-admin',
 	showModal = true
@@ -43,19 +55,21 @@ export function request(action, data, {
 		showModal && uni.showModal({
 			content: err.message || '请求服务失败',
 			showCancel: false,
-			success: function(){
+			success: function() {
 				// #ifdef H5
 				if (err.code === 10101 && that.$refs.usernameInput) {
 					that.$refs.usernameInput.$refs.input.focus()
 				}
-				if (err.code === 10102 && that.$refs.passwordInput ) {
+				if (err.code === 10102 && that.$refs.passwordInput) {
 					that.$refs.passwordInput.$refs.input.focus()
 				}
 				// #endif
 			}
 		})
 		const noDebugPages = ['/pages/login/login', '/pages/init/init']
-		const { path } = this.$route
+		const {
+			path
+		} = this.$route
 		if (debugOptions && debugOptions.enable === true && noDebugPages.indexOf(path) === -1) {
 			store.dispatch('error/add', {
 				err: err.toString(),
