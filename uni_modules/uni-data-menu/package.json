@@ -5,11 +5,13 @@
   "description": "一个展示类的datacom组件，自带查询的侧边栏菜单",
   "keywords": [
     "uni-data-menu",
-    "uni-ui"
+    "uni-ui",
+    "边栏菜单",
+    "admin"
 ],
   "repository": "",
   "engines": {
-    "HBuilderX": "^3.0.7"
+    "HBuilderX": "^3.1.0"
   },
   "dcloudext": {
     "category": [
