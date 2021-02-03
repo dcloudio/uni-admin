@@ -4,13 +4,19 @@
 			<uni-forms-item name="username" label="用户名" required>
 				<uni-easyinput v-model="formData.username" :clearable="false" placeholder="请输入用户名" />
 			</uni-forms-item>
+			<uni-forms-item :name="showPassword ? 'password' : ''" label="重置密码">
+				<span v-if="!showPassword" class="reset-password-btn" @click="trigger">点击重置密码</span>
+				<uni-easyinput v-if="showPassword" v-model="formData.password" :clearable="false" placeholder="请输入重置密码">
+					<view slot="right" class="cancel-reset-password-btn" @click="trigger">取消</view>
+				</uni-easyinput>
+			</uni-forms-item>
 			<uni-forms-item name="role" label="角色列表">
 				<uni-data-checklist multiple v-if="roles.length" :value="formData.role" :range="roles" @change="binddata('role', $event.detail.value)"></uni-data-checklist>
 				<view v-else class="uni-form-item-empty">
 					暂无
 				</view>
 			</uni-forms-item>
-			<uni-forms-item  name="mobile" label="手机号">
+			<uni-forms-item name="mobile" label="手机号">
 				<uni-easyinput v-model="formData.mobile" :clearable="false" placeholder="请输入手机号" />
 			</uni-forms-item>
 			<uni-forms-item name="email" label="邮箱">
@@ -48,8 +54,10 @@
 	export default {
 		data() {
 			return {
+				showPassword: false,
 				formData: {
 					"username": "",
+					"password": "",
 					"role": [],
 					"mobile": "",
 					"email": "",
@@ -74,6 +82,12 @@
 
 		},
 		methods: {
+			/**
+			 * 切换重置密码框显示或隐藏
+			 */
+			trigger() {
+				this.showPassword = !this.showPassword
+			},
 			/**
 			 * 触发表单提交
 			 */
@@ -105,11 +119,18 @@
 					value.status = Number(!value.status)
 				}
 
-
+				const resetData = {
+					uid: this.formDataId,
+					password: value.password
+				}
+				delete value.password
 				// 使用 uni-clientDB 提交数据
 				db.collection(dbCollectionName).where({
 					_id: this.formDataId
 				}).update(value).then((res) => {
+					if (resetData.password) {
+						this.resetPWd(resetData)
+					}
 					uni.showToast({
 						title: '修改成功'
 					})
@@ -125,6 +146,15 @@
 				})
 			},
 
+			resetPWd(resetData) {
+				this.$request('system/user/resetPwd', resetData)
+					.then().catch(err => {
+						uni.showModal({
+							content: err.message || '请求服务失败',
+							showCancel: false
+						})
+					}).finally()
+			},
 			/**
 			 * 获取表单数据
 			 * @param {Object} id
@@ -134,31 +164,31 @@
 					mask: true
 				})
 				db.collection(dbCollectionName)
-				.doc(id)
-				.field('username,role,mobile,email,status')
-				.get()
-				.then((res) => {
-					const data = res.result.data[0]
-					if (data) {
-						if (data.status === undefined) {
-							data.status = true
+					.doc(id)
+					.field('username,role,mobile,email,status')
+					.get()
+					.then((res) => {
+						const data = res.result.data[0]
+						if (data) {
+							if (data.status === undefined) {
+								data.status = true
+							}
+							if (data.status === 0) {
+								data.status = true
+							}
+							if (data.status === 1) {
+								data.status = false
+							}
+							this.formData = data
 						}
-						if (data.status === 0) {
-							data.status = true
-						}
-						if (data.status === 1) {
-							data.status = false
-						}
-						this.formData = data
-					}
-				}).catch((err) => {
-					uni.showModal({
-						content: err.message || '请求服务失败',
-						showCancel: false
+					}).catch((err) => {
+						uni.showModal({
+							content: err.message || '请求服务失败',
+							showCancel: false
+						})
+					}).finally(() => {
+						uni.hideLoading()
 					})
-				}).finally(() => {
-					uni.hideLoading()
-				})
 			},
 			loadroles() {
 				db.collection('uni-id-roles').limit(500).get().then(res => {
@@ -201,3 +231,19 @@
 		}
 	}
 </script>
+
+<style>
+	.reset-password-btn {
+		/* height: 100%; */
+		line-height: 36px;
+		color: #007AFF;
+		text-decoration: underline;
+		cursor: pointer;
+	}
+
+	.cancel-reset-password-btn {
+		color: #007AFF;
+		padding-right: 10px;
+		cursor: pointer;
+	}
+</style>

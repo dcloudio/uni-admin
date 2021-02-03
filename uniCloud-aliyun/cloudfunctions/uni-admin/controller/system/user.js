@@ -26,4 +26,18 @@ module.exports = class UserController extends Controller {
 
 		return result
 	}
+	
+	async resetPwd() {
+		const {
+			uid,
+			password
+		} = this.ctx.data
+	
+		const result = await uniID.resetPwd({
+			uid,
+			password
+		})
+
+		return result
+	}
 }

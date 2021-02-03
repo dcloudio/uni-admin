@@ -102,7 +102,6 @@
 				if (typeof value.status === "boolean") {
 					value.status = Number(!value.status)
 				}
-				console.log(121212, value)
 				this.$request('system/user/addUser', value)
 				    .then(res => {
 						uni.showToast({
