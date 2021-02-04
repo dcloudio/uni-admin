@@ -5,13 +5,13 @@
 				<uni-easyinput v-model="formData.username" :clearable="false" placeholder="请输入用户名" />
 			</uni-forms-item>
 			<uni-forms-item :name="showPassword ? 'password' : ''" label="重置密码">
-				<span v-if="!showPassword" class="reset-password-btn" @click="trigger">点击重置密码</span>
-				<uni-easyinput v-if="showPassword" v-model="formData.password" :clearable="false" placeholder="请输入重置密码">
+				<span v-show="!showPassword" class="reset-password-btn" @click="trigger">点击重置密码</span>
+				<uni-easyinput v-show="showPassword" v-model="formData.password" :clearable="false" placeholder="请输入重置密码">
 					<view slot="right" class="cancel-reset-password-btn" @click="trigger">取消</view>
 				</uni-easyinput>
 			</uni-forms-item>
 			<uni-forms-item name="role" label="角色列表">
-				<uni-data-checklist multiple v-if="roles.length" :value="formData.role" :range="roles" @change="binddata('role', $event.detail.value)"></uni-data-checklist>
+				<uni-data-checkbox v-if="roles.length" multiple :localdata="roles" v-model="formData.role" />
 				<view v-else class="uni-form-item-empty">
 					暂无
 				</view>
@@ -88,6 +88,7 @@
 			trigger() {
 				this.showPassword = !this.showPassword
 			},
+
 			/**
 			 * 触发表单提交
 			 */
@@ -104,7 +105,6 @@
 					value,
 					errors
 				} = event.detail
-
 				// 表单校验失败页面会提示报错 ，要停止表单提交逻辑
 				if (errors) {
 					return
@@ -128,7 +128,7 @@
 				db.collection(dbCollectionName).where({
 					_id: this.formDataId
 				}).update(value).then((res) => {
-					if (resetData.password) {
+					if (this.showPassword && resetData.password) {
 						this.resetPWd(resetData)
 					}
 					uni.showToast({

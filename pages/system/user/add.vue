@@ -8,7 +8,7 @@
 				<uni-easyinput v-model="formData.password" :clearable="false" placeholder="请输入初始密码" />
 			</uni-forms-item>
 			<uni-forms-item name="role" label="角色列表">
-				<uni-data-checklist v-if="roles.length" multiple :range="roles" v-model="formData.role" />
+				<uni-data-checkbox v-if="roles.length" multiple :localdata="roles" v-model="formData.role" />
 				<view v-else class="uni-form-item-empty">
 					暂无
 				</view>

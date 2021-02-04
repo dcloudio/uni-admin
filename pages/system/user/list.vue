@@ -13,14 +13,13 @@
 			</view>
 		</view>
 		<view class="uni-container">
-			<uni-clientdb ref="udb" @load="onqueryload" collection="uni-id-users,uni-id-roles" :options="options" :where="where" field="_id,username,role{role_id,role_name},mobile,email,status,register_date"
+			<unicloud-db ref="udb" @load="onqueryload" collection="uni-id-users,uni-id-roles" :options="options" :where="where" field="_id,username,role{role_id,role_name},mobile,email,status,register_date"
 			 page-data="replace" :orderby="orderby" :getcount="true" :page-size="options.pageSize" :page-current="options.pageCurrent"
 			 v-slot:default="{data,pagination,loading,error}">
 				<uni-table :loading="loading" :emptyText="error.message || '没有更多数据'" border stripe type="selection"
 				 @selection-change="selectionChange">
 					<uni-tr>
 						<uni-th align="center">用户名</uni-th>
-						<!-- <uni-th align="center">初始密码</uni-th> -->
 						<uni-th align="center">角色</uni-th>
 						<uni-th align="center">手机号</uni-th>
 						<uni-th align="center">邮箱</uni-th>
@@ -30,7 +29,6 @@
 					</uni-tr>
 					<uni-tr v-for="(item,index) in data" :key="index">
 						<uni-td align="center">{{item.username}}</uni-td>
-						<!-- <uni-td align="center">{{item.password}}</uni-td> -->
 						<uni-td align="center">{{item.role}}</uni-td>
 						<uni-td align="center">{{item.mobile}}</uni-td>
 						<uni-td align="center">{{item.email}}</uni-td>
@@ -51,7 +49,7 @@ register_date" :threshold="[0, 0]" />
 					<uni-pagination show-icon :page-size="pagination.size" v-model="pagination.current" :total="pagination.count"
 					 @change="onPageChanged" />
 				</view>
-			</uni-clientdb>
+			</unicloud-db>
 		</view>
 		<!-- #ifndef H5 -->
 		<fix-window />

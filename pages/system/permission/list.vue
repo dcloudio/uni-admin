@@ -13,7 +13,7 @@
             </view>
         </view>
         <view class="uni-container">
-            <uni-clientdb ref="dataQuery" collection="uni-id-permissions" :options="options" :where="where" page-data="replace"
+            <unicloud-db ref="dataQuery" collection="uni-id-permissions" :options="options" :where="where" page-data="replace"
                 :orderby="orderby" :getcount="true" :page-size="options.pageSize" :page-current="options.pageCurrent"
                 v-slot:default="{data,pagination,loading,error}">
                 <uni-table :loading="loading" :emptyText="error.message || '没有更多数据'" border stripe type="selection"
@@ -44,7 +44,7 @@
                     <uni-pagination show-icon :page-size="pagination.size" v-model="pagination.current" :total="pagination.count"
                         @change="onPageChanged" />
                 </view>
-            </uni-clientdb>
+            </unicloud-db>
         </view>
 		<!-- #ifndef H5 -->
 		<fix-window />

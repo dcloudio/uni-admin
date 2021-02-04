@@ -39,7 +39,7 @@
 		</uni-forms>
 		<uni-popup class="icon-modal-box" ref="iconPopup" type="center">
 			<view class="icon-modal icon-modal-pc">
-				<Icons :tag="false"/>
+				<Icons :tag="false" :fix-window="false"/>
 			</view>
 		</uni-popup>
 	</view>

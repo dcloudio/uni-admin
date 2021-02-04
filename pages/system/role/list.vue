@@ -13,7 +13,7 @@
 			</view>
 		</view>
 		<view class="uni-container">
-			<uni-clientdb ref="udb" @load="onqueryload" collection="uni-id-roles,uni-id-permissions" :options="options" :where="where" field="role_id,role_name,permission{permission_id,permission_name},comment,create_date" page-data="replace" :orderby="orderby"
+			<unicloud-db ref="udb" @load="onqueryload" collection="uni-id-roles,uni-id-permissions" :options="options" :where="where" field="role_id,role_name,permission{permission_id,permission_name},comment,create_date" page-data="replace" :orderby="orderby"
 			 :getcount="true" :page-size="options.pageSize" :page-current="options.pageCurrent" v-slot:default="{data,pagination,loading,error}">
 				<uni-table :loading="loading" :emptyText="error.message || '没有更多数据'" border stripe type="selection"
 				 @selection-change="selectionChange">
@@ -46,7 +46,7 @@
 					<uni-pagination show-icon :page-size="pagination.size" v-model="pagination.current" :total="pagination.count"
 					 @change="onPageChanged" />
 				</view>
-			</uni-clientdb>
+			</unicloud-db>
 		</view>
 		<!-- #ifndef H5 -->
 		<fix-window />
