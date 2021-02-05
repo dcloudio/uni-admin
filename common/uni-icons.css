@@ -1,6 +1,6 @@
 @font-face {
 	font-family: uni-icons;
-	src: url('~@/components/uni-icons/uni.ttf') format('truetype');
+	src: url('~@/uni_modules/uni-icons/components/uni-icons/uni.ttf') format('truetype');
 	font-weight: 400;
 	font-display: "auto";
 	font-style: normal
