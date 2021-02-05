@@ -1,6 +1,6 @@
 import {
     formatDate
-} from '@/components/uni-dateformat/date-format.js'
+} from '@/uni_modules/uni-dateformat/components/uni-dateformat/date-format.js'
 
 function formatBytes(bytes) {
     const sizes = ['B', 'KB', 'MB', 'GB', 'TB']

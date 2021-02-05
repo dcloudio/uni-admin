@@ -31,7 +31,8 @@
 		},
 		"parent_id": {
 			"bsonType": "string",
-			"description": "父级菜单Id"
+			"description": "父级菜单Id",
+			"parentKey": "menu_id"
 		},
 		"permission": {
 			"bsonType": "array",
