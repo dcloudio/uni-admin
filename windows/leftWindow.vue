@@ -52,6 +52,11 @@
 					return window.open(url)
 				}
 				// #endif
+
+				// url 开头可用有 / ，也可没有
+				if (url[0] !== '/' && url.indexOf('http') !== 0) {
+					url = '/' + url
+				}
 				// TODO 后续要调整
 				uni.redirectTo({
 					url: url,

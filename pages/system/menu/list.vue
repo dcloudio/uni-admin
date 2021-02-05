@@ -84,6 +84,9 @@
 </template>
 
 <script>
+	import {
+		mapActions
+	} from 'vuex'
 	// 查找插件注册的菜单列表（目前仅在开发模式启用，仅限 admin 角色）
 	const pluginMenuJsons = []
 	if (process.env.NODE_ENV === 'development') {
@@ -167,6 +170,9 @@
 			this.loadData()
 		},
 		methods: {
+			...mapActions({
+				init: 'app/init'
+			}),
 			switchTab(tab) {
 				this.currentTab = tab
 			},
@@ -252,6 +258,7 @@
 						})
 						const checkAll = menus.length === pluginMenus.length
 						uniCloud.database().collection('opendb-admin-menus').add(menus).then(res => {
+							this.init()
 							uni.showModal({
 								title: '提示',
 								content: '添加菜单成功！',
