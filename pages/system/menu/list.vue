@@ -99,18 +99,18 @@
 				pluginMenuJsons.push(item)
 			})
 		})
-		// const pluginModules = require.context(
-		// 	'../../../uni_modules/',
-		// 	true,
-		// 	/-menu.json$/
-		// )
-		// pluginModules.keys().forEach(function(key) {
-		// 	const json = 'uni_modules' + key.substr(1)
-		// 	pluginModules(key).forEach(item => {
-		// 		item.json = json
-		// 		pluginMenuJsons.push(item)
-		// 	})
-		// })
+		const pluginModules = require.context(
+			'../../../uni_modules/',
+			true,
+			/menu.json$/
+		)
+		pluginModules.keys().forEach(function(key) {
+			const json = 'uni_modules' + key.substr(1)
+			pluginModules(key).forEach(item => {
+				item.json = json
+				pluginMenuJsons.push(item)
+			})
+		})
 	}
 
 	// 菜单扁平化
