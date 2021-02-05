@@ -217,6 +217,7 @@
 						this.$request('system/menu/delete', {
 							id: menu._id
 						}).then(() => {
+							this.init()
 							this.loadData()
 						}).finally(() => {
 							uni.hideLoading()

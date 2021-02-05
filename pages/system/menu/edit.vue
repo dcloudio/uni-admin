@@ -49,6 +49,9 @@
 <script>
 	import validator from '@/js_sdk/validator/opendb-admin-menus.js';
 	import Icons from '@/pages/demo/icons/icons.vue'
+	import {
+		mapActions
+	} from 'vuex'
 
 	const db = uniCloud.database();
 	const dbCmd = db.command;
@@ -91,6 +94,9 @@
 			this.getDetail(id)
 		},
 		methods: {
+			...mapActions({
+				init: 'app/init'
+			}),
 			/**
 			 * 触发表单提交
 			 */
@@ -124,6 +130,7 @@
 					uni.showToast({
 						title: '修改成功'
 					})
+					this.init()
 					this.getOpenerEventChannel().emit('refreshData')
 					setTimeout(() => uni.navigateBack(), 500)
 				}).finally(() => {
@@ -179,4 +186,3 @@
 		}
 	}
 </style>
-
