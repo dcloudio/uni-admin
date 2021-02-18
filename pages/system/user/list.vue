@@ -9,7 +9,7 @@
 				<input class="uni-search" type="text" v-model="query" @confirm="search"  placeholder="请输入搜索内容" />
 				<button class="uni-button" type="default" size="mini" @click="search">搜索</button>
 				<button class="uni-button" type="default" size="mini" @click="navigateTo('./add')">新增</button>
-				<button class="uni-button" type="default" size="mini" @click="delTable">批量删除</button>
+				<button class="uni-button" type="default" size="mini" @click="delTable" :disabled="!selectedIndexs.length">批量删除</button>
 			</view>
 		</view>
 		<view class="uni-container">
@@ -78,7 +78,8 @@ register_date" :threshold="[0, 0]" />
 				options: {
 					pageSize,
 					pageCurrent
-				}
+				},
+				selectedIndexs: [] //批量选中的项
 			}
 		},
 		computed: {
@@ -156,7 +157,7 @@ register_date" :threshold="[0, 0]" />
 				if (currentUserId === item._id) {
 					uni.showToast({
 						icon: 'none',
-						title: '不允许账号删除自己',
+						title: '不允许 admin 账号删除自己',
 						duration: 1500
 					})
 					return
