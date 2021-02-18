@@ -11,10 +11,7 @@
 				</uni-easyinput>
 			</uni-forms-item>
 			<uni-forms-item name="role" label="角色列表">
-				<uni-data-checkbox v-if="roles.length" multiple :localdata="roles" v-model="formData.role" />
-				<view v-else class="uni-form-item-empty">
-					暂无
-				</view>
+				<uni-data-checkbox multiple :localdata="roles" v-model="formData.role" />
 			</uni-forms-item>
 			<uni-forms-item name="mobile" label="手机号">
 				<uni-easyinput v-model="formData.mobile" :clearable="false" placeholder="请输入手机号" />
