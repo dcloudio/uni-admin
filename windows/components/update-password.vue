@@ -6,19 +6,19 @@
 			</view>
 		</view>
 		<view class="uni-container">
-			<uni-forms ref="form" validateTrigger="bind" :rules="rules" @submit="submit">
+			<uni-forms ref="resetPwdForm" v-model="password" :rules="rules" @submit="submit">
 				<uni-forms-item label="旧密码" name="oldPassword" labelWidth="85">
-					<input class="uni-input-border" type="password" placeholder="旧密码" @blur="binddata('oldPassword',$event.detail.value)" />
+					<input class="uni-input-border" type="password" placeholder="旧密码" v-model="password.oldPassword" />
 				</uni-forms-item>
 
 				<uni-forms-item label="新密码" name="newPassword" labelWidth="85">
-					<input class="uni-input-border" :password="showPassword" placeholder="新密码" @blur="binddata('newPassword',$event.detail.value)" />
+					<input class="uni-input-border" :password="showPassword" placeholder="新密码" v-model="password.newPassword" />
 					<text class="uni-icon-password-eye pointer" :class="[!showPassword ? 'uni-eye-active' : '']" @click="changePassword">&#xe568;</text>
 				</uni-forms-item>
 
 				<uni-forms-item label="确认新密码" name="passwordConfirmation" labelWidth="85" :errorMessage="errorMessage">
-					<input @confirm="confirmForm('passwordConfirmation',$event.detail.value)" class="uni-input-border" :password="showPasswordAgain"
-					 placeholder="确认新密码" @blur="binddata('passwordConfirmation',$event.detail.value)" />
+					<input @confirm="submitForm" class="uni-input-border" :password="showPasswordAgain"
+					 placeholder="确认新密码" v-model="password.passwordConfirmation" />
 					<text class="uni-icon-password-eye pointer" :class="[!showPasswordAgain ? 'uni-eye-active' : '']" @click="changePasswordAgain">&#xe568;</text>
 				</uni-forms-item>
 				<view class="uni-button-group pointer">
@@ -117,10 +117,9 @@
 			},
 			submitForm() {
 				this.errorMessage = ''
-				this.$refs.form.submit()
+				this.$refs.resetPwdForm.submit()
 			},
 			save(formData) {
-				let that = this
 				this.isLoading = true
 				this.$request('self/changePwd', formData).then(res => {
 					this.isLoading = false
