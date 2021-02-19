@@ -138,14 +138,6 @@ register_date" :threshold="[0, 0]" />
 			delTable() {
 				const ids = this.selectedItems()
 				const currentUserId = this.userInfo._id
-				if (!ids.length) {
-					uni.showToast({
-						icon: 'none',
-						title: '请选择要删除的选项',
-						duration: 1500
-					})
-					return
-				}
 				if (ids.includes(currentUserId)) {
 					uni.showToast({
 						icon: 'none',
