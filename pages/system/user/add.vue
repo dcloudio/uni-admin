@@ -8,10 +8,7 @@
 				<uni-easyinput v-model="formData.password" :clearable="false" placeholder="请输入初始密码" />
 			</uni-forms-item>
 			<uni-forms-item name="role" label="角色列表">
-				<uni-data-checklist v-if="roles.length" multiple :range="roles" v-model="formData.role" />
-				<view v-else class="uni-form-item-empty">
-					暂无
-				</view>
+				<uni-data-checkbox multiple :localdata="roles" v-model="formData.role" />
 			</uni-forms-item>
 			<uni-forms-item name="mobile" label="手机号">
 				<uni-easyinput v-model="formData.mobile" :clearable="false" placeholder="请输入手机号" />
@@ -102,7 +99,6 @@
 				if (typeof value.status === "boolean") {
 					value.status = Number(!value.status)
 				}
-				console.log(121212, value)
 				this.$request('system/user/addUser', value)
 				    .then(res => {
 						uni.showToast({

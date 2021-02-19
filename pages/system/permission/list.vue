@@ -9,11 +9,11 @@
                 <input class="uni-search" type="text" v-model="query" @confirm="search" placeholder="权限标识/名称" />
                 <button class="uni-button" type="default" size="mini" @click="search">搜索</button>
                 <button @click="navigateTo('./add')" size="mini" class="uni-button" type="default">新增</button>
-				<button class="uni-button" type="default" size="mini" @click="delTable">批量删除</button>
+				<button class="uni-button" type="default" size="mini" @click="delTable" :disabled="!selectedIndexs.length">批量删除</button>
             </view>
         </view>
         <view class="uni-container">
-            <uni-clientdb ref="dataQuery" collection="uni-id-permissions" :options="options" :where="where" page-data="replace"
+            <unicloud-db ref="dataQuery" collection="uni-id-permissions" :options="options" :where="where" page-data="replace"
                 :orderby="orderby" :getcount="true" :page-size="options.pageSize" :page-current="options.pageCurrent"
                 v-slot:default="{data,pagination,loading,error}">
                 <uni-table :loading="loading" :emptyText="error.message || '没有更多数据'" border stripe type="selection"
@@ -44,7 +44,7 @@
                     <uni-pagination show-icon :page-size="pagination.size" v-model="pagination.current" :total="pagination.count"
                         @change="onPageChanged" />
                 </view>
-            </uni-clientdb>
+            </unicloud-db>
         </view>
 		<!-- #ifndef H5 -->
 		<fix-window />
@@ -70,7 +70,8 @@
                 options: {
                     pageSize,
                     pageCurrent
-                }
+                },
+				selectedIndexs: [] //批量选中的项
             }
         },
         methods: {

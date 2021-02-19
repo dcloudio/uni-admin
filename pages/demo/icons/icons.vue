@@ -15,7 +15,7 @@
 			</view>
 		</view>
 		<!-- #ifndef H5 -->
-		<fix-window />
+		<fix-window v-if="fixWindow" />
 		<!-- #endif -->
 	</view>
 </template>
@@ -28,10 +28,20 @@
 				icons
 			}
 		},
+		props:{
+			tag: {
+				type: Boolean,
+				default: true
+			},
+			fixWindow: {
+				type: Boolean,
+				default: true
+			}
+		},
 		methods: {
 			setClipboardData(type, icon) {
 				let data = 'uni-icons-' + icon
-				if (type === 'tag') {
+				if (this.tag && type === 'tag') {
 					data = '<view class="' + data + '"></view>'
 				}
 				uni.setClipboardData({

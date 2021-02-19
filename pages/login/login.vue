@@ -7,14 +7,14 @@
 			<view class="uni-title">系统登录</view>
 		</view>
 		<view class="uni-container">
-			<uni-forms ref="form" validateTrigger="bind" :rules="rules" @submit="submit">
-				<uni-forms-item left-icon="person" name="username" labelWidth="35">
-					<input ref="usernameInput" @confirm="confirmForm('username',$event.detail.value)" class="uni-input-border" type="text" placeholder="账户"
-					 @blur="binddata('username',$event.detail.value)" />
+			<uni-forms ref="form" v-model="formData" :rules="rules" @submit="submit">
+				<uni-forms-item left-icon="uni-icons-person-filled" name="username" labelWidth="35">
+					<input ref="usernameInput" @confirm="submitForm" class="uni-input-border" type="text" placeholder="账户"
+					 v-model="formData.username" />
 				</uni-forms-item>
-				<uni-forms-item left-icon="locked" class="icon-container" name="password" labelWidth="35">
-					<input ref="passwordInput" @confirm="confirmForm('password',$event.detail.value)" class="uni-input-border" :password="showPassword"
-					 placeholder="密码" @blur="binddata('password',$event.detail.value)" />
+				<uni-forms-item left-icon="uni-icons-locked-filled" class="icon-container" name="password" labelWidth="35">
+					<input ref="passwordInput" @confirm="submitForm" class="uni-input-border" :password="showPassword"
+					 placeholder="密码" v-model="formData.password" />
 					<text class="uni-icon-password-eye pointer" :class="[!showPassword ? 'uni-eye-active' : '']" @click="changePassword">&#xe568;</text>
 				</uni-forms-item>
 				<view class="uni-button-group">
@@ -38,6 +38,7 @@
 		data() {
 			return {
 				...config.navBar,
+				indexPage: config.index.url,
 				showPassword: true,
 				loading: false,
 				formData: {
@@ -77,6 +78,13 @@
 			// #ifdef H5
 			this.focus()
 			// #endif
+			const self = this
+			uni.getStorage({
+				key: "username",
+				success: function(res) {
+					self.formData.username = res.data
+				}
+			})
 		},
 		methods: {
 			...mapActions({
@@ -114,12 +122,13 @@
 								title: '登录成功',
 								icon: 'none'
 							})
+							uni.setStorage({
+							    key: 'username',
+							    data: value.username
+							});
 							uni.redirectTo({
-								url: '/pages/index/index'
+								url: this.indexPage,
 							})
-							// #ifdef H5
-							window.location.reload();
-							// #endif
 						})
 					}).catch(err => {
 
@@ -129,7 +138,7 @@
 
 			},
 			confirmForm(name, value) {
-				this.binddata(name, value)
+				// this.binddata(name, value)
 				this.submitForm()
 			},
 			submitForm() {

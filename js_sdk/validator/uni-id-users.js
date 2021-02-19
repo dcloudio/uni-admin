@@ -30,7 +30,7 @@ export default {
 				"minLength": 6
 			}
 		],
-		"label": "初始密码"
+		"label": "密码"
 	},
 	"mobile": {
 		"rules": [{

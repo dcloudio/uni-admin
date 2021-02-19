@@ -4,16 +4,18 @@
 			<uni-forms-item name="menu_id" label="标识" required>
 				<uni-easyinput v-model="formData.menu_id" :clearable="false" placeholder="请输入菜单项的ID，不可重复" />
 			</uni-forms-item>
-			<uni-forms-item name="name" label="名称" required>
+			<uni-forms-item name="name" label="显示名称" required>
 				<uni-easyinput v-model="formData.name" :clearable="false" placeholder="请输入菜单名称" />
 			</uni-forms-item>
-			<uni-forms-item name="icon" label="图标" style="margin-bottom: 40px;">
-				<uni-easyinput v-model="formData.icon" :clearable="false" placeholder="请输入菜单图标" />
-				<uni-link font-size="12" href="https://uniapp.dcloud.net.cn/uniCloud/admin?id=icon-%e5%9b%be%e6%a0%87" text="如何获取内置图标或使用自定义图标？"
+			<uni-forms-item name="icon" label="图标 class" style="margin-bottom: 10px;">
+				<uni-easyinput v-model="formData.icon" :clearable="false" placeholder="请输入菜单图标css样式类名">
+					<span slot="right" style="color: #007aff; cursor: pointer;padding-right: 10px;" @click="showIconPopup">内置图标</span>
+				</uni-easyinput>
+				<uni-link font-size="12" href="https://uniapp.dcloud.net.cn/uniCloud/admin?id=icon-%e5%9b%be%e6%a0%87" text="如何使用自定义图标？"
 				 class="uni-form-item-tips"></uni-link>
 			</uni-forms-item>
-			<uni-forms-item name="url" label="URL">
-				<uni-easyinput v-model="formData.url" :clearable="false" placeholder="请输入菜单url" />
+			<uni-forms-item name="url" label="页面URL">
+				<uni-easyinput v-model="formData.url" :clearable="false" placeholder="URL为空代表是目录而不是叶子节点" />
 			</uni-forms-item>
 			<uni-forms-item name="sort" label="序号">
 				<uni-easyinput v-model="formData.sort" :clearable="false" placeholder="请输入菜单序号（越大越靠后）" />
@@ -24,7 +26,7 @@
 			<uni-forms-item name="permission" label="权限列表" style="margin-bottom: 60px;">
 				<uni-data-checkbox :multiple="true" v-model="formData.permission" collection="uni-id-permissions" field="permission_name as text, permission_id as value" />
 				<view class="uni-form-item-tips">
-					当用户拥有以上被选中的权限时，可以访问此菜单，建议仅对子菜单配置权限，父菜单会自动包含。
+					当用户拥有以上被选中的权限时，可以访问此菜单。建议仅对子菜单配置权限，父菜单会自动包含。如不选择权限，意味着仅超级管理员可访问本菜单
 				</view>
 			</uni-forms-item>
 			<uni-forms-item name="enable" label="是否启用">
@@ -35,11 +37,20 @@
 				<navigator open-type="navigateBack" style="margin-left: 15px;"><button style="width: 100px;" class="uni-button">返回</button></navigator>
 			</view>
 		</uni-forms>
+		<uni-popup class="icon-modal-box" ref="iconPopup" type="center">
+			<view class="icon-modal icon-modal-pc">
+				<Icons :tag="false" :fix-window="false"/>
+			</view>
+		</uni-popup>
 	</view>
 </template>
 
 <script>
 	import validator from '@/js_sdk/validator/opendb-admin-menus.js';
+	import Icons from '@/pages/demo/icons/icons.vue'
+	import {
+		mapActions
+	} from 'vuex'
 
 	const db = uniCloud.database();
 	const dbCmd = db.command;
@@ -56,6 +67,9 @@
 	}
 
 	export default {
+		components: {
+			Icons
+		},
 		data() {
 			return {
 				formData: {
@@ -74,6 +88,9 @@
 			}
 		},
 		methods: {
+			...mapActions({
+				init: 'app/init'
+			}),
 			/**
 			 * 触发表单提交
 			 */
@@ -103,12 +120,34 @@
 					uni.showToast({
 						title: '新增成功'
 					})
+					this.init()
 					this.getOpenerEventChannel().emit('refreshData')
 					setTimeout(() => uni.navigateBack(), 500)
 				}).finally(() => {
 					uni.hideLoading()
 				})
+			},
+			showIconPopup() {
+				this.$refs.iconPopup.open()
 			}
 		}
 	}
 </script>
+<style scoped>
+	.icon-modal-box {
+		padding-top: var(--top-window-height);
+	}
+
+	.icon-modal {
+		width: 350px;
+		background-color: #fff;
+		height: 500px;
+		overflow-y: scroll;
+	}
+
+	@media screen and (min-width: 768px) {
+		.icon-modal-pc {
+			width: 600px;
+		}
+	}
+</style>
