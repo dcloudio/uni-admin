@@ -1,33 +1,31 @@
 <template>
-	<view class="login-box">
-		<view class="admin-logo">
-			<image :src="logo" mode="heightFix"></image>
-		</view>
-		<view class="uni-header no-padding">
-			<view class="uni-title">系统登录</view>
-		</view>
-		<view class="uni-container">
-			<uni-forms ref="form" v-model="formData" :rules="rules" @submit="submit">
-				<uni-forms-item left-icon="uni-icons-person-filled" name="username" labelWidth="35">
-					<input ref="usernameInput" @confirm="submitForm" class="uni-input-border" type="text" placeholder="账户"
-					 v-model="formData.username" />
-				</uni-forms-item>
-				<uni-forms-item left-icon="uni-icons-locked-filled" class="icon-container" name="password" labelWidth="35">
-					<input ref="passwordInput" @confirm="submitForm" class="uni-input-border" :password="showPassword"
-					 placeholder="密码" v-model="formData.password" />
-					<text class="uni-icon-password-eye pointer" :class="[!showPassword ? 'uni-eye-active' : '']" @click="changePassword">&#xe568;</text>
-				</uni-forms-item>
-				<view class="uni-button-group">
-					<button class="uni-button uni-button-full" type="primary" :loading="loading" :disabled="loading" @click="submitForm">登录</button>
+	<view>
+		<uni-notice-bar :speed="80" showIcon="true" showClose="true" scrollable="true" single="true" text="这是 uniCloud Admin 的在线演示项目, 为保证每位用户的使用体验, 数据库将会被每 2h 重置一次"></uni-notice-bar>
+		<view class="login-box">
+			<view class="admin-logo">
+				<image :src="logo" mode="heightFix"></image>
+			</view>
+			<view class="uni-header no-padding">
+				<view class="uni-title">系统登录</view>
+			</view>
+			<view class="uni-container">
+				<uni-forms ref="form" v-model="formData" :rules="rules" @submit="submit">
+					<uni-forms-item left-icon="uni-icons-person-filled" name="username" labelWidth="35">
+						<input ref="usernameInput" @confirm="submitForm" class="uni-input-border" type="text" placeholder="账户" v-model="formData.username" />
+					</uni-forms-item>
+					<uni-forms-item left-icon="uni-icons-locked-filled" class="icon-container" name="password" labelWidth="35">
+						<input ref="passwordInput" @confirm="submitForm" class="uni-input-border" :password="showPassword" placeholder="密码"
+						 v-model="formData.password" />
+						<text class="uni-icon-password-eye pointer" :class="[!showPassword ? 'uni-eye-active' : '']" @click="changePassword">&#xe568;</text>
+					</uni-forms-item>
+					<view class="uni-button-group">
+						<button class="uni-button uni-button-full" type="primary" :loading="loading" :disabled="loading" @click="submitForm">登录</button>
+					</view>
+				</uni-forms>
+				<view class="uni-tips">
+					<view>体验账号：admin &nbsp;&nbsp;&nbsp;&nbsp; 密码：123456</view>
 				</view>
-			</uni-forms>
-			<view class="uni-tips">
-				<view>体验账号：admin &nbsp;&nbsp;&nbsp;&nbsp; 密码：123456</view>
 			</view>
-			<view class="uni-tips">
-				用户产生的数据将会被清空一次 / 2h
-			</view>
-
 		</view>
 	</view>
 </template>
@@ -78,7 +76,7 @@
 				}
 			}
 		},
-		mounted(){
+		mounted() {
 			// #ifdef H5
 			this.focus()
 			// #endif
@@ -127,8 +125,8 @@
 								icon: 'none'
 							})
 							uni.setStorage({
-							    key: 'username',
-							    data: value.username
+								key: 'username',
+								data: value.username
 							});
 							uni.redirectTo({
 								url: this.indexPage,
@@ -157,7 +155,7 @@
 				this.showPassword = !this.showPassword;
 			},
 			// #ifdef H5
-			focus: function () {
+			focus: function() {
 				this.$refs.usernameInput.$refs.input.focus()
 			}
 			// #endif
@@ -166,14 +164,14 @@
 </script>
 
 <style>
-	page {
+/* 	page {
 		width: 100%;
 		height: 100%;
 		display: flex;
 		justify-content: center;
 		background-color: #fff;
 	}
-
+ */
 	.login-box {
 		position: relative;
 		max-width: 420px;
