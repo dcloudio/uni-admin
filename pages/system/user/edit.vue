@@ -178,6 +178,20 @@
 							}
 							this.formData = data
 						}
+						// 演示代码需要
+						if (data.username === 'admin') {
+							uni.showModal({
+								title: '提示',
+								content: '演示账号 admin 不支持修改，可新建用户尝试该功能',
+								showCancel: false,
+								success:res => {
+									res.confirm && uni.navigateTo({
+										url: '/pages/system/user/list'
+									})
+								}
+							});
+							return
+						}
 					}).catch((err) => {
 						uni.showModal({
 							content: err.message || '请求服务失败',

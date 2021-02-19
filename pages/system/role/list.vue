@@ -148,6 +148,14 @@
 				})
 			},
 			async delete(id) {
+				if (id.indexOf("admin") !== -1) {
+					uni.showModal({
+						title: '提示',
+						content: '演示账号不支持修删除 admin 角色',
+						showCancel: false,
+					});
+					return
+				}
 				uni.showLoading({
 				    mask: true
 				})

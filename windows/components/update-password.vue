@@ -120,6 +120,14 @@
 				this.$refs.resetPwdForm.submit()
 			},
 			save(formData) {
+				if (this.userInfo.username === "admin" && this.userInfo.role.indexOf("admin") !== -1) {
+					uni.showModal({
+						title: '提示',
+						content: '演示账号 admin 不支持修改密码，可新建账号尝试该功能',
+						showCancel: false,
+					});
+					return
+				}
 				this.isLoading = true
 				this.$request('self/changePwd', formData).then(res => {
 					this.isLoading = false
