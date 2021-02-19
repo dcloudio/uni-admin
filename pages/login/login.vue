@@ -22,8 +22,12 @@
 				</view>
 			</uni-forms>
 			<view class="uni-tips">
-				<text>体验账号：admin &nbsp;&nbsp;&nbsp;&nbsp; 密码：123456</text>
+				<view>体验账号：admin &nbsp;&nbsp;&nbsp;&nbsp; 密码：123456</view>
 			</view>
+			<view class="uni-tips">
+				用户产生的数据将会被清空一次 / 2h
+			</view>
+
 		</view>
 	</view>
 </template>
