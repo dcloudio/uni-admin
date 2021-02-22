@@ -6,11 +6,15 @@ module.exports = class UserController extends Controller {
 	async login() {
 		const {
 			username,
-			password
+			password,
+			captchaText,
+			captchaOptions
 		} = this.ctx.data
 		return this.service.user.login({
 			username,
-			password
+			password,
+			captchaText,
+			captchaOptions
 		})
 	}
 
@@ -37,4 +41,7 @@ module.exports = class UserController extends Controller {
 		return this.service.user.logout(this.ctx.event.uniIdToken)
 	}
 
+	async refreshCaptcha() {
+		return await this.service.user.refreshCaptcha(this.ctx.data)
+	}
 }

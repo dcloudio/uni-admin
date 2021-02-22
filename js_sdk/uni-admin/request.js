@@ -35,8 +35,9 @@ export function request(action, data, {
 					url: config.login.url
 				})
 			}
-			const err = new Error(result.message)
-			err.code = result.code
+			// const err = new Error(result.message)
+			// err.code = result.code
+			const err = result
 			return Promise.reject(err)
 		}
 		const {

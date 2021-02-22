@@ -15,6 +15,9 @@
 	"uni-id-permissions": {
 		"data": []
 	},
+	"uni-id-log": {
+		"data": []
+	},
 	"opendb-admin-menus": {
 		"data": [{
 			"menu_id": "system_management",

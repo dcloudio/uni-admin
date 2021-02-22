@@ -17,6 +17,13 @@
 					 placeholder="密码" v-model="formData.password" />
 					<text class="uni-icon-password-eye pointer" :class="[!showPassword ? 'uni-eye-active' : '']" @click="changePassword">&#xe568;</text>
 				</uni-forms-item>
+				<uni-forms-item v-if="needCaptcha" left-icon="uni-icons-person-filled" class="icon-container" name="captchaText" labelWidth="35">
+					<input ref="captchaInput" @confirm="submitForm" class="uni-input-border" type="text" placeholder="验证码"
+					 v-model="formData.captchaText" />
+					 <view class="admin-captcha-img pointer" @click="refreshCaptcha">
+						<image  :src="captchaBase64" width="100%" height="100%"></image>
+					 </view>
+				</uni-forms-item>
 				<view class="uni-button-group">
 					<button class="uni-button uni-button-full" type="primary" :loading="loading" :disabled="loading" @click="submitForm">登录</button>
 				</view>
@@ -34,6 +41,13 @@
 		mapActions
 	} from 'vuex'
 	import config from '@/admin.config.js'
+	import { getDeviceUUID } from '@/js_sdk/uni-admin/util.js'
+
+	const captchaOptions = {
+		deviceId: getDeviceUUID(),
+		scene: 'login'
+	}
+
 	export default {
 		data() {
 			return {
@@ -44,7 +58,10 @@
 				formData: {
 					username: '',
 					password: '',
+					captchaText: '',
 				},
+				needCaptcha: false,
+				captchaBase64: '',
 				rules: {
 					// 对name字段进行必填验证
 					username: {
@@ -70,6 +87,13 @@
 								errorMessage: '密码长度大于{minLength}个字符',
 							}
 						]
+					},
+					// 对email字段进行必填验证
+					captchaText: {
+						rules: [{
+								required: true,
+								errorMessage: '请输入验证码',
+							}]
 					}
 				}
 			}
@@ -80,7 +104,7 @@
 			// #endif
 			const self = this
 			uni.getStorage({
-				key: "username",
+				key: "lastUsername",
 				success: function(res) {
 					self.formData.username = res.data
 				}
@@ -111,32 +135,56 @@
 				this.$refs.passwordInput.$refs.input.blur()
 				// #endif
 				this.loading = true
-				this.$request('user/login', value)
-					.then(res => {
-						this.setToken({
-							token: res.token,
-							tokenExpired: res.tokenExpired
-						})
-						return this.init().then(() => {
-							uni.showToast({
-								title: '登录成功',
-								icon: 'none'
+				this.$request('user/login', {
+					...value,
+					captchaOptions
+				}).then(res => {
+					console.log(6666, res);
+						if (res.needCaptcha) {
+							this.needCaptcha = true
+							this.captchaBase64 = res.captchaBase64
+						} else {
+							this.setToken({
+								token: res.token,
+								tokenExpired: res.tokenExpired
 							})
-							uni.setStorage({
-							    key: 'username',
-							    data: value.username
-							});
-							uni.redirectTo({
-								url: this.indexPage,
+							return this.init().then(() => {
+								uni.showToast({
+									title: '登录成功',
+									icon: 'none'
+								})
+								uni.setStorage({
+								    key: 'lastUsername',
+								    data: value.username
+								});
+								uni.redirectTo({
+									url: this.indexPage,
+								})
 							})
-						})
+						}
 					}).catch(err => {
-
+						if (err.code === 10002 || 10102) {
+							this.refreshCaptcha()
+							this.formData.captchaText = ''
+							// this.$refs.captchaInput.$refs.input.focus()
+						}
 					}).finally(err => {
 						this.loading = false
 					})
 
 			},
+
+			refreshCaptcha(){
+				this.$request('user/refreshCaptcha', captchaOptions).then(res => {
+					console.log(777, res)
+						if (res.code === 0) {
+							this.captchaBase64 = res.captchaBase64
+						}
+					}).catch(err => {
+					}).finally(err => {
+					})
+			},
+
 			confirmForm(name, value) {
 				// this.binddata(name, value)
 				this.submitForm()
@@ -211,5 +259,19 @@
 
 	.admin-logo image {
 		height: 40px;
+	}
+
+	.admin-captcha-img {
+		position: absolute;
+		top: 0;
+		right: 0;
+		background-color: #fff;
+		width: 80px;
+		height: 33px;
+		border: 1px #E5E5E5 solid;
+		border-radius: 0 5px 5px 0;
+	}
+	.admin-captcha-img image {
+		display: inline;
 	}
 </style>
