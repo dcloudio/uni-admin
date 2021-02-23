@@ -41,7 +41,15 @@ module.exports = class UserController extends Controller {
 		return this.service.user.logout(this.ctx.event.uniIdToken)
 	}
 
+	async createCaptcha() {
+		return await this.service.user.createCaptcha(this.ctx.data)
+	}
+	
 	async refreshCaptcha() {
 		return await this.service.user.refreshCaptcha(this.ctx.data)
+	}
+
+	async getNeedCaptcha() {
+		return await this.service.user.getNeedCaptcha(this.ctx.data)
 	}
 }

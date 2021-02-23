@@ -10,10 +10,10 @@ module.exports = class UserService extends Service {
 		captchaText,
 		captchaOptions
 	}) {
-		const needCaptcha = await this.getNeedCaptcha(captchaOptions)
+		let needCaptcha = await this.getNeedCaptcha(captchaOptions)
 		if (needCaptcha) {
 			if (!captchaText) {
-				const captchaRes = await uniCaptcha.create(captchaOptions)
+				const captchaRes = await this.createCaptcha(captchaOptions)
 				captchaRes.needCaptcha = needCaptcha;
 				return captchaRes
 			} else {
@@ -37,10 +37,14 @@ module.exports = class UserService extends Service {
 			password,
 			needPermission: true
 		})
-		this.loginLog(res, captchaOptions)
+		await this.loginLog(res, captchaOptions)
 		if (res.code) {
+			const refresh = await this.refreshCaptcha(captchaOptions)
+			res.captchaBase64 = refresh.captchaBase64
+			res.needCaptcha = true
 			return res
 		}
+		res.needCaptcha = false
 		await this.checkToken(res.token, {
 			needPermission: true,
 			needUserInfo: false
@@ -117,7 +121,7 @@ module.exports = class UserService extends Service {
 	async getNeedCaptcha(params) {
 		const now = Date.now()
 		// 查询是否在 {2小时} 内 {前2条} 有 {登录失败} 数据，来确定是否需要验证码
-		const recordSize = 2;
+		const recordSize = 1;
 		const recordDate = 120 * 60 * 1000;
 
 		const uniIdLogCollection = this.db.collection('uni-id-log')
@@ -127,13 +131,21 @@ module.exports = class UserService extends Service {
 				type: 'login'
 			})
 			.orderBy('create_date', 'desc')
-			.limit(recordSize)
+			.limit(100)
 			.get();
 
-		return recentRecord.data.filter(item => item.state === 0).length === recordSize;
+		return recentRecord.data.filter(item => item.state === 0).length > recordSize;
 	}
 
 	async refreshCaptcha(params) {
-		return await uniCaptcha.refresh(params)
+		const refreshRes = await uniCaptcha.refresh(params)
+		refreshRes.needCaptcha = true
+		return refreshRes
+	}
+
+	async createCaptcha(params) {
+		const createRes = await uniCaptcha.create(params)
+		createRes.needCaptcha = true
+		return createRes
 	}
 }
