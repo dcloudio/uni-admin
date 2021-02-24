@@ -24,7 +24,6 @@ module.exports = class UserService extends Service {
 				// 验证失败
 				if (verifyRes.code !== 0) {
 					const newCaptcha = await this.refreshCaptcha(captchaOptions)
-					console.log(111111, newCaptcha);
 					verifyRes.captchaBase64 = newCaptcha.captchaBase64
 					verifyRes.needCaptcha = needCaptcha;
 					return verifyRes
@@ -39,8 +38,6 @@ module.exports = class UserService extends Service {
 		})
 		await this.loginLog(res, captchaOptions)
 		if (res.code) {
-			const refresh = await this.refreshCaptcha(captchaOptions)
-			res.captchaBase64 = refresh.captchaBase64
 			res.needCaptcha = true
 			return res
 		}
@@ -97,12 +94,11 @@ module.exports = class UserService extends Service {
 
 	// 登录记录
 	async loginLog(res = {}, params, type = 'login') {
-		console.log(333333);
 		const now = Date.now()
 		const uniIdLogCollection = this.db.collection('uni-id-log')
 		let logData = {
-			deviceId: params.deviceId,
-			ip: params.ip,
+			deviceId: params.deviceId || this.ctx.DEVICEID,
+			ip: params.ip || this.ctx.CLIENTIP,
 			type,
 			create_date: now
 		};
@@ -126,7 +122,7 @@ module.exports = class UserService extends Service {
 
 		const uniIdLogCollection = this.db.collection('uni-id-log')
 		let recentRecord = await uniIdLogCollection.where({
-				deviceId: params.deviceId,
+				deviceId: params.deviceId || this.ctx.DEVICEID,
 				create_date: this.db.command.gt(now - recordDate),
 				type: 'login'
 			})

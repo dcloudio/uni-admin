@@ -22,7 +22,7 @@
 					 v-model="formData.captchaText" />
 					 <view class="admin-captcha-img pointer" @click="refreshCaptcha">
 						 <i v-if="captchaLoading" class="uni-loading"></i>
-						<image v-else :src="captchaBase64" width="100%" height="100%"></image>
+						<img v-else :src="captchaBase64" width="100%" height="100%"></img>
 					 </view>
 				</uni-forms-item>
 				<view class="uni-button-group">
@@ -142,7 +142,6 @@
 					...value,
 					captchaOptions
 				}).then(res => {
-					console.log(6666, res);
 						if (res.needCaptcha) {
 							this.needCaptcha = true
 							this.captchaBase64 = res.captchaBase64
@@ -177,6 +176,19 @@
 
 			},
 
+			createCaptcha(){
+				this.captchaLoading = true
+				this.$request('user/createCaptcha', captchaOptions).then(res => {
+						if (res.code === 0) {
+							this.needCaptcha = res.needCaptcha
+							this.captchaBase64 = res.captchaBase64
+						}
+					}).catch(err => {
+					}).finally(err => {
+						this.captchaLoading = false
+					})
+			},
+
 			refreshCaptcha(){
 				this.captchaLoading = true
 				this.$request('user/refreshCaptcha', captchaOptions).then(res => {
@@ -192,8 +204,7 @@
 
 			getNeedCaptcha(){
 				this.$request('user/getNeedCaptcha', captchaOptions).then(res => {
-					console.log(777, res)
-					if (res) this.refreshCaptcha()
+					if (res) this.createCaptcha()
 					}).catch(err => {
 					}).finally(err => {
 					})
@@ -289,8 +300,8 @@
 		border-radius: 0 5px 5px 0;
 		background-color: #f9f9f9;
 	}
-	.admin-captcha-img image {
-		display: contents;
+	.admin-captcha-img img {
+		border-radius: 5px;
 	}
 
 	.uni-loading:before {

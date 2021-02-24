@@ -67,6 +67,7 @@ export function request(action, data, {
 				// #endif
 			}
 		})
+		// #ifdef H5
 		const noDebugPages = ['/pages/login/login', '/pages/init/init']
 		const {
 			path
@@ -79,6 +80,7 @@ export function request(action, data, {
 				time: new Date().toLocaleTimeString()
 			})
 		}
+		// #endif
 		return Promise.reject(err)
 	})
 }

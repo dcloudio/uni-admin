@@ -12,6 +12,6 @@
 	"dependencies": {
 		"uni-captcha": "file:../common/uni-captcha",
 		"uni-cloud-router": "file:../../../uni_modules/uni-cloud-router/uniCloud/cloudfunctions/common/uni-cloud-router",
-		"uni-id": "file:../common/uni-id"
+		"uni-id": "file:../../../uni_modules/uni-id/uniCloud/cloudfunctions/common/uni-id"
 	}
 }
