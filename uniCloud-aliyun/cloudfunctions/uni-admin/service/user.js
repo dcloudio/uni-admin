@@ -131,10 +131,10 @@ module.exports = class UserService extends Service {
 				type: 'login'
 			})
 			.orderBy('create_date', 'desc')
-			.limit(100)
-			.get();
+			.limit(2)
+			.get(recordSize);
 
-		return recentRecord.data.filter(item => item.state === 0).length > recordSize;
+		return !!recentRecord.data.filter(item => item.state === 0).length;
 	}
 
 	async refreshCaptcha(params) {
