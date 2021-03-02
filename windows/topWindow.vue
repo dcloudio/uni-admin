@@ -41,11 +41,8 @@
 							<uni-icons class="person" type="person" color="#666" size="13"></uni-icons>
 							<text>{{userInfo.username}}</text>
 						</view>
-						<view class="menu-item" @click="chagePassword">
-							<text>修改密码</text>
-						</view>
 						<view class="menu-item ">
-							<text class="logout pointer" @click="logout">退出</text>
+							<text class="logout pointer" @click="logout">{{ $t("topwindow.text.signOut") }}</text>
 						</view>
 					</template>
 					<view class="popup-menu__arrow"></view>
@@ -154,8 +151,17 @@
 					url: '/pages/changepwd/changepwd'
 				})
 			},
-			chagePassword() {
+			changePassword() {
 				!this.matchLeftWindow ? this.toPasswordPage() : this.showPasswordPopup()
+			},
+			changeLanguage() {
+				if (this.$i18n.locale === 'en') {
+					this.$i18n.locale = 'zh-Hans'
+				} else if (this.$i18n.locale === 'zh-Hans') {
+					this.$i18n.locale =	 'zh-Hant'
+				} else {
+					this.$i18n.locale = 'en'
+				}
 			}
 		}
 	}

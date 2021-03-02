@@ -34,8 +34,8 @@
 			</uni-forms-item>
 
 			<view class="uni-button-group">
-				<button type="primary" class="uni-button" @click="submitForm" style="width: 100px;">提交</button>
-				<navigator open-type="navigateBack" style="margin-left: 15px;"><button class="uni-button" style="width: 100px;">返回</button></navigator>
+				<button type="primary" class="uni-button" @click="submitForm" style="width: 100px;">{{$t('common.button.submit')}}</button>
+				<navigator open-type="navigateBack" style="margin-left: 15px;"><button class="uni-button" style="width: 100px;">{{$t('common.button.back')}}</button></navigator>
 			</view>
 			<uni-popup class="icon-modal-box" ref="iconPopup" type="center">
 				<view class="icon-modal icon-modal-pc">

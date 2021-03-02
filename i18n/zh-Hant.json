@@ -1,0 +1,41 @@
+{
+	"login.text.title": "系統登錄",
+	"login.text.prompt": "如無管理員賬號，請先創建管理員...",
+	"login.field.username": "賬號",
+	"login.field.password": "密碼",
+	"login.field.captcha": "驗證碼",
+	"login.button.login": "登錄",
+
+	"topwindow.text.doc": "Admin框架文檔",
+	"topwindow.text.plugin": "瀏覽更多Admin插件",
+	"topwindow.text.changeLanguage": "切换语言",
+	"topwindow.text.changePwd": "修改密碼",
+	"topwindow.text.signOut": "退出",
+
+	"index.text.prompt": "內容主體，可自定義內容及樣式",
+	"index.text.vesion": "可在控制台和 package.json 中查看當前的版本",
+
+	"updatePwd.text.title": "修改密碼",
+	"updatePwd.field.oldPassword": "舊密碼",
+	"updatePwd.field.newPassword": "新密碼",
+	"updatePwd.field.passwordConfirmation": "確認新密碼",
+	"updatePwd.button.save": "保存",
+	"updatePwd.button.back": "返回",
+
+	"common.placeholder.query": "請輸入搜索內容",
+	"common.button.search": "搜索",
+	"common.button.add": "新增",
+	"common.button.edit": "修改",
+	"common.button.delete": "刪除",
+	"common.button.batchDelete": "批量删除",
+	"common.button.submit": "提交",
+	"common.button.back": "返回",
+
+	"user.text.userManager": "用戶管理",
+	"role.text.roleManager": "角色管理",
+	"permission.text.permissionManager": "權限管理",
+	"menu.text.menuManager": "菜單管理",
+	"menu.text.additiveMenu": "待添加菜單",
+	"menu.button.addFirstLevelMenu": "新增一級增",
+	"menu.button.addChildMenu": "子菜單"
+}

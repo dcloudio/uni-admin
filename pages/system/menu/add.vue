@@ -7,7 +7,7 @@
 			<uni-forms-item name="name" label="显示名称" required>
 				<uni-easyinput v-model="formData.name" :clearable="false" placeholder="请输入菜单名称" />
 			</uni-forms-item>
-			<uni-forms-item name="icon" label="图标 class" style="margin-bottom: 10px;">
+			<uni-forms-item name="icon" label="图标class" style="margin-bottom: 10px;">
 				<uni-easyinput v-model="formData.icon" :clearable="false" placeholder="请输入菜单图标css样式类名">
 					<span slot="right" style="color: #007aff; cursor: pointer;padding-right: 10px;" @click="showIconPopup">内置图标</span>
 				</uni-easyinput>
@@ -33,8 +33,8 @@
 				<switch @change="binddata('enable', $event.detail.value)" :checked="formData.enable" />
 			</uni-forms-item>
 			<view class="uni-button-group">
-				<button type="primary" class="uni-button" @click="submitForm" style="width: 100px;">提交</button>
-				<navigator open-type="navigateBack" style="margin-left: 15px;"><button class="uni-button" tyle="width: 100px;">返回</button></navigator>
+				<button type="primary" class="uni-button" @click="submitForm" style="width: 100px;">{{$t('common.button.submit')}}</button>
+				<navigator open-type="navigateBack" style="margin-left: 15px;"><button class="uni-button" tyle="width: 100px;">{{$t('common.button.back')}}</button></navigator>
 			</view>
 		</uni-forms>
 		<uni-popup class="icon-modal-box" ref="iconPopup" type="center">

@@ -4,13 +4,12 @@
 			<view class="uni-tabs__nav-wrap">
 				<view class="uni-tabs__nav-scroll">
 					<view class="uni-tabs__nav">
-						<view @click="switchTab('menus')" :class="{'is-active':currentTab==='menus'}"
-							class="uni-tabs__item">
-							菜单管理
+						<view @click="switchTab('menus')" :class="{'is-active':currentTab==='menus'}" class="uni-tabs__item">
+							{{$t('menu.text.menuManager')}}
 						</view>
-						<view @click="switchTab('pluginMenus')" v-if="pluginMenus.length"
-							:class="{'is-active':currentTab==='pluginMenus'}" class="uni-tabs__item">
-							待添加菜单
+						<view @click="switchTab('pluginMenus')" v-if="pluginMenus.length" :class="{'is-active':currentTab==='pluginMenus'}"
+						 class="uni-tabs__item">
+							{{$t('menu.text.additiveMenu')}}
 							<uni-badge class="menu-badge" :text="pluginMenus.length" type="error"></uni-badge>
 						</view>
 					</view>
@@ -20,7 +19,7 @@
 		<view v-show="currentTab==='menus'">
 			<view class="uni-header" style="border-bottom: 0;margin-bottom: -15px;">
 				<view class="uni-group">
-					<button @click="navigateTo('./add')" size="mini" plain="true" type="primary">新增一级菜单</button>
+					<button @click="navigateTo('./add')" size="mini" plain="true" type="primary">{{$t('menu.button.addFirstLevelMenu')}}</button>
 				</view>
 				<view class="uni-group">
 
@@ -49,13 +48,13 @@
 							<uni-td align="center">
 								<view class="uni-group">
 									<button v-if="!item.url" @click="navigateTo('./add?parent_id='+item.menu_id, false)"
-										class="uni-button" size="mini" type="primary">子菜单</button>
+										class="uni-button" size="mini" type="primary">{{$t('menu.button.addChildMenu')}}</button>
 									<button @click="navigateTo('./edit?id='+item._id, false)" class="uni-button"
-										size="mini" type="primary">修&nbsp;&nbsp;&nbsp;改</button>
+										size="mini" type="primary">{{$t('common.button.edit')}}</button>
 									<button
 										v-if="item.menu_id !== 'system_menu' && item.menu_id !== 'system_management'"
 										@click="confirmDelete(item)" class="uni-button" size="mini"
-										type="warn">删&nbsp;&nbsp;&nbsp;除</button>
+										type="warn">{{$t('common.button.delete')}}</button>
 								</view>
 							</uni-td>
 						</uni-tr>

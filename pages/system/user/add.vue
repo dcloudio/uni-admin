@@ -25,9 +25,9 @@
 				<switch @change="binddata('status', $event.detail.value)" :checked="formData.status" />
 			</uni-forms-item>
 			<view class="uni-button-group">
-				<button style="width: 100px;" type="primary" class="uni-button" @click="submitForm">提交</button>
+				<button style="width: 100px;" type="primary" class="uni-button" @click="submitForm">{{$t('common.button.submit')}}</button>
 				<navigator open-type="navigateBack" style="margin-left: 15px;"><button style="width: 100px;"
-						class="uni-button">返回</button></navigator>
+						class="uni-button">{{$t('common.button.back')}}</button></navigator>
 			</view>
 		</uni-forms>
 	</view>

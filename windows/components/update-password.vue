@@ -2,28 +2,28 @@
 	<view>
 		<view class="uni-header">
 			<view class="uni-group">
-				<view class="uni-title">修改密码</view>
+				<view class="uni-title">{{$t('updatePwd.text.title')}}</view>
 			</view>
 		</view>
 		<view class="uni-container">
 			<uni-forms ref="resetPwdForm" v-model="password" :rules="rules" @submit="submit">
-				<uni-forms-item label="旧密码" name="oldPassword" labelWidth="85">
-					<input class="uni-input-border" type="password" placeholder="旧密码" v-model="password.oldPassword" />
+				<uni-forms-item :label="$t('updatePwd.field.oldPassword')" name="oldPassword" labelWidth="85">
+					<input class="uni-input-border" type="password" :placeholder="$t('updatePwd.field.oldPassword')" v-model="password.oldPassword" />
 				</uni-forms-item>
 
-				<uni-forms-item label="新密码" name="newPassword" labelWidth="85">
-					<input class="uni-input-border" :password="showPassword" placeholder="新密码" v-model="password.newPassword" />
+				<uni-forms-item :label="$t('updatePwd.field.newPassword')" name="newPassword" labelWidth="85">
+					<input class="uni-input-border" :password="showPassword" :placeholder="$t('updatePwd.field.newPassword')" v-model="password.newPassword" />
 					<text class="uni-icon-password-eye pointer" :class="[!showPassword ? 'uni-eye-active' : '']" @click="changePassword">&#xe568;</text>
 				</uni-forms-item>
 
-				<uni-forms-item label="确认新密码" name="passwordConfirmation" labelWidth="85" :errorMessage="errorMessage">
+				<uni-forms-item :label="$t('updatePwd.field.passwordConfirmation')" name="passwordConfirmation" labelWidth="85" :errorMessage="errorMessage">
 					<input @confirm="submitForm" class="uni-input-border" :password="showPasswordAgain"
-					 placeholder="确认新密码" v-model="password.passwordConfirmation" />
+					 :placeholder="$t('updatePwd.field.passwordConfirmation')" v-model="password.passwordConfirmation" />
 					<text class="uni-icon-password-eye pointer" :class="[!showPasswordAgain ? 'uni-eye-active' : '']" @click="changePasswordAgain">&#xe568;</text>
 				</uni-forms-item>
 				<view class="uni-button-group pointer">
-					<button class="uni-button uni-button-full" type="primary" :disabled="isLoading" @click="submitForm">保存</button>
-					<button v-if="hasBackButton" class="uni-button login-button-width" type="default" :disabled="isLoading" @click="back">返回</button>
+					<button class="uni-button uni-button-full" type="primary" :disabled="isLoading" @click="submitForm">{{$t('updatePwd.button.save')}}</button>
+					<button v-if="hasBackButton" class="uni-button login-button-width" type="default" :disabled="isLoading" @click="back">{{$t('updatePwd.button.back')}}</button>
 				</view>
 			</uni-forms>
 		</view>

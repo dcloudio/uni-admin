@@ -1,0 +1,41 @@
+{
+	"login.text.title": "System Login",
+	"login.text.prompt": "If there is no administrator account, please create an administrator first...",
+	"login.field.username": "Account",
+	"login.field.password": "Password",
+	"login.field.captcha": "Captcha",
+	"login.button.login": "Log In",
+
+	"topwindow.text.doc": "Admin doc",
+	"topwindow.text.plugin": "More admin plugin",
+	"topwindow.text.changeLanguage": "Language",
+	"topwindow.text.changePwd": "Password",
+	"topwindow.text.signOut": "Sign out",
+
+	"index.text.prompt": "Main content, customizable content and style",
+	"index.text.vesion": "The current version can be viewed in the console and package.json",
+
+	"updatePwd.text.title": "Change Password",
+	"updatePwd.field.oldPassword": "Old password",
+	"updatePwd.field.newPassword": "New password",
+	"updatePwd.field.passwordConfirmation": "Confirm the new password",
+	"updatePwd.button.save": "Save",
+	"updatePwd.button.back": "Back",
+
+	"common.placeholder.query": "Enter search content",
+	"common.button.search": "Search",
+	"common.button.add": "Add",
+	"common.button.edit": "Edit",
+	"common.button.delete": "Delete",
+	"common.button.batchDelete": "BatchDel",
+	"common.button.submit": "Submit",
+	"common.button.back": "Back",
+
+	"user.text.userManager": "Users Manager",
+	"role.text.roleManager": "Roles Manager",
+	"permission.text.permissionManager": "Permissions Manager",
+	"menu.text.menuManager": "Menus Manager",
+	"menu.text.additiveMenu": "Additive Menu",
+	"menu.button.addFirstLevelMenu": "Add First-level Menu",
+	"menu.button.addChildMenu": "Submenu"
+}
