@@ -20,7 +20,7 @@
 				<uni-forms-item v-if="needCaptcha" left-icon="uni-icons-person-filled" class="icon-container" name="captchaText" labelWidth="35">
 					<input ref="captchaInput" @confirm="submitForm" class="uni-input-border" type="text" placeholder="验证码"
 					 v-model="formData.captchaText" />
-					 <view class="admin-captcha-img pointer" @click="refreshCaptcha">
+					 <view class="admin-captcha-img pointer" @click="createCaptcha">
 						 <i v-if="captchaLoading" class="uni-loading"></i>
 						<img v-else :src="captchaBase64" width="100%" height="100%"></img>
 					 </view>
@@ -166,8 +166,8 @@
 						}
 					}).catch(err => {
 						if (err.needCaptcha) {
-							this.refreshCaptcha()
 							this.formData.captchaText = ''
+							this.createCaptcha()
 							// this.$refs.captchaInput.$refs.input.focus()
 						}
 					}).finally(err => {
@@ -179,19 +179,6 @@
 			createCaptcha(){
 				this.captchaLoading = true
 				this.$request('user/createCaptcha', captchaOptions).then(res => {
-						if (res.code === 0) {
-							this.needCaptcha = res.needCaptcha
-							this.captchaBase64 = res.captchaBase64
-						}
-					}).catch(err => {
-					}).finally(err => {
-						this.captchaLoading = false
-					})
-			},
-
-			refreshCaptcha(){
-				this.captchaLoading = true
-				this.$request('user/refreshCaptcha', captchaOptions).then(res => {
 						if (res.code === 0) {
 							this.needCaptcha = res.needCaptcha
 							this.captchaBase64 = res.captchaBase64

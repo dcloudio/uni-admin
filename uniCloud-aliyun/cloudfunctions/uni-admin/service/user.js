@@ -23,7 +23,7 @@ module.exports = class UserService extends Service {
 				})
 				// 验证失败
 				if (verifyRes.code !== 0) {
-					const newCaptcha = await this.refreshCaptcha(captchaOptions)
+					const newCaptcha = await this.createCaptcha(captchaOptions)
 					verifyRes.captchaBase64 = newCaptcha.captchaBase64
 					verifyRes.needCaptcha = needCaptcha;
 					return verifyRes
@@ -131,12 +131,6 @@ module.exports = class UserService extends Service {
 			.get(recordSize);
 
 		return !!recentRecord.data.filter(item => item.state === 0).length;
-	}
-
-	async refreshCaptcha(params) {
-		const refreshRes = await uniCaptcha.refresh(params)
-		refreshRes.needCaptcha = true
-		return refreshRes
 	}
 
 	async createCaptcha(params) {
