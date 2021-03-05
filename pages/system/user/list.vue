@@ -1,8 +1,8 @@
 <template>
 	<view>
 		<view class="uni-header">
-			<view class="uni-group">
-				<view class="uni-title"></view>
+			<view class="uni-group hide-on-phone">
+				<view class="uni-title">用户管理</view>
 				<view class="uni-sub-title"></view>
 			</view>
 			<view class="uni-group">

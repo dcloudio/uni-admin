@@ -115,7 +115,7 @@ html {
 .uni-group {
 	display: flex;
 	align-items: center;
-	justify-content: center;
+	/* justify-content: center; */
 	word-break: keep-all;
 }
 
@@ -168,8 +168,6 @@ html {
 
 /* 分页容器 */
 .uni-pagination-box {
-	display: flex;
-	justify-content: center;
 	margin-top: 20px;
 }
 
@@ -276,4 +274,10 @@ html {
 	color: #999;
 	min-height: 36px;
 	line-height: 36px;
+}
+
+@media screen and (max-width: 450px) {
+	.hide-on-phone {
+		display: none;
+	}
 }
