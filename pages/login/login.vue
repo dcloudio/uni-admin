@@ -1,6 +1,6 @@
 <template>
 	<view>
-		<uni-notice-bar :speed="80" showIcon="true" showClose="true" scrollable="true" single="true" text="这是 uniCloud Admin 的在线演示项目, 为保证每位用户的使用体验, 数据将会被整点重置一次, 请避免整点前后操作"></uni-notice-bar>
+		<uni-notice-bar :speed="80" showIcon="true" showClose="true" scrollable="true" single="true" text="uniCloud Admin 在线演示项目, 为保证每位用户的使用体验, 数据将会被整点重置一次, 请避免整点前后操作"></uni-notice-bar>
 		<view class="login-box">
 			<view class="admin-logo">
 				<image :src="logo" mode="heightFix"></image>
