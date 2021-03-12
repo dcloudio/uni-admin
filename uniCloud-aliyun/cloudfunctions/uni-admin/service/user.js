@@ -2,19 +2,46 @@ const {
 	Service
 } = require('uni-cloud-router')
 const uniID = require('uni-id')
+const uniCaptcha = require('uni-captcha')
 module.exports = class UserService extends Service {
 	async login({
 		username,
-		password
+		password,
+		captchaText,
+		captchaOptions
 	}) {
+		let needCaptcha = await this.getNeedCaptcha(captchaOptions)
+		if (needCaptcha) {
+			if (!captchaText) {
+				const captchaRes = await this.createCaptcha(captchaOptions)
+				captchaRes.needCaptcha = needCaptcha;
+				return captchaRes
+			} else {
+				const verifyRes = await uniCaptcha.verify({
+					captcha: captchaText,
+					...captchaOptions
+				})
+				// 验证失败
+				if (verifyRes.code !== 0) {
+					const newCaptcha = await this.createCaptcha(captchaOptions)
+					verifyRes.captchaBase64 = newCaptcha.captchaBase64
+					verifyRes.needCaptcha = needCaptcha;
+					return verifyRes
+				}
+			}
+		}
+
 		const res = await uniID.login({
 			username,
 			password,
 			needPermission: true
 		})
+		await this.loginLog(res, captchaOptions)
 		if (res.code) {
+			res.needCaptcha = true
 			return res
 		}
+		res.needCaptcha = false
 		await this.checkToken(res.token, {
 			needPermission: true,
 			needUserInfo: false
@@ -63,5 +90,52 @@ module.exports = class UserService extends Service {
 			uid: this.ctx.auth.uid,
 			field
 		})
+	}
+
+	// 登录记录
+	async loginLog(res = {}, params, type = 'login') {
+		const now = Date.now()
+		const uniIdLogCollection = this.db.collection('uni-id-log')
+		let logData = {
+			deviceId: params.deviceId || this.ctx.DEVICEID,
+			ip: params.ip || this.ctx.CLIENTIP,
+			type,
+			create_date: now
+		};
+
+		Object.assign(logData,
+			res.code === 0 ? {
+				user_id: res.uid,
+				state: 1
+			} : {
+				state: 0
+			})
+
+		return uniIdLogCollection.add(logData)
+	}
+
+	async getNeedCaptcha(params) {
+		const now = Date.now()
+		// 查询是否在 {2小时} 内 {前2条} 有 {登录失败} 数据，来确定是否需要验证码
+		const recordSize = 1;
+		const recordDate = 120 * 60 * 1000;
+
+		const uniIdLogCollection = this.db.collection('uni-id-log')
+		let recentRecord = await uniIdLogCollection.where({
+				deviceId: params.deviceId || this.ctx.DEVICEID,
+				create_date: this.db.command.gt(now - recordDate),
+				type: 'login'
+			})
+			.orderBy('create_date', 'desc')
+			.limit(2)
+			.get(recordSize);
+
+		return !!recentRecord.data.filter(item => item.state === 0).length;
+	}
+
+	async createCaptcha(params) {
+		const createRes = await uniCaptcha.create(params)
+		createRes.needCaptcha = true
+		return createRes
 	}
 }

@@ -28,9 +28,9 @@
 			<view class="uni-container">
 				<uni-table :loading="loading" :emptyText="errMsg || '没有更多数据'" border stripe>
 					<uni-tr>
-						<uni-th width="80" align="center">排序</uni-th>
+						<uni-th align="center">排序</uni-th>
 						<uni-th width="200" align="center">名称</uni-th>
-						<uni-th width="200" align="center">标识</uni-th>
+						<uni-th align="center">标识</uni-th>
 						<uni-th align="center">URL</uni-th>
 						<uni-th width="100" align="center">是否启用</uni-th>
 						<uni-th width="160" align="center">操作</uni-th>
