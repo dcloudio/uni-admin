@@ -4,11 +4,12 @@
 			<view class="uni-tabs__nav-wrap">
 				<view class="uni-tabs__nav-scroll">
 					<view class="uni-tabs__nav">
-						<view @click="switchTab('menus')" :class="{'is-active':currentTab==='menus'}" class="uni-tabs__item">
+						<view @click="switchTab('menus')" :class="{'is-active':currentTab==='menus'}"
+							class="uni-tabs__item">
 							菜单管理
 						</view>
-						<view @click="switchTab('pluginMenus')" v-if="pluginMenus.length" :class="{'is-active':currentTab==='pluginMenus'}"
-						 class="uni-tabs__item">
+						<view @click="switchTab('pluginMenus')" v-if="pluginMenus.length"
+							:class="{'is-active':currentTab==='pluginMenus'}" class="uni-tabs__item">
 							待添加菜单
 							<uni-badge class="menu-badge" :text="pluginMenus.length" type="error"></uni-badge>
 						</view>
@@ -40,13 +41,18 @@
 						<uni-td>{{item.title}}</uni-td>
 						<uni-td>{{item.menu_id}}</uni-td>
 						<uni-td>{{item.url}}</uni-td>
-						<uni-td align="center" :class="{'menu-disable':!item.enable}">{{item.enable?'已启用':'未启用'}}</uni-td>
+						<uni-td align="center" :class="{'menu-disable':!item.enable}">{{item.enable?'已启用':'未启用'}}
+						</uni-td>
 						<uni-td align="center">
 							<view class="uni-group">
-								<button v-if="!item.url" @click="navigateTo('./add?parent_id='+item.menu_id, false)" class="uni-button" size="mini" type="primary">子菜单</button>
-								<button @click="navigateTo('./edit?id='+item._id, false)" class="uni-button" size="mini" type="primary">修&nbsp;&nbsp;&nbsp;改</button>
-								<button :style="{visibility:item.menu_id==='system_menu'||item.menu_id==='system_management'?'hidden':'initial'}"
-								 @click="confirmDelete(item)" class="uni-button" size="mini" type="warn">删&nbsp;&nbsp;&nbsp;除</button>
+								<button v-if="!item.url" @click="navigateTo('./add?parent_id='+item.menu_id, false, item)"
+									class="uni-button" size="mini" type="primary">子菜单</button>
+								<button @click="navigateTo('./edit?id='+item._id, false, item)" class="uni-button" size="mini"
+									type="primary">修&nbsp;&nbsp;&nbsp;改</button>
+								<button
+									:style="{visibility:item.menu_id==='system_menu'||item.menu_id==='system_management'?'hidden':'initial'}"
+									@click="confirmDelete(item)" class="uni-button" size="mini"
+									type="warn">删&nbsp;&nbsp;&nbsp;除</button>
 							</view>
 						</uni-td>
 					</uni-tr>
@@ -61,7 +67,8 @@
 				<view class="uni-group"></view>
 			</view>
 			<view class="uni-container">
-				<uni-table ref="pluginMenusTable" type="selection" border stripe @selection-change="pluginMenuSelectChange">
+				<uni-table ref="pluginMenusTable" type="selection" border stripe
+					@selection-change="pluginMenuSelectChange">
 					<uni-tr>
 						<uni-th align="center">名称（标识）</uni-th>
 						<uni-th align="center">URL</uni-th>
@@ -171,6 +178,25 @@
 			this.loadData()
 		},
 		methods: {
+			hasBanFeat(item) {
+				if (!item) return false
+				const bans = [
+						'system_management',
+						'system_user',
+						'system_role',
+						'system_permission',
+						'system_menu'
+					],
+					res = bans.indexOf(item.menu_id) !== -1
+				if (res) {
+					uni.showModal({
+						title: '提示',
+						content: '系统菜单不支持删除和修改，请新增菜单体验！',
+						showCancel: false,
+					})
+				}
+				return res
+			},
 			...mapActions({
 				init: 'app/init'
 			}),
@@ -189,7 +215,8 @@
 					this.loading = false
 				})
 			},
-			navigateTo(url, clear) { // clear 表示刷新列表时是否清除当前页码，true 表示刷新并回到列表第 1 页，默认为 true
+			navigateTo(url, clear, item) { // clear 表示刷新列表时是否清除当前页码，true 表示刷新并回到列表第 1 页，默认为 true
+				if(this.hasBanFeat(item)) return
 				uni.navigateTo({
 					url,
 					events: {
@@ -200,6 +227,7 @@
 				})
 			},
 			confirmDelete(menu) {
+				if(this.hasBanFeat(menu)) return
 				let content = '是否删除该菜单？'
 				// 有子菜单
 				if (this.menus.find(item => item.parent_id === menu.menu_id)) {
@@ -293,6 +321,7 @@
 	page {
 		padding-top: 85px;
 	}
+
 	/* #endif */
 	.menu-disable {
 		color: red;
