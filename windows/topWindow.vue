@@ -21,7 +21,7 @@
 			<view class="navbar-right pointer">
 				<view v-show="userInfo.username" @click="togglePopupMenu" class="navbar-user">
 					<view class="username"><text>{{userInfo.username}}</text>️</view>
-					<uni-icons class="arrowdown" type="arrowdown" color="#bbb" size="14"></uni-icons>
+					<uni-icons class="arrowdown" type="arrowdown" color="#666" size="13"></uni-icons>
 				</view>
 				<view class="uni-mask" @click="togglePopupMenu"></view>
 				<view class="navbar-menu">
@@ -34,13 +34,11 @@
 					</view>
 					<!-- #endif -->
 					<view v-for="link in links" :key="link.url" class="menu-item">
-						<uni-link :href="link.url" :text="link.text" />
+						<uni-link :href="link.url" :text="link.text" color="#666" fontSize="13" style="font-size:12px;" />
 					</view>
 					<template v-if="userInfo.username">
-						<!-- <view class="menu-item username">
-							<text>{{userInfo.username}}</text>️
-						</view> -->
 						<view class="menu-item username">
+							<uni-icons class="person" type="person" color="#666" size="13"></uni-icons>
 							<text>{{userInfo.username}}</text>
 						</view>
 						<view class="menu-item" @click="chagePassword">
@@ -214,6 +212,8 @@
 
 	.navbar-middle,
 	.username {
+		display: flex;
+		align-items: center;
 		overflow: hidden;
 		text-overflow: ellipsis;
 		white-space: nowrap;
@@ -237,7 +237,9 @@
 	}
 
 	.menu-item {
-		padding: 5px;
+		padding: 8px;
+		font-size: 13px;
+		color: #666;
 	}
 
 	.debug {
@@ -255,6 +257,11 @@
 	.arrowdown {
 		margin-top: 4px;
 		margin-left: 3px;
+	}
+
+	.person {
+		margin-top: 2px;
+		margin-right: 2px;
 	}
 
 	.navbar-right {
