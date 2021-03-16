@@ -4,6 +4,8 @@ body,
 html {
 	-webkit-user-select: auto;
 	user-select: auto;
+	font: menu;
+	font-size: 16px;
 }
 
 /* #ifdef H5 */
@@ -13,12 +15,18 @@ html {
 	background-color: #f5f5f5;
 }
 
-.uni-mask+.uni-left-window, .uni-mask+.uni-right-window{
+.uni-mask+.uni-left-window,
+.uni-mask+.uni-right-window {
 	position: fixed;
 }
 
 .uni-app--showleftwindow uni-page-head .uni-page-head {
+	color: #333 !important;
 	/* margin-right: 15px; */
+}
+
+uni-page-head .uni-btn-icon {
+	color: #333 !important;
 }
 
 .uni-app--showleftwindow uni-page-head[uni-page-head-type=default]~uni-page-wrapper {
@@ -61,6 +69,7 @@ html {
 .uni-nav-menu {
 	height: 100vh;
 }
+
 /* #endif */
 
 .pointer {
@@ -115,7 +124,7 @@ html {
 .uni-group {
 	display: flex;
 	align-items: center;
-	/* justify-content: center; */
+	justify-content: center;
 	word-break: keep-all;
 }
 
@@ -157,13 +166,14 @@ html {
 
 /* 搜索框样式 */
 .uni-search {
-	height: 30px;
-	line-height: 30px;
+	height: 28px;
+	line-height: 28px;
 	font-size: 12px;
+	color: #606266;
 	padding: 0 10px;
-	border: 1px #eee solid;
+	border: 1px #dcdfe6 solid;
 	margin-right: 10px;
-	border-radius: 5px;
+	border-radius: 3px;
 }
 
 /* 分页容器 */
@@ -276,8 +286,84 @@ html {
 	line-height: 36px;
 }
 
+/* #ifdef H5 */
 @media screen and (max-width: 450px) {
 	.hide-on-phone {
 		display: none;
 	}
+}
+
+@media screen and (min-width: 450px) {
+	::v-deep .uni-forms-item__label {
+		margin-right: 50px !important;
+	}
+}
+
+/* #endif */
+
+::v-deep .uni-forms-item__label .label-text {
+	color: #606266 !important;
+}
+
+/* button 重置样式 */
+
+
+::v-deep uni-button[size=mini] {
+	line-height: 2.4;
+	font-size: 12px;
+	border-radius: 3px;
+}
+
+uni-button {
+	background: #fff;
+	border: 1px solid #dcdfe6;
+	color: #606266;
+	box-sizing: border-box;
+}
+
+uni-button[type=primary] {
+	background-color: #409EFF;
+	border-color: #409EFF;
+	border-width: 0;
+}
+
+uni-button[type=warn] {
+	background-color: #f56c6c;
+	border-color: #f56c6c;
+	border-width: 0;
+}
+
+uni-button[type=default] {
+	background: #fff;
+	border: 1px solid #dcdfe6;
+	color: #606266;
+	box-sizing: border-box;
+}
+
+uni-button[type=primary][plain] {
+	border-color: #409EFF;
+	color: #409EFF;
+}
+
+uni-button[type=warn][plain] {
+	border-color: #f56c6c;
+	color: #f56c6c;
+}
+
+uni-button[type=default][plain] {
+	border-color: #dcdfe6;
+	color: #606266;
+}
+
+uni-button[plain] {
+	border-color: #dcdfe6;
+	color: #606266;
+}
+
+uni-button:after {
+	border-width: 0;
+}
+
+.uni-input-placeholder {
+	color: #999;
 }

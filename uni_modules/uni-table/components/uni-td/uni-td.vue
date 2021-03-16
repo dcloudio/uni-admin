@@ -60,7 +60,7 @@
 		padding: 12px 10px;
 		// text-align: center;
 		vertical-align: middle;
-		border-bottom: 1px #ddd solid;
+		border-bottom: 1px $uni-table-border-color solid;
 		// min-width: 150px;
 		color: #666;
 		font-size: 14px;
@@ -68,7 +68,7 @@
 	}
 
 	.table--border {
-		border-right: 1px #ddd solid;
+		border-right: 1px $uni-table-border-color solid;
 	}
 
 </style>

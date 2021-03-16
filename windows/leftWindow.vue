@@ -3,7 +3,8 @@
 <!-- 		<uni-data-menu v-model="current" collection="opendb-admin-menus" gettree field="url as value, name as text, menu_id, icon" orderby="sort asc" active-text-color="#409eff">
 			<uni-menu-sidebar :data="staticMenu"></uni-menu-sidebar>
 		</uni-data-menu> -->
-		<uni-nav-menu :uniqueOpened="true" :active="splitFullPath(active)" activeKey="url" activeTextColor="#409eff" @select="select">
+
+		<uni-nav-menu :uniqueOpened="true" :active="splitFullPath(active)" activeKey="url" textColor="#666" activeTextColor="#409eff" @select="select">
 			<uni-menu-sidebar :data="navMenu"></uni-menu-sidebar>
 			<uni-menu-sidebar :data="staticMenu"></uni-menu-sidebar>
 		</uni-nav-menu>
