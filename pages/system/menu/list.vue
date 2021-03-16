@@ -19,7 +19,7 @@
 		<view v-show="currentTab==='menus'">
 			<view class="uni-header" style="border-bottom: 0;margin-bottom: -15px;">
 				<view class="uni-group">
-					<button @click="navigateTo('./add')" size="mini" type="primary">新增一级菜单</button>
+					<button @click="navigateTo('./add')" size="mini" plain="true" type="primary">新增一级菜单</button>
 				</view>
 				<view class="uni-group">
 
@@ -45,7 +45,7 @@
 							<view class="uni-group">
 								<button v-if="!item.url" @click="navigateTo('./add?parent_id='+item.menu_id, false)" class="uni-button" size="mini" type="primary">子菜单</button>
 								<button @click="navigateTo('./edit?id='+item._id, false)" class="uni-button" size="mini" type="primary">修&nbsp;&nbsp;&nbsp;改</button>
-								<button :style="{visibility:item.menu_id==='system_menu'||item.menu_id==='system_management'?'hidden':'initial'}"
+								<button v-if="item.menu_id !== 'system_menu' && item.menu_id !== 'system_management'"
 								 @click="confirmDelete(item)" class="uni-button" size="mini" type="warn">删&nbsp;&nbsp;&nbsp;除</button>
 							</view>
 						</uni-td>

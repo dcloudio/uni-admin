@@ -163,7 +163,7 @@
 	}
 
 	.table--border {
-		border: 1px #ddd solid;
+		border: 1px $uni-table-border-color solid;
 	}
 
 	.border-none {
