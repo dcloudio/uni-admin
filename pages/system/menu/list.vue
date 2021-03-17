@@ -45,8 +45,8 @@
 						</uni-td>
 						<uni-td align="center">
 							<view class="uni-group">
-								<button v-if="!item.url" @click="navigateTo('./add?parent_id='+item.menu_id, false)" class="uni-button" size="mini" type="primary">子菜单</button>
-								<button @click="navigateTo('./edit?id='+item._id, false)" class="uni-button" size="mini" type="primary">修&nbsp;&nbsp;&nbsp;改</button>
+								<button v-if="!item.url" @click="navigateTo('./add?parent_id='+item.menu_id, false, item)" class="uni-button" size="mini" type="primary">子菜单</button>
+								<button @click="navigateTo('./edit?id='+item._id, false, item)" class="uni-button" size="mini" type="primary">修&nbsp;&nbsp;&nbsp;改</button>
 								<button v-if="item.menu_id !== 'system_menu' && item.menu_id !== 'system_management'"
 								 @click="confirmDelete(item)" class="uni-button" size="mini" type="warn">删&nbsp;&nbsp;&nbsp;除</button>
 							</view>
