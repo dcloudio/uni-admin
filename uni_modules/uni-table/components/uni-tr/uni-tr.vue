@@ -2,7 +2,7 @@
 	<view class="uni-table-tr">
 		<checkbox-group v-if="selection === 'selection'" class="checkbox" :class="{'tr-table--border':border}" @change="change">
 			<label>
-				<checkbox value="check" :checked="value" :disabled="!checkedable" />
+				<checkbox value="check" :checked="value" :disabled="!selectable" />
 			</label>
 		</checkbox-group>
 		<slot></slot>
@@ -18,7 +18,7 @@
 	export default {
 		name: 'uniTr',
 		props: {
-			checkedable: {
+			selectable: {
 				type: Boolean,
 				default: true
 			}
