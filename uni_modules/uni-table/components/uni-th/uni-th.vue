@@ -67,14 +67,14 @@
 		display: table-cell;
 		box-sizing: border-box;
 		/* #endif */
-		color: #333;
+		color: #909399;
 		font-weight: 500;
 		font-size: 14px;
-		border-bottom: 1px #ddd solid;
+		border-bottom: 1px $uni-table-border-color solid;
 		// text-align: center;
 		// background-color: #efefef;
 	}
 	.table--border {
-		border-right: 1px #ddd solid;
+		border-right: 1px $uni-table-border-color solid;
 	}
 </style>

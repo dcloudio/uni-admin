@@ -319,7 +319,7 @@
 		position: relative;
 		overflow: hidden;
 		flex: 1;
-		line-height: 2;
+		// line-height: 2;
 		font-size: 14px;
 		// padding-right: 10px;
 	}

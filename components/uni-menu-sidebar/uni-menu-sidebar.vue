@@ -47,6 +47,6 @@
 
 <style lang="scss">
 	.title {
-		margin-left: 5px;
+		margin-left: 16px;
 	}
 </style>
