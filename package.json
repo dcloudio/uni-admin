@@ -1,7 +1,7 @@
 {
     "name": "uniCloud-admin",
 	"id": "uni-template-admin",
-    "version": "1.3.5",
+    "version": "1.3.7",
     "description": "基于 uni-app，uniCloud 的 admin 管理项目模板",
     "main": "main.js",
     "scripts": {

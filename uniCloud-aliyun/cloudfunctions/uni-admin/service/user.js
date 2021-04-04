@@ -55,7 +55,7 @@ module.exports = class UserService extends Service {
 		}
 		return {
 			code: 10001,
-			message: '该账号暂无权限登录，请联系管理员'
+			message: '该账户没有被赋予登录admin系统的权限, 请联系系统管理员绑定角色赋权'
 		}
 	}
 
