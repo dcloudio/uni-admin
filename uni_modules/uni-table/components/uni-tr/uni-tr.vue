@@ -1,9 +1,8 @@
 <template>
 	<view class="uni-table-tr">
-		<checkbox-group v-if="selection === 'selection'" class="checkbox" :class="{'tr-table--border':border}"
-			@change="change">
+		<checkbox-group v-if="selection === 'selection'" class="checkbox" :class="{'tr-table--border':border}" @change="change">
 			<label>
-				<checkbox value="check" :checked="value" />
+				<checkbox value="check" :checked="value" :disabled="!selectable" />
 			</label>
 		</checkbox-group>
 		<slot></slot>
@@ -18,6 +17,12 @@
 	 */
 	export default {
 		name: 'uniTr',
+		props: {
+			selectable: {
+				type: Boolean,
+				default: true
+			}
+		},
 		options: {
 			virtualHost: true
 		},
@@ -84,21 +89,9 @@
 		/* #endif */
 	}
 
-	.uni-table-tr ::v-deep uni-checkbox {
-		.uni-checkbox-input {
-		    width: 14px;
-		    height: 14px;
-		}
-
-		.uni-checkbox-input-checked:before {
-		    font-size: 14px;
-		}
-
-	}
-
 	.checkbox {
 		padding: 12px 8px;
-		width: 14px;
+		width: 26px;
 		padding-left: 12px;
 		/* #ifndef APP-NVUE */
 		display: table-cell;
@@ -106,13 +99,13 @@
 		/* #endif */
 		color: #333;
 		font-weight: 500;
-		border-bottom: 1px $uni-table-border-color solid;
+		border-bottom: 1px #ddd solid;
 		font-size: 14px;
 		// text-align: center;
 	}
 
 	.tr-table--border {
-		border-right: 1px $uni-table-border-color solid;
+		border-right: 1px #ddd solid;
 	}
 
 	/* #ifndef APP-NVUE */
