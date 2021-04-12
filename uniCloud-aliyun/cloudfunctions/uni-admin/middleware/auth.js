@@ -1,13 +1,8 @@
-const uniID = require('uni-id')
-module.exports = (options) => {
-	// 初始化 uniID 配置
-	if (options) {
-		uniID.init(options)
-	}
+module.exports = () => {
 	// 返回中间件函数
 	return async function auth(ctx, next) {
 		// 校验 token
-		const auth = await uniID.checkToken(ctx.event.uniIdToken, {
+		const auth = await ctx.uniID.checkToken(ctx.event.uniIdToken, {
 			needPermission: true,
 			needUserInfo: false
 		})
