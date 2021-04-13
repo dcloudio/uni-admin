@@ -101,11 +101,20 @@
 		font-weight: 500;
 		border-bottom: 1px #ddd solid;
 		font-size: 14px;
-		// text-align: center;
+		text-align: center;
 	}
 
 	.tr-table--border {
 		border-right: 1px #ddd solid;
+	}
+
+	::v-deep .tr-table--border uni-checkbox .uni-checkbox-input {
+		width: 15px;
+		height: 15px;
+	}
+	
+	::v-deep .tr-table--border uni-checkbox .uni-checkbox-input.uni-checkbox-input-checked:before {
+		font-size: 14px;
 	}
 
 	/* #ifndef APP-NVUE */
