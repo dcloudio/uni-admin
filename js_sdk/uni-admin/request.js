@@ -58,17 +58,7 @@ export function request(action, data, {
 		const that = this
 		showModal && uni.showModal({
 			content: err.message || '请求服务失败',
-			showCancel: false,
-			success: function() {
-				// #ifdef H5
-				if (err.code === 10101 && that.$refs.usernameInput) {
-					that.$refs.usernameInput.$refs.input.focus()
-				}
-				if (err.code === 10102 && that.$refs.passwordInput) {
-					that.$refs.passwordInput.$refs.input.focus()
-				}
-				// #endif
-			}
+			showCancel: false
 		})
 		// #ifdef H5
 		const noDebugPages = ['/pages/login/login', '/pages/init/init']
