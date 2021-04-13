@@ -183,7 +183,6 @@
 						content: err.message || '请求服务失败',
 						showCancel: false,
 						success: function() {
-							// #ifdef H5
 							if (err.code === 10101 && that.$refs.usernameInput) {
 								that.$refs.usernameInput.$refs.input.focus()
 							}
@@ -193,7 +192,6 @@
 							if (err.code === 10002 && that.$refs.captchaInput) {
 								that.$refs.captchaInput.$refs.input.focus()
 							}
-							// #endif
 						}
 					})
 				}).finally(err => {
