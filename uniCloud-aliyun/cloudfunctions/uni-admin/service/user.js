@@ -45,17 +45,7 @@ module.exports = class UserService extends Service {
 			needPermission: true,
 			needUserInfo: false
 		})
-		if (this.ctx.auth.role.includes('admin')) {
-			return res
-		}
-		const navMenu = await this.service.menu.getMenu()
-		if (navMenu.length) {
-			return res
-		}
-		return {
-			code: 10001,
-			message: '该账户没有被赋予登录admin系统的权限, 请联系系统管理员绑定角色赋权'
-		}
+		return res
 	}
 
 	async logout(token) {
