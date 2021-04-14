@@ -1,7 +1,6 @@
 const {
 	Controller
 } = require('uni-cloud-router')
-const uniID = require('uni-id')
 module.exports = class UserController extends Controller {
 	async addUser() {
 		const {
@@ -13,7 +12,7 @@ module.exports = class UserController extends Controller {
 			status
 		} = this.ctx.data
 
-		const result = await uniID.register({
+		const result = await this.ctx.uniID.register({
 			username,
 			password,
 			role,
@@ -33,7 +32,7 @@ module.exports = class UserController extends Controller {
 			password
 		} = this.ctx.data
 	
-		const result = await uniID.resetPwd({
+		const result = await this.ctx.uniID.resetPwd({
 			uid,
 			password
 		})

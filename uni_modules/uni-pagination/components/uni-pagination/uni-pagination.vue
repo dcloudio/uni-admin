@@ -20,13 +20,6 @@
                     @click.top="selectPage(item,index)">
                     <text> {{item}}</text>
                 </view>
-                <!-- <view class="uni-pagination__num-tag"><text class="uni-pagination__child-btn">
-                        <<</text> </view> <view class="uni-pagination__num-tag">3</view>
-                <view class="uni-pagination__num-tag">4</view>
-                <view class="uni-pagination__num-tag">5</view>
-                <view class="uni-pagination__num-tag">6</view>
-                <view class="uni-pagination__num-tag"><text class="uni-pagination__child-btn">>></text></view>
-                <view class="uni-pagination__num-tag">8</view> -->
             </view>
         </view>
         <view class="uni-pagination__btn" :class="currentIndex >= maxPage ? 'uni-pagination--disabled' : 'uni-pagination--enabled'"
@@ -260,8 +253,7 @@
         display: flex;
         cursor: pointer;
         /* #endif */
-        width: 30px;
-        height: 30px;
+				padding: 0 8px;
         line-height: 30px;
         font-size: $uni-font-size-base;
         position: relative;
