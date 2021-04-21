@@ -1,7 +1,7 @@
 {
   "id": "uni-config-center",
   "displayName": "uni-config-center",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "uniCloud 配置中心",
   "keywords": [
     "配置",
@@ -18,10 +18,10 @@
     ],
     "sale": {
       "regular": {
-        "price": 0
+        "price": "0.00"
       },
       "sourcecode": {
-        "price": 0
+        "price": "0.00"
       }
     },
     "contact": {
