@@ -36,7 +36,7 @@ cloudfunctions
 
 使用uni-config-center后的优势
 
-- 配置文件统一管理，对插件作者来说发布插件更简单了，对用户来说使用也更简单了
+- 配置文件统一管理，分离插件主体和配置信息，更新插件更方便
 - 支持对config.json设置schema，插件使用者在HBuilderX内编写config.json文件时会有更好的提示（后续HBuilderX会提供支持）
 
 # 用法
