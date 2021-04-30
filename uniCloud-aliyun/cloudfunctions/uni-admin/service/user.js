@@ -1,7 +1,6 @@
 const {
 	Service
 } = require('uni-cloud-router')
-const uniID = require('uni-id')
 const uniCaptcha = require('uni-captcha')
 module.exports = class UserService extends Service {
 	async login({
@@ -31,7 +30,7 @@ module.exports = class UserService extends Service {
 			}
 		}
 
-		const res = await uniID.login({
+		const res = await this.ctx.uniID.login({
 			username,
 			password,
 			needPermission: true
@@ -46,25 +45,15 @@ module.exports = class UserService extends Service {
 			needPermission: true,
 			needUserInfo: false
 		})
-		if (this.ctx.auth.role.includes('admin')) {
-			return res
-		}
-		const navMenu = await this.service.menu.getMenu()
-		if (navMenu.length) {
-			return res
-		}
-		return {
-			code: 10001,
-			message: '该账号暂无权限登录'
-		}
+		return res
 	}
 
 	async logout(token) {
-		return await uniID.logout(token)
+		return await this.ctx.uniID.logout(token)
 	}
 
 	async checkToken(token) {
-		const auth = await uniID.checkToken(token, {
+		const auth = await this.ctx.uniID.checkToken(token, {
 			needPermission: true,
 			needUserInfo: false
 		})
@@ -86,7 +75,7 @@ module.exports = class UserService extends Service {
 	}
 
 	async getCurrentUserInfo(field = []) {
-		return uniID.getUserInfo({
+		return this.ctx.uniID.getUserInfo({
 			uid: this.ctx.auth.uid,
 			field
 		})

@@ -44,7 +44,9 @@
 		mapActions
 	} from 'vuex'
 	import config from '@/admin.config.js'
-	import { getDeviceUUID } from '@/js_sdk/uni-admin/util.js'
+	import {
+		getDeviceUUID
+	} from '@/js_sdk/uni-admin/util.js'
 
 	const captchaOptions = {
 		deviceId: getDeviceUUID(),
@@ -95,9 +97,9 @@
 					// 对email字段进行必填验证
 					captchaText: {
 						rules: [{
-								required: true,
-								errorMessage: '请输入验证码',
-							}]
+							required: true,
+							errorMessage: '请输入验证码',
+						}]
 					}
 				}
 			}
@@ -138,65 +140,80 @@
 				// #ifdef H5
 				this.$refs.usernameInput.$refs.input.blur()
 				this.$refs.passwordInput.$refs.input.blur()
+				this.$refs.captchaInput && this.$refs.captchaInput.$refs.input.blur()
 				// #endif
 				this.loading = true
 				this.$request('user/login', {
 					...value,
 					captchaOptions
+				}, {
+					showModal: false
 				}).then(res => {
-						if (res.needCaptcha) {
-							this.needCaptcha = true
-							this.captchaBase64 = res.captchaBase64
-						} else {
-							this.setToken({
-								token: res.token,
-								tokenExpired: res.tokenExpired
+					if (res.needCaptcha) {
+						this.needCaptcha = true
+						this.captchaBase64 = res.captchaBase64
+					} else {
+						this.setToken({
+							token: res.token,
+							tokenExpired: res.tokenExpired
+						})
+						return this.init().then(() => {
+							uni.showToast({
+								title: '登录成功',
+								icon: 'none'
 							})
-							return this.init().then(() => {
-								uni.showToast({
-									title: '登录成功',
-									icon: 'none'
-								})
-								uni.setStorage({
-								    key: 'lastUsername',
-								    data: value.username
-								});
-								uni.redirectTo({
-									url: this.indexPage,
-								})
+							uni.setStorage({
+								key: 'lastUsername',
+								data: value.username
+							});
+							uni.redirectTo({
+								url: this.indexPage,
 							})
+						})
+					}
+				}).catch(err => {
+					if (err.needCaptcha) {
+						this.formData.captchaText = ''
+						this.createCaptcha()
+					}
+					const that = this
+					uni.showModal({
+						content: err.message || '请求服务失败',
+						showCancel: false,
+						success: function() {
+							if (err.code === 10101 && that.$refs.usernameInput) {
+								that.$refs.usernameInput.$refs.input.focus()
+							}
+							if (err.code === 10102 && that.$refs.passwordInput) {
+								that.$refs.passwordInput.$refs.input.focus()
+							}
+							if (err.code === 10002 && that.$refs.captchaInput) {
+								that.$refs.captchaInput.$refs.input.focus()
+							}
 						}
-					}).catch(err => {
-						if (err.needCaptcha) {
-							this.formData.captchaText = ''
-							this.createCaptcha()
-							// this.$refs.captchaInput.$refs.input.focus()
-						}
-					}).finally(err => {
-						this.loading = false
 					})
+				}).finally(err => {
+					this.loading = false
+				})
 
 			},
 
-			createCaptcha(){
+			createCaptcha() {
 				this.captchaLoading = true
 				this.$request('user/createCaptcha', captchaOptions).then(res => {
-						if (res.code === 0) {
-							this.needCaptcha = res.needCaptcha
-							this.captchaBase64 = res.captchaBase64
-						}
-					}).catch(err => {
-					}).finally(err => {
-						this.captchaLoading = false
-					})
+					if (res.code === 0) {
+						this.needCaptcha = res.needCaptcha
+						this.captchaBase64 = res.captchaBase64
+					}
+				}).catch(err => {}).finally(err => {
+					this.captchaLoading = false
+				})
 			},
 
-			getNeedCaptcha(){
+			getNeedCaptcha() {
 				this.$request('user/getNeedCaptcha', captchaOptions).then(res => {
 					if (res) this.createCaptcha()
-					}).catch(err => {
-					}).finally(err => {
-					})
+				}).catch(err => {}).finally(err => {})
 			},
 
 			confirmForm(name, value) {
@@ -277,7 +294,7 @@
 
 	.admin-captcha-img {
 		position: absolute;
-		top: 0;
+		top: 1px;
 		right: 0;
 		display: flex;
 		justify-content: center;
@@ -289,46 +306,47 @@
 		border-radius: 0 5px 5px 0;
 		background-color: #f9f9f9;
 	}
+
 	.admin-captcha-img img {
 		border-radius: 5px;
 	}
 
 	.uni-loading:before {
-	    background: rgba(0,0,0,0) url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMjAiIGhlaWdodD0iMTIwIiB2aWV3Qm94PSIwIDAgMTAwIDEwMCI+PHBhdGggZmlsbD0ibm9uZSIgZD0iTTAgMGgxMDB2MTAwSDB6Ii8+PHJlY3Qgd2lkdGg9IjciIGhlaWdodD0iMjAiIHg9IjQ2LjUiIHk9IjQwIiBmaWxsPSIjRTlFOUU5IiByeD0iNSIgcnk9IjUiIHRyYW5zZm9ybT0idHJhbnNsYXRlKDAgLTMwKSIvPjxyZWN0IHdpZHRoPSI3IiBoZWlnaHQ9IjIwIiB4PSI0Ni41IiB5PSI0MCIgZmlsbD0iIzk4OTY5NyIgcng9IjUiIHJ5PSI1IiB0cmFuc2Zvcm09InJvdGF0ZSgzMCAxMDUuOTggNjUpIi8+PHJlY3Qgd2lkdGg9IjciIGhlaWdodD0iMjAiIHg9IjQ2LjUiIHk9IjQwIiBmaWxsPSIjOUI5OTlBIiByeD0iNSIgcnk9IjUiIHRyYW5zZm9ybT0icm90YXRlKDYwIDc1Ljk4IDY1KSIvPjxyZWN0IHdpZHRoPSI3IiBoZWlnaHQ9IjIwIiB4PSI0Ni41IiB5PSI0MCIgZmlsbD0iI0EzQTFBMiIgcng9IjUiIHJ5PSI1IiB0cmFuc2Zvcm09InJvdGF0ZSg5MCA2NSA2NSkiLz48cmVjdCB3aWR0aD0iNyIgaGVpZ2h0PSIyMCIgeD0iNDYuNSIgeT0iNDAiIGZpbGw9IiNBQkE5QUEiIHJ4PSI1IiByeT0iNSIgdHJhbnNmb3JtPSJyb3RhdGUoMTIwIDU4LjY2IDY1KSIvPjxyZWN0IHdpZHRoPSI3IiBoZWlnaHQ9IjIwIiB4PSI0Ni41IiB5PSI0MCIgZmlsbD0iI0IyQjJCMiIgcng9IjUiIHJ5PSI1IiB0cmFuc2Zvcm09InJvdGF0ZSgxNTAgNTQuMDIgNjUpIi8+PHJlY3Qgd2lkdGg9IjciIGhlaWdodD0iMjAiIHg9IjQ2LjUiIHk9IjQwIiBmaWxsPSIjQkFCOEI5IiByeD0iNSIgcnk9IjUiIHRyYW5zZm9ybT0icm90YXRlKDE4MCA1MCA2NSkiLz48cmVjdCB3aWR0aD0iNyIgaGVpZ2h0PSIyMCIgeD0iNDYuNSIgeT0iNDAiIGZpbGw9IiNDMkMwQzEiIHJ4PSI1IiByeT0iNSIgdHJhbnNmb3JtPSJyb3RhdGUoLTE1MCA0NS45OCA2NSkiLz48cmVjdCB3aWR0aD0iNyIgaGVpZ2h0PSIyMCIgeD0iNDYuNSIgeT0iNDAiIGZpbGw9IiNDQkNCQ0IiIHJ4PSI1IiByeT0iNSIgdHJhbnNmb3JtPSJyb3RhdGUoLTEyMCA0MS4zNCA2NSkiLz48cmVjdCB3aWR0aD0iNyIgaGVpZ2h0PSIyMCIgeD0iNDYuNSIgeT0iNDAiIGZpbGw9IiNEMkQyRDIiIHJ4PSI1IiByeT0iNSIgdHJhbnNmb3JtPSJyb3RhdGUoLTkwIDM1IDY1KSIvPjxyZWN0IHdpZHRoPSI3IiBoZWlnaHQ9IjIwIiB4PSI0Ni41IiB5PSI0MCIgZmlsbD0iI0RBREFEQSIgcng9IjUiIHJ5PSI1IiB0cmFuc2Zvcm09InJvdGF0ZSgtNjAgMjQuMDIgNjUpIi8+PHJlY3Qgd2lkdGg9IjciIGhlaWdodD0iMjAiIHg9IjQ2LjUiIHk9IjQwIiBmaWxsPSIjRTJFMkUyIiByeD0iNSIgcnk9IjUiIHRyYW5zZm9ybT0icm90YXRlKC0zMCAtNS45OCA2NSkiLz48L3N2Zz4=") no-repeat
+		background: rgba(0, 0, 0, 0) url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMjAiIGhlaWdodD0iMTIwIiB2aWV3Qm94PSIwIDAgMTAwIDEwMCI+PHBhdGggZmlsbD0ibm9uZSIgZD0iTTAgMGgxMDB2MTAwSDB6Ii8+PHJlY3Qgd2lkdGg9IjciIGhlaWdodD0iMjAiIHg9IjQ2LjUiIHk9IjQwIiBmaWxsPSIjRTlFOUU5IiByeD0iNSIgcnk9IjUiIHRyYW5zZm9ybT0idHJhbnNsYXRlKDAgLTMwKSIvPjxyZWN0IHdpZHRoPSI3IiBoZWlnaHQ9IjIwIiB4PSI0Ni41IiB5PSI0MCIgZmlsbD0iIzk4OTY5NyIgcng9IjUiIHJ5PSI1IiB0cmFuc2Zvcm09InJvdGF0ZSgzMCAxMDUuOTggNjUpIi8+PHJlY3Qgd2lkdGg9IjciIGhlaWdodD0iMjAiIHg9IjQ2LjUiIHk9IjQwIiBmaWxsPSIjOUI5OTlBIiByeD0iNSIgcnk9IjUiIHRyYW5zZm9ybT0icm90YXRlKDYwIDc1Ljk4IDY1KSIvPjxyZWN0IHdpZHRoPSI3IiBoZWlnaHQ9IjIwIiB4PSI0Ni41IiB5PSI0MCIgZmlsbD0iI0EzQTFBMiIgcng9IjUiIHJ5PSI1IiB0cmFuc2Zvcm09InJvdGF0ZSg5MCA2NSA2NSkiLz48cmVjdCB3aWR0aD0iNyIgaGVpZ2h0PSIyMCIgeD0iNDYuNSIgeT0iNDAiIGZpbGw9IiNBQkE5QUEiIHJ4PSI1IiByeT0iNSIgdHJhbnNmb3JtPSJyb3RhdGUoMTIwIDU4LjY2IDY1KSIvPjxyZWN0IHdpZHRoPSI3IiBoZWlnaHQ9IjIwIiB4PSI0Ni41IiB5PSI0MCIgZmlsbD0iI0IyQjJCMiIgcng9IjUiIHJ5PSI1IiB0cmFuc2Zvcm09InJvdGF0ZSgxNTAgNTQuMDIgNjUpIi8+PHJlY3Qgd2lkdGg9IjciIGhlaWdodD0iMjAiIHg9IjQ2LjUiIHk9IjQwIiBmaWxsPSIjQkFCOEI5IiByeD0iNSIgcnk9IjUiIHRyYW5zZm9ybT0icm90YXRlKDE4MCA1MCA2NSkiLz48cmVjdCB3aWR0aD0iNyIgaGVpZ2h0PSIyMCIgeD0iNDYuNSIgeT0iNDAiIGZpbGw9IiNDMkMwQzEiIHJ4PSI1IiByeT0iNSIgdHJhbnNmb3JtPSJyb3RhdGUoLTE1MCA0NS45OCA2NSkiLz48cmVjdCB3aWR0aD0iNyIgaGVpZ2h0PSIyMCIgeD0iNDYuNSIgeT0iNDAiIGZpbGw9IiNDQkNCQ0IiIHJ4PSI1IiByeT0iNSIgdHJhbnNmb3JtPSJyb3RhdGUoLTEyMCA0MS4zNCA2NSkiLz48cmVjdCB3aWR0aD0iNyIgaGVpZ2h0PSIyMCIgeD0iNDYuNSIgeT0iNDAiIGZpbGw9IiNEMkQyRDIiIHJ4PSI1IiByeT0iNSIgdHJhbnNmb3JtPSJyb3RhdGUoLTkwIDM1IDY1KSIvPjxyZWN0IHdpZHRoPSI3IiBoZWlnaHQ9IjIwIiB4PSI0Ni41IiB5PSI0MCIgZmlsbD0iI0RBREFEQSIgcng9IjUiIHJ5PSI1IiB0cmFuc2Zvcm09InJvdGF0ZSgtNjAgMjQuMDIgNjUpIi8+PHJlY3Qgd2lkdGg9IjciIGhlaWdodD0iMjAiIHg9IjQ2LjUiIHk9IjQwIiBmaWxsPSIjRTJFMkUyIiByeD0iNSIgcnk9IjUiIHRyYW5zZm9ybT0icm90YXRlKC0zMCAtNS45OCA2NSkiLz48L3N2Zz4=") no-repeat
 	}
 
 	.uni-loading {
 		margin: 0 auto;
-	    width: 20px;
-	    height: 20px;
-	    display: inline-block;
-	    vertical-align: middle;
-	    -webkit-animation: uni-loading 1s steps(12) infinite;
-	    animation: uni-loading 1s steps(12) infinite;
-	    background-size: 100%
+		width: 20px;
+		height: 20px;
+		display: inline-block;
+		vertical-align: middle;
+		-webkit-animation: uni-loading 1s steps(12) infinite;
+		animation: uni-loading 1s steps(12) infinite;
+		background-size: 100%
 	}
 
 	@-webkit-keyframes uni-loading {
-	    0% {
-	        -webkit-transform: rotate(0deg);
-	        transform: rotate(0deg)
-	    }
+		0% {
+			-webkit-transform: rotate(0deg);
+			transform: rotate(0deg)
+		}
 
-	    to {
-	        -webkit-transform: rotate(1turn);
-	        transform: rotate(1turn)
-	    }
+		to {
+			-webkit-transform: rotate(1turn);
+			transform: rotate(1turn)
+		}
 	}
 
 	@keyframes uni-loading {
-	    0% {
-	        -webkit-transform: rotate(0deg);
-	        transform: rotate(0deg)
-	    }
+		0% {
+			-webkit-transform: rotate(0deg);
+			transform: rotate(0deg)
+		}
 
-	    to {
-	        -webkit-transform: rotate(1turn);
-	        transform: rotate(1turn)
-	    }
+		to {
+			-webkit-transform: rotate(1turn);
+			transform: rotate(1turn)
+		}
 	}
 </style>

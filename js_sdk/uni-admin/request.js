@@ -13,6 +13,13 @@ db.on('refreshToken', function({
 	})
 })
 
+db.on('error', function({
+	code, // 错误码详见https://uniapp.dcloud.net.cn/uniCloud/clientdb?id=returnvalue
+	message
+}) {
+	reLaunchToLogin(code)
+})
+
 export function request(action, data, {
 	functionName = 'uni-admin',
 	showModal = true
@@ -30,11 +37,7 @@ export function request(action, data, {
 			return Promise.resolve(result)
 		}
 		if (result.code) {
-			if (typeof result.code === 'string' && result.code.indexOf('TOKEN_INVALID') === 0) {
-				uni.reLaunch({
-					url: config.login.url
-				})
-			}
+			reLaunchToLogin(result.code)
 			// const err = new Error(result.message)
 			// err.code = result.code
 			const err = result
@@ -55,17 +58,7 @@ export function request(action, data, {
 		const that = this
 		showModal && uni.showModal({
 			content: err.message || '请求服务失败',
-			showCancel: false,
-			success: function() {
-				// #ifdef H5
-				if (err.code === 10101 && that.$refs.usernameInput) {
-					that.$refs.usernameInput.$refs.input.focus()
-				}
-				if (err.code === 10102 && that.$refs.passwordInput) {
-					that.$refs.passwordInput.$refs.input.focus()
-				}
-				// #endif
-			}
+			showCancel: false
 		})
 		// #ifdef H5
 		const noDebugPages = ['/pages/login/login', '/pages/init/init']
@@ -83,6 +76,14 @@ export function request(action, data, {
 		// #endif
 		return Promise.reject(err)
 	})
+}
+
+function reLaunchToLogin(code) {
+	if (typeof code === 'string' && code.indexOf('TOKEN_INVALID') === 0) {
+		uni.reLaunch({
+			url: config.login.url
+		})
+	}
 }
 
 export function initRequest(Vue) {

@@ -9,7 +9,7 @@
 						<text v-if="required" class="is-required">*</text>
 					</slot>
 				</view>
-				<view class="uni-forms-item__content" :class="{'is-input-error-border': msg}">
+				<view class="uni-forms-item__content" :class="{'is-input-error-border': msg}" style="display: flex;align-items: center;">
 					<slot></slot>
 				</view>
 			</view>
@@ -268,8 +268,8 @@
 						[this.name]: value
 					}, this.form.formData)
 				}
-				// 判断是否必填
-				if (!isNoField && !value) {
+				// 判断是否必填,非必填，不填不校验，填写才校验
+				if (!isNoField && (value === undefined || value === '')) {
 					result = null
 				}
 				if (isTrigger && result && result.errorMessage) {

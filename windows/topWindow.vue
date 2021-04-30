@@ -20,7 +20,7 @@
 			</view>
 			<view class="navbar-right pointer">
 				<view v-show="userInfo.username" @click="togglePopupMenu" class="navbar-user">
-					<view class="username"><text>{{userInfo.username}}</text>️</view>
+					<view class="username"><text>{{userInfo.username}}</text></view>
 					<uni-icons class="arrowdown" type="arrowdown" color="#666" size="13"></uni-icons>
 				</view>
 				<view class="uni-mask" @click="togglePopupMenu"></view>

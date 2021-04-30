@@ -1,7 +1,6 @@
 const {
 	Controller
 } = require('uni-cloud-router')
-const uniID = require('uni-id')
 module.exports = class UserController extends Controller {
 	async login() {
 		const {
@@ -30,7 +29,7 @@ module.exports = class UserController extends Controller {
 				message: '超级管理员已存在，请登录...'
 			}
 		}
-		return uniID.register({
+		return this.ctx.uniID.register({
 			username,
 			password,
 			role: ["admin"]
