@@ -54,7 +54,7 @@
 					</button>-->
 					<download-excel :fields="expExcel.json_fields" :data="data" :type="expExcel.type" :name="expExcel.filename">
 						<button type="primary" size="mini">
-							导出 Excel
+							导出数据
 							<uni-icons type="arrowthindown" size="12" color="#fff"
 								style="border-bottom: 1px solid #fff; margin-left: 5px;" />
 						</button>
