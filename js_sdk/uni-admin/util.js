@@ -28,17 +28,3 @@ export function getDeviceUUID() {
 	return deviceId;
 }
 
-export function praseDate(date) {
-	if (!date) return
-	date = new Date(date)
-	const year = date.getFullYear(),
-		month = date.getMonth() + 1,
-		day = date.getDate(),
-		hour = date.getHours(),
-		minute = date.getMinutes(),
-		second = date.getSeconds()
-	let ymd = year + '/' + month + '/' + day,
-		hms = hour + '/' + minute + '/' + second
-
- 	return ymd + ' ' + hms
-}

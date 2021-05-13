@@ -49,17 +49,18 @@
 					</uni-tr>
 				</uni-table>
 				<view class="uni-pagination-box">
+					<!-- <button class="btn-excel-export" type="primary" size="mini">
+					  导入 Excel
+					</button>-->
+					<download-excel :fields="expExcel.json_fields" :data="data" :type="expExcel.type" :name="expExcel.filename">
+						<button type="primary" size="mini">
+							导出 Excel
+							<uni-icons type="arrowthindown" size="12" color="#fff"
+								style="border-bottom: 1px solid #fff; margin-left: 5px;" />
+						</button>
+					</download-excel>
 					<uni-pagination show-icon :page-size="pagination.size" v-model="pagination.current"
 						:total="pagination.count" @change="onPageChanged" />
-					<download-excel
-					  class="btn btn-default"
-					  :fields="json_fields"
-					  :data="data"
-					  type="xls"
-					  name="filename.xls"
-					>
-					  Download CSV (you can customize this with html code!)
-					</download-excel>
 				</view>
 			</unicloud-db>
 		</view>
@@ -92,25 +93,23 @@
 					pageCurrent
 				},
 				selectedIndexs: [], //批量选中的项
-				json_fields: {
-					用户名: "username",
-					角色: "role",
-					手机号: "mobile",
-					邮箱: "email",
-					用户状态: "status",
-					创建时间: {
-						field: "register_date",
-						callback: (value) => {
-							return this.$formatDate(value)
-						},
-					},
-				},
-				json_meta: [
-					[{
-						key: "charset",
-						value: "utf-8",
-					}, ],
-				],
+				expExcel: {
+					filename: "用户.xls",
+					type: "xls",
+					json_fields: {
+						"用户名": "username",
+						"角色": "role",
+						"手机号": "mobile",
+						"邮箱": "email",
+						"用户状态": "status",
+						"创建时间": {
+							field: "register_date",
+							callback: (value) => {
+								return this.$formatDate(value)
+							}
+						}
+					}
+				}
 			}
 		},
 		computed: {
@@ -216,6 +215,5 @@
 	page {
 		padding-top: 85px;
 	}
-
 	/* #endif */
 </style>

@@ -368,3 +368,8 @@ uni-button:after {
 .uni-input-placeholder {
 	color: #999;
 }
+
+.uni-pagination-box {
+	display: flex;
+	justify-content: space-between;
+}
