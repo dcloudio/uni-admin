@@ -369,7 +369,7 @@ uni-button:after {
 	color: #999;
 }
 
-.uni-pagination-box {
+.uni-excel-box {
 	display: flex;
-	justify-content: space-between;
+	/* justify-content: flex-end; */
 }

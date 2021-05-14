@@ -44,17 +44,21 @@
 					</uni-tr>
 				</uni-table>
 				<view class="uni-pagination-box">
-					<download-excel :fields="expExcel.json_fields" :data="data" :type="expExcel.type"
-						:name="expExcel.filename">
+					<uni-pagination show-icon :page-size="pagination.size" v-model="pagination.current"
+						:total="pagination.count" @change="onPageChanged" />
+				</view>
+				<!-- #ifdef H5 -->
+				<view class="uni-excel-box">
+					<download-excel class="hide-on-phone" :fields="expExcel.json_fields" :data="data"
+						:type="expExcel.type" :name="expExcel.filename">
 						<button type="primary" size="mini">
 							导出数据
 							<uni-icons type="arrowthindown" size="12" color="#fff"
 								style="border-bottom: 1px solid #fff; margin-left: 5px;" />
 						</button>
 					</download-excel>
-					<uni-pagination show-icon :page-size="pagination.size" v-model="pagination.current"
-						:total="pagination.count" @change="onPageChanged" />
 				</view>
+				<!-- #endif -->
 			</unicloud-db>
 		</view>
 		<!-- #ifndef H5 -->
