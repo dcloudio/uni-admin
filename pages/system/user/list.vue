@@ -8,12 +8,12 @@
 			<view class="uni-group">
 				<input class="uni-search" type="text" v-model="query" @confirm="search" placeholder="请输入搜索内容" />
 				<button class="uni-button" type="default" size="mini" @click="search">搜索</button>
-				<button class="uni-button" type="default" size="mini" @click="navigateTo('./add')">新增</button>
+				<button class="uni-button" type="primary" size="mini" @click="navigateTo('./add')">新增</button>
 				<button class="uni-button" type="warn" size="mini" @click="delTable"
 					:disabled="!selectedIndexs.length">批量删除</button>
 				<download-excel class="hide-on-phone" :fields="expExcel.json_fields" :data="expData"
 					:type="expExcel.type" :name="expExcel.filename">
-					<button class="uni-button" type="primary" size="mini" :disabled="!selectedIndexs.length">导出 Excel</button>
+					<button class="uni-button" type="primary" size="mini">导出 Excel</button>
 				</download-excel>
 			</view>
 		</view>
@@ -85,7 +85,6 @@
 					pageCurrent
 				},
 				selectedIndexs: [], //批量选中的项
-				tableData: [],
 				expData: [],
 				expExcel: {
 					filename: "用户.xls",
@@ -96,26 +95,13 @@
 						"手机号": "mobile",
 						"邮箱": "email",
 						"用户状态": "status",
-						"创建时间": {
-							field: "register_date",
-							callback: (value) => {
-								return this.$formatDate(value)
-							}
-						}
+						"创建时间": "register_date"
 					}
 				}
 			}
 		},
 		computed: {
 			...mapState('user', ['userInfo']),
-		},
-		watch: {
-			selectedIndexs(val) {
-				this.expData = []
-				for (const i of val) {
-					this.expData.push(this.tableData[i])
-				}
-			}
 		},
 		methods: {
 			onqueryload(data) {
@@ -125,7 +111,7 @@
 					item.status = this.parseUserStatus(item.status)
 					item.register_date = this.$formatDate(item.register_date)
 				}
-				this.tableData = data
+				this.expData = data
 			},
 			getWhere() {
 				const query = this.query.trim()

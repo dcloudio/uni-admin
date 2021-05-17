@@ -8,14 +8,13 @@
 			<view class="uni-group">
 				<input class="uni-search" type="text" v-model="query" @confirm="search" placeholder="请输入搜索内容" />
 				<button class="uni-button" type="default" size="mini" @click="search">搜索</button>
-				<button class="uni-button" type="default" size="mini" @click="navigateTo('./add')">新增</button>
-				<button class="uni-button" type="default" size="mini" @click="delTable"
+				<button class="uni-button" type="primary" size="mini" @click="navigateTo('./add')">新增</button>
+				<button class="uni-button" type="warn" size="mini" @click="delTable"
 					:disabled="!selectedIndexs.length">批量删除</button>
 				<!-- #ifdef H5 -->
 				<download-excel class="hide-on-phone" :fields="expExcel.json_fields" :data="expData"
 					:type="expExcel.type" :name="expExcel.filename">
-					<button class="uni-button" type="primary" size="mini" :disabled="!selectedIndexs.length">导出
-						Excel</button>
+					<button class="uni-button" type="primary" size="mini">导出 Excel</button>
 				</download-excel>
 				<!-- #endif -->
 			</view>
@@ -86,7 +85,6 @@
 					pageCurrent
 				},
 				selectedIndexs: [], //批量选中的项
-				tableData: [],
 				expData: [],
 				expExcel: {
 					filename: "角色.xls",
@@ -95,22 +93,8 @@
 						"角色Id": "role_id",
 						"角色名称": "role_name",
 						"备注": "comment",
-						"创建时间": {
-							field: "create_date",
-							callback: (value) => {
-								return this.$formatDate(value)
-							}
-						}
+						"创建时间": "create_date"
 					}
-				}
-
-			}
-		},
-		watch: {
-			selectedIndexs(val) {
-				this.expData = []
-				for (const i of val) {
-					this.expData.push(this.tableData[i])
 				}
 			}
 		},
@@ -121,7 +105,7 @@
 					item.permission = item.permission.map(pItem => pItem.permission_name).join('、')
 					item.create_date = this.$formatDate(item.create_date)
 				}
-				this.tableData = data
+				this.expData = data //仅导出当前页
 			},
 			getWhere() {
 				const query = this.query.trim()

@@ -8,14 +8,12 @@
 			<view class="uni-group">
 				<input class="uni-search" type="text" v-model="query" @confirm="search" placeholder="权限标识/名称" />
 				<button class="uni-button" type="default" size="mini" @click="search">搜索</button>
-				<button @click="navigateTo('./add')" size="mini" class="uni-button" type="default">新增</button>
-				<button class="uni-button" type="default" size="mini" @click="delTable"
-					:disabled="!selectedIndexs.length">批量删除</button>
+				<button @click="navigateTo('./add')" size="mini" class="uni-button" type="primary">新增</button>
+				<button class="uni-button" type="warn" size="mini" @click="delTable">批量删除</button>
 				<!-- #ifdef H5 -->
 				<download-excel class="hide-on-phone" :fields="expExcel.json_fields" :data="expData"
 					:type="expExcel.type" :name="expExcel.filename">
-					<button class="uni-button" type="primary" size="mini"
-						:disabled="!selectedIndexs.length">导出 Excel</button>
+					<button class="uni-button" type="primary" size="mini">导出 Excel</button>
 				</download-excel>
 				<!-- #endif -->
 			</view>
@@ -37,9 +35,7 @@
 						<uni-td align="center">{{item.permission_id}}</uni-td>
 						<uni-td align="center">{{item.permission_name}}</uni-td>
 						<uni-td align="center">{{item.comment}}</uni-td>
-						<uni-td align="center">
-							<uni-dateformat :date="item.create_date" :threshold="[0, 0]" />
-						</uni-td>
+						<uni-td align="center">{{item.create_date}}</uni-td>
 						<uni-td align="center">
 							<view class="uni-group">
 								<button size="mini" @click="navigateTo('./edit?id='+item._id, false)" class="uni-button"
@@ -82,7 +78,6 @@
 					pageCurrent
 				},
 				selectedIndexs: [], //批量选中的项
-				tableData: [],
 				expData: [],
 				expExcel: {
 					filename: "权限.xls",
@@ -91,27 +86,18 @@
 						"权限标识": "permission_id",
 						"权限名称": "permission_name",
 						"备注": "comment",
-						"创建时间": {
-							field: "create_date",
-							callback: (value) => {
-								return this.$formatDate(value)
-							}
-						}
+						"创建时间": "create_date",
 					}
-				}
-			}
-		},
-		watch: {
-			selectedIndexs(val) {
-				this.expData = []
-				for (const i of val) {
-					this.expData.push(this.tableData[i])
 				}
 			}
 		},
 		methods: {
 			onqueryload(data) {
-				this.tableData = data
+				for (var i = 0; i < data.length; i++) {
+					let item = data[i]
+					item.create_date = this.$formatDate(item.create_date)
+				}
+				this.expData = data //仅导出当前页
 			},
 			getWhere() {
 				const query = this.query.trim()
