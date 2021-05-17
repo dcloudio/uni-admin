@@ -146,10 +146,13 @@ uni-page-head .uni-btn-icon {
 	overflow: initial;
 }
 
-.uni-button+.uni-button {
+.uni-group .uni-button {
 	margin-left: 10px;
 }
 
+.uni-group > .uni-button:first-child {
+	margin-left: 0;
+}
 
 .uni-button:hover,
 .uni-button:focus {
@@ -367,9 +370,4 @@ uni-button:after {
 
 .uni-input-placeholder {
 	color: #999;
-}
-
-.uni-excel-box {
-	display: flex;
-	/* justify-content: flex-end; */
 }

@@ -14,7 +14,7 @@ export default {
 			text: '框架文档',
 			url: 'https://uniapp.dcloud.net.cn/uniCloud/admin'
 		}, {
-			text: '浏览更多插件',
+			text: '更多插件',
 			url: 'https://ext.dcloud.net.cn/?cat1=7&cat2=74'
 		}],
 		debug: {

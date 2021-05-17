@@ -11,10 +11,17 @@
 				<button @click="navigateTo('./add')" size="mini" class="uni-button" type="default">新增</button>
 				<button class="uni-button" type="default" size="mini" @click="delTable"
 					:disabled="!selectedIndexs.length">批量删除</button>
+				<!-- #ifdef H5 -->
+				<download-excel class="hide-on-phone" :fields="expExcel.json_fields" :data="expData"
+					:type="expExcel.type" :name="expExcel.filename">
+					<button class="uni-button" type="primary" size="mini"
+						:disabled="!selectedIndexs.length">导出 Excel</button>
+				</download-excel>
+				<!-- #endif -->
 			</view>
 		</view>
 		<view class="uni-container">
-			<unicloud-db ref="dataQuery" collection="uni-id-permissions" :options="options" :where="where"
+			<unicloud-db ref="dataQuery" @load="onqueryload" collection="uni-id-permissions" :options="options" :where="where"
 				page-data="replace" :orderby="orderby" :getcount="true" :page-size="options.pageSize"
 				:page-current="options.pageCurrent" v-slot:default="{data,pagination,loading,error}">
 				<uni-table :loading="loading" :emptyText="error.message || '没有更多数据'" border stripe type="selection"
@@ -47,18 +54,6 @@
 					<uni-pagination show-icon :page-size="pagination.size" v-model="pagination.current"
 						:total="pagination.count" @change="onPageChanged" />
 				</view>
-				<!-- #ifdef H5 -->
-				<view class="uni-excel-box">
-					<download-excel class="hide-on-phone" :fields="expExcel.json_fields" :data="data"
-						:type="expExcel.type" :name="expExcel.filename">
-						<button type="primary" size="mini">
-							导出数据
-							<uni-icons type="arrowthindown" size="12" color="#fff"
-								style="border-bottom: 1px solid #fff; margin-left: 5px;" />
-						</button>
-					</download-excel>
-				</view>
-				<!-- #endif -->
 			</unicloud-db>
 		</view>
 		<!-- #ifndef H5 -->
@@ -87,6 +82,8 @@
 					pageCurrent
 				},
 				selectedIndexs: [], //批量选中的项
+				tableData: [],
+				expData: [],
 				expExcel: {
 					filename: "权限.xls",
 					type: "xls",
@@ -104,7 +101,18 @@
 				}
 			}
 		},
+		watch: {
+			selectedIndexs(val) {
+				this.expData = []
+				for (const i of val) {
+					this.expData.push(this.tableData[i])
+				}
+			}
+		},
 		methods: {
+			onqueryload(data) {
+				this.tableData = data
+			},
 			getWhere() {
 				const query = this.query.trim()
 				if (!query) {
@@ -198,5 +206,6 @@
 	page {
 		padding-top: 85px;
 	}
+
 	/* #endif */
 </style>

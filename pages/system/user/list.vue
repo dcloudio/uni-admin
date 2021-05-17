@@ -9,8 +9,12 @@
 				<input class="uni-search" type="text" v-model="query" @confirm="search" placeholder="请输入搜索内容" />
 				<button class="uni-button" type="default" size="mini" @click="search">搜索</button>
 				<button class="uni-button" type="default" size="mini" @click="navigateTo('./add')">新增</button>
-				<button class="uni-button" type="default" size="mini" @click="delTable"
+				<button class="uni-button" type="warn" size="mini" @click="delTable"
 					:disabled="!selectedIndexs.length">批量删除</button>
+				<download-excel class="hide-on-phone" :fields="expExcel.json_fields" :data="expData"
+					:type="expExcel.type" :name="expExcel.filename">
+					<button class="uni-button" type="primary" size="mini" :disabled="!selectedIndexs.length">导出 Excel</button>
+				</download-excel>
 			</view>
 		</view>
 		<view class="uni-container">
@@ -35,9 +39,7 @@
 						<uni-td align="center">{{item.mobile}}</uni-td>
 						<uni-td align="center">{{item.email}}</uni-td>
 						<uni-td align="center">{{item.status}}</uni-td>
-						<uni-td align="center">
-							<uni-dateformat :date="item.register_date" :threshold="[0, 0]" />
-						</uni-td>
+						<uni-td align="center">{{item.register_date}}</uni-td>
 						<uni-td align="center">
 							<view class="uni-group">
 								<button @click="navigateTo('./edit?id='+item._id, false)" class="uni-button" size="mini"
@@ -49,24 +51,9 @@
 					</uni-tr>
 				</uni-table>
 				<view class="uni-pagination-box">
-					<!-- <button class="btn-excel-export" type="primary" size="mini">
-					  导入 Excel
-					</button>-->
 					<uni-pagination show-icon :page-size="pagination.size" v-model="pagination.current"
 						:total="pagination.count" @change="onPageChanged" />
 				</view>
-				<!-- #ifdef H5 -->
-				<view class="uni-excel-box">
-					<download-excel class="hide-on-phone" :fields="expExcel.json_fields" :data="data"
-						:type="expExcel.type" :name="expExcel.filename">
-						<button type="primary" size="mini">
-							导出数据
-							<uni-icons type="arrowthindown" size="12" color="#fff"
-								style="border-bottom: 1px solid #fff; margin-left: 5px;" />
-						</button>
-					</download-excel>
-				</view>
-				<!-- #endif -->
 			</unicloud-db>
 		</view>
 		<!-- #ifndef H5 -->
@@ -98,6 +85,8 @@
 					pageCurrent
 				},
 				selectedIndexs: [], //批量选中的项
+				tableData: [],
+				expData: [],
 				expExcel: {
 					filename: "用户.xls",
 					type: "xls",
@@ -120,13 +109,23 @@
 		computed: {
 			...mapState('user', ['userInfo']),
 		},
+		watch: {
+			selectedIndexs(val) {
+				this.expData = []
+				for (const i of val) {
+					this.expData.push(this.tableData[i])
+				}
+			}
+		},
 		methods: {
 			onqueryload(data) {
 				for (var i = 0; i < data.length; i++) {
 					let item = data[i]
 					item.role = item.role.map(item => item.role_name).join('、')
 					item.status = this.parseUserStatus(item.status)
+					item.register_date = this.$formatDate(item.register_date)
 				}
+				this.tableData = data
 			},
 			getWhere() {
 				const query = this.query.trim()

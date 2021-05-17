@@ -11,6 +11,13 @@
 				<button class="uni-button" type="default" size="mini" @click="navigateTo('./add')">新增</button>
 				<button class="uni-button" type="default" size="mini" @click="delTable"
 					:disabled="!selectedIndexs.length">批量删除</button>
+				<!-- #ifdef H5 -->
+				<download-excel class="hide-on-phone" :fields="expExcel.json_fields" :data="expData"
+					:type="expExcel.type" :name="expExcel.filename">
+					<button class="uni-button" type="primary" size="mini" :disabled="!selectedIndexs.length">导出
+						Excel</button>
+				</download-excel>
+				<!-- #endif -->
 			</view>
 		</view>
 		<view class="uni-container">
@@ -34,7 +41,7 @@
 						<uni-td align="center">{{item.permission}}</uni-td>
 						<uni-td align="center">{{item.comment}}</uni-td>
 						<uni-td align="center">
-							<uni-dateformat :date="item.create_date" :threshold="[0, 0]" />
+							{{item.create_date}}
 						</uni-td>
 						<uni-td align="center">
 							<view v-if="item.role_id === 'admin'">-</view>
@@ -50,18 +57,6 @@
 				<view class="uni-pagination-box">
 					<uni-pagination show-icon :page-size="pagination.size" v-model="pagination.current"
 						:total="pagination.count" @change="onPageChanged" />
-					<!-- #ifdef H5 -->
-					<view class="uni-excel-box">
-						<download-excel class="hide-on-phone" :fields="expExcel.json_fields" :data="data"
-							:type="expExcel.type" :name="expExcel.filename">
-							<button type="primary" size="mini">
-								导出数据
-								<uni-icons type="arrowthindown" size="12" color="#fff"
-									style="border-bottom: 1px solid #fff; margin-left: 5px;" />
-							</button>
-						</download-excel>
-					</view>
-					<!-- #endif -->
 				</view>
 			</unicloud-db>
 		</view>
@@ -91,6 +86,8 @@
 					pageCurrent
 				},
 				selectedIndexs: [], //批量选中的项
+				tableData: [],
+				expData: [],
 				expExcel: {
 					filename: "角色.xls",
 					type: "xls",
@@ -109,12 +106,22 @@
 
 			}
 		},
+		watch: {
+			selectedIndexs(val) {
+				this.expData = []
+				for (const i of val) {
+					this.expData.push(this.tableData[i])
+				}
+			}
+		},
 		methods: {
 			onqueryload(data, ended) {
 				for (var i = 0; i < data.length; i++) {
 					let item = data[i]
 					item.permission = item.permission.map(pItem => pItem.permission_name).join('、')
+					item.create_date = this.$formatDate(item.create_date)
 				}
+				this.tableData = data
 			},
 			getWhere() {
 				const query = this.query.trim()
