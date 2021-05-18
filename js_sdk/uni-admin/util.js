@@ -27,3 +27,4 @@ export function getDeviceUUID() {
 	uni.setStorageSync('uni_deviceId', deviceId)
 	return deviceId;
 }
+

@@ -146,10 +146,13 @@ uni-page-head .uni-btn-icon {
 	overflow: initial;
 }
 
-.uni-button+.uni-button {
+.uni-group .uni-button {
 	margin-left: 10px;
 }
 
+.uni-group > .uni-button:first-child {
+	margin-left: 0;
+}
 
 .uni-button:hover,
 .uni-button:focus {
@@ -172,7 +175,7 @@ uni-page-head .uni-btn-icon {
 	color: #606266;
 	padding: 0 10px;
 	border: 1px #dcdfe6 solid;
-	margin-right: 10px;
+	/* margin-right: 10px; */
 	border-radius: 3px;
 }
 
