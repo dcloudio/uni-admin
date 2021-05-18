@@ -6,18 +6,24 @@
 				<view class="uni-sub-title"></view>
 			</view>
 			<view class="uni-group">
-				<input class="uni-search" type="text" v-model="query" @confirm="search"  placeholder="请输入搜索内容" />
+				<input class="uni-search" type="text" v-model="query" @confirm="search" placeholder="请输入搜索内容" />
 				<button class="uni-button" type="default" size="mini" @click="search">搜索</button>
-				<button class="uni-button" type="default" size="mini" @click="navigateTo('./add')">新增</button>
-				<button class="uni-button" type="default" size="mini" @click="delTable" :disabled="!selectedIndexs.length">批量删除</button>
+				<button class="uni-button" type="primary" size="mini" @click="navigateTo('./add')">新增</button>
+				<button class="uni-button" type="warn" size="mini" @click="delTable"
+					:disabled="!selectedIndexs.length">批量删除</button>
+				<download-excel class="hide-on-phone" :fields="expExcel.json_fields" :data="expData"
+					:type="expExcel.type" :name="expExcel.filename">
+					<button class="uni-button" type="primary" size="mini">导出 Excel</button>
+				</download-excel>
 			</view>
 		</view>
 		<view class="uni-container">
-			<unicloud-db ref="udb" @load="onqueryload" collection="uni-id-users,uni-id-roles" :options="options" :where="where" field="_id,username,role{role_id,role_name},mobile,email,status,register_date"
-			 page-data="replace" :orderby="orderby" :getcount="true" :page-size="options.pageSize" :page-current="options.pageCurrent"
-			 v-slot:default="{data,pagination,loading,error}">
+			<unicloud-db ref="udb" @load="onqueryload" collection="uni-id-users,uni-id-roles" :options="options"
+				:where="where" field="_id,username,role{role_id,role_name},mobile,email,status,register_date"
+				page-data="replace" :orderby="orderby" :getcount="true" :page-size="options.pageSize"
+				:page-current="options.pageCurrent" v-slot:default="{data,pagination,loading,error}">
 				<uni-table :loading="loading" :emptyText="error.message || '没有更多数据'" border stripe type="selection"
-				 @selection-change="selectionChange">
+					@selection-change="selectionChange">
 					<uni-tr>
 						<uni-th align="center">用户名</uni-th>
 						<uni-th align="center">角色</uni-th>
@@ -33,21 +39,27 @@
 						<uni-td align="center">{{item.mobile}}</uni-td>
 						<uni-td align="center">{{item.email}}</uni-td>
 						<uni-td align="center">{{item.status}}</uni-td>
-						<uni-td align="center">
-							<uni-dateformat :date="item.
-register_date" :threshold="[0, 0]" />
-						</uni-td>
+						<uni-td align="center">{{item.register_date}}</uni-td>
 						<uni-td align="center">
 							<view class="uni-group">
-								<button @click="navigateTo('./edit?id='+item._id, false)" class="uni-button" size="mini" type="primary">修改</button>
-								<button @click="confirmDelete(item)" class="uni-button" size="mini" type="warn">删除</button>
+								<button @click="navigateTo('./edit?id='+item._id, false)" class="uni-button" size="mini"
+									type="primary">修改</button>
+								<button @click="confirmDelete(item)" class="uni-button" size="mini"
+									type="warn">删除</button>
 							</view>
 						</uni-td>
 					</uni-tr>
 				</uni-table>
 				<view class="uni-pagination-box">
-					<uni-pagination show-icon :page-size="pagination.size" v-model="pagination.current" :total="pagination.count"
-					 @change="onPageChanged" />
+					<picker class="select-picker" mode="selector" :value="pageSizeIndex" :range="pageSizeOption"
+						@change="changeSize">
+						<button type="default" size="mini" :plain="true">
+							<text>{{pageSizeOption[pageSizeIndex]}} 条/页</text>
+							<uni-icons class="select-picker-icon" type="arrowdown" size="12" color="#999"></uni-icons>
+						</button>
+					</picker>
+					<uni-pagination show-icon :page-size="pagination.size" v-model="pagination.current"
+						:total="pagination.count" @change="onPageChanged" />
 				</view>
 			</unicloud-db>
 		</view>
@@ -79,11 +91,35 @@ register_date" :threshold="[0, 0]" />
 					pageSize,
 					pageCurrent
 				},
-				selectedIndexs: [] //批量选中的项
+				selectedIndexs: [], //批量选中的项
+				pageSizeIndex: 0,
+				pageSizeOption: [1, 20, 50, 100, 500],
+				expData: [],
+				expExcel: {
+					filename: "用户.xls",
+					type: "xls",
+					json_fields: {
+						"用户名": "username",
+						"角色": "role",
+						"手机号": "mobile",
+						"邮箱": "email",
+						"用户状态": "status",
+						"创建时间": "register_date"
+					}
+				}
 			}
 		},
 		computed: {
 			...mapState('user', ['userInfo']),
+		},
+		watch: {
+			pageSizeIndex: {
+				immediate: true,
+				handler(val, old) {
+					this.options.pageSize = this.pageSizeOption[val]
+					this.options.pageCurrent = 1
+				}
+			}
 		},
 		methods: {
 			onqueryload(data) {
@@ -91,7 +127,12 @@ register_date" :threshold="[0, 0]" />
 					let item = data[i]
 					item.role = item.role.map(item => item.role_name).join('、')
 					item.status = this.parseUserStatus(item.status)
+					item.register_date = this.$formatDate(item.register_date)
 				}
+				this.expData = data
+			},
+			changeSize(e) {
+				this.pageSizeIndex = e.detail.value
 			},
 			getWhere() {
 				const query = this.query.trim()
@@ -115,9 +156,7 @@ register_date" :threshold="[0, 0]" />
 				})
 			},
 			onPageChanged(e) {
-				this.$refs.udb.loadData({
-					current: e.current
-				})
+				this.options.pageCurrent = e.current
 			},
 			navigateTo(url, clear) { // clear 表示刷新列表时是否清除当前页码，true 表示刷新并回到列表第 1 页，默认为 true
 				uni.navigateTo({
@@ -185,5 +224,6 @@ register_date" :threshold="[0, 0]" />
 	page {
 		padding-top: 85px;
 	}
+
 	/* #endif */
 </style>
