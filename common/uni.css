@@ -150,7 +150,7 @@ uni-page-head .uni-btn-icon {
 	margin-left: 10px;
 }
 
-.uni-group > .uni-button:first-child {
+.uni-group>.uni-button:first-child {
 	margin-left: 0;
 }
 
@@ -370,4 +370,37 @@ uni-button:after {
 
 .uni-input-placeholder {
 	color: #999;
+}
+
+/* #ifdef H5 */
+@media screen and (min-width: 500px) and (min-height: 500px) {
+	::v-deep .uni-picker-container .uni-picker-custom {
+		width: 100px;
+		margin-left: 100px;
+	}
+}
+/* #endif */
+
+.uni-pagination-box {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.select-picker {
+	margin-right: 20px;
+}
+
+.select-picker button{
+	margin-top: 5px;
+    line-height: 29px;
+    font-size: 14px;
+}
+
+.select-picker button text{
+	color: #999;
+}
+
+.select-picker-icon {
+	margin-left: 8px;
 }

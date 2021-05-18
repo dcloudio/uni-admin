@@ -51,6 +51,13 @@
 					</uni-tr>
 				</uni-table>
 				<view class="uni-pagination-box">
+					<picker class="select-picker" mode="selector" :value="pageSizeIndex" :range="pageSizeOption"
+						@change="changeSize">
+						<button type="default" size="mini" :plain="true">
+							<text>{{pageSizeOption[pageSizeIndex]}} 条/页</text>
+							<uni-icons class="select-picker-icon" type="arrowdown" size="12" color="#999"></uni-icons>
+						</button>
+					</picker>
 					<uni-pagination show-icon :page-size="pagination.size" v-model="pagination.current"
 						:total="pagination.count" @change="onPageChanged" />
 				</view>
@@ -85,6 +92,8 @@
 					pageCurrent
 				},
 				selectedIndexs: [], //批量选中的项
+				pageSizeIndex: 0,
+				pageSizeOption: [1, 20, 50, 100, 500],
 				expData: [],
 				expExcel: {
 					filename: "用户.xls",
@@ -103,6 +112,15 @@
 		computed: {
 			...mapState('user', ['userInfo']),
 		},
+		watch: {
+			pageSizeIndex: {
+				immediate: true,
+				handler(val, old) {
+					this.options.pageSize = this.pageSizeOption[val]
+					this.options.pageCurrent = 1
+				}
+			}
+		},
 		methods: {
 			onqueryload(data) {
 				for (var i = 0; i < data.length; i++) {
@@ -112,6 +130,9 @@
 					item.register_date = this.$formatDate(item.register_date)
 				}
 				this.expData = data
+			},
+			changeSize(e) {
+				this.pageSizeIndex = e.detail.value
 			},
 			getWhere() {
 				const query = this.query.trim()
@@ -135,9 +156,7 @@
 				})
 			},
 			onPageChanged(e) {
-				this.$refs.udb.loadData({
-					current: e.current
-				})
+				this.options.pageCurrent = e.current
 			},
 			navigateTo(url, clear) { // clear 表示刷新列表时是否清除当前页码，true 表示刷新并回到列表第 1 页，默认为 true
 				uni.navigateTo({
