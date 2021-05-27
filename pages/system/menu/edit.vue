@@ -123,19 +123,33 @@
 					title: '修改中...',
 					mask: true
 				})
-
-				this.$request('system/menu/update', Object.assign({
-					_id: this.formDataId
-				}, value)).then((res) => {
-					uni.showToast({
-						title: '修改成功'
-					})
-					this.init()
-					this.getOpenerEventChannel().emit('refreshData')
-					setTimeout(() => uni.navigateBack(), 500)
+				// 使用 uni-clientDB 提交数据
+				db.collection(dbCollectionName).doc(this.formDataId).update(value).then((res) => {
+				    uni.showToast({
+				        title: '修改成功'
+				    })
+				    this.getOpenerEventChannel().emit('refreshData')
+				    setTimeout(() => uni.navigateBack(), 500)
+				}).catch((err) => {
+				    uni.showModal({
+				        content: err.message || '请求服务失败',
+				        showCancel: false
+				    })
 				}).finally(() => {
-					uni.hideLoading()
+				    uni.hideLoading()
 				})
+				// this.$request('system/menu/update', Object.assign({
+				// 	_id: this.formDataId
+				// }, value)).then((res) => {
+				// 	uni.showToast({
+				// 		title: '修改成功'
+				// 	})
+				// 	this.init()
+				// 	this.getOpenerEventChannel().emit('refreshData')
+				// 	setTimeout(() => uni.navigateBack(), 500)
+				// }).finally(() => {
+				// 	uni.hideLoading()
+				// })
 			},
 
 			/**

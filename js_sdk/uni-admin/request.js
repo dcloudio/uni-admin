@@ -3,22 +3,29 @@ import config from '@/admin.config.js'
 const debugOptions = config.navBar.debug
 
 const db = uniCloud.database()
-db.on('refreshToken', function({
-	token,
-	tokenExpired
-}) {
-	store.commit('user/SET_TOKEN', {
+let hasServer = true
+db.catch(res => {
+	hasServer = false
+})
+setTimeout(()=> {
+	hasServer && db.on('refreshToken', function({
 		token,
 		tokenExpired
+	}) {
+		store.commit('user/SET_TOKEN', {
+			token,
+			tokenExpired
+		})
 	})
-})
 
-db.on('error', function({
-	code, // 错误码详见https://uniapp.dcloud.net.cn/uniCloud/clientdb?id=returnvalue
-	message
-}) {
-	reLaunchToLogin(code)
-})
+	hasServer && db.on('error', function({
+		code, // 错误码详见https://uniapp.dcloud.net.cn/uniCloud/clientdb?id=returnvalue
+		message
+	}) {
+		reLaunchToLogin(code)
+	})
+
+}, 16)
 
 export function request(action, data, {
 	functionName = 'uni-admin',
