@@ -138,18 +138,6 @@
 				}).finally(() => {
 				    uni.hideLoading()
 				})
-				// this.$request('system/menu/update', Object.assign({
-				// 	_id: this.formDataId
-				// }, value)).then((res) => {
-				// 	uni.showToast({
-				// 		title: '修改成功'
-				// 	})
-				// 	this.init()
-				// 	this.getOpenerEventChannel().emit('refreshData')
-				// 	setTimeout(() => uni.navigateBack(), 500)
-				// }).finally(() => {
-				// 	uni.hideLoading()
-				// })
 			},
 
 			/**

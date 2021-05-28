@@ -136,16 +136,6 @@
 				}).finally(() => {
 					uni.hideLoading()
 				})
-				// this.$request('system/menu/add', value).then((res) => {
-				// 	uni.showToast({
-				// 		title: '新增成功'
-				// 	})
-				// 	this.init()
-				// 	this.getOpenerEventChannel().emit('refreshData')
-				// 	setTimeout(() => uni.navigateBack(), 500)
-				// }).finally(() => {
-				// 	uni.hideLoading()
-				// })
 			},
 			showIconPopup() {
 				this.$refs.iconPopup.open()

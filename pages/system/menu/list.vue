@@ -134,7 +134,8 @@
 			})
 		})
 	}
-
+	
+	// 获取父的个数
 	function getParents(menus, id, depth = 0) {
 		menus.forEach(menu => {
 			if (menu.menu_id === id && menu.parent_id) {
@@ -142,6 +143,19 @@
 			}
 		})
 		return depth
+	}
+	
+	// 获取子的 _id
+	function getChildren(menus, id, childrenIds = []) {
+		if (menus.find(menu => menu.parent_id === id)) {
+			menus.forEach(item => {
+				if (item.parent_id === id) {
+					childrenIds.push(item._id)
+					getChildren(menus, item.menu_id, childrenIds)
+				}
+			})
+		}
+		return childrenIds
 	}
 
 	export default {
@@ -188,9 +202,6 @@
 				}
 			}
 		},
-		onLoad() {
-			// this.loadData()
-		},
 		methods: {
 			...mapActions({
 				init: 'app/init'
@@ -223,19 +234,12 @@
 				})
 			},
 			confirmDelete(menu) {
-				let id = menu._id
+				let ids = menu._id
 				let content = '是否删除该菜单？'
-				// 有子菜单
-				if (this.menus.find(item => item.parent_id === menu.menu_id)) {
-					content = '是否删除该菜单及其所有子菜单？'
-					const ids = []
-					this.menus.forEach(item => {
-						if (item.parent_id === menu.menu_id) {
-							ids.push(item._id)
-						}
-					})
-					id = [id, ...ids]
-				}
+				// 如有子菜单
+				const children = getChildren(this.menus, menu.menu_id)
+				if (children.length) content = '是否删除该菜单及其子菜单？'
+				ids = [ids, ...children]
 				uni.showModal({
 					title: '提示',
 					content,
@@ -243,7 +247,7 @@
 						if (!res.confirm) {
 							return
 						}
-						this.$refs.udb.remove(id, {
+						this.$refs.udb.remove(ids, {
 							needConfirm: false
 						})
 					}
