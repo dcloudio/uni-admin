@@ -29,13 +29,13 @@
 	const dbCollectionName = 'uni-id-roles';
 
 	function getValidator(fields) {
-		let reuslt = {}
+		let result = {}
 		for (let key in validator) {
 			if (fields.includes(key)) {
-				reuslt[key] = validator[key]
+				result[key] = validator[key]
 			}
 		}
-		return reuslt
+		return result
 	}
 
 	export default {
