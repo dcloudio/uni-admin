@@ -62,16 +62,13 @@ export function request(action, params, {
 		}
 		return Promise.resolve(result)
 	}).catch(err => {
-		const that = this
 		showModal && uni.showModal({
 			content: err.message || '请求服务失败',
 			showCancel: false
 		})
 		// #ifdef H5
 		const noDebugPages = ['/pages/login/login', '/pages/init/init']
-		const {
-			path
-		} = this.$route
+		const path = location.hash.split('#')[1]
 		if (debugOptions && debugOptions.enable === true && noDebugPages.indexOf(path) === -1) {
 			store.dispatch('error/add', {
 				err: err.toString(),
