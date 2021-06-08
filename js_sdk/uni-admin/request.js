@@ -27,7 +27,7 @@ setTimeout(()=> {
 
 }, 16)
 
-export function request(action, data, {
+export function request(action, params, {
 	functionName = 'uni-admin',
 	showModal = true
 } = {}) {
@@ -35,7 +35,7 @@ export function request(action, data, {
 		name: functionName,
 		data: {
 			action,
-			data
+			params
 		}
 	}).then(({
 		result

@@ -121,7 +121,9 @@
 			},
 			save(formData) {
 				this.isLoading = true
-				this.$request('self/changePwd', formData).then(res => {
+				this.$request('updatePwd', formData, {
+					functionName: 'uni-id-cf'
+				}).then(res => {
 					this.isLoading = false
 					if (res.code === 0) {
 						uni.showModal({

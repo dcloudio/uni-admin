@@ -107,8 +107,9 @@
 				this.$refs.passwordInput.$refs.input.blur()
 				// #endif
 				this.loading = true
-				this.$request('user/register', formData)
-					.then(res => {
+				this.$request('registerAdmin', formData, {
+					functionName: 'uni-id-cf'
+				}).then(res => {
 						uni.showModal({
 							title: '提示',
 							content: res.code ? res.message : '创建成功',
