@@ -99,8 +99,9 @@
 				if (typeof value.status === "boolean") {
 					value.status = Number(!value.status)
 				}
-				this.$request('system/user/addUser', value)
-				    .then(res => {
+				this.$request('register', value, {
+					functionName: 'uni-id-cf'
+				}).then(res => {
 						uni.showToast({
 							title: '新增成功'
 						})

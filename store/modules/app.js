@@ -26,13 +26,14 @@ export default {
 		init({
 			commit
 		}) {
-			return request('app/init')
-				.then(res => {
+			return request('getCurrentUserInfo', {}, {
+				functionName: 'uni-id-cf'
+			}).then(res => {
 					const {
 						navMenu,
 						userInfo
 					} = res
-					commit('SET_NAV_MENU', navMenu)
+					// commit('SET_NAV_MENU', navMenu)
 					commit('user/SET_USER_INFO', userInfo, {
 						root: true
 					})

@@ -124,9 +124,6 @@ exports.main = async (event, context) => {
 			console.log(res);
 			break;
 		case 'register':
-			var {
-				username, password, nickname
-			} = params
 			if (/^1\d{10}$/.test(username)) {
 				return {
 					code: 401,
@@ -139,12 +136,10 @@ exports.main = async (event, context) => {
 					msg: '用户名不能是邮箱'
 				}
 			}
-			res = await uniID.register({
-				username,
-				password,
-				nickname
-			});
+			res = await uniID.register(params);
 			if (res.code === 0) {
+				delete res.token
+				delete res.tokenExpired
 				await registerSuccess(res.uid)
 			}
 			break;
@@ -344,6 +339,12 @@ exports.main = async (event, context) => {
 				username,
 				password,
 				role: ["admin"]
+			})
+			break;
+		case 'getCurrentUserInfo':
+			res = uniID.getUserInfo({
+				uid: params.uid,
+				...params
 			})
 			break;
 		default:

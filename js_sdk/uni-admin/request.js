@@ -28,7 +28,7 @@ setTimeout(()=> {
 }, 16)
 
 export function request(action, params, {
-	functionName = 'uni-admin',
+	functionName = 'uni-id-cf',
 	showModal = true
 } = {}) {
 	return uniCloud.callFunction({

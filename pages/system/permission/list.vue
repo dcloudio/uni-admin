@@ -86,7 +86,7 @@
 				},
 				selectedIndexs: [], //批量选中的项
 				pageSizeIndex: 0,
-				pageSizeOption: [1, 20, 50, 100, 500],
+				pageSizeOption: [20, 50, 100, 500],
 				expData: [],
 				expExcel: {
 					filename: "权限.xls",
