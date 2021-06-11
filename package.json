@@ -10,12 +10,12 @@
 	},
 	"repository": "https://github.com/dcloudio/uni-template-admin.git",
 	"keywords": [
-		"admin",
-		"uniCloud",
-		"管理后台",
-		"云后台",
-		"uni-admin"
-	],
+        "admin",
+        "uniCloud",
+        "管理后台",
+        "云后台",
+        "uni-admin"
+    ],
 	"engines": {
 		"HBuilderX": "^3.1.1"
 	},
