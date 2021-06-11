@@ -4,7 +4,7 @@
 			<view class="uni-sub-menu__title-sub" :style="{color:disabled?'#999':textColor}">
 				<slot name="title"></slot>
 			</view>
-			<uni-icons class="uni-sub-menu__icon" :class="{transition:isOpen}" type="arrowdown" color="#bbb" size="12"></uni-icons>
+			<uni-icons class="uni-sub-menu__icon" :class="{transition:isOpen}" type="arrowdown" color="#bbb" size="14"></uni-icons>
 		</view>
 		<view class="uni-sub-menu__content" :class="{'uni-sub-menu--close':!isOpen}" :style="{'background-color':backgroundColor}">
 			<view id="content--hook">
@@ -113,7 +113,7 @@
 		display: flex;
 		align-items: center;
 		padding: 0 20px;
-		// padding-right: 10px;
+		padding-right: 10px;
 		height: 56px;
 		line-height: 56px;
 		color: #303133;
@@ -124,7 +124,7 @@
 	.uni-sub-menu__title:hover {
 		color: #42B983;
 		outline: none;
-		background-color: $sub-menu-bg-color;
+		background-color: #EBEBEB;
 	}
 
 	.uni-sub-menu__title-sub {
@@ -144,11 +144,11 @@
 
 	.uni-sub-menu__icon {
 		max-height: auto;
-		transition: all 0.3s;
+		transition: all 0.2s;
 	}
 
 	.transition {
-		transform: rotate(180deg);
+		transform: rotate(-180deg);
 	}
 
 	.is-disabled {

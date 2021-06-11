@@ -35,13 +35,13 @@
 	const dbCollectionName = 'uni-id-users';
 
 	function getValidator(fields) {
-		let reuslt = {}
+		let result = {}
 		for (let key in validator) {
 			if (fields.includes(key)) {
-				reuslt[key] = validator[key]
+				result[key] = validator[key]
 			}
 		}
-		return reuslt
+		return result
 	}
 
 	export default {
@@ -99,8 +99,9 @@
 				if (typeof value.status === "boolean") {
 					value.status = Number(!value.status)
 				}
-				this.$request('system/user/addUser', value)
-				    .then(res => {
+				this.$request('register', value, {
+					functionName: 'uni-id-cf'
+				}).then(res => {
 						uni.showToast({
 							title: '新增成功'
 						})

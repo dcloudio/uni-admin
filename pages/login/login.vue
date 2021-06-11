@@ -20,9 +20,9 @@
 						@click="changePassword">&#xe568;</text>
 				</uni-forms-item>
 				<uni-forms-item v-if="needCaptcha" left-icon="uni-icons-person-filled" class="icon-container"
-					name="captchaText" labelWidth="35">
+					name="captcha" labelWidth="35">
 					<input ref="captchaInput" @confirm="submitForm" class="uni-input-border" type="text"
-						placeholder="验证码" v-model="formData.captchaText" />
+						placeholder="验证码" v-model="formData.captcha" />
 					<view class="admin-captcha-img pointer" @click="createCaptcha">
 						<i v-if="captchaLoading" class="uni-loading"></i>
 						<img v-else :src="captchaBase64" width="100%" height="100%"></img>
@@ -65,7 +65,7 @@
 				formData: {
 					username: '',
 					password: '',
-					captchaText: '',
+					captcha: '',
 				},
 				captchaLoading: false,
 				needCaptcha: false,
@@ -97,7 +97,7 @@
 						]
 					},
 					// 对email字段进行必填验证
-					captchaText: {
+					captcha: {
 						rules: [{
 							required: true,
 							errorMessage: '请输入验证码',
@@ -117,7 +117,7 @@
 					self.formData.username = res.data
 				}
 			})
-			this.getNeedCaptcha()
+			// this.getNeedCaptcha()
 		},
 		methods: {
 			...mapActions({
@@ -145,38 +145,35 @@
 				this.$refs.captchaInput && this.$refs.captchaInput.$refs.input.blur()
 				// #endif
 				this.loading = true
-				this.$request('user/login', {
+				this.$request('login', {
 					...value,
 					captchaOptions
 				}, {
+					functionName: 'uni-id-cf',
 					showModal: false
 				}).then(res => {
-					if (res.needCaptcha) {
-						this.needCaptcha = true
-						this.captchaBase64 = res.captchaBase64
-					} else {
-						this.setToken({
-							token: res.token,
-							tokenExpired: res.tokenExpired
+					this.setToken({
+						token: res.token,
+						tokenExpired: res.tokenExpired
+					})
+					return this.init().then(() => {
+						uni.showToast({
+							title: '登录成功',
+							icon: 'none'
 						})
-						return this.init().then(() => {
-							uni.showToast({
-								title: '登录成功',
-								icon: 'none'
-							})
-							uni.setStorage({
-								key: 'lastUsername',
-								data: value.username
-							});
-							uni.redirectTo({
-								url: this.indexPage,
-							})
+						uni.setStorage({
+							key: 'lastUsername',
+							data: value.username
+						});
+						uni.redirectTo({
+							url: this.indexPage,
 						})
-					}
+					})
 				}).catch(err => {
 					if (err.needCaptcha) {
-						this.formData.captchaText = ''
+						this.formData.captcha = ''
 						this.createCaptcha()
+						this.needCaptcha = true
 					}
 					const that = this
 					uni.showModal({
@@ -202,9 +199,10 @@
 
 			createCaptcha() {
 				this.captchaLoading = true
-				this.$request('user/createCaptcha', captchaOptions).then(res => {
+				this.$request('createCaptcha', captchaOptions, {
+					functionName: 'uni-id-cf'
+				}).then(res => {
 					if (res.code === 0) {
-						this.needCaptcha = res.needCaptcha
 						this.captchaBase64 = res.captchaBase64
 					}
 				}).catch(err => {}).finally(err => {
@@ -212,11 +210,11 @@
 				})
 			},
 
-			getNeedCaptcha() {
-				this.$request('user/getNeedCaptcha', captchaOptions).then(res => {
-					if (res) this.createCaptcha()
-				}).catch(err => {}).finally(err => {})
-			},
+			// getNeedCaptcha() {
+			// 	this.$request('user/getNeedCaptcha', captchaOptions).then(res => {
+			// 		if (res) this.createCaptcha()
+			// 	}).catch(err => {}).finally(err => {})
+			// },
 
 			confirmForm(name, value) {
 				// this.binddata(name, value)
@@ -236,7 +234,7 @@
 			// #ifdef H5
 			focus: function() {
 				this.$refs.usernameInput.$refs.input.focus()
-			}
+			},
 			// #endif
 		}
 	}

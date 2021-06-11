@@ -202,7 +202,7 @@
 <style lang="scss">
 	.uni-nav-menu {
 		width: 240px;
-		min-height: 500px;
+		// min-height: 500px;
 		background-color: #FFFFFF;
 		font-size: 14px;
 	}

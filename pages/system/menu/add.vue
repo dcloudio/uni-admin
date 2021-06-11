@@ -57,13 +57,13 @@
 	const dbCollectionName = 'opendb-admin-menus';
 
 	function getValidator(fields) {
-		let reuslt = {}
+		let result = {}
 		for (let key in validator) {
 			if (fields.includes(key)) {
-				reuslt[key] = validator[key]
+				result[key] = validator[key]
 			}
 		}
-		return reuslt
+		return result
 	}
 
 	export default {
@@ -121,13 +121,18 @@
 					title: '提交中...',
 					mask: true
 				})
-				this.$request('system/menu/add', value).then((res) => {
+				// 使用 uni-clientDB 提交数据
+				db.collection(dbCollectionName).add(value).then((res) => {
 					uni.showToast({
 						title: '新增成功'
 					})
-					this.init()
 					this.getOpenerEventChannel().emit('refreshData')
 					setTimeout(() => uni.navigateBack(), 500)
+				}).catch((err) => {
+					uni.showModal({
+						content: err.message || '请求服务失败',
+						showCancel: false
+					})
 				}).finally(() => {
 					uni.hideLoading()
 				})

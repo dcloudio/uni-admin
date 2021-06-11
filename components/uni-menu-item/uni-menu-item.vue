@@ -103,7 +103,7 @@
 
 	.uni-menu-item:hover {
 		outline: none;
-		background-color: $sub-menu-bg-color;
+		background-color: #EBEBEB;
 		transition: all 0.3s;
 	}
 
