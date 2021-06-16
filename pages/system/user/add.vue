@@ -99,7 +99,7 @@
 				if (typeof value.status === "boolean") {
 					value.status = Number(!value.status)
 				}
-				this.$request('register', value, {
+				this.$request('registerUser', value, {
 					functionName: 'uni-id-cf'
 				}).then(res => {
 						uni.showToast({
