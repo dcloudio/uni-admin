@@ -28,7 +28,7 @@ exports.main = async (event, context) => {
 	/*
 	2.在某些操作之前我们要对用户对身份进行校验（也就是要检查用户的token）再将得到的uid写入params.uid
 	  校验用到的方法是uniID.checkToken 详情：https://uniapp.dcloud.io/uniCloud/uni-id?id=checktoken
-	  
+
 	  讨论，我们假设一个这样的场景，代码如下。
 	  如：
 		uniCloud.callFunction({
@@ -349,6 +349,7 @@ exports.main = async (event, context) => {
 		case 'refreshCaptcha':
 			res = await uniCaptcha.refresh(params)
 			break;
+		// -------- admin api --------start
 		case 'registerAdmin':
 			var {
 				username, password
@@ -397,6 +398,7 @@ exports.main = async (event, context) => {
 				...params
 			})
 			break;
+		// -------- admin api --------end
 		case 'getUserInviteCode':
 			res = await uniID.getUserInfo({
 				uid: params.uid,
