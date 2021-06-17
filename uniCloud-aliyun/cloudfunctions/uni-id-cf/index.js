@@ -44,7 +44,7 @@ exports.main = async (event, context) => {
 	*/
 	let noCheckAction = ['register', 'checkToken', 'login', 'logout', 'sendSmsCode', 'createCaptcha',
 		'verifyCaptcha', 'refreshCaptcha', 'inviteLogin', 'login_by_weixin', 'login_by_univerify',
-		'login_by_apple', 'loginBySms', 'resetPwdBySmsCode'
+		'login_by_apple', 'loginBySms', 'resetPwdBySmsCode', 'registerAdmin'
 	]
 	if (!noCheckAction.includes(action)) {
 		if (!uniIdToken) {
@@ -349,7 +349,20 @@ exports.main = async (event, context) => {
 		case 'refreshCaptcha':
 			res = await uniCaptcha.refresh(params)
 			break;
-		// -------- admin api --------start
+		case 'getUserInviteCode':
+			res = await uniID.getUserInfo({
+				uid: params.uid,
+				field: ['my_invite_code']
+			})
+			console.log(9527, res, res.userInfo.my_invite_code);
+			if (!res.userInfo.my_invite_code) {
+				res = await uniID.setUserInviteCode({
+					uid: params.uid
+				})
+			}
+			break;
+
+		// -----------  admin api  -----------
 		case 'registerAdmin':
 			var {
 				username, password
@@ -365,7 +378,7 @@ exports.main = async (event, context) => {
 					message: '超级管理员已存在，请登录...'
 				}
 			}
-			return this.ctx.uniID.register({
+			return uniID.register({
 				username,
 				password,
 				role: ["admin"]
@@ -397,17 +410,6 @@ exports.main = async (event, context) => {
 				uid: params.uid,
 				...params
 			})
-			break;
-		// -------- admin api --------end
-		case 'getUserInviteCode':
-			res = await uniID.getUserInfo({
-				uid: params.uid,
-				field: ['my_invite_code']
-			})
-			console.log(9527,res,res.userInfo.my_invite_code);
-			if(!res.userInfo.my_invite_code){
-				res = await uniID.setUserInviteCode({uid: params.uid})
-			}
 			break;
 		default:
 			res = {
