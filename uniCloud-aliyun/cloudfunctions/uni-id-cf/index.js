@@ -28,7 +28,7 @@ exports.main = async (event, context) => {
 	/*
 	2.在某些操作之前我们要对用户对身份进行校验（也就是要检查用户的token）再将得到的uid写入params.uid
 	  校验用到的方法是uniID.checkToken 详情：https://uniapp.dcloud.io/uniCloud/uni-id?id=checktoken
-	  
+
 	  讨论，我们假设一个这样的场景，代码如下。
 	  如：
 		uniCloud.callFunction({
@@ -44,7 +44,7 @@ exports.main = async (event, context) => {
 	*/
 	let noCheckAction = ['register', 'checkToken', 'login', 'logout', 'sendSmsCode', 'createCaptcha',
 		'verifyCaptcha', 'refreshCaptcha', 'inviteLogin', 'login_by_weixin', 'login_by_univerify',
-		'login_by_apple', 'loginBySms', 'resetPwdBySmsCode'
+		'login_by_apple', 'loginBySms', 'resetPwdBySmsCode', 'registerAdmin'
 	]
 	if (!noCheckAction.includes(action)) {
 		if (!uniIdToken) {
@@ -349,6 +349,20 @@ exports.main = async (event, context) => {
 		case 'refreshCaptcha':
 			res = await uniCaptcha.refresh(params)
 			break;
+		case 'getUserInviteCode':
+			res = await uniID.getUserInfo({
+				uid: params.uid,
+				field: ['my_invite_code']
+			})
+			console.log(9527, res, res.userInfo.my_invite_code);
+			if (!res.userInfo.my_invite_code) {
+				res = await uniID.setUserInviteCode({
+					uid: params.uid
+				})
+			}
+			break;
+
+		// -----------  admin api  -----------
 		case 'registerAdmin':
 			var {
 				username, password
@@ -364,7 +378,7 @@ exports.main = async (event, context) => {
 					message: '超级管理员已存在，请登录...'
 				}
 			}
-			return this.ctx.uniID.register({
+			return uniID.register({
 				username,
 				password,
 				role: ["admin"]
@@ -396,16 +410,6 @@ exports.main = async (event, context) => {
 				uid: params.uid,
 				...params
 			})
-			break;
-		case 'getUserInviteCode':
-			res = await uniID.getUserInfo({
-				uid: params.uid,
-				field: ['my_invite_code']
-			})
-			console.log(9527,res,res.userInfo.my_invite_code);
-			if(!res.userInfo.my_invite_code){
-				res = await uniID.setUserInviteCode({uid: params.uid})
-			}
 			break;
 		default:
 			res = {
