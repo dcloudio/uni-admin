@@ -1,3 +1,5 @@
+## 1.5.4（2021-06-21）
+- 优化 云函数 uni-id-cf uni_module 化，更新更方便
 ## 1.5.3（2021-06-17）
 - 优化 opendb-admin-menus.schema 读权限配置默认为 true
 	> 原因：侧边栏菜单管理功能使用了 clientDB, 默认全部读取，通过用户权限过滤

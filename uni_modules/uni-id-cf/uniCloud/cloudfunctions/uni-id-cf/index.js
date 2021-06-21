@@ -4,7 +4,7 @@ const uniCaptcha = require('uni-captcha')
 const createConfig = require('uni-config-center')
 const uniIdConfig = createConfig({
 	pluginId: 'uni-id'
-})._config
+}).config()
 const db = uniCloud.database()
 const dbCmd = db.command
 exports.main = async (event, context) => {
@@ -21,7 +21,8 @@ exports.main = async (event, context) => {
 	*/
 	const {
 		action,
-		uniIdToken
+		uniIdToken,
+		inviteCode
 	} = event;
 	const deviceInfo = event.deviceInfo || {};
 	let params = event.params || {};
@@ -43,8 +44,8 @@ exports.main = async (event, context) => {
 	  所以这里我们需要将uniID.checkToken返回的uid写入到params.uid
 	*/
 	let noCheckAction = ['register', 'checkToken', 'login', 'logout', 'sendSmsCode', 'createCaptcha',
-		'verifyCaptcha', 'refreshCaptcha', 'inviteLogin', 'login_by_weixin', 'login_by_univerify',
-		'login_by_apple', 'loginBySms', 'resetPwdBySmsCode', 'registerAdmin'
+		'verifyCaptcha', 'refreshCaptcha', 'inviteLogin', 'loginByWeixin', 'loginByUniverify',
+		'loginByApple', 'loginBySms', 'resetPwdBySmsCode', 'registerAdmin'
 	]
 	if (!noCheckAction.includes(action)) {
 		if (!uniIdToken) {
@@ -59,10 +60,23 @@ exports.main = async (event, context) => {
 		}
 		params.uid = payload.uid
 	}
-
+	
+	//禁止前台用户传递角色
+	if (action.slice(0,7) == "loginBy") {
+		if (params.role) {
+			return {
+				code: 403,
+				msg: '禁止前台用户传递角色'
+			}
+		}
+	}
 
 	//3.注册成功后创建新用户的积分表方法
 	async function registerSuccess(uid) {
+		//用户接受邀请
+		if(inviteCode){
+			await uniID.acceptInvite({inviteCode,uid});
+		}
 		//添加当前用户设备信息
 		await db.collection('uni-id-device').add({
 			...deviceInfo,
@@ -78,13 +92,13 @@ exports.main = async (event, context) => {
 		})
 	}
 	//4.记录成功登录的日志方法
-	const loginLog = async (res = {}, type = 'login') => {
+	const loginLog = async (res = {}) => {
 		const now = Date.now()
 		const uniIdLogCollection = db.collection('uni-id-log')
 		let logData = {
 			deviceId: params.deviceId || context.DEVICEID,
 			ip: params.ip || context.CLIENTIP,
-			type,
+			type: res.type,
 			ua: context.CLIENTUA,
 			create_date: now
 		};
@@ -132,22 +146,20 @@ exports.main = async (event, context) => {
 			}
 			break;
 		case 'bind_mobile_by_sms':
-			console.log({
-				uid: params.uid,
-				mobile: params.mobile,
-				code: params.code
-			});
+			// console.log({
+			// 	uid: params.uid,
+			// 	mobile: params.mobile,
+			// 	code: params.code
+			// });
 			res = await uniID.bindMobile({
 				uid: params.uid,
 				mobile: params.mobile,
 				code: params.code
 			})
-			console.log(res);
+			// console.log(res);
 			break;
 		case 'register':
-			var {
-				username, password, nickname
-			} = params
+			var {username, password, nickname} = params
 			if (/^1\d{10}$/.test(username)) {
 				return {
 					code: 401,
@@ -160,11 +172,7 @@ exports.main = async (event, context) => {
 					msg: '用户名不能是邮箱'
 				}
 			}
-			res = await uniID.register({
-				username,
-				password,
-				nickname
-			});
+			res = await uniID.register({username, password, nickname,inviteCode});
 			if (res.code === 0) {
 				await registerSuccess(res.uid)
 			}
@@ -212,10 +220,8 @@ exports.main = async (event, context) => {
 
 			res.needCaptcha = needCaptcha;
 			break;
-		case 'login_by_weixin':
-			res = await uniID.loginByWeixin({
-				...params
-			});
+		case 'loginByWeixin':
+			res = await uniID.loginByWeixin(params);
 			await uniID.updateUser({
 				uid: res.uid,
 				username: "微信用户"
@@ -223,11 +229,11 @@ exports.main = async (event, context) => {
 			res.userInfo.username = "微信用户"
 			await loginLog(res)
 			break;
-		case 'login_by_univerify':
+		case 'loginByUniverify':
 			res = await uniID.loginByUniverify(params)
 			await loginLog(res)
 			break;
-		case 'login_by_apple':
+		case 'loginByApple':
 			res = await uniID.loginByApple(params)
 			await loginLog(res)
 			break;
@@ -270,7 +276,6 @@ exports.main = async (event, context) => {
 				type: params.type,
 				templateId
 			})
-			await loginLog(res)
 			break;
 		case 'loginBySms':
 			if (!params.code) {
@@ -288,18 +293,6 @@ exports.main = async (event, context) => {
 			res = await uniID.loginBySms(params)
 			await loginLog(res)
 			break;
-		case 'inviteLogin':
-			if (!params.code) {
-				return {
-					code: 500,
-					msg: '请填写验证码'
-				}
-			}
-			res = await uniID.loginBySms({
-				...params,
-				type: 'register'
-			})
-			break;
 		case 'resetPwdBySmsCode':
 			if (!params.code) {
 				return {
@@ -314,7 +307,7 @@ exports.main = async (event, context) => {
 				}
 			}
 			let loginBySmsRes = await uniID.loginBySms(params)
-			console.log(loginBySmsRes);
+			// console.log(loginBySmsRes);
 			if (loginBySmsRes.code === 0) {
 				res = await uniID.resetPwd({
 					password: params.password,
@@ -338,10 +331,7 @@ exports.main = async (event, context) => {
 			res = await uniID.getInvitedUser(params)
 			break;
 		case 'updatePwd':
-			res = await uniID.updatePwd({
-				uid: params.uid,
-				...params
-			})
+			res = await uniID.updatePwd(params)
 			break;
 		case 'createCaptcha':
 			res = await uniCaptcha.create(params)
@@ -354,7 +344,6 @@ exports.main = async (event, context) => {
 				uid: params.uid,
 				field: ['my_invite_code']
 			})
-			console.log(9527, res, res.userInfo.my_invite_code);
 			if (!res.userInfo.my_invite_code) {
 				res = await uniID.setUserInviteCode({
 					uid: params.uid
@@ -362,7 +351,7 @@ exports.main = async (event, context) => {
 			}
 			break;
 
-		// -----------  admin api  -----------
+			// -----------  admin api  -----------
 		case 'registerAdmin':
 			var {
 				username, password
@@ -388,7 +377,7 @@ exports.main = async (event, context) => {
 			const {
 				userInfo
 			} = await uniID.getUserInfo({
-				uid: params.uid,
+				uid: params.uid
 			})
 			if (userInfo.role.indexOf('admin') === -1 && params.role.indexOf('admin') > -1) {
 				res = {
