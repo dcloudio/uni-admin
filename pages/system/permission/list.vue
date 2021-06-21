@@ -9,7 +9,7 @@
 				<input class="uni-search" type="text" v-model="query" @confirm="search" placeholder="权限标识/名称" />
 				<button class="uni-button" type="default" size="mini" @click="search">搜索</button>
 				<button @click="navigateTo('./add')" size="mini" class="uni-button" type="primary">新增</button>
-				<button class="uni-button" type="warn" size="mini" @click="delTable">批量删除</button>
+				<button class="uni-button" type="warn" size="mini" @click="delTable" :disabled="!selectedIndexs.length">批量删除</button>
 				<!-- #ifdef H5 -->
 				<download-excel class="hide-on-phone" :fields="expExcel.json_fields" :data="expData"
 					:type="expExcel.type" :name="expExcel.filename">
@@ -19,7 +19,7 @@
 			</view>
 		</view>
 		<view class="uni-container">
-			<unicloud-db ref="dataQuery" @load="onqueryload" collection="uni-id-permissions" :options="options" :where="where"
+			<unicloud-db ref="udb" @load="onqueryload" collection="uni-id-permissions" :options="options" :where="where"
 				page-data="replace" :orderby="orderby" :getcount="true" :page-size="options.pageSize"
 				:page-current="options.pageCurrent" v-slot:default="{data,pagination,loading,error}">
 				<uni-table :loading="loading" :emptyText="error.message || '没有更多数据'" border stripe type="selection"
@@ -40,7 +40,7 @@
 							<view class="uni-group">
 								<button size="mini" @click="navigateTo('./edit?id='+item._id, false)" class="uni-button"
 									type="primary">修改</button>
-								<button size="mini" @click="confirmDelete(item.permission_id)" class="uni-button"
+								<button size="mini" @click="confirmDelete(item)" class="uni-button"
 									type="warn">删除</button>
 							</view>
 						</uni-td>
@@ -137,7 +137,7 @@
 				}
 			},
 			loadData(clear = true) {
-				this.$refs.dataQuery.loadData({
+				this.$refs.udb.loadData({
 					clear
 				})
 			},
@@ -156,52 +156,19 @@
 			},
 			// 多选处理
 			selectedItems() {
-				var dataList = this.$refs.dataQuery.dataList
-				return this.selectedIndexs.map(i => dataList[i].permission_id)
+				var dataList = this.$refs.udb.dataList
+				return this.selectedIndexs.map(i => dataList[i]._id)
 			},
 			//批量删除
 			delTable() {
-				uni.showModal({
-					title: '提示',
-					content: '确认删除多条记录？',
-					success: (res) => {
-						res.confirm && this.delete(this.selectedItems())
-					}
-				})
+				this.$refs.udb.remove(this.selectedItems())
 			},
 			// 多选
 			selectionChange(e) {
 				this.selectedIndexs = e.detail.index
 			},
-			confirmDelete(id) {
-				uni.showModal({
-					title: '提示',
-					content: '确认删除该记录？',
-					success: (res) => {
-						res.confirm && this.delete(id)
-					}
-				})
-			},
-			async delete(id) {
-				uni.showLoading({
-					mask: true
-				})
-				await this.$request('system/permission/remove', {
-						id
-					})
-					.then(res => {
-						uni.showToast({
-							title: '删除成功'
-						})
-					}).catch(err => {
-						uni.showModal({
-							content: err.message || '请求服务失败',
-							showCancel: false
-						})
-					}).finally(err => {
-						uni.hideLoading()
-					})
-				this.loadData(false)
+			confirmDelete(item) {
+				this.$refs.udb.remove(item._id)
 			}
 		}
 	}

@@ -210,12 +210,6 @@
 				})
 			},
 
-			// getNeedCaptcha() {
-			// 	this.$request('user/getNeedCaptcha', captchaOptions).then(res => {
-			// 		if (res) this.createCaptcha()
-			// 	}).catch(err => {}).finally(err => {})
-			// },
-
 			confirmForm(name, value) {
 				// this.binddata(name, value)
 				this.submitForm()

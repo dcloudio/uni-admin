@@ -47,7 +47,7 @@
 							<view v-else class="uni-group">
 								<button @click="navigateTo('./edit?id='+item._id, false)" class="uni-button" size="mini"
 									type="primary">修改</button>
-								<button @click="confirmDelete(item.role_id)" class="uni-button" size="mini"
+								<button @click="confirmDelete(item)" class="uni-button" size="mini"
 									type="warn">删除</button>
 							</view>
 						</uni-td>
@@ -165,51 +165,18 @@
 			// 多选处理
 			selectedItems() {
 				var dataList = this.$refs.udb.dataList
-				return this.selectedIndexs.map(i => dataList[i].role_id)
+				return this.selectedIndexs.map(i => dataList[i]._id)
 			},
 			//批量删除
 			delTable() {
-				uni.showModal({
-					title: '提示',
-					content: '确认删除多条记录？',
-					success: (res) => {
-						res.confirm && this.delete(this.selectedItems())
-					}
-				})
+				this.$refs.udb.remove(this.selectedItems())
 			},
 			// 多选
 			selectionChange(e) {
 				this.selectedIndexs = e.detail.index
 			},
-			confirmDelete(id) {
-				uni.showModal({
-					title: '提示',
-					content: '确认删除该记录？',
-					success: (res) => {
-						res.confirm && this.delete(id)
-					}
-				})
-			},
-			async delete(id) {
-				uni.showLoading({
-					mask: true
-				})
-				await this.$request('system/role/remove', {
-						id
-					})
-					.then(res => {
-						uni.showToast({
-							title: '删除成功'
-						})
-					}).catch(err => {
-						uni.showModal({
-							content: err.message || '请求服务失败',
-							showCancel: false
-						})
-					}).finally(err => {
-						uni.hideLoading()
-					})
-				this.loadData(false)
+			confirmDelete(item) {
+				this.$refs.udb.remove(item._id)
 			},
 			praseRoleArr(permission) {
 				return permission ? permission.map(pItem => pItem.permission_name).join('、') : '-'
