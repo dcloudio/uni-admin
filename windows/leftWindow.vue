@@ -1,8 +1,7 @@
 <template>
 	<scroll-view class="sidebar" scroll-y="true">
 		<uni-data-menu ref="menu" collection="opendb-admin-menus"
-			field="url as value, name as text, menu_id,
-parent_id, sort, icon, permission" orderby="sort asc" active-text-color="#409eff" @select="select">
+			:field="field" orderby="sort asc" active-text-color="#409eff" @select="select">
 			<uni-menu-sidebar :data="staticMenu"></uni-menu-sidebar>
 		</uni-data-menu>
 		<!-- <uni-nav-menu :uniqueOpened="true" :active="splitFullPath(active)" activeKey="url" textColor="#666" activeTextColor="#409eff" @select="select">
@@ -23,7 +22,8 @@ parent_id, sort, icon, permission" orderby="sort asc" active-text-color="#409eff
 			return {
 				...config.sideBar,
 				defaultValue: '',
-				current: ''
+				current: '',
+				field: 'url as value, name as text, menu_id, parent_id, sort, icon, permission'
 			}
 		},
 		computed: {
