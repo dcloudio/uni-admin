@@ -11,10 +11,12 @@
 				<button class="uni-button" type="primary" size="mini" @click="navigateTo('./add')">新增</button>
 				<button class="uni-button" type="warn" size="mini" @click="delTable"
 					:disabled="!selectedIndexs.length">批量删除</button>
+				<!-- #ifdef H5 -->
 				<download-excel class="hide-on-phone" :fields="expExcel.json_fields" :data="expData"
 					:type="expExcel.type" :name="expExcel.filename">
 					<button class="uni-button" type="primary" size="mini">导出 Excel</button>
 				</download-excel>
+				<!-- #endif -->
 			</view>
 		</view>
 		<view class="uni-container">
