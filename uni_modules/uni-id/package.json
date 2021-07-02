@@ -1,7 +1,7 @@
 {
   "id": "uni-id",
-  "displayName": "uni-id公共模块",
-  "version": "3.1.0",
+  "displayName": "uni-id",
+  "version": "3.1.1",
   "description": "简单、统一、可扩展的用户中心",
   "keywords": [
     "uniid",
@@ -21,10 +21,10 @@
     ],
     "sale": {
       "regular": {
-        "price": 0
+        "price": "0.00"
       },
       "sourcecode": {
-        "price": 0
+        "price": "0.00"
       }
     },
     "contact": {

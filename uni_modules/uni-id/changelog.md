@@ -1,3 +1,6 @@
+## 3.1.1（2021-07-01）
+- 使用新的错误码规范，兼容旧版 [详情](https://uniapp.dcloud.net.cn/uniCloud/uni-id?id=errcode)
+- 修复微信登录、绑定时未返回用户accessToken的Bug
 ## 3.1.0（2021-04-19）
 - 增加对用户名、邮箱、密码字段的两端去空格
 - 默认忽略用户名、邮箱的大小写 [详情](https://uniapp.dcloud.net.cn/uniCloud/uni-id?id=case-sensitive)
