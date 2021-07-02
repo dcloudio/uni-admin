@@ -61,7 +61,7 @@ exports.main = async (event, context) => {
 		}
 		params.uid = payload.uid
 	}
-	
+
 	//禁止前台用户传递角色
 	if (action.slice(0,7) == "loginBy") {
 		if (params.role) {
@@ -254,7 +254,7 @@ exports.main = async (event, context) => {
 				// 	type: params.type
 				// })
 			/* -结束- */
-			
+
 			// 简单限制一下客户端调用频率
 			const ipLimit = await db.collection('opendb-verify-codes').where({
 				ip: context.CLIENTIP,
@@ -385,7 +385,7 @@ exports.main = async (event, context) => {
 			} = await uniID.getUserInfo({
 				uid: params.uid
 			})
-			if (userInfo.role.indexOf('admin') === -1 && params.role.indexOf('admin') > -1) {
+			if (userInfo.role.indexOf('admin') === -1) {
 				res = {
 					code: 403,
 					message: '非法访问, 无权限注册超级管理员',
