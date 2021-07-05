@@ -96,6 +96,7 @@
 </template>
 
 <script>
+	import { buildMenus } from '../../../components/uni-data-menu/util.js'
 	const db = uniCloud.database()
 	// 表查询配置
 	const dbOrderBy = 'create_date asc'
@@ -134,7 +135,7 @@
 			})
 		})
 	}
-	
+
 	// 获取父的个数
 	function getParents(menus, id, depth = 0) {
 		menus.forEach(menu => {
@@ -144,7 +145,7 @@
 		})
 		return depth
 	}
-	
+
 	// 获取子的 _id
 	function getChildren(menus, id, childrenIds = []) {
 		if (menus.find(menu => menu.parent_id === id)) {
@@ -206,14 +207,36 @@
 			...mapActions({
 				init: 'app/init'
 			}),
+			getSortMenu(menuList) {
+				// 标记叶子节点
+				menuList.map(item => {
+					if (!menuList.some(subMenuItem => subMenuItem.parent_id === item.menu_id)) {
+						item.isLeafNode = true
+					}
+				})
+				return buildMenus(menuList)
+			},
 			onqueryload(data) {
 				for (var i = 0; i < data.length; i++) {
 					let item = data[i]
 					const depth = getParents(data, item.menu_id)
 					item.name = (depth ? '　'.repeat(depth) + '|-' : '') + item.name
 				}
-				data.sort((a, b) => a.sort - b.sort)
+				const menuTree = this.getSortMenu(data)
+				const sortMenus = []
+				this.patTree(menuTree, sortMenus)
+				data.length = 0;
+				data.push(...sortMenus)
 				this.menus = data //仅导出当前页
+			},
+			patTree(tree, sortMenus) {
+				tree.forEach(item => {
+					sortMenus.push(item)
+					if (item.children.length) {
+						this.patTree(item.children, sortMenus)
+					}
+				})
+				return sortMenus
 			},
 			switchTab(tab) {
 				this.currentTab = tab

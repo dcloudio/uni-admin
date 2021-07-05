@@ -7,6 +7,7 @@ const uniIdConfig = createConfig({
 }).config()
 const db = uniCloud.database()
 const dbCmd = db.command
+const usersDB = db.collection('uni-id-users')
 exports.main = async (event, context) => {
 	//UNI_WYQ:这里的uniID换成新的，保证多人访问不会冲突
 	uniID = uniID.createInstance({
@@ -60,7 +61,7 @@ exports.main = async (event, context) => {
 		}
 		params.uid = payload.uid
 	}
-	
+
 	//禁止前台用户传递角色
 	if (action.slice(0,7) == "loginBy") {
 		if (params.role) {
@@ -93,6 +94,9 @@ exports.main = async (event, context) => {
 	}
 	//4.记录成功登录的日志方法
 	const loginLog = async (res = {}) => {
+		if(res.code != 0){
+			return false
+		}
 		const now = Date.now()
 		const uniIdLogCollection = db.collection('uni-id-log')
 		let logData = {
@@ -114,6 +118,7 @@ exports.main = async (event, context) => {
 			await registerSuccess(res.uid)
 		} else {
 			if (Object.keys(deviceInfo).length) {
+				console.log(979797,{deviceInfo,user_id: res});
 				//更新当前用户设备信息
 				await db.collection('uni-id-device').where({
 					user_id: res.uid
@@ -125,7 +130,7 @@ exports.main = async (event, context) => {
 
 	let res = {}
 	switch (action) { //根据action的值执行对应的操作
-		case 'bind_mobile_by_univerify':
+		case 'bindMobileByUniverify':
 			let {
 				appid, apiKey, apiSecret
 			} = uniIdConfig.service.univerify
@@ -145,7 +150,7 @@ exports.main = async (event, context) => {
 				res.mobile = univerifyRes.phoneNumber
 			}
 			break;
-		case 'bind_mobile_by_sms':
+		case 'bindMobileBySms':
 			// console.log({
 			// 	uid: params.uid,
 			// 	mobile: params.mobile,
@@ -212,9 +217,7 @@ exports.main = async (event, context) => {
 					...params,
 					queryField: ['username', 'email', 'mobile']
 				});
-				if (res.code === 0) {
-					await loginLog(res);
-				}
+				await loginLog(res);
 				needCaptcha = await getNeedCaptcha();
 			}
 
@@ -244,12 +247,14 @@ exports.main = async (event, context) => {
 			res = await uniID.logout(uniIdToken)
 			break;
 		case 'sendSmsCode':
-			// 测试期间短信统一用 123456 正式项目删除即可
-			return uniID.setVerifyCode({
-				mobile: params.mobile,
-				code: '123456',
-				type: params.type
-			})
+			/* -开始- 测试期间，为节约资源。统一虚拟短信验证码为： 123456；开启以下代码块即可  */
+				// return uniID.setVerifyCode({
+				// 	mobile: params.mobile,
+				// 	code: '123456',
+				// 	type: params.type
+				// })
+			/* -结束- */
+
 			// 简单限制一下客户端调用频率
 			const ipLimit = await db.collection('opendb-verify-codes').where({
 				ip: context.CLIENTIP,
@@ -306,6 +311,7 @@ exports.main = async (event, context) => {
 					msg: '手机号码填写错误'
 				}
 			}
+			params.type = 'login'
 			let loginBySmsRes = await uniID.loginBySms(params)
 			// console.log(loginBySmsRes);
 			if (loginBySmsRes.code === 0) {
@@ -379,7 +385,7 @@ exports.main = async (event, context) => {
 			} = await uniID.getUserInfo({
 				uid: params.uid
 			})
-			if (userInfo.role.indexOf('admin') === -1 && params.role.indexOf('admin') > -1) {
+			if (userInfo.role.indexOf('admin') === -1) {
 				res = {
 					code: 403,
 					message: '非法访问, 无权限注册超级管理员',
