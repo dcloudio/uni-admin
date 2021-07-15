@@ -1,6 +1,6 @@
 <template>
 	<scroll-view class="sidebar" scroll-y="true">
-		<uni-data-menu ref="menu" collection="opendb-admin-menus"
+		<uni-data-menu ref="menu" collection="opendb-admin-menus" :page-size="500"
 			:field="field" orderby="sort asc" active-text-color="#409eff" @select="select">
 			<uni-menu-sidebar :data="staticMenu"></uni-menu-sidebar>
 		</uni-data-menu>
