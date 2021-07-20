@@ -8,12 +8,11 @@
 		</view>
 		<view class="uni-container">
 			<uni-forms ref="form" v-model="formData" :rules="rules" @submit="submit">
-				<uni-forms-item left-icon="uni-icons-person-filled" name="username" labelWidth="35">
+				<uni-forms-item left-icon="person-filled" name="username" labelWidth="35">
 					<input ref="usernameInput" @confirm="submitForm" class="uni-input-border" type="text"
 						placeholder="账户" v-model="formData.username" />
 				</uni-forms-item>
-				<uni-forms-item left-icon="uni-icons-locked-filled" class="icon-container" name="password"
-					labelWidth="35">
+				<uni-forms-item left-icon="locked-filled" class="icon-container" name="password" labelWidth="35">
 					<input ref="passwordInput" @confirm="submitForm" class="uni-input-border" :password="showPassword"
 						placeholder="密码" v-model="formData.password" />
 					<text class="uni-icon-password-eye pointer" :class="[!showPassword ? 'uni-eye-active' : '']"

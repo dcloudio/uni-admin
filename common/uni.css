@@ -297,11 +297,11 @@ uni-page-head .uni-btn-icon {
 	}
 }
 
-@media screen and (min-width: 450px) {
+/* @media screen and (min-width: 450px) {
 	::v-deep .uni-forms-item__label {
 		margin-right: 50px !important;
 	}
-}
+} */
 
 /* #endif */
 

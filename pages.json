@@ -92,6 +92,21 @@
 			"style": {
 				"navigationBarTitleText": "用户管理"
 			}
+		}, {
+			"path": "app/add",
+			"style": {
+				"navigationBarTitleText": "新增应用"
+			}
+		}, {
+			"path": "app/edit",
+			"style": {
+				"navigationBarTitleText": "修改应用"
+			}
+		}, {
+			"path": "app/list",
+			"style": {
+				"navigationBarTitleText": "应用管理"
+			}
 		}]
 	}, {
 		"root": "pages/demo",

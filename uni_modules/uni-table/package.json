@@ -1,13 +1,12 @@
 {
   "id": "uni-table",
-  "displayName": "Table 表格",
-  "version": "1.0.3",
+  "displayName": "uni-table 表格",
+  "version": "1.0.7",
   "description": "用于展示多条结构类似的数据",
   "keywords": [
     "uni-ui",
-    "ui",
+    "uniui",
     "table",
-    "uni-table",
     "表格"
 ],
   "repository": "https://github.com/dcloudio/uni-ui",
@@ -41,7 +40,7 @@
     "npmurl": "https://www.npmjs.com/package/@dcloudio/uni-ui"
   },
   "uni_modules": {
-    "dependencies": [],
+    "dependencies": ["uni-datetime-picker"],
     "encrypt": [],
     "platforms": {
       "cloud": {
@@ -51,7 +50,7 @@
       "client": {
         "App": {
           "app-vue": "y",
-          "app-nvue": "y"
+          "app-nvue": "n"
         },
         "H5-mobile": {
           "Safari": "y",
@@ -70,12 +69,12 @@
           "微信": "y",
           "阿里": "y",
           "百度": "y",
-          "字节跳动": "y",
+          "字节跳动": "n",
           "QQ": "y"
         },
         "快应用": {
-          "华为": "u",
-          "联盟": "u"
+          "华为": "n",
+          "联盟": "n"
         }
       }
     }

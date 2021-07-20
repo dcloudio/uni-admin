@@ -2,6 +2,7 @@
 
 ## Forms 表单
 
+> **组件名：uni-forms**
 > 代码块： `uForms`、`uni-forms-item`
 > 关联组件：`uni-forms-item`、`uni-easyinput`、`uni-data-checkbox`、`uni-group`。
 
@@ -18,11 +19,13 @@ uni-app的内置组件已经有了 `<form>`组件，用于提交表单内容。
 
 另外，`<uni-forms>`组件下面的各个表单项，可以通过`<uni-group>`包裹为不同的分组。同一`<uni-group>`下的不同表单项目将聚拢在一起，同其他group保持垂直间距。`<uni-group>`仅影响视觉效果。
 
+> **注意事项**
 > 为了避免错误使用，给大家带来不好的开发体验，请在使用组件前仔细阅读下面的注意事项，可以帮你避免一些错误。
 > - 组件需要依赖 `sass` 插件 ，请自行手动安装
 > - `focus` 属性在开发者工具从不生效，需要真机测试
 > - `resetFields` 方法不会重置原生组件和三方组件的值
 > - 如果配置 `validateTrigger` 属性为 `bind` 且表单域组件使用 `input` 事件触发会耗损部分性能，请谨慎使用
+> - 组件支持 nvue ，需要在 `manifest.json > app-plus` 节点下配置 `"nvueStyleCompiler" : "uni-app"` 
 > - 如使用过程中有任何问题，或者您对uni-ui有一些好的建议，欢迎加入 uni-ui 交流群：871950839
 
 
@@ -46,7 +49,7 @@ uni-app的内置组件已经有了 `<form>`组件，用于提交表单内容。
 ```html
 <template>
 	<view class="">
-		<uni-forms :value="formData" ref="form">
+		<uni-forms :modelValue="formData" ref="form">
 			<uni-forms-item label="姓名" name="name">
 				<uni-easyinput type="text" v-model="formData.name" placeholder="请输入姓名" />
 			</uni-forms-item>
@@ -69,7 +72,8 @@ export default {
 		return {
 			formData:{
 				name:'',
-				age:''
+				age:'',
+				hobby:[]
 			},
 			hobby: [{
 				text: '足球',
@@ -117,7 +121,7 @@ export default {
 ```html
 <template>
 	<view>
-		<uni-forms ref="form" :value="formData" :rules="rules">
+		<uni-forms ref="form" :modelValue="formData" :rules="rules">
 			<uni-forms-item label="姓名" name="name">
 				<uni-easyinput type="text" v-model="formData.name" placeholder="请输入姓名" />
 			</uni-forms-item>
@@ -236,7 +240,7 @@ rules: {
 |required					| Boolean	| -			|										| 是否必填，配置此参数不会显示输入框左边的必填星号，如需要，请配置`uni-forms-item`组件的的required为true|
 |range						| Array		| -			| -									| 数组至少要有一个元素，且数组内的每一个元素都是唯一的。	|
 |format						| String	| -			| -									| 内置校验规则，如这些规则无法满足需求，可以使用正则匹配或者自定义规则	|
-|pattern					| RegExp	| -			| -									| 正则表达式，如验证邮箱：/^\S+?@\S+?\.\S+?$/ （注意不带引号）,或使用 "^\\S+?@\\S+?\\.\\S+?$"（注意带引号需要使用 `\` 转义）		|
+|pattern					| RegExp	| -			| -									| 正则表达式，注意事项见下方说明|
 |maximum					| Number	| -			| -									| 校验最大值(大于)|
 |minimum					| Number	| -			| -									| 校验最小值(小于)		|
 |maxLength				| Number	| -			| -									| 校验数据最大长度		|
@@ -257,6 +261,14 @@ rules: {
 |url			| 必须是 url 类型|
 |email		| 必须是 email 类型|
 
+**pattern属性说明**
+
+在小程序中，json 中不能使用正则对象，如：`/^\S+?@\S+?\.\S+?$/`，使用正则对象会被微信序列化，导致正则失效。
+
+所以建议统一使用字符串的方式来使用正则 ，如`'^\\S+?@\\S+?\\.\\S+?$'` ，需要注意 `\` 需要使用 `\\` 来转译。
+
+
+如验证邮箱：/^\S+?@\S+?\.\S+?$/ （注意不带引号）,或使用 "^\\S+?@\\S+?\\.\\S+?$"（注意带引号需要使用 `\` 转义）		
 
 ### validateFunction 自定义校验规则使用说明
 `uni-forms` 的 `rules` 基础规则有时候不能满足项目的所有使用场景，这时候可以使用 `validateFunction` 来自定义校验规则
@@ -344,7 +356,7 @@ export default {
 ```html
 <template>
 	<view>
-		<uni-forms :value="formData" ref="form">
+		<uni-forms :modelValue="formData" ref="form">
 			<uni-forms-item name="age" label="年龄">
 				<uni-easyinput v-model="formData.age" type="text" placeholder="请输入年龄" />
 			</uni-forms-item>
@@ -419,7 +431,7 @@ export default {
 
 <template>
 	<view>
-		<uni-forms  ref="form" :value="formData" validate-trigger="bind">
+		<uni-forms  ref="form" :modelValue="formData" validate-trigger="bind">
 			<uni-forms-item name="age" label="年龄">
 				<!-- uni-easyinput 的校验时机是数据发生变化， 即触发 input 时 -->
 				<uni-easyinput v-model="formData.age" type="text" placeholder="请输入年龄" />
@@ -454,7 +466,8 @@ export default {
 
 | 属性名						| 类型				|默认值	 		| 可选值							| 说明|
 | :-:							| :-:				|:-:				| :-:								| :-:		|
-| v-model/value		| Object		| -					| -									| 表单数据|
+| v-model/value [即将废弃]	| Object		| -					| -									| 表单数据|
+| v-model/modelValue| Object		| -					| -									| 表单数据|
 | rules						| Object		| -					| -									| 表单校验规则	|
 | validate-trigger| String		| submit		| bind/submit				| 表单校验时机|
 | label-position	| String		| left 			| top/left					| label 位置
@@ -473,11 +486,12 @@ validate		| 任意表单项被校验后触发，返回表单校验信息
 
 | 方法称名				| 说明		|						
 | :-:						| :-:		|						
-| submit 				| 对整个表单进行校验的方法，会返回一个 promise	|
+| submit[即将废弃]| 对整个表单进行校验的方法，会返回一个 promise	|
+| validate 			| 对整个表单进行校验的方法，会返回一个 promise	|
 | setValue			| 设置表单某一项 name 的对应值，通常在 uni-forms-item 和自定表单组件中使用|
 | validateField	| 部分表单进行校验		|
 | clearValidate	| 移除表单的校验结果	|
-| resetFields   | 重置表单|
+| resetFields   | 重置表单, 需要把 `uni-forms` 的`modelValue`属性改为 `v-model` ,且对内置组件可能不生效|
 
 
 ```javascript
@@ -531,3 +545,8 @@ this.$refs.form.clearValidate(['name', 'email'])
 | label-align			|String	| left		|left/center/right	| label的文字对齐方式|
 | label-position	|String	| left		|top/left			| label的文字的位置|
 | error-message		|String	| -			|-					| 显示的错误提示内容，如果为空字符串或者false，则不显示错误信息|
+
+
+## 组件示例
+
+点击查看：[https://hellouniapp.dcloud.net.cn/pages/extUI/forms/forms](https://hellouniapp.dcloud.net.cn/pages/extUI/forms/forms)
