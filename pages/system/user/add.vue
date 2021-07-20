@@ -28,7 +28,7 @@
 </template>
 
 <script>
-	import validator from '@/js_sdk/validator/uni-id-users.js';
+	import { validator } from '@/js_sdk/validator/uni-id-users.js';
 
 	const db = uniCloud.database();
 	const dbCmd = db.command;

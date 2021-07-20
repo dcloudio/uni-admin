@@ -1,6 +1,6 @@
 {
 	"bsonType": "object",
-	"required": [],
+	"required": ["username", "password"],
 	"properties": {
 		"_id": {
 			"description": "存储文档 ID（用户 ID），系统自动生成"
@@ -9,13 +9,15 @@
 			"bsonType": "string",
 			"title": "用户名",
 			"description": "用户名，不允许重复",
-			"trim": "both"
+			"trim": "both",
+			"minLength": 2
 		},
 		"password": {
 			"bsonType": "password",
 			"title": "密码",
 			"description": "密码，加密存储",
-			"trim": "both"
+			"trim": "both",
+			"minLength": 6
 		},
 		"password_secret_version": {
 			"bsonType": "int",
@@ -214,7 +216,8 @@
 			"description": "注册时间",
 			"forceDefaultValue": {
 				"$env": "now"
-			}
+			},
+			"title": "注册时间"
 		},
 		"register_ip": {
 			"bsonType": "string",

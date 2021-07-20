@@ -10,9 +10,6 @@
       <uni-forms-item name="description" label="应用描述" required>
         <textarea placeholder="应用描述" @input="binddata('description', $event.detail.value)" class="uni-textarea-border" v-model="formData.description"></textarea>
       </uni-forms-item>
-      <uni-forms-item name="create_date" label="创建时间">
-        <uni-dateformat return-type="timestamp" v-model="formData.create_date"></uni-dateformat>
-      </uni-forms-item>
       <view class="uni-button-group">
         <button type="primary" class="uni-button" style="width: 100px;" @click="submit">提交</button>
         <navigator open-type="navigateBack" style="margin-left: 15px;">
