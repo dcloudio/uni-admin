@@ -1,6 +1,6 @@
 {
 	"bsonType": "object",
-	"required": ["role_id"],
+	"required": ["role_id", "role_name"],
 	"permission": {
 		"read": false,
 		"create": false,

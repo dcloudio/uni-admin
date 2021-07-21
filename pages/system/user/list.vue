@@ -26,7 +26,7 @@
 				v-slot:default="{data,pagination,loading,error,options}" :options="options" loadtime="manual"
 				@load="onqueryload">
 				<uni-table ref="table" :loading="loading" :emptyText="error.message || '没有更多数据'" border stripe
-					type="selection" @selection-change="selectionChange">
+					type="selection" @selection-change="selectionChange" style="min-height: 600px; border: 1px #ebeef5 solid;box-sizing: border-box;">
 					<uni-tr>
 						<uni-th align="center" filter-type="search" @filter-change="filterChange($event, 'username')"
 							sortable @sort-change="sortChange($event, 'username')">用户名</uni-th>
