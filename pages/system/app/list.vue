@@ -19,7 +19,7 @@
       <unicloud-db ref="udb" collection="opendb-app-list" field="appid,name,description,create_date" :where="where" page-data="replace"
         :orderby="orderby" :getcount="true" :page-size="options.pageSize" :page-current="options.pageCurrent"
         v-slot:default="{data,pagination,loading,error,options}" :options="options" loadtime="manual" @load="onqueryload">
-        <uni-table ref="table" :loading="loading" :emptyText="error.message || '没有更多数据'" border stripe type="selection" @selection-change="selectionChange">
+        <uni-table ref="table" :loading="loading" :emptyText="error.message || '没有更多数据'" border stripe type="selection" @selection-change="selectionChange" style="min-height: 600px; border: 1px #ebeef5 solid;box-sizing: border-box;">
           <uni-tr>
             <uni-th align="center" filter-type="search" @filter-change="filterChange($event, 'appid')" sortable @sort-change="sortChange($event, 'appid')">AppID</uni-th>
             <uni-th align="center" filter-type="search" @filter-change="filterChange($event, 'name')" sortable @sort-change="sortChange($event, 'name')">应用名称</uni-th>
@@ -30,9 +30,7 @@
           <uni-tr v-for="(item,index) in data" :key="index">
             <uni-td align="center">{{item.appid}}</uni-td>
             <uni-td align="center">{{item.name}}</uni-td>
-            <uni-td align="center">
-              <textarea disabled="true" :value="item.description"></textarea>
-            </uni-td>
+            <uni-td align="center">{{item.description}}</uni-td>
             <uni-td align="center">
               <uni-dateformat :threshold="[0, 0]" :date="item.create_date"></uni-dateformat>
             </uni-td>
