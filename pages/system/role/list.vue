@@ -73,6 +73,7 @@
 </template>
 
 <script>
+	import { validator } from '@/js_sdk/validator/uni-id-roles.js';
 	const db = uniCloud.database()
 	// 表查询配置
 	const dbOrderBy = 'create_date desc' // 排序字段

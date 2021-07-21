@@ -26,7 +26,8 @@
 				v-slot:default="{data,pagination,loading,error,options}" :options="options" loadtime="manual"
 				@load="onqueryload">
 				<uni-table ref="table" :loading="loading" :emptyText="error.message || '没有更多数据'" border stripe
-					type="selection" @selection-change="selectionChange" style="min-height: 600px; border: 1px #ebeef5 solid;box-sizing: border-box;">
+					type="selection" @selection-change="selectionChange"
+					style="min-height: 600px; border: 1px #ebeef5 solid;box-sizing: border-box;">
 					<uni-tr>
 						<uni-th align="center" filter-type="search" @filter-change="filterChange($event, 'username')"
 							sortable @sort-change="sortChange($event, 'username')">用户名</uni-th>
@@ -49,7 +50,7 @@
 						<uni-td align="center">
 							<uni-link :href="'mailto:'+item.email" :text="item.email"></uni-link>
 						</uni-td>
-						<uni-td align="center">{{item.role && item.role[0] && item.role[0].role_name}}</uni-td>
+						<uni-td align="center">{{item.role}}</uni-td>
 						<uni-td align="center">
 							<uni-dateformat :threshold="[0, 0]" :date="item.register_date"></uni-dateformat>
 						</uni-td>
@@ -171,6 +172,11 @@
 		},
 		methods: {
 			onqueryload(data) {
+				for (var i = 0; i < data.length; i++) {
+					let item = data[i]
+					item.role = item.role.map(item => item.role_name).join('、')
+					item.register_date = this.$formatDate(item.register_date)
+				}
 				this.exportExcelData = data
 			},
 			changeSize(e) {

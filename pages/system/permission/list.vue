@@ -32,7 +32,7 @@
 							@sort-change="sortChange($event, 'permission_name')">权限名称</uni-th>
 						<uni-th align="center" filter-type="search" @filter-change="filterChange($event, 'comment')"
 							sortable @sort-change="sortChange($event, 'comment')">备注</uni-th>
-						<uni-th align="center" filter-type="timestamp" @filter-change="filterChange($event, 'create_date')" sortable @sort-change="sortChange($event, 'create_date')">注册时间</uni-th>
+						<uni-th align="center" filter-type="timestamp" @filter-change="filterChange($event, 'create_date')" sortable @sort-change="sortChange($event, 'create_date')">创建时间</uni-th>
 						<uni-th align="center">操作</uni-th>
 					</uni-tr>
 					<uni-tr v-for="(item,index) in data" :key="index">
