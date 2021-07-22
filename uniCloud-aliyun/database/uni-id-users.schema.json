@@ -124,6 +124,19 @@
 				"write": false
 			}
 		},
+		"dcloud_appid": {
+			"bsonType": "array",
+			"title": "可登陆应用appid",
+			"description": "可登陆应用appid",
+			"enum": {
+				"collection": "opendb-app-list",
+				"field": "appid as value, name as text"
+			},
+			"foreignKey": "opendb-app-list.appid",
+			"permission": {
+				"write": false
+			}
+		},
 		"wx_unionid": {
 			"bsonType": "string",
 			"description": "微信unionid"

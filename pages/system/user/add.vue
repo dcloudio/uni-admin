@@ -10,6 +10,10 @@
 			<uni-forms-item name="role" label="角色列表">
 				<uni-data-checkbox multiple :localdata="roles" v-model="formData.role" />
 			</uni-forms-item>
+			<uni-forms-item name="dcloud_appid" label="app列表">
+				<uni-data-checkbox :multiple="true" v-model="formData.dcloud_appid" collection="opendb-app-list"
+					field="appid as value, name as text"></uni-data-checkbox>
+			</uni-forms-item>
 			<uni-forms-item name="mobile" label="手机号">
 				<uni-easyinput v-model="formData.mobile" :clearable="false" placeholder="请输入手机号" />
 			</uni-forms-item>
@@ -21,14 +25,17 @@
 			</uni-forms-item>
 			<view class="uni-button-group">
 				<button style="width: 100px;" type="primary" class="uni-button" @click="submitForm">提交</button>
-				<navigator open-type="navigateBack" style="margin-left: 15px;"><button style="width: 100px;" class="uni-button">返回</button></navigator>
+				<navigator open-type="navigateBack" style="margin-left: 15px;"><button style="width: 100px;"
+						class="uni-button">返回</button></navigator>
 			</view>
 		</uni-forms>
 	</view>
 </template>
 
 <script>
-	import { validator } from '@/js_sdk/validator/uni-id-users.js';
+	import {
+		validator
+	} from '@/js_sdk/validator/uni-id-users.js';
 
 	const db = uniCloud.database();
 	const dbCmd = db.command;
@@ -51,9 +58,10 @@
 					"username": "",
 					"password": "",
 					"role": [],
+					"dcloud_appid": [],
 					"mobile": "",
 					"email": "",
-					"status": true  //默认启用
+					"status": true //默认启用
 				},
 				rules: {
 					...getValidator(["username", "password", "role", "mobile", "email"]),
@@ -101,20 +109,20 @@
 				}
 				this.$request('registerUser', value, {
 					functionName: 'uni-id-cf'
-				}).then(res => {
-						uni.showToast({
-							title: '新增成功'
-						})
-						this.getOpenerEventChannel().emit('refreshData')
-						setTimeout(() => uni.navigateBack(), 500)
-				    }).catch(err => {
-						uni.showModal({
-							content: err.message || '请求服务失败',
-							showCancel: false
-						})
-					}).finally(err => {
-				        uni.hideLoading()
-				    })
+				}).then(res => {		
+					uni.showToast({
+						title: '新增成功'
+					})
+					this.getOpenerEventChannel().emit('refreshData')
+					setTimeout(() => uni.navigateBack(), 500)
+				}).catch(err => {
+					uni.showModal({
+						content: err.message || '请求服务失败',
+						showCancel: false
+					})
+				}).finally(err => {
+					uni.hideLoading()
+				})
 			},
 			loadroles() {
 				db.collection('uni-id-roles').limit(500).get().then(res => {

@@ -21,7 +21,7 @@
 		</view>
 		<view class="uni-container">
 			<unicloud-db ref="udb" collection="uni-id-users,uni-id-roles"
-				field="username,mobile,status,email,role{role_name},register_date" :where="where" page-data="replace"
+				field="username,mobile,status,email,role{role_name},dcloud_appid,register_date" :where="where" page-data="replace"
 				:orderby="orderby" :getcount="true" :page-size="options.pageSize" :page-current="options.pageCurrent"
 				v-slot:default="{data,pagination,loading,error,options}" :options="options" loadtime="manual"
 				@load="onqueryload">
@@ -38,6 +38,7 @@
 						<uni-th align="center" filter-type="search" @filter-change="filterChange($event, 'email')"
 							sortable @sort-change="sortChange($event, 'email')">邮箱</uni-th>
 						<uni-th align="center">角色</uni-th>
+						<uni-th align="center">可登录应用</uni-th>
 						<uni-th align="center" filter-type="timestamp"
 							@filter-change="filterChange($event, 'register_date')" sortable
 							@sort-change="sortChange($event, 'register_date')">注册时间</uni-th>
@@ -51,6 +52,7 @@
 							<uni-link :href="'mailto:'+item.email" :text="item.email"></uni-link>
 						</uni-td>
 						<uni-td align="center">{{item.role}}</uni-td>
+						<uni-td align="center">{{item.dcloud_appid}}</uni-td>
 						<uni-td align="center">
 							<uni-dateformat :threshold="[0, 0]" :date="item.register_date"></uni-dateformat>
 						</uni-td>
@@ -175,6 +177,7 @@
 				for (var i = 0; i < data.length; i++) {
 					let item = data[i]
 					item.role = item.role.map(item => item.role_name).join('、')
+					item.dcloud_appid = item.dcloud_appid.join('、')
 					item.register_date = this.$formatDate(item.register_date)
 				}
 				this.exportExcelData = data

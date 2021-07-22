@@ -63,7 +63,7 @@ exports.main = async (event, context) => {
 	}
 
 	//禁止前台用户传递角色
-	if (action.slice(0,7) == "loginBy") {
+	if (action.slice(0, 7) == "loginBy") {
 		if (params.role) {
 			return {
 				code: 403,
@@ -75,8 +75,11 @@ exports.main = async (event, context) => {
 	//3.注册成功后创建新用户的积分表方法
 	async function registerSuccess(uid) {
 		//用户接受邀请
-		if(inviteCode){
-			await uniID.acceptInvite({inviteCode,uid});
+		if (inviteCode) {
+			await uniID.acceptInvite({
+				inviteCode,
+				uid
+			});
 		}
 		//添加当前用户设备信息
 		await db.collection('uni-id-device').add({
@@ -94,7 +97,7 @@ exports.main = async (event, context) => {
 	}
 	//4.记录成功登录的日志方法
 	const loginLog = async (res = {}) => {
-		if(res.code != 0){
+		if (res.code != 0) {
 			return false
 		}
 		const now = Date.now()
@@ -118,7 +121,10 @@ exports.main = async (event, context) => {
 			await registerSuccess(res.uid)
 		} else {
 			if (Object.keys(deviceInfo).length) {
-				console.log(979797,{deviceInfo,user_id: res});
+				console.log(979797, {
+					deviceInfo,
+					user_id: res
+				});
 				//更新当前用户设备信息
 				await db.collection('uni-id-device').where({
 					user_id: res.uid
@@ -164,7 +170,9 @@ exports.main = async (event, context) => {
 			// console.log(res);
 			break;
 		case 'register':
-			var {username, password, nickname} = params
+			var {
+				username, password, nickname
+			} = params
 			if (/^1\d{10}$/.test(username)) {
 				return {
 					code: 401,
@@ -177,7 +185,12 @@ exports.main = async (event, context) => {
 					msg: '用户名不能是邮箱'
 				}
 			}
-			res = await uniID.register({username, password, nickname,inviteCode});
+			res = await uniID.register({
+				username,
+				password,
+				nickname,
+				inviteCode
+			});
 			if (res.code === 0) {
 				await registerSuccess(res.uid)
 			}
@@ -248,11 +261,11 @@ exports.main = async (event, context) => {
 			break;
 		case 'sendSmsCode':
 			/* -开始- 测试期间，为节约资源。统一虚拟短信验证码为： 123456；开启以下代码块即可  */
-				// return uniID.setVerifyCode({
-				// 	mobile: params.mobile,
-				// 	code: '123456',
-				// 	type: params.type
-				// })
+			// return uniID.setVerifyCode({
+			// 	mobile: params.mobile,
+			// 	code: '123456',
+			// 	type: params.type
+			// })
 			/* -结束- */
 
 			// 简单限制一下客户端调用频率
@@ -357,7 +370,7 @@ exports.main = async (event, context) => {
 			}
 			break;
 
-			// -----------  admin api  -----------
+			// =========================== admin api start =========================
 		case 'registerAdmin':
 			var {
 				username, password
@@ -391,21 +404,75 @@ exports.main = async (event, context) => {
 					message: '非法访问, 无权限注册超级管理员',
 				}
 			} else {
+				// 过滤 dcloud_appid，注册用户成功后再提交
+				const dcloudAppidList = params.dcloud_appid
+				delete params.dcloud_appid
 				res = await uniID.register({
+					autoSetDcloudAppid: false,
 					...params
 				})
 				if (res.code === 0) {
 					delete res.token
 					delete res.tokenExpired
+					await uniID.setAuthorizedAppLogin({
+						uid: res.uid,
+						dcloudAppidList
+					})
 				}
 			}
 			break;
+		case 'updateUser': {
+			const {
+				userInfo
+			} = await uniID.getUserInfo({
+				uid: params.uid
+			})
+			if (userInfo.role.indexOf('admin') === -1) {
+				res = {
+					code: 403,
+					message: '非法访问, 无权限注册超级管理员',
+				}
+			} else {
+				// 过滤 dcloud_appid，注册用户成功后再提交
+				const dcloudAppidList = params.dcloud_appid
+				delete params.dcloud_appid
+
+				// 过滤 password，注册用户成功后再提交
+				const password = params.password
+				delete params.password
+
+				// 过滤 uid、id
+				const id = params.id
+				delete params.id
+				delete params.uid
+
+
+				res = await uniID.updateUser({
+					uid: id,
+					...params
+				})
+				if (res.code === 0) {
+					if (password) {
+						await uniID.resetPwd({
+							uid: id,
+							password
+						})
+					}
+					await uniID.setAuthorizedAppLogin({
+						uid: id,
+						dcloudAppidList
+					})
+				}
+			}
+			break;
+		}
 		case 'getCurrentUserInfo':
 			res = uniID.getUserInfo({
 				uid: params.uid,
 				...params
 			})
 			break;
+			// =========================== admin api end =========================
 		default:
 			res = {
 				code: 403,

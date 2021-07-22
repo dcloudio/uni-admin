@@ -13,6 +13,10 @@
 			<uni-forms-item name="role" label="角色列表">
 				<uni-data-checkbox multiple :localdata="roles" v-model="formData.role" />
 			</uni-forms-item>
+			<uni-forms-item name="dcloud_appid" label="app列表">
+				<uni-data-checkbox :multiple="true" v-model="formData.dcloud_appid" collection="opendb-app-list"
+					field="appid as value, name as text"></uni-data-checkbox>
+			</uni-forms-item>
 			<uni-forms-item name="mobile" label="手机号">
 				<uni-easyinput v-model="formData.mobile" :clearable="false" placeholder="请输入手机号" />
 			</uni-forms-item>
@@ -56,6 +60,7 @@
 					"username": "",
 					"password": "",
 					"role": [],
+					"dcloud_appid": [],
 					"mobile": "",
 					"email": "",
 					"status": false //默认禁用
@@ -115,30 +120,21 @@
 				if (typeof value.status === "boolean") {
 					value.status = Number(!value.status)
 				}
-
-				const resetData = {
-					uid: this.formDataId,
-					password: value.password
-				}
-				delete value.password
-				// 使用 uni-clientDB 提交数据
-				db.collection(dbCollectionName).where({
-					_id: this.formDataId
-				}).update(value).then((res) => {
-					if (this.showPassword && resetData.password) {
-						this.resetPWd(resetData)
-					}
+				value.id = this.formDataId
+				this.$request('updateUser', value, {
+					functionName: 'uni-id-cf'
+				}).then(res => {
 					uni.showToast({
-						title: '修改成功'
+						title: '新增成功'
 					})
 					this.getOpenerEventChannel().emit('refreshData')
 					setTimeout(() => uni.navigateBack(), 500)
-				}).catch((err) => {
+				}).catch(err => {
 					uni.showModal({
 						content: err.message || '请求服务失败',
 						showCancel: false
 					})
-				}).finally(() => {
+				}).finally(err => {
 					uni.hideLoading()
 				})
 			},
@@ -162,7 +158,7 @@
 				})
 				db.collection(dbCollectionName)
 					.doc(id)
-					.field('username,role,mobile,email,status')
+					.field('username,role,dcloud_appid,mobile,email,status')
 					.get()
 					.then((res) => {
 						const data = res.result.data[0]
