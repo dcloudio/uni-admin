@@ -1,3 +1,12 @@
+## 3.2.1（2021-07-09）
+- 撤销3.2.0版本所做的调整
+## 3.2.0（2021-07-09）
+- 【重要】支持不同端（管理端、用户端等）用户隔离 [详情](https://uniapp.dcloud.net.cn/uniCloud/uni-id?id=isolate-user)
+- 支持不同端（管理端、用户端等）配置文件隔离 [详情](https://uniapp.dcloud.net.cn/uniCloud/uni-id?id=isolate-config)
+## 3.1.3（2021-07-08）
+- 移除插件内误传的node_modules
+## 3.1.2（2021-07-08）
+- 修复 微信小程序绑定微信账号时报错的Bug
 ## 3.1.1（2021-07-01）
 - 使用新的错误码规范，兼容旧版 [详情](https://uniapp.dcloud.net.cn/uniCloud/uni-id?id=errcode)
 - 修复微信登录、绑定时未返回用户accessToken的Bug

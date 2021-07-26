@@ -319,6 +319,7 @@ $border-color: #ebeef5;
 	box-sizing: border-box;
 	display: table;
 	overflow-x: auto;
+	/* #ifndef VUE3 */
 	::v-deep .uni-table-tr:nth-child(n + 2) {
 		&:hover {
 			background-color: #f5f7fa;
@@ -332,6 +333,23 @@ $border-color: #ebeef5;
 			}
 		}
 	}
+	/* #endif */
+	
+	/* #ifdef VUE3 */
+	:deep(.uni-table-tr:nth-child(n + 2)) {
+		&:hover {
+			background-color: #f5f7fa;
+		}
+	}
+	:deep(.uni-table-thead) {
+		.uni-table-tr {
+			// background-color: #f5f7fa;
+			&:hover {
+				background-color:#fafafa;
+			}
+		}
+	}
+	/* #endif */
 	/* #endif */
 }
 
@@ -348,9 +366,17 @@ $border-color: #ebeef5;
 
 .table--stripe {
 	/* #ifndef APP-NVUE */
+	/* #ifndef VUE3 */
 	::v-deep .uni-table-tr:nth-child(2n + 3) {
 		background-color: #fafafa;
 	}
+	/* #endif */
+	
+	/* #ifdef VUE3 */
+	:deep(.uni-table-tr:nth-child(2n + 3)) {
+		background-color: #fafafa;
+	}
+	/* #endif */
 	/* #endif */
 }
 

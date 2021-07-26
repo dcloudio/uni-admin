@@ -24,7 +24,7 @@
 						placeholder="验证码" v-model="formData.captcha" />
 					<view class="admin-captcha-img pointer" @click="createCaptcha">
 						<i v-if="captchaLoading" class="uni-loading"></i>
-						<img v-else :src="captchaBase64" width="100%" height="100%"></img>
+						<img v-else :src="captchaBase64" width="100%" height="100%" />
 					</view>
 				</uni-forms-item>
 				<view class="uni-button-group">
@@ -107,7 +107,9 @@
 		},
 		mounted() {
 			// #ifdef H5
+			// #ifndef VUE3
 			this.focus()
+			// #endif
 			// #endif
 			const self = this
 			uni.getStorage({
@@ -139,9 +141,11 @@
 					return
 				}
 				// #ifdef H5
+				// #ifndef VUE3
 				this.$refs.usernameInput.$refs.input.blur()
 				this.$refs.passwordInput.$refs.input.blur()
 				this.$refs.captchaInput && this.$refs.captchaInput.$refs.input.blur()
+				// #endif
 				// #endif
 				this.loading = true
 				this.$request('login', {
@@ -169,7 +173,6 @@
 						})
 					})
 				}).catch(err => {
-					console.log(4444, err);
 					if (err.needCaptcha) {
 						this.formData.captcha = ''
 						this.createCaptcha()
@@ -180,6 +183,8 @@
 						content: err.message || '请求服务失败',
 						showCancel: false,
 						success: function() {
+							// #ifdef H5
+							// #ifndef VUE3
 							if (err.code === 10101 && that.$refs.usernameInput) {
 								that.$refs.usernameInput.$refs.input.focus()
 							}
@@ -189,6 +194,8 @@
 							if (err.code === 10002 && that.$refs.captchaInput) {
 								that.$refs.captchaInput.$refs.input.focus()
 							}
+							// #endif
+							// #endif
 						}
 					})
 				}).finally(err => {

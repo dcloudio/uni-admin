@@ -12,10 +12,12 @@
 				<button class="uni-button" type="warn" size="mini" :disabled="!selectedIndexs.length"
 					@click="delTable">批量删除</button>
 				<!-- #ifdef H5 -->
+				<!-- #ifndef VUE3 -->
 				<download-excel class="hide-on-phone" :fields="exportExcel.fields" :data="exportExcelData"
 					:type="exportExcel.type" :name="exportExcel.filename">
 					<button class="uni-button" type="primary" size="mini">导出 Excel</button>
 				</download-excel>
+				<!-- #endif -->
 				<!-- #endif -->
 			</view>
 		</view>

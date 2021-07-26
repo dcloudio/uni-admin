@@ -12,10 +12,10 @@
 				<button class="uni-button" type="warn" size="mini" :disabled="!selectedIndexs.length"
 					@click="delTable">批量删除</button>
 				<!-- #ifdef H5 -->
-				<download-excel class="hide-on-phone" :fields="exportExcel.fields" :data="exportExcelData"
-					:type="exportExcel.type" :name="exportExcel.filename">
-					<button class="uni-button" type="primary" size="mini">导出 Excel</button>
-				</download-excel>
+					<download-excel class="hide-on-phone" :fields="exportExcel.fields" :data="exportExcelData"
+						:type="exportExcel.type" :name="exportExcel.filename">
+						<button class="uni-button" type="primary" size="mini">导出 Excel</button>
+					</download-excel>
 				<!-- #endif -->
 			</view>
 		</view>
@@ -176,8 +176,9 @@
 			onqueryload(data) {
 				for (var i = 0; i < data.length; i++) {
 					let item = data[i]
-					item.role = item.role.map(item => item.role_name).join('、')
-					item.dcloud_appid = item.dcloud_appid.join('、')
+					const roleArr = item.role.map(item => item.role_name)
+					item.role = roleArr.join('、')
+					item.dcloud_appid = Array.isArray(item.dcloud_appid) && item.dcloud_appid.join('、')
 					item.register_date = this.$formatDate(item.register_date)
 				}
 				this.exportExcelData = data

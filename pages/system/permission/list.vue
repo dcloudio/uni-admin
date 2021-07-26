@@ -11,18 +11,26 @@
 				<button class="uni-button" type="primary" size="mini" @click="navigateTo('./add')">新增</button>
 				<button class="uni-button" type="warn" size="mini" :disabled="!selectedIndexs.length"
 					@click="delTable">批量删除</button>
+				<!-- #ifdef H5 -->
+				<!-- #ifndef VUE3 -->
 				<download-excel class="hide-on-phone" :fields="exportExcel.fields" :data="exportExcelData"
 					:type="exportExcel.type" :name="exportExcel.filename">
 					<button class="uni-button" type="primary" size="mini">导出 Excel</button>
 				</download-excel>
+				<!-- #endif -->
+				<!-- #endif -->
+
 			</view>
 		</view>
 		<view class="uni-container">
-			<unicloud-db ref="udb" collection="uni-id-permissions" field="permission_id,permission_name,comment,create_date" :where="where" page-data="replace" :orderby="orderby" :getcount="true" :page-size="options.pageSize"
-				:page-current="options.pageCurrent" v-slot:default="{data,pagination,loading,error,options}"
-				:options="options" loadtime="manual" @load="onqueryload">
+			<unicloud-db ref="udb" collection="uni-id-permissions"
+				field="permission_id,permission_name,comment,create_date" :where="where" page-data="replace"
+				:orderby="orderby" :getcount="true" :page-size="options.pageSize" :page-current="options.pageCurrent"
+				v-slot:default="{data,pagination,loading,error,options}" :options="options" loadtime="manual"
+				@load="onqueryload">
 				<uni-table ref="table" :loading="loading" :emptyText="error.message || '没有更多数据'" border stripe
-					type="selection" @selection-change="selectionChange" style="min-height: 600px; border: 1px #ebeef5 solid;box-sizing: border-box;">
+					type="selection" @selection-change="selectionChange"
+					style="min-height: 600px; border: 1px #ebeef5 solid;box-sizing: border-box;">
 					<uni-tr>
 						<uni-th align="center" filter-type="search"
 							@filter-change="filterChange($event, 'permission_id')" sortable
@@ -32,7 +40,9 @@
 							@sort-change="sortChange($event, 'permission_name')">权限名称</uni-th>
 						<uni-th align="center" filter-type="search" @filter-change="filterChange($event, 'comment')"
 							sortable @sort-change="sortChange($event, 'comment')">备注</uni-th>
-						<uni-th align="center" filter-type="timestamp" @filter-change="filterChange($event, 'create_date')" sortable @sort-change="sortChange($event, 'create_date')">创建时间</uni-th>
+						<uni-th align="center" filter-type="timestamp"
+							@filter-change="filterChange($event, 'create_date')" sortable
+							@sort-change="sortChange($event, 'create_date')">创建时间</uni-th>
 						<uni-th align="center">操作</uni-th>
 					</uni-tr>
 					<uni-tr v-for="(item,index) in data" :key="index">

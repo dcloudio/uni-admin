@@ -89,7 +89,14 @@ function reLaunchToLogin(code) {
 		})
 	}
 }
-
+// #ifndef VUE3
 export function initRequest(Vue) {
 	Vue.prototype.$request = request
 }
+// #endif
+
+// #ifdef VUE3
+export function initRequest(app) {
+	app.config.globalProperties.$request = request
+}
+// #endif

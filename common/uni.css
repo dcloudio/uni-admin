@@ -69,7 +69,6 @@ uni-page-head .uni-btn-icon {
 .uni-nav-menu {
 	height: 100vh;
 }
-
 /* #endif */
 
 .pointer {
@@ -305,18 +304,35 @@ uni-page-head .uni-btn-icon {
 
 /* #endif */
 
+/* #ifndef VUE3 */
 ::v-deep .uni-forms-item__label .label-text {
 	color: #606266 !important;
 }
+/* #endif */
+
+/* #ifdef VUE3 */
+:deep(.uni-forms-item__label .label-text) {
+	color: #606266 !important;
+}
+/* #endif */
 
 /* button 重置样式 */
 
-
+/* #ifndef VUE3 */
 ::v-deep uni-button[size=mini] {
 	line-height: 2.4;
 	font-size: 12px;
 	border-radius: 3px;
 }
+/* #endif */
+
+/* #ifdef VUE3 */
+:deep(uni-button[size=mini]) {
+	line-height: 2.4;
+	font-size: 12px;
+	border-radius: 3px;
+}
+/* #endif */
 
 uni-button {
 	background: #fff;
@@ -374,10 +390,19 @@ uni-button:after {
 
 /* #ifdef H5 */
 @media screen and (min-width: 500px) and (min-height: 500px) {
+	/* #ifndef VUE3 */
 	::v-deep .uni-picker-container .uni-picker-custom {
 		width: 100px;
 		margin-left: 100px;
 	}
+	/* #endif */
+	
+	/* #ifdef VUE3 */
+	:deep(.uni-picker-container .uni-picker-custom) {
+		width: 100px;
+		margin-left: 100px;
+	}
+	/* #endif */
 }
 /* #endif */
 
