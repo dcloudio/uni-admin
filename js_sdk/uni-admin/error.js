@@ -22,19 +22,19 @@ export function initError(Vue) {
 
 // #ifdef VUE3
 export function initError(app) {
-//     const debugOptions = config.navBar.debug
-//     if (debugOptions && debugOptions.enable === true) {
-//         const oldErrorHandler = app.config.errorHandler
-//         app.config.errorHandler = function errorHandler(err, vm, info) {
-//             const route = vm.$page && vm.$page.route
-//             store.dispatch('error/add', {
-//                 err: err.toString(),
-//                 info,
-//                 route,
-//                 time: new Date().toLocaleTimeString()
-//             })
-//             return oldErrorHandler && oldErrorHandler(err, vm, info)
-//         }
-//     }
+    const debugOptions = config.navBar.debug
+    if (debugOptions && debugOptions.enable === true) {
+        const oldErrorHandler = app.config.errorHandler
+        app.config.errorHandler = function errorHandler(err, vm, info) {
+            const route = vm.$page && vm.$page.route
+            store.dispatch('error/add', {
+                err: err.toString(),
+                info,
+                route,
+                time: new Date().toLocaleTimeString()
+            })
+            return oldErrorHandler && oldErrorHandler(err, vm, info)
+        }
+    }
 }
 // #endif

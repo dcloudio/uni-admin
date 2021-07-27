@@ -1,13 +1,9 @@
 <template>
 	<scroll-view class="sidebar" scroll-y="true">
-		<uni-data-menu ref="menu" collection="opendb-admin-menus" :page-size="500"
+		<uni-data-menu ref="menu" :value="currentMenu" collection="opendb-admin-menus" :page-size="500"
 			:field="field" orderby="sort asc" active-text-color="#409eff" @select="select">
 			<uni-menu-sidebar :data="staticMenu"></uni-menu-sidebar>
 		</uni-data-menu>
-		<!-- <uni-nav-menu :uniqueOpened="true" :active="splitFullPath(active)" activeKey="url" textColor="#666" activeTextColor="#409eff" @select="select">
-			<uni-menu-sidebar :data="navMenu"></uni-menu-sidebar>
-			<uni-menu-sidebar :data="staticMenu"></uni-menu-sidebar>
-		</uni-nav-menu> -->
 	</scroll-view>
 </template>
 
@@ -21,14 +17,16 @@
 		data() {
 			return {
 				...config.sideBar,
-				defaultValue: '',
-				current: '',
 				field: 'url as value, name as text, menu_id, parent_id, sort, icon, permission'
 			}
 		},
 		computed: {
 			...mapState('app', ['inited', 'navMenu', 'active']),
-			...mapState('user', ['userInfo'])
+			...mapState('user', ['userInfo']),
+
+			currentMenu() {
+				return this.splitFullPath(this.active)
+			}
 		},
 		// #ifdef H5
 		watch: {
@@ -40,22 +38,6 @@
 					}
 				}
 			},
-			// navMenu(val) {
-			// 	if (val.length) return
-			// 	let content
-			// 	if (this.userInfo.role.indexOf('admin') !== -1) {
-			// 		content = '菜单表中没有数据，请对 db_init.json 文件右键，初始化数据库'
-			// 	} else {
-			// 		content = '该用户未被授权访问任何菜单表中的菜单,请使用管理员账户为该用户赋权,可在权限管理、角色管理、菜单管理中操作,详见uniCloud admin文档'
-			// 	}
-			// 	setTimeout(() => {
-			// 		uni.showModal({
-			// 			title: '提示',
-			// 			showCancel: false,
-			// 			content: content
-			// 		})
-			// 	}, 16)
-			// }
 			userInfo: {
 				immediate: true,
 				handler(newVal, oldVal) {
