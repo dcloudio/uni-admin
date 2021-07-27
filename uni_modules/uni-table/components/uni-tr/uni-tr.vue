@@ -74,11 +74,20 @@ export default {
 			this.root.minWidth = this.widthThArr.reduce((a, b) => Number(a) + Number(b)) + selectionWidth
 		}
 	},
+	// #ifndef VUE3
 	destroyed() {
 		const index = this.root.trChildren.findIndex(i => i === this)
 		this.root.trChildren.splice(index, 1)
 		this.root.isNodata()
 	},
+	// #endif
+	// #ifdef VUE3
+	unmounted() {
+		const index = this.root.trChildren.findIndex(i => i === this)
+		this.root.trChildren.splice(index, 1)
+		this.root.isNodata()
+	},
+	// #endif
 	methods: {
 		minWidthUpdate(width) {
 			this.widthThArr.push(width)
@@ -158,14 +167,14 @@ $border-color: #ebeef5;
 		}
 	}
 	/* #endif */
-	
+
 	/* #ifdef VUE3 */
 	:deep(.uni-table-th) {
 		&.table--border:last-child {
 			// border-right: none;
 		}
 	}
-	
+
 	:deep(.uni-table-td) {
 		&.table--border:last-child {
 			// border-right: none;
