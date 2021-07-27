@@ -178,7 +178,7 @@
 					let item = data[i]
 					const roleArr = item.role.map(item => item.role_name)
 					item.role = roleArr.join('、')
-					item.dcloud_appid = Array.isArray(item.dcloud_appid) && item.dcloud_appid.join('、')
+					item.dcloud_appid = item.dcloud_appid && item.dcloud_appid.join('、')
 					item.register_date = this.$formatDate(item.register_date)
 				}
 				this.exportExcelData = data

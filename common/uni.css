@@ -319,7 +319,7 @@ uni-page-head .uni-btn-icon {
 /* button 重置样式 */
 
 /* #ifndef VUE3 */
-::v-deep uni-button[size=mini] {
+::v-deep button[size=mini] {
 	line-height: 2.4;
 	font-size: 12px;
 	border-radius: 3px;
@@ -327,60 +327,60 @@ uni-page-head .uni-btn-icon {
 /* #endif */
 
 /* #ifdef VUE3 */
-:deep(uni-button[size=mini]) {
+:deep(button[size=mini]) {
 	line-height: 2.4;
 	font-size: 12px;
 	border-radius: 3px;
 }
 /* #endif */
 
-uni-button {
+button {
 	background: #fff;
 	border: 1px solid #dcdfe6;
 	color: #606266;
 	box-sizing: border-box;
 }
 
-uni-button[type=primary] {
+button[type=primary] {
 	background-color: #409EFF;
 	border-color: #409EFF;
 	border-width: 0;
 }
 
-uni-button[type=warn] {
+button[type=warn] {
 	background-color: #f56c6c;
 	border-color: #f56c6c;
 	border-width: 0;
 }
 
-uni-button[type=default] {
+button[type=default] {
 	background: #fff;
 	border: 1px solid #dcdfe6;
 	color: #606266;
 	box-sizing: border-box;
 }
 
-uni-button[type=primary][plain] {
+button[type=primary][plain] {
 	border-color: #409EFF;
 	color: #409EFF;
 }
 
-uni-button[type=warn][plain] {
+button[type=warn][plain] {
 	border-color: #f56c6c;
 	color: #f56c6c;
 }
 
-uni-button[type=default][plain] {
+button[type=default][plain] {
 	border-color: #dcdfe6;
 	color: #606266;
 }
 
-uni-button[plain] {
+button[plain] {
 	border-color: #dcdfe6;
 	color: #606266;
 }
 
-uni-button:after {
+button:after {
 	border-width: 0;
 }
 
@@ -396,7 +396,7 @@ uni-button:after {
 		margin-left: 100px;
 	}
 	/* #endif */
-	
+
 	/* #ifdef VUE3 */
 	:deep(.uni-picker-container .uni-picker-custom) {
 		width: 100px;
