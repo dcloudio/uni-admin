@@ -1,5 +1,5 @@
 <template>
-  <view>
+  <view class="fix-top-window">
     <view class="uni-header">
       <view class="uni-group">
         <view class="uni-title"></view>
@@ -23,7 +23,7 @@
       <unicloud-db ref="udb" collection="opendb-app-list" field="appid,name,description,create_date" :where="where" page-data="replace"
         :orderby="orderby" :getcount="true" :page-size="options.pageSize" :page-current="options.pageCurrent"
         v-slot:default="{data,pagination,loading,error,options}" :options="options" loadtime="manual" @load="onqueryload">
-        <uni-table ref="table" :loading="loading" :emptyText="error.message || '没有更多数据'" border stripe type="selection" @selection-change="selectionChange" style="min-height: 600px; border: 1px #ebeef5 solid;box-sizing: border-box;">
+        <uni-table ref="table" :loading="loading" :emptyText="error.message || '没有更多数据'" border stripe type="selection" @selection-change="selectionChange" class="table-pc">
           <uni-tr>
             <uni-th align="center" filter-type="search" @filter-change="filterChange($event, 'appid')" sortable @sort-change="sortChange($event, 'appid')">AppID</uni-th>
             <uni-th align="center" filter-type="search" @filter-change="filterChange($event, 'name')" sortable @sort-change="sortChange($event, 'name')">应用名称</uni-th>
@@ -51,6 +51,9 @@
         </view>
       </unicloud-db>
     </view>
+	<!-- #ifndef H5 -->
+	<fix-window />
+	<!-- #endif -->
   </view>
 </template>
 

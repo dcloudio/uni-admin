@@ -296,12 +296,19 @@ uni-page-head .uni-btn-icon {
 	}
 }
 
-/* @media screen and (min-width: 450px) {
-	::v-deep .uni-forms-item__label {
-		margin-right: 50px !important;
+@media screen and (min-width: 450px) {
+	.table-pc {
+		min-height: 600px;
+		border: 1px #ebeef5 solid;
+		box-sizing: border-box;
 	}
-} */
+}
+/* #endif */
 
+/* #ifndef H5 */
+.fix-top-window {
+	margin-top: 85px;
+}
 /* #endif */
 
 ::v-deep .uni-forms-item__label .label-text {

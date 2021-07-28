@@ -1,5 +1,5 @@
 <template>
-	<view>
+	<view class="fix-top-window">
 		<view class="uni-header">
 			<view class="uni-group">
 				<view class="uni-title"></view>
@@ -27,7 +27,7 @@
 				@load="onqueryload">
 				<uni-table ref="table" :loading="loading" :emptyText="error.message || '没有更多数据'" border stripe
 					type="selection" @selection-change="selectionChange"
-					style="min-height: 600px; border: 1px #ebeef5 solid;box-sizing: border-box;">
+					class="table-pc">
 					<uni-tr>
 						<uni-th align="center" filter-type="search" @filter-change="filterChange($event, 'username')"
 							sortable @sort-change="sortChange($event, 'username')">用户名</uni-th>
@@ -67,6 +67,7 @@
 					</uni-tr>
 				</uni-table>
 				<view class="uni-pagination-box">
+					<!-- #ifndef MP -->
 					<picker class="select-picker" mode="selector" :value="pageSizeIndex" :range="pageSizeOption"
 						@change="changeSize">
 						<button type="default" size="mini" :plain="true">
@@ -74,11 +75,15 @@
 							<uni-icons class="select-picker-icon" type="arrowdown" size="12" color="#999"></uni-icons>
 						</button>
 					</picker>
+					<!-- #endif -->
 					<uni-pagination show-icon :page-size="pagination.size" v-model="pagination.current"
 						:total="pagination.count" @change="onPageChanged" />
 				</view>
 			</unicloud-db>
 		</view>
+		<!-- #ifndef H5 -->
+		<fix-window />
+		<!-- #endif -->
 	</view>
 </template>
 
