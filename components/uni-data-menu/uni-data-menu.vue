@@ -13,7 +13,8 @@
 	export default {
 		data() {
 			return {
-				menus: []
+				menus: [],
+				userMenu:[]
 			};
 		},
 		mixins: [uniCloud.mixinDatacom],
@@ -48,11 +49,11 @@
 			if (this.hasLocalData(this.localdata)) return
 			this.load()
 		},
-		computed:{
-			userMenu() {
-				return this.getUserMenu(this.menus)
-			}
-		},
+		// computed:{
+		// 	userMenu() {
+		// 		return this.getUserMenu(this.menus)
+		// 	}
+		// },
 		methods: {
 			getUserMenu(menuList) {
 				const {
@@ -101,6 +102,7 @@
 						count
 					} = res.result
 					this.menus = data
+					this.userMenu = this.getUserMenu(this.menus)
 				}).catch((err) => {
 					this.mixinDatacomLoading = false
 					this.mixinDatacomErrorMessage = err

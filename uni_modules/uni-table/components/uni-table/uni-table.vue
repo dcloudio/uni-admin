@@ -89,10 +89,10 @@ export default {
 			if (this.theadChildren) {
 				rowspan = this.theadChildren.rowspan
 			}
-			
+
 			// this.trChildren.length - rowspan
 			this.noData = false
-			// this.noData = newVal.length === 0 
+			// this.noData = newVal.length === 0
 		}
 	},
 	created() {
@@ -246,9 +246,9 @@ export default {
 			if (!this.theadChildren) {
 				theadChildren = this.trChildren[0]
 			}
-			
-			
-			
+
+
+
 			let childDomIndex = this.trChildren.findIndex((item, index) => child === item)
 			if(childDomIndex < 0){
 				childDomIndex = this.data.findIndex(v=>v[this.rowKey] === keyValue) + 1
@@ -319,7 +319,6 @@ $border-color: #ebeef5;
 	box-sizing: border-box;
 	display: table;
 	overflow-x: auto;
-	/* #ifndef VUE3 */
 	::v-deep .uni-table-tr:nth-child(n + 2) {
 		&:hover {
 			background-color: #f5f7fa;
@@ -333,23 +332,7 @@ $border-color: #ebeef5;
 			}
 		}
 	}
-	/* #endif */
-	
-	/* #ifdef VUE3 */
-	:deep(.uni-table-tr:nth-child(n + 2)) {
-		&:hover {
-			background-color: #f5f7fa;
-		}
-	}
-	:deep(.uni-table-thead) {
-		.uni-table-tr {
-			// background-color: #f5f7fa;
-			&:hover {
-				background-color:#fafafa;
-			}
-		}
-	}
-	/* #endif */
+
 	/* #endif */
 }
 
@@ -366,17 +349,9 @@ $border-color: #ebeef5;
 
 .table--stripe {
 	/* #ifndef APP-NVUE */
-	/* #ifndef VUE3 */
 	::v-deep .uni-table-tr:nth-child(2n + 3) {
 		background-color: #fafafa;
 	}
-	/* #endif */
-	
-	/* #ifdef VUE3 */
-	:deep(.uni-table-tr:nth-child(2n + 3)) {
-		background-color: #fafafa;
-	}
-	/* #endif */
 	/* #endif */
 }
 

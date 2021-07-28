@@ -304,35 +304,19 @@ uni-page-head .uni-btn-icon {
 
 /* #endif */
 
-/* #ifndef VUE3 */
 ::v-deep .uni-forms-item__label .label-text {
 	color: #606266 !important;
 }
-/* #endif */
-
-/* #ifdef VUE3 */
-:deep(.uni-forms-item__label .label-text) {
-	color: #606266 !important;
-}
-/* #endif */
 
 /* button 重置样式 */
 
-/* #ifndef VUE3 */
+
 ::v-deep button[size=mini] {
 	line-height: 2.4;
 	font-size: 12px;
 	border-radius: 3px;
 }
-/* #endif */
 
-/* #ifdef VUE3 */
-:deep(button[size=mini]) {
-	line-height: 2.4;
-	font-size: 12px;
-	border-radius: 3px;
-}
-/* #endif */
 
 button {
 	background: #fff;
