@@ -74,7 +74,7 @@
 			"name": "应用管理",
 			"icon": "uni-icons-shop",
 			"url": "/pages/system/app/list",
-			"sort": 1050,
+			"sort": 1035,
 			"parent_id": "system_management",
 			"permission": [],
 			"enable": true,

@@ -52,7 +52,12 @@
 							<uni-link :href="'mailto:'+item.email" :text="item.email"></uni-link>
 						</uni-td>
 						<uni-td align="center">{{item.role}}</uni-td>
-						<uni-td align="center">{{item.dcloud_appid}}</uni-td>
+						<uni-td align="center">
+							<uni-link v-if="item.dcloud_appid === undefined" :href="noAppidWhatShouldIDoLink">
+								未绑定可登陆应用<view class="uni-icons-help"></view>
+							</uni-link>
+							{{item.dcloud_appid}}
+						</uni-td>
 						<uni-td align="center">
 							<uni-dateformat :threshold="[0, 0]" :date="item.register_date"></uni-dateformat>
 						</uni-td>
@@ -156,7 +161,8 @@
 						"register_date": "register_date"
 					}
 				},
-				exportExcelData: []
+				exportExcelData: [],
+				noAppidWhatShouldIDoLink: 'https://uniapp.dcloud.net.cn/uniCloud/uni-id?id=makeup-dcloud-appid'
 			}
 		},
 		onLoad() {
@@ -183,7 +189,9 @@
 					let item = data[i]
 					const roleArr = item.role.map(item => item.role_name)
 					item.role = roleArr.join('、')
-					item.dcloud_appid = item.dcloud_appid && item.dcloud_appid.join('、')
+					if (Array.isArray(item.dcloud_appid)) {
+						item.dcloud_appid = item.dcloud_appid.join('、')
+					}
 					item.register_date = this.$formatDate(item.register_date)
 				}
 				this.exportExcelData = data

@@ -371,9 +371,10 @@ exports.main = async (event, context) => {
 			break;
 
 			// =========================== admin api start =========================
-		case 'registerAdmin':
+		case 'registerAdmin': {
 			var {
-				username, password
+				username,
+				password
 			} = params
 			let {
 				total
@@ -386,99 +387,118 @@ exports.main = async (event, context) => {
 					message: '超级管理员已存在，请登录...'
 				}
 			}
-			return uniID.register({
+			const appid = params.appid
+			const appName = params.appName
+			delete params.appid
+			delete params.appName
+			res = await uniID.register({
 				username,
 				password,
 				role: ["admin"]
 			})
-			break;
-		case 'registerUser':
-			const {
-				userInfo
-			} = await uniID.getUserInfo({
-				uid: params.uid
-			})
-			if (userInfo.role.indexOf('admin') === -1) {
-				res = {
-					code: 403,
-					message: '非法访问, 无权限注册超级管理员',
-				}
-			} else {
-				// 过滤 dcloud_appid，注册用户成功后再提交
-				const dcloudAppidList = params.dcloud_appid
-				delete params.dcloud_appid
-				res = await uniID.register({
-					autoSetDcloudAppid: false,
-					...params
-				})
-				if (res.code === 0) {
-					delete res.token
-					delete res.tokenExpired
-					await uniID.setAuthorizedAppLogin({
-						uid: res.uid,
-						dcloudAppidList
+			if (res.code === 0) {
+				const app = await db.collection('opendb-app-list').where({
+					appid
+				}).count()
+				if (!app.total) {
+					await db.collection('opendb-app-list').add({
+						appid,
+						name: appName,
+						description: "admin 管理后台",
+						create_date: Date.now()
 					})
 				}
+
 			}
-			break;
-		case 'updateUser': {
-			const {
-				userInfo
-			} = await uniID.getUserInfo({
-				uid: params.uid
-			})
-			if (userInfo.role.indexOf('admin') === -1) {
-				res = {
-					code: 403,
-					message: '非法访问, 无权限注册超级管理员',
-				}
-			} else {
-				// 过滤 dcloud_appid，注册用户成功后再提交
-				const dcloudAppidList = params.dcloud_appid
-				delete params.dcloud_appid
-
-				// 过滤 password，注册用户成功后再提交
-				const password = params.password
-				delete params.password
-
-				// 过滤 uid、id
-				const id = params.id
-				delete params.id
-				delete params.uid
-
-
-				res = await uniID.updateUser({
-					uid: id,
-					...params
-				})
-				if (res.code === 0) {
-					if (password) {
-						await uniID.resetPwd({
-							uid: id,
-							password
-						})
-					}
-					await uniID.setAuthorizedAppLogin({
-						uid: id,
-						dcloudAppidList
-					})
-				}
-			}
-			break;
 		}
-		case 'getCurrentUserInfo':
-			res = uniID.getUserInfo({
-				uid: params.uid,
-				...params
-			})
-			break;
-			// =========================== admin api end =========================
-		default:
+		break;
+	case 'registerUser':
+		const {
+			userInfo
+		} = await uniID.getUserInfo({
+			uid: params.uid
+		})
+		if (userInfo.role.indexOf('admin') === -1) {
 			res = {
 				code: 403,
-				msg: '非法访问'
+				message: '非法访问, 无权限注册超级管理员',
 			}
-			break;
+		} else {
+			// 过滤 dcloud_appid，注册用户成功后再提交
+			const dcloudAppidList = params.dcloud_appid
+			delete params.dcloud_appid
+			res = await uniID.register({
+				autoSetDcloudAppid: false,
+				...params
+			})
+			if (res.code === 0) {
+				delete res.token
+				delete res.tokenExpired
+				await uniID.setAuthorizedAppLogin({
+					uid: res.uid,
+					dcloudAppidList
+				})
+			}
+		}
+		break;
+	case 'updateUser': {
+		const {
+			userInfo
+		} = await uniID.getUserInfo({
+			uid: params.uid
+		})
+		if (userInfo.role.indexOf('admin') === -1) {
+			res = {
+				code: 403,
+				message: '非法访问, 无权限注册超级管理员',
+			}
+		} else {
+			// 过滤 dcloud_appid，注册用户成功后再提交
+			const dcloudAppidList = params.dcloud_appid
+			delete params.dcloud_appid
+
+			// 过滤 password，注册用户成功后再提交
+			const password = params.password
+			delete params.password
+
+			// 过滤 uid、id
+			const id = params.id
+			delete params.id
+			delete params.uid
+
+
+			res = await uniID.updateUser({
+				uid: id,
+				...params
+			})
+			if (res.code === 0) {
+				if (password) {
+					await uniID.resetPwd({
+						uid: id,
+						password
+					})
+				}
+				await uniID.setAuthorizedAppLogin({
+					uid: id,
+					dcloudAppidList
+				})
+			}
+		}
+		break;
+	}
+	case 'getCurrentUserInfo':
+		res = await uniID.getUserInfo({
+			uid: params.uid,
+			...params
+		})
+		break;
+		// =========================== admin api end =========================
+	default:
+		res = {
+			code: 403,
+			msg: '非法访问'
+		}
+		break;
 	}
 	//返回数据给客户端
 	return res

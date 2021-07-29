@@ -2,7 +2,7 @@
   <view class="uni-container">
     <uni-forms ref="form" :value="formData" validateTrigger="bind">
       <uni-forms-item name="appid" label="AppID" required>
-        <uni-easyinput placeholder="应用的AppID" v-model="formData.appid"></uni-easyinput>
+        <uni-easyinput placeholder="应用AppID" v-model="formData.appid"></uni-easyinput>
       </uni-forms-item>
       <uni-forms-item name="name" label="应用名称" required>
         <uni-easyinput placeholder="应用名称" v-model="formData.name"></uni-easyinput>

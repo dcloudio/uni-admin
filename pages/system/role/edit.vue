@@ -125,3 +125,10 @@
     }
   }
 </script>
+<style>
+	::v-deep .uni-forms-item__content {
+		display: flex;
+		align-items: center;
+		flex-wrap: wrap;
+	}
+</style>

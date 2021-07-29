@@ -43,7 +43,8 @@
 <script>
 	import {
 		mapMutations,
-		mapActions
+		mapActions,
+		mapState
 	} from 'vuex'
 	import config from '@/admin.config.js'
 	export default {
@@ -104,6 +105,10 @@
 			this.focus()
 			// #endif
 			// #endif
+			console.log(555555, this.appName, 66666,this.appid);
+		},
+		computed: {
+			...mapState('app', ['appName', 'appid'])
 		},
 		methods: {
 			...mapMutations({
@@ -148,6 +153,8 @@
 				} = event.detail
 				if (errors) return
 				if (value.password === value.passwordConfirmation) {
+					value.appName = this.appName
+					value.appid = this.appid
 					this.register(value)
 				} else {
 					this.errorMessage = '两次输入密码不相同'
