@@ -80,7 +80,6 @@ uni-app的内置组件已经有了 `<form>`组件，用于提交表单内容。
 ### 如何使用 
 
 1. `uni-forms` 需要通过 `rules` 属性传入约定的校验规则，详细描述下文`校验规则说明`。
-
 ```html
 <!-- rules 内容详见下方完整示例 -->
 <uni-forms ref="form" :rules="rules">
@@ -89,7 +88,6 @@ uni-app的内置组件已经有了 `<form>`组件，用于提交表单内容。
 ```
 
 2. `uni-forms` 需要绑定`modelValue`属性，值为表单的key\value 组成的对象。
-
 ```html
 <!-- formData、rules 内容详见下方完整示例 -->
 <uni-forms ref="form" :modelValue="formData" :rules="rules">
@@ -98,7 +96,6 @@ uni-app的内置组件已经有了 `<form>`组件，用于提交表单内容。
 ```
 
 3. `uni-forms-item` 需要设置 `name` 属性为当前字段名，字段为 `String` 类型而非变量。
-
 ```html
 <!-- formData、rules 内容详见下方完整示例 -->
 <uni-forms :modelValue="formData" :rules="rules">
@@ -433,29 +430,25 @@ export default {
 
 多用于同一个字段需要添加多次的场景，如需要动态创建多个域名参与检验。
 
-1. 在 `formData` 中定义个变量用来接受同一个字段的多个结果
+1. 在 `formData` 中定义个变量用来接受同一个字段的多个结果。
 ```javascript
 dynamicFormData: {
 	email: '',
 	// domains 字段下会有多个结果
 	domains: {}
 }
-
 ```
 
 
 2. 使用 `uni-forms-item` 的 `rules` 属性定义单个表单域的校验规则。
-
 ```html
 <uni-forms-item :label="item.label+' '+index" required
 	:rules="[{'required': true,errorMessage: '域名项必填'}]" :key="item.id">
 	...
 </uni-forms-item>
-
 ```
 
 3. `name` 需要动态指定，格式为： `字段[唯一值]`
-
 ```html
 <uni-forms-item 
 	required
@@ -466,12 +459,9 @@ dynamicFormData: {
 	>
 	...
 </uni-forms-item>
-
 ```
 
 4. 需要绑定值的组件的 v-model 也需要动态指定，格式为：`数据源.字段[唯一值]`
-
-
 ```html
 <uni-forms-item 
 	required
@@ -482,7 +472,6 @@ dynamicFormData: {
 	>
 	<uni-easyinput v-model="dynamicFormData.domains[item.id]" placeholder="请输入域名" />
 </uni-forms-item>
-
 ```
 
 **完整示例**

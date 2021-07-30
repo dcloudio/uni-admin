@@ -142,7 +142,6 @@
 		methods: {
 			onqueryload(data) {
 				if (!data.find(item => item.appid === this.appid)) {
-					// data.length = 0
 					this.addCurrentAppid({
 						appid: this.appid,
 						name: this.appName,
@@ -166,7 +165,9 @@
 					}, 500)
 				}).catch((err) => {
 
-				}).finally(() => {})
+				}).finally(() => {
+					this.addAppidLoading = false
+				})
 			},
 			getWhere() {
 				const query = this.query.trim()

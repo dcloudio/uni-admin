@@ -54,7 +54,7 @@
 						<uni-td align="center">{{item.role}}</uni-td>
 						<uni-td align="center">
 							<uni-link v-if="item.dcloud_appid === undefined" :href="noAppidWhatShouldIDoLink">
-								未绑定可登陆应用<view class="uni-icons-help"></view>
+								未绑定可登录应用<view class="uni-icons-help"></view>
 							</uni-link>
 							{{item.dcloud_appid}}
 						</uni-td>

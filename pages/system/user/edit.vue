@@ -254,4 +254,7 @@
 		align-items: center;
 		flex-wrap: wrap;
 	}
+	::v-deep .uni-forms-item__label {
+		width: 90px !important;
+	}
 </style>
