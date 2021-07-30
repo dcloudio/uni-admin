@@ -1,3 +1,11 @@
+## 3.3.1（2021-07-30）
+- 修复 将设置用户允许登录的应用列表时传入空数组报错的Bug
+## 3.3.0（2021-07-30）
+- 新增 不同端应用配置隔离 [详情](https://uniapp.dcloud.net.cn/uniCloud/uni-id?id=isolate-config)
+- 新增 不同端用户隔离 [详情](https://uniapp.dcloud.net.cn/uniCloud/uni-id?id=isolate-user)
+  + 此版本升级需要开发者处理一下用户数据，请参考 [补齐用户dcloud_appid字段](https://uniapp.dcloud.net.cn/uniCloud/uni-id?id=makeup-dcloud-appid)
+- 新增 QQ登录、注册相关功能 [详情](https://uniapp.dcloud.net.cn/uniCloud/uni-id?id=qq)
+- 调整 不再支持绑定手机、邮箱时不填验证码直接绑定
 ## 3.2.1（2021-07-09）
 - 撤销3.2.0版本所做的调整
 ## 3.2.0（2021-07-09）

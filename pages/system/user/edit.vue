@@ -181,7 +181,7 @@
 							if (data.status === 1) {
 								data.status = false
 							}
-							this.formData = data
+							this.formData = Object.assign(this.formData, data)
 						}
 					}).catch((err) => {
 						uni.showModal({
