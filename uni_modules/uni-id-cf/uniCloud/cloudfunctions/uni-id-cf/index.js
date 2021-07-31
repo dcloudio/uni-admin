@@ -97,9 +97,6 @@ exports.main = async (event, context) => {
 	}
 	//4.记录成功登录的日志方法
 	const loginLog = async (res = {}) => {
-		if (res.code != 0) {
-			return false
-		}
 		const now = Date.now()
 		const uniIdLogCollection = db.collection('uni-id-log')
 		let logData = {
@@ -230,6 +227,7 @@ exports.main = async (event, context) => {
 					...params,
 					queryField: ['username', 'email', 'mobile']
 				});
+				res.type = 'login'
 				await loginLog(res);
 				needCaptcha = await getNeedCaptcha();
 			}

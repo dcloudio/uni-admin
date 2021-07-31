@@ -18,7 +18,7 @@
 					<text class="uni-icon-password-eye pointer" :class="[!showPassword ? 'uni-eye-active' : '']"
 						@click="changePassword">&#xe568;</text>
 				</uni-forms-item>
-				<uni-forms-item v-if="needCaptcha" left-icon="uni-icons-person-filled" class="icon-container"
+				<uni-forms-item v-if="needCaptcha" left-icon="image" class="icon-container"
 					name="captcha" labelWidth="35">
 					<input ref="captchaInput" @confirm="submitForm" class="uni-input-border" type="text"
 						placeholder="验证码" v-model="formData.captcha" />
@@ -95,7 +95,7 @@
 							}
 						]
 					},
-					// 对email字段进行必填验证
+					// 对captcha字段进行必填验证
 					captcha: {
 						rules: [{
 							required: true,
