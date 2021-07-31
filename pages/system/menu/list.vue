@@ -109,6 +109,7 @@
 	} from 'vuex'
 	// 查找插件注册的菜单列表（目前仅在开发模式启用，仅限 admin 角色）
 	const pluginMenuJsons = []
+	// #ifndef VUE3
 	if (process.env.NODE_ENV === 'development') {
 		const rootModules = require.context(
 			'../../../',
@@ -135,6 +136,7 @@
 			})
 		})
 	}
+	// #endif
 
 	// 获取父的个数
 	function getParents(menus, id, depth = 0) {

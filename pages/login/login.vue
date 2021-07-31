@@ -8,24 +8,23 @@
 		</view>
 		<view class="uni-container">
 			<uni-forms ref="form" v-model="formData" :rules="rules" @submit="submit">
-				<uni-forms-item left-icon="uni-icons-person-filled" name="username" labelWidth="35">
+				<uni-forms-item left-icon="person-filled" name="username" labelWidth="35">
 					<input ref="usernameInput" @confirm="submitForm" class="uni-input-border" type="text"
 						placeholder="账户" v-model="formData.username" />
 				</uni-forms-item>
-				<uni-forms-item left-icon="uni-icons-locked-filled" class="icon-container" name="password"
-					labelWidth="35">
+				<uni-forms-item left-icon="locked-filled" class="icon-container" name="password" labelWidth="35">
 					<input ref="passwordInput" @confirm="submitForm" class="uni-input-border" :password="showPassword"
 						placeholder="密码" v-model="formData.password" />
 					<text class="uni-icon-password-eye pointer" :class="[!showPassword ? 'uni-eye-active' : '']"
 						@click="changePassword">&#xe568;</text>
 				</uni-forms-item>
-				<uni-forms-item v-if="needCaptcha" left-icon="uni-icons-person-filled" class="icon-container"
+				<uni-forms-item v-if="needCaptcha" left-icon="image" class="icon-container"
 					name="captcha" labelWidth="35">
 					<input ref="captchaInput" @confirm="submitForm" class="uni-input-border" type="text"
 						placeholder="验证码" v-model="formData.captcha" />
 					<view class="admin-captcha-img pointer" @click="createCaptcha">
 						<i v-if="captchaLoading" class="uni-loading"></i>
-						<img v-else :src="captchaBase64" width="100%" height="100%"></img>
+						<img v-else :src="captchaBase64" width="100%" height="100%" />
 					</view>
 				</uni-forms-item>
 				<view class="uni-button-group">
@@ -96,7 +95,7 @@
 							}
 						]
 					},
-					// 对email字段进行必填验证
+					// 对captcha字段进行必填验证
 					captcha: {
 						rules: [{
 							required: true,
@@ -108,7 +107,9 @@
 		},
 		mounted() {
 			// #ifdef H5
+			// #ifndef VUE3
 			this.focus()
+			// #endif
 			// #endif
 			const self = this
 			uni.getStorage({
@@ -140,9 +141,11 @@
 					return
 				}
 				// #ifdef H5
+				// #ifndef VUE3
 				this.$refs.usernameInput.$refs.input.blur()
 				this.$refs.passwordInput.$refs.input.blur()
 				this.$refs.captchaInput && this.$refs.captchaInput.$refs.input.blur()
+				// #endif
 				// #endif
 				this.loading = true
 				this.$request('login', {
@@ -180,6 +183,8 @@
 						content: err.message || '请求服务失败',
 						showCancel: false,
 						success: function() {
+							// #ifdef H5
+							// #ifndef VUE3
 							if (err.code === 10101 && that.$refs.usernameInput) {
 								that.$refs.usernameInput.$refs.input.focus()
 							}
@@ -189,6 +194,8 @@
 							if (err.code === 10002 && that.$refs.captchaInput) {
 								that.$refs.captchaInput.$refs.input.focus()
 							}
+							// #endif
+							// #endif
 						}
 					})
 				}).finally(err => {

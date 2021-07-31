@@ -2,8 +2,8 @@
 	<view class="fix-window">
 		<top-window class="fix-window-top"/>
 		<view class="fix-window-button" @click="tiggerWindow"></view>
-		<view v-if="visible" class="fix-window--mask" @click="tiggerWindow"></view>
-		<left-window v-if="visible" class="fix-window--popup" />
+		<view v-show="visible" class="fix-window--mask" @click="tiggerWindow"></view>
+		<left-window v-show="visible" class="fix-window--popup" />
 	</view>
 </template>
 

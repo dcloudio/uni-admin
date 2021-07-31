@@ -1,6 +1,7 @@
 
 
 ### DateFormat 日期格式化
+> **组件名：uni-dateformat**
 > 代码块： `uDateformat`
 
 
@@ -69,3 +70,8 @@ format接收字符以及含义如下：
 |SSS	|三位毫秒（不足三位在前面补0）	|
 |S		|毫秒，不自动补0				|
 
+
+
+## 组件示例
+
+点击查看：[https://hellouniapp.dcloud.net.cn/pages/extUI/dateformat/dateformat](https://hellouniapp.dcloud.net.cn/pages/extUI/dateformat/dateformat)

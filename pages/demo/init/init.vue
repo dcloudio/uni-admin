@@ -8,21 +8,28 @@
 		<view class="uni-container">
 			<uni-forms ref="form" validateTrigger="bind" :rules="rules" @submit="submit">
 				<uni-forms-item left-icon="person" name="username" labelWidth="35">
-					<input ref="usernameInput" class="uni-input-border" type="text" placeholder="账户" @blur="binddata('username',$event.detail.value)" />
+					<input ref="usernameInput" class="uni-input-border" type="text" placeholder="账户"
+						@blur="binddata('username',$event.detail.value)" />
 				</uni-forms-item>
 
 				<uni-forms-item left-icon="locked" name="password" labelWidth="35">
-					<input class="uni-input-border" :password="showPassword" placeholder="密码" @blur="binddata('password',$event.detail.value)" />
-					<text class="uni-icon-password-eye pointer" :class="[!showPassword ? 'uni-eye-active' : '']" @click="changePassword">&#xe568;</text>
+					<input class="uni-input-border" :password="showPassword" placeholder="密码"
+						@blur="binddata('password',$event.detail.value)" />
+					<text class="uni-icon-password-eye pointer" :class="[!showPassword ? 'uni-eye-active' : '']"
+						@click="changePassword">&#xe568;</text>
 				</uni-forms-item>
 
-				<uni-forms-item left-icon="locked" name="passwordConfirmation" labelWidth="35" :errorMessage="errorMessage">
-					<input ref="passwordInput" @confirm="confirmForm('passwordConfirmation',$event.detail.value)" @blur="binddata('passwordConfirmation',$event.detail.value)"
-					 class="uni-input-border" :password="showPasswordAgain" placeholder="确认密码" />
-					<text class="uni-icon-password-eye pointer" :class="[!showPasswordAgain ? 'uni-eye-active' : '']" @click="changePasswordAgain">&#xe568;</text>
+				<uni-forms-item left-icon="locked" name="passwordConfirmation" labelWidth="35"
+					:errorMessage="errorMessage">
+					<input ref="passwordInput" @confirm="confirmForm('passwordConfirmation',$event.detail.value)"
+						@blur="binddata('passwordConfirmation',$event.detail.value)" class="uni-input-border"
+						:password="showPasswordAgain" placeholder="确认密码" />
+					<text class="uni-icon-password-eye pointer" :class="[!showPasswordAgain ? 'uni-eye-active' : '']"
+						@click="changePasswordAgain">&#xe568;</text>
 				</uni-forms-item>
-				<view class="uni-button-group">
-					<button class="uni-button" type="primary" :loading="loading" :disabled="loading" @click="submitForm">创建</button>
+				<view class="uni-group" style="margin-top: 30px;">
+					<button class="uni-button" type="primary" :loading="loading" :disabled="loading"
+						@click="submitForm">创建</button>
 					<button class="uni-button" type="default" @click="back">返回</button>
 				</view>
 
@@ -36,7 +43,8 @@
 <script>
 	import {
 		mapMutations,
-		mapActions
+		mapActions,
+		mapState
 	} from 'vuex'
 	import config from '@/admin.config.js'
 	export default {
@@ -93,8 +101,14 @@
 		},
 		mounted() {
 			// #ifdef H5
+			// #ifndef VUE3
 			this.focus()
 			// #endif
+			// #endif
+			console.log(555555, this.appName, 66666,this.appid);
+		},
+		computed: {
+			...mapState('app', ['appName', 'appid'])
 		},
 		methods: {
 			...mapMutations({
@@ -103,28 +117,31 @@
 				}
 			}),
 			register(formData) {
+				// console.log(111111, this.$refs.passwordInput);
 				// #ifdef H5
+				// #ifndef VUE3
 				this.$refs.passwordInput.$refs.input.blur()
+				// #endif
 				// #endif
 				this.loading = true
 				this.$request('registerAdmin', formData, {
 					functionName: 'uni-id-cf'
 				}).then(res => {
-						uni.showModal({
-							title: '提示',
-							content: res.code ? res.message : '创建成功',
-							showCancel: false,
-							success: (res) => {
-								if (res.confirm) {
-									uni.navigateTo({
-										url: '/pages/login/login'
-									})
-								}
+					uni.showModal({
+						title: '提示',
+						content: res.code ? res.message : '创建成功',
+						showCancel: false,
+						success: (res) => {
+							if (res.confirm) {
+								uni.navigateTo({
+									url: '/pages/login/login'
+								})
 							}
-						})
-					}).catch(err => {}).finally(err => {
-						this.loading = false
+						}
 					})
+				}).catch(err => {}).finally(err => {
+					this.loading = false
+				})
 			},
 			submit(event) {
 				if (this.loading) {
@@ -136,6 +153,8 @@
 				} = event.detail
 				if (errors) return
 				if (value.password === value.passwordConfirmation) {
+					value.appName = this.appName
+					value.appid = this.appid
 					this.register(value)
 				} else {
 					this.errorMessage = '两次输入密码不相同'
@@ -162,9 +181,11 @@
 				this.showPasswordAgain = !this.showPasswordAgain;
 			},
 			// #ifdef H5
+			// #ifndef VUE3
 			focus: function() {
 				this.$refs.usernameInput.$refs.input.focus()
 			}
+			// #endif
 			// #endif
 		}
 	}

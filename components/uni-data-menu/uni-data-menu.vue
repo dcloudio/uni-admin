@@ -3,7 +3,7 @@
 		<uni-nav-menu :active="value" activeKey="value" :activeTextColor="activeTextColor" :uniqueOpened="uniqueOpened"
 			@select="onSelect">
 			<uni-menu-sidebar :data="userMenu"></uni-menu-sidebar>
-			<slot></slot>
+			<uni-menu-sidebar :data="staticMenu"></uni-menu-sidebar>
 		</uni-nav-menu>
 	</view>
 </template>
@@ -13,7 +13,8 @@
 	export default {
 		data() {
 			return {
-				menus: []
+				menus: [],
+				userMenu:[]
 			};
 		},
 		mixins: [uniCloud.mixinDatacom],
@@ -32,6 +33,12 @@
 			uniqueOpened: {
 				type: Boolean,
 				default: false
+			},
+			staticMenu: {
+				type: Array,
+				default() {
+					return []
+				}
 			}
 		},
 		watch: {
@@ -48,11 +55,11 @@
 			if (this.hasLocalData(this.localdata)) return
 			this.load()
 		},
-		computed:{
-			userMenu() {
-				return this.getUserMenu(this.menus)
-			}
-		},
+		// computed:{
+		// 	userMenu() {
+		// 		return this.getUserMenu(this.menus)
+		// 	}
+		// },
 		methods: {
 			getUserMenu(menuList) {
 				const {
@@ -101,6 +108,7 @@
 						count
 					} = res.result
 					this.menus = data
+					this.userMenu = this.getUserMenu(this.menus)
 				}).catch((err) => {
 					this.mixinDatacomLoading = false
 					this.mixinDatacomErrorMessage = err

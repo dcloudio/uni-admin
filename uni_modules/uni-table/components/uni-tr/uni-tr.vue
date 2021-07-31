@@ -19,12 +19,12 @@
 </template>
 
 <script>
+	import tableCheckbox from './table-checkbox.vue'
 /**
  * Tr 表格行组件
  * @description 表格行组件 仅包含 th,td 组件
  * @tutorial https://ext.dcloud.net.cn/plugin?id=
  */
-import tableCheckbox from './table-checkbox.vue'
 export default {
 	name: 'uniTr',
 	components: { tableCheckbox },
@@ -74,11 +74,20 @@ export default {
 			this.root.minWidth = this.widthThArr.reduce((a, b) => Number(a) + Number(b)) + selectionWidth
 		}
 	},
+	// #ifndef VUE3
 	destroyed() {
 		const index = this.root.trChildren.findIndex(i => i === this)
 		this.root.trChildren.splice(index, 1)
 		this.root.isNodata()
 	},
+	// #endif
+	// #ifdef VUE3
+	unmounted() {
+		const index = this.root.trChildren.findIndex(i => i === this)
+		this.root.trChildren.splice(index, 1)
+		this.root.isNodata()
+	},
+	// #endif
 	methods: {
 		minWidthUpdate(width) {
 			this.widthThArr.push(width)
@@ -145,6 +154,7 @@ $border-color: #ebeef5;
 
 /* #ifndef APP-NVUE */
 .uni-table-tr {
+	/* #ifndef VUE3 */
 	::v-deep .uni-table-th {
 		&.table--border:last-child {
 			// border-right: none;
@@ -156,6 +166,21 @@ $border-color: #ebeef5;
 			// border-right: none;
 		}
 	}
+	/* #endif */
+
+	/* #ifdef VUE3 */
+	:deep(.uni-table-th) {
+		&.table--border:last-child {
+			// border-right: none;
+		}
+	}
+
+	:deep(.uni-table-td) {
+		&.table--border:last-child {
+			// border-right: none;
+		}
+	}
+	/* #endif */
 }
 
 /* #endif */

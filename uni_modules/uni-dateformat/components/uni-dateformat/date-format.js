@@ -59,7 +59,13 @@ function getDate(time) {
 	}
 	switch (typeof time) {
 		case 'string':
-			return new Date(time.replace(/-/g, '/'))
+			{
+				// 2020-12-12T12:12:12.000Z、2020-12-12T12:12:12.000
+				if (time.indexOf('T') > -1) {
+					return new Date(time)
+				}
+				return new Date(time.replace(/-/g, '/'))
+			}
 		default:
 			return new Date(time)
 	}
@@ -97,6 +103,9 @@ export function friendlyDate(time, {
 	threshold = [60000, 3600000],
 	format = 'yyyy/MM/dd hh:mm:ss'
 }) {
+	if (time === '-') {
+		return time
+	}
 	if (!time && time !== 0) {
 		return ''
 	}
