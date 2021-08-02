@@ -1,6 +1,7 @@
 <template>
 	<view>
-		<uni-notice-bar :speed="80" showIcon="true" showClose="true" scrollable="true" single="true" text="uniCloud Admin 在线演示项目, 为保证每位用户的使用体验, 数据将会被整点重置一次, 请避免整点前后操作"></uni-notice-bar>
+		<uni-notice-bar :speed="80" showIcon="true" showClose="true" scrollable="true" single="true"
+			text="uniCloud Admin 在线演示项目, 为保证每位用户的使用体验, 数据将会被整点重置一次, 请避免整点前后操作" />
 		<view class="login-box">
 			<view class="admin-logo">
 				<image :src="logo" mode="heightFix"></image>
@@ -10,28 +11,32 @@
 			</view>
 			<view class="uni-container">
 				<uni-forms ref="form" v-model="formData" :rules="rules" @submit="submit">
-					<uni-forms-item left-icon="uni-icons-person-filled" name="username" labelWidth="35">
-						<input ref="usernameInput" @confirm="submitForm" class="uni-input-border" type="text" placeholder="账户" v-model="formData.username" />
+					<uni-forms-item left-icon="person-filled" name="username" labelWidth="35">
+						<input ref="usernameInput" @confirm="submitForm" class="uni-input-border" type="text"
+							placeholder="账户" v-model="formData.username" />
 					</uni-forms-item>
-					<uni-forms-item left-icon="uni-icons-locked-filled" class="icon-container" name="password" labelWidth="35">
-						<input ref="passwordInput" @confirm="submitForm" class="uni-input-border" :password="showPassword" placeholder="密码"
-						 v-model="formData.password" />
-						<text class="uni-icon-password-eye pointer" :class="[!showPassword ? 'uni-eye-active' : '']" @click="changePassword">&#xe568;</text>
+					<uni-forms-item left-icon="locked-filled" class="icon-container" name="password" labelWidth="35">
+						<input ref="passwordInput" @confirm="submitForm" class="uni-input-border"
+							:password="showPassword" placeholder="密码" v-model="formData.password" />
+						<text class="uni-icon-password-eye pointer" :class="[!showPassword ? 'uni-eye-active' : '']"
+							@click="changePassword">&#xe568;</text>
 					</uni-forms-item>
-					<uni-forms-item v-if="needCaptcha" left-icon="uni-icons-person-filled" class="icon-container" name="captchaText" labelWidth="35">
-						<input ref="captchaInput" @confirm="submitForm" class="uni-input-border" type="text" placeholder="验证码"
-						 v-model="formData.captchaText" />
-						 <view class="admin-captcha-img pointer" @click="createCaptcha">
-							 <i v-if="captchaLoading" class="uni-loading"></i>
-							<img v-else :src="captchaBase64" width="100%" height="100%"></img>
-						 </view>
+					<uni-forms-item v-if="needCaptcha" left-icon="image" class="icon-container" name="captcha"
+						labelWidth="35">
+						<input ref="captchaInput" @confirm="submitForm" class="uni-input-border" type="text"
+							placeholder="验证码" v-model="formData.captcha" />
+						<view class="admin-captcha-img pointer" @click="createCaptcha">
+							<i v-if="captchaLoading" class="uni-loading"></i>
+							<img v-else :src="captchaBase64" width="100%" height="100%" />
+						</view>
 					</uni-forms-item>
 					<view class="uni-button-group">
-						<button class="uni-button uni-button-full" type="primary" :loading="loading" :disabled="loading" @click="submitForm">登录</button>
+						<button class="uni-button uni-button-full" type="primary" :loading="loading" :disabled="loading"
+							@click="submitForm">登录</button>
 					</view>
 				</uni-forms>
 				<view class="uni-tips">
-					<view>体验账号：admin &nbsp;&nbsp;&nbsp;&nbsp; 密码：123456</view>
+					<text class="uni-tips-text" @click="initAdmin">如无管理员账号，请先创建管理员...</text>
 				</view>
 			</view>
 		</view>
@@ -63,7 +68,7 @@
 				formData: {
 					username: '',
 					password: '',
-					captchaText: '',
+					captcha: '',
 				},
 				captchaLoading: false,
 				needCaptcha: false,
@@ -94,8 +99,8 @@
 							}
 						]
 					},
-					// 对email字段进行必填验证
-					captchaText: {
+					// 对captcha字段进行必填验证
+					captcha: {
 						rules: [{
 							required: true,
 							errorMessage: '请输入验证码',
@@ -106,7 +111,9 @@
 		},
 		mounted() {
 			// #ifdef H5
+			// #ifndef VUE3
 			this.focus()
+			// #endif
 			// #endif
 			const self = this
 			uni.getStorage({
@@ -115,7 +122,7 @@
 					self.formData.username = res.data
 				}
 			})
-			this.getNeedCaptcha()
+			// this.getNeedCaptcha()
 		},
 		methods: {
 			...mapActions({
@@ -138,49 +145,50 @@
 					return
 				}
 				// #ifdef H5
+				// #ifndef VUE3
 				this.$refs.usernameInput.$refs.input.blur()
 				this.$refs.passwordInput.$refs.input.blur()
 				this.$refs.captchaInput && this.$refs.captchaInput.$refs.input.blur()
 				// #endif
+				// #endif
 				this.loading = true
-				this.$request('user/login', {
+				this.$request('login', {
 					...value,
 					captchaOptions
 				}, {
+					functionName: 'uni-id-cf',
 					showModal: false
 				}).then(res => {
-					if (res.needCaptcha) {
-						this.needCaptcha = true
-						this.captchaBase64 = res.captchaBase64
-					} else {
-						this.setToken({
-							token: res.token,
-							tokenExpired: res.tokenExpired
+					this.setToken({
+						token: res.token,
+						tokenExpired: res.tokenExpired
+					})
+					return this.init().then(() => {
+						uni.showToast({
+							title: '登录成功',
+							icon: 'none'
 						})
-						return this.init().then(() => {
-							uni.showToast({
-								title: '登录成功',
-								icon: 'none'
-							})
-							uni.setStorage({
-								key: 'lastUsername',
-								data: value.username
-							});
-							uni.redirectTo({
-								url: this.indexPage,
-							})
+						uni.setStorage({
+							key: 'lastUsername',
+							data: value.username
+						});
+						uni.redirectTo({
+							url: this.indexPage,
 						})
-					}
+					})
 				}).catch(err => {
 					if (err.needCaptcha) {
-						this.formData.captchaText = ''
+						this.formData.captcha = ''
 						this.createCaptcha()
+						this.needCaptcha = true
 					}
 					const that = this
 					uni.showModal({
 						content: err.message || '请求服务失败',
 						showCancel: false,
 						success: function() {
+							// #ifdef H5
+							// #ifndef VUE3
 							if (err.code === 10101 && that.$refs.usernameInput) {
 								that.$refs.usernameInput.$refs.input.focus()
 							}
@@ -190,6 +198,8 @@
 							if (err.code === 10002 && that.$refs.captchaInput) {
 								that.$refs.captchaInput.$refs.input.focus()
 							}
+							// #endif
+							// #endif
 						}
 					})
 				}).finally(err => {
@@ -200,20 +210,15 @@
 
 			createCaptcha() {
 				this.captchaLoading = true
-				this.$request('user/createCaptcha', captchaOptions).then(res => {
+				this.$request('createCaptcha', captchaOptions, {
+					functionName: 'uni-id-cf'
+				}).then(res => {
 					if (res.code === 0) {
-						this.needCaptcha = res.needCaptcha
 						this.captchaBase64 = res.captchaBase64
 					}
 				}).catch(err => {}).finally(err => {
 					this.captchaLoading = false
 				})
-			},
-
-			getNeedCaptcha() {
-				this.$request('user/getNeedCaptcha', captchaOptions).then(res => {
-					if (res) this.createCaptcha()
-				}).catch(err => {}).finally(err => {})
 			},
 
 			confirmForm(name, value) {
@@ -234,21 +239,21 @@
 			// #ifdef H5
 			focus: function() {
 				this.$refs.usernameInput.$refs.input.focus()
-			}
+			},
 			// #endif
 		}
 	}
 </script>
 
 <style>
-/* 	page {
+	/* 	page {
 		width: 100%;
 		height: 100%;
 		display: flex;
 		justify-content: center;
 		background-color: #fff;
-	}
- */
+	} */
+
 	.login-box {
 		position: relative;
 		max-width: 350px;

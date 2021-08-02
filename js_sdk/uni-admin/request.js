@@ -3,32 +3,39 @@ import config from '@/admin.config.js'
 const debugOptions = config.navBar.debug
 
 const db = uniCloud.database()
-db.on('refreshToken', function({
-	token,
-	tokenExpired
-}) {
-	store.commit('user/SET_TOKEN', {
+let hasServer = true
+db.catch(res => {
+	hasServer = false
+})
+setTimeout(()=> {
+	hasServer && db.on('refreshToken', function({
 		token,
 		tokenExpired
+	}) {
+		store.commit('user/SET_TOKEN', {
+			token,
+			tokenExpired
+		})
 	})
-})
 
-db.on('error', function({
-	code, // 错误码详见https://uniapp.dcloud.net.cn/uniCloud/clientdb?id=returnvalue
-	message
-}) {
-	reLaunchToLogin(code)
-})
+	hasServer && db.on('error', function({
+		code, // 错误码详见https://uniapp.dcloud.net.cn/uniCloud/clientdb?id=returnvalue
+		message
+	}) {
+		reLaunchToLogin(code)
+	})
 
-export function request(action, data, {
-	functionName = 'uni-admin',
+}, 16)
+
+export function request(action, params, {
+	functionName = 'uni-id-cf',
 	showModal = true
 } = {}) {
 	return uniCloud.callFunction({
 		name: functionName,
 		data: {
 			action,
-			data
+			params
 		}
 	}).then(({
 		result
@@ -55,16 +62,13 @@ export function request(action, data, {
 		}
 		return Promise.resolve(result)
 	}).catch(err => {
-		const that = this
 		showModal && uni.showModal({
 			content: err.message || '请求服务失败',
 			showCancel: false
 		})
 		// #ifdef H5
 		const noDebugPages = ['/pages/login/login', '/pages/init/init']
-		const {
-			path
-		} = this.$route
+		const path = location.hash.split('#')[1]
 		if (debugOptions && debugOptions.enable === true && noDebugPages.indexOf(path) === -1) {
 			store.dispatch('error/add', {
 				err: err.toString(),
@@ -85,7 +89,14 @@ function reLaunchToLogin(code) {
 		})
 	}
 }
-
+// #ifndef VUE3
 export function initRequest(Vue) {
 	Vue.prototype.$request = request
 }
+// #endif
+
+// #ifdef VUE3
+export function initRequest(app) {
+	app.config.globalProperties.$request = request
+}
+// #endif

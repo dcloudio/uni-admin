@@ -70,5 +70,6 @@
     },
     "h5" : {
         "template" : "template.h5.html"
-    }
+    },
+    "vueVersion" : "2"
 }

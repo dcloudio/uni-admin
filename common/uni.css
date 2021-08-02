@@ -150,7 +150,7 @@ uni-page-head .uni-btn-icon {
 	margin-left: 10px;
 }
 
-.uni-group > .uni-button:first-child {
+.uni-group>.uni-button:first-child {
 	margin-left: 0;
 }
 
@@ -298,9 +298,18 @@ uni-page-head .uni-btn-icon {
 }
 
 @media screen and (min-width: 450px) {
-	::v-deep .uni-forms-item__label {
-		margin-right: 50px !important;
+	.table-pc {
+		min-height: 600px;
+		border: 1px #ebeef5 solid;
+		box-sizing: border-box;
 	}
+}
+
+/* #endif */
+
+/* #ifndef H5 */
+.fix-top-window {
+	margin-top: 85px;
 }
 
 /* #endif */
@@ -309,65 +318,122 @@ uni-page-head .uni-btn-icon {
 	color: #606266 !important;
 }
 
+::v-deep .uni-forms-item__content {
+	display: flex;
+	align-items: center;
+	flex-wrap: wrap;
+}
+
+.link-btn {
+	color: #007AFF;
+	text-decoration: underline;
+	cursor: pointer;
+}
+
 /* button 重置样式 */
-
-
-::v-deep uni-button[size=mini] {
+::v-deep button[size=mini] {
 	line-height: 2.4;
 	font-size: 12px;
 	border-radius: 3px;
 }
 
-uni-button {
+
+button {
 	background: #fff;
 	border: 1px solid #dcdfe6;
 	color: #606266;
 	box-sizing: border-box;
 }
 
-uni-button[type=primary] {
+button[type=primary] {
 	background-color: #409EFF;
 	border-color: #409EFF;
 	border-width: 0;
 }
 
-uni-button[type=warn] {
+button[type=warn] {
 	background-color: #f56c6c;
 	border-color: #f56c6c;
 	border-width: 0;
 }
 
-uni-button[type=default] {
+button[type=default] {
 	background: #fff;
 	border: 1px solid #dcdfe6;
 	color: #606266;
 	box-sizing: border-box;
 }
 
-uni-button[type=primary][plain] {
+button[type=primary][plain] {
 	border-color: #409EFF;
 	color: #409EFF;
 }
 
-uni-button[type=warn][plain] {
+button[type=warn][plain] {
 	border-color: #f56c6c;
 	color: #f56c6c;
 }
 
-uni-button[type=default][plain] {
+button[type=default][plain] {
 	border-color: #dcdfe6;
 	color: #606266;
 }
 
-uni-button[plain] {
+button[plain] {
 	border-color: #dcdfe6;
 	color: #606266;
 }
 
-uni-button:after {
+button:after {
 	border-width: 0;
 }
 
 .uni-input-placeholder {
 	color: #999;
+}
+
+/* #ifdef H5 */
+@media screen and (min-width: 500px) and (min-height: 500px) {
+
+	/* #ifndef VUE3 */
+	::v-deep .uni-picker-container .uni-picker-custom {
+		width: 100px;
+		margin-left: 100px;
+	}
+
+	/* #endif */
+
+	/* #ifdef VUE3 */
+	:deep(.uni-picker-container .uni-picker-custom) {
+		width: 100px;
+		margin-left: 100px;
+	}
+
+	/* #endif */
+}
+
+/* #endif */
+
+.uni-pagination-box {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.select-picker {
+	margin-right: 20px;
+}
+
+.select-picker button {
+	margin-top: 5px;
+	line-height: 29px;
+	font-size: 14px;
+}
+
+.select-picker button text {
+	color: #999;
+}
+
+.select-picker-icon {
+	margin-left: 8px;
 }

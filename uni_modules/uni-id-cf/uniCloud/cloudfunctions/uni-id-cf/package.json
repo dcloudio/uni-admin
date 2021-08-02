@@ -1,0 +1,16 @@
+{
+	"name": "uni-id-cf",
+	"version": "1.0.0",
+	"description": "",
+	"main": "index.js",
+	"scripts": {
+		"test": "echo \"Error: no test specified\" && exit 1"
+	},
+	"author": "",
+	"license": "ISC",
+	"dependencies": {
+		"uni-captcha": "file:../../../../uni-captcha/uniCloud/cloudfunctions/common/uni-captcha",
+		"uni-config-center": "file:../../../../uni-config-center/uniCloud/cloudfunctions/common/uni-config-center",
+		"uni-id": "file:../../../../uni-id/uniCloud/cloudfunctions/common/uni-id"
+	}
+}

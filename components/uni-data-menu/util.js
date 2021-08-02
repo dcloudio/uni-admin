@@ -61,7 +61,7 @@ function buildMenus(menuList, trim = true) {
 	return menu
 }
 
-module.exports = {
+export {
 	buildMenu,
 	buildMenus
 }

@@ -10,20 +10,14 @@
 			"description": "权限唯一标识，不可修改，不允许重复",
 			"label": "权限标识",
 			"trim": "both",
-			"title": "权限ID",
-			"component": {
-				"name": "input"
-			}
+			"title": "权限ID"
 		},
 		"permission_name": {
 			"bsonType": "string",
 			"description": "权限名称",
 			"label": "权限名称",
 			"title": "权限名称",
-			"trim": "both",
-			"component": {
-				"name": "input"
-			}
+			"trim": "both"
 		},
 		"comment": {
 			"bsonType": "string",

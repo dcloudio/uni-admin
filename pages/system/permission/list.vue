@@ -1,52 +1,75 @@
 <template>
-	<view>
+	<view class="fix-top-window">
 		<view class="uni-header">
-			<view class="uni-group hide-on-phone">
-				<view class="uni-title">权限管理</view>
+			<view class="uni-group">
+				<view class="uni-title"></view>
 				<view class="uni-sub-title"></view>
 			</view>
 			<view class="uni-group">
-				<input class="uni-search" type="text" v-model="query" @confirm="search" placeholder="权限标识/名称" />
+				<input class="uni-search" type="text" v-model="query" @confirm="search" placeholder="请输入搜索内容" />
 				<button class="uni-button" type="default" size="mini" @click="search">搜索</button>
-				<button @click="navigateTo('./add')" size="mini" class="uni-button" type="primary">新增</button>
-				<button class="uni-button" type="warn" size="mini" @click="delTable">批量删除</button>
+				<button class="uni-button" type="primary" size="mini" @click="navigateTo('./add')">新增</button>
+				<button class="uni-button" type="warn" size="mini" :disabled="!selectedIndexs.length"
+					@click="delTable">批量删除</button>
 				<!-- #ifdef H5 -->
-				<download-excel class="hide-on-phone" :fields="expExcel.json_fields" :data="expData"
-					:type="expExcel.type" :name="expExcel.filename">
+				<download-excel class="hide-on-phone" :fields="exportExcel.fields" :data="exportExcelData"
+					:type="exportExcel.type" :name="exportExcel.filename">
 					<button class="uni-button" type="primary" size="mini">导出 Excel</button>
 				</download-excel>
 				<!-- #endif -->
+
 			</view>
 		</view>
 		<view class="uni-container">
-			<unicloud-db ref="dataQuery" @load="onqueryload" collection="uni-id-permissions" :options="options" :where="where"
-				page-data="replace" :orderby="orderby" :getcount="true" :page-size="options.pageSize"
-				:page-current="options.pageCurrent" v-slot:default="{data,pagination,loading,error}">
-				<uni-table :loading="loading" :emptyText="error.message || '没有更多数据'" border stripe type="selection"
-					@selection-change="selectionChange">
+			<unicloud-db ref="udb" collection="uni-id-permissions"
+				field="permission_id,permission_name,comment,create_date" :where="where" page-data="replace"
+				:orderby="orderby" :getcount="true" :page-size="options.pageSize" :page-current="options.pageCurrent"
+				v-slot:default="{data,pagination,loading,error,options}" :options="options" loadtime="manual"
+				@load="onqueryload">
+				<uni-table ref="table" :loading="loading" :emptyText="error.message || '没有更多数据'" border stripe
+					type="selection" @selection-change="selectionChange"
+					class="table-pc">
 					<uni-tr>
-						<uni-th width="250" align="center">权限标识</uni-th>
-						<uni-th width="150" align="center">权限名称</uni-th>
-						<uni-th align="center">备注</uni-th>
-						<uni-th width="170" align="center">创建时间</uni-th>
-						<uni-th width="160" align="center">操作</uni-th>
+						<uni-th align="center" filter-type="search"
+							@filter-change="filterChange($event, 'permission_id')" sortable
+							@sort-change="sortChange($event, 'permission_id')">权限标识</uni-th>
+						<uni-th align="center" filter-type="search"
+							@filter-change="filterChange($event, 'permission_name')" sortable
+							@sort-change="sortChange($event, 'permission_name')">权限名称</uni-th>
+						<uni-th align="center" filter-type="search" @filter-change="filterChange($event, 'comment')"
+							sortable @sort-change="sortChange($event, 'comment')">备注</uni-th>
+						<uni-th align="center" filter-type="timestamp"
+							@filter-change="filterChange($event, 'create_date')" sortable
+							@sort-change="sortChange($event, 'create_date')">创建时间</uni-th>
+						<uni-th align="center">操作</uni-th>
 					</uni-tr>
 					<uni-tr v-for="(item,index) in data" :key="index">
 						<uni-td align="center">{{item.permission_id}}</uni-td>
 						<uni-td align="center">{{item.permission_name}}</uni-td>
 						<uni-td align="center">{{item.comment}}</uni-td>
-						<uni-td align="center">{{item.create_date}}</uni-td>
+						<uni-td align="center">
+							<uni-dateformat :threshold="[0, 0]" :date="item.create_date"></uni-dateformat>
+						</uni-td>
 						<uni-td align="center">
 							<view class="uni-group">
-								<button size="mini" @click="navigateTo('./edit?id='+item._id, false)" class="uni-button"
+								<button @click="navigateTo('./edit?id='+item._id, false)" class="uni-button" size="mini"
 									type="primary">修改</button>
-								<button size="mini" @click="confirmDelete(item.permission_id)" class="uni-button"
+								<button @click="confirmDelete(item._id)" class="uni-button" size="mini"
 									type="warn">删除</button>
 							</view>
 						</uni-td>
 					</uni-tr>
 				</uni-table>
 				<view class="uni-pagination-box">
+					<!-- #ifndef MP -->
+					<picker class="select-picker" mode="selector" :value="pageSizeIndex" :range="pageSizeOption"
+						@change="changeSize">
+						<button type="default" size="mini" :plain="true">
+							<text>{{pageSizeOption[pageSizeIndex]}} 条/页</text>
+							<uni-icons class="select-picker-icon" type="arrowdown" size="12" color="#999"></uni-icons>
+						</button>
+					</picker>
+					<!-- #endif -->
 					<uni-pagination show-icon :page-size="pagination.size" v-model="pagination.current"
 						:total="pagination.count" @change="onPageChanged" />
 				</view>
@@ -59,13 +82,23 @@
 </template>
 
 <script>
+	import {
+		enumConverter,
+		filterToWhere
+	} from '@/js_sdk/validator/uni-id-permissions.js';
+
 	const db = uniCloud.database()
 	// 表查询配置
-	const dbOrderBy = 'create_date desc'
-	const dbSearchFields = ['permission_id', 'permission_name'] // 支持模糊搜索的字段列表
+	const dbOrderBy = 'create_date desc' // 排序字段
+	const dbSearchFields = ['permission_id', 'permission_name'] // 模糊搜索字段，支持模糊搜索的字段列表
 	// 分页配置
 	const pageSize = 20
 	const pageCurrent = 1
+
+	const orderByMapping = {
+		"ascending": "asc",
+		"descending": "desc"
+	}
 
 	export default {
 		data() {
@@ -73,59 +106,86 @@
 				query: '',
 				where: '',
 				orderby: dbOrderBy,
+				orderByFieldName: "",
+				selectedIndexs: [],
+				pageSizeIndex: 0,
+				pageSizeOption: [20, 50, 100, 500],
 				options: {
 					pageSize,
-					pageCurrent
+					pageCurrent,
+					filterData: {},
+					...enumConverter
 				},
-				selectedIndexs: [], //批量选中的项
-				expData: [],
-				expExcel: {
-					filename: "权限.xls",
-					type: "xls",
-					json_fields: {
-						"权限标识": "permission_id",
+				imageStyles: {
+					width: 64,
+					height: 64
+				},
+				exportExcel: {
+					"filename": "uni-id-permissions.xls",
+					"type": "xls",
+					"fields": {
+						"权限ID": "permission_id",
 						"权限名称": "permission_name",
-						"备注": "comment",
-						"创建时间": "create_date",
+						"备注": "comment"
 					}
+				},
+				exportExcelData: []
+			}
+		},
+		onLoad() {
+			this._filter = {}
+		},
+		onReady() {
+			this.$refs.udb.loadData()
+		},
+		watch: {
+			pageSizeIndex: {
+				immediate: true,
+				handler(val, old) {
+					this.options.pageSize = this.pageSizeOption[val]
+					this.options.pageCurrent = 1
 				}
 			}
 		},
 		methods: {
 			onqueryload(data) {
-				for (var i = 0; i < data.length; i++) {
-					let item = data[i]
-					item.create_date = this.$formatDate(item.create_date)
-				}
-				this.expData = data //仅导出当前页
+				this.exportExcelData = data
+			},
+			changeSize(e) {
+				this.pageSizeIndex = e.detail.value
+				this.$nextTick(() => {
+					this.loadData()
+				})
 			},
 			getWhere() {
 				const query = this.query.trim()
 				if (!query) {
 					return ''
 				}
-				const queryRe = `/${query}/i`
+				const queryRe = new RegExp(query, 'i')
 				return dbSearchFields.map(name => queryRe + '.test(' + name + ')').join(' || ')
 			},
 			search() {
 				const newWhere = this.getWhere()
-				const isSameWhere = newWhere === this.where
 				this.where = newWhere
-				if (isSameWhere) { // 相同条件时，手动强制刷新
+				this.$nextTick(() => {
 					this.loadData()
-				}
+				})
 			},
 			loadData(clear = true) {
-				this.$refs.dataQuery.loadData({
+				this.$refs.udb.loadData({
 					clear
 				})
 			},
 			onPageChanged(e) {
-				this.$refs.dataQuery.loadData({
+				this.selectedIndexs.length = 0
+				this.$refs.table.clearSelection()
+				this.$refs.udb.loadData({
 					current: e.current
 				})
 			},
-			navigateTo(url, clear) { // clear 表示刷新列表时是否清除当前页码，true 表示刷新并回到列表第 1 页，默认为 true
+			navigateTo(url, clear) {
+				// clear 表示刷新列表时是否清除页码，true 表示刷新并回到列表第 1 页，默认为 true
 				uni.navigateTo({
 					url,
 					events: {
@@ -137,16 +197,14 @@
 			},
 			// 多选处理
 			selectedItems() {
-				var dataList = this.$refs.dataQuery.dataList
-				return this.selectedIndexs.map(i => dataList[i].permission_id)
+				var dataList = this.$refs.udb.dataList
+				return this.selectedIndexs.map(i => dataList[i]._id)
 			},
-			//批量删除
+			// 批量删除
 			delTable() {
-				uni.showModal({
-					title: '提示',
-					content: '确认删除多条记录？',
+				this.$refs.udb.remove(this.selectedItems(), {
 					success: (res) => {
-						res.confirm && this.delete(this.selectedItems())
+						this.$refs.table.clearSelection()
 					}
 				})
 			},
@@ -155,43 +213,42 @@
 				this.selectedIndexs = e.detail.index
 			},
 			confirmDelete(id) {
-				uni.showModal({
-					title: '提示',
-					content: '确认删除该记录？',
+				this.$refs.udb.remove(id, {
 					success: (res) => {
-						res.confirm && this.delete(id)
+						this.$refs.table.clearSelection()
 					}
 				})
 			},
-			async delete(id) {
-				uni.showLoading({
-					mask: true
+			sortChange(e, name) {
+				this.orderByFieldName = name;
+				if (e.order) {
+					this.orderby = name + ' ' + orderByMapping[e.order]
+				} else {
+					this.orderby = ''
+				}
+				this.$refs.table.clearSelection()
+				this.$nextTick(() => {
+					this.$refs.udb.loadData()
 				})
-				await this.$request('system/permission/remove', {
-						id
-					})
-					.then(res => {
-						uni.showToast({
-							title: '删除成功'
-						})
-					}).catch(err => {
-						uni.showModal({
-							content: err.message || '请求服务失败',
-							showCancel: false
-						})
-					}).finally(err => {
-						uni.hideLoading()
-					})
-				this.loadData(false)
+			},
+			filterChange(e, name) {
+				this._filter[name] = {
+					type: e.filterType,
+					value: e.filter
+				}
+				let newWhere = filterToWhere(this._filter, db.command)
+				if (Object.keys(newWhere).length) {
+					this.where = newWhere
+				} else {
+					this.where = ''
+				}
+				this.$nextTick(() => {
+					this.$refs.udb.loadData()
+				})
 			}
 		}
 	}
 </script>
-<style>
-	/* #ifndef H5 */
-	page {
-		padding-top: 85px;
-	}
 
-	/* #endif */
+<style>
 </style>

@@ -1,6 +1,7 @@
 
 
 ## DataCheckbox 数据驱动的单选复选框
+> **组件名：uni-data-checkbox**
 > 代码块： `uDataCheckbox`
 
 
@@ -13,6 +14,7 @@
 
 在uniCloud开发中，`DB Schema`中配置了enum枚举等类型后，在web控制台的[自动生成表单](https://uniapp.dcloud.io/uniCloud/schema?id=autocode)功能中，会自动生成``uni-data-checkbox``组件并绑定好data
 
+> **注意事项**
 > 为了避免错误使用，给大家带来不好的开发体验，请在使用组件前仔细阅读下面的注意事项，可以帮你避免一些错误。
 > - 组件需要依赖 `sass` 插件 ，请自行手动安装
 > - 本组件为数据驱动，目的是快速投入使用，只可通过 style 覆盖有限样式，不支持自定义更多样式
@@ -261,6 +263,7 @@ export default {
 |selectedColor|String							|-											|#007aff|选中颜色|
 |selectedTextColor|String					|-											|#333		|选中文本颜色，如不填写则自动显示|
 |emptyText 	|String					|-											|暂无数据		|没有数据时显示的文字 ，本地数据无效|
+|map 				|Object					|-											|{text:'text',value:'value'}		|字段映射，将text/value映射到数据中的其他字段|
 
 #### Localdata Options
 
@@ -286,6 +289,11 @@ export default {
 
 | 事件名	| 事件说明								| 返回参数|
 | :-:		| :-:									| :-:			|
-| @chage| 选中状态改变时触发事件	| -				|
+| @change| 选中状态改变时触发事件	| -				|
 
 
+
+
+## 组件示例
+
+点击查看：[https://hellouniapp.dcloud.net.cn/pages/extUI/data-checkbox/data-checkbox](https://hellouniapp.dcloud.net.cn/pages/extUI/data-checkbox/data-checkbox)
