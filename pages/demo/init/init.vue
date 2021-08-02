@@ -105,7 +105,6 @@
 			this.focus()
 			// #endif
 			// #endif
-			console.log(555555, this.appName, 66666,this.appid);
 		},
 		computed: {
 			...mapState('app', ['appName', 'appid'])
@@ -117,7 +116,6 @@
 				}
 			}),
 			register(formData) {
-				// console.log(111111, this.$refs.passwordInput);
 				// #ifdef H5
 				// #ifndef VUE3
 				this.$refs.passwordInput.$refs.input.blur()
