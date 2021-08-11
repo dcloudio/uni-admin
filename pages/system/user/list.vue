@@ -62,7 +62,8 @@
 							<uni-dateformat :threshold="[0, 0]" :date="item.register_date"></uni-dateformat>
 						</uni-td>
 						<uni-td align="center">
-							<view class="uni-group">
+							<view v-if="item.username === 'admin' && item.role.indexOf('超级管理员') !== -1">-</view>
+							<view v-else class="uni-group">
 								<button @click="navigateTo('./edit?id='+item._id, false)" class="uni-button" size="mini"
 									type="primary">修改</button>
 								<button @click="confirmDelete(item._id)" class="uni-button" size="mini"

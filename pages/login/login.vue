@@ -36,7 +36,7 @@
 					</view>
 				</uni-forms>
 				<view class="uni-tips">
-					<text class="uni-tips-text" @click="initAdmin">如无管理员账号，请先创建管理员...</text>
+					<text class="uni-tips">账号：admin &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 密码：123456</text>
 				</view>
 			</view>
 		</view>
