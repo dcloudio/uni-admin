@@ -10,10 +10,10 @@
 					<view slot="right" class="cancel-reset-password-btn" @click="trigger">取消</view>
 				</uni-easyinput>
 			</uni-forms-item>
-			<uni-forms-item name="role" label="角色列表">
+			<uni-forms-item name="role" label="角色列表" class="flex-center-x">
 				<uni-data-checkbox multiple :localdata="roles" v-model="formData.role" />
 			</uni-forms-item>
-			<uni-forms-item name="dcloud_appid" label="可登录应用">
+			<uni-forms-item name="dcloud_appid" label="可登录应用" class="flex-center-x">
 				<uni-data-checkbox :multiple="true" v-model="formData.dcloud_appid" collection="opendb-app-list"
 					field="appid as value, name as text"></uni-data-checkbox>
 				<span class="link-btn" @click="gotoAppList">管理</span>
@@ -247,12 +247,6 @@
 		color: #007AFF;
 		padding-right: 10px;
 		cursor: pointer;
-	}
-
-	::v-deep .uni-forms-item__content {
-		display: flex;
-		align-items: center;
-		flex-wrap: wrap;
 	}
 	::v-deep .uni-forms-item__label {
 		width: 90px !important;

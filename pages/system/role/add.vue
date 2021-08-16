@@ -7,7 +7,7 @@
       <uni-forms-item name="role_name" label="名称" required>
         <uni-easyinput placeholder="角色名称" v-model="formData.role_name" trim="both"></uni-easyinput>
       </uni-forms-item>
-      <uni-forms-item name="permission" label="权限">
+      <uni-forms-item name="permission" label="权限" class="flex-center-x">
         <uni-data-checkbox :multiple="true" v-model="formData.permission" collection="uni-id-permissions" field="permission_name as text, permission_id as value"></uni-data-checkbox>
       </uni-forms-item>
       <uni-forms-item name="comment" label="备注">
@@ -96,9 +96,4 @@
   }
 </script>
 <style>
-	::v-deep .uni-forms-item__content {
-		display: flex;
-		align-items: center;
-		flex-wrap: wrap;
-	}
 </style>

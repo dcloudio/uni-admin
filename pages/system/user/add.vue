@@ -7,10 +7,10 @@
 			<uni-forms-item name="password" label="初始密码" required>
 				<uni-easyinput v-model="formData.password" :clearable="false" placeholder="请输入初始密码" />
 			</uni-forms-item>
-			<uni-forms-item name="role" label="角色列表">
+			<uni-forms-item name="role" label="角色列表" class="flex-center-x">
 				<uni-data-checkbox multiple :localdata="roles" v-model="formData.role" />
 			</uni-forms-item>
-			<uni-forms-item name="dcloud_appid" label="可登录应用" labelWidth="100">
+			<uni-forms-item name="dcloud_appid" label="可登录应用" labelWidth="100" class="flex-center-x">
 				<uni-data-checkbox :multiple="true" v-model="formData.dcloud_appid" collection="opendb-app-list"
 					field="appid as value, name as text"></uni-data-checkbox>
 				<span class="link-btn" @click="gotoAppList">管理</span>
@@ -162,12 +162,6 @@
 	}
 </script>
 <style>
-	::v-deep .uni-forms-item__content {
-		display: flex;
-		align-items: center;
-		flex-wrap: wrap;
-	}
-
 	::v-deep .uni-forms-item__label {
 		width: 90px !important;
 	}
