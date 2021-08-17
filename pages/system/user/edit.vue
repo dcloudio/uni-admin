@@ -134,7 +134,7 @@
 					functionName: 'uni-id-cf'
 				}).then(res => {
 					uni.showToast({
-						title: '新增成功'
+						title: '修改成功'
 					})
 					this.getOpenerEventChannel().emit('refreshData')
 					setTimeout(() => uni.navigateBack(), 500)
