@@ -303,6 +303,12 @@ uni-page-head .uni-btn-icon {
 		border: 1px #ebeef5 solid;
 		box-sizing: border-box;
 	}
+	::v-deep .uni-table .tr-table--border {
+		border-left: 1px #ebeef5 solid;
+	}
+	::v-deep .table--border {
+		border-left: none !important;
+	}
 }
 
 /* #endif */
