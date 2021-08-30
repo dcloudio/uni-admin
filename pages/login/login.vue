@@ -24,7 +24,7 @@
 						:placeholder="$t('login.field.captcha')" v-model="formData.captcha" />
 					<view class="admin-captcha-img pointer" @click="createCaptcha">
 						<i v-if="captchaLoading" class="uni-loading"></i>
-						<img v-else :src="captchaBase64" width="100%" height="100%" />
+						<img v-else :src="captchaBase64" style="width:120px; height:32px" />
 					</view>
 				</uni-forms-item>
 				<view class="uni-button-group">
@@ -303,7 +303,8 @@
 		background-color: #fff;
 		width: 100px;
 		height: 33px;
-		border: 1px #E5E5E5 solid;
+		border-left: 1px #E5E5E5 solid;
+		border-right: 1px #E5E5E5 solid;
 		border-radius: 0 5px 5px 0;
 		background-color: #f9f9f9;
 	}
