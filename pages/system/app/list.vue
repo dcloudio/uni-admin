@@ -3,9 +3,7 @@
 		<view class="uni-header">
 			<view class="uni-group">
 				<view class="uni-title"></view>
-				<view class="uni-sub-title">
-					管理用户可登录的应用
-				</view>
+				<view class="uni-sub-title">{{$t('app.text.describle')}}</view>
 			</view>
 			<view class="uni-group">
 				<input class="uni-search" type="text" v-model="query" @confirm="search" :placeholder="$t('common.placeholder.query')" />

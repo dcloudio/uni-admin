@@ -81,7 +81,7 @@
 						</button>
 					</picker>
 					<!-- #endif -->
-					<uni-pagination :page-size="pagination.size" v-model="pagination.current"
+					<uni-pagination  :page-size="pagination.size" v-model="pagination.current"
 						:total="pagination.count" @change="onPageChanged" />
 				</view>
 			</unicloud-db>

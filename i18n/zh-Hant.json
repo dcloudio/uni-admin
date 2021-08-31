@@ -74,6 +74,12 @@
 			"permissionManager": "權限管理"
 		}
 	},
+	"app": {
+		"text": {
+			"appManager": "应用管理",
+			"describle": "管理用戶可登錄的應用"
+		}
+	},
 	"menu": {
 		"text": {
 			"menuManager": "菜單管理",

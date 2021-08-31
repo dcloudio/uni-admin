@@ -33,8 +33,9 @@
 						<uni-badge class="debug-badge" :text="logs.length" type="error"></uni-badge>
 					</view>
 					<!-- #endif -->
-					<view v-for="link in links" :key="link.url" class="menu-item">
-						<uni-link :href="link.url" :text="$t(link.text)" color="#666" fontSize="13" style="font-size:12px;" />
+					<view v-for="item in links" :key="item.url || item.text" class="menu-item">
+						<view v-if="!item.url && item.lang" class="hover-highlight dlanguage-item" @click="changeLanguage(item.lang)">{{item.text}}</view>
+						<uni-link v-else :href="item.url" :text="$t(item.text)" color="#666" fontSize="13" style="font-size:12px;" />
 					</view>
 					<template v-if="userInfo.username">
 						<view class="menu-item username">
@@ -42,7 +43,7 @@
 							<text>{{userInfo.username}}</text>
 						</view>
 						<view class="menu-item ">
-							<text class="logout pointer" @click="logout">{{ $t("topwindow.text.signOut") }}</text>
+							<text class="logout pointer hover-highlight" @click="logout">{{ $t("topwindow.text.signOut") }}</text>
 						</view>
 					</template>
 					<view class="popup-menu__arrow"></view>
@@ -154,13 +155,13 @@
 			changePassword() {
 				!this.matchLeftWindow ? this.toPasswordPage() : this.showPasswordPopup()
 			},
-			changeLanguage() {
-				if (this.$i18n.locale === 'en') {
-					this.$i18n.locale = 'zh-Hans'
-				} else if (this.$i18n.locale === 'zh-Hans') {
-					this.$i18n.locale =	 'zh-Hant'
+			changeLanguage(lang) {
+				if (lang) {
+					this.$i18n.locale = lang
+					uni.setLocale(lang)
 				} else {
 					this.$i18n.locale = 'en'
+					uni.setLocale('en')
 				}
 			}
 		}
@@ -371,7 +372,7 @@
 		display: block;
 	}
 
-	.logout:hover {
+	.hover-highlight:hover {
 		color: $menu-text-color-actived;
 	}
 
@@ -398,5 +399,12 @@
 
 	.password-popup {
 		padding: 30px;
+	}
+
+
+	.language-item {
+		font-stretch: 12px;
+		vertical-align: baseline;
+		text-decoration: underline;
 	}
 </style>

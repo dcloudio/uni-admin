@@ -74,6 +74,12 @@
 			"permissionManager": "Permissions Manager"
 		}
 	},
+	"app": {
+		"text": {
+			"appManager": "App Manager",
+			"describle": "Manage the apps that users can login"
+		}
+	},
 	"menu": {
 		"text": {
 			"menuManager": "Menus Manager",

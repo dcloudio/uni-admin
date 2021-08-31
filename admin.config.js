@@ -10,7 +10,16 @@ export default {
 	},
 	navBar: { // 顶部导航
 		logo: '/static/logo.png', // 左侧 Logo
-		links: [{ // 右侧链接
+		links: [{
+			text: '中文简体',
+			lang: 'zh-Hans'
+		}, {
+			text: '中文繁體',
+			lang: 'zh-Hant'
+		}, {
+			text: 'English',
+			lang: 'en'
+		}, { // 右侧链接
 			text: 'topwindow.text.doc',
 			url: 'https://uniapp.dcloud.net.cn/uniCloud/admin'
 		}, {
