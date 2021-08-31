@@ -112,7 +112,6 @@ $border-color: #ebeef5;
 
 /* #ifndef APP-NVUE */
 .uni-table-tr {
-	/* #ifndef VUE3 */
 	::v-deep .uni-table-th {
 		&.table--border:last-child {
 			// border-right: none;
@@ -124,21 +123,6 @@ $border-color: #ebeef5;
 			// border-right: none;
 		}
 	}
-	/* #endif */
-	
-	/* #ifdef VUE3 */
-	:deep(.uni-table-th) {
-		&.table--border:last-child {
-			// border-right: none;
-		}
-	}
-	
-	:deep(.uni-table-td) {
-		&.table--border:last-child {
-			// border-right: none;
-		}
-	}
-	/* #endif */
 }
 
 /* #endif */
