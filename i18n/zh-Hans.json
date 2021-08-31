@@ -15,8 +15,8 @@
 	},
 	"topwindow": {
 		"text": {
-			"doc": "Admin框架文档",
-			"plugin": "浏览更多Admin插件",
+			"doc": "Admin 框架文档",
+			"plugin": "浏览更多 Admin 插件",
 			"changeLanguage": "切换语言",
 			"changePwd": "修改密码",
 			"signOut": "退出"
@@ -52,9 +52,12 @@
 			"edit": "修改",
 			"delete": "删除",
 			"batchDelete": "批量删除",
+			"exportExcel": "导出 Excel",
 			"submit": "提交",
 			"back": "返回"
-		}
+		},
+		"empty": "没有更多数据",
+		"piecePerPage": "条/页"
 	},
 	"user": {
 		"text": {
@@ -79,6 +82,15 @@
 		"button": {
 			"addFirstLevelMenu": "新增一级增",
 			"addChildMenu": "子菜单"
+		}
+	},
+	"demo": {
+		"icons": {
+			"title": "图标",
+			"describle": "点击图标即可复制图标代码"
+		},
+		"table": {
+			"title": "表格"
 		}
 	}
 }

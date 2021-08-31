@@ -51,10 +51,13 @@
 			"add": "Add",
 			"edit": "Edit",
 			"delete": "Delete",
-			"batchDelete": "BatchDel",
+			"batchDelete": "Batch Delete",
+			"exportExcel": "Export Excel",
 			"submit": "Submit",
 			"back": "Back"
-		}
+		},
+		"empty": "No more data",
+		"piecePerPage": "piece/page"
 	},
 	"user": {
 		"text": {
@@ -79,6 +82,15 @@
 		"button": {
 			"addFirstLevelMenu": "Add First-level Menu",
 			"addChildMenu": "Submenu"
+		}
+	},
+	"demo": {
+		"icons": {
+			"title": "Icons",
+			"describle": "Click icons to copy the icon code"
+		},
+		"table": {
+			"title": "Table"
 		}
 	}
 }

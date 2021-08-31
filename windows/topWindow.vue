@@ -34,7 +34,7 @@
 					</view>
 					<!-- #endif -->
 					<view v-for="link in links" :key="link.url" class="menu-item">
-						<uni-link :href="link.url" :text="link.text" color="#666" fontSize="13" style="font-size:12px;" />
+						<uni-link :href="link.url" :text="$t(link.text)" color="#666" fontSize="13" style="font-size:12px;" />
 					</view>
 					<template v-if="userInfo.username">
 						<view class="menu-item username">

@@ -14,7 +14,7 @@
 				<!-- #ifdef H5 -->
 				<download-excel class="hide-on-phone" :fields="exportExcel.fields" :data="exportExcelData"
 					:type="exportExcel.type" :name="exportExcel.filename">
-					<button class="uni-button" type="primary" size="mini">导出 Excel</button>
+					<button class="uni-button" type="primary" size="mini">{{$t('common.button.exportExcel')}}</button>
 				</download-excel>
 				<!-- #endif -->
 			</view>
@@ -25,7 +25,7 @@
 				page-data="replace" :orderby="orderby" :getcount="true" :page-size="options.pageSize"
 				:page-current="options.pageCurrent" v-slot:default="{data,pagination,loading,error,options}"
 				:options="options" loadtime="manual" @load="onqueryload">
-				<uni-table ref="table" :loading="loading" :emptyText="error.message || '没有更多数据'" border stripe
+				<uni-table ref="table" :loading="loading" :emptyText="error.message || $t('common.empty')" border stripe
 					type="selection" @selection-change="selectionChange" class="table-pc">
 					<uni-tr>
 						<uni-th align="center" filter-type="search" @filter-change="filterChange($event, 'role_id')"
@@ -63,7 +63,7 @@
 					<picker class="select-picker" mode="selector" :value="pageSizeIndex" :range="pageSizeOption"
 						@change="changeSize">
 						<button type="default" size="mini" :plain="true">
-							<text>{{pageSizeOption[pageSizeIndex]}} 条/页</text>
+							<text>{{pageSizeOption[pageSizeIndex]}} {{$t('common.piecePerPage')}}</text>
 							<uni-icons class="select-picker-icon" type="arrowdown" size="12" color="#999"></uni-icons>
 						</button>
 					</picker>
