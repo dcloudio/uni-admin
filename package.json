@@ -69,7 +69,9 @@
 				},
 				"H5-pc": {
 					"Chrome": "y",
-					"IE": "y",
+					"IE": {
+                        "minVersion": "vue2: ie8+，vue3: 不支持 ie"
+                    },
 					"Edge": "y",
 					"Firefox": "y",
 					"Safari": "y"
