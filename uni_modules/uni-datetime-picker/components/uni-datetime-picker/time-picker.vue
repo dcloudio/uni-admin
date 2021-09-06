@@ -6,7 +6,7 @@
 					:class="{'uni-datetime-picker-disabled': disabled, 'uni-datetime-picker-timebox': border}">
 					<text class="uni-datetime-picker-text">{{time}}</text>
 					<view v-if="!time" class="uni-datetime-picker-time">
-						<text class="uni-datetime-picker-text">选择{{title}}</text>
+						<text class="uni-datetime-picker-text">{{selectTimeText}}</text>
 					</view>
 				</view>
 			</slot>
@@ -15,7 +15,7 @@
 		<view v-if="visible" class="uni-datetime-picker-popup" :class="[dateShow && timeShow ? '' : 'fix-nvue-height']"
 			:style="fixNvueBug">
 			<view class="uni-title">
-				<text class="uni-datetime-picker-text">设置{{title}}</text>
+				<text class="uni-datetime-picker-text">{{selectTimeText}}</text>
 			</view>
 			<view v-if="dateShow" class="uni-datetime-picker__container-box">
 				<picker-view class="uni-datetime-picker-view" :indicator-style="indicatorStyle" :value="ymd"
@@ -65,14 +65,14 @@
 			</view>
 			<view class="uni-datetime-picker-btn">
 				<view @click="clearTime">
-					<text class="uni-datetime-picker-btn-text">清空</text>
+					<text class="uni-datetime-picker-btn-text">{{clearText}}</text>
 				</view>
 				<view class="uni-datetime-picker-btn-group">
 					<view class="uni-datetime-picker-cancel" @click="tiggerTimePicker">
-						<text class="uni-datetime-picker-btn-text">取消</text>
+						<text class="uni-datetime-picker-btn-text">{{cancelText}}</text>
 					</view>
 					<view @click="setTime">
-						<text class="uni-datetime-picker-btn-text">确定</text>
+						<text class="uni-datetime-picker-btn-text">{{okText}}</text>
 					</view>
 				</view>
 			</view>
@@ -87,6 +87,11 @@
 	// #ifdef H5
 	import keypress from './keypress'
 	// #endif
+	import {
+		initVueI18n
+	} from '@dcloudio/uni-i18n'
+	import messages from './i18n/index.js'
+	const {	t	} = initVueI18n(messages)
 
 	/**
 	 * DatetimePicker 时间选择器
@@ -147,6 +152,10 @@
 				default: 'datetime'
 			},
 			value: {
+				type: [String, Number],
+				default: ''
+			},
+			modelValue: {
 				type: [String, Number],
 				default: ''
 			},
@@ -233,17 +242,6 @@
 			},
 			seconds(newVal) {
 				this.checkValue('second', this.second, newVal)
-			}
-		},
-		created() {
-			this.form = this.getForm('uniForms')
-			this.formItem = this.getForm('uniFormsItem')
-
-			if (this.formItem) {
-				if (this.formItem.name) {
-					this.rename = this.formItem.name
-					this.form.inputChildrens.push(this)
-				}
 			}
 		},
 		computed: {
@@ -412,6 +410,22 @@
 						return 59
 					}
 				}
+			},
+
+			/**
+			 * for i18n
+			 */
+			selectTimeText() {
+				return t("uni-datetime-picker.selectTime")
+			},
+			okText() {
+				return t("uni-datetime-picker.ok")
+			},
+			clearText() {
+				return t("uni-datetime-picker.clear")
+			},
+			cancelText() {
+				return t("uni-datetime-picker.cancel")
 			}
 		},
 
@@ -433,20 +447,6 @@
 
 			lessThanTen(item) {
 				return item < 10 ? '0' + item : item
-			},
-
-			/**
-			 * 获取父元素实例
-			 */
-			getForm(name = 'uniForms') {
-				let parent = this.$parent;
-				let parentName = parent.$options.name;
-				while (parentName !== name) {
-					parent = parent.$parent;
-					if (!parent) return false
-					parentName = parent.$options.name;
-				}
-				return parent;
 			},
 
 			/**
@@ -701,13 +701,13 @@
 				this.time = this.createDomSting()
 				if (!emit) return
 				if (this.returnType === 'timestamp' && this.type !== 'time') {
-					this.formItem && this.formItem.setValue(this.createTimeStamp(this.time))
 					this.$emit('change', this.createTimeStamp(this.time))
 					this.$emit('input', this.createTimeStamp(this.time))
+					this.$emit('update:modelValue', this.createTimeStamp(this.time))
 				} else {
-					this.formItem && this.formItem.setValue(this.time)
 					this.$emit('change', this.time)
 					this.$emit('input', this.time)
+					this.$emit('update:modelValue', this.time)
 				}
 			},
 
@@ -750,9 +750,9 @@
 			 */
 			clearTime() {
 				this.time = ''
-				this.formItem && this.formItem.setValue(this.time)
 				this.$emit('change', this.time)
 				this.$emit('input', this.time)
+				this.$emit('update:modelValue', this.time)
 				this.tiggerTimePicker()
 			},
 

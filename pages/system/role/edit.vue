@@ -7,16 +7,16 @@
       <uni-forms-item name="role_name" label="名称" required>
         <uni-easyinput placeholder="角色名称" v-model="formData.role_name" trim="both"></uni-easyinput>
       </uni-forms-item>
-      <uni-forms-item name="permission" label="权限">
+      <uni-forms-item name="permission" label="权限" class="flex-center-x">
         <uni-data-checkbox :multiple="true" v-model="formData.permission" collection="uni-id-permissions" field="permission_name as text, permission_id as value"></uni-data-checkbox>
       </uni-forms-item>
       <uni-forms-item name="comment" label="备注">
         <uni-easyinput type="textarea" placeholder="备注" v-model="formData.comment" trim="both"></uni-easyinput>
       </uni-forms-item>
       <view class="uni-button-group">
-        <button type="primary" class="uni-button" style="width: 100px;" @click="submit">提交</button>
+        <button type="primary" class="uni-button" style="width: 100px;" @click="submit">{{$t('common.button.submit')}}</button>
         <navigator open-type="navigateBack" style="margin-left: 15px;">
-            <button class="uni-button" style="width: 100px;">返回</button>
+            <button class="uni-button" style="width: 100px;">{{$t('common.button.back')}}</button>
         </navigator>
       </view>
     </uni-forms>
@@ -126,9 +126,4 @@
   }
 </script>
 <style>
-	::v-deep .uni-forms-item__content {
-		display: flex;
-		align-items: center;
-		flex-wrap: wrap;
-	}
 </style>

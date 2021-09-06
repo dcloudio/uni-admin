@@ -2,7 +2,7 @@
 	"name": "uniCloud-admin",
 	"id": "uni-template-admin",
 	"displayName": "uniCloud admin 基础框架",
-	"version": "1.6.0",
+	"version": "1.7.0",
 	"description": "基于 uni-app，uniCloud 的 admin 管理项目模板",
 	"main": "main.js",
 	"scripts": {
@@ -69,7 +69,9 @@
 				},
 				"H5-pc": {
 					"Chrome": "y",
-					"IE": "y",
+					"IE": {
+                        "minVersion": "vue2: ie8+，vue3: 不支持 ie"
+                    },
 					"Edge": "y",
 					"Firefox": "y",
 					"Safari": "y"
@@ -84,7 +86,11 @@
 				"快应用": {
 					"华为": "u",
 					"联盟": "u"
-				}
+                },
+                "Vue": {
+                    "vue2": "y",
+                    "vue3": "y"
+                }
 			}
 		}
 	}

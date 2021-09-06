@@ -1,5 +1,5 @@
 <template>
-	<view class="uni-data-checklist">
+	<view class="uni-data-checklist" :style="{'margin-top':isTop+'px'}">
 		<template v-if="!isLocal">
 			<view class="uni-data-loading">
 				<uni-load-more v-if="!mixinDatacomErrorMessage" status="loading" iconType="snow" :iconSize="18" :content-text="contentText"></uni-load-more>
@@ -74,12 +74,13 @@
 		// 	prop: 'modelValue',
 		// 	event: 'update:modelValue'
 		// },
+		emits:['input','update:modelValue','change'],
 		props: {
 			mode: {
 				type: String,
 				default: 'default'
 			},
-			
+
 			multiple: {
 				type: Boolean,
 				default: false
@@ -159,11 +160,18 @@
 			},
 			value(newVal) {
 				this.dataList = this.getDataList(newVal)
-				this.formItem && this.formItem.setValue(newVal)
+				// fix by mehaotian is_reset 在 uni-forms 中定义
+				if(!this.is_reset){
+					this.is_reset = false
+					this.formItem && this.formItem.setValue(newVal)
+				}
 			},
 			modelValue(newVal) {
 				this.dataList = this.getDataList(newVal);
-				this.formItem && this.formItem.setValue(newVal);
+				if(!this.is_reset){
+					this.is_reset = false
+					this.formItem && this.formItem.setValue(newVal)
+				}
 			}
 		},
 		data() {
@@ -179,7 +187,8 @@
 				styles: {
 					selectedColor: '#007aff',
 					selectedTextColor: '#333',
-				}
+				},
+				isTop:0
 			};
 		},
 		computed:{
@@ -195,7 +204,13 @@
 			// this.formItem && this.formItem.setValue(this.value)
 
 			if (this.formItem) {
+				this.isTop = 6
 				if (this.formItem.name) {
+					// 如果存在name添加默认值,否则formData 中不存在这个字段不校验
+					if(!this.is_reset){
+						this.is_reset = false
+						this.formItem.setValue(this.dataValue)
+					}
 					this.rename = this.formItem.name
 					this.form.inputChildrens.push(this)
 				}
@@ -249,7 +264,7 @@
 
 				if (this.multiple) {
 					this.range.forEach(item => {
-						
+
 						if (values.includes(item[this.map.value] + '')) {
 							detail.value.push(item[this.map.value])
 							detail.data.push(item)
@@ -336,7 +351,7 @@
 							}
 						}
 					}
-					this.setStyles(item, index)  
+					this.setStyles(item, index)
 					list[index] = item
 				})
 				return list
@@ -390,7 +405,7 @@
 			setStyleIcon(item) {
 				let styles = {}
 				let classles = ''
-				let selectedColor = this.selectedColor?this.selectedColor:'#007aff' 
+				let selectedColor = this.selectedColor?this.selectedColor:'#007aff'
 				styles['background-color'] = item.selected?selectedColor:'#fff'
 				styles['border-color'] = item.selected?selectedColor:'#DCDFE6'
 
@@ -416,7 +431,7 @@
 				if(!item.selected && item.disabled){
 					styles.color = '#999'
 				}
-				
+
 				for (let i in styles) {
 					classles += `${i}:${styles[i]};`
 				}
@@ -505,9 +520,9 @@
 						border-right-color: #007aff;
 						border-right-style: solid;
 						border-bottom-width:1px;
-						border-bottom-color: #007aff; 
+						border-bottom-color: #007aff;
 						border-bottom-style: solid;
-						height: 12px; 
+						height: 12px;
 						width: 6px;
 						left: -5px;
 						transform-origin: center;
@@ -624,7 +639,7 @@
 							color: $checked-color;
 						}
 						// 选中禁用
-						&.is-disable { 
+						&.is-disable {
 							.checkbox__inner {
 								opacity: $disable;
 							}
@@ -774,7 +789,11 @@
 								transform: rotate(45deg);
 							}
 						}
-
+						.radio__inner {
+							.radio__inner-icon {
+								opacity: 1;
+							}
+						}
 						.checklist-text {
 							color: $checked-color;
 						}

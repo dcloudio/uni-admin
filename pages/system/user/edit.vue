@@ -10,10 +10,10 @@
 					<view slot="right" class="cancel-reset-password-btn" @click="trigger">取消</view>
 				</uni-easyinput>
 			</uni-forms-item>
-			<uni-forms-item name="role" label="角色列表">
+			<uni-forms-item name="role" label="角色列表" class="flex-center-x">
 				<uni-data-checkbox multiple :localdata="roles" v-model="formData.role" />
 			</uni-forms-item>
-			<uni-forms-item name="dcloud_appid" label="可登录应用">
+			<uni-forms-item name="dcloud_appid" label="可登录应用" class="flex-center-x">
 				<uni-data-checkbox :multiple="true" v-model="formData.dcloud_appid" collection="opendb-app-list"
 					field="appid as value, name as text"></uni-data-checkbox>
 				<span class="link-btn" @click="gotoAppList">管理</span>
@@ -29,8 +29,8 @@
 				<view v-else class="uni-form-item-empty">{{parseUserStatus(formData.status)}}</view>
 			</uni-forms-item>
 			<view class="uni-button-group">
-				<button style="width: 100px;" type="primary" class="uni-button" @click="submitForm">提交</button>
-				<navigator open-type="navigateBack" style="margin-left: 15px;"><button style="width: 100px;" class="uni-button">返回</button></navigator>
+				<button style="width: 100px;" type="primary" class="uni-button" @click="submitForm">{{$t('common.button.submit')}}</button>
+				<navigator open-type="navigateBack" style="margin-left: 15px;"><button style="width: 100px;" class="uni-button">{{$t('common.button.back')}}</button></navigator>
 			</view>
 		</uni-forms>
 	</view>
@@ -134,7 +134,7 @@
 					functionName: 'uni-id-cf'
 				}).then(res => {
 					uni.showToast({
-						title: '新增成功'
+						title: '修改成功'
 					})
 					this.getOpenerEventChannel().emit('refreshData')
 					setTimeout(() => uni.navigateBack(), 500)
@@ -247,12 +247,6 @@
 		color: #007AFF;
 		padding-right: 10px;
 		cursor: pointer;
-	}
-
-	::v-deep .uni-forms-item__content {
-		display: flex;
-		align-items: center;
-		flex-wrap: wrap;
 	}
 	::v-deep .uni-forms-item__label {
 		width: 90px !important;

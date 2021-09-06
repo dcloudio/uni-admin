@@ -20,7 +20,7 @@
         },
         onShow() {
             uni.setNavigationBarTitle({
-                title: '修改密码'
+                title: this.$i18n.t('updatePwd.text.title')
             })
         },
         methods: {

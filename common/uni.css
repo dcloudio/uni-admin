@@ -299,9 +299,15 @@ uni-page-head .uni-btn-icon {
 
 @media screen and (min-width: 450px) {
 	.table-pc {
-		min-height: 600px;
+		min-height: calc(100vh - 237px);
 		border: 1px #ebeef5 solid;
 		box-sizing: border-box;
+	}
+	::v-deep .uni-table .tr-table--border {
+		border-left: 1px #ebeef5 solid;
+	}
+	::v-deep .table--border {
+		border-left: none !important;
 	}
 }
 
@@ -318,7 +324,7 @@ uni-page-head .uni-btn-icon {
 	color: #606266 !important;
 }
 
-::v-deep .uni-forms-item__content {
+::v-deep .flex-center-x .uni-forms-item__content {
 	display: flex;
 	align-items: center;
 	flex-wrap: wrap;

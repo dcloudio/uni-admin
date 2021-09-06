@@ -1,7 +1,7 @@
 {
   "id": "uni-id",
   "displayName": "uni-id",
-  "version": "3.3.1",
+  "version": "3.3.5",
   "description": "简单、统一、可扩展的用户中心",
   "keywords": [
     "uniid",
@@ -73,6 +73,10 @@
         "快应用": {
           "华为": "u",
           "联盟": "u"
+        },
+        "Vue": {
+            "vue2": "y",
+            "vue3": "u"
         }
       }
     }

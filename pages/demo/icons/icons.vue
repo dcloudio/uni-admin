@@ -2,8 +2,8 @@
 	<view>
 		<view class="uni-header">
 			<view class="uni-group">
-				<view class="uni-title">图标（uni-icons）</view>
-				<view class="uni-sub-title">点击图标即可复制图标代码</view>
+				<view class="uni-title">{{$t('demo.icons.title')}}（uni-icons）</view>
+				<view class="uni-sub-title">{{$t('demo.icons.describle')}}</view>
 			</view>
 		</view>
 		<view class="uni-container">

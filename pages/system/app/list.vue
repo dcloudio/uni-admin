@@ -3,21 +3,19 @@
 		<view class="uni-header">
 			<view class="uni-group">
 				<view class="uni-title"></view>
-				<view class="uni-sub-title">
-					管理用户可登录的应用
-				</view>
+				<view class="uni-sub-title">{{$t('app.text.describle')}}</view>
 			</view>
 			<view class="uni-group">
-				<input class="uni-search" type="text" v-model="query" @confirm="search" placeholder="请输入搜索内容" />
-				<button class="uni-button" type="default" size="mini" @click="search">搜索</button>
-				<button class="uni-button" type="default" size="mini" @click="navigateTo('./add')">新增</button>
+				<input class="uni-search" type="text" v-model="query" @confirm="search" :placeholder="$t('common.placeholder.query')" />
+				<button class="uni-button" type="default" size="mini" @click="search">{{$t('common.button.search')}}</button>
+				<button class="uni-button" type="default" size="mini" @click="navigateTo('./add')">{{$t('common.button.add')}}</button>
 				<button class="uni-button" type="default" size="mini" :disabled="!selectedIndexs.length"
-					@click="delTable">批量删除</button>
+					@click="delTable">{{$t('common.button.batchDelete')}}</button>
 				<!-- #ifdef H5 -->
 				<!-- #ifndef VUE3 -->
 				<download-excel class="hide-on-phone" :fields="exportExcel.fields" :data="exportExcelData"
 					:type="exportExcel.type" :name="exportExcel.filename">
-					<button class="uni-button" type="primary" size="mini">导出 Excel</button>
+					<button class="uni-button" type="primary" size="mini">{{$t('common.button.exportExcel')}}</button>
 				</download-excel>
 				<!-- #endif -->
 				<!-- #endif -->
@@ -28,7 +26,7 @@
 				:where="where" page-data="replace" :orderby="orderby" :getcount="true" :page-size="options.pageSize"
 				:page-current="options.pageCurrent" v-slot:default="{data,pagination,loading,error,options}"
 				:options="options" loadtime="manual" @load="onqueryload">
-				<uni-table ref="table" :loading="loading || addAppidLoading" :emptyText="error.message || '没有更多数据'"
+				<uni-table ref="table" :loading="loading || addAppidLoading" :emptyText="error.message || $t('common.empty')"
 					border stripe type="selection" @selection-change="selectionChange" class="table-pc">
 					<uni-tr>
 						<uni-th align="center" filter-type="search" @filter-change="filterChange($event, 'appid')"
@@ -55,9 +53,9 @@
 							</view>
 							<view v-else class="uni-group">
 								<button @click="navigateTo('./edit?id='+item._id, false)" class="uni-button" size="mini"
-									type="primary">修改</button>
+									type="primary">{{$t('common.button.edit	')}}</button>
 								<button @click="confirmDelete(item._id)" class="uni-button" size="mini"
-									type="warn">删除</button>
+									type="warn">{{$t('common.button.delete')}}</button>
 							</view>
 						</uni-td>
 					</uni-tr>

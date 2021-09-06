@@ -11,9 +11,9 @@
         <textarea placeholder="应用描述" @input="binddata('description', $event.detail.value)" class="uni-textarea-border" v-model="formData.description"></textarea>
       </uni-forms-item>
       <view class="uni-button-group">
-        <button type="primary" class="uni-button" style="width: 100px;" @click="submit">提交</button>
+        <button type="primary" class="uni-button" style="width: 100px;" @click="submit">{{$t('common.button.submit')}}</button>
         <navigator open-type="navigateBack" style="margin-left: 15px;">
-            <button class="uni-button" style="width: 100px;">返回</button>
+            <button class="uni-button" style="width: 100px;">{{$t('common.button.back')}}</button>
         </navigator>
       </view>
     </uni-forms>

@@ -2,17 +2,17 @@
     <view>
         <view class="uni-header">
             <view class="uni-group">
-                <view class="uni-title">表格</view>
+                <view class="uni-title">{{$t('demo.table.title')}}</view>
             </view>
             <view class="uni-group">
-                <input class="uni-search" type="text" v-model="searchVal" placeholder="请输入搜索内容" />
-                <button class="uni-button" type="default" size="mini" @click="search">搜索</button>
-                <button class="uni-button" type="default" size="mini">新增</button>
-                <button class="uni-button" type="default" size="mini" @click="delTable">删除</button>
+				<input class="uni-search" type="text" v-model="searchVal" @confirm="search" :placeholder="$t('common.placeholder.query')" />
+				<button class="uni-button" type="default" size="mini" @click="search">{{$t('common.button.search')}}</button>
+				<button class="uni-button" type="primary" size="mini">{{$t('common.button.add')}}</button>
+				<button class="uni-button" type="warn" size="mini" @click="delTable">{{$t('common.button.batchDelete')}}</button>
             </view>
         </view>
         <view class="uni-container">
-            <uni-table :loading="loading" border stripe type="selection" emptyText="暂无更多数据" @selection-change="selectionChange">
+            <uni-table :loading="loading" border stripe type="selection" :emptyText="$t('common.empty')" @selection-change="selectionChange">
                 <uni-tr>
                     <uni-th width="150" align="center">日期</uni-th>
                     <uni-th width="150" align="center">姓名</uni-th>
@@ -27,8 +27,8 @@
                     <uni-td>{{item.address}}</uni-td>
                     <uni-td>
                         <view class="uni-group">
-                            <button class="uni-button" size="mini" type="primary">修改</button>
-                            <button class="uni-button" size="mini" type="warn">删除</button>
+                            <button class="uni-button" size="mini" type="primary">{{$t('common.button.edit')}}</button>
+                            <button class="uni-button" size="mini" type="warn">{{$t('common.button.delete')}}</button>
                         </view>
                     </uni-td>
                 </uni-tr>
