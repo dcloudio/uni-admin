@@ -1,4 +1,4 @@
-import store from '@/store'
+import store from '@/store/index.js'
 import config from '@/admin.config.js'
 const debugOptions = config.navBar.debug
 
