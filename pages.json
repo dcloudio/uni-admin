@@ -20,8 +20,16 @@
 				"navigationBarTitleText": "修改密码"
 			}
 
-		}
-	],
+		} ,{
+            "path" : "pages/dashboard/dashboard",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "",
+                "enablePullDownRefresh": false
+            }
+            
+        }
+    ],
 	"subPackages": [{
 		"root": "pages/system",
 		"pages": [{

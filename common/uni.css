@@ -34,9 +34,9 @@ uni-page-head .uni-btn-icon {
 	padding-top: 59px;
 }
 
-.uni-app--showleftwindow uni-page-head~uni-page-wrapper uni-page-body {
-	/* padding-top: 44px; */
-}
+/* .uni-app--showleftwindow uni-page-head~uni-page-wrapper uni-page-body {
+	padding-top: 44px;
+} */
 
 .uni-app--showleftwindow uni-page-wrapper {
 	position: absolute;
@@ -56,6 +56,18 @@ uni-page-head .uni-btn-icon {
 	border-radius: 5px;
 	box-shadow: -1px -1px 5px 0 rgba(0, 0, 0, .1);
 	background-color: #fff;
+}
+
+[data-page="pages/dashboard/dashboard"] uni-page-body {
+    width: 100%;
+    min-height: 100%;
+	border: none !important;
+	background-color: #F5F5F5 !important;
+    box-shadow: none;
+}
+
+::v-deep .uni-card + .uni-border::after {
+	border: none !important;
 }
 
 .uni-app--showleftwindow .uni-container .uni-forms {
