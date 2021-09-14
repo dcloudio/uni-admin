@@ -26,12 +26,12 @@ app.$mount()
 // #ifdef VUE3
 import { createSSRApp } from 'vue'
 import { createI18n } from 'vue-i18n'
-const i18n = createI18n({
-	locale: 'zh-Hans',
-	messages
-})
 export function createApp() {
   const app = createSSRApp(App)
+  const i18n = createI18n({
+  	locale: 'zh-Hans',
+  	messages
+  })
   app.use(i18n)
   app.use(plugin)
   app.use(store)
