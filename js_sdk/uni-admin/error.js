@@ -7,6 +7,7 @@ export function initError(Vue) {
      if (debugOptions && debugOptions.enable === true) {
         const oldErrorHandler = Vue.config.errorHandler
         Vue.config.errorHandler = function errorHandler(err, vm, info) {
+			console.error(err)
              const route = vm.$page && vm.$page.route
              store.dispatch('error/add', {
                  err: err.toString(),
@@ -26,6 +27,7 @@ export function initError(app) {
     if (debugOptions && debugOptions.enable === true) {
         const oldErrorHandler = app.config.errorHandler
         app.config.errorHandler = function errorHandler(err, vm, info) {
+			console.error(err)
             const route = vm.$page && vm.$page.route
             store.dispatch('error/add', {
                 err: err.toString(),
