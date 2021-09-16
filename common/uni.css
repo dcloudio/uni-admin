@@ -455,3 +455,9 @@ button:after {
 .select-picker-icon {
 	margin-left: 8px;
 }
+
+.flex-cl  {
+	display: flex;
+	align-items: center;
+	flex-wrap: wrap;
+}
