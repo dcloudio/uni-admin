@@ -85,7 +85,9 @@
 				})
 			},
 			splitFullPath(path) {
-				if (!path) path = '/'
+				if (!path) {
+					path = '/'
+				}
 				return path.split('?')[0]
 			},
 		}
