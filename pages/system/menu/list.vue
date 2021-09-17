@@ -100,7 +100,7 @@
 	// 表查询配置
 	const dbOrderBy = 'create_date asc'
 	// 分页配置
-	const pageSize = 20
+	const pageSize = 20000
 	const pageCurrent = 1
 
 	import {
