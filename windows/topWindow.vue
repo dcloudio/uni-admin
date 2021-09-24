@@ -208,13 +208,22 @@
 		line-height: 30px;
 	}
 
-	.navbar-left,
 	.navbar-middle,
 	.navbar-right {
 		flex: 1;
 		/* #ifdef MP */
 		margin-right: 97px;
 		/* #endif */
+	}
+	
+	// 在平板以下，保持navbar-middle
+	@media screen and (max-width: 767px) {
+		.navbar-left{
+			flex: 1;
+			/* #ifdef MP */
+			margin-right: 97px;
+			/* #endif */
+		}
 	}
 
 	.navbar-middle,
