@@ -29,7 +29,7 @@
 				<unicloud-db ref="udb" @load="onqueryload" collection="opendb-admin-menus" :options="options"
 					:where="where" page-data="replace" :orderby="orderby" :getcount="true" :page-size="options.pageSize"
 					:page-current="options.pageCurrent" v-slot:default="{data,pagination,loading,error}">
-					<uni-table :loading="loading" :emptyText="errMsg || $t('common.empty')" border stripe>
+					<uni-table :loading="loading" class="table-pc" :emptyText="errMsg || $t('common.empty')" border stripe>
 						<uni-tr>
 							<uni-th align="center">排序</uni-th>
 							<uni-th width="200" align="center">名称</uni-th>
