@@ -215,7 +215,7 @@
 		margin-right: 97px;
 		/* #endif */
 	}
-	
+
 	// 在平板以下，保持navbar-middle
 	@media screen and (max-width: 767px) {
 		.navbar-left{
@@ -256,6 +256,7 @@
 		padding: 8px;
 		font-size: 13px;
 		color: #666;
+		line-height: 1;
 	}
 
 	.debug {
