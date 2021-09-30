@@ -33,7 +33,7 @@
 						<uni-badge class="debug-badge" :text="logs.length" type="error"></uni-badge>
 					</view>
 					<!-- #endif -->
-					<view v-for="item in links" :key="item.url || item.text" class="menu-item">
+					<view v-for="item in links" :key="item.text" class="menu-item">
 						<view v-if="!item.url && item.lang" class="hover-highlight dlanguage-item" @click="changeLanguage(item.lang)">{{item.text}}</view>
 						<uni-link v-else :href="item.url" :text="$t(item.text)" color="#666" fontSize="13" style="font-size:12px;" />
 					</view>
