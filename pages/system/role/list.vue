@@ -88,7 +88,7 @@
 	const db = uniCloud.database()
 	// 表查询配置
 	const dbOrderBy = 'create_date desc' // 排序字段
-	const dbSearchFields = ['role_id', 'role_name'] // 支持模糊搜索的字段列表	// 分页配置
+	const dbSearchFields = ['role_id', 'role_name', 'permission.permission_name'] // 支持模糊搜索的字段列表	// 分页配置
 	const pageSize = 20
 	const pageCurrent = 1
 
