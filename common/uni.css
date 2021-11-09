@@ -4,7 +4,6 @@ body,
 html {
 	-webkit-user-select: auto;
 	user-select: auto;
-	font: menu;
 	font-size: 16px;
 }
 
@@ -60,7 +59,7 @@ uni-page-head .uni-btn-icon {
 
 .uni-app--showleftwindow .uni-container .uni-forms {
 	padding: 15px;
-	max-width: 460px;
+	max-width: 600px;
 }
 
 /* #endif */
