@@ -72,7 +72,7 @@ exports.main = async (event, context) => {
 		}
 	}
 
-	//3.注册成功后创建新用户的积分表方法
+	// 3.注册成功后触发。
 	async function registerSuccess(uid) {
 		//用户接受邀请
 		if (inviteCode) {
@@ -85,14 +85,6 @@ exports.main = async (event, context) => {
 		await db.collection('uni-id-device').add({
 			...deviceInfo,
 			user_id: uid
-		})
-		await db.collection('uni-id-scores').add({
-			user_id: uid,
-			score: 1,
-			type: 1,
-			balance: 1,
-			comment: "",
-			create_date: Date.now()
 		})
 	}
 	//4.记录成功登录的日志方法
@@ -107,32 +99,70 @@ exports.main = async (event, context) => {
 			create_date: now
 		};
 
-		Object.assign(logData,
-			res.code === 0 ? {
-				user_id: res.uid,
-				state: 1
-			} : {
-				state: 0
-			})
-		if (res.type == 'register') {
-			await registerSuccess(res.uid)
-		} else {
-			if (Object.keys(deviceInfo).length) {
-				console.log(979797, {
-					deviceInfo,
-					user_id: res
-				});
-				//更新当前用户设备信息
-				await db.collection('uni-id-device').where({
-					user_id: res.uid
-				}).update(deviceInfo)
+		if(res.code === 0){
+			logData.user_id = res.uid
+			logData.state = 1
+			if(res.userInfo&&res.userInfo.password){
+				delete res.userInfo.password
 			}
+			if (res.type == 'register') {
+				await registerSuccess(res.uid)
+			} else {
+				if (Object.keys(deviceInfo).length) {
+					// console.log(979797, {
+					// 	deviceInfo,
+					// 	user_id: res
+					// });
+					//更新当前用户设备信息
+					await db.collection('uni-id-device').where({
+						user_id: res.uid
+					}).update(deviceInfo)
+				}
+			}
+		}else{
+			logData.state = 0
 		}
 		return await uniIdLogCollection.add(logData)
 	}
 
 	let res = {}
 	switch (action) { //根据action的值执行对应的操作
+		case 'refreshSessionKey':
+			let getSessionKey = await uniID.code2SessionWeixin({code:params.code});
+			if(getSessionKey.code){
+				return getSessionKey
+			}
+			res =  await uniID.updateUser({
+				uid: params.uid,
+				sessionKey:getSessionKey.sessionKey
+			})
+			console.log(res);
+			break;
+		case 'bindMobileByMpWeixin':
+			console.log(params);
+			let getSessionKeyRes = await uniID.getUserInfo({
+				uid: params.uid,
+				field: ['sessionKey']
+			})
+			if(getSessionKeyRes.code){
+				return getSessionKeyRes
+			}
+			let sessionKey = getSessionKeyRes.userInfo.sessionKey
+			console.log(getSessionKeyRes);
+			res = await uniID.wxBizDataCrypt({
+				...params,
+				sessionKey
+			})
+			console.log(res);
+			if(res.code){
+				return res
+			}
+			res = await uniID.bindMobile({
+				uid: params.uid,
+				mobile: res.purePhoneNumber
+			})
+			console.log(res);
+			break;
 		case 'bindMobileByUniverify':
 			let {
 				appid, apiKey, apiSecret
@@ -235,13 +265,60 @@ exports.main = async (event, context) => {
 			res.needCaptcha = needCaptcha;
 			break;
 		case 'loginByWeixin':
-			res = await uniID.loginByWeixin(params);
-			await uniID.updateUser({
-				uid: res.uid,
-				username: "微信用户"
-			});
-			res.userInfo.username = "微信用户"
-			await loginLog(res)
+			let loginRes = await uniID.loginByWeixin(params);
+			if(loginRes.code===0){
+				//用户完善资料（昵称、头像）
+				if(context.PLATFORM == "app-plus" && !loginRes.userInfo.nickname){
+					let {accessToken:access_token,openid} = loginRes,
+						{appid,appsecret:secret} = uniIdConfig['app-plus'].oauth.weixin;
+					let wxRes = await uniCloud.httpclient.request(
+						`https://api.weixin.qq.com/sns/userinfo?access_token=${access_token}&openid=${openid}&scope=snsapi_userinfo&appid=${appid}&secret=${secret}`, {
+							method: 'POST',
+							contentType: 'json', // 指定以application/json发送data内的数据
+							dataType: 'json' // 指定返回值为json格式，自动进行parse
+						})
+					if(wxRes.status == 200){
+						let {nickname,headimgurl} = wxRes.data;
+						let headimgurlFile = {},cloudPath = loginRes.uid+'/'+Date.now()+"headimgurl.jpg";
+						let getImgBuffer = await uniCloud.httpclient.request(headimgurl)
+						if(getImgBuffer.status == 200){
+							let {fileID} = await uniCloud.uploadFile({
+							    cloudPath,
+							    fileContent: getImgBuffer.data
+							});
+							headimgurlFile = {
+								name:cloudPath,
+								extname:"jpg",
+								url:fileID
+							}
+						}else{
+							return getImgBuffer
+						}
+						await uniID.updateUser({
+							uid: loginRes.uid,
+							nickname,
+							avatar_file:headimgurlFile
+						})
+						loginRes.userInfo.nickname = nickname;
+						loginRes.userInfo.avatar_file = headimgurlFile;
+					}else{
+						return wxRes
+					}
+				}
+				if(context.PLATFORM == "mp-weixin"){
+					let resUpdateUser =  await uniID.updateUser({
+						uid: loginRes.uid,
+						sessionKey:loginRes.sessionKey
+					})
+					console.log(resUpdateUser);
+				}
+				delete loginRes.openid
+				delete loginRes.sessionKey
+				delete loginRes.accessToken
+				delete loginRes.refreshToken
+			}
+			await loginLog(loginRes)
+			return loginRes
 			break;
 		case 'loginByUniverify':
 			res = await uniID.loginByUniverify(params)
@@ -259,11 +336,11 @@ exports.main = async (event, context) => {
 			break;
 		case 'sendSmsCode':
 			/* -开始- 测试期间，为节约资源。统一虚拟短信验证码为： 123456；开启以下代码块即可  */
-			// return uniID.setVerifyCode({
-			// 	mobile: params.mobile,
-			// 	code: '123456',
-			// 	type: params.type
-			// })
+			return uniID.setVerifyCode({
+				mobile: params.mobile,
+				code: '123456',
+				type: params.type
+			})
 			/* -结束- */
 
 			// 简单限制一下客户端调用频率

@@ -1,3 +1,13 @@
+## 3.3.9（2021-11-09）
+- 去除重复的context.xxx未找到的提示语
+## 3.3.8（2021-10-28）
+- 新增 用户账户封禁接口 [详情](https://uniapp.dcloud.net.cn/uniCloud/uni-id?id=ban-account)
+- 新增 用户账户注销接口 [详情](https://uniapp.dcloud.net.cn/uniCloud/uni-id?id=close-account)
+- 修复 未传appid时用户重复注册的Bug
+## 3.3.7（2021-10-08）
+- 移除部分接口的废弃提示
+## 3.3.6（2021-09-08）
+- 修复 邀请码可能重复的Bug
 ## 3.3.5（2021-08-10）
 - 修复版本号错误
 ## 3.3.4（2021-08-10）
