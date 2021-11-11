@@ -48,7 +48,7 @@
 							<text>{{userInfo.username}}</text>
 						</view>
 						<view class="menu-item" @click="changePassword">
-							<text>修改密码</text>
+							<text>{{ $t("topwindow.text.changePwd") }}</text>
 						</view>
 						<view class="menu-item ">
 							<text class="logout pointer hover-highlight"
