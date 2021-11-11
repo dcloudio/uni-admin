@@ -90,7 +90,7 @@
 					'uni-badge--' + type,
 					'uni-badge--' + size,
 					absolute ? 'uni-badge--absolute' : ''
-				]
+				].join(' ')
 			},
 			positionStyle() {
 				if (!this.absolute) return {}
@@ -157,7 +157,7 @@
 
 	.uni-badge--x {
 		/* #ifdef APP-NVUE */
-		align-self: flex-start;
+		// align-self: flex-start;
 		/* #endif */
 		/* #ifndef APP-NVUE */
 		display: inline-block;

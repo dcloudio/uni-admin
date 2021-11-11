@@ -13,13 +13,13 @@
 
 				<uni-forms-item :label="$t('updatePwd.field.newPassword')" name="newPassword" labelWidth="85">
 					<input class="uni-input-border" :password="showPassword" :placeholder="$t('updatePwd.field.newPassword')" v-model="password.newPassword" />
-					<text class="uni-icon-password-eye pointer" :class="[!showPassword ? 'uni-eye-active' : '']" @click="changePassword">&#xe568;</text>
+					<!-- <text class="uni-icon-password-eye pointer" :class="[!showPassword ? 'uni-eye-active' : '']" @click="changePassword">&#xe568;</text> -->
 				</uni-forms-item>
 
 				<uni-forms-item :label="$t('updatePwd.field.passwordConfirmation')" name="passwordConfirmation" labelWidth="85" :errorMessage="errorMessage">
 					<input @confirm="submitForm" class="uni-input-border" :password="showPasswordAgain"
 					 :placeholder="$t('updatePwd.field.passwordConfirmation')" v-model="password.passwordConfirmation" />
-					<text class="uni-icon-password-eye pointer" :class="[!showPasswordAgain ? 'uni-eye-active' : '']" @click="changePasswordAgain">&#xe568;</text>
+					<!-- <text class="uni-icon-password-eye pointer" :class="[!showPasswordAgain ? 'uni-eye-active' : '']" @click="changePasswordAgain">&#xe568;</text> -->
 				</uni-forms-item>
 				<view class="uni-button-group pointer">
 					<button class="uni-button uni-button-full" type="primary" :disabled="isLoading" @click="submitForm">{{$t('updatePwd.button.save')}}</button>

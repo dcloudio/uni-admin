@@ -69,7 +69,10 @@
         "enable" : false
     },
     "h5" : {
-        "template" : "template.h5.html"
+        "template" : "template.h5.html",
+        "router" : {
+            "base" : "/admin/"
+        }
     },
     "vueVersion" : "2"
 }
