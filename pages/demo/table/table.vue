@@ -1,7 +1,7 @@
 <template>
     <view>
         <view class="uni-header">
-            <view class="uni-group">
+            <view class="uni-group hide-on-phone">
                 <view class="uni-title">{{$t('demo.table.title')}}</view>
             </view>
             <view class="uni-group">

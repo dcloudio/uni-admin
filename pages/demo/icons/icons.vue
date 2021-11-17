@@ -72,6 +72,7 @@
 	/* #endif */
 	.icons {
 		display: flex;
+		flex-direction: row;
 		flex-wrap: wrap;
 	}
 

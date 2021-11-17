@@ -289,8 +289,8 @@ uni-page-head .uni-btn-icon {
 	line-height: 36px;
 }
 
-/* #ifdef H5 */
-@media screen and (max-width: 450px) {
+/* #ifndef APP-NVUE */
+@media screen and (max-width: 500px) {
 	.hide-on-phone {
 		display: none;
 	}
