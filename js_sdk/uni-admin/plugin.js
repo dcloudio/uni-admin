@@ -1,7 +1,4 @@
 import {
-    initApi
-} from './api.js'
-import {
     initUtil
 } from './util.js'
 import {
@@ -22,8 +19,6 @@ export default {
         initError(Vue)
         initRequest(Vue)
         initPermission(Vue)
-
-        initApi()
         initInterceptor()
     }
 }
