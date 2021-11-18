@@ -13,6 +13,12 @@
 			<uni-forms-item name="role" label="角色列表" class="flex-center-x">
 				<uni-data-checkbox multiple :localdata="roles" v-model="formData.role" />
 			</uni-forms-item>
+			<uni-forms-item name="tags" label="用户标签" labelWidth="100" class="flex-center-x">
+				<uni-data-checkbox :multiple="true" v-model="formData.tags" collection="uni-id-tag"
+					field="tagid as value, name as text"></uni-data-checkbox>
+				<span class="link-btn" @click="gotoTagAdd">新增</span>
+				<span class="link-btn" @click="gotoTagList" style="margin-left: 10px;">管理</span>
+			</uni-forms-item>
 			<uni-forms-item name="dcloud_appid" label="可登录应用" class="flex-center-x">
 				<uni-data-checkbox :multiple="true" v-model="formData.dcloud_appid" collection="opendb-app-list"
 					field="appid as value, name as text"></uni-data-checkbox>
@@ -93,6 +99,21 @@
 					url: '../app/list'
 				})
 			},
+			gotoTagList() {
+				uni.navigateTo({
+					url: '../tag/list'
+				})
+			},
+			gotoTagAdd() {
+				uni.navigateTo({
+					url: '../tag/add',
+					events: {
+						refreshCheckboxData: () => {
+							this.$refs.checkbox.loadData()
+						}
+					}
+				})
+			},
 			/**
 			 * 切换重置密码框显示或隐藏
 			 */
@@ -167,7 +188,7 @@
 				})
 				db.collection(dbCollectionName)
 					.doc(id)
-					.field('username,role,dcloud_appid,mobile,email,status')
+					.field('username,role,dcloud_appid,tags,mobile,email,status')
 					.get()
 					.then((res) => {
 						const data = res.result.data[0]

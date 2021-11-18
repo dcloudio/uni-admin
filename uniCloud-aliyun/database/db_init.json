@@ -79,6 +79,16 @@
 			"permission": [],
 			"enable": true,
 			"create_date": 1602662469399
+		}, {
+			"menu_id": "system_tag",
+			"name": "标签管理",
+			"icon": "uni-icons-flag",
+			"url": "/pages/system/tag/list",
+			"sort": 1037,
+			"parent_id": "system_management",
+			"permission": [],
+			"enable": true,
+			"create_date": 1602662479389
 		}]
 	}
 }

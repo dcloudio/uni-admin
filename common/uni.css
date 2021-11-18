@@ -330,6 +330,8 @@ uni-page-head .uni-btn-icon {
 }
 
 .link-btn {
+	line-height: 26px;
+	margin-top: 5px;
 	color: #007AFF;
 	text-decoration: underline;
 	cursor: pointer;

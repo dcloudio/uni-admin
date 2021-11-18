@@ -10,6 +10,12 @@
 			<uni-forms-item name="role" label="角色列表" class="flex-center-x">
 				<uni-data-checkbox multiple :localdata="roles" v-model="formData.role" />
 			</uni-forms-item>
+			<uni-forms-item name="tags" label="用户标签" labelWidth="100" class="flex-center-x">
+				<uni-data-checkbox ref="checkbox" :multiple="true" v-model="formData.tags" collection="uni-id-tag"
+					field="tagid as value, name as text"></uni-data-checkbox>
+				<span class="link-btn" @click="gotoTagAdd">新增</span>
+				<span class="link-btn" @click="gotoTagList" style="margin-left: 10px;">管理</span>
+			</uni-forms-item>
 			<uni-forms-item name="dcloud_appid" label="可登录应用" labelWidth="100" class="flex-center-x">
 				<uni-data-checkbox :multiple="true" v-model="formData.dcloud_appid" collection="opendb-app-list"
 					field="appid as value, name as text"></uni-data-checkbox>
@@ -25,7 +31,8 @@
 				<switch @change="binddata('status', $event.detail.value)" :checked="formData.status" />
 			</uni-forms-item>
 			<view class="uni-button-group">
-				<button style="width: 100px;" type="primary" class="uni-button" @click="submitForm">{{$t('common.button.submit')}}</button>
+				<button style="width: 100px;" type="primary" class="uni-button"
+					@click="submitForm">{{$t('common.button.submit')}}</button>
 				<navigator open-type="navigateBack" style="margin-left: 15px;"><button style="width: 100px;"
 						class="uni-button">{{$t('common.button.back')}}</button></navigator>
 			</view>
@@ -60,6 +67,7 @@
 					"password": "",
 					"role": [],
 					"dcloud_appid": [],
+					"tags": [],
 					"mobile": "",
 					"email": "",
 					"status": true //默认启用
@@ -85,6 +93,21 @@
 			gotoAppList() {
 				uni.navigateTo({
 					url: '../app/list'
+				})
+			},
+			gotoTagList() {
+				uni.navigateTo({
+					url: '../tag/list'
+				})
+			},
+			gotoTagAdd() {
+				uni.navigateTo({
+					url: '../tag/add',
+					events: {
+						refreshCheckboxData: () => {
+							this.$refs.checkbox.loadData()
+						}
+					}
 				})
 			},
 

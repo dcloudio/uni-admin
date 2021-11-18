@@ -137,6 +137,19 @@
 				"write": false
 			}
 		},
+		"tags": {
+			"bsonType": "array",
+			"title": "用户标签tagid",
+			"description": "用户标签tagid",
+			"enum": {
+				"collection": "uni-id-tag",
+				"field": "tagid as value, name as text"
+			},
+			"foreignKey": "uni-id-tag.tagid",
+			"permission": {
+				"write": false
+			}
+		},
 		"wx_unionid": {
 			"bsonType": "string",
 			"description": "微信unionid"

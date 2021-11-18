@@ -21,7 +21,7 @@
 		</view>
 		<view class="uni-container">
 			<unicloud-db ref="udb" collection="uni-id-users,uni-id-roles"
-				field="username,mobile,status,email,role{role_name},dcloud_appid,register_date" :where="where" page-data="replace"
+				field="username,mobile,status,email,role{role_name},dcloud_appid,tags,register_date" :where="where" page-data="replace"
 				:orderby="orderby" :getcount="true" :page-size="options.pageSize" :page-current="options.pageCurrent"
 				v-slot:default="{data,pagination,loading,error,options}" :options="options" loadtime="manual"
 				@load="onqueryload">
@@ -38,6 +38,7 @@
 						<uni-th align="center" filter-type="search" @filter-change="filterChange($event, 'email')"
 							sortable @sort-change="sortChange($event, 'email')">邮箱</uni-th>
 						<uni-th align="center">角色</uni-th>
+						<uni-th align="center">用户标签</uni-th>
 						<uni-th align="center">可登录应用</uni-th>
 						<uni-th align="center" filter-type="timestamp"
 							@filter-change="filterChange($event, 'register_date')" sortable
@@ -52,6 +53,11 @@
 							<uni-link :href="'mailto:'+item.email" :text="item.email"></uni-link>
 						</uni-td>
 						<uni-td align="center">{{item.role}}</uni-td>
+						<uni-td align="center">
+							<template v-if="item.tags" v-for="tag in item.tags">
+								<uni-tag type="primary" inverted size="small" :text="tag" style="margin: 0 5px;"></uni-tag>
+							</template>
+						</uni-td>
 						<uni-td align="center">
 							<uni-link v-if="item.dcloud_appid === undefined" :href="noAppidWhatShouldIDoLink">
 								未绑定可登录应用<view class="uni-icons-help"></view>
@@ -121,6 +127,7 @@
 				selectedIndexs: [],
 				pageSizeIndex: 0,
 				pageSizeOption: [20, 50, 100, 500],
+				tags: {},
 				options: {
 					pageSize,
 					pageCurrent,
@@ -169,6 +176,7 @@
 			this._filter = {}
 		},
 		onReady() {
+			this.loadTags()
 			this.$refs.udb.loadData()
 		},
 		watch: {
@@ -189,6 +197,8 @@
 					let item = data[i]
 					const roleArr = item.role.map(item => item.role_name)
 					item.role = roleArr.join('、')
+					const tagsArr = item.tags && item.tags.map(item => this.tags[item])
+					item.tags = tagsArr
 					if (Array.isArray(item.dcloud_appid)) {
 						item.dcloud_appid = item.dcloud_appid.join('、')
 					}
@@ -233,6 +243,7 @@
 					url,
 					events: {
 						refreshData: () => {
+							this.loadTags()
 							this.loadData(clear)
 						}
 					}
@@ -287,6 +298,19 @@
 				}
 				this.$nextTick(() => {
 					this.$refs.udb.loadData()
+				})
+			},
+			loadTags() {
+				db.collection('uni-id-tag').limit(500).get().then(res => {
+					res.result.data.map(item => {
+						this.tags[item.tagid] = item.name
+					})
+				}).catch(err => {
+					uni.showModal({
+						title: '提示',
+						content: err.message,
+						showCancel: false
+					})
 				})
 			}
 		}
