@@ -109,6 +109,21 @@
 			"style": {
 				"navigationBarTitleText": "应用管理"
 			}
+		}, {
+			"path": "tag/add",
+			"style": {
+				"navigationBarTitleText": "新增标签"
+			}
+		}, {
+			"path": "tag/edit",
+			"style": {
+				"navigationBarTitleText": "修改标签"
+			}
+		}, {
+			"path": "tag/list",
+			"style": {
+				"navigationBarTitleText": "标签管理"
+			}
 		}]
 	}, {
 		"root": "pages/demo",
