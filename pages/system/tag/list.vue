@@ -2,7 +2,7 @@
 	<view>
 		<view class="uni-header">
 			<view class="uni-group">
-				<view class="uni-title"></view>
+				<view class="uni-title">标签管理</view>
 				<view class="uni-sub-title"></view>
 			</view>
 			<view class="uni-group">
@@ -47,6 +47,8 @@
 						</uni-td>
 						<uni-td align="center">
 							<view class="uni-group">
+								<button @click="navigateTo('../user/list', false)" class="uni-button" size="mini"
+																	type="primary">标签成员</button>
 								<button @click="navigateTo('./edit?id='+item._id, false)" class="uni-button" size="mini"
 									type="primary">修改</button>
 								<button @click="confirmDelete(item._id)" class="uni-button" size="mini"
