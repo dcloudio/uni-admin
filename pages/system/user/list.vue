@@ -11,6 +11,7 @@
 				<button class="uni-button" type="primary" size="mini" @click="navigateTo('./add')">{{$t('common.button.add')}}</button>
 				<button class="uni-button" type="warn" size="mini" :disabled="!selectedIndexs.length"
 					@click="delTable">{{$t('common.button.batchDelete')}}</button>
+				<button class="uni-button" type="primary" size="mini" :disabled="!selectedIndexs.length" @click="">标签管理</button>
 				<!-- #ifdef H5 -->
 					<download-excel class="hide-on-phone" :fields="exportExcel.fields" :data="exportExcelData"
 						:type="exportExcel.type" :name="exportExcel.filename">
@@ -38,7 +39,7 @@
 						<uni-th align="center" filter-type="search" @filter-change="filterChange($event, 'email')"
 							sortable @sort-change="sortChange($event, 'email')">邮箱</uni-th>
 						<uni-th align="center">角色</uni-th>
-						<uni-th align="center">用户标签</uni-th>
+						<uni-th align="center" filter-type="select" :filter-data="tagsData" @filter-change="filterChange($event, 'tags')">用户标签</uni-th>
 						<uni-th align="center">可登录应用</uni-th>
 						<uni-th align="center" filter-type="timestamp"
 							@filter-change="filterChange($event, 'register_date')" sortable
@@ -128,13 +129,22 @@
 				pageSizeIndex: 0,
 				pageSizeOption: [20, 50, 100, 500],
 				tags: {},
+				tags_dynamic_data: [{
+						"text": "正常",
+						"value": "sds"
+					},
+					{
+						"text": "禁用",
+						"value": "sdsd"
+					}],
 				options: {
 					pageSize,
 					pageCurrent,
 					filterData: {
 						"status_localdata": [{
 								"text": "正常",
-								"value": 0
+								"value": 0,
+								"checked": true
 							},
 							{
 								"text": "禁用",
@@ -189,6 +199,19 @@
 						this.loadData()
 					})
 				}
+			}
+		},
+		computed:{
+			tagsData() {
+				const dynamic_data = []
+				for(const key in this.tags) {
+					dynamic_data.push({
+						value: key,
+						text: this.tags[key]
+					})
+				}
+				console.log(22222222222,dynamic_data);
+				return dynamic_data
 			}
 		},
 		methods: {
@@ -305,6 +328,7 @@
 					res.result.data.map(item => {
 						this.tags[item.tagid] = item.name
 					})
+					console.log(111111111111, this.tags);
 				}).catch(err => {
 					uni.showModal({
 						title: '提示',

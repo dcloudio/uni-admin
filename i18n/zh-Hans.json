@@ -54,7 +54,8 @@
 			"batchDelete": "批量删除",
 			"exportExcel": "导出 Excel",
 			"submit": "提交",
-			"back": "返回"
+			"back": "返回",
+			"tagManager": "标签管理"
 		},
 		"empty": "没有更多数据",
 		"piecePerPage": "条/页"
