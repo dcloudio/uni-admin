@@ -210,6 +210,7 @@
 			},
 			// 批量删除
 			delTable() {
+				console.warn("删除应用，只能删除应用表 opendb-app-list 中的应用数据记录，不能删除与应用关联的其他数据，例如：使用升级中心 uni-upgrade-center 等插件产生的数据（应用版本数据等）")
 				this.$refs.udb.remove(this.selectedItems(), {
 					success: (res) => {
 						this.$refs.table.clearSelection()
@@ -221,6 +222,7 @@
 				this.selectedIndexs = e.detail.index
 			},
 			confirmDelete(id) {
+				console.warn("删除应用，只能删除应用表 opendb-app-list 中的应用数据记录，不能删除与应用关联的其他数据，例如：使用升级中心 uni-upgrade-center 等插件产生的数据（应用版本数据等）")
 				this.$refs.udb.remove(id, {
 					success: (res) => {
 						this.$refs.table.clearSelection()
