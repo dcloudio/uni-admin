@@ -26,7 +26,7 @@
 				:page-current="options.pageCurrent" v-slot:default="{data,pagination,loading,error,options}"
 				:options="options" loadtime="manual" @load="onqueryload">
 				<uni-table ref="table" :loading="loading" :emptyText="error.message || $t('common.empty')" border stripe
-					type="selection" @selection-change="selectionChange" class="table-pc">
+					type="selection" @selection-change="selectionChange">
 					<uni-tr>
 						<uni-th align="center" filter-type="search" @filter-change="filterChange($event, 'role_id')"
 							sortable @sort-change="sortChange($event, 'role_id')">唯一ID</uni-th>
