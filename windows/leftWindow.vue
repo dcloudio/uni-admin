@@ -97,7 +97,7 @@
 <style lang="scss">
 	.sidebar {
 		position: fixed;
-		top: var(--top-window-height);
+		// top: var(--top-window-height); // useless
 		width: 240px;
 		height: calc(100vh - (var(--top-window-height)));
 		box-sizing: border-box;
