@@ -297,9 +297,8 @@ uni-page-head .uni-btn-icon {
 }
 
 @media screen and (min-width: 450px) {
-	.table-pc {
+	::v-deep .uni-table-scroll {
 		min-height: calc(100vh - 237px);
-		border: 1px #ebeef5 solid;
 		box-sizing: border-box;
 	}
 	::v-deep .uni-table .tr-table--border {
