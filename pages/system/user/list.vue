@@ -88,7 +88,7 @@
 						</button>
 					</picker>
 					<!-- #endif -->
-					<uni-pagination  :page-size="pagination.size" v-model="pagination.current"
+					<uni-pagination show-icon :page-size="pagination.size" v-model="pagination.current"
 						:total="pagination.count" @change="onPageChanged" />
 				</view>
 			</unicloud-db>
@@ -129,14 +129,6 @@
 				pageSizeIndex: 0,
 				pageSizeOption: [20, 50, 100, 500],
 				tags: {},
-				tags_dynamic_data: [{
-						"text": "正常",
-						"value": "sds"
-					},
-					{
-						"text": "禁用",
-						"value": "sdsd"
-					}],
 				options: {
 					pageSize,
 					pageCurrent,
@@ -210,7 +202,6 @@
 						text: this.tags[key]
 					})
 				}
-				console.log(22222222222,dynamic_data);
 				return dynamic_data
 			}
 		},
@@ -328,7 +319,6 @@
 					res.result.data.map(item => {
 						this.tags[item.tagid] = item.name
 					})
-					console.log(111111111111, this.tags);
 				}).catch(err => {
 					uni.showModal({
 						title: '提示',
