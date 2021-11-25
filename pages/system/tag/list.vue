@@ -1,7 +1,7 @@
 <template>
-	<view>
+	<view class="fix-top-window">
 		<view class="uni-header">
-			<view class="uni-group">
+			<view class="uni-group hide-on-phone">
 				<view class="uni-title">标签管理</view>
 				<view class="uni-sub-title"></view>
 			</view>
@@ -47,8 +47,8 @@
 						</uni-td>
 						<uni-td align="center">
 							<view class="uni-group">
-								<button @click="navigateTo('../user/list', false)" class="uni-button" size="mini"
-																	type="primary">标签成员</button>
+								<button @click="navigateTo('../user/list' + item.tagid, false)" class="uni-button"
+									size="mini" type="primary">标签成员</button>
 								<button @click="navigateTo('./edit?id='+item._id, false)" class="uni-button" size="mini"
 									type="primary">修改</button>
 								<button @click="confirmDelete(item._id)" class="uni-button" size="mini"
@@ -58,11 +58,24 @@
 					</uni-tr>
 				</uni-table>
 				<view class="uni-pagination-box">
+					<!-- #ifndef MP -->
+					<picker class="select-picker" mode="selector" :value="pageSizeIndex" :range="pageSizeOption"
+						@change="changeSize">
+						<button type="default" size="mini" :plain="true">
+							<text>{{pageSizeOption[pageSizeIndex]}} {{$t('common.piecePerPage')}}</text>
+							<uni-icons class="select-picker-icon" type="arrowdown" size="12" color="#999"></uni-icons>
+						</button>
+					</picker>
+					<!-- #endif -->
 					<uni-pagination show-icon :page-size="pagination.size" v-model="pagination.current"
 						:total="pagination.count" @change="onPageChanged" />
 				</view>
 			</unicloud-db>
 		</view>
+
+		<!-- #ifndef H5 -->
+		<fix-window />
+		<!-- #endif -->
 	</view>
 </template>
 
@@ -93,6 +106,8 @@
 				orderby: dbOrderBy,
 				orderByFieldName: "",
 				selectedIndexs: [],
+				pageSizeIndex: 0,
+				pageSizeOption: [20, 50, 100, 500],
 				options: {
 					pageSize,
 					pageCurrent,
@@ -121,9 +136,24 @@
 		onReady() {
 			this.$refs.udb.loadData()
 		},
+		watch: {
+			pageSizeIndex: {
+				immediate: true,
+				handler(val, old) {
+					this.options.pageSize = this.pageSizeOption[val]
+					this.options.pageCurrent = 1
+					this.$nextTick(() => {
+						this.loadData()
+					})
+				}
+			}
+		},
 		methods: {
 			onqueryload(data) {
 				this.exportExcelData = data
+			},
+			changeSize(e) {
+				this.pageSizeIndex = e.detail.value
 			},
 			getWhere() {
 				const query = this.query.trim()
