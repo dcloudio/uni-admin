@@ -71,6 +71,8 @@
 				<update-password class="password-popup" :isPhone="true" v-on:closePasswordPopup="closePasswordPopup" />
 			</view>
 		</uni-popup>
+		<!-- 沉余代码，临时处理 uni-datetime-picker 国际化不生效的问题 -->
+		<uni-datetime-picker type="date" v-show="false"></uni-datetime-picker>
 	</view>
 </template>
 
@@ -118,6 +120,12 @@
 			this.mpCapsule = menuButtonInfo.width
 			// console.log(111111111,this.mpCapsule)
 			// #endif
+
+			// 沉余代码，临时处理 uni-datetime-picker 国际化不生效的问题
+			uni.setLocale('en')
+			this.$nextTick(() => {
+				this.changeLanguage('zh-Hans')
+			})
 		},
 		methods: {
 			...mapMutations({
