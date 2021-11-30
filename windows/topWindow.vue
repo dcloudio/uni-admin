@@ -72,7 +72,9 @@
 			</view>
 		</uni-popup>
 		<!-- 沉余代码，临时处理 uni-datetime-picker 国际化不生效的问题 -->
+		<!-- #ifdef H5 -->
 		<uni-datetime-picker type="date" v-show="false"></uni-datetime-picker>
+		<!-- #endif -->
 	</view>
 </template>
 
@@ -118,14 +120,15 @@
 			// #ifdef MP
 			let menuButtonInfo = uni.getMenuButtonBoundingClientRect()
 			this.mpCapsule = menuButtonInfo.width
-			// console.log(111111111,this.mpCapsule)
 			// #endif
 
 			// 沉余代码，临时处理 uni-datetime-picker 国际化不生效的问题
+			// #ifdef H5
 			uni.setLocale('en')
 			this.$nextTick(() => {
 				this.changeLanguage('zh-Hans')
 			})
+			// #endif
 		},
 		methods: {
 			...mapMutations({
@@ -173,6 +176,15 @@
 				!this.matchLeftWindow ? this.toPasswordPage() : this.showPasswordPopup()
 			},
 			changeLanguage(lang) {
+				const platform = uni.getSystemInfoSync().platform
+				if (platform === 'android') {
+					uni.showToast({
+						icon: 'error',
+						title: '暂不支持',
+						duration: 2000
+					})
+					return
+				}
 				if (lang) {
 					this.$i18n.locale = lang
 					uni.setLocale(lang)

@@ -95,12 +95,14 @@
 		}, {
 			"path": "app/add",
 			"style": {
-				"navigationBarTitleText": "新增应用"
+				"navigationBarTitleText": "新增应用",
+				"navigationStyle": "default"
 			}
 		}, {
 			"path": "app/edit",
 			"style": {
-				"navigationBarTitleText": "修改应用"
+				"navigationBarTitleText": "修改应用",
+				"navigationStyle": "default"
 			}
 		}, {
 			"path": "app/list",
