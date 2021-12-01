@@ -47,8 +47,8 @@
 						</uni-td>
 						<uni-td align="center">
 							<view class="uni-group">
-								<button @click="navigateTo('../user/list' + item.tagid, false)" class="uni-button"
-									size="mini" type="primary">标签成员</button>
+								<button @click="navigateTo('../user/list?tagid='+item.tagid, false)" class="uni-button"
+									size="mini" type="primary">成员</button>
 								<button @click="navigateTo('./edit?id='+item._id, false)" class="uni-button" size="mini"
 									type="primary">修改</button>
 								<button @click="confirmDelete(item._id)" class="uni-button" size="mini"
