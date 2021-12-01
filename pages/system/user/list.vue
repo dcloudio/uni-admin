@@ -6,26 +6,30 @@
 				<view class="uni-sub-title"></view>
 			</view>
 			<view class="uni-group">
-				<input class="uni-search" type="text" v-model="query" @confirm="search" :placeholder="$t('common.placeholder.query')" />
-				<button class="uni-button" type="default" size="mini" @click="search">{{$t('common.button.search')}}</button>
-				<button class="uni-button" type="primary" size="mini" @click="navigateTo('./add')">{{$t('common.button.add')}}</button>
+				<input class="uni-search" type="text" v-model="query" @confirm="search"
+					:placeholder="$t('common.placeholder.query')" />
+				<button class="uni-button" type="default" size="mini"
+					@click="search">{{$t('common.button.search')}}</button>
+				<button class="uni-button" type="primary" size="mini"
+					@click="navigateTo('./add')">{{$t('common.button.add')}}</button>
 				<button class="uni-button" type="warn" size="mini" :disabled="!selectedIndexs.length"
 					@click="delTable">{{$t('common.button.batchDelete')}}</button>
-				<button class="uni-button" type="primary" size="mini" :disabled="!selectedIndexs.length" @click="">标签管理</button>
+				<button class="uni-button" type="primary" size="mini" :disabled="!selectedIndexs.length"
+					@click="openTagsPopup">标签管理</button>
 				<!-- #ifdef H5 -->
-					<download-excel class="hide-on-phone" :fields="exportExcel.fields" :data="exportExcelData"
-						:type="exportExcel.type" :name="exportExcel.filename">
-						<button class="uni-button" type="primary" size="mini">{{$t('common.button.exportExcel')}}</button>
-					</download-excel>
+				<download-excel class="hide-on-phone" :fields="exportExcel.fields" :data="exportExcelData"
+					:type="exportExcel.type" :name="exportExcel.filename">
+					<button class="uni-button" type="primary" size="mini">{{$t('common.button.exportExcel')}}</button>
+				</download-excel>
 				<!-- #endif -->
 			</view>
 		</view>
 		<view class="uni-container">
 			<unicloud-db ref="udb" collection="uni-id-users,uni-id-roles"
-				field="username,mobile,status,email,role{role_name},dcloud_appid,tags,register_date" :where="where" page-data="replace"
-				:orderby="orderby" :getcount="true" :page-size="options.pageSize" :page-current="options.pageCurrent"
-				v-slot:default="{data,pagination,loading,error,options}" :options="options" loadtime="manual"
-				@load="onqueryload">
+				field="username,mobile,status,email,role{role_name},dcloud_appid,tags,register_date" :where="where"
+				page-data="replace" :orderby="orderby" :getcount="true" :page-size="options.pageSize"
+				:page-current="options.pageCurrent" v-slot:default="{data,pagination,loading,error,options}"
+				:options="options" loadtime="manual" @load="onqueryload">
 				<uni-table ref="table" :loading="loading" :emptyText="error.message || $t('common.empty')" border stripe
 					type="selection" @selection-change="selectionChange">
 					<uni-tr>
@@ -38,7 +42,8 @@
 						<uni-th align="center" filter-type="search" @filter-change="filterChange($event, 'email')"
 							sortable @sort-change="sortChange($event, 'email')">邮箱</uni-th>
 						<uni-th align="center">角色</uni-th>
-						<uni-th align="center" filter-type="select" :filter-data="tagsData" @filter-change="filterChange($event, 'tags')">用户标签</uni-th>
+						<uni-th align="center" filter-type="select" :filter-data="tagsData"
+							@filter-change="filterChange($event, 'tags')">用户标签</uni-th>
 						<uni-th align="center">可登录应用</uni-th>
 						<uni-th align="center" filter-type="timestamp"
 							@filter-change="filterChange($event, 'register_date')" sortable
@@ -55,7 +60,8 @@
 						<uni-td align="center">{{item.role}}</uni-td>
 						<uni-td align="center">
 							<template v-if="item.tags" v-for="tag in item.tags">
-								<uni-tag type="primary" inverted size="small" :text="tag" style="margin: 0 5px;"></uni-tag>
+								<uni-tag type="primary" inverted size="small" :text="tag" style="margin: 0 5px;">
+								</uni-tag>
 							</template>
 						</uni-td>
 						<uni-td align="center">
@@ -95,6 +101,19 @@
 		<!-- #ifndef H5 -->
 		<fix-window />
 		<!-- #endif -->
+		<uni-popup ref="tagsPopup" type="center">
+			<view class="tags-manager--x">
+				<view class="tags-manager--header mb">管理标签</view>
+				<uni-data-checkbox ref="checkbox" v-model="managerTags" class="mb ml" :multiple="true" collection="uni-id-tag"
+					field="tagid as value, name as text"></uni-data-checkbox>
+				<view class="uni-group">
+					<button @click="managerMultiTag('add')" class="uni-button"
+						type="primary" style="margin-right: 75px;">添加</button>
+					<button @click="managerMultiTag('del')" class="uni-button"
+						type="warn">删除</button>
+				</view>
+			</view>
+		</uni-popup>
 	</view>
 </template>
 
@@ -128,6 +147,8 @@
 				pageSizeIndex: 0,
 				pageSizeOption: [20, 50, 100, 500],
 				tags: {},
+				managerTags: [],
+				queryTagid: '',
 				options: {
 					pageSize,
 					pageCurrent,
@@ -173,12 +194,23 @@
 				noAppidWhatShouldIDoLink: 'https://uniapp.dcloud.net.cn/uniCloud/uni-id?id=makeup-dcloud-appid'
 			}
 		},
-		onLoad() {
+		onLoad(e) {
 			this._filter = {}
+			const tagid = e.tagid
+			if (tagid) {
+				this.queryTagid = tagid
+				const options = {
+					filterType: "select",
+					filter: [tagid]
+				}
+				this.filterChange(options, "tags")
+			}
 		},
 		onReady() {
 			this.loadTags()
-			this.$refs.udb.loadData()
+			if (!this.queryTagid) {
+				this.$refs.udb.loadData()
+			}
 		},
 		watch: {
 			pageSizeIndex: {
@@ -192,14 +224,18 @@
 				}
 			}
 		},
-		computed:{
+		computed: {
 			tagsData() {
 				const dynamic_data = []
-				for(const key in this.tags) {
-					dynamic_data.push({
+				for (const key in this.tags) {
+					const tag = {
 						value: key,
 						text: this.tags[key]
-					})
+					}
+					if (key === this.queryTagid) {
+						tag.checked = true
+					}
+					dynamic_data.push(tag)
 				}
 				return dynamic_data
 			}
@@ -221,6 +257,12 @@
 			},
 			changeSize(e) {
 				this.pageSizeIndex = e.detail.value
+			},
+			openTagsPopup() {
+				this.$refs.tagsPopup.open()
+			},
+			closeTagsPopup() {
+				this.$refs.tagsPopup.close()
 			},
 			getWhere() {
 				const query = this.query.trim()
@@ -325,10 +367,59 @@
 						showCancel: false
 					})
 				})
+			},
+			managerMultiTag(type) {
+				const ids = this.selectedItems()
+				const options = {
+					type,
+					ids,
+					value: this.managerTags
+				}
+				this.$request('managerMultiTag', options, {
+					functionName: 'uni-id-cf'
+				}).then(res => {
+					uni.showToast({
+						title: '修改标签成功',
+						duration: 2000
+					})
+					this.$refs.table.clearSelection()
+					this.managerTags = []
+					this.loadData()
+					this.closeTagsPopup()
+				}).catch(err => {
+					uni.showModal({
+						content: err.message || '请求服务失败',
+						showCancel: false
+					})
+				}).finally(err => {
+					uni.hideLoading()
+				})
 			}
 		}
 	}
 </script>
 
-<style>
+<style lang="scss">
+	.tags-manager {
+
+		&--x {
+			width: 400px;
+			padding: 40px 30px;
+			border-radius: 5px;
+			background-color: #fff;
+		}
+
+		&--header {
+			font-size: 22px;
+			color: #333;
+			text-align: center;
+		}
+	}
+
+	.mb {
+		margin-bottom: 80px;
+	}
+	.ml {
+		margin-left: 30px;
+	}
 </style>

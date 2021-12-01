@@ -99,10 +99,10 @@ exports.main = async (event, context) => {
 			create_date: now
 		};
 
-		if(res.code === 0){
+		if (res.code === 0) {
 			logData.user_id = res.uid
 			logData.state = 1
-			if(res.userInfo&&res.userInfo.password){
+			if (res.userInfo && res.userInfo.password) {
 				delete res.userInfo.password
 			}
 			if (res.type == 'register') {
@@ -119,7 +119,7 @@ exports.main = async (event, context) => {
 					}).update(deviceInfo)
 				}
 			}
-		}else{
+		} else {
 			logData.state = 0
 		}
 		return await uniIdLogCollection.add(logData)
@@ -128,13 +128,15 @@ exports.main = async (event, context) => {
 	let res = {}
 	switch (action) { //根据action的值执行对应的操作
 		case 'refreshSessionKey':
-			let getSessionKey = await uniID.code2SessionWeixin({code:params.code});
-			if(getSessionKey.code){
+			let getSessionKey = await uniID.code2SessionWeixin({
+				code: params.code
+			});
+			if (getSessionKey.code) {
 				return getSessionKey
 			}
-			res =  await uniID.updateUser({
+			res = await uniID.updateUser({
 				uid: params.uid,
-				sessionKey:getSessionKey.sessionKey
+				sessionKey: getSessionKey.sessionKey
 			})
 			console.log(res);
 			break;
@@ -144,7 +146,7 @@ exports.main = async (event, context) => {
 				uid: params.uid,
 				field: ['sessionKey']
 			})
-			if(getSessionKeyRes.code){
+			if (getSessionKeyRes.code) {
 				return getSessionKeyRes
 			}
 			let sessionKey = getSessionKeyRes.userInfo.sessionKey
@@ -154,7 +156,7 @@ exports.main = async (event, context) => {
 				sessionKey
 			})
 			console.log(res);
-			if(res.code){
+			if (res.code) {
 				return res
 			}
 			res = await uniID.bindMobile({
@@ -266,49 +268,60 @@ exports.main = async (event, context) => {
 			break;
 		case 'loginByWeixin':
 			let loginRes = await uniID.loginByWeixin(params);
-			if(loginRes.code===0){
+			if (loginRes.code === 0) {
 				//用户完善资料（昵称、头像）
-				if(context.PLATFORM == "app-plus" && !loginRes.userInfo.nickname){
-					let {accessToken:access_token,openid} = loginRes,
-						{appid,appsecret:secret} = uniIdConfig['app-plus'].oauth.weixin;
+				if (context.PLATFORM == "app-plus" && !loginRes.userInfo.nickname) {
+					let {
+						accessToken: access_token,
+						openid
+					} = loginRes, {
+						appid,
+						appsecret: secret
+					} = uniIdConfig['app-plus'].oauth.weixin;
 					let wxRes = await uniCloud.httpclient.request(
 						`https://api.weixin.qq.com/sns/userinfo?access_token=${access_token}&openid=${openid}&scope=snsapi_userinfo&appid=${appid}&secret=${secret}`, {
 							method: 'POST',
 							contentType: 'json', // 指定以application/json发送data内的数据
 							dataType: 'json' // 指定返回值为json格式，自动进行parse
 						})
-					if(wxRes.status == 200){
-						let {nickname,headimgurl} = wxRes.data;
-						let headimgurlFile = {},cloudPath = loginRes.uid+'/'+Date.now()+"headimgurl.jpg";
+					if (wxRes.status == 200) {
+						let {
+							nickname,
+							headimgurl
+						} = wxRes.data;
+						let headimgurlFile = {},
+							cloudPath = loginRes.uid + '/' + Date.now() + "headimgurl.jpg";
 						let getImgBuffer = await uniCloud.httpclient.request(headimgurl)
-						if(getImgBuffer.status == 200){
-							let {fileID} = await uniCloud.uploadFile({
-							    cloudPath,
-							    fileContent: getImgBuffer.data
+						if (getImgBuffer.status == 200) {
+							let {
+								fileID
+							} = await uniCloud.uploadFile({
+								cloudPath,
+								fileContent: getImgBuffer.data
 							});
 							headimgurlFile = {
-								name:cloudPath,
-								extname:"jpg",
-								url:fileID
+								name: cloudPath,
+								extname: "jpg",
+								url: fileID
 							}
-						}else{
+						} else {
 							return getImgBuffer
 						}
 						await uniID.updateUser({
 							uid: loginRes.uid,
 							nickname,
-							avatar_file:headimgurlFile
+							avatar_file: headimgurlFile
 						})
 						loginRes.userInfo.nickname = nickname;
 						loginRes.userInfo.avatar_file = headimgurlFile;
-					}else{
+					} else {
 						return wxRes
 					}
 				}
-				if(context.PLATFORM == "mp-weixin"){
-					let resUpdateUser =  await uniID.updateUser({
+				if (context.PLATFORM == "mp-weixin") {
+					let resUpdateUser = await uniID.updateUser({
 						uid: loginRes.uid,
-						sessionKey:loginRes.sessionKey
+						sessionKey: loginRes.sessionKey
 					})
 					console.log(resUpdateUser);
 				}
@@ -566,6 +579,32 @@ exports.main = async (event, context) => {
 			uid: params.uid,
 			...params
 		})
+		break;
+	case 'managerMultiTag':
+		let {
+			ids, type, value
+		} = params
+		if (type === 'add') {
+			res = await db.collection('uni-id-users').where({
+				_id: dbCmd.in(ids)
+			}).update({
+				tags: dbCmd.addToSet({
+					$each: value
+				})
+			})
+		} else if (type === 'del') {
+			res = await db.collection('uni-id-users').where({
+				_id: dbCmd.in(ids)
+			}).update({
+				tags: dbCmd.pull(dbCmd.in(value))
+			})
+		} else {
+			res = {
+				code: 403,
+				msg: '无效操作'
+			}
+			return
+		}
 		break;
 		// =========================== admin api end =========================
 	default:
