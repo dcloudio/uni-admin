@@ -36,7 +36,7 @@
 							<uni-th align="center">标识</uni-th>
 							<uni-th align="center">URL</uni-th>
 							<uni-th width="100" align="center">是否启用</uni-th>
-							<uni-th width="160" align="center">操作</uni-th>
+							<uni-th align="center">操作</uni-th>
 						</uni-tr>
 						<uni-tr v-for="(item,index) in data" :key="index">
 							<uni-td align="center">{{item.sort}}</uni-td>
