@@ -16,7 +16,7 @@ exports.main = async (event, context) => {
 	console.log('event : ' + JSON.stringify(event))
 	/*
 	1.event为客户端 uniCloud.callFunction填写的data的值，这里介绍一下其中的属性
-	  action：表示要执行的任务名称、比如：登陆login、退出登陆 logout等
+	  action：表示要执行的任务名称、比如：登录login、退出登录 logout等
 	  params：业务数据内容
 	  uniIdToken：系统自动传递的token，数据来源客户端的 uni.getStorageSync('uni_id_token')
 	*/
@@ -41,7 +41,7 @@ exports.main = async (event, context) => {
 				}
 			}
 		})
-	  用户就这样轻易地伪造了他人的uid传递给服务端，有一句话叫：前端从来的数据是不可信任的
+	  用户就这样轻易地伪造了他人的uid传递给服务端，有一句话叫：前端传来的数据都是不可信任的
 	  所以这里我们需要将uniID.checkToken返回的uid写入到params.uid
 	*/
 	let noCheckAction = ['register', 'checkToken', 'login', 'logout', 'sendSmsCode', 'createCaptcha',
@@ -297,7 +297,7 @@ exports.main = async (event, context) => {
 								fileID
 							} = await uniCloud.uploadFile({
 								cloudPath,
-								fileContent: getImgBuffer.data
+							 fileContent: getImgBuffer.data
 							});
 							headimgurlFile = {
 								name: cloudPath,
@@ -456,6 +456,12 @@ exports.main = async (event, context) => {
 					uid: params.uid
 				})
 			}
+			break;
+		case 'closeAccount':
+			console.log(params.uid, '-----------------------');
+			res = await uniID.closeAccount({
+				uid: params.uid
+			});
 			break;
 
 			// =========================== admin api start =========================
