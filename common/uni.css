@@ -414,7 +414,7 @@ button:after {
 	border-left: 1px #ebeef5 solid;
 }
 ::v-deep .table--border {
-	border-left: none !important;
+	/* border-left: none !important; */
 }
 /* #endif */
 
@@ -440,4 +440,16 @@ button:after {
 
 .select-picker-icon {
 	margin-left: 8px;
+}
+
+.mb-s {
+	margin-bottom: 5px;
+}
+
+.mb-m {
+	margin-bottom: 15px !important;
+}
+
+.mb-l {
+	margin-bottom: 30px;
 }

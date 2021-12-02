@@ -21,7 +21,16 @@
 			}
 
 		}
-	],
+	    ,{
+            "path" : "pages/uni-stat/index/index",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "",
+                "enablePullDownRefresh": false
+            }
+            
+        }
+    ],
 	"subPackages": [{
 		"root": "pages/system",
 		"pages": [{
