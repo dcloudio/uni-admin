@@ -30,6 +30,15 @@
             }
             
         }
+        ,{
+            "path" : "pages/uni-stat/page-res/page-res",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "",
+                "enablePullDownRefresh": false
+            }
+            
+        }
     ],
 	"subPackages": [{
 		"root": "pages/system",
