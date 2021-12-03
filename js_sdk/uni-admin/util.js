@@ -4,7 +4,7 @@ import {
 
 function formatBytes(bytes) {
 	const sizes = ['B', 'KB', 'MB', 'GB', 'TB']
-	if (bytes == 0) {
+	if (bytes <= 0) {
 		return 'n/a'
 	}
 	const i = parseInt(Math.floor(Math.log(bytes) / Math.log(1024)))
