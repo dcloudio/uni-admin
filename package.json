@@ -1,14 +1,14 @@
 {
-	"name": "uniCloud-admin",
+	"name": "uni-admin 基础框架（原名 uniCloud admin）",
 	"id": "uni-template-admin",
-	"displayName": "uniCloud admin 基础框架",
+	"displayName": "uni-admin 基础框架",
 	"version": "1.7.8",
-	"description": "基于 uni-app，uniCloud 的 admin 管理项目模板",
+	"description": "基于uni-app & uniCloud的后台管理项目模板（管理后台开发必备神器）",
 	"main": "main.js",
 	"scripts": {
 		"test": "echo \"Error: no test specified\" && exit 1"
 	},
-	"repository": "https://github.com/dcloudio/uni-template-admin.git",
+	"repository": "https://github.com/dcloudio/uni-admin.git",
 	"keywords": [
         "admin",
         "uniCloud",
@@ -22,9 +22,9 @@
 	"author": "",
 	"license": "MIT",
 	"bugs": {
-		"url": "https://github.com/dcloudio/uni-template-admin/issues"
+		"url": "https://github.com/dcloudio/uni-admin/issues"
 	},
-	"homepage": "https://github.com/dcloudio/uni-template-admin#readme",
+	"homepage": "https://github.com/dcloudio/uni-admin#readme",
 	"dcloudext": {
 		"category": [
 			"uniCloud",
