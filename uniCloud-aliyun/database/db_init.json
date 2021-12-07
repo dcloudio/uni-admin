@@ -9,6 +9,9 @@
 	"opendb-verify-codes": {
 		"data": []
 	},
+	"opendb-app-list": {
+		"data": []
+	},
 	"uni-id-roles": {
 		"data": []
 	},
@@ -16,6 +19,9 @@
 		"data": []
 	},
 	"uni-id-log": {
+		"data": []
+	},
+	"uni-id-tag": {
 		"data": []
 	},
 	"opendb-admin-menus": {
