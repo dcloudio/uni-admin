@@ -24,42 +24,32 @@
 						<span v-if="item.title" class="uni-icons-help"></span>
 					</view>
 					<view class="uni-stat--sum-item-today">{{item.today}}</view>
-					<view class="uni-stat--sum-item-yesterday">{{item.yesterday}}</view>
+					<!-- <view class="uni-stat--sum-item-yesterday">{{item.yesterday}}</view> -->
 				</view>
 			</view>
 
-			<uni-table :loading="loading" border stripe :emptyText="$t('common.empty')"
-				@selection-change="selectionChange">
+			<uni-table :loading="loading" border stripe :emptyText="$t('common.empty')">
 				<uni-tr>
-					<uni-th align="center">APPID</uni-th>
-					<uni-th align="center">应用名</uni-th>
-					<uni-th align="center">今日新增用户</uni-th>
-					<uni-th align="center">今日活跃用户</uni-th>
-					<uni-th align="center">今日访问数</uni-th>
-					<uni-th align="center">昨日新增用户</uni-th>
-					<uni-th align="center">昨日活跃用户</uni-th>
-					<uni-th align="center">今日访问数</uni-th>
-					<uni-th align="center">总用户数</uni-th>
-					<uni-th align="center">操作</uni-th>
+					<uni-th align="center">受访页</uni-th>
+					<uni-th align="center">页面名称</uni-th>
+					<uni-th align="center">访问人数</uni-th>
+					<uni-th align="center">访问次数</uni-th>
+					<uni-th align="center">退出页次数</uni-th>
+					<uni-th align="center">退出率</uni-th>
+					<uni-th align="center">次均停留时长</uni-th>
+					<uni-th align="center">人均停留时长</uni-th>
+					<uni-th align="center">分享次数</uni-th>
 				</uni-tr>
-				<uni-tr v-for="(item ,index) in tableData" :key="index" :value="items"
-					style="text-align: center; !important">
-					<uni-td>{{item.appid}}</uni-td>
-					<uni-td>
-						<view class="name">{{item.name}}</view>
-					</uni-td>
-					<uni-td>{{item.today_num_new_visitor}}</uni-td>
-					<uni-td>{{item.today_num_visitor}}</uni-td>
-					<uni-td>{{item.today_num_page_views}}</uni-td>
-					<uni-td>{{item.yesterday_num_new_visitor}}</uni-td>
-					<uni-td>{{item.yesterday_num_visitor}}</uni-td>
-					<uni-td>{{item.yesterday_num_page_views}}</uni-td>
-					<uni-td>{{item.num_total_visitor}}</uni-td>
-					<uni-td>
-						<view class="uni-group">
-							<button class="uni-button" size="mini" type="primary">查看</button>
-						</view>
-					</uni-td>
+				<uni-tr v-for="(item ,index) in tableData" :key="index" style="text-align: center; !important">
+					<uni-td>{{item.url}}</uni-td>
+					<uni-td>{{item.name}}</uni-td>
+					<uni-td>{{item.num_visitor}}</uni-td>
+					<uni-td>{{item.num_visits}}</uni-td>
+					<uni-td>{{item.exit_num_visits}}</uni-td>
+					<uni-td>{{item.exit_rate}}</uni-td>
+					<uni-td>{{item.visit_avg_time}}</uni-td>
+					<uni-td>{{item.visitor_avg_time}}</uni-td>
+					<uni-td>{{item.num_share}}</uni-td>
 				</uni-tr>
 			</uni-table>
 			<view class="uni-pagination-box">
@@ -75,10 +65,6 @@
 </template>
 
 <script>
-	import {
-		data
-	} from '@/mock/uni-stat/apps-detail.json'
-	const tableData = data.item
 	export default {
 		data() {
 			return {
@@ -91,94 +77,103 @@
 				total: 0,
 				loading: false,
 				sumData: [{
-					title: '',
-					today: '今天',
-					yesterday: '昨天'
-				}, {
-					title: '新增用户',
+					title: '访问人数',
 					today: 140,
 					yesterday: 150
 				}, {
-					title: '新增用户',
+					title: '访问次数',
 					today: 140,
 					yesterday: 150
 				}, {
-					title: '新增用户新增用户',
+					title: '退出页次数',
 					today: 140,
 					yesterday: 150
 				}, {
-					title: '新增用户',
+					title: '退出率',
+					today: 140,
+					yesterday: 150
+				}, {
+					title: '分享次数',
 					today: 140,
 					yesterday: 150
 				}],
 				current: 0,
-				tabItems: ['最近七天', '最近30天', '最近90天'],
+				tabItems: ['昨天', '最近七天', '最近30天', '最近90天'],
 				activeTab: '最近七天',
 				candidates: ['北京', '南京', '东京', '武汉', '天津', '上海', '海口'],
 			}
 		},
 		onLoad() {
-			this.selectedIndexs = []
-			this.getData(1)
+			this.getData('/pageRes', 1)
 		},
 		methods: {
 
 			// 分页触发
 			change(e) {
-				this.getData(e.current)
+				this.getData('/pageRes', e.current)
 			},
 			// 搜索
 			search() {
 				this.getData(1, this.searchVal)
 			},
 			// 获取数据
-			getData(pageCurrent, value = "") {
-				this.loading = true
-				this.pageCurrent = pageCurrent
-				this.request({
-					pageSize: this.pageSize,
-					pageCurrent: pageCurrent,
-					value: value,
-					success: (res) => {
-						// console.log('data', res);
-						this.tableData = res.data
-						this.total = res.total
-						this.loading = false
-					}
-				})
-			},
-			// 伪request请求
-			request(options) {
-				const {
-					pageSize,
-					pageCurrent,
-					success,
-					value
-				} = options
-				let total = tableData.length
-				let data = tableData.filter((item, index) => {
-					const idx = index - (pageCurrent - 1) * pageSize
-					return idx < pageSize && idx >= 0
-				})
-				if (value) {
-					data = []
-					tableData.forEach(item => {
-						if (item.name.indexOf(value) !== -1) {
-							data.push(item)
+		    getData(url, pageCurrent, value = "") {
+				if (pageCurrent) {
+					this.loading = true
+					this.pageCurrent = pageCurrent
+					this.request(url, {
+						pageSize: this.pageSize,
+						pageCurrent: pageCurrent,
+						value: value,
+						success: (res) => {
+							this.tableData = res.data
+							this.total = res.total
+							this.loading = false
 						}
 					})
-					total = data.length
-				}
+				} else {
+					this.request(url, {
+						success: (res) => {
+							console.log('.........else', res);
 
-				setTimeout(() => {
-					typeof success === 'function' && success({
-						data: data,
-						total: total
+						}
 					})
-				}, 500)
+				}
+		    },
+		    // 伪request请求
+		    request(path, options) {
+		    	const {
+		    		pageSize,
+		    		pageCurrent,
+		    		success,
+		    		value
+		    	} = options
+		    	const origin = 'http://localhost:5000'
+		    	const url = origin + path
+		    	fetch(url)
+		    		.then(response => response.json())
+		    		.then(res => {
+		    			console.log('........', res);
+						let data, total
+						if (res.item) {
+							const tableData = res.item
+							total =  tableData.length
+							data = tableData.filter((item, index) => {
+								const idx = index - (pageCurrent - 1) * pageSize
+								return idx < pageSize && idx >= 0
+							})
+						} else {
+							data = res
+						}
 
-			}
-
+		    			setTimeout(() => {
+		    				typeof success === 'function' && success({
+		    					data: data,
+		    					total: total
+		    				})
+		    			}, 500)
+		    		})
+		    },
 		}
 
 	}

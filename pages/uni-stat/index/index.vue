@@ -20,8 +20,7 @@
 				</view>
 			</view>
 
-			<uni-table :loading="loading" border stripe :emptyText="$t('common.empty')"
-				@selection-change="selectionChange">
+			<uni-table :loading="loading" border stripe :emptyText="$t('common.empty')">
 				<uni-tr>
 					<uni-th align="center">APPID</uni-th>
 					<uni-th align="center">应用名</uni-th>
@@ -48,7 +47,7 @@
 					<uni-td>{{item.num_total_visitor}}</uni-td>
 					<uni-td>
 						<view class="uni-group">
-							<button class="uni-button" size="mini" type="primary">查看</button>
+							<button class="uni-button" size="mini" type="primary" @click="navTo(item.appid)">查看</button>
 						</view>
 					</uni-td>
 				</uni-tr>
@@ -66,8 +65,6 @@
 </template>
 
 <script>
-    import { data } from '@/mock/uni-stat/apps-detail.json'
-	const tableData = data.item
 	export default {
 		data() {
 			return {
@@ -103,67 +100,88 @@
 			}
 		},
 		onLoad() {
-		    this.selectedIndexs = []
-		    this.getData(1)
+		    this.getData('/appOverview')
+		    this.getData('/appsDetail', 1)
 		},
 		methods: {
+			// 分页触发
+			change(e) {
+				this.getData('/appsDetail', e.current)
+			},
 
-		    // 分页触发
-		    change(e) {
-		        this.getData(e.current)
-		    },
-		    // 搜索
-		    search() {
-		        this.getData(1, this.searchVal)
-		    },
 		    // 获取数据
-		    getData(pageCurrent, value = "") {
-		        this.loading = true
-		        this.pageCurrent = pageCurrent
-		        this.request({
-		            pageSize: this.pageSize,
-		            pageCurrent: pageCurrent,
-		            value: value,
-		            success: (res) => {
-		                // console.log('data', res);
-		                this.tableData = res.data
-		                this.total = res.total
-		                this.loading = false
-		            }
-		        })
+		    getData(url, pageCurrent, value = "") {
+				if (pageCurrent) {
+					this.loading = true
+					this.pageCurrent = pageCurrent
+					this.request(url, {
+						pageSize: this.pageSize,
+						pageCurrent: pageCurrent,
+						value: value,
+						success: (res) => {
+							this.tableData = res.data
+							this.total = res.total
+							this.loading = false
+						}
+					})
+				} else {
+					this.request(url, {
+						success: (res) => {
+							console.log('.........else', res);
+
+						}
+					})
+				}
 		    },
 		    // 伪request请求
-		    request(options) {
-		        const {
-		            pageSize,
-		            pageCurrent,
-		            success,
-		            value
-		        } = options
-		        let total = tableData.length
-		        let data = tableData.filter((item, index) => {
-		            const idx = index - (pageCurrent - 1) * pageSize
-		            return idx < pageSize && idx >= 0
-		        })
-		        if (value) {
-		            data = []
-		            tableData.forEach(item => {
-		                if (item.name.indexOf(value) !== -1) {
-		                    data.push(item)
-		                }
-		            })
-		            total = data.length
-		        }
+		    request(path, options) {
+		    	const {
+		    		pageSize,
+		    		pageCurrent,
+		    		success,
+		    		value
+		    	} = options
+		    	const origin = 'http://localhost:5000'
+		    	const url = origin + path
+		    	fetch(url)
+		    		.then(response => response.json())
+		    		.then(res => {
+		    			console.log('........', res);
+						let data, total
+						if (res.item) {
+							const tableData = res.item
+							total =  tableData.length
+							data = tableData.filter((item, index) => {
+								const idx = index - (pageCurrent - 1) * pageSize
+								return idx < pageSize && idx >= 0
+							})
+							if (value) {
+								data = []
+								tableData.forEach(item => {
+									if (item.name.indexOf(value) !== -1) {
+										data.push(item)
+									}
+								})
+							}
+						} else {
+							data = res
+						}
 
-		        setTimeout(() => {
-		            typeof success === 'function' && success({
-		                data: data,
-		                total: total
-		            })
-		        }, 500)
+		    			setTimeout(() => {
+		    				typeof success === 'function' && success({
+		    					data: data,
+		    					total: total
+		    				})
+		    			}, 500)
+		    		})
+		    },
 
-		    }
-
+			navTo(id) {
+				const url = `/pages/uni-stat/overview/overview?id=${id}`
+				uni.navigateTo({
+					url
+				})
+			}
 		}
 
 	}

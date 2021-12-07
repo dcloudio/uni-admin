@@ -385,38 +385,6 @@ button:after {
 	color: #999;
 }
 
-/* #ifdef H5 */
-@media screen and (min-width: 500px) and (min-height: 500px) {
-
-	/* #ifndef VUE3 */
-	::v-deep .uni-picker-container .uni-picker-custom {
-		width: 100px;
-		margin-left: 100px;
-	}
-
-	/* #endif */
-
-	/* #ifdef VUE3 */
-	:deep(.uni-picker-container .uni-picker-custom) {
-		width: 100px;
-		margin-left: 100px;
-	}
-
-	/* #endif */
-}
-
-/* fix 弹出层被遮盖 */
-::v-deep .uni-table-scroll {
-	min-height: calc(100vh - 237px);
-	box-sizing: border-box;
-}
-::v-deep .uni-table .tr-table--border {
-	border-left: 1px #ebeef5 solid;
-}
-::v-deep .table--border {
-	/* border-left: none !important; */
-}
-/* #endif */
 
 .uni-pagination-box {
 	display: flex;
