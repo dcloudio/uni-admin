@@ -195,7 +195,7 @@
 		&--x {
 			border-radius: 4px;
 			padding: 15px;
-			box-shadow: -1px -1px 5px 0 rgb(0 0 0 / 10%);
+			box-shadow: -1px -1px 5px 0 rgba(0, 0, 0, 0.1);
 		}
 
 		&--sum {
