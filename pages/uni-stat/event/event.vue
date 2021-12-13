@@ -2,20 +2,20 @@
 	<view class="fix-top-window">
 		<view class="uni-header">
 			<view class="uni-group hide-on-phone">
-				<view class="uni-title">内容统计</view>
-				<view class="uni-sub-title">根据 url 参数进行分组的页面，如资讯类应用的新闻页面，不同的新闻内容计为多个内容页。 商城类应用的商品详情页面，不同的产品计为多个内容页. 内容统计说明>></view>
+				<view class="uni-title">事件分析管理</view>
+				<view class="uni-sub-title">分析用户自定义事件 自定义事件说明>></view>
 			</view>
 		</view>
 		<view class="uni-container">
 			<view class="uni-stat--x uni-stat--tab mb-m">
-				<view v-for="(item, index) in tabItems" key="index" class="uni-stat--tab-item">
+				<view v-for="(item, index) in tabItems" :key="index" class="uni-stat--tab-item">
 					{{item}}
 				</view>
 			</view>
 			<view class="uni-stat--x flex mb-m">
 				<uni-datetime-picker type="datetimerange" style="max-width: 400px; margin-right: 30px;" />
 				<view class="label-text">渠道:</view>
-				 <uni-combox :candidates="candidates" placeholder="请选择" style="max-width: 400px;" ></uni-combox>
+				<uni-combox :candidates="candidates" placeholder="请选择" style="max-width: 400px;" ></uni-combox>
 			</view>
 
 			<uni-table :loading="loading" border stripe :emptyText="$t('common.empty')">

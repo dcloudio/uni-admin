@@ -7,19 +7,28 @@
 			</view>
 		</view>
 		<view class="uni-container">
-			<view class="uni-stat--x uni-stat--tab mb-m">
-				<view v-for="(item, index) in tabItems" key="index" class="uni-stat--tab-item">
-					{{item}}
-				</view>
+			<view class="uni-stat--x flex uni-stat--tab mb-m">
+				<span class="label-text">应用选择：</span>
+				<uni-combox :candidates="apps" placeholder="请选择" style="width: 300px; margin-right: 30px;">
+				</uni-combox>
 			</view>
+			<view class="uni-stat--x flex uni-stat--tab mb-m">
+				<span class="label-text">平台选择：</span>
+				<uni-stat-tabs type="boldLine" :tabs="platforms" />
+			</view>
+			<view class="uni-stat--x uni-stat--tab mb-m">
+				<uni-stat-tabs :tabs="dates" />
+			</view>
+
 			<view class="uni-stat--x flex mb-m">
 				<uni-datetime-picker type="datetimerange" style="max-width: 400px; margin-right: 30px;" />
 				<view class="label-text">渠道:</view>
-				 <uni-combox :candidates="candidates" placeholder="请选择" style="max-width: 400px;" ></uni-combox>
+				<uni-combox :candidates="candidates" placeholder="请选择" style="max-width: 400px; margin-right: 30px;">
+				</uni-combox>
 			</view>
 			<view class="uni-stat--x uni-stat--sum mb-m">
-				<view v-for="(item, index) in sumData" key="index" class="uni-stat--sum-item">
-					<view class="uni-stat--sum-item-title" >
+				<view v-for="(item, index) in sumData" :key="index" class="uni-stat--sum-item">
+					<view class="uni-stat--sum-item-title">
 						{{item.title}}
 						<span v-if="item.title" class="uni-icons-help"></span>
 					</view>
@@ -98,15 +107,30 @@
 					yesterday: 150
 				}],
 				current: 0,
-				tabItems: ['昨天', '最近七天', '最近30天', '最近90天'],
-				activeTab: '最近七天',
+				dates: ['昨天', '最近七天', '最近30天', '最近90天'],
+				dateTabIndex: 3,
+				apps: ['Hello uni-app (__UNI__HelloUniApp)', 'uni-admin (__UNI__uniAdmin)'],
 				candidates: ['北京', '南京', '东京', '武汉', '天津', '上海', '海口'],
+				platforms: [
+					'全部',
+					'Android',
+					'iOS',
+					'H5',
+					'微信小程序',
+					'支付宝小程序',
+					'百度小程序',
+					'头条小程序',
+					'QQ 小程序'
+				]
 			}
 		},
 		onLoad() {
 			this.getData('/pageRes', 1)
 		},
 		methods: {
+			changeDateTab(index) {
+				this.dateTabIndex = index
+			},
 
 			// 分页触发
 			change(e) {
@@ -117,7 +141,7 @@
 				this.getData(1, this.searchVal)
 			},
 			// 获取数据
-		    getData(url, pageCurrent, value = "") {
+			getData(url, pageCurrent, value = "") {
 				if (pageCurrent) {
 					this.loading = true
 					this.pageCurrent = pageCurrent
@@ -139,25 +163,25 @@
 						}
 					})
 				}
-		    },
-		    // 伪request请求
-		    request(path, options) {
-		    	const {
-		    		pageSize,
-		    		pageCurrent,
-		    		success,
-		    		value
-		    	} = options
-		    	const origin = 'http://localhost:5000'
-		    	const url = origin + path
-		    	fetch(url)
-		    		.then(response => response.json())
-		    		.then(res => {
-		    			console.log('........', res);
+			},
+			// 伪request请求
+			request(path, options) {
+				const {
+					pageSize,
+					pageCurrent,
+					success,
+					value
+				} = options
+				const origin = 'http://localhost:5000'
+				const url = origin + path
+				fetch(url)
+					.then(response => response.json())
+					.then(res => {
+						console.log('........', res);
 						let data, total
 						if (res.item) {
 							const tableData = res.item
-							total =  tableData.length
+							total = tableData.length
 							data = tableData.filter((item, index) => {
 								const idx = index - (pageCurrent - 1) * pageSize
 								return idx < pageSize && idx >= 0
@@ -166,14 +190,14 @@
 							data = res
 						}
 
-		    			setTimeout(() => {
-		    				typeof success === 'function' && success({
-		    					data: data,
-		    					total: total
-		    				})
-		    			}, 500)
-		    		})
-		    },
+						setTimeout(() => {
+							typeof success === 'function' && success({
+								data: data,
+								total: total
+							})
+						}, 500)
+					})
+			},
 		}
 
 	}
@@ -188,6 +212,7 @@
 	.label-text {
 		font-size: 14px;
 		color: #666;
+		margin: auto 0;
 		margin-right: 5px;
 	}
 
@@ -199,9 +224,9 @@
 		}
 
 		&--sum {
-				display: flex;
-				justify-content: space-around;
-				flex-wrap: wrap;
+			display: flex;
+			justify-content: space-around;
+			flex-wrap: wrap;
 
 			&-item {
 				text-align: center;
@@ -234,12 +259,46 @@
 				font-size: 14px;
 				color: #666;
 				text-align: center;
-				margin-right: 30px;
-				padding: 2px 0;
+				cursor: pointer;
+				box-sizing: border-box;
 
-				&-active {
-					color: $uni-color-primary;
-					border-bottom: 1px solid $uni-color-primary;
+				&-line {
+					margin-right: 30px;
+					padding: 2px 0;
+					border-bottom: 1px solid transparent;
+
+					&-active {
+						color: $uni-color-primary;
+						border-bottom: 1px solid $uni-color-primary;
+					}
+				}
+
+				&-line-bold {
+					margin-right: 30px;
+					padding: 2px 0;
+					border-bottom: 2px solid transparent;
+
+					&-active {
+						color: $uni-color-primary;
+						box-sizing: border-box;
+						border-bottom: 2px solid $uni-color-primary;
+					}
+				}
+
+				&-box {
+					padding: 5px 15px;
+					border: 1px solid #eee;
+					margin: 0;
+
+					&:not(:last-child) {
+						border-right-color: transparent;
+					}
+
+
+					&-active {
+						box-sizing: border-box;
+						border: 1px solid $uni-color-primary !important;
+					}
 				}
 			}
 

@@ -74,5 +74,5 @@
             "base" : "/admin/"
         }
     },
-    "vueVersion" : "3"
+    "vueVersion" : "2"
 }

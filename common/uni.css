@@ -296,6 +296,7 @@ uni-page-head .uni-btn-icon {
 		display: none;
 	}
 }
+
 /* #endif */
 
 /* #ifndef H5 */
@@ -419,5 +420,10 @@ button:after {
 }
 
 .mb-l {
-	margin-bottom: 30px;
+	margin-bottom: 30px !important;
+}
+
+.uni-charts-box {
+	width: 100%;
+	height: 300px;
 }

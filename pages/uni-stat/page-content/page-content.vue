@@ -8,7 +8,7 @@
 		</view>
 		<view class="uni-container">
 			<view class="uni-stat--x uni-stat--tab mb-m">
-				<view v-for="(item, index) in tabItems" key="index" class="uni-stat--tab-item">
+				<view v-for="(item, index) in tabItems" :key="index" class="uni-stat--tab-item">
 					{{item}}
 				</view>
 			</view>
@@ -18,7 +18,7 @@
 				 <uni-combox :candidates="candidates" placeholder="请选择" style="max-width: 400px;" ></uni-combox>
 			</view>
 			<view class="uni-stat--x uni-stat--sum mb-m">
-				<view v-for="(item, index) in sumData" key="index" class="uni-stat--sum-item">
+				<view v-for="(item, index) in sumData" :key="index" class="uni-stat--sum-item">
 					<view class="uni-stat--sum-item-title" >
 						{{item.title}}
 						<span v-if="item.title" class="uni-icons-help"></span>
