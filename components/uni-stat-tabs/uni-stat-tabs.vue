@@ -42,6 +42,7 @@
 
 		&--tab {
 			display: flex;
+			flex-wrap: wrap;
 
 			&-item {
 				font-size: 14px;

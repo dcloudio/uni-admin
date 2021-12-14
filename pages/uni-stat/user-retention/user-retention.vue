@@ -8,21 +8,24 @@
 		</view>
 		<view class="uni-container">
 			<view class="uni-stat--x mb-m">
-			<uni-stat-tabs :tabs="dates" />
+				<uni-stat-tabs :tabs="dates" />
 			</view>
 			<view class="uni-stat--x flex mb-m">
 				<uni-datetime-picker type="daterange" style="max-width: 400px; margin-right: 30px;" />
 				<view class="label-text">渠道:</view>
-				<uni-combox :candidates="candidates" placeholder="请选择" style="max-width: 400px; margin-right: 30px;"></uni-combox>
+				<uni-combox :candidates="candidates" placeholder="请选择" style="max-width: 400px; margin-right: 30px;">
+				</uni-combox>
 				<uni-stat-tabs type="box" :tabs="vitalities" />
 			</view>
 			<view class="uni-stat--x mb-l">
-				<view class="mb-l" style="border-bottom: 1px solid #eee;">
-					<uni-stat-tabs type="boldLine" :tabs="items" />
+				<view class="mb-l line-bottom">
+					<uni-stat-tabs type="boldLine" :tabs="items" style="line-height: 30px; margin-bottom: -2px;" />
 				</view>
 				<uni-stat-tabs type="box" :tabs="vitalities" class="mb-l" />
-				<qiun-data-charts type="area" :echartsApp="true"
-					:opts="{extra:{area:{type:'curve',addLine:true,gradient:true}}}" :chartData="linearareadata" />
+				<view class="uni-charts-box">
+					<qiun-data-charts type="area" :echartsApp="true"
+						:opts="{extra:{area:{type:'curve',addLine:true,gradient:true}}}" :chartData="linearareadata" />
+				</view>
 			</view>
 			<uni-table :loading="loading" border stripe :emptyText="$t('common.empty')">
 				<uni-tr>
@@ -152,37 +155,37 @@
 							}
 						},
 						"data": [
-						  1520,
-						  1523,
-						  1462,
-						  1445,
-						  1433,
-						  972,
-						  768,
-						  1421,
-						  1581,
-						  1613,
-						  1549,
-						  1517,
-						  989,
-						  839,
-						  1579,
-						  1539,
-						  1574,
-						  1518,
-						  1584,
-						  1043,
-						  853,
-						  1498,
-						  1553,
-						  1170,
-						  909,
-						  866,
-						  620,
-						  566,
-						  884,
-						  905,
-						  643
+							1520,
+							1523,
+							1462,
+							1445,
+							1433,
+							972,
+							768,
+							1421,
+							1581,
+							1613,
+							1549,
+							1517,
+							989,
+							839,
+							1579,
+							1539,
+							1574,
+							1518,
+							1584,
+							1043,
+							853,
+							1498,
+							1553,
+							1170,
+							909,
+							866,
+							620,
+							566,
+							884,
+							905,
+							643
 						]
 					}]
 				}
@@ -276,6 +279,10 @@
 		color: #666;
 		margin: auto 0;
 		margin-right: 5px;
+	}
+
+	.line-bottom {
+		border-bottom: 2px solid #eee;
 	}
 
 	.uni-stat {

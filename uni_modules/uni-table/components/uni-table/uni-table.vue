@@ -307,7 +307,7 @@ $border-color: #ebeef5;
 	width: 100%;
 	/* #ifndef APP-NVUE */
 	overflow-x: auto;
-	overscroll-behavior: contain;
+	// overscroll-behavior: contain;
 	/* #endif */
 }
 
