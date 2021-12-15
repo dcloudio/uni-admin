@@ -7,16 +7,7 @@
 			</view>
 		</view>
 		<view class="uni-container">
-			<view class="uni-stat--x uni-stat--sum mb-m">
-				<view v-for="(item, index) in sumData" :key="index" class="uni-stat--sum-item">
-					<view class="uni-stat--sum-item-title">
-						{{item.title}}
-						<span v-if="item.title" class="uni-icons-help"></span>
-					</view>
-					<view class="uni-stat--sum-item-today">{{item.today}}</view>
-					<view class="uni-stat--sum-item-yesterday">{{item.yesterday}}</view>
-				</view>
-			</view>
+			<uni-stat-panel :items="sumData" />
 			<view class="uni-stat--x mb-m">
 				<uni-stat-tabs :tabs="dates" />
 			</view>
@@ -77,6 +68,10 @@
 				total: 0,
 				loading: false,
 				sumData: [{
+					title: '',
+					today: '今天',
+					yesterday: '昨天'
+				}, {
 					title: '访问人数',
 					today: 140,
 					yesterday: 150

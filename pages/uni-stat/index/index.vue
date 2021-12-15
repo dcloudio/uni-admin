@@ -8,18 +8,7 @@
 		</view>
 		<view class="uni-container">
 			<uni-notice-bar class="mb-m" text="当日实时统计显示逻辑：3天内未登录统计后台的应用不会处理当日实时统计，再次登录后1小时内会开始进行实时统计。"></uni-notice-bar>
-
-			<view class="uni-stat--sum-x mb-m">
-				<view v-for="(item, index) in sumData" :key="index" class="uni-stat--sum-item">
-					<view class="uni-stat--sum-item-title">
-						{{item.title}}
-						<span v-if="item.title" class="uni-icons-help"></span>
-					</view>
-					<view class="uni-stat--sum-item-today">{{item.today}}</view>
-					<view class="uni-stat--sum-item-yesterday">{{item.yesterday}}</view>
-				</view>
-			</view>
-
+			<uni-stat-panel :items="sumData" />
 			<uni-table :loading="loading" border stripe :emptyText="$t('common.empty')">
 				<uni-tr>
 					<uni-th align="center">APPID</uni-th>
