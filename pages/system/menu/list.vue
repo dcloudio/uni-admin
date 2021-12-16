@@ -4,11 +4,12 @@
 			<view class="uni-tabs__nav-wrap">
 				<view class="uni-tabs__nav-scroll">
 					<view class="uni-tabs__nav">
-						<view @click="switchTab('menus')" :class="{'is-active':currentTab==='menus'}" class="uni-tabs__item">
+						<view @click="switchTab('menus')" :class="{'is-active':currentTab==='menus'}"
+							class="uni-tabs__item">
 							{{$t('menu.text.menuManager')}}
 						</view>
-						<view @click="switchTab('pluginMenus')" v-if="pluginMenus.length" :class="{'is-active':currentTab==='pluginMenus'}"
-						 class="uni-tabs__item">
+						<view @click="switchTab('pluginMenus')" v-if="pluginMenus.length"
+							:class="{'is-active':currentTab==='pluginMenus'}" class="uni-tabs__item">
 							{{$t('menu.text.additiveMenu')}}
 							<uni-badge class="menu-badge" :text="pluginMenus.length" type="error"></uni-badge>
 						</view>
@@ -19,7 +20,8 @@
 		<view v-show="currentTab==='menus'">
 			<view class="uni-header" style="border-bottom: 0;margin-bottom: -15px;">
 				<view class="uni-group">
-					<button @click="navigateTo('./add')" size="mini" plain="true" type="primary">{{$t('menu.button.addFirstLevelMenu')}}</button>
+					<button @click="navigateTo('./add')" size="mini" plain="true"
+						type="primary">{{$t('menu.button.addFirstLevelMenu')}}</button>
 				</view>
 				<view class="uni-group">
 
@@ -29,7 +31,8 @@
 				<unicloud-db ref="udb" @load="onqueryload" collection="opendb-admin-menus" :options="options"
 					:where="where" page-data="replace" :orderby="orderby" :getcount="true" :page-size="options.pageSize"
 					:page-current="options.pageCurrent" v-slot:default="{data,pagination,loading,error}">
-					<uni-table :loading="loading" class="table-pc" :emptyText="errMsg || $t('common.empty')" border stripe>
+					<uni-table :loading="loading" class="table-pc" :emptyText="errMsg || $t('common.empty')" border
+						stripe>
 						<uni-tr>
 							<uni-th align="center">排序</uni-th>
 							<uni-th width="200" align="center">名称</uni-th>
@@ -48,7 +51,8 @@
 							<uni-td align="center">
 								<view class="uni-group">
 									<button v-if="!item.url" @click="navigateTo('./add?parent_id='+item.menu_id, false)"
-										class="uni-button" size="mini" type="primary">{{$t('menu.button.addChildMenu')}}</button>
+										class="uni-button" size="mini"
+										type="primary">{{$t('menu.button.addChildMenu')}}</button>
 									<button @click="navigateTo('./edit?id='+item._id, false)" class="uni-button"
 										size="mini" type="primary">{{$t('common.button.edit')}}</button>
 									<button
@@ -95,7 +99,9 @@
 </template>
 
 <script>
-	import { buildMenus } from '../../../components/uni-data-menu/util.js'
+	import {
+		buildMenus
+	} from '../../../components/uni-data-menu/util.js'
 	const db = uniCloud.database()
 	// 表查询配置
 	const dbOrderBy = 'create_date asc'
@@ -134,6 +140,27 @@
 				pluginMenuJsons.push(item)
 			})
 		})
+	}
+	// #endif
+
+	// #ifdef VUE3
+	if (process.env.NODE_ENV === 'development') {
+		const rootModules = import.meta.globEager("../../../*-menu.json")
+		for (const key in rootModules) {
+			const json = key.split('/')[3]
+			rootModules[key].default.forEach(item => {
+				item.json = json
+				pluginMenuJsons.push(item)
+			})
+		}
+		const pluginModules = import.meta.globEager("../../../uni_modules/*/menu.json")
+		for (const key in pluginModules) {
+			const json = key.substr(key.indexOf('uni_modules'))
+			pluginModules[key].default.forEach(item => {
+				item.json = json
+				pluginMenuJsons.push(item)
+			})
+		}
 	}
 	// #endif
 
