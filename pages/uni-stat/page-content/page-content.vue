@@ -142,8 +142,8 @@
 				} = options
 				const origin = 'http://localhost:5000'
 				const url = origin + path
-				fetch(url)
-					.then(response => response.json())
+				this.$fetch(url)
+					
 					.then(res => {
 						console.log('........', res);
 						let data, total
