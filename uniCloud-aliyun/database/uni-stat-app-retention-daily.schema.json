@@ -1,0 +1,37 @@
+// uni统计-留存数据日统计表
+{
+	"bsonType": "object",
+	"required": [],
+	"permission": {
+		"read": false,
+		"create": false,
+		"update": false,
+		"delete": false
+	},
+	"properties": {
+		"_id": {
+			"description": "ID，系统自动生成"
+		},
+		"stat_visit_daliy_id": {
+			"bsonType": "string",
+			"description":"访问数据日统计ID，对应uni-stat-app-visit-daliy._id",
+			"foreignKey": "uni-stat-app-visit-daliy._id"
+		},
+		"days": {
+			"bsonType": "int",
+			"description": "当前天数"
+		},
+		"num_visits": {
+			"bsonType": "int",
+			"description": "访问次数"
+		},
+		"num_visitor": {
+			"bsonType": "int",
+			"description": "访问用户数"
+		},
+		"stat_date": {
+			"bsonType": "int",
+			"description": "统计日期，格式yyyymmdd，例:20211201"
+		}
+	}
+}

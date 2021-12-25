@@ -1,0 +1,53 @@
+// 文档教程: https://uniapp.dcloud.net.cn/uniCloud/schema
+{
+	"bsonType": "object",
+	"required": [],
+	"permission": {
+		"read": false,
+		"create": false,
+		"update": false,
+		"delete": false
+	},
+	"properties": {
+		"_id": {
+			"description": "ID，系统自动生成"
+		},
+		"stat_app_id": {
+			"bsonType": "string",
+			"description": "应用表ID，对应opendb-app-list._id",
+			"foreignKey": "opendb-app-list._id"
+		},
+		"stat_version_id": {
+			"bsonType": "string",
+			"description": "应用版本表ID，对应uni-stat-app-versions._id",
+			"foreignKey": "uni-stat-app-versions._id"
+		},
+		"platform_id": {
+			"bsonType": "string",
+			"description": "平台编号",
+			"foreignKey":"uni-stat-app-platforms._id"
+		},
+		"channel_id": {
+			"bsonType": "string",
+			"description": "渠道编号同uni-stat-app-channels._id",
+			"foreignKey": "uni-stat-app-channels._id"
+		},
+		"event_id": {
+			"bsonType": "string",
+			"description": "事件ID, 对应uni-stat-app-events._id",
+			"foreignKey": "uni-stat-app-events._id"
+		},
+		"num_visits": {
+			"bsonType": "int",
+			"description": "访问次数"
+		},
+		"num_visitor": {
+			"bsonType": "int",
+			"description": "访问用户数"
+		},
+		"stat_date": {
+			"bsonType": "int",
+			"description": "统计日期，格式yyyymmdd，例:20211201"
+		}
+	}
+}

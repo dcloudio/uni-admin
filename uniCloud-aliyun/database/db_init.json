@@ -3,6 +3,143 @@
 // 编写完毕后对本文件点右键，可按配置规则创建表和添加数据
 
 {
+	"uni-stat-app-platforms": {
+		"data": [{
+			"_id": "61c046e691a75000014c255f",
+			"name": "原生-安卓",
+			"code": "native-android",
+			"report_code": "n",
+			"create_time": 163998979103
+		}, {
+			"_id": "61c046e691a75000014c2560",
+			"name": "原生-iOS",
+			"code": "native-ios",
+			"report_code": "n",
+			"create_time": 163998979103
+		}, {
+			"_id": "61c046e691a75000014c2561",
+			"name": "HTML5",
+			"code": "h5",
+			"report_code": "h5",
+			"create_time": 163998979103
+		}, {
+			"_id": "61c046e691a75000014c2562",
+			"name": "微信小程序",
+			"code": "wx",
+			"report_code": "wx",
+			"create_time": 163998979103
+		}, {
+			"_id": "61c046e691a75000014c2563",
+			"name": "百度小程序",
+			"code": "bd",
+			"report_code": "bd",
+			"create_time": 163998979103
+		}, {
+			"_id": "61c046e691a75000014c2564",
+			"name": "支付宝小程序",
+			"code": "ali",
+			"report_code": "ali",
+			"create_time": 163998979103
+		}, {
+			"_id": "61c046e691a75000014c2565",
+			"name": "头条小程序",
+			"code": "tt",
+			"report_code": "tt",
+			"create_time": 163998979103
+		}, {
+			"_id": "61c046e691a75000014c2566",
+			"name": "qq小程序",
+			"code": "qq",
+			"report_code": "qq",
+			"create_time": 163998979103
+		}]
+	},
+	"uni-stat-app-channels": {
+		"data": [{
+			"_id": "61c041fb34458700013e700a",
+			"stat_app_id": "61c041fb34458700013e700a",
+			"platform_id": "61c046e691a75000014c255f",
+			"channel": "1001",
+			"channel_name": "test-channel",
+			"create_time": 163998979103,
+			"update_time": 163998979103
+		}]
+	},
+
+	"uni-stat-app-visit-daily": {
+		"data": [{
+				"_id": "61c041fb34458700013e700a",
+				"bounce_rate": 8.3,
+				"channel_id": "61c041fb34458700013e700a",
+				"num_errors": 0,
+				"num_new_visitor": 7,
+				"num_page_views": 987,
+				"num_total_visitor": 101,
+				"num_visitor": 96,
+				"num_visits": 29,
+				"open_num": 291,
+				"platform_id": "61c046e691a75000014c255f",
+				"stat_app_id": "61c041fb34458700013e700a",
+				"stat_date": 20211219,
+				"visit_avg_time": 1,
+				"visitor_avg_time": 2
+			},
+			{
+				"_id": "61c041fb34458700013e700b",
+				"bounce_rate": 10.3,
+				"channel_id": "",
+				"num_errors": 1,
+				"num_new_visitor": 9,
+				"num_page_views": 1097,
+				"num_total_visitor": 120,
+				"num_visitor": 103,
+				"num_visits": 31,
+				"open_num": 301,
+				"platform_id": "61c046e691a75000014c255f",
+				"stat_app_id": "61c041fb34458700013e700a",
+				"stat_date": 20211220,
+				"visit_avg_time": 1,
+				"visitor_avg_time": 3
+			},
+			{
+				"_id": "61c041fb34458700013e700c",
+				"bounce_rate": 10.3,
+				"channel_id": "61c041fb34458700013e700a",
+				"num_errors": 1,
+				"num_new_visitor": 90,
+				"num_page_views": 1097,
+				"num_total_visitor": 120,
+				"num_visitor": 203,
+				"num_visits": 31,
+				"open_num": 301,
+				"platform_id": "61c046e691a75000014c255f",
+				"stat_app_id": "61c041fb34458700013e700b",
+				"stat_date": 20211219,
+				"visit_avg_time": 1,
+				"visitor_avg_time": 3
+			},
+			{
+				"_id": "61c041fb34458700013e700d",
+				"bounce_rate": 10.3,
+				"channel_id": "61c041fb34458700013e700a",
+				"num_errors": 1,
+				"num_new_visitor": 19,
+				"num_page_views": 2000,
+				"num_total_visitor": 120,
+				"num_visitor": 303,
+				"num_visits": 31,
+				"open_num": 301,
+				"platform_id": "61c046e691a75000014c255f",
+				"stat_app_id": "61c041fb34458700013e700b",
+				"stat_date": 20211220,
+				"visit_avg_time": 1,
+				"visitor_avg_time": 3
+			}
+		]
+
+	},
+
+
 	"uni-id-users": {
 		"data": []
 	},
@@ -10,7 +147,21 @@
 		"data": []
 	},
 	"opendb-app-list": {
-		"data": []
+		"data": [{
+				"_id": "61c041fb34458700013e700a",
+				"appid": "__UNI__DF38D05",
+				"create_date": 1639989667981,
+				"description": "测试应用",
+				"name": "测试应用一"
+			},
+			{
+				"_id": "61c041fb34458700013e700b",
+				"appid": "_UNI__CB98803",
+				"create_date": 1639989802201,
+				"description": "测试应用",
+				"name": "测试应用二"
+			}
+		]
 	},
 	"uni-id-roles": {
 		"data": []

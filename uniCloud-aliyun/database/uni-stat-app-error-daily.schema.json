@@ -1,0 +1,55 @@
+// uni统计-应用错误数据日统计表
+{
+	"bsonType": "object",
+	"required": [],
+	"permission": {
+		"read": false,
+		"create": false,
+		"update": false,
+		"delete": false
+	},
+	"properties": {
+		"_id": {
+			"description": "ID，系统自动生成"
+		},
+		"stat_app_id": {
+			"bsonType": "string",
+			"description": "应用表ID，对应opendb-app-list._id",
+			"foreignKey": "opendb-app-list._id"
+		},
+		"stat_version_id": {
+			"bsonType": "string",
+			"description": "应用版本表ID，对应uni-stat-app-versions._id",
+			"foreignKey": "uni-stat-app-versions._id"
+		},
+		"platform_id": {
+			"bsonType": "string",
+			"description": "平台编号",
+			"foreignKey":"uni-stat-app-platforms._id"
+		},
+		"sdk_version": {
+			"bsonType": "string",
+			"description": "sdk 版本"
+		},
+		"platform_version": {
+			"bsonType": "string",
+			"description": "平台版本，如ide版本、微信、支付宝sdk版本等"
+		},
+		"error_hash": {
+			"bsonType": "string",
+			"description": "错误hash码"
+		},
+		"num_errors": {
+			"bsonType":"int",
+			"description":"报错次数"
+		},
+		"latest_error_time": {
+			"bsonType":"timestamp",
+			"description":"最近一次报错事件"
+		},
+		"stat_date": {
+			"bsonType": "int",
+			"description": "统计日期，格式yyyymmdd，例:20211201"
+		}
+	}
+}

@@ -83,7 +83,7 @@ export function request(action, params, {
 }
 
 function reLaunchToLogin(code) {
-	if (typeof code === 'string' && code.indexOf('TOKEN_INVALID') === 0) {
+	if (code === 30202 || typeof code === 'string' && code.indexOf('TOKEN_INVALID') === 0) {
 		uni.reLaunch({
 			url: config.login.url
 		})
