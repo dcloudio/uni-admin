@@ -5,7 +5,7 @@
         <uni-easyinput :disabled="true" placeholder="应用AppID" v-model="formData.appid"></uni-easyinput>
       </uni-forms-item>
       <uni-forms-item name="name" label="应用名称" required>
-        <uni-easyinput :disabled="true" placeholder="应用名称" v-model="formData.name"></uni-easyinput>
+        <uni-easyinput placeholder="应用名称" v-model="formData.name"></uni-easyinput>
       </uni-forms-item>
       <uni-forms-item name="description" label="应用描述" required>
         <textarea placeholder="应用描述" @input="binddata('description', $event.detail.value)" class="uni-textarea-border" v-model="formData.description"></textarea>
