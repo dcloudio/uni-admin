@@ -3,14 +3,14 @@
 		<view v-for="(item, index) in items" :key="index" class="uni-stat--sum-item">
 			<view class="uni-stat--sum-item-title">
 				{{item.title}}
-				<view v-if="item.title" class="uni-icons-help uni-stat-tooltip">
+				<view v-if="item.title && item.tooltip" class="uni-icons-help uni-stat-tooltip">
 					<view class="uni-stat-tooltip-popup">
-						首次访问应用的用户数（以设备为判断标准，去重）
+						{{item.tooltip}}
 					</view>
 				</view>
 			</view>
-			<view class="uni-stat--sum-item-today">{{item.today}}</view>
-			<view v-if="contraster" class="uni-stat--sum-item-yesterday">{{item.yesterday}}</view>
+			<view class="uni-stat--sum-item-value">{{item.value}}</view>
+			<view v-if="contrast" class="uni-stat--sum-item-contrast">{{item.contrast}}</view>
 		</view>
 	</view>
 </template>
@@ -30,7 +30,7 @@
 					return []
 				}
 			},
-			contraster: {
+			contrast: {
 				type: Boolean,
 				default: true
 			}
@@ -61,14 +61,14 @@
 			color: #666;
 		}
 
-		&-item-today {
+		&-item-value {
 			font-size: 24px;
 			line-height: 48px;
 			font-weight: 700;
 			color: #333;
 		}
 
-		&-item-yesterday {
+		&-item-contrast {
 			font-size: 14px;
 			color: #666;
 		}

@@ -9,34 +9,22 @@
 		<view class="uni-container">
 			<view class="uni-stat--x flex uni-stat--tab mb-m">
 				<span class="label-text">应用选择：</span>
-				<uni-combox :candidates="apps" placeholder="请选择" style="width: 300px; margin-right: 30px;">
-				</uni-combox>
+				<uni-stat-select mode="app" v-model="query.stat_app_id" />
+				<view class="label-text">渠道选择：</view>
+				<uni-stat-select mode="channel" v-model="query.channel_id" />
 			</view>
-			<view class="uni-stat--x flex uni-stat--tab mb-m">
-				<span class="label-text">平台选择：</span>
-				<uni-stat-tabs type="boldLine" :tabs="platforms" />
-			</view>
-			<view class="uni-stat--x uni-stat--tab mb-m">
-				<uni-stat-tabs :tabs="dates" />
-			</view>
-
 			<view class="uni-stat--x flex mb-m">
-				<uni-datetime-picker type="datetimerange" style="max-width: 400px; margin-right: 30px;" />
-				<view class="label-text">渠道:</view>
-				<uni-combox :candidates="candidates" placeholder="请选择" style="max-width: 400px; margin-right: 30px;">
-				</uni-combox>
+				<span class="label-text">平台选择：</span>
+				<uni-stat-tabs type="boldLine" mode="platform" v-model="query.platform_id" />
 			</view>
-			<view class="uni-stat--x uni-stat--sum mb-m">
-				<view v-for="(item, index) in sumData" :key="index" class="uni-stat--sum-item">
-					<view class="uni-stat--sum-item-title">
-						{{item.title}}
-						<span v-if="item.title" class="uni-icons-help"></span>
-					</view>
-					<view class="uni-stat--sum-item-today">{{item.today}}</view>
-					<!-- <view class="uni-stat--sum-item-yesterday">{{item.yesterday}}</view> -->
-				</view>
+			<view class="uni-stat--x flex mb-m">
+				<span class="label-text">日期选择：</span>
+				<uni-stat-tabs mode="date" v-model="query.stat_time" :disabled="!!stat_time_range.length" />
+				<view style="color: #333; margin-right: 30px;">/</view>
+				<uni-datetime-picker type="daterange" v-model="stat_time_range" returnType="timestamp"
+					style="max-width: 400px; margin-right: 30px;" />
 			</view>
-
+			<uni-stat-panel :items="panelData" />
 			<uni-table :loading="loading" border stripe :emptyText="$t('common.empty')">
 				<uni-tr>
 					<uni-th align="center">受访页</uni-th>
@@ -51,7 +39,7 @@
 				</uni-tr>
 				<uni-tr v-for="(item ,index) in tableData" :key="index" style="text-align: center; !important">
 					<uni-td>{{item.url}}</uni-td>
-					<uni-td>{{item.name}}</uni-td>
+					<uni-td>{{item.title}}</uni-td>
 					<uni-td>{{item.num_visitor}}</uni-td>
 					<uni-td>{{item.num_visits}}</uni-td>
 					<uni-td>{{item.exit_num_visits}}</uni-td>
@@ -77,6 +65,14 @@
 	export default {
 		data() {
 			return {
+				query: {
+					stat_app_id: '',
+					platform_id: '',
+					channel_id: '',
+					stat_time: 1,
+				},
+				test: 0,
+				stat_time_range: [],
 				tableData: [],
 				// 每页数据量
 				pageSize: 10,
@@ -85,223 +81,162 @@
 				// 数据总量
 				total: 0,
 				loading: false,
-				sumData: [{
+				panelData: [{
 					title: '访问人数',
-					today: 140,
-					yesterday: 150
+					tooltip: '访问人数',
+					value: 140,
 				}, {
 					title: '访问次数',
-					today: 140,
-					yesterday: 150
+					value: 140,
 				}, {
 					title: '退出页次数',
-					today: 140,
-					yesterday: 150
+					value: 140,
 				}, {
 					title: '退出率',
-					today: 140,
-					yesterday: 150
+					value: 140,
+				}, {
+					title: '次均停留时长',
+					value: '00:02:00',
+				}, {
+					title: '人均停留时长 ',
+					value: '00:02:00',
 				}, {
 					title: '分享次数',
-					today: 140,
-					yesterday: 150
+					value: 140,
 				}],
-				current: 0,
-				dates: ['昨天', '最近七天', '最近30天', '最近90天'],
-				dateTabIndex: 3,
 				apps: ['Hello uni-app (__UNI__HelloUniApp)', 'uni-admin (__UNI__uniAdmin)'],
 				candidates: ['北京', '南京', '东京', '武汉', '天津', '上海', '海口'],
-				platforms: [
-					'全部',
-					'Android',
-					'iOS',
-					'H5',
-					'微信小程序',
-					'支付宝小程序',
-					'百度小程序',
-					'头条小程序',
-					'QQ 小程序'
-				]
 			}
 		},
-		onLoad() {
-			this.getData('/pageRes', 1)
+		onReady() {
+			this.getApps(this.stringifyQuery(this.query))
 		},
-		methods: {
-			changeDateTab(index) {
-				this.dateTabIndex = index
-			},
-
-			// 分页触发
-			change(e) {
-				this.getData('/pageRes', e.current)
-			},
-			// 搜索
-			search() {
-				this.getData(1, this.searchVal)
-			},
-			// 获取数据
-			getData(url, pageCurrent, value = "") {
-				if (pageCurrent) {
-					this.loading = true
-					this.pageCurrent = pageCurrent
-					this.request(url, {
-						pageSize: this.pageSize,
-						pageCurrent: pageCurrent,
-						value: value,
-						success: (res) => {
-							this.tableData = res.data
-							this.total = res.total
-							this.loading = false
-						}
-					})
-				} else {
-					this.request(url, {
-						success: (res) => {
-							console.log('.........else', res);
-
-						}
-					})
+		computed: {
+			deepCloneQuery() {
+				return JSON.parse(JSON.stringify(this.query))
+			}
+		},
+		watch: {
+			deepCloneQuery: {
+				deep: true,
+				handler(newVal, oldVal) {
+					console.log('..........newVal', newVal);
+					if (newVal.stat_time !== oldVal.stat_time && this.stat_time_range.length) {
+						this.stat_time_range = []
+						return
+					}
+					this.getApps(this.stringifyQuery(newVal))
 				}
 			},
-			// 伪request请求
-			request(path, options) {
-				const {
-					pageSize,
-					pageCurrent,
-					success,
-					value
-				} = options
-				const origin = 'http://localhost:5000'
-				const url = origin + path
-				this.$fetch(url)
-					
-					.then(res => {
-						console.log('........', res);
-						let data, total
-						if (res.item) {
-							const tableData = res.item
-							total = tableData.length
-							data = tableData.filter((item, index) => {
-								const idx = index - (pageCurrent - 1) * pageSize
-								return idx < pageSize && idx >= 0
-							})
-						} else {
-							data = res
+			stat_time_range(newVal) {
+				this.getApps(this.stringifyQuery(this.query))
+			}
+		},
+		methods: {
+			defQuery() {
+				return ''
+			},
+			// 获取指定日期当天或 n 天前零点的时间戳，丢弃时分秒
+			getTimeOfSomeDayAgo(days = 0, date = Date.now()) {
+				const d = new Date(date)
+				const oneDayTime = 24 * 60 * 60 * 1000
+				let ymd = [d.getFullYear(), d.getMonth() + 1, d.getDate()].join('-')
+				ymd = ymd + ' 00:00:00'
+				const someDaysAgoTime = new Date(ymd).getTime() - oneDayTime * days
+				return someDaysAgoTime
+			},
+			stringifyQuery(query, defQuery) {
+				const queryArr = []
+				if (defQuery && typeof defQuery === 'string') {
+					queryArr.push(defQuery)
+				}
+				const range = this.stat_time_range
+				const keys = Object.keys(query)
+				keys.forEach(key => {
+					let val = query[key]
+					if (val) {
+						if (typeof val === 'string') {
+							val = `"${val}"`
 						}
+						if (key === 'stat_time') {
+							if (Array.isArray(range) && range.length === 2) {
+								queryArr.push(`stat_time >= ${range[0]} && stat_time <= ${range[1]}`)
+							} else {
+								queryArr.push(`stat_time >= ${this.getTimeOfSomeDayAgo(val)}`)
+							}
 
-						setTimeout(() => {
-							typeof success === 'function' && success({
-								data: data,
-								total: total
-							})
-						}, 500)
+						} else {
+							queryArr.push(`${key} == ${val}`)
+						}
+					}
+				})
+				const queryStr = queryArr.join(' && ')
+
+				return queryStr || {}
+			},
+			getApps(query) {
+				console.log('..............query：', query);
+				this.loading = true
+				const db = uniCloud.database()
+				const mainTable = db.collection('uni-stat-app-pages').getTemp()
+				const subTable = db.collection('uni-stat-app-page-view-daily')
+					.where(query)
+					.orderBy('stat_time', 'desc')
+					.getTemp()
+
+				db.collection(mainTable, subTable)
+					.field(
+						'title, url, _id{"uni-stat-app-page-view-daily"{exit_num_visits, num_visitor, num_visits, sum_visit_length, num_share,entry_num_visitor, entry_num_visits, entry_sum_visit_length, stat_time}}'
+					)
+					.get()
+					.then((res) => {
+						const {
+							data
+						} = res.result
+						this.tableData = []
+						this.panelData.forEach((sum, index) => {
+							if (sum.title) {
+								sum.value = 0
+							}
+						})
+						for (const item of data) {
+							const lines = item._id["uni-stat-app-page-view-daily"]
+							if (Array.isArray(lines)) {
+								delete(item._id)
+								const line = lines[0]
+								if (line && Object.keys(line)) {
+									for (const key in line) {
+										item[key] = line[key] ? line[key] : ''
+									}
+									const exit_rate = line['exit_num_visits'] / line['num_visits']
+									const visit_avg_time = line['sum_visit_length'] / line['num_visits']
+									const visitor_avg_time = line['sum_visit_length'] / line['num_visitor']
+									item['exit_rate'] = exit_rate.toFixed(4)
+									item['visit_avg_time'] = Math.ceil(visit_avg_time)
+									item['visitor_avg_time'] = Math.ceil(visitor_avg_time)
+								}
+							}
+							this.tableData.push(item)
+						}
+					}).catch((err) => {
+						console.error(err)
+						// err.message 错误信息
+						// err.code 错误码
+					}).finally(() => {
+						this.loading = false
 					})
 			},
+
+			navTo(id) {
+				const url = `/pages/uni-stat/overview/overview?id=${id}`
+				uni.navigateTo({
+					url
+				})
+			}
 		}
 
 	}
 </script>
 
-<style lang="scss">
-	.flex {
-		display: flex;
-		align-items: center;
-	}
-
-	.label-text {
-		font-size: 14px;
-		color: #666;
-		margin: auto 0;
-		margin-right: 5px;
-	}
-
-	.uni-stat {
-		&--x {
-			border-radius: 4px;
-			padding: 15px;
-			box-shadow: -1px -1px 5px 0 rgba(0, 0, 0, 0.1);
-		}
-
-		&--sum {
-			display: flex;
-			justify-content: space-around;
-			flex-wrap: wrap;
-
-			&-item {
-				text-align: center;
-				margin: 10px 30px;
-			}
-
-			&-item-title {
-				min-height: 17px;
-				font-size: 12px;
-				color: #666;
-			}
-
-			&-item-today {
-				font-size: 24px;
-				line-height: 48px;
-				font-weight: 700;
-				color: #333;
-			}
-
-			&-item-yesterday {
-				font-size: 14px;
-				color: #666;
-			}
-		}
-
-		&--tab {
-			display: flex;
-
-			&-item {
-				font-size: 14px;
-				color: #666;
-				text-align: center;
-				cursor: pointer;
-				box-sizing: border-box;
-
-				&-line {
-					margin-right: 30px;
-					padding: 2px 0;
-					border-bottom: 1px solid transparent;
-
-					&-active {
-						color: $uni-color-primary;
-						border-bottom: 1px solid $uni-color-primary;
-					}
-				}
-
-				&-line-bold {
-					margin-right: 30px;
-					padding: 2px 0;
-					border-bottom: 2px solid transparent;
-
-					&-active {
-						color: $uni-color-primary;
-						box-sizing: border-box;
-						border-bottom: 2px solid $uni-color-primary;
-					}
-				}
-
-				&-box {
-					padding: 5px 15px;
-					border: 1px solid #eee;
-					margin: 0;
-
-					&:not(:last-child) {
-						border-right-color: transparent;
-					}
-
-
-					&-active {
-						box-sizing: border-box;
-						border: 1px solid $uni-color-primary !important;
-					}
-				}
-			}
-
-		}
-	}
+<style>
 </style>

@@ -1,11 +1,11 @@
 <template>
 	<view class="uni-stat--tab">
-		<view v-if="!renderTabs.length" class="uni-stat--tab-item" :class="[`uni-stat--tab-item-${type}`]">
+		<view v-if="!renderTabs.length" class="uni-stat--tab-item uni-stat--tab-item-disabled" :class="[`uni-stat--tab-item-${type}`]">
 			暂无选项
 		</view>
 		<view v-else v-for="(item, index) in renderTabs" :key="index" @click="change(item._id, index)"
 			class="uni-stat--tab-item"
-			:class="[index === tabIndex ? `uni-stat--tab-item-${type}-active` : '' , `uni-stat--tab-item-${type}`]">
+			:class="[index === current ? `uni-stat--tab-item-${type}-active` : '' , `uni-stat--tab-item-${type}`, (index === current && disabled) ? `uni-stat--tab-item-${type}-active-disabled` : '']">
 			{{item.name}}
 		</view>
 
@@ -17,7 +17,7 @@
 		name: "uni-stat-tabs",
 		data() {
 			return {
-				tabIndex: 0,
+				current: 0,
 				renderTabs: []
 			};
 		},
@@ -30,6 +30,10 @@
 				type: String,
 				default: ''
 			},
+			disabled: {
+				type: Boolean,
+				default: false
+			},
 			tabs: {
 				type: Array,
 				default: () => {
@@ -40,15 +44,29 @@
 		mounted() {
 			if (this.mode === 'platform') {
 				this.getPlatform()
-			} else {
+			} else if (this.mode === 'date') {
+				this.renderTabs = [{
+					_id: 1,
+					name: '昨天',
+				}, {
+					_id: 7,
+					name: '最近七天',
+				}, {
+					_id: 30,
+					name: '最近30天',
+				}, {
+					_id: 90,
+					name: '最近90天',
+				}]
+			}else {
 				this.renderTabs = this.tabs
 			}
 		},
 		methods: {
 			change(e, index) {
 				console.log(',,,,,,,,,', e);
-				this.tabIndex = index
-				this.$emit('change', e)
+				// if(this.disabled) return
+				this.current = index
 				this.$emit('change', e)
 				this.$emit('input', e)
 			},
@@ -92,6 +110,10 @@
 					&-active {
 						color: $uni-color-primary;
 						border-bottom: 1px solid $uni-color-primary;
+						&-disabled {
+							color: #666;
+							border-color: #666;
+						}
 					}
 				}
 

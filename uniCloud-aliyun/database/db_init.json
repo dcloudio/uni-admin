@@ -139,6 +139,97 @@
 
 	},
 
+	"uni-stat-app-pages": {
+		"data": [{
+			"_id": "61c041fb34458700013e70p1",
+			"stat_app_id": "61c041fb34458700013e700a",
+			"url": "pages/tabBar/case/case",
+			"title": "实例",
+			"page_params": [],
+			"create_time": 1640217600000,
+			"update_time": 1640217700000
+		}, {
+			"_id": "61c041fb34458700013e70p2",
+			"stat_app_id": "61c041fb34458700013e700a",
+			"url": "pages/tabBar/forum/forum",
+			"title": "社区",
+			"page_params": [],
+			"create_time": 1640217600000,
+			"update_time": 1640217700000
+		}, {
+			"_id": "61c041fb34458700013e70p3",
+			"stat_app_id": "61c041fb34458700013e700b",
+			"url": "pages/tabBar/center/center",
+			"title": "个人中心",
+			"page_params": [],
+			"create_time": 1640217600000,
+			"update_time": 1640217700000
+		}]
+	},
+
+	"uni-stat-app-page-view-daily": {
+		"data": [{
+			"stat_app_id": "61c041fb34458700013e700a",
+			"stat_version_id": "",
+			"platform_id": "61c046e691a75000014c255f",
+			"channel_id": "61c041fb34458700013e700a",
+			"page_id": "61c041fb34458700013e70p1",
+			"num_visitor": 500,
+			"exit_num_visits": 300,
+			"sum_visit_length": 300,
+			"num_share": 300,
+			"entry_num_visitor": 300,
+			"entry_num_visits": 300,
+			"entry_sum_visit_length": 300,
+			"stat_time": 1640217700000
+
+		}, {
+			"stat_app_id": "61c041fb34458700013e700a",
+			"stat_version_id": "",
+			"platform_id": "61c046e691a75000014c255f",
+			"channel_id": "61c041fb34458700013e700a",
+			"page_id": "61c041fb34458700013e70p2",
+			"num_visitor": 600,
+			"exit_num_visits": 300,
+			"sum_visit_length": 300,
+			"num_share": 300,
+			"entry_num_visitor": 300,
+			"entry_num_visits": 300,
+			"entry_sum_visit_length": 300,
+			"stat_time": 1640217700000
+
+		}, {
+			"stat_app_id": "61c041fb34458700013e700a",
+			"stat_version_id": "",
+			"platform_id": "61c046e691a75000014c255f",
+			"channel_id": "61c041fb34458700013e700a",
+			"page_id": "61c041fb34458700013e70p3",
+			"num_visitor": 700,
+			"exit_num_visits": 300,
+			"sum_visit_length": 300,
+			"num_share": 300,
+			"entry_num_visitor": 300,
+			"entry_num_visits": 300,
+			"entry_sum_visit_length": 300,
+			"stat_time": 1640217700000
+
+		}, {
+			"stat_app_id": "61c041fb34458700013e700b",
+			"stat_version_id": "",
+			"platform_id": "61c046e691a75000014c255f",
+			"channel_id": "61c041fb34458700013e700a",
+			"page_id": "61c041fb34458700013e70p3",
+			"num_visitor": 700,
+			"exit_num_visits": 300,
+			"sum_visit_length": 300,
+			"num_share": 300,
+			"entry_num_visitor": 300,
+			"entry_num_visits": 300,
+			"entry_sum_visit_length": 300,
+			"stat_time": 1640217700000
+
+		}]
+	},
 
 	"uni-id-users": {
 		"data": []

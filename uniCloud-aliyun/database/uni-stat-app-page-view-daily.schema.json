@@ -72,6 +72,10 @@
 		"stat_date": {
 			"bsonType": "int",
 			"description": "统计日期，格式yyyymmdd，例:20211201"
+		},
+		"stat_time": {
+			"bsonType": "timestamp",
+			"description": "统计时间戳"
 		}
 	}
 }

@@ -2,8 +2,8 @@
 	<view class="fix-top-window">
 		<view class="uni-header">
 			<view class="uni-group hide-on-phone">
-				<view class="uni-title">受访页</view>
-				<view class="uni-sub-title">受访页数据分析</view>
+				<view class="uni-title">入口页</view>
+				<view class="uni-sub-title">入口页数据分析</view>
 			</view>
 		</view>
 		<view class="uni-container">

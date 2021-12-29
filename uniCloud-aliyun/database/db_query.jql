@@ -9,7 +9,22 @@
 // 详细JQL语法，请参考 https://uniapp.dcloud.net.cn/uniCloud/clientdb?id=jsquery
 
 // 下面示例查询uni-id-users表的所有数据
-db.collection('uni-stat-app-visit-daily')
-	.where('stat_time >= 1640217600000')
+db.collection('uni-stat-app-pages')
 	.orderBy('stat_time', 'desc')
+	.get()
+
+const mainTable = db.collection('uni-stat-app-pages').getTemp()
+const subTable = db.collection('uni-stat-app-page-view-daily')
+	.orderBy('stat_time', 'desc')
+	.getTemp()
+
+db.collection(mainTable, subTable)
+	.field(
+		'title, url, _id{"uni-stat-app-page-view-daily"{exit_num_visits, num_visitor, num_visits,divide(num_visits,num_visitor) as abc, sum_visit_length, num_share,entry_num_visitor, entry_num_visits, entry_sum_visit_length, stat_time}}'
+	)
+	.get()
+
+ db.collection('uni-stat-app-page-view-daily')
+	// .orderBy('stat_time', 'desc')
+	.field('divide(num_visits,num_visitor) as abc')
 	.get()

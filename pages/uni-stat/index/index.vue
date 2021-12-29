@@ -12,7 +12,7 @@
 				<span class="label-text">平台选择：</span>
 				<uni-stat-tabs type="boldLine" mode="platform" v-model="query.platform_id" />
 			</view>
-			<uni-stat-panel :items="sumData" />
+			<uni-stat-panel :items="panelData" />
 			<uni-table :loading="loading" border stripe :emptyText="$t('common.empty')">
 				<uni-tr>
 					<uni-th align="center">APPID</uni-th>
@@ -71,31 +71,33 @@
 				// 数据总量
 				total: 0,
 				loading: false,
-				sumData: [{
+				panelData: [{
 					field: '',
 					title: '',
-					today: '今天',
-					yesterday: '昨天'
+					tooltip: '',
+					value: '今天',
+					contrast: '昨天'
 				}, {
 					field: 'num_new_visitor',
 					title: '新增用户',
-					today: 0,
-					yesterday: 0
+					tooltip: '首次访问应用的用户数（以设备为判断标准，去重）',
+					value: 0,
+					contrast: 0
 				}, {
 					field: 'num_visitor',
 					title: '活跃用户',
-					today: 0,
-					yesterday: 0
+					value: 0,
+					contrast: 0
 				}, {
 					field: 'num_page_views',
 					title: '访问次数',
-					today: 0,
-					yesterday: 0
+					value: 0,
+					contrast: 0
 				}, {
 					field: 'num_total_visitor',
 					title: '总用户数',
-					today: 0,
-					yesterday: 0
+					value: 0,
+					contrast: 0
 				}]
 			}
 		},
@@ -113,18 +115,18 @@
 		},
 		methods: {
 			defQuery() {
-				const yesterday = this.getSomeDayAgoTime(1)
+				const yesterday = this.getTimeOfSomeDayAgo(5)
 				return `stat_time >= ${yesterday}`
 			},
 			// 获取指定日期当天或 n 天前零点的时间戳，丢弃时分秒
-			getSomeDayAgoTime( days = 0, date = Date.now()) {
+			getTimeOfSomeDayAgo(days = 0, date = Date.now()) {
 				const d = new Date(date)
-				const oneDayTime = 24*60*60*1000
-				let ymd = [d.getFullYear(), d.getMonth()+1, d.getDate()].join('-')
+				const oneDayTime = 24 * 60 * 60 * 1000
+				let ymd = [d.getFullYear(), d.getMonth() + 1, d.getDate()].join('-')
 				ymd = ymd + ' 00:00:00'
 				const someDaysAgoTime = new Date(ymd).getTime() - oneDayTime * days
 				return someDaysAgoTime
- 			},
+			},
 			stringifyQuery(query, defQuery) {
 				if (typeof query !== 'object' && !defQuery) return {}
 				const keys = Object.keys(query)
@@ -165,32 +167,12 @@
 							data
 						} = res.result
 						this.tableData = []
-						this.sumData = [{
-							field: '',
-							title: '',
-							today: '今天',
-							yesterday: '昨天'
-						}, {
-							field: 'num_new_visitor',
-							title: '新增用户',
-							today: 0,
-							yesterday: 0
-						}, {
-							field: 'num_visitor',
-							title: '活跃用户',
-							today: 0,
-							yesterday: 0
-						}, {
-							field: 'num_page_views',
-							title: '访问次数',
-							today: 0,
-							yesterday: 0
-						}, {
-							field: 'num_total_visitor',
-							title: '总用户数',
-							today: 0,
-							yesterday: 0
-						}]
+						this.panelData.forEach((sum, index) => {
+							if (sum.title) {
+								sum.value = 0
+								sum.contrast = 0
+							}
+						})
 						for (const item of data) {
 							const lines = item._id["uni-stat-app-visit-daily"]
 							if (Array.isArray(lines)) {
@@ -201,10 +183,10 @@
 									item['today_' + key] = today[key] ? today[key] : ''
 									item['yesterday_' + key] = yesterday[key] ? yesterday[key] : ''
 
-									for (const sum of this.sumData) {
+									for (const sum of this.panelData) {
 										if (key === sum.field) {
-											sum['today'] += today[key] ? today[key] : 0
-											sum['yesterday'] += yesterday[key] ? yesterday[key] : 0
+											sum.value += today[key] ? today[key] : 0
+											sum.contrast += yesterday[key] ? yesterday[key] : 0
 										}
 									}
 								}
@@ -231,24 +213,5 @@
 	}
 </script>
 
-<style lang="scss">
-	.flex {
-		display: flex;
-		align-items: center;
-	}
-
-	.label-text {
-		font-size: 14px;
-		color: #666;
-		margin: auto 0;
-		margin-right: 5px;
-	}
-
-	.uni-stat {
-		&--x {
-			border-radius: 4px;
-			padding: 15px;
-			box-shadow: -1px -1px 5px 0 rgba(0, 0, 0, 0.1);
-		}
-	}
+<style>
 </style>
