@@ -425,6 +425,19 @@ button:after {
 	margin-bottom: 30px !important;
 }
 
+.ml-s {
+	margin-left: 5px;
+}
+
+.ml-m {
+	margin-left: 15px !important;
+}
+
+.ml-l {
+	margin-left: 30px !important;
+}
+
+
 .uni-charts-box {
 	width: 100%;
 	height: 300px;
@@ -434,6 +447,10 @@ button:after {
 	border-radius: 4px;
 	padding: 15px;
 	box-shadow: -1px -1px 5px 0 rgba(0, 0, 0, 0.1);
+}
+
+.uni-stat__actived {
+	outline: 1px solid #2979ff;
 }
 
 .flex {

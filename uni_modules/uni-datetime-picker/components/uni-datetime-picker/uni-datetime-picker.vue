@@ -787,7 +787,7 @@
 		right: 0;
 		display: inline-block;
 		box-sizing: border-box;
-		border: 9px solid transparent;
+		border: 7px solid transparent;
 		/* #ifdef H5 */
 		cursor: pointer;
 		/* #endif */
@@ -795,9 +795,8 @@
 
 	.uni-date__x-input {
 		padding: 0 8px;
-		height: 40px;
+		height: 36px;
 		width: 100%;
-		line-height: 40px;
 		font-size: 14px;
 	}
 

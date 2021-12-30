@@ -10,7 +10,7 @@
 			<view class="uni-stat--x flex uni-stat--tab mb-m">
 				<span class="label-text">应用选择：</span>
 				<uni-stat-select mode="app" v-model="query.stat_app_id" />
-				<view class="label-text">渠道选择：</view>
+				<view class="label-text ml-l">渠道选择：</view>
 				<uni-stat-select mode="channel" v-model="query.channel_id" />
 			</view>
 			<view class="uni-stat--x flex mb-m">
@@ -22,6 +22,7 @@
 				<uni-stat-tabs mode="date" v-model="query.stat_time" :disabled="!!stat_time_range.length" />
 				<view style="color: #333; margin-right: 30px;">/</view>
 				<uni-datetime-picker type="daterange" v-model="stat_time_range" returnType="timestamp"
+					:class="{'uni-stat__actived': !!stat_time_range.length}"
 					style="max-width: 400px; margin-right: 30px;" />
 			</view>
 			<uni-stat-panel :items="panelData" />
@@ -84,24 +85,31 @@
 				panelData: [{
 					title: '访问人数',
 					tooltip: '访问人数',
+					field: 'total_num_visitor',
 					value: 140,
 				}, {
 					title: '访问次数',
+					field: 'total_num_visits',
 					value: 140,
 				}, {
 					title: '退出页次数',
+					field: 'total_exit_num_visits',
 					value: 140,
 				}, {
 					title: '退出率',
+					field: 'total_exit_rate',
 					value: 140,
 				}, {
 					title: '次均停留时长',
+					field: 'avg_visit_avg_time',
 					value: '00:02:00',
 				}, {
 					title: '人均停留时长 ',
+					field: 'avg_visitor_avg_time',
 					value: '00:02:00',
 				}, {
 					title: '分享次数',
+					field: 'total_num_share',
 					value: 140,
 				}],
 				apps: ['Hello uni-app (__UNI__HelloUniApp)', 'uni-admin (__UNI__uniAdmin)'],
@@ -178,27 +186,51 @@
 				console.log('..............query：', query);
 				this.loading = true
 				const db = uniCloud.database()
-				const mainTable = db.collection('uni-stat-app-pages').getTemp()
-				const subTable = db.collection('uni-stat-app-page-view-daily')
+				const mainTableTemp = db.collection('uni-stat-app-pages').getTemp()
+				const subTableTemp = db.collection('uni-stat-app-page-view-daily')
 					.where(query)
 					.orderBy('stat_time', 'desc')
 					.getTemp()
 
-				db.collection(mainTable, subTable)
-					.field(
-						'title, url, _id{"uni-stat-app-page-view-daily"{exit_num_visits, num_visitor, num_visits, sum_visit_length, num_share,entry_num_visitor, entry_num_visits, entry_sum_visit_length, stat_time}}'
-					)
+				const subTable = db.collection('uni-stat-app-page-view-daily')
+					.where(query)
+					.groupBy('stat_app_id')
+					.groupField(
+						'sum(num_visits) as total_num_visits, sum(num_visitor) as total_num_visitor, sum(exit_num_visits) as total_exit_num_visits, sum(num_share) as total_num_share, sum(sum_visit_length) as total_sum_visit_length'
+						)
+					.orderBy('stat_time', 'desc')
 					.get()
-					.then((res) => {
-						const {
-							data
-						} = res.result
-						this.tableData = []
+					.then(res => {
+						console.log('.......res.', res);
+						const items = res.result.data[0]
 						this.panelData.forEach((sum, index) => {
 							if (sum.title) {
 								sum.value = 0
 							}
+							if (!items) return
+							if (sum.field === 'total_exit_rate') {
+								sum.value = items.total_exit_num_visits / items.total_num_visits
+							} else if (sum.field === 'avg_visit_avg_time') {
+								sum.value = items.total_sum_visit_length / items.total_num_visits
+							} else if (sum.field === 'avg_visitor_avg_time') {
+								sum.value = items.total_exit_num_visits / items.total_num_visitor
+							} else {
+								sum.value = items[sum.field]
+							}
 						})
+					})
+
+
+				db.collection(mainTableTemp, subTableTemp)
+					.field(
+						'title, url, _id{"uni-stat-app-page-view-daily"{exit_num_visits, num_visitor, num_visits, sum_visit_length, num_share,entry_num_visitor, entry_num_visits, entry_sum_visit_length, stat_time}}'
+					)
+					.get()
+					.then(res => {
+						const {
+							data
+						} = res.result
+						this.tableData = []
 						for (const item of data) {
 							const lines = item._id["uni-stat-app-page-view-daily"]
 							if (Array.isArray(lines)) {
@@ -225,6 +257,16 @@
 					}).finally(() => {
 						this.loading = false
 					})
+			},
+
+			getPanelData() {
+				const db = uniCloud.database()
+				const mainTable = db.collection('uni-stat-app-pages').getTemp()
+				const subTable = db.collection('uni-stat-app-page-view-daily')
+					.where(query)
+					.orderBy('stat_time', 'desc')
+					.getTemp()
+
 			},
 
 			navTo(id) {

@@ -1,6 +1,7 @@
 <template>
-	<view>
-		<uni-combox :candidates="renderData" v-model="current" :placeholder="placeholder" />
+	<view :class="{'uni-stat__actived': current}">
+		<uni-combox :candidates="renderData" :filter="false" v-model="current"
+			:placeholder="placeholder" />
 	</view>
 </template>
 
@@ -9,13 +10,17 @@
 		name: "uni-stat-select",
 		data() {
 			return {
-				current: '',
+				current: this.value,
 				renderData: [],
 				apps: [],
 				channels: []
 			};
 		},
 		props: {
+			value: {
+				type: String,
+				default: ''
+			},
 			mode: {
 				type: String,
 				default: ''
@@ -83,12 +88,13 @@
 					this.channels = res.result.data
 					this.renderData = res.result.data.map(item => item.channel_name)
 				})
-				console.log('...........', this.renderData);
 			}
 		}
 	}
 </script>
 
 <style>
-
+	.uni-stat__actived {
+		outline: 1px solid #2979ff;
+	}
 </style>
