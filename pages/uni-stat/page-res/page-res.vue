@@ -12,6 +12,8 @@
 				<uni-stat-select mode="app" v-model="query.stat_app_id" />
 				<view class="label-text ml-l">渠道选择：</view>
 				<uni-stat-select mode="channel" v-model="query.channel_id" />
+				<view class="label-text ml-l">版本选择：</view>
+				<uni-stat-select />
 			</view>
 			<view class="uni-stat--x flex mb-m">
 				<span class="label-text">平台选择：</span>
@@ -197,7 +199,7 @@
 					.groupBy('stat_app_id')
 					.groupField(
 						'sum(num_visits) as total_num_visits, sum(num_visitor) as total_num_visitor, sum(exit_num_visits) as total_exit_num_visits, sum(num_share) as total_num_share, sum(sum_visit_length) as total_sum_visit_length'
-						)
+					)
 					.orderBy('stat_time', 'desc')
 					.get()
 					.then(res => {
@@ -208,14 +210,21 @@
 								sum.value = 0
 							}
 							if (!items) return
+							const exitTimes = items.total_exit_num_visits
+							const visitTimes = items.total_num_visits
+							const visitDurtion = items.total_sum_visit_length
+							const visitPeople = items.total_num_visitor
 							if (sum.field === 'total_exit_rate') {
-								sum.value = items.total_exit_num_visits / items.total_num_visits
+								const rate = this.division(exitTimes, visitTimes)
+								sum.value = this.format(rate, '%')
 							} else if (sum.field === 'avg_visit_avg_time') {
-								sum.value = items.total_sum_visit_length / items.total_num_visits
+								const avgDurtion = this.division(visitDurtion, visitTimes)
+								sum.value = this.format(avgDurtion, ':')
 							} else if (sum.field === 'avg_visitor_avg_time') {
-								sum.value = items.total_exit_num_visits / items.total_num_visitor
+								const avgDurtion = this.division(visitDurtion, visitPeople)
+								sum.value = this.format(avgDurtion, ':')
 							} else {
-								sum.value = items[sum.field]
+								sum.value = this.format(items[sum.field], ',')
 							}
 						})
 					})
@@ -257,6 +266,41 @@
 					}).finally(() => {
 						this.loading = false
 					})
+			},
+
+			division(dividend, divisor) {
+				if (divisor) {
+					return dividend / divisor
+				} else {
+					return 0
+				}
+			},
+
+			format(num, type) {
+				if (typeof num !== 'number') return num
+				if (type === '%') {
+					return num.toFixed(4) * 100 + type
+				} else if (type === ':') {
+					num = Math.ceil(3660)
+					let h, m, s
+					h = m = s = 0
+					if (num >= 60) {
+						m = Math.floor(num / 60)
+					}
+					if (m >= 60) {
+						h = Math.floor(num / 60)
+					}
+					// if (mun >= 3600) {
+					// 	h = Math.floor(num / 3600)
+					// 	m = 
+					// }
+					m = m % 60
+					s = num % 60
+					const hms = [h,m,s].map(i => i < 10 ? '0' + i : i )
+					return hms.join(type)
+				} else if (type === ',') {
+					return num.toLocaleString()
+				}
 			},
 
 			getPanelData() {
