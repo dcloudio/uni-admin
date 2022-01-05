@@ -1,7 +1,8 @@
 <template>
 	<view class="uni-stat--tab">
+		<span v-if="label" class="label-text">{{label + '：'}}</span>
 		<view v-if="!renderTabs.length" class="uni-stat--tab-item uni-stat--tab-item-disabled" :class="[`uni-stat--tab-item-${type}`]">
-			暂无选项
+			{{placeholder}}
 		</view>
 		<view v-else v-for="(item, index) in renderTabs" :key="index" @click="change(item._id, index)"
 			class="uni-stat--tab-item"
@@ -33,6 +34,14 @@
 			disabled: {
 				type: Boolean,
 				default: false
+			},
+			label: {
+				type: String,
+				default: 'label'
+			},
+			placeholder: {
+				type: String,
+				default: '暂无选项'
 			},
 			tabs: {
 				type: Array,
@@ -94,6 +103,7 @@
 		&--tab {
 			display: flex;
 			flex-wrap: wrap;
+			margin: 0 15px;
 
 			&-item {
 				font-size: 14px;
@@ -101,11 +111,16 @@
 				text-align: center;
 				cursor: pointer;
 				box-sizing: border-box;
+				margin: 15px 0;
 
 				&-line {
 					margin-right: 30px;
 					padding: 2px 0;
 					border-bottom: 1px solid transparent;
+
+					&:last-child {
+						margin-right: 0;
+					}
 
 					&-active {
 						color: $uni-color-primary;
@@ -122,6 +137,10 @@
 					margin-right: 30px;
 					padding: 2px 0;
 					border-bottom: 2px solid transparent;
+
+					&:last-child {
+						margin-right: 0;
+					}
 
 					&-active {
 						box-sizing: border-box;

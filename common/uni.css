@@ -445,8 +445,8 @@ button:after {
 
 .uni-stat--x {
 	border-radius: 4px;
-	padding: 15px;
 	box-shadow: -1px -1px 5px 0 rgba(0, 0, 0, 0.1);
+	margin-bottom: 15px;
 }
 
 .uni-stat__actived {
@@ -455,6 +455,7 @@ button:after {
 
 .flex {
 	display: flex;
+	flex-wrap: wrap;
 	align-items: center;
 }
 
@@ -463,4 +464,9 @@ button:after {
 	color: #666;
 	margin: auto 0;
 	margin-right: 5px;
+}
+
+.uni-stat-datetime-picker {
+	max-width: 350px;
+	margin: 15px
 }

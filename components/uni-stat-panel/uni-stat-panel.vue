@@ -43,6 +43,7 @@
 	.uni-stat--sum {
 		&-x {
 			display: flex;
+			align-items: left;
 			justify-content: space-around;
 			flex-wrap: wrap;
 			border-radius: 4px;

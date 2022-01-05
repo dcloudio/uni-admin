@@ -1,7 +1,10 @@
 <template>
-	<view :class="{'uni-stat__actived': current}">
-		<uni-combox :candidates="renderData" :filter="false" v-model="current"
-			:placeholder="placeholder" />
+	<view class="uni-stat__select">
+		<span v-if="label" class="label-text">{{label + '：'}}</span>
+		<view :class="{'uni-stat__actived': current}">
+			<uni-combox :candidates="renderData" :filter="false" v-model="current" emptyTips="暂无选项"
+				:placeholder="placeholder" />
+		</view>
 	</view>
 </template>
 
@@ -30,6 +33,10 @@
 				default () {
 					return []
 				}
+			},
+			label: {
+				type: String,
+				default: 'label'
 			},
 			placeholder: {
 				type: String,
@@ -94,7 +101,18 @@
 </script>
 
 <style>
+	.uni-stat__select {
+		display: flex;
+		align-items: center;
+		margin: 15px;
+	}
 	.uni-stat__actived {
 		outline: 1px solid #2979ff;
+	}
+	.label-text {
+		font-size: 14px;
+		color: #666;
+		margin: auto 0;
+		margin-right: 5px;
 	}
 </style>

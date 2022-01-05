@@ -7,25 +7,19 @@
 			</view>
 		</view>
 		<view class="uni-container">
-			<view class="uni-stat--x flex uni-stat--tab mb-m">
-				<span class="label-text">应用选择：</span>
-				<uni-stat-select mode="app" v-model="query.stat_app_id" />
-				<view class="label-text ml-l">渠道选择：</view>
-				<uni-stat-select mode="channel" v-model="query.channel_id" />
-				<view class="label-text ml-l">版本选择：</view>
-				<uni-stat-select />
+			<view class="uni-stat--x flex">
+				<uni-stat-select mode="app" label="应用选择" v-model="query.stat_app_id" />
+				<uni-stat-select mode="channel" label="渠道选择" v-model="query.channel_id" />
+				<uni-stat-select label="版本选择" />
 			</view>
-			<view class="uni-stat--x flex mb-m">
-				<span class="label-text">平台选择：</span>
-				<uni-stat-tabs type="boldLine" mode="platform" v-model="query.platform_id" />
+			<view class="uni-stat--x">
+				<uni-stat-tabs label="平台选择" type="boldLine" mode="platform" v-model="query.platform_id" />
 			</view>
-			<view class="uni-stat--x flex mb-m">
-				<span class="label-text">日期选择：</span>
-				<uni-stat-tabs mode="date" v-model="query.stat_time" :disabled="!!stat_time_range.length" />
-				<view style="color: #333; margin-right: 30px;">/</view>
+			<view class="uni-stat--x flex">
+				<uni-stat-tabs label="日期选择" mode="date" v-model="query.stat_time" :disabled="!!stat_time_range.length" />
+				<view style="color: #333; font-size: 14px; margin: 0 30px;">/</view>
 				<uni-datetime-picker type="daterange" v-model="stat_time_range" returnType="timestamp"
-					:class="{'uni-stat__actived': !!stat_time_range.length}"
-					style="max-width: 400px; margin-right: 30px;" />
+					class="uni-stat-datetime-picker" :class="{'uni-stat__actived': !!stat_time_range.length}" />
 			</view>
 			<uni-stat-panel :items="panelData" />
 			<uni-table :loading="loading" border stripe :emptyText="$t('common.empty')">
@@ -88,34 +82,32 @@
 					title: '访问人数',
 					tooltip: '访问人数',
 					field: 'total_num_visitor',
-					value: 140,
+					value: 0,
 				}, {
 					title: '访问次数',
 					field: 'total_num_visits',
-					value: 140,
+					value: 0,
 				}, {
 					title: '退出页次数',
 					field: 'total_exit_num_visits',
-					value: 140,
+					value: 0,
 				}, {
 					title: '退出率',
 					field: 'total_exit_rate',
-					value: 140,
+					value: 0,
 				}, {
 					title: '次均停留时长',
 					field: 'avg_visit_avg_time',
-					value: '00:02:00',
+					value: 0,
 				}, {
 					title: '人均停留时长 ',
 					field: 'avg_visitor_avg_time',
-					value: '00:02:00',
+					value: 0,
 				}, {
 					title: '分享次数',
 					field: 'total_num_share',
-					value: 140,
-				}],
-				apps: ['Hello uni-app (__UNI__HelloUniApp)', 'uni-admin (__UNI__uniAdmin)'],
-				candidates: ['北京', '南京', '东京', '武汉', '天津', '上海', '海口'],
+					value: 0,
+				}]
 			}
 		},
 		onReady() {
@@ -245,16 +237,16 @@
 							if (Array.isArray(lines)) {
 								delete(item._id)
 								const line = lines[0]
-								if (line && Object.keys(line)) {
+								if (line && Object.keys(line).length) {
 									for (const key in line) {
-										item[key] = line[key] ? line[key] : ''
+										item[key] = this.format(line[key], ',')
 									}
 									const exit_rate = line['exit_num_visits'] / line['num_visits']
+									item['exit_rate'] = this.format(exit_rate, '%')
 									const visit_avg_time = line['sum_visit_length'] / line['num_visits']
+									item['visit_avg_time'] = this.format(visit_avg_time, ':')
 									const visitor_avg_time = line['sum_visit_length'] / line['num_visitor']
-									item['exit_rate'] = exit_rate.toFixed(4)
-									item['visit_avg_time'] = Math.ceil(visit_avg_time)
-									item['visitor_avg_time'] = Math.ceil(visitor_avg_time)
+									item['visitor_avg_time'] = this.format(visitor_avg_time, ':')
 								}
 							}
 							this.tableData.push(item)
@@ -281,21 +273,25 @@
 				if (type === '%') {
 					return num.toFixed(4) * 100 + type
 				} else if (type === ':') {
-					num = Math.ceil(3660)
+					num = Math.ceil(num)
 					let h, m, s
 					h = m = s = 0
-					if (num >= 60) {
-						m = Math.floor(num / 60)
+					const wunH = 60*60, wunM = 60  // 单位秒
+					if (num >= wunH) {
+						h = Math.floor(num / wunH)
+						const remainder = num % wunH
+						if (remainder >= wunM) {
+							m = Math.floor(remainder / wunM)
+							s = remainder % wunM
+						} else {
+							s = remainder
+						}
+					} else if (wunH >= num  && num >= wunM) {
+						m = Math.floor(num / wunM)
+						s = num % wunM
+					} else {
+						s = num
 					}
-					if (m >= 60) {
-						h = Math.floor(num / 60)
-					}
-					// if (mun >= 3600) {
-					// 	h = Math.floor(num / 3600)
-					// 	m = 
-					// }
-					m = m % 60
-					s = num % 60
 					const hms = [h,m,s].map(i => i < 10 ? '0' + i : i )
 					return hms.join(type)
 				} else if (type === ',') {
@@ -325,4 +321,13 @@
 </script>
 
 <style>
+	.m-m {
+		margin: 15px;
+	}
+	.mv-s {
+		margin: 5px 0;
+	}
+	.mv-m {
+		margin: 15px 0;
+	}
 </style>
