@@ -3,29 +3,26 @@
 		<view class="uni-header">
 			<view class="uni-group hide-on-phone">
 				<view class="uni-title">内容统计</view>
-				<view class="uni-sub-title">根据 url 参数进行分组的页面，如资讯类应用的新闻页面，不同的新闻内容计为多个内容页。 商城类应用的商品详情页面，不同的产品计为多个内容页. 内容统计说明>></view>
+				<view class="uni-sub-title">根据 url 参数进行分组的页面，如资讯类应用的新闻页面，不同的新闻内容计为多个内容页。 商城类应用的商品详情页面，不同的产品计为多个内容页.
+					内容统计说明>></view>
 			</view>
 		</view>
 		<view class="uni-container">
-			<view class="uni-stat--x uni-stat--tab mb-m">
-				<view v-for="(item, index) in tabItems" :key="index" class="uni-stat--tab-item">
-					{{item}}
-				</view>
+			<view class="uni-stat--x flex">
+				<uni-stat-select mode="app" label="应用选择" v-model="query.stat_app_id" />
+				<uni-stat-select mode="channel" label="渠道选择" v-model="query.channel_id" />
 			</view>
-			<view class="uni-stat--x flex mb-m">
-				<uni-datetime-picker type="datetimerange" style="max-width: 400px; margin-right: 30px;" />
-				<view class="label-text">渠道:</view>
-				 <uni-combox :candidates="candidates" placeholder="请选择" style="max-width: 400px;" ></uni-combox>
+			<view class="uni-stat--x">
+				<uni-stat-tabs label="平台选择" type="boldLine" mode="platform" v-model="query.platform_id" />
 			</view>
-			<view class="uni-stat--x uni-stat--sum mb-m">
-				<view v-for="(item, index) in sumData" :key="index" class="uni-stat--sum-item">
-					<view class="uni-stat--sum-item-title" >
-						{{item.title}}
-						<span v-if="item.title" class="uni-icons-help"></span>
-					</view>
-					<view class="uni-stat--sum-item-today">{{item.today}}</view>
-				</view>
+			<view class="uni-stat--x flex">
+				<uni-stat-tabs label="日期选择" mode="date" v-model="query.stat_time"
+					:disabled="!!stat_time_range.length" />
+				<view style="color: #333; font-size: 14px; margin: 0 30px;">/</view>
+				<uni-datetime-picker type="daterange" v-model="stat_time_range" returnType="timestamp"
+					class="uni-stat-datetime-picker" :class="{'uni-stat__actived': !!stat_time_range.length}" />
 			</view>
+			<uni-stat-panel :items="panelData" />
 
 			<uni-table :loading="loading" border stripe :emptyText="$t('common.empty')">
 				<uni-tr>
@@ -63,6 +60,13 @@
 	export default {
 		data() {
 			return {
+				query: {
+					stat_app_id: '',
+					platform_id: '',
+					channel_id: '',
+					stat_time: 1,
+				},
+				stat_time_range: [],
 				tableData: [],
 				// 每页数据量
 				pageSize: 10,
@@ -71,178 +75,243 @@
 				// 数据总量
 				total: 0,
 				loading: false,
-				sumData: [{
+				panelData: [{
 					title: '访问人数',
-					today: 140,
-					yesterday: 150
+					tooltip: '访问人数',
+					field: 'total_num_visitor',
+					value: 0,
 				}, {
 					title: '访问次数',
-					today: 140,
-					yesterday: 150
+					field: 'total_num_visits',
+					value: 0,
 				}, {
-					title: '次均停留时长 ',
-					today: '00:00:36',
-					yesterday: 150
+					title: '次均停留时长',
+					field: 'avg_visit_avg_time',
+					value: 0,
 				}, {
-					title: '人均停留时长  ',
-					today: '00:01:47',
-					yesterday: 150
+					title: '人均停留时长 ',
+					field: 'avg_visitor_avg_time',
+					value: 0,
 				}, {
 					title: '分享次数',
-					today: 140,
-					yesterday: 150
-				}],
-				current: 0,
-				tabItems: ['昨天', '最近七天', '最近30天', '最近90天'],
-				activeTab: '最近七天',
-				candidates: ['北京', '南京', '东京', '武汉', '天津', '上海', '海口'],
+					field: 'total_num_share',
+					value: 0,
+				}]
 			}
 		},
-		onLoad() {
-			this.getData('/pageContent', 1)
+
+		onReady() {
+			const query = this.stringifyQuery(this.query)
+			this.getAllData(query)
 		},
-		methods: {
-
-			// 分页触发
-			change(e) {
-				this.getData('/pageContent', e.current)
-			},
-
-			// 获取数据
-			getData(url, pageCurrent, value = "") {
-				if (pageCurrent) {
-					this.loading = true
-					this.pageCurrent = pageCurrent
-					this.request(url, {
-						pageSize: this.pageSize,
-						pageCurrent: pageCurrent,
-						value: value,
-						success: (res) => {
-							this.tableData = res.data
-							this.total = res.total
-							this.loading = false
-						}
-					})
-				} else {
-					this.request(url, {
-						success: (res) => {
-							console.log('.........else', res);
-
-						}
-					})
+		computed: {
+			deepCloneQuery() {
+				return JSON.parse(JSON.stringify(this.query))
+			}
+		},
+		watch: {
+			deepCloneQuery: {
+				deep: true,
+				handler(newVal, oldVal) {
+					console.log('..........newVal', newVal);
+					if (newVal.stat_time !== oldVal.stat_time && this.stat_time_range.length) {
+						this.stat_time_range = []
+						return
+					}
+					const query = this.stringifyQuery(newVal)
+					this.getAllData(query)
 				}
 			},
-			// 伪request请求
-			request(path, options) {
-				const {
-					pageSize,
-					pageCurrent,
-					success,
-					value
-				} = options
-				const origin = 'http://localhost:5000'
-				const url = origin + path
-				this.$fetch(url)
-					
-					.then(res => {
-						console.log('........', res);
-						let data, total
-						if (res.item) {
-							const tableData = res.item
-							total =  tableData.length
-							data = tableData.filter((item, index) => {
-								const idx = index - (pageCurrent - 1) * pageSize
-								return idx < pageSize && idx >= 0
-							})
-							if (value) {
-								data = []
-								tableData.forEach(item => {
-									if (item.name.indexOf(value) !== -1) {
-										data.push(item)
-									}
-								})
-							}
-						} else {
-							data = res
+			stat_time_range(newVal) {
+				const query = this.stringifyQuery(this.query)
+				this.getAllData(query)
+			}
+		},
+		methods: {
+			defQuery() {
+				return ''
+			},
+			// 获取指定日期当天或 n 天前零点的时间戳，丢弃时分秒
+			getTimeOfSomeDayAgo(days = 0, date = Date.now()) {
+				const d = new Date(date)
+				const oneDayTime = 24 * 60 * 60 * 1000
+				let ymd = [d.getFullYear(), d.getMonth() + 1, d.getDate()].join('-')
+				ymd = ymd + ' 00:00:00'
+				const someDaysAgoTime = new Date(ymd).getTime() - oneDayTime * days
+				return someDaysAgoTime
+			},
+			stringifyQuery(query, defQuery) {
+				const queryArr = []
+				if (defQuery && typeof defQuery === 'string') {
+					queryArr.push(defQuery)
+				}
+				const range = this.stat_time_range
+				const keys = Object.keys(query)
+				keys.forEach(key => {
+					let val = query[key]
+					if (val) {
+						if (typeof val === 'string') {
+							val = `"${val}"`
 						}
+						if (key === 'stat_time') {
+							if (Array.isArray(range) && range.length === 2) {
+								queryArr.push(`stat_time >= ${range[0]} && stat_time <= ${range[1]}`)
+							} else {
+								queryArr.push(`stat_time >= ${this.getTimeOfSomeDayAgo(val)}`)
+							}
 
-						setTimeout(() => {
-							typeof success === 'function' && success({
-								data: data,
-								total: total
-							})
-						}, 500)
+						} else {
+							queryArr.push(`${key} == ${val}`)
+						}
+					}
+				})
+				const queryStr = queryArr.join(' && ')
+
+				return queryStr || {}
+			},
+			
+			getAllData(query) {
+				this.getPanelData(query)
+				this.getTableData(query)
+			},
+			
+			getTableData(query) {
+				console.log('..............query：', query);
+				this.loading = true
+				const db = uniCloud.database()
+				const mainTableTemp = db.collection('uni-stat-app-pages').getTemp()
+				const subTableTemp = db.collection('uni-stat-app-page-view-daily')
+					.where(query)
+					.orderBy('stat_time', 'desc')
+					.getTemp()
+
+				db.collection(mainTableTemp, subTableTemp)
+					.field(
+						'title, url, _id{"uni-stat-app-page-view-daily"{exit_num_visits, num_visitor, num_visits, sum_visit_length, num_share,entry_num_visitor, entry_num_visits, entry_sum_visit_length, stat_time}}'
+					)
+					.get()
+					.then(res => {
+						const {
+							data
+						} = res.result
+						this.tableData = []
+						for (const item of data) {
+							const lines = item._id["uni-stat-app-page-view-daily"]
+							if (Array.isArray(lines)) {
+								delete(item._id)
+								const line = lines[0]
+								if (line && Object.keys(line).length) {
+									for (const key in line) {
+										item[key] = this.format(line[key], ',')
+									}
+									const exit_rate = line['exit_num_visits'] / line['num_visits']
+									item['exit_rate'] = this.format(exit_rate, '%')
+									const visit_avg_time = line['sum_visit_length'] / line['num_visits']
+									item['visit_avg_time'] = this.format(visit_avg_time, ':')
+									const visitor_avg_time = line['sum_visit_length'] / line['num_visitor']
+									item['visitor_avg_time'] = this.format(visitor_avg_time, ':')
+								}
+							}
+							this.tableData.push(item)
+						}
+					}).catch((err) => {
+						console.error(err)
+						// err.message 错误信息
+						// err.code 错误码
+					}).finally(() => {
+						this.loading = false
 					})
+			},
+
+			getPanelData(query) {
+				const db = uniCloud.database()
+				const subTable = db.collection('uni-stat-app-page-view-daily')
+					.where(query)
+					.groupBy('stat_app_id')
+					.groupField(
+						'sum(num_visits) as total_num_visits, sum(num_visitor) as total_num_visitor, sum(exit_num_visits) as total_exit_num_visits, sum(num_share) as total_num_share, sum(sum_visit_length) as total_sum_visit_length'
+					)
+					.orderBy('stat_time', 'desc')
+					.get()
+					.then(res => {
+						console.log('.......res.', res);
+						const items = res.result.data[0]
+						this.panelData.forEach((sum, index) => {
+							if (sum.title) {
+								sum.value = 0
+							}
+							if (!items) return
+							const exitTimes = items.total_exit_num_visits
+							const visitTimes = items.total_num_visits
+							const visitDurtion = items.total_sum_visit_length
+							const visitPeople = items.total_num_visitor
+							if (sum.field === 'total_exit_rate') {
+								const rate = this.division(exitTimes, visitTimes)
+								sum.value = this.format(rate, '%')
+							} else if (sum.field === 'avg_visit_avg_time') {
+								const avgDurtion = this.division(visitDurtion, visitTimes)
+								sum.value = this.format(avgDurtion, ':')
+							} else if (sum.field === 'avg_visitor_avg_time') {
+								const avgDurtion = this.division(visitDurtion, visitPeople)
+								sum.value = this.format(avgDurtion, ':')
+							} else {
+								sum.value = this.format(items[sum.field], ',')
+							}
+						})
+					})
+			},
+
+			division(dividend, divisor) {
+				if (divisor) {
+					return dividend / divisor
+				} else {
+					return 0
+				}
+			},
+
+			format(num, type) {
+				if (typeof num !== 'number') return num
+				if (type === '%') {
+					return num.toFixed(4) * 100 + type
+				} else if (type === ':') {
+					num = Math.ceil(num)
+					let h, m, s
+					h = m = s = 0
+					const wunH = 60 * 60,
+						wunM = 60 // 单位秒
+					if (num >= wunH) {
+						h = Math.floor(num / wunH)
+						const remainder = num % wunH
+						if (remainder >= wunM) {
+							m = Math.floor(remainder / wunM)
+							s = remainder % wunM
+						} else {
+							s = remainder
+						}
+					} else if (wunH >= num && num >= wunM) {
+						m = Math.floor(num / wunM)
+						s = num % wunM
+					} else {
+						s = num
+					}
+					const hms = [h, m, s].map(i => i < 10 ? '0' + i : i)
+					return hms.join(type)
+				} else if (type === ',') {
+					return num.toLocaleString()
+				}
+			},
+
+			navTo(id) {
+				const url = `/pages/uni-stat/overview/overview?id=${id}`
+				uni.navigateTo({
+					url
+				})
 			}
 		}
 
 	}
 </script>
 
-<style lang="scss">
-	.flex {
-		display: flex;
-		align-items: center;
-	}
+<style>
 
-	.label-text {
-		font-size: 14px;
-		color: #666;
-		margin-right: 5px;
-	}
-
-	.uni-stat {
-		&--x {
-			border-radius: 4px;
-			padding: 15px;
-			box-shadow: -1px -1px 5px 0 rgba(0, 0, 0, 0.1);
-		}
-
-		&--sum {
-				display: flex;
-				justify-content: space-around;
-				flex-wrap: wrap;
-
-			&-item {
-				text-align: center;
-				margin: 10px 30px;
-			}
-
-			&-item-title {
-				min-height: 17px;
-				font-size: 12px;
-				color: #666;
-			}
-
-			&-item-today {
-				font-size: 24px;
-				line-height: 48px;
-				font-weight: 700;
-				color: #333;
-			}
-
-			&-item-yesterday {
-				font-size: 14px;
-				color: #666;
-			}
-		}
-
-		&--tab {
-			display: flex;
-
-			&-item {
-				font-size: 14px;
-				color: #666;
-				text-align: center;
-				margin-right: 30px;
-				padding: 2px 0;
-
-				&-active {
-					color: $uni-color-primary;
-					border-bottom: 1px solid $uni-color-primary;
-				}
-			}
-
-		}
-	}
 </style>
