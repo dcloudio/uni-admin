@@ -413,6 +413,9 @@ button:after {
 
 
 /* stat style start */
+.m-m {
+	margin: 15px;
+}
 .mb-s {
 	margin-bottom: 5px;
 }
@@ -437,6 +440,9 @@ button:after {
 	margin-left: 30px !important;
 }
 
+.p-m {
+	padding: 15px;
+}
 
 .uni-charts-box {
 	width: 100%;

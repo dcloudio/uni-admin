@@ -9,8 +9,7 @@
 		<view class="uni-container">
 			<uni-notice-bar class="mb-m" text="当日实时统计显示逻辑：3天内未登录统计后台的应用不会处理当日实时统计，再次登录后1小时内会开始进行实时统计。"></uni-notice-bar>
 			<view class="uni-stat--x flex mb-m">
-				<span class="label-text">平台选择：</span>
-				<uni-stat-tabs type="boldLine" mode="platform" v-model="query.platform_id" />
+				<uni-stat-tabs label="平台选择" type="boldLine" mode="platform" v-model="query.platform_id" />
 			</view>
 			<uni-stat-panel :items="panelData" />
 			<uni-table :loading="loading" border stripe :emptyText="$t('common.empty')">
@@ -57,11 +56,18 @@
 </template>
 
 <script>
+	import {
+		stringifyQuery,
+		getTimeOfSomeDayAgo,
+		division,
+		format
+	} from '@/js_sdk/uni-stat/util.js'
 	export default {
 		data() {
 			return {
 				query: {
-					platform_id: ''
+					platform_id: '',
+					stat_time: 30  // 昨天
 				},
 				tableData: [],
 				// 每页数据量
@@ -103,50 +109,17 @@
 		},
 
 		onReady() {
-			this.getApps(this.stringifyQuery(this.query, this.defQuery()))
+			this.getApps(stringifyQuery(this.query))
 		},
 		watch: {
 			query: {
 				deep: true,
 				handler(newVal) {
-					this.getApps(this.stringifyQuery(newVal, this.defQuery()))
+					this.getApps(stringifyQuery(newVal))
 				}
 			}
 		},
 		methods: {
-			defQuery() {
-				const yesterday = this.getTimeOfSomeDayAgo(5)
-				return `stat_time >= ${yesterday}`
-			},
-			// 获取指定日期当天或 n 天前零点的时间戳，丢弃时分秒
-			getTimeOfSomeDayAgo(days = 0, date = Date.now()) {
-				const d = new Date(date)
-				const oneDayTime = 24 * 60 * 60 * 1000
-				let ymd = [d.getFullYear(), d.getMonth() + 1, d.getDate()].join('-')
-				ymd = ymd + ' 00:00:00'
-				const someDaysAgoTime = new Date(ymd).getTime() - oneDayTime * days
-				return someDaysAgoTime
-			},
-			stringifyQuery(query, defQuery) {
-				if (typeof query !== 'object' && !defQuery) return {}
-				const keys = Object.keys(query)
-				if (keys.length === 1 && !query[keys[0]]) return defQuery || {}
-				const queryArr = []
-				keys.forEach(key => {
-					let val = query[key]
-					if (val) {
-						if (typeof val === 'string') {
-							val = `"${val}"`
-						}
-						queryArr.push(`${key} == ${val}`)
-					}
-				})
-				let queryStr = queryArr.length ? queryArr.join('&&') : ''
-				if (defQuery) {
-					queryStr = queryStr + ' && ' + defQuery
-				}
-				return queryStr
-			},
 			getApps(query) {
 				console.log('..............query', query);
 				this.loading = true
@@ -180,8 +153,8 @@
 								const today = lines[0] || []
 								const yesterday = lines[1] || []
 								for (const key in today) {
-									item['today_' + key] = today[key] ? today[key] : ''
-									item['yesterday_' + key] = yesterday[key] ? yesterday[key] : ''
+									item['today_' + key] = format(today[key] ? today[key] : '')
+									item['yesterday_' + key] = format(yesterday[key] ? yesterday[key] : '')
 
 									for (const sum of this.panelData) {
 										if (key === sum.field) {
@@ -192,6 +165,16 @@
 								}
 							}
 							this.tableData.push(item)
+						}
+						for (const sum of this.panelData) {
+							const val = sum.value
+							const con = sum.contrast
+							if (val) {
+								sum.value = format(val)
+							}
+							if (con) {
+								sum.contrast = format(con)
+							} 
 						}
 					}).catch((err) => {
 						console.error(err)
