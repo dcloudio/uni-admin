@@ -297,7 +297,7 @@ exports.main = async (event, context) => {
 								fileID
 							} = await uniCloud.uploadFile({
 								cloudPath,
-							 fileContent: getImgBuffer.data
+								fileContent: getImgBuffer.data
 							});
 							headimgurlFile = {
 								name: cloudPath,
@@ -586,9 +586,24 @@ exports.main = async (event, context) => {
 			...params
 		})
 		break;
-	case 'managerMultiTag':
+	case 'managerMultiTag': {
+		const {
+			userInfo
+		} = await uniID.getUserInfo({
+			uid: params.uid
+		})
+		// 限制只有 admin 角色的用户可管理标签，如需非 admin 角色需自行实现
+		if (userInfo.role.indexOf('admin') === -1) {
+			res = {
+				code: 403,
+				message: '非法访问, 无权限修改用户标签',
+			}
+			return
+		}
 		let {
-			ids, type, value
+			ids,
+			type,
+			value
 		} = params
 		if (type === 'add') {
 			res = await db.collection('uni-id-users').where({
@@ -612,7 +627,8 @@ exports.main = async (event, context) => {
 			return
 		}
 		break;
-		// =========================== admin api end =========================
+	}
+	// =========================== admin api end =========================
 	default:
 		res = {
 			code: 403,
