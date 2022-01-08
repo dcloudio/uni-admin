@@ -53,7 +53,7 @@ function division(dividend, divisor) {
 	}
 }
 
-function format(num, type=',') {
+function format(num, type = ',') {
 	if (typeof num !== 'number') return num
 	if (type === '%') {
 		return num.toFixed(4) * 100 + type
@@ -85,7 +85,50 @@ function format(num, type=',') {
 	}
 }
 
+function mapfields(map, data, goal, prefix = '') {
+	const goals = [], argsGoal = goal
+	map = JSON.parse(JSON.stringify(map))
+	for (const mapper of map) {
+		let {
+			field,
+			computed,
+			panel
+		} = mapper
+		// if (!field) return // stat index
+		goal = argsGoal || mapper
+		const preField = prefix + field
+		if (data) {
+			if (data[preField]) {
+				if (goal.hasOwnProperty('value')) {
+					if (goal.field === field) {
+						goal['value'] = data[preField]
+					}
+				} else {
+					goal[field] = data[preField]
+				}
+			} else {
+				if (computed) {
+					const computedFields = computed.split('/')
+					let [dividend, divisor] = computedFields
+					dividend = data[prefix + dividend]
+					divisor = data[prefix + divisor]
+					if (dividend && divisor) {
+						if (goal.hasOwnProperty('value')) {
+							goal['value'] = division(dividend, divisor)
+						} else {
+							goal[field] = division(dividend, divisor)
+						}
+					}
+				}
+			}
+		}
+		goals.push(goal)
+	}
+	return goals
+}
+
 export {
+	mapfields,
 	stringifyQuery,
 	getTimeOfSomeDayAgo,
 	division,

@@ -11,7 +11,7 @@
 			<view class="uni-stat--x flex mb-m">
 				<uni-stat-tabs label="平台选择" type="boldLine" mode="platform" v-model="query.platform_id" />
 			</view>
-			<uni-stat-panel :items="panelData" />
+			<uni-stat-panel :items="panelData" :contrast="true" />
 			<uni-table :loading="loading" border stripe :emptyText="$t('common.empty')">
 				<uni-tr>
 					<uni-th align="center">APPID</uni-th>

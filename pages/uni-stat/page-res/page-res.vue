@@ -18,37 +18,13 @@
 			<view class="uni-stat--x flex">
 				<uni-stat-tabs label="日期选择" mode="date" v-model="query.stat_time"
 					:disabled="!!query.stat_time_range.length" />
-				<view style="color: #333; font-size: 14px; margin: 0 30px;">/</view>
+				<!-- <view style="color: #333; font-size: 14px; margin: 0 30px;">/</view> -->
 				<uni-datetime-picker type="daterange" v-model="query.stat_time_range" returnType="timestamp"
 					class="uni-stat-datetime-picker" :class="{'uni-stat__actived': !!query.stat_time_range.length}" />
 			</view>
 			<uni-stat-panel :items="panelData" />
 			<view class="uni-stat--x p-m">
-				<uni-table :loading="loading" border stripe :emptyText="$t('common.empty')">
-					<uni-tr>
-						<uni-th align="center">受访页</uni-th>
-						<uni-th align="center">页面名称</uni-th>
-						<uni-th align="center">访问人数</uni-th>
-						<uni-th align="center">访问次数</uni-th>
-						<uni-th align="center">退出页次数</uni-th>
-						<uni-th align="center">退出率</uni-th>
-						<uni-th align="center">次均停留时长</uni-th>
-						<uni-th align="center">人均停留时长</uni-th>
-						<uni-th align="center">分享次数</uni-th>
-					</uni-tr>
-					<uni-tr v-for="(item ,index) in tableData" :key="index" style="text-align: center; !important">
-						<uni-td>{{item.url}}</uni-td>
-						<uni-td>{{item.title}}</uni-td>
-						<uni-td>{{item.num_visitor}}</uni-td>
-						<uni-td>{{item.num_visits}}</uni-td>
-						<uni-td>{{item.exit_num_visits}}</uni-td>
-						<uni-td>{{item.exit_rate}}</uni-td>
-						<uni-td>{{item.visit_avg_time}}</uni-td>
-						<uni-td>{{item.visitor_avg_time}}</uni-td>
-						<uni-td>{{item.num_share}}</uni-td>
-					</uni-tr>
-				</uni-table>
-
+				<uni-stat-table :data="tableData" :filedsMap="fieldsMap" :loading="loading" />
 				<view class="uni-pagination-box">
 					<!-- #ifndef MP -->
 					<picker class="select-picker" mode="selector" :value="options.pageSizeIndex"
@@ -74,15 +50,15 @@
 
 <script>
 	import {
+		mapfields,
 		stringifyQuery,
 		division,
 		format
 	} from '@/js_sdk/uni-stat/util.js'
+	import fieldsMap from './fieldsMap.js'
 	export default {
 		data() {
 			return {
-				tableData: [],
-				loading: false,
 				query: {
 					stat_app_id: '',
 					platform_id: '',
@@ -93,39 +69,13 @@
 				options: {
 					pageCurrent: 1, // 当前页
 					total: 0, // 数据总量
-					pageSizeIndex: 0,  // 与 pageSizeRange 一起计算得出 pageSize
+					pageSizeIndex: 0, // 与 pageSizeRange 一起计算得出 pageSize
 					pageSizeRange: [1, 10, 20, 50, 100],
 				},
-				panelData: [{
-					title: '访问人数',
-					tooltip: '访问人数',
-					field: 'total_num_visitor',
-					value: 0,
-				}, {
-					title: '访问次数',
-					field: 'total_num_visits',
-					value: 0,
-				}, {
-					title: '退出页次数',
-					field: 'total_exit_num_visits',
-					value: 0,
-				}, {
-					title: '退出率',
-					field: 'total_exit_rate',
-					value: 0,
-				}, {
-					title: '次均停留时长',
-					field: 'avg_visit_avg_time',
-					value: 0,
-				}, {
-					title: '人均停留时长 ',
-					field: 'avg_visitor_avg_time',
-					value: 0,
-				}, {
-					title: '分享次数',
-					field: 'total_num_share',
-					value: 0,
-				}]
+				loading: false,
+				tableData: [],
+				panelData: [],
+				fieldsMap
 			}
 		},
 		onReady() {
@@ -182,9 +132,6 @@
 				const {
 					pageCurrent
 				} = this.options
-				const {
-					pageSize
-				} = this
 				console.log('..............query：', query);
 				this.loading = true
 				const db = uniCloud.database()
@@ -198,8 +145,8 @@
 					.field(
 						'title, url, _id{"uni-stat-app-page-view-daily"{exit_num_visits, num_visitor, num_visits, sum_visit_length, num_share,entry_num_visitor, entry_num_visits, entry_sum_visit_length, stat_time}}'
 					)
-					.skip((pageCurrent - 1) * pageSize)
-					.limit(pageSize)
+					.skip((pageCurrent - 1) * this.pageSize)
+					.limit(this.pageSize)
 					.get({
 						getCount: true
 					})
@@ -216,15 +163,7 @@
 								delete(item._id)
 								const line = lines[0]
 								if (line && Object.keys(line).length) {
-									for (const key in line) {
-										item[key] = format(line[key])
-									}
-									const exit_rate = line['exit_num_visits'] / line['num_visits']
-									item['exit_rate'] = format(exit_rate, '%')
-									const visit_avg_time = line['sum_visit_length'] / line['num_visits']
-									item['visit_avg_time'] = format(visit_avg_time, ':')
-									const visitor_avg_time = line['sum_visit_length'] / line['num_visitor']
-									item['visitor_avg_time'] = format(visitor_avg_time, ':')
+									mapfields(fieldsMap, line, item)
 								}
 							}
 							this.tableData.push(item)
@@ -251,28 +190,8 @@
 					.then(res => {
 						console.log('.......res.', res);
 						const items = res.result.data[0]
-						this.panelData.forEach((sum, index) => {
-							if (sum.title) {
-								sum.value = 0
-							}
-							if (!items) return
-							const exitTimes = items.total_exit_num_visits
-							const visitTimes = items.total_num_visits
-							const visitDurtion = items.total_sum_visit_length
-							const visitPeople = items.total_num_visitor
-							if (sum.field === 'total_exit_rate') {
-								const rate = division(exitTimes, visitTimes)
-								sum.value = format(rate, '%')
-							} else if (sum.field === 'avg_visit_avg_time') {
-								const avgDurtion = division(visitDurtion, visitTimes)
-								sum.value = format(avgDurtion, ':')
-							} else if (sum.field === 'avg_visitor_avg_time') {
-								const avgDurtion = division(visitDurtion, visitPeople)
-								sum.value = format(avgDurtion, ':')
-							} else {
-								sum.value = format(items[sum.field])
-							}
-						})
+						this.panelData = []
+						this.panelData = mapfields(fieldsMap, items, undefined, 'total_')
 					})
 			},
 

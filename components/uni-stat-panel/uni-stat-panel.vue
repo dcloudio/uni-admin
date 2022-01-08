@@ -9,8 +9,8 @@
 					</view>
 				</view>
 			</view>
-			<view class="uni-stat--sum-item-value">{{item.value}}</view>
-			<view v-if="contrast" class="uni-stat--sum-item-contrast">{{item.contrast}}</view>
+			<view class="uni-stat--sum-item-value">{{item.value ? item.value : 0}}</view>
+			<view v-if="contrast" class="uni-stat--sum-item-contrast">{{item.contrast ? item.contrast : 0}}</view>
 		</view>
 	</view>
 </template>
@@ -32,7 +32,7 @@
 			},
 			contrast: {
 				type: Boolean,
-				default: true
+				default: false
 			}
 		}
 
