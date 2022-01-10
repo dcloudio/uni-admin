@@ -1,0 +1,89 @@
+// 应用页面访问数据日统计表
+{
+	"bsonType": "object",
+	"required": [],
+	"permission": {
+		"read": false,
+		"create": false,
+		"update": false,
+		"delete": false
+	},
+	"properties": {
+		"_id": {
+			"description": "ID，系统自动生成"
+		},
+		"app_id": {
+			"bsonType": "string",
+			"description": "应用表ID，对应opendb-app-list._id",
+			"foreignKey": "opendb-app-list._id"
+		},
+		"platform_id": {
+			"bsonType": "string",
+			"description": "应用平台ID，对应opendb-stat-app-platforms._id	",
+			"foreignKey": "opendb-stat-app-platforms._id"
+		},
+		"channel_id": {
+			"bsonType": "string",
+			"description": "渠道/场景值ID，对应opendb-stat-app-channels._id",
+			"foreignKey": "opendb-stat-app-channels._id"
+		},
+		"version_id": {
+			"bsonType": "string",
+			"description": "应用版本ID，对应opendb-stat-app-versions._id",
+			"foreignKey": "opendb-stat-app-versions._id"
+		},
+		"page_id": {
+			"bsonType": "string",
+			"description": "页面表ID，对应页面表ID，对应pendb-stat-app-pages._id",
+			"foreignKey": "pendb-stat-app-pages._id"
+		},
+		"access_times": {
+			"bsonType": "int",
+			"description": "访问次数"
+		},
+		"access_users": {
+			"bsonType": "int",
+			"description": "访问用户数"
+		},
+		"exit_times": {
+			"bsonType": "int",
+			"description": "退出次数"
+		},
+		"access_time": {
+			"bsonType": "int",
+			"description": "访问总时长,单位秒"
+		},
+		"num_share": {
+			"bsonType": "int",
+			"description": "分享次数"
+		},
+		"entry_users": {
+			"bsonType": "int",
+			"description": "当前页作为入口页的人数"
+		},
+		"entry_count": {
+			"bsonType": "int",
+			"description": "当前页作为入口页的总次数"
+		},
+		"entry_access_time": {
+			"bsonType": "int",
+			"description": "当前页作为入口时，本页面的总访问时长,单位秒"
+		},
+		"dimension": {
+			"bsonType": "string",
+			"description": "统计范围 day:按天统计，hour:按小时统计"
+		},
+		"stat_date":{
+			"bsonType":"int",
+			"description":"统计日期，格式yyyymmdd，例:20211201"
+		},
+		"start_time":{
+			"bsonType":"timestamp",
+			"description":"开始时间"
+		},
+		"end_time":{
+			"bsonType":"timestamp",
+			"description":"结束时间"
+		}
+	}
+}

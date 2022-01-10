@@ -1,4 +1,4 @@
-// 统计-应用渠道表
+// 统计-应用版本表
 {
 	"bsonType": "object",
 	"required": [],
@@ -12,30 +12,27 @@
 		"_id": {
 			"description": "ID，系统自动生成"
 		},
-		"stat_app_id": {
+		"app_id": {
 			"bsonType": "string",
 			"description": "应用表ID，对应opendb-app-list._id",
 			"foreignKey": "opendb-app-list._id"
 		},
 		"platform_id": {
 			"bsonType": "int",
-			"description": "平台编号"
+			"description": "应用平台ID，对应opendb-stat-app-platforms._id",
+			"foreignKey": "opendb-app-list._id"
 		},
-		"channel": {
-			"bsonType": "int",
-			"description": "客户端上报的 channel_id"
-		},
-		"channel_name": {
+		"version": {
 			"bsonType": "string",
-			"description": "渠道名称，用户可编辑"
+			"description": "应用版本"
 		},
 		"create_time": {
 			"bsonType": "timestamp",
 			"description": "创建时间"
 		},
-		"update_time": {
+		"last_modify_time": {
 			"bsonType": "timestamp",
-			"description": "修改时间"
+			"description": "最后修改时间"
 		}
 	}
 }

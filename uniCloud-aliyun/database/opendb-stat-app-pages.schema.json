@@ -1,4 +1,4 @@
-// 统计-应用事件表
+// 统计-应用页面表
 {
 	"bsonType": "object",
 	"required": [],
@@ -12,26 +12,22 @@
 		"_id": {
 			"description": "ID，系统自动生成"
 		},
-		"stat_app_id": {
+		"app_id": {
 			"bsonType": "string",
 			"description": "应用表ID，对应opendb-app-list._id",
 			"foreignKey": "opendb-app-list._id"
 		},
-		"event_key": {
+		"url": {
 			"bsonType": "string",
-			"description": "事件键值"
+			"description": "页面链接"
 		},
-		"event_name": {
+		"title": {
 			"bsonType": "string",
-			"description": "事件名称"
+			"description": "页面标题"
 		},
 		"create_time": {
 			"bsonType": "timestamp",
 			"description": "创建时间"
-		},
-		"update_time": {
-			"bsonType": "timestamp",
-			"description": "修改时间"
 		}
 	}
 }

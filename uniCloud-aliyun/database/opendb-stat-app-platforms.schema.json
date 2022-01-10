@@ -12,17 +12,13 @@
 		"_id": {
 			"description": "ID，系统自动生成"
 		},
-		"name": {
-			"bsonType": "string",
-			"description": "平台名称 如 微信小程序，安卓，苹果"
-		},
 		"code": {
 			"bsonType": "string",
-			"description": "平台代码,如 android:安卓, ios：苹果, wxmp:微信小程序"
+			"description": "平台代码，前端上报"
 		},
-		"report_code": {
+		"name": {
 			"bsonType": "string",
-			"description": "平台上报代码"
+			"description": "平台名称，管理端显示"
 		},
 		"create_time": {
 			"bsonType": "timestamp",

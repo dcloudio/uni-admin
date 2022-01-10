@@ -12,28 +12,33 @@
 		"_id": {
 			"description": "ID，系统自动生成"
 		},
-		"stat_app_id": {
+		"app_id": {
 			"bsonType": "string",
-			"description": "应用表ID，对应opendb-app-list._id",
-			"foreignKey": "opendb-app-list._id"
+			"description": "用户端上报的应用ID"
 		},
-		"stat_version_id": {
+		"version": {
 			"bsonType": "string",
-			"description": "应用版本表ID，对应uni-stat-app-versions._id",
-			"foreignKey": "uni-stat-app-versions._id"
+			"description": "用户端上报的应用版本号"
 		},
-		"platform_id": {
+		"platform": {
 			"bsonType": "string",
-			"description": "平台编号",
-			"foreignKey":"uni-stat-app-platforms._id"
+			"description": "用户端上报的平台code"
+		},
+		"channel": {
+			"bsonType": "string",
+			"description": "用户端上报的渠道code/场景值"
+		},
+		"uuid": {
+			"bsonType": "string",
+			"description": "用户端上报的用户标志"
 		},
 		"sdk_version": {
 			"bsonType": "string",
-			"description": "sdk 版本"
+			"description": "小程序基础库版本号"
 		},
 		"platform_version": {
 			"bsonType": "string",
-			"description": "平台版本，如ide、微信、支付宝等"
+			"description": "微信、支付宝宿主App的版本号"
 		},
 		"error_msg": {
 			"bsonType": "string",
