@@ -23,20 +23,21 @@ export default [{
 	title: '退出率',
 	field: 'exitRate',
 	computed: 'exit_num_visits/num_visits',
-	formart: '%',
+	formatter: '%',
 	tooltip: '',
 	value: 0
 }, {
 	title: '次均停留时长',
 	field: 'visitAvgTime',
 	computed: 'sum_visit_length/num_visits',
-	formart: ':',
+	formatter: ':',
 	tooltip: '',
 	value: 0
 }, {
 	title: '人均停留时长 ',
 	field: 'visitorAvgTime',
 	computed: 'sum_visit_length/num_visitor',
+	formatter: ':',
 	tooltip: '',
 	value: 0
 }, {

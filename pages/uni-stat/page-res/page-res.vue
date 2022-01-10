@@ -18,7 +18,6 @@
 			<view class="uni-stat--x flex">
 				<uni-stat-tabs label="日期选择" mode="date" v-model="query.stat_time"
 					:disabled="!!query.stat_time_range.length" />
-				<!-- <view style="color: #333; font-size: 14px; margin: 0 30px;">/</view> -->
 				<uni-datetime-picker type="daterange" v-model="query.stat_time_range" returnType="timestamp"
 					class="uni-stat-datetime-picker" :class="{'uni-stat__actived': !!query.stat_time_range.length}" />
 			</view>
@@ -39,7 +38,6 @@
 						:total="options.total" @change="changePageCurrent" />
 				</view>
 			</view>
-
 		</view>
 
 		<!-- #ifndef H5 -->

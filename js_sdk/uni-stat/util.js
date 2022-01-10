@@ -1,5 +1,5 @@
 /**
- *  以下方法为 uni-stat 的工具方法
+ *  以下为 uni-stat 的工具方法
  */
 
 // 获取指定日期当天或 n 天前零点的时间戳，丢弃时分秒
@@ -53,7 +53,7 @@ function division(dividend, divisor) {
 	}
 }
 
-function format(num, type = ',') {
+function format(num, type=',') {
 	if (typeof num !== 'number') return num
 	if (type === '%') {
 		return num.toFixed(4) * 100 + type
@@ -82,6 +82,8 @@ function format(num, type = ',') {
 		return hms.join(type)
 	} else if (type === ',') {
 		return num.toLocaleString()
+	} else {
+		return num
 	}
 }
 
@@ -92,19 +94,21 @@ function mapfields(map, data, goal, prefix = '') {
 		let {
 			field,
 			computed,
-			panel
+			formatter
 		} = mapper
 		// if (!field) return // stat index
 		goal = argsGoal || mapper
+		const hasValue = goal.hasOwnProperty('value')
 		const preField = prefix + field
 		if (data) {
 			if (data[preField]) {
-				if (goal.hasOwnProperty('value')) {
+				const val = format(data[preField], formatter)
+				if (hasValue) {
 					if (goal.field === field) {
-						goal['value'] = data[preField]
+						goal['value'] = val
 					}
 				} else {
-					goal[field] = data[preField]
+					goal[field] = val
 				}
 			} else {
 				if (computed) {
@@ -113,16 +117,20 @@ function mapfields(map, data, goal, prefix = '') {
 					dividend = data[prefix + dividend]
 					divisor = data[prefix + divisor]
 					if (dividend && divisor) {
-						if (goal.hasOwnProperty('value')) {
-							goal['value'] = division(dividend, divisor)
+						const val = format(division(dividend, divisor), formatter)
+						// const val = division(dividend, divisor)
+						if (hasValue) {
+							goal['value'] = val
 						} else {
-							goal[field] = division(dividend, divisor)
+							goal[field] = val
 						}
 					}
 				}
 			}
 		}
-		goals.push(goal)
+		if (hasValue) {
+			goals.push(goal)
+		}
 	}
 	return goals
 }
