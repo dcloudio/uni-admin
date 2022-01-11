@@ -8,7 +8,7 @@
 		</view>
 		<view class="uni-container">
 			<view class="uni-stat--x flex">
-				<uni-stat-select mode="app" label="应用选择" v-model="query.stat_app_id" />
+				<uni-stat-select mode="app" label="应用选择" v-model="query.appid" />
 				<uni-stat-select mode="channel" label="渠道选择" v-model="query.channel_id" />
 				<uni-stat-select label="版本选择" />
 			</view>
@@ -16,10 +16,9 @@
 				<uni-stat-tabs label="平台选择" type="boldLine" mode="platform" v-model="query.platform_id" />
 			</view>
 			<view class="uni-stat--x flex">
-				<uni-stat-tabs label="日期选择" mode="date" v-model="query.stat_time"
-					:disabled="!!query.stat_time_range.length" />
-				<uni-datetime-picker type="daterange" v-model="query.stat_time_range" returnType="timestamp"
-					class="uni-stat-datetime-picker" :class="{'uni-stat__actived': !!query.stat_time_range.length}" />
+				<uni-stat-tabs label="日期选择" mode="date" v-model="query.start_time" :disabled="!!query.time_range.length" />
+				<uni-datetime-picker type="daterange" v-model="query.time_range" returnType="timestamp"
+					class="uni-stat-datetime-picker" :class="{'uni-stat__actived': !!query.time_range.length}" />
 			</view>
 			<uni-stat-panel :items="panelData" />
 			<view class="uni-stat--x p-m">
@@ -58,17 +57,17 @@
 		data() {
 			return {
 				query: {
-					stat_app_id: '',
+					appid: '',
 					platform_id: '',
 					channel_id: '',
-					stat_time: 1,
-					stat_time_range: []
+					start_time: 1,
+					time_range: []
 				},
 				options: {
 					pageCurrent: 1, // 当前页
 					total: 0, // 数据总量
 					pageSizeIndex: 0, // 与 pageSizeRange 一起计算得出 pageSize
-					pageSizeRange: [1, 10, 20, 50, 100],
+					pageSizeRange: [10, 20, 50, 100],
 				},
 				loading: false,
 				tableData: [],
@@ -97,8 +96,8 @@
 				deep: true,
 				handler(newVal, oldVal) {
 					this.options.pageCurrent = 1 // 重置分页
-					if (newVal.stat_time !== oldVal.stat_time && newVal.stat_time_range.length) {
-						this.query.stat_time_range = []
+					if (newVal.start_time !== oldVal.start_time && newVal.time_range.length) {
+						this.query.time_range = []
 						return
 					}
 					const query = stringifyQuery(newVal)
@@ -133,15 +132,15 @@
 				console.log('..............query：', query);
 				this.loading = true
 				const db = uniCloud.database()
-				const mainTableTemp = db.collection('uni-stat-app-pages').getTemp()
-				const subTableTemp = db.collection('uni-stat-app-page-view-daily')
+				const mainTableTemp = db.collection('opendb-stat-app-pages').getTemp()
+				const subTableTemp = db.collection('opendb-stat-app-page-result')
 					.where(query)
-					.orderBy('stat_time', 'desc')
+					.orderBy('start_time ', 'desc ')
 					.getTemp()
 
 				db.collection(mainTableTemp, subTableTemp)
 					.field(
-						'title, url, _id{"uni-stat-app-page-view-daily"{exit_num_visits, num_visitor, num_visits, sum_visit_length, num_share,entry_num_visitor, entry_num_visits, entry_sum_visit_length, stat_time}}'
+						'title, url, _id{"opendb-stat-app-page-result"{access_times,access_users,exit_times,access_time,share_count,entry_users,entry_count,entry_access_time,dimension,stat_date}}'
 					)
 					.skip((pageCurrent - 1) * this.pageSize)
 					.limit(this.pageSize)
@@ -153,10 +152,11 @@
 							count,
 							data
 						} = res.result
+						console.log('......table', res);
 						this.tableData = []
 						this.options.total = count
 						for (const item of data) {
-							const lines = item._id["uni-stat-app-page-view-daily"]
+							const lines = item._id["opendb-stat-app-page-result"]
 							if (Array.isArray(lines)) {
 								delete(item._id)
 								const line = lines[0]
@@ -177,13 +177,13 @@
 
 			getPanelData(query = stringifyQuery(this.query)) {
 				const db = uniCloud.database()
-				const subTable = db.collection('uni-stat-app-page-view-daily')
+				const subTable = db.collection('opendb-stat-app-page-result')
 					.where(query)
-					.groupBy('stat_app_id')
+					.groupBy('appid')
 					.groupField(
-						'sum(num_visits) as total_num_visits, sum(num_visitor) as total_num_visitor, sum(exit_num_visits) as total_exit_num_visits, sum(num_share) as total_num_share, sum(sum_visit_length) as total_sum_visit_length'
+						'sum(access_times) as total_access_times, sum(access_users) as total_access_users, sum(exit_times) as total_exit_times, sum(share_count) as total_share_count, sum(access_time) as total_access_time'
 					)
-					.orderBy('stat_time', 'desc')
+					.orderBy('start_time', 'desc ')
 					.get()
 					.then(res => {
 						console.log('.......res.', res);

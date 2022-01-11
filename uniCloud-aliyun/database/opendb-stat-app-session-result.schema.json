@@ -12,7 +12,7 @@
 		"_id": {
 			"description": "ID，系统自动生成"
 		},
-		"app_id": {
+		"appid": {
 			"bsonType": "string",
 			"description": "应用表ID，对应opendb-app-list._id",
 			"foreignKey": "opendb-app-list._id"

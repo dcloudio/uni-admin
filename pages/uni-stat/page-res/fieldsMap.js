@@ -6,43 +6,43 @@ export default [{
 	field: 'title',
 }, {
 	title: '访问人数',
-	field: 'num_visitor',
+	field: 'access_users',
 	tooltip: '访问人数',
 	value: 0
 }, {
 	title: '访问次数',
-	field: 'num_visits',
+	field: 'access_times',
 	tooltip: '',
 	value: 0
 }, {
 	title: '退出页次数',
-	field: 'exit_num_visits',
+	field: 'exit_times',
 	tooltip: '',
 	value: 0
 }, {
 	title: '退出率',
 	field: 'exitRate',
-	computed: 'exit_num_visits/num_visits',
+	computed: 'exit_times/access_times',
 	formatter: '%',
 	tooltip: '',
 	value: 0
 }, {
 	title: '次均停留时长',
 	field: 'visitAvgTime',
-	computed: 'sum_visit_length/num_visits',
+	computed: 'access_time/access_times',
 	formatter: ':',
 	tooltip: '',
 	value: 0
 }, {
 	title: '人均停留时长 ',
 	field: 'visitorAvgTime',
-	computed: 'sum_visit_length/num_visitor',
+	computed: 'access_time/access_users',
 	formatter: ':',
 	tooltip: '',
 	value: 0
 }, {
 	title: '分享次数',
-	field: 'num_share',
+	field: 'share_count',
 	tooltip: '',
 	value: 0
 }]

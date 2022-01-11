@@ -57,7 +57,7 @@
 	"opendb-stat-app-channels": {
 		"data": [{
 			"_id": "61c041fb34458700013e700a",
-			"app_id": "61c041fb34458700013e700a",
+			"appid": "61c041fb34458700013e700a",
 			"platform_id": "61c046e691a75000014c255f",
 			"channel_code": "1001",
 			"channel_name": "test-channel",
@@ -71,7 +71,7 @@
 				"_id": "61c041fb34458700013e700a",
 				"channel_id": "61c041fb34458700013e700a",
 				"platform_id": "61c046e691a75000014c255f",
-				"app_id": "61c041fb34458700013e700a",
+				"appid": "61c041fb34458700013e700a",
 				"version_id": "61c041fb34458700013e700a",
 				"total_users": 1100,
 				"new_user_count": 7,
@@ -91,7 +91,7 @@
 				"_id": "61c041fb34458700013e700a",
 				"channel_id": "61c041fb34458700013e700a",
 				"platform_id": "61c046e691a75000014c255f",
-				"app_id": "61c041fb34458700013e700a",
+				"appid": "61c041fb34458700013e700a",
 				"version_id": "61c041fb34458700013e700a",
 				"total_users": 1200,
 				"new_user_count": 7,
@@ -112,7 +112,7 @@
 				"_id": "61c041fb34458700013e700a",
 				"channel_id": "61c041fb34458700013e700a",
 				"platform_id": "61c046e691a75000014c255f",
-				"app_id": "61c041fb34458700013e700a",
+				"appid": "61c041fb34458700013e700a",
 				"version_id": "61c041fb34458700013e700b",
 				"total_users": 1300,
 				"new_user_count": 7,
@@ -132,7 +132,7 @@
 				"_id": "61c041fb34458700013e700b",
 				"channel_id": "61c041fb34458700013e700b",
 				"platform_id": "61c046e691a75000014c255f",
-				"app_id": "61c041fb34458700013e700b",
+				"appid": "61c041fb34458700013e700b",
 				"version_id": "61c041fb34458700013e700b",
 				"total_users": 1101,
 				"new_user_count": 7,
@@ -152,7 +152,7 @@
 				"_id": "61c041fb34458700013e700b",
 				"channel_id": "61c041fb34458700013e700b",
 				"platform_id": "61c046e691a75000014c255f",
-				"app_id": "61c041fb34458700013e700b",
+				"appid": "61c041fb34458700013e700b",
 				"version_id": "61c041fb34458700013e700b",
 				"total_users": 1201,
 				"new_user_count": 7,
@@ -173,7 +173,7 @@
 				"_id": "61c041fb34458700013e700b",
 				"channel_id": "61c041fb34458700013e700b",
 				"platform_id": "61c046e691a75000014c255f",
-				"app_id": "61c041fb34458700013e700b",
+				"appid": "61c041fb34458700013e700b",
 				"version_id": "61c041fb34458700013e700b",
 				"total_users": 1301,
 				"new_user_count": 7,
@@ -197,37 +197,37 @@
 	"opendb-stat-app-pages": {
 		"data": [{
 			"_id": "61c041fb34458700013e70p1",
-			"app_id": "61c041fb34458700013e700a",
+			"appid": "61c041fb34458700013e700a",
 			"url": "pages/tabBar/case/case",
 			"title": "实例",
 			"create_time": 1640217600000
 		}, {
 			"_id": "61c041fb34458700013e70p2",
-			"app_id": "61c041fb34458700013e700a",
+			"appid": "61c041fb34458700013e700a",
 			"url": "pages/tabBar/forum/forum",
 			"title": "社区",
 			"create_time": 1640217600000
 		}, {
 			"_id": "61c041fb34458700013e70p3",
-			"app_id": "61c041fb34458700013e700a",
+			"appid": "61c041fb34458700013e700a",
 			"url": "pages/tabBar/center/center",
 			"title": "个人中心",
 			"create_time": 1640217600000
 		}, {
 			"_id": "61c041fb34458700013e70p4",
-			"app_id": "61c041fb34458700013e700b",
+			"appid": "61c041fb34458700013e700b",
 			"url": "pages/tabBar/case/case2",
 			"title": "实例2",
 			"create_time": 1640217600000
 		}, {
 			"_id": "61c041fb34458700013e70p5",
-			"app_id": "61c041fb34458700013e700b",
+			"appid": "61c041fb34458700013e700b",
 			"url": "pages/tabBar/forum/forum2",
 			"title": "社区2",
 			"create_time": 1640217600000
 		}, {
 			"_id": "61c041fb34458700013e70p6",
-			"app_id": "61c041fb34458700013e700b2",
+			"appid": "61c041fb34458700013e700b2",
 			"url": "pages/tabBar/center/center",
 			"title": "个人中心2",
 			"create_time": 1640217600000
@@ -236,7 +236,7 @@
 
 	"opendb-stat-app-page-result": {
 		"data": [{
-			"app_id": "61c041fb34458700013e700a",
+			"appid": "61c041fb34458700013e700a",
 			"version_id": "61c041fb34458700013e700a",
 			"platform_id": "61c046e691a75000014c255f",
 			"channel_id": "61c041fb34458700013e700a",
@@ -255,7 +255,7 @@
 			"end_time": 1641816442552
 
 		}, {
-			"app_id": "61c041fb34458700013e700a",
+			"appid": "61c041fb34458700013e700a",
 			"version_id": "61c041fb34458700013e700a",
 			"platform_id": "61c046e691a75000014c255f",
 			"channel_id": "61c041fb34458700013e700a",
@@ -274,7 +274,7 @@
 			"end_time": 1641816442552
 
 		}, {
-			"app_id": "61c041fb34458700013e700a",
+			"appid": "61c041fb34458700013e700a",
 			"version_id": "61c041fb34458700013e700a",
 			"platform_id": "61c046e691a75000014c255f",
 			"channel_id": "61c041fb34458700013e700a",
@@ -293,7 +293,7 @@
 			"end_time": 1641816442552
 
 		}, {
-			"app_id": "61c041fb34458700013e700b",
+			"appid": "61c041fb34458700013e700b",
 			"version_id": "61c041fb34458700013e700b",
 			"platform_id": "61c046e691a75000014c255f",
 			"channel_id": "61c041fb34458700013e700b",
@@ -311,7 +311,7 @@
 			"start_time": 1641812842552,
 			"end_time": 1641816442552
 		}, {
-			"app_id": "61c041fb34458700013e700b",
+			"appid": "61c041fb34458700013e700b",
 			"version_id": "61c041fb34458700013e700b",
 			"platform_id": "61c046e691a75000014c255f",
 			"channel_id": "61c041fb34458700013e700b",
@@ -329,7 +329,7 @@
 			"start_time": 1641812842552,
 			"end_time": 1641816442552
 		}, {
-			"app_id": "61c041fb34458700013e700b",
+			"appid": "61c041fb34458700013e700b",
 			"version_id": "61c041fb34458700013e700b",
 			"platform_id": "61c046e691a75000014c255f",
 			"channel_id": "61c041fb34458700013e700b",

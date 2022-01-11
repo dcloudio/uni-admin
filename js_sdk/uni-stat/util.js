@@ -18,20 +18,20 @@ function stringifyQuery(query, customQuery) {
 	if (customQuery && typeof customQuery === 'string') {
 		queryArr.push(customQuery)
 	}
-	const range = query.stat_time_range
+	const range = query.time_range
 	const keys = Object.keys(query)
 	keys.forEach(key => {
-		if (key === 'stat_time_range') return
+		if (key === 'time_range') return
 		let val = query[key]
 		if (val) {
 			if (typeof val === 'string') {
 				val = `"${val}"`
 			}
-			if (key === 'stat_time') {
+			if (key === 'start_time') {
 				if (Array.isArray(range) && range.length === 2) {
-					queryArr.push(`stat_time >= ${range[0]} && stat_time <= ${range[1]}`)
+					queryArr.push(`start_time >= ${range[0]} && start_time <= ${range[1]}`)
 				} else {
-					queryArr.push(`stat_time >= ${getTimeOfSomeDayAgo(val)}`)
+					queryArr.push(`start_time >= ${getTimeOfSomeDayAgo(val)}`)
 				}
 
 			} else {

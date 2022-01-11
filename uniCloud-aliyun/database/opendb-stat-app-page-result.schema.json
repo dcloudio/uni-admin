@@ -12,7 +12,7 @@
 		"_id": {
 			"description": "ID，系统自动生成"
 		},
-		"app_id": {
+		"appid": {
 			"bsonType": "string",
 			"description": "应用表ID，对应opendb-app-list._id",
 			"foreignKey": "opendb-app-list._id"
@@ -35,7 +35,7 @@
 		"page_id": {
 			"bsonType": "string",
 			"description": "页面表ID，对应页面表ID，对应pendb-stat-app-pages._id",
-			"foreignKey": "pendb-stat-app-pages._id"
+			"foreignKey": "opendb-stat-app-pages._id"
 		},
 		"access_times": {
 			"bsonType": "int",
