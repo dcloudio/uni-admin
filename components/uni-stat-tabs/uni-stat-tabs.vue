@@ -1,12 +1,13 @@
 <template>
 	<view class="uni-stat--tab">
 		<span v-if="label" class="label-text">{{label + '：'}}</span>
-		<view v-if="!renderTabs.length" class="uni-stat--tab-item uni-stat--tab-item-disabled" :class="[`uni-stat--tab-item-${type}`]">
+		<view v-if="!renderTabs.length" class="uni-stat--tab-item uni-stat--tab-item-disabled"
+			:class="[`uni-stat--tab-item-${type}`]">
 			{{placeholder}}
 		</view>
 		<view v-else v-for="(item, index) in renderTabs" :key="index" @click="change(item._id, index)"
 			class="uni-stat--tab-item"
-			:class="[index === current ? `uni-stat--tab-item-${type}-active` : '' , `uni-stat--tab-item-${type}`, (index === current && disabled) ? `uni-stat--tab-item-${type}-active-disabled` : '']">
+			:class="[index === currentTab ? `uni-stat--tab-item-${type}-active` : '' , `uni-stat--tab-item-${type}`]">
 			{{item.name}}
 		</view>
 
@@ -18,7 +19,7 @@
 		name: "uni-stat-tabs",
 		data() {
 			return {
-				current: 0,
+				currentTab: 0,
 				renderTabs: []
 			};
 		},
@@ -26,6 +27,14 @@
 			type: {
 				type: String,
 				default: 'line'
+			},
+			// value: {
+			// 	type: [String, Number],
+			// 	default: ''
+			// },
+			current: {
+				type: [String, Number],
+				default: 0
 			},
 			mode: {
 				type: String,
@@ -67,17 +76,31 @@
 					_id: 90,
 					name: '最近90天',
 				}]
-			}else {
+			} else {
 				this.renderTabs = this.tabs
 			}
 		},
+		created() {
+			const index = this.current
+			this.currentTab = this.current
+			if (this.mode === 'date' && index >= 0) {
+				this.$nextTick(function() {
+					const id = this.renderTabs[index]._id
+					this.$emit('change', id, index)
+					this.$emit('input', id, index)
+				})
+			}
+		},
+		watch: {
+			current(val) {
+				this.currentTab = val
+			}
+		},
 		methods: {
-			change(e, index) {
-				console.log(',,,,,,,,,', e);
-				// if(this.disabled) return
-				this.current = index
-				this.$emit('change', e)
-				this.$emit('input', e)
+			change(id, index) {
+				this.currentTab = index
+				this.$emit('change', id, index)
+				this.$emit('input', id, index)
 			},
 			getPlatform() {
 				const db = uniCloud.database()
@@ -125,10 +148,10 @@
 					&-active {
 						color: $uni-color-primary;
 						border-bottom: 1px solid $uni-color-primary;
-						&-disabled {
-							color: #666;
-							border-color: #666;
-						}
+						// &-disabled {
+						// 	color: #666;
+						// 	border-color: #666;
+						// }
 					}
 				}
 

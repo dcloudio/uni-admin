@@ -18,7 +18,6 @@ function stringifyQuery(query, customQuery) {
 	if (customQuery && typeof customQuery === 'string') {
 		queryArr.push(customQuery)
 	}
-	const range = query.time_range
 	const keys = Object.keys(query)
 	keys.forEach(key => {
 		if (key === 'time_range') return
@@ -28,12 +27,10 @@ function stringifyQuery(query, customQuery) {
 				val = `"${val}"`
 			}
 			if (key === 'start_time') {
+				const range = query.start_time
 				if (Array.isArray(range) && range.length === 2) {
 					queryArr.push(`start_time >= ${range[0]} && start_time <= ${range[1]}`)
-				} else {
-					queryArr.push(`start_time >= ${getTimeOfSomeDayAgo(val)}`)
-				}
-
+				} 
 			} else {
 				queryArr.push(`${key} == ${val}`)
 			}
@@ -56,13 +53,15 @@ function division(dividend, divisor) {
 function format(num, type=',') {
 	if (typeof num !== 'number') return num
 	if (type === '%') {
-		return num.toFixed(4) * 100 + type
+		// 注意浮点数精度
+		num = Number.parseFloat(num).toPrecision(4)
+		return num * 100 + type
 	} else if (type === ':') {
 		num = Math.ceil(num)
 		let h, m, s
 		h = m = s = 0
 		const wunH = 60 * 60,
-			wunM = 60 // 单位秒
+			wunM = 60 // 单位秒, wun 通 one
 		if (num >= wunH) {
 			h = Math.floor(num / wunH)
 			const remainder = num % wunH
