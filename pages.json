@@ -150,21 +150,21 @@
 		"pages": [{
 			"path": "index/index",
 			"style": {
-				"navigationBarTitleText": "",
+				"navigationBarTitleText": "统计首页",
 				"enablePullDownRefresh": false
 			}
 
 		}, {
 			"path": "page-res/page-res",
 			"style": {
-				"navigationBarTitleText": "",
+				"navigationBarTitleText": "受访页",
 				"enablePullDownRefresh": false
 			}
 
 		}, {
 			"path": "page-ent/page-ent",
 			"style": {
-				"navigationBarTitleText": "",
+				"navigationBarTitleText": "入口页",
 				"enablePullDownRefresh": false
 			}
 		}, {
@@ -183,70 +183,70 @@
 		}, {
 			"path": "overview/overview",
 			"style": {
-				"navigationBarTitleText": "",
+				"navigationBarTitleText": "今日概况",
 				"enablePullDownRefresh": false
 			}
 
 		}, {
 			"path": "user-activity/user-activity",
 			"style": {
-				"navigationBarTitleText": "",
+				"navigationBarTitleText": "用户活跃度",
 				"enablePullDownRefresh": false
 			}
 
 		}, {
 			"path": "trend-analysis/trend-analysis",
 			"style": {
-				"navigationBarTitleText": "",
+				"navigationBarTitleText": "趋势分析",
 				"enablePullDownRefresh": false
 			}
 
 		}, {
 			"path": "user-retention/user-retention",
 			"style": {
-				"navigationBarTitleText": "",
+				"navigationBarTitleText": "用户留存",
 				"enablePullDownRefresh": false
 			}
 
 		}, {
 			"path": "comparison/comparison",
 			"style": {
-				"navigationBarTitleText": "",
+				"navigationBarTitleText": "平台对比",
 				"enablePullDownRefresh": false
 			}
 
 		}, {
 			"path": "loyalty/loyalty",
 			"style": {
-				"navigationBarTitleText": "",
+				"navigationBarTitleText": "用户忠诚度",
 				"enablePullDownRefresh": false
 			}
 
 		}, {
 			"path": "scene/scene",
 			"style": {
-				"navigationBarTitleText": "",
+				"navigationBarTitleText": "场景值（小程序）",
 				"enablePullDownRefresh": false
 			}
 
 		}, {
 			"path": "channel/channel",
 			"style": {
-				"navigationBarTitleText": "",
+				"navigationBarTitleText": "渠道（app）",
 				"enablePullDownRefresh": false
 			}
 
 		}, {
 			"path": "error/error",
 			"style": {
-				"navigationBarTitleText": "",
+				"navigationBarTitleText": "错误分析",
 				"enablePullDownRefresh": false
 			}
 
 		}, {
 			"path": "event/event",
 			"style": {
-				"navigationBarTitleText": "",
+				"navigationBarTitleText": "事件和转化",
 				"enablePullDownRefresh": false
 			}
 

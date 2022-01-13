@@ -3,7 +3,7 @@
 		<uni-tr>
 			<uni-th v-for="(mapper, index) in filedsMap" :key="index" align="center">{{mapper.title}}</uni-th>
 		</uni-tr>
-		<uni-tr v-for="(item ,index) in data" :key="index">
+		<uni-tr v-for="(item ,i) in data" :key="i">
 			<uni-td v-for="(mapper, index) in filedsMap" :key="index" align="center">
 				{{item[mapper.field]}}
 			</uni-td>

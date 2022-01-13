@@ -1,7 +1,7 @@
 <template>
 	<view class="fix-top-window">
-		<view class="uni-header">
-			<view class="uni-group hide-on-phone">
+		<view class="uni-header hide-on-phone">
+			<view class="uni-group">
 				<view class="uni-title">受访页</view>
 				<view class="uni-sub-title">受访页数据分析</view>
 			</view>
@@ -24,7 +24,6 @@
 			<view class="uni-stat--x p-m">
 				<uni-stat-table :data="tableData" :filedsMap="fieldsMap" :loading="loading" />
 				<view class="uni-pagination-box">
-					<!-- #ifndef MP -->
 					<picker class="select-picker" mode="selector" :value="options.pageSizeIndex"
 						:range="options.pageSizeRange" @change="changePageSize">
 						<button type="default" size="mini" :plain="true">
@@ -32,7 +31,6 @@
 							<uni-icons class="select-picker-icon" type="arrowdown" size="12" color="#999"></uni-icons>
 						</button>
 					</picker>
-					<!-- #endif -->
 					<uni-pagination show-icon :page-size="pageSize" :current="options.pageCurrent"
 						:total="options.total" @change="changePageCurrent" />
 				</view>
@@ -72,19 +70,12 @@
 					pageSizeRange: [10, 20, 50, 100],
 				},
 				loading: false,
-				currentDateTab: 2,
+				currentDateTab: 0,
 				tableData: [],
 				panelData: []
 			}
 		},
-		mounted() {
-
-		},
 		computed: {
-			deepCloneQuery() {
-				return JSON.parse(JSON.stringify(this.query))
-			},
-
 			pageSize() {
 				const {
 					pageSizeRange,
@@ -94,9 +85,9 @@
 			}
 		},
 		watch: {
-			deepCloneQuery: {
+			query: {
 				deep: true,
-				handler(val, old) {
+				handler(val) {
 					this.options.pageCurrent = 1 // 重置分页
 					const query = stringifyQuery(val)
 					this.getAllData(query)

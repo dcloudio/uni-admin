@@ -79,10 +79,9 @@
 			} else {
 				this.renderTabs = this.tabs
 			}
-		},
-		created() {
+
 			const index = this.current
-			this.currentTab = this.current
+			this.currentTab = index
 			if (this.mode === 'date' && index >= 0) {
 				this.$nextTick(function() {
 					const id = this.renderTabs[index]._id
