@@ -1,7 +1,7 @@
 <template>
 	<view class="fix-top-window">
-		<view class="uni-header">
-			<view class="uni-group hide-on-phone">
+		<view class="uni-header hide-on-phone">
+			<view class="uni-group">
 				<view class="uni-title">统计首页</view>
 				<view class="uni-sub-title"></view>
 			</view>
