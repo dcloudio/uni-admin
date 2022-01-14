@@ -1,22 +1,36 @@
 export default [{
-	title: '受访页',
-	field: 'url',
+	value: '今天',
+	contrast: '昨天'
 }, {
-	title: '页面名称',
-	field: 'title',
-}, {
-	title: '访问人数',
-	field: 'access_users',
-	tooltip: '访问人数',
-	value: 0
-}, {
-	title: '访问次数',
-	field: 'access_times',
+	title: '新增用户',
+	field: 'new_user_count',
 	tooltip: '',
 	value: 0
 }, {
-	title: '入口页次数',
-	field: 'entry_count',
+	title: '活跃用户',
+	field: 'active_user_count',
+	tooltip: '',
+	value: 0
+}, {
+	title: '访问次数',
+	field: 'page_visit_count',
+	tooltip: '',
+	value: 0
+}, {
+	title: '启动次数',
+	field: 'app_launch_count',
+	tooltip: '访问人数',
+	value: 0
+}, {
+	title: '次均停留时长',
+	field: 'avg_session_time',
+	formatter: ':',
+	tooltip: '',
+	value: 0
+}, {
+	title: '人均停留时长 ',
+	field: 'avg_user_time',
+	formatter: ':',
 	tooltip: '',
 	value: 0
 }, {
@@ -26,17 +40,8 @@ export default [{
 	tooltip: '',
 	value: 0
 }, {
-	title: '次均停留时长',
-	field: 'visitAvgTime',
-	computed: 'access_time/access_times',
-	formatter: ':',
-	tooltip: '',
-	value: 0
-}, {
-	title: '人均停留时长 ',
-	field: 'visitorAvgTime',
-	computed: 'access_time/access_users',
-	formatter: ':',
+	title: '总用户数',
+	field: 'total_users',
 	tooltip: '',
 	value: 0
 }]

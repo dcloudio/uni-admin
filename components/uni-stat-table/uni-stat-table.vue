@@ -1,12 +1,16 @@
 <template>
 	<uni-table :loading="loading" border stripe :emptyText="$t('common.empty')">
 		<uni-tr>
-			<uni-th v-for="(mapper, index) in filedsMap" :key="index" align="center">{{mapper.title}}</uni-th>
+			<template v-for="(mapper, index) in filedsMap">
+				<uni-th v-if="mapper.title" :key="index" align="center">{{mapper.title}}</uni-th>
+			</template>
 		</uni-tr>
 		<uni-tr v-for="(item ,i) in data" :key="i">
-			<uni-td v-for="(mapper, index) in filedsMap" :key="index" align="center">
-				{{item[mapper.field]}}
-			</uni-td>
+			<template v-for="(mapper, index) in filedsMap">
+				<uni-td v-if="mapper.title" :key="index" align="center">
+					{{item[mapper.field] !== undefined ? item[mapper.field] : '-'}}
+				</uni-td>
+			</template>
 		</uni-tr>
 	</uni-table>
 </template>

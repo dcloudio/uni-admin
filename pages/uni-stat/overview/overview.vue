@@ -2,8 +2,8 @@
 	<view class="fix-top-window">
 		<view class="uni-header hide-on-phone">
 			<view class="uni-group">
-				<view class="uni-title">入口页</view>
-				<view class="uni-sub-title">入口页数据分析</view>
+				<view class="uni-title">今日概况</view>
+				<view class="uni-sub-title">今日概况</view>
 			</view>
 		</view>
 		<view class="uni-container">
@@ -15,10 +15,22 @@
 			</view>
 			<view class="uni-stat--x flex">
 				<uni-stat-tabs label="日期选择" :current="currentDateTab" mode="date" @change="changeTimeRange" />
-				<uni-datetime-picker type="daterange" v-model="query.start_time" returnType="timestamp" :clearIcon="false"
-					class="uni-stat-datetime-picker" :class="{'uni-stat__actived': currentDateTab < 0 && !!query.start_time.length}" @change="useDatetimePicker" />
+				<uni-datetime-picker type="daterange" v-model="query.start_time" returnType="timestamp"
+					:clearIcon="false" class="uni-stat-datetime-picker"
+					:class="{'uni-stat__actived': currentDateTab < 0 && !!query.start_time.length}"
+					@change="useDatetimePicker" />
 			</view>
-			<uni-stat-panel :items="panelData" />
+			<uni-stat-panel :items="panelData" :contrast="true" />
+
+			<view class="uni-stat--x p-m">
+				<view class="label-text mb-l">
+					趋势图
+				</view>
+				<uni-stat-tabs type="box" :tabs="chartTabs" class="mb-l" />
+				<qiun-data-charts type="area" :echartsApp="true" :chartData="chartData"
+					:opts="{extra:{area:{type:'curve',addLine:true,gradient:true}}}" />
+			</view>
+
 			<view class="uni-stat--x p-m">
 				<uni-stat-table :data="tableData" :filedsMap="fieldsMap" :loading="loading" />
 				<view class="uni-pagination-box">
@@ -69,7 +81,8 @@
 				loading: false,
 				currentDateTab: 0,
 				tableData: [],
-				panelData: []
+				panelData: [],
+				chartData: {}
 			}
 		},
 		computed: {
@@ -79,6 +92,20 @@
 					pageSizeIndex
 				} = this.options
 				return pageSizeRange[pageSizeIndex]
+			},
+			chartTabs() {
+				const tabs = []
+				fieldsMap.forEach(item => {
+					const _id = item.field
+					const name = item.title
+					if (_id && name) {
+						tabs.push({
+							_id,
+							name
+						})
+					}
+				})
+				return tabs
 			}
 		},
 		watch: {
@@ -103,7 +130,7 @@
 			},
 			changePageCurrent(e) {
 				this.options.pageCurrent = e.current
-				this.getTableData()
+				this.getTableData(stringifyQuery(this.query))
 			},
 
 			changePageSize(e) {
@@ -112,36 +139,27 @@
 				} = e.detail
 				this.options.pageCurrent = 1 // 重置分页
 				this.options.pageSizeIndex = value
-				this.getTableData()
+				this.getTableData(stringifyQuery(this.query))
 			},
 
-			getAllData(query) {
-				this.getPanelData(query)
+			getAllData(query = stringifyQuery(this.query)) {
+				this.getPanelData()
 				this.getTableData(query)
 			},
 
-			getTableData(query = stringifyQuery(this.query)) {
+			getTableData(query) {
 				const {
 					pageCurrent
 				} = this.options
-				console.log('..............query：', query);
+				console.log('..............Table query：', query);
 				this.loading = true
 				const db = uniCloud.database()
-				const filterAppid = stringifyQuery({
-					appid: this.query.appid
-				})
-				const mainTableTemp = db.collection('opendb-stat-app-pages').where(filterAppid).getTemp()
-				const subTableTemp = db.collection('opendb-stat-app-page-result')
+				db.collection('opendb-stat-app-session-result')
 					.where(query)
-					.orderBy('start_time ', 'desc ')
-					.getTemp()
-
-				db.collection(mainTableTemp, subTableTemp)
-					.field(
-						'title, url, _id1{"opendb-stat-app-page-result"{access_times,access_users,access_time,share_count,entry_users,entry_count,entry_access_time,dimension,stat_date,bounce_rate}}'
-					)
+					.field('new_user_count, start_time, stat_date')
 					.skip((pageCurrent - 1) * this.pageSize)
 					.limit(this.pageSize)
+					.orderBy('start_time', 'asc')
 					.get({
 						getCount: true
 					})
@@ -150,19 +168,41 @@
 							count,
 							data
 						} = res.result
+						console.log('.......chart:', data);
+						const options = {
+							categories: [],
+							series: [{
+								name: "日活",
+								smooth: true,
+								areaStyle: {
+									color: {
+										type: 'linear',
+										x: 0,
+										y: 0,
+										x2: 0,
+										y2: 1,
+										colorStops: [{
+											offset: 0,
+											color: '#1890FF' // 0% 处的颜色
+										}, {
+											offset: 1,
+											color: '#FFFFFF' // 100% 处的颜色
+										}],
+										global: false // 缺省为 false
+									}
+								},
+								data: []
+							}]
+						}
+						this.chartData = []
+						for (const item of data) {
+							options.categories.push(item.stat_date)
+							options.series[0].data.push(item.new_user_count)
+						}
+						this.chartData = options
 						this.tableData = []
 						this.options.total = count
-						for (const item of data) {
-							const lines = item._id["opendb-stat-app-page-result"]
-							if (Array.isArray(lines)) {
-								delete(item._id)
-								const line = lines[0]
-								if (line && Object.keys(line).length) {
-									mapfields(fieldsMap, line, item)
-								}
-							}
-							this.tableData.push(item)
-						}
+						this.tableData = data
 					}).catch((err) => {
 						console.error(err)
 						// err.message 错误信息
@@ -172,20 +212,27 @@
 					})
 			},
 
-			getPanelData(query = stringifyQuery(this.query)) {
+			getPanelData() {
+				const {
+					appid,
+					platform_id
+				} = this.query
+				const query = stringifyQuery({
+					dimension: "day",
+					appid,
+					platform_id,
+					start_time: [getTimeOfSomeDayAgo(1), getTimeOfSomeDayAgo(0)]
+				})
+				console.log('..............Panel query：', query);
 				const db = uniCloud.database()
-				const subTable = db.collection('opendb-stat-app-page-result')
+				const subTable = db.collection('opendb-stat-app-session-result')
 					.where(query)
-					.groupBy('appid')
-					.groupField(
-						'sum(access_times) as total_access_times, sum(access_users) as total_access_users, sum(entry_count) as total_entry_count, sum(bounce_rate) as total_bounce_rate, sum(access_time) as total_access_time'
-					)
-					.orderBy('start_time', 'desc ')
+					.orderBy('start_time', 'desc')
 					.get()
 					.then(res => {
 						const items = res.result.data[0]
 						this.panelData = []
-						this.panelData = mapfields(fieldsMap, items, undefined, 'total_')
+						this.panelData = mapfields(fieldsMap, items, undefined)
 					})
 			},
 

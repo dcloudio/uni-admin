@@ -83,11 +83,11 @@
 				"avg_user_time": 3,
 				"bounce_rate": 8.3,
 				"dimension": "day",
-				"stat_date": 20211219,
-				"start_time": 1641812842552,
-				"end_time": 1641816442552
+				"stat_date": 20220114,
+				"start_time": 1642089600000,
+				"end_time": 1610639999999
 			}, {
-				"_id": "61c041fb34458700013e700a",
+				"_id": "61c041fb34458700013e700b",
 				"channel_id": "61c041fb34458700013e700a",
 				"platform_id": "61c046e691a75000014c255f",
 				"appid": "61c041fb34458700013e700a",
@@ -103,12 +103,12 @@
 				"avg_user_time": 3,
 				"bounce_rate": 8.3,
 				"dimension": "day",
-				"stat_date": 20211219,
-				"start_time": 1641812842552,
-				"end_time": 1641816442552
+				"stat_date": 20220113,
+				"start_time": 1642003200000,
+				"end_time": 1642175999999
 			},
 			{
-				"_id": "61c041fb34458700013e700a",
+				"_id": "61c041fb34458700013e700c",
 				"channel_id": "61c041fb34458700013e700a",
 				"platform_id": "61c046e691a75000014c255f",
 				"appid": "61c041fb34458700013e700a",
@@ -124,11 +124,11 @@
 				"avg_user_time": 3,
 				"bounce_rate": 8.3,
 				"dimension": "day",
-				"stat_date": 20211219,
-				"start_time": 1641812842552,
-				"end_time": 1641816442552
+				"stat_date": 20220112,
+				"start_time": 1641916800000,
+				"end_time": 1642003199999
 			}, {
-				"_id": "61c041fb34458700013e700b",
+				"_id": "61c041fb34458700013e700d",
 				"channel_id": "61c041fb34458700013e700b",
 				"platform_id": "61c046e691a75000014c255f",
 				"appid": "61c041fb34458700013e700b",
@@ -144,11 +144,11 @@
 				"avg_user_time": 3,
 				"bounce_rate": 8.3,
 				"dimension": "day",
-				"stat_date": 20211219,
-				"start_time": 1641812842552,
-				"end_time": 1641816442552
+				"stat_date": 20220114,
+				"start_time": 1642089600000,
+				"end_time": 1610639999999
 			}, {
-				"_id": "61c041fb34458700013e700b",
+				"_id": "61c041fb34458700013e700e",
 				"channel_id": "61c041fb34458700013e700b",
 				"platform_id": "61c046e691a75000014c255f",
 				"appid": "61c041fb34458700013e700b",
@@ -164,12 +164,12 @@
 				"avg_user_time": 3,
 				"bounce_rate": 8.3,
 				"dimension": "day",
-				"stat_date": 20211219,
-				"start_time": 1641812842552,
-				"end_time": 1641816442552
+				"stat_date": 20220113,
+				"start_time": 1642003200000,
+				"end_time": 1642175999999
 			},
 			{
-				"_id": "61c041fb34458700013e700b",
+				"_id": "61c041fb34458700013e700f",
 				"channel_id": "61c041fb34458700013e700b",
 				"platform_id": "61c046e691a75000014c255f",
 				"appid": "61c041fb34458700013e700b",
@@ -185,9 +185,9 @@
 				"avg_user_time": 3,
 				"bounce_rate": 8.3,
 				"dimension": "day",
-				"stat_date": 20211219,
-				"start_time": 1641812842552,
-				"end_time": 1641816442552
+				"stat_date": 20220112,
+				"start_time": 1641916800000,
+				"end_time": 1642003199999
 			}
 		]
 

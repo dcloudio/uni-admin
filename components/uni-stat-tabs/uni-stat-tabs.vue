@@ -46,7 +46,7 @@
 			},
 			label: {
 				type: String,
-				default: 'label'
+				default: ''
 			},
 			placeholder: {
 				type: String,
