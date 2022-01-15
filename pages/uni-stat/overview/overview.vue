@@ -14,7 +14,7 @@
 				<uni-stat-tabs label="平台选择" type="boldLine" mode="platform" v-model="query.platform_id" />
 			</view>
 			<view class="uni-stat--x flex">
-				<uni-stat-tabs label="日期选择" :current="currentDateTab" mode="date" @change="changeTimeRange" />
+				<uni-stat-tabs label="日期选择" :current="currentDateTab" mode="date" :today="true" @change="changeTimeRange" />
 				<uni-datetime-picker type="daterange" v-model="query.start_time" returnType="timestamp"
 					:clearIcon="false" class="uni-stat-datetime-picker"
 					:class="{'uni-stat__actived': currentDateTab < 0 && !!query.start_time.length}"
@@ -79,7 +79,7 @@
 					pageSizeRange: [10, 20, 50, 100],
 				},
 				loading: false,
-				currentDateTab: 1,
+				currentDateTab: 2,
 				// currentChartTab: ,
 				tableData: [],
 				panelData: [],
@@ -129,7 +129,7 @@
 			changeTimeRange(id, index) {
 				this.currentDateTab = index
 				const start = getTimeOfSomeDayAgo(id),
-					end = getTimeOfSomeDayAgo(0) - 1
+					end = getTimeOfSomeDayAgo(0) + 24*60*60 - 1
 				this.query.start_time = [start, end]
 			},
 			changePageCurrent(e) {

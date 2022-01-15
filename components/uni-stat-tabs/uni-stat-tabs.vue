@@ -40,6 +40,14 @@
 				type: String,
 				default: ''
 			},
+			today: {
+				type: Boolean,
+				default: false
+			},
+			yesterday: {
+				type: Boolean,
+				default: true
+			},
 			disabled: {
 				type: Boolean,
 				default: false
@@ -63,10 +71,7 @@
 			if (this.mode === 'platform') {
 				this.getPlatform()
 			} else if (this.mode === 'date') {
-				this.renderTabs = [{
-					_id: 1,
-					name: '昨天',
-				}, {
+				const dates = [{
 					_id: 7,
 					name: '最近七天',
 				}, {
@@ -76,6 +81,19 @@
 					_id: 90,
 					name: '最近90天',
 				}]
+				if (this.yesterday) {
+					dates.unshift({
+						_id: 1,
+						name: '昨天',
+					})
+				}
+				if (this.today) {
+					dates.unshift({
+						_id: 0,
+						name: '今天',
+					})
+				}
+				this.renderTabs = dates
 			} else {
 				this.renderTabs = this.tabs
 			}
