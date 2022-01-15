@@ -87,7 +87,7 @@ function format(num, type=',') {
 	}
 }
 
-function mapfields(map, data, goal, prefix = '') {
+function mapfields(map, data, goal, prefix = '', prop = 'value') {
 	const goals = [], argsGoal = goal
 	map = JSON.parse(JSON.stringify(map))
 	for (const mapper of map) {
@@ -98,14 +98,14 @@ function mapfields(map, data, goal, prefix = '') {
 		} = mapper
 		// if (!field) return // stat index
 		goal = argsGoal || mapper
-		const hasValue = goal.hasOwnProperty('value')
+		const hasValue = goal.hasOwnProperty(prop)
 		const preField = prefix + field
 		if (data) {
 			if (data[preField]) {
 				const val = format(data[preField], formatter)
 				if (hasValue) {
 					if (goal.field === field) {
-						goal['value'] = val
+						goal[prop] = val
 					}
 				} else {
 					goal[field] = val
@@ -120,7 +120,7 @@ function mapfields(map, data, goal, prefix = '') {
 						const val = format(division(dividend, divisor), formatter)
 						// const val = division(dividend, divisor)
 						if (hasValue) {
-							goal['value'] = val
+							goal[prop] = val
 						} else {
 							goal[field] = val
 						}

@@ -166,8 +166,6 @@
 				db.collection('opendb-stat-app-session-result')
 					.where(query)
 					.field(`${field}, start_time, stat_date`)
-					.skip((pageCurrent - 1) * this.pageSize)
-					.limit(this.pageSize)
 					.orderBy('start_time', 'asc')
 					.get({
 						getCount: true
@@ -217,7 +215,7 @@
 					dimension: "day",
 					appid,
 					platform_id,
-					start_time: [getTimeOfSomeDayAgo(1), getTimeOfSomeDayAgo(0)]
+					start_time: [getTimeOfSomeDayAgo(2), getTimeOfSomeDayAgo(1)]
 				})
 				console.log('..............Panel query：', query);
 				const db = uniCloud.database()
@@ -226,9 +224,13 @@
 					.orderBy('start_time', 'desc')
 					.get()
 					.then(res => {
-						const items = res.result.data[0]
+						const today = res.result.data[0]
+						const yesterday = res.result.data[1]
 						this.panelData = []
-						this.panelData = mapfields(fieldsMap, items, undefined)
+						this.panelData = mapfields(fieldsMap, today)
+						this.panelData.map(item => {
+							mapfields(fieldsMap, yesterday, item, '', 'contrast')
+						})
 					})
 			},
 
