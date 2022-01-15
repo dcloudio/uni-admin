@@ -26,7 +26,7 @@
 				<view class="label-text mb-l">
 					趋势图
 				</view>
-				<uni-stat-tabs type="box" :tabs="chartTabs" class="mb-l" />
+				<uni-stat-tabs type="box" :tabs="chartTabs" class="mb-l" @change="changeChartTab" />
 				<qiun-data-charts type="area" :echartsApp="true" :chartData="chartData"
 					:opts="{extra:{area:{type:'curve',addLine:true,gradient:true}}}" />
 			</view>
@@ -79,10 +79,15 @@
 					pageSizeRange: [10, 20, 50, 100],
 				},
 				loading: false,
-				currentDateTab: 0,
+				currentDateTab: 1,
+				// currentChartTab: ,
 				tableData: [],
 				panelData: [],
-				chartData: {}
+				chartData: {},
+				defaultChart: {
+					field: 'new_user_count',
+					name: '新增用户'
+				},
 			}
 		},
 		computed: {
@@ -113,8 +118,7 @@
 				deep: true,
 				handler(val) {
 					this.options.pageCurrent = 1 // 重置分页
-					const query = stringifyQuery(val)
-					this.getAllData(query)
+					this.getAllData(val)
 				}
 			}
 		},
@@ -130,7 +134,7 @@
 			},
 			changePageCurrent(e) {
 				this.options.pageCurrent = e.current
-				this.getTableData(stringifyQuery(this.query))
+				this.getChartData(this.query)
 			},
 
 			changePageSize(e) {
@@ -139,24 +143,29 @@
 				} = e.detail
 				this.options.pageCurrent = 1 // 重置分页
 				this.options.pageSizeIndex = value
-				this.getTableData(stringifyQuery(this.query))
+				this.getChartData(this.query)
 			},
 
-			getAllData(query = stringifyQuery(this.query)) {
+			changeChartTab(id, index, name) {
+				this.getChartData(this.query, id, name)
+			},
+
+			getAllData(query) {
 				this.getPanelData()
-				this.getTableData(query)
+				this.getChartData(query)
 			},
 
-			getTableData(query) {
+			getChartData(query, field='new_user_count', name='新增用户') {
 				const {
 					pageCurrent
 				} = this.options
+				query = stringifyQuery(query)
 				console.log('..............Table query：', query);
 				this.loading = true
 				const db = uniCloud.database()
 				db.collection('opendb-stat-app-session-result')
 					.where(query)
-					.field('new_user_count, start_time, stat_date')
+					.field(`${field}, start_time, stat_date`)
 					.skip((pageCurrent - 1) * this.pageSize)
 					.limit(this.pageSize)
 					.orderBy('start_time', 'asc')
@@ -172,34 +181,21 @@
 						const options = {
 							categories: [],
 							series: [{
-								name: "日活",
-								smooth: true,
-								areaStyle: {
-									color: {
-										type: 'linear',
-										x: 0,
-										y: 0,
-										x2: 0,
-										y2: 1,
-										colorStops: [{
-											offset: 0,
-											color: '#1890FF' // 0% 处的颜色
-										}, {
-											offset: 1,
-											color: '#FFFFFF' // 100% 处的颜色
-										}],
-										global: false // 缺省为 false
-									}
-								},
+								name,
 								data: []
 							}]
 						}
 						this.chartData = []
 						for (const item of data) {
-							options.categories.push(item.stat_date)
-							options.series[0].data.push(item.new_user_count)
+							const x = item.stat_date
+							const y = item[field]
+							if (y) {
+								options.series[0].data.push(y)
+								options.categories.push(x)
+							}
 						}
 						this.chartData = options
+
 						this.tableData = []
 						this.options.total = count
 						this.tableData = data

@@ -51,6 +51,7 @@ function division(dividend, divisor) {
 }
 
 function format(num, type=',') {
+	if (!type) return num
 	if (typeof num !== 'number') return num
 	if (type === '%') {
 		// 注意浮点数精度

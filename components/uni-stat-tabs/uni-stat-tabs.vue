@@ -5,7 +5,7 @@
 			:class="[`uni-stat--tab-item-${type}`]">
 			{{placeholder}}
 		</view>
-		<view v-else v-for="(item, index) in renderTabs" :key="index" @click="change(item._id, index)"
+		<view v-else v-for="(item, index) in renderTabs" :key="index" @click="change(item._id, index, item.name)"
 			class="uni-stat--tab-item"
 			:class="[index === currentTab ? `uni-stat--tab-item-${type}-active` : '' , `uni-stat--tab-item-${type}`]">
 			{{item.name}}
@@ -85,8 +85,9 @@
 			if (this.mode === 'date' && index >= 0) {
 				this.$nextTick(function() {
 					const id = this.renderTabs[index]._id
-					this.$emit('change', id, index)
-					this.$emit('input', id, index)
+					const name = this.renderTabs[index].name
+					this.$emit('change', id, index, name)
+					this.$emit('input', id, index, name)
 				})
 			}
 		},
@@ -96,10 +97,10 @@
 			}
 		},
 		methods: {
-			change(id, index) {
+			change(id, index, name) {
 				this.currentTab = index
-				this.$emit('change', id, index)
-				this.$emit('input', id, index)
+				this.$emit('change', id, index, name)
+				this.$emit('input', id, index, name)
 			},
 			getPlatform() {
 				const db = uniCloud.database()
