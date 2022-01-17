@@ -167,8 +167,7 @@
 				"stat_date": 20220113,
 				"start_time": 1642003200000,
 				"end_time": 1642175999999
-			},
-			{
+			}, {
 				"_id": "61c041fb34458700013e700f",
 				"channel_id": "61c041fb34458700013e700b",
 				"platform_id": "61c046e691a75000014c255f",
@@ -188,6 +187,45 @@
 				"stat_date": 20220112,
 				"start_time": 1641916800000,
 				"end_time": 1642003199999
+			}, {
+				"channel_id": "61c041fb34458700013e700a",
+				"platform_id": "61c046e691a75000014c255f",
+				"appid": "61c041fb34458700013e700a",
+				"version_id": "61c041fb34458700013e700a",
+				"total_users": 600,
+				"new_user_count": 60,
+				"active_user_count": 60,
+				"app_launch_count": 29,
+				"page_visit_count": 600,
+				"error_count": 0,
+				"access_time": 101,
+				"avg_residence_time": 1,
+				"avg_user_time": 3,
+				"bounce_rate": 0.3,
+				"dimension": "day",
+				"stat_date": 20220103,
+				"start_time": 1641139200000,
+				"end_time": 1641225599999
+			},
+			{
+				"channel_id": "61c041fb34458700013e700a",
+				"platform_id": "61c046e691a75000014c255f",
+				"appid": "61c041fb34458700013e700a",
+				"version_id": "61c041fb34458700013e700a",
+				"total_users": 100,
+				"new_user_count": 10,
+				"active_user_count": 10,
+				"app_launch_count": 29,
+				"page_visit_count": 100,
+				"error_count": 0,
+				"access_time": 101,
+				"avg_residence_time": 1,
+				"avg_user_time": 3,
+				"bounce_rate": 0.3,
+				"dimension": "day",
+				"stat_date": 20221230,
+				"start_time": 1640793600000,
+				"end_time": 1640879999999
 			}
 		]
 

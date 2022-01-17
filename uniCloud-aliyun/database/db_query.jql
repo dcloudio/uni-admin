@@ -30,6 +30,6 @@
 // 	.get()
 
 
-// db.collection('opendb-stat-app-session-result').field('active_user_count, week(add(new Date(0),start_time), "Asia/Shanghai") as week,year(add(new Date(0),start_time), "Asia/Shanghai") as year').groupBy('year,week').groupField('sum(active_user_count) as count').get()
+db.collection('opendb-stat-app-session-result').field('active_user_count, week(add(new Date(0),start_time), "Asia/Shanghai") as week,year(add(new Date(0),start_time), "Asia/Shanghai") as year').groupBy('year,week').groupField('sum(active_user_count) as count').get()
 
-db.collection('opendb-stat-app-session-result').field('active_user_count, month(add(new Date(0),start_time), "Asia/Shanghai") as month,year(add(new Date(0),start_time), "Asia/Shanghai") as year').groupBy('year,month').groupField('sum(active_user_count) as count').get()
+// db.collection('opendb-stat-app-session-result').field('active_user_count, month(add(new Date(0),start_time), "Asia/Shanghai") as month,year(add(new Date(0),start_time), "Asia/Shanghai") as year').groupBy('year,month').groupField('sum(active_user_count) as count').get()

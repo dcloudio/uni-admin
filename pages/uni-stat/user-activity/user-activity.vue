@@ -81,7 +81,7 @@
 				},
 				loading: false,
 				currentDateTab: 0,
-				// currentChartTab: ,
+				currentChartTab: 'day',
 				tableData: [],
 				panelData: [],
 				chartData: {},
@@ -101,13 +101,13 @@
 			},
 			chartTabs() {
 				const tabs = [{
-					_id: 1,
+					_id: 'day',
 					name: '日活'
 				}, {
-					_id: 7,
+					_id: 'week',
 					name: '周活'
 				}, {
-					_id: 30,
+					_id: 'month',
 					name: '月活'
 				}]
 				return tabs
@@ -146,59 +146,71 @@
 				this.getTabelData(this.query)
 			},
 
-			changeChartTab(id, index, name) {
-				this.getChartData(this.query, id, name)
+			changeChartTab(type, index, name) {
+				this.currentChartTab = type
+				this.getChartData(this.query, type, name)
 			},
 
 			getAllData(query) {
-				this.getChartData(query)
+				this.getChartData(query, this.currentChartTab)
 				this.getTabelData(query)
 			},
 
-			getChartData(query, field = 'new_user_count', name = '新增用户') {
-				const {
-					pageCurrent
-				} = this.options
+			getChartData(query, type, name = '日活', field = 'active_user_count') {
+				const options = {
+					categories: [],
+					series: [{
+						name,
+						data: []
+					}]
+				}
 				query = stringifyQuery(query)
-				console.log('..............Chart query：', query);
 				const db = uniCloud.database()
-				db.collection('opendb-stat-app-session-result')
-					.where(query)
-					.field(`${field}, start_time, stat_date`)
-					.orderBy('start_time', 'asc')
-					.get({
-						getCount: true
-					})
-					.then(res => {
+				if (type === 'day') {
+					db.collection('opendb-stat-app-session-result')
+						.where(query)
+						.field(`${field}, start_time, stat_date`)
+						.orderBy('start_time', 'asc')
+						.get({
+							getCount: true
+						})
+						.then(res => {
+							const {
+								count,
+								data
+							} = res.result
+							// console.log('.......chart:', data);
+							this.chartData = []
+							for (const item of data) {
+								const x = item.stat_date
+								const y = item[field]
+								if (y) {
+									options.series[0].data.push(y)
+									options.categories.push(x)
+								}
+							}
+							this.chartData = options
+						}).catch((err) => {
+							console.error(err)
+						})
+				} else {
+					this.getRangeCountData(query, type).then(res => {
 						const {
 							count,
 							data
 						} = res.result
-						// console.log('.......chart:', data);
-						const options = {
-							categories: [],
-							series: [{
-								name,
-								data: []
-							}]
-						}
 						this.chartData = []
 						for (const item of data) {
-							const x = item.stat_date
-							const y = item[field]
+							const x = item.year + '/' + item[type] + type
+							const y = item[type + '_' + field]
 							if (y) {
 								options.series[0].data.push(y)
 								options.categories.push(x)
 							}
 						}
 						this.chartData = options
-					}).catch((err) => {
-						console.error(err)
-						// err.message 错误信息
-						// err.code 错误码
-					}).finally(() => {
-						this.loading = false
 					})
+				}
 			},
 
 			getTabelData(query) {
@@ -211,6 +223,7 @@
 				const db = uniCloud.database()
 				db.collection('opendb-stat-app-session-result')
 					.where(query)
+					.field('active_user_count, start_time, stat_date')
 					.skip((pageCurrent - 1) * this.pageSize)
 					.limit(this.pageSize)
 					.orderBy('start_time', 'asc')
@@ -222,13 +235,37 @@
 							count,
 							data
 						} = res.result
-						// console.log('.......table:', data);
-						for (const item of data) {
-							mapfields(fieldsMap, item, item)
-						}
-						this.tableData = []
-						this.options.total = count
-						this.tableData = data
+						let daysData = data,
+							daysCount = count,
+							weeks = [],
+							months = []
+
+						this.getRangeCountData(query, 'week').then(res => {
+							const {
+								count,
+								data
+							} = res.result
+							weeks = data
+
+							this.getRangeCountData(query, 'month').then(res => {
+								const {
+									count,
+									data
+								} = res.result
+								months = data
+
+								const allData = this.mapWithWeekAndMonth(daysData, weeks, months)
+
+								for (const item of allData) {
+									mapfields(fieldsMap, item, item)
+								}
+								this.tableData = []
+								this.options.total = daysCount
+								this.tableData = allData
+							})
+						})
+
+
 					}).catch((err) => {
 						console.error(err)
 						// err.message 错误信息
@@ -236,7 +273,62 @@
 					}).finally(() => {
 						this.loading = false
 					})
+			},
+
+			getRangeCountData(query, type) {
+				const {
+					pageCurrent
+				} = this.options
+				const db = uniCloud.database()
+				return db.collection('opendb-stat-app-session-result')
+					.where(query)
+					.field(
+						`active_user_count, start_time, ${type}(add(new Date(0),start_time), "Asia/Shanghai") as ${type},year(add(new Date(0),start_time), "Asia/Shanghai") as year`
+					)
+					.groupBy(`year, ${type}`)
+					.groupField(`sum(active_user_count) as ${type}_active_user_count`)
+					.orderBy(`year asc, ${type} asc`)
+					.get({
+						getCount: true
+					})
+			},
+
+
+			mapWithWeekAndMonth(data, weeks, months) {
+				for (const item of data) {
+					const date = new Date(item.start_time)
+					const year = date.getUTCFullYear()
+					const month = date.getMonth() + 1
+					const week = this.getWeekNumber(date)
+					for (const w of weeks) {
+						if (w.week === week && w.year === year) {
+							item[`week_active_user_count`] = w[`week_active_user_count`]
+						}
+					}
+					for (const m of months) {
+						if (m.month === month && m.year === year) {
+							item[`month_active_user_count`] = m[`month_active_user_count`]
+						}
+					}
+				}
+
+				return data
+			},
+
+			getWeekNumber(d) {
+				// Copy date so don't modify original
+				d = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
+				// Set to nearest Thursday: current date + 4 - current day number
+				// Make Sunday's day number 7
+				d.setUTCDate(d.getUTCDate() + 4 - (d.getUTCDay() || 7));
+				// Get first day of year
+				var yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
+				// Calculate full weeks to nearest Thursday
+				var weekNo = Math.ceil((((d - yearStart) / 86400000) + 1) / 7);
+				// Return array of year and week number
+				return weekNo;
 			}
+
 		}
 
 	}

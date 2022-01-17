@@ -30,7 +30,7 @@ function stringifyQuery(query, customQuery) {
 				const range = query.start_time
 				if (Array.isArray(range) && range.length === 2) {
 					queryArr.push(`start_time >= ${range[0]} && start_time <= ${range[1]}`)
-				} 
+				}
 			} else {
 				queryArr.push(`${key} == ${val}`)
 			}
@@ -134,6 +134,7 @@ function mapfields(map, data, goal, prefix = '', prop = 'value') {
 	}
 	return goals
 }
+
 
 export {
 	mapfields,
