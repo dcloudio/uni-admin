@@ -27,9 +27,11 @@ function stringifyQuery(query, customQuery) {
 				val = `"${val}"`
 			}
 			if (key === 'start_time') {
-				const range = query.start_time
-				if (Array.isArray(range) && range.length === 2) {
-					queryArr.push(`start_time >= ${range[0]} && start_time <= ${range[1]}`)
+				const time = query.start_time
+				if (Array.isArray(time) && time.length === 2) {
+					queryArr.push(`start_time >= ${time[0]} && start_time <= ${time[1]}`)
+				} else {
+					queryArr.push(`start_time == ${time}`)
 				}
 			} else {
 				queryArr.push(`${key} == ${val}`)

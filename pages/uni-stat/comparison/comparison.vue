@@ -1,42 +1,25 @@
 <template>
 	<view class="fix-top-window">
-		<view class="uni-header">
-			<view class="uni-group hide-on-phone">
+		<view class="uni-header hide-on-phone">
+			<view class="uni-group">
 				<view class="uni-title">平台对比</view>
 				<view class="uni-sub-title">多个指标在不同平台数据的占比，可以直观看出各个平台引流的效果</view>
 			</view>
 		</view>
 		<view class="uni-container">
-			<view class="uni-stat--x mb-m">
-				<uni-stat-tabs :tabs="dates" />
-			</view>
 			<view class="uni-stat--x flex mb-m">
-				<uni-datetime-picker type="date" />
+				<uni-stat-select mode="app" label="应用选择" v-model="query.appid" />
+				<view class="flex ml-m">
+					<view class="label-text">日期选择:</view>
+					<uni-datetime-picker type="date" v-model="query.start_time" returnType="timestamp"
+						:clearIcon="false" class="uni-stat-datetime-picker"
+						:class="{'uni-stat__actived': !!query.start_time}" />
+				</view>
 			</view>
 			<view class="flex">
 				<view class="uni-stat--x uni-charts-box">
 					<view class="label-text">日新增用户对比</view>
-					<qiun-data-charts type="ring" :opts="{legend:{position:'bottom'}}" :chartData="PieA"
-						:echartsApp="true" />
-				</view>
-				<view class="uni-stat--x uni-charts-box">
-					<view class="label-text">日新增用户对比</view>
-					<qiun-data-charts type="ring" :opts="{legend:{position:'bottom'}}" :chartData="PieA"
-						:echartsApp="true" />
-				</view>
-				<view class="uni-stat--x uni-charts-box">
-					<view class="label-text">日新增用户对比</view>
-					<qiun-data-charts type="ring" :opts="{legend:{position:'bottom'}}" :chartData="PieA"
-						:echartsApp="true" />
-				</view>
-				<view class="uni-stat--x uni-charts-box">
-					<view class="label-text">日新增用户对比</view>
-					<qiun-data-charts type="ring" :opts="{legend:{position:'bottom'}}" :chartData="PieA"
-						:echartsApp="true" />
-				</view>
-				<view class="uni-stat--x uni-charts-box">
-					<view class="label-text">日新增用户对比</view>
-					<qiun-data-charts type="ring" :opts="{legend:{position:'bottom'}}" :chartData="PieA"
+					<qiun-data-charts type="ring" :opts="{legend:{position:'left'}}" :chartData="chartData"
 						:echartsApp="true" />
 				</view>
 			</view>
@@ -50,225 +33,197 @@
 </template>
 
 <script>
+	import {
+		mapfields,
+		stringifyQuery,
+		getTimeOfSomeDayAgo,
+		division,
+		format
+	} from '@/js_sdk/uni-stat/util.js'
 	export default {
 		data() {
 			return {
-				tableData: [],
-				// 每页数据量
-				pageSize: 10,
-				// 当前页
-				pageCurrent: 1,
-				// 数据总量
-				total: 0,
-				loading: false,
-				sumData: [{
-					title: '访问人数',
-					today: 140,
-					yesterday: 150
-				}, {
-					title: '访问次数',
-					today: 140,
-					yesterday: 150
-				}, {
-					title: '退出页次数',
-					today: 140,
-					yesterday: 150
-				}, {
-					title: '退出率',
-					today: 140,
-					yesterday: 150
-				}, {
-					title: '分享次数',
-					today: 140,
-					yesterday: 150
-				}],
-				items: ['新增留存', '活跃留存'],
-				vitalities: ['按天', '按周', '按月'],
-				dates: ['最近七天', '最近30天', '最近90天'],
-				candidates: ['北京', '南京', '东京', '武汉', '天津', '上海', '海口'],
-				PieA: {
-					"series": [{
-						"data": [{
-							"name": "一班",
-							"value": 50
-						}, {
-							"name": "二班",
-							"value": 30
-						}, {
-							"name": "三班",
-							"value": 20
-						}, {
-							"name": "四班",
-							"value": 18
-						}, {
-							"name": "五班",
-							"value": 8
-						}]
-					}]
+				query: {
+					dimension: "day",
+					appid: '',
+					start_time: 1642089600000,
 				},
-				linearareadata: {
-					categories: [
-						"2021-11-08",
-						"2021-11-09",
-						"2021-11-10",
-						"2021-11-11",
-						"2021-11-12",
-						"2021-11-13",
-						"2021-11-14",
-						"2021-11-15",
-						"2021-11-16",
-						"2021-11-17",
-						"2021-11-18",
-						"2021-11-19",
-						"2021-11-20",
-						"2021-11-21",
-						"2021-11-22",
-						"2021-11-23",
-						"2021-11-24",
-						"2021-11-25",
-						"2021-11-26",
-						"2021-11-27",
-						"2021-11-28",
-						"2021-11-29",
-						"2021-11-30",
-						"2021-12-01",
-						"2021-12-02",
-						"2021-12-03",
-						"2021-12-04",
-						"2021-12-05",
-						"2021-12-06",
-						"2021-12-07",
-						"2021-12-08"
-					],
-					series: [{
-						name: "日活",
-						smooth: true,
-						areaStyle: {
-							color: {
-								type: 'linear',
-								x: 0,
-								y: 0,
-								x2: 0,
-								y2: 1,
-								colorStops: [{
-									offset: 0,
-									color: '#1890FF' // 0% 处的颜色
-								}, {
-									offset: 1,
-									color: '#FFFFFF' // 100% 处的颜色
-								}],
-								global: false // 缺省为 false
-							}
-						},
-						"data": [
-							1520,
-							1523,
-							1462,
-							1445,
-							1433,
-							972,
-							768,
-							1421,
-							1581,
-							1613,
-							1549,
-							1517,
-							989,
-							839,
-							1579,
-							1539,
-							1574,
-							1518,
-							1584,
-							1043,
-							853,
-							1498,
-							1553,
-							1170,
-							909,
-							866,
-							620,
-							566,
-							884,
-							905,
-							643
-						]
-					}]
+				chartData: {}
+			}
+		},
+		mounted() {
+			this.getChartData(this.query)
+			// this.getRangeCountData(this.query, 'month')
+		},
+		watch: {
+			query: {
+				deep: true,
+				handler(val) {
+					this.getChartData(val)
 				}
 			}
 		},
-		onLoad() {
-			this.getData('/pageRes', 1)
-		},
 
 		methods: {
-
-			// 分页触发
-			change(e) {
-				this.getData('/pageRes', e.current)
-			},
-			// 搜索
-			search() {
-				this.getData(1, this.searchVal)
-			},
-			// 获取数据
-			getData(url, pageCurrent, value = "") {
-				if (pageCurrent) {
-					this.loading = true
-					this.pageCurrent = pageCurrent
-					this.request(url, {
-						pageSize: this.pageSize,
-						pageCurrent: pageCurrent,
-						value: value,
-						success: (res) => {
-							this.tableData = res.data
-							this.total = res.total
-							this.loading = false
-						}
-					})
-				} else {
-					this.request(url, {
-						success: (res) => {
-							console.log('.........else', res);
-
-						}
-					})
+			getChartData(query, type='') {
+				const options = {
+					series: [{
+						data: []
+					}]
 				}
-			},
-			// 伪request请求
-			request(path, options) {
-				const {
-					pageSize,
-					pageCurrent,
-					success,
-					value
-				} = options
-				const origin = 'http://localhost:5000'
-				const url = origin + path
-				this.$fetch(url)
-					
-					.then(res => {
-						console.log('........', res);
-						let data, total
-						if (res.item) {
-							const tableData = res.item
-							total = tableData.length
-							data = tableData.filter((item, index) => {
-								const idx = index - (pageCurrent - 1) * pageSize
-								return idx < pageSize && idx >= 0
-							})
-						} else {
-							data = res
-						}
+				query = stringifyQuery(query)
+				console.log('.............query:', query);
+				const db = uniCloud.database()
 
-						setTimeout(() => {
-							typeof success === 'function' && success({
-								data: data,
-								total: total
-							})
-						}, 500)
+				const main = db.collection('opendb-stat-app-platforms').getTemp()
+				const sub = db.collection('opendb-stat-app-session-result')
+					.where(query)
+					.getTemp()
+
+				db.collection(main, sub)
+					.field(
+						`name, _id{"opendb-stat-app-session-result"{${type ? type + '_' : ''}active_user_count, ${type ? type + '_' : ''}new_user_count${!type ? ',total_users' : ''}}}`
+						)
+					.orderBy('start_time', 'asc')
+					.get({
+						getCount: true
+					})
+					.then(res => {
+						const {
+							count,
+							data
+						} = res.result
+						console.log('.......chart:', data);
+						this.chartData = options
+
+						for (const item of data) {
+							const lines = item._id["opendb-stat-app-session-result"]
+							if (Array.isArray(lines)) {
+								delete(item._id)
+								const line = lines[0]
+								const name = item.name
+								let value = line && line.active_user_count ? line.active_user_count : 0
+								options.series[0].data.push({
+									name,
+									value
+								})
+								// mapfields(fieldsMap, line, item)
+							}
+						}
+						console.log(111111111, options);
+						this.chartData = options
+					}).catch((err) => {
+						console.error(err)
 					})
 			},
+			getRangeCountData(query, type) {
+				const options = {
+					series: [{
+						data: []
+					}]
+				}
+				const {
+					pageCurrent
+				} = this.options
+				const db = uniCloud.database()
+				query = stringifyQuery(query)
+				const main = db.collection('opendb-stat-app-platforms').getTemp()
+
+				const sub = db.collection('opendb-stat-app-session-result')
+					.where(query)
+					.field(
+						`active_user_count, platform_id, ${type}(add(new Date(0),start_time), "Asia/Shanghai") as ${type},year(add(new Date(0),start_time), "Asia/Shanghai") as year`
+					)
+					.groupBy(`year, ${type}, platform_id`)
+					.groupField(`sum(active_user_count) as ${type}_active_user_count`)
+					.orderBy(`year asc, ${type} asc`)
+					.getTemp()
+
+				db.collection(main, sub)
+					.field(
+						`name, _id{"opendb-stat-app-session-result"{${type ? type + '_' : ''}active_user_count, ${type ? type + '_' : ''}new_user_count${type ? ',total_users' : ''}}}`
+						)
+					.orderBy('start_time', 'asc')
+					.get({
+						getCount: true
+					})
+					.then(res => {
+						const {
+							count,
+							data
+						} = res.result
+						console.log('.......chart:', data);
+						this.chartData = options
+
+						for (const item of data) {
+							const lines = item._id["opendb-stat-app-session-result"]
+							if (Array.isArray(lines)) {
+								delete(item._id)
+								const line = lines[0]
+								const name = item.name
+								let value = line && line.active_user_count ? line.active_user_count : 0
+								options.series[0].data.push({
+									name,
+									value
+								})
+								// mapfields(fieldsMap, line, item)
+							}
+						}
+						console.log(111111111, options);
+						this.chartData = options
+					}).catch((err) => {
+						console.error(err)
+					})
+			},
+
+
+
+
+
+			jointTable(main, sub, type='') {
+				const options = {
+					series: [{
+						data: []
+					}]
+				}
+				const db = uniCloud.database()
+				db.collection(main, sub)
+					.field(
+						`name, _id{"opendb-stat-app-session-result"{${type ? type + '_' : ''}active_user_count, ${type ? type + '_' : ''}new_user_count ${type ? ',total_users' : ''}}}`
+						)
+					.orderBy('start_time', 'asc')
+					.get({
+						getCount: true
+					})
+					.then(res => {
+						const {
+							count,
+							data
+						} = res.result
+						console.log('.......chart:', data);
+						this.chartData = options
+
+						for (const item of data) {
+							const lines = item._id["opendb-stat-app-session-result"]
+							if (Array.isArray(lines)) {
+								delete(item._id)
+								const line = lines[0]
+								const name = item.name
+								let value = line && line.active_user_count ? line.active_user_count : 0
+								options.series[0].data.push({
+									name,
+									value
+								})
+								// mapfields(fieldsMap, line, item)
+							}
+						}
+						console.log(111111111, options);
+						this.chartData = options
+					}).catch((err) => {
+						console.error(err)
+					})
+			}
+
 		}
 
 	}
@@ -276,113 +231,13 @@
 
 <style lang="scss">
 	.uni-charts-box {
-		width: calc((50% - 7.5px));
-		height: 300px;
+		padding: 15px;
+		width: calc((50% - 37.5px));
+		height: 350px;
 		margin-bottom: 15px;
 	}
+
 	.uni-charts-box:nth-last-child(2n-1) {
 		margin-right: 15px;
-	}
-	.flex {
-		display: flex;
-		align-items: center;
-		flex-wrap: wrap;
-	}
-
-	.label-text {
-		font-size: 14px;
-		color: #666;
-		margin: auto 0;
-		margin-right: 5px;
-	}
-
-	.uni-stat {
-		&--x {
-			border-radius: 4px;
-			padding: 15px;
-			box-sizing: border-box;
-			box-shadow: -1px -1px 5px 0 rgba(0, 0, 0, 0.1);
-		}
-
-		&--sum {
-			display: flex;
-			justify-content: space-around;
-			flex-wrap: wrap;
-
-			&-item {
-				text-align: center;
-				margin: 10px 30px;
-			}
-
-			&-item-title {
-				min-height: 17px;
-				font-size: 12px;
-				color: #666;
-			}
-
-			&-item-today {
-				font-size: 24px;
-				line-height: 48px;
-				font-weight: 700;
-				color: #333;
-			}
-
-			&-item-yesterday {
-				font-size: 14px;
-				color: #666;
-			}
-		}
-
-		&--tab {
-			display: flex;
-
-			&-item {
-				font-size: 14px;
-				color: #666;
-				text-align: center;
-				cursor: pointer;
-				box-sizing: border-box;
-
-				&-line {
-					margin-right: 30px;
-					padding: 2px 0;
-					border-bottom: 1px solid transparent;
-
-					&-active {
-						color: $uni-color-primary;
-						border-bottom: 1px solid $uni-color-primary;
-					}
-				}
-
-				&-line-bold {
-					margin-right: 30px;
-					padding: 2px 0;
-					border-bottom: 2px solid transparent;
-
-					&-active {
-						color: $uni-color-primary;
-						box-sizing: border-box;
-						border-bottom: 2px solid $uni-color-primary;
-					}
-				}
-
-				&-box {
-					padding: 5px 15px;
-					border: 1px solid #eee;
-					margin: 0;
-
-					&:not(:last-child) {
-						border-right-color: transparent;
-					}
-
-
-					&-active {
-						box-sizing: border-box;
-						border: 1px solid $uni-color-primary !important;
-					}
-				}
-			}
-
-		}
 	}
 </style>
