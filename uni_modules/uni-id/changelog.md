@@ -1,3 +1,6 @@
+## 3.3.12（2022-01-15）
+- 新增 preferedAppPlatform 配置用于解决uni-app vue2版本vue3版本获取platform不一致的问题 [详情](https://uniapp.dcloud.net.cn/uniCloud/uni-id?id=prefered-app-platform)
+- 修复 checkToken 未返回自定义token内容的Bug
 ## 3.3.11（2022-01-11）
 - 修复用户名密码登录时多个应用出现重复用户名登录报错的Bug
 ## 3.3.10（2022-01-07）

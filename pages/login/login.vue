@@ -161,7 +161,8 @@
 				// #endif
 				this.loading = true
 				this.$request('login', {
-					...value
+					...value,
+					...captchaOptions
 				}, {
 					functionName: 'uni-id-cf',
 					showModal: false
