@@ -118,7 +118,7 @@
 					self.formData.username = res.data
 				}
 			})
-			// this.getNeedCaptcha()
+			this.getNeedCaptcha()
 		},
 		methods: {
 			...mapActions({
@@ -129,6 +129,18 @@
 					commit('user/SET_TOKEN', tokenInfo)
 				}
 			}),
+			getNeedCaptcha(){
+				this.$request('getNeedCaptcha', {
+					functionName: 'uni-id-cf',
+					showModal: false
+				}).then(res => {
+					if (res.needCaptcha) {
+						this.formData.captcha = ''
+						this.createCaptcha()
+						this.needCaptcha = true
+					}
+				})
+			},
 			submit(event) {
 				if (this.loading) {
 					return
@@ -149,8 +161,7 @@
 				// #endif
 				this.loading = true
 				this.$request('login', {
-					...value,
-					captchaOptions
+					...value
 				}, {
 					functionName: 'uni-id-cf',
 					showModal: false

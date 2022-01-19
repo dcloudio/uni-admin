@@ -45,7 +45,8 @@ exports.main = async (event, context) => {
 	  所以这里我们需要将uniID.checkToken返回的uid写入到params.uid
 	*/
 	let noCheckAction = ['register', 'checkToken', 'login', 'logout', 'sendSmsCode', 'createCaptcha',
-		'verifyCaptcha', 'refreshCaptcha', 'inviteLogin', 'loginByWeixin', 'loginByUniverify',
+		'getNeedCaptcha', 'verifyCaptcha', 'refreshCaptcha', 'inviteLogin', 'loginByWeixin',
+		'loginByUniverify',
 		'loginByApple', 'loginBySms', 'resetPwdBySmsCode', 'registerAdmin'
 	]
 	if (!noCheckAction.includes(action)) {
@@ -123,6 +124,24 @@ exports.main = async (event, context) => {
 			logData.state = 0
 		}
 		return await uniIdLogCollection.add(logData)
+	}
+
+	//5.防止恶意破解登录，连续登录失败一定次数后，需要用户提供验证码
+	const isNeedCaptcha = async () => {
+		//当用户最近“2小时内(recordDate)”登录失败达到2次(recordSize)时。要求用户提交验证码
+		const now = Date.now(),
+			recordDate = 120 * 60 * 1000,
+			recordSize = 2;
+		const uniIdLogCollection = db.collection('uni-id-log')
+		let recentRecord = await uniIdLogCollection.where({
+				deviceId: params.deviceId || context.DEVICEID,
+				create_date: dbCmd.gt(now - recordDate),
+				type: 'login'
+			})
+			.orderBy('create_date', 'desc')
+			.limit(recordSize)
+			.get();
+		return recentRecord.data.filter(item => item.state === 0).length === recordSize;
 	}
 
 	let res = {}
@@ -224,27 +243,16 @@ exports.main = async (event, context) => {
 				await registerSuccess(res.uid)
 			}
 			break;
-		case 'login':
-			//防止黑客恶意破解登录，连续登录失败一定次数后，需要用户提供验证码
-			const getNeedCaptcha = async () => {
-				//当用户最近“2小时内(recordDate)”登录失败达到2次(recordSize)时。要求用户提交验证码
-				const now = Date.now(),
-					recordDate = 120 * 60 * 1000,
-					recordSize = 2;
-				const uniIdLogCollection = db.collection('uni-id-log')
-				let recentRecord = await uniIdLogCollection.where({
-						deviceId: params.deviceId || context.DEVICEID,
-						create_date: dbCmd.gt(now - recordDate),
-						type: 'login'
-					})
-					.orderBy('create_date', 'desc')
-					.limit(recordSize)
-					.get();
-				return recentRecord.data.filter(item => item.state === 0).length === recordSize;
-			}
 
+		case 'getNeedCaptcha': {
+			const needCaptcha = await isNeedCaptcha()
+			res.needCaptcha = needCaptcha
+			break;
+		}
+
+		case 'login':
 			let passed = false;
-			let needCaptcha = await getNeedCaptcha();
+			let needCaptcha = await isNeedCaptcha();
 			console.log('needCaptcha', needCaptcha);
 			if (needCaptcha) {
 				res = await uniCaptcha.verify({
@@ -261,7 +269,7 @@ exports.main = async (event, context) => {
 				});
 				res.type = 'login'
 				await loginLog(res);
-				needCaptcha = await getNeedCaptcha();
+				needCaptcha = await isNeedCaptcha();
 			}
 
 			res.needCaptcha = needCaptcha;
@@ -297,7 +305,7 @@ exports.main = async (event, context) => {
 								fileID
 							} = await uniCloud.uploadFile({
 								cloudPath,
-							 fileContent: getImgBuffer.data
+								fileContent: getImgBuffer.data
 							});
 							headimgurlFile = {
 								name: cloudPath,
