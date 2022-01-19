@@ -44,10 +44,9 @@ exports.main = async (event, context) => {
 	  用户就这样轻易地伪造了他人的uid传递给服务端，有一句话叫：前端传来的数据都是不可信任的
 	  所以这里我们需要将uniID.checkToken返回的uid写入到params.uid
 	*/
-	let noCheckAction = ['register', 'checkToken', 'login', 'logout', 'sendSmsCode', 'createCaptcha',
-		'getNeedCaptcha', 'verifyCaptcha', 'refreshCaptcha', 'inviteLogin', 'loginByWeixin',
-		'loginByUniverify',
-		'loginByApple', 'loginBySms', 'resetPwdBySmsCode', 'registerAdmin'
+	let noCheckAction = ['register', 'checkToken', 'login', 'logout', 'sendSmsCode', 'getNeedCaptcha',
+		'createCaptcha', 'verifyCaptcha', 'refreshCaptcha', 'inviteLogin', 'loginByWeixin',
+		'loginByUniverify', 'loginByApple', 'loginBySms', 'resetPwdBySmsCode', 'registerAdmin'
 	]
 	if (!noCheckAction.includes(action)) {
 		if (!uniIdToken) {
@@ -594,9 +593,24 @@ exports.main = async (event, context) => {
 			...params
 		})
 		break;
-	case 'managerMultiTag':
+	case 'managerMultiTag': {
+		const {
+			userInfo
+		} = await uniID.getUserInfo({
+			uid: params.uid
+		})
+		// 限制只有 admin 角色的用户可管理标签，如需非 admin 角色需自行实现
+		if (userInfo.role.indexOf('admin') === -1) {
+			res = {
+				code: 403,
+				message: '非法访问, 无权限修改用户标签',
+			}
+			return
+		}
 		let {
-			ids, type, value
+			ids,
+			type,
+			value
 		} = params
 		if (type === 'add') {
 			res = await db.collection('uni-id-users').where({
@@ -620,7 +634,8 @@ exports.main = async (event, context) => {
 			return
 		}
 		break;
-		// =========================== admin api end =========================
+	}
+	// =========================== admin api end =========================
 	default:
 		res = {
 			code: 403,

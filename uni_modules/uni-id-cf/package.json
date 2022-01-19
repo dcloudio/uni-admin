@@ -1,8 +1,8 @@
 {
   "id": "uni-id-cf",
   "displayName": "uni-id-cf",
-  "version": "1.0.9",
-  "description": "uni-id-cf",
+  "version": "1.0.11",
+  "description": "封装uni-id常用接口的云函数，快速实现简单、统一、可扩展的用户管理功能",
   "keywords": [
     "uni-id-cf",
     "uni-id的云函数"
