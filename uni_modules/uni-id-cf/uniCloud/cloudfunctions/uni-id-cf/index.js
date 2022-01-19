@@ -44,9 +44,9 @@ exports.main = async (event, context) => {
 	  用户就这样轻易地伪造了他人的uid传递给服务端，有一句话叫：前端传来的数据都是不可信任的
 	  所以这里我们需要将uniID.checkToken返回的uid写入到params.uid
 	*/
-	let noCheckAction = ['register', 'checkToken', 'login', 'logout', 'sendSmsCode', 'createCaptcha',
-		'verifyCaptcha', 'refreshCaptcha', 'inviteLogin', 'loginByWeixin', 'loginByUniverify',
-		'loginByApple', 'loginBySms', 'resetPwdBySmsCode', 'registerAdmin'
+	let noCheckAction = ['register', 'checkToken', 'login', 'logout', 'sendSmsCode', 'getNeedCaptcha',
+		'createCaptcha', 'verifyCaptcha', 'refreshCaptcha', 'inviteLogin', 'loginByWeixin',
+		'loginByUniverify', 'loginByApple', 'loginBySms', 'resetPwdBySmsCode', 'registerAdmin'
 	]
 	if (!noCheckAction.includes(action)) {
 		if (!uniIdToken) {
@@ -123,6 +123,24 @@ exports.main = async (event, context) => {
 			logData.state = 0
 		}
 		return await uniIdLogCollection.add(logData)
+	}
+
+	//5.防止恶意破解登录，连续登录失败一定次数后，需要用户提供验证码
+	const isNeedCaptcha = async () => {
+		//当用户最近“2小时内(recordDate)”登录失败达到2次(recordSize)时。要求用户提交验证码
+		const now = Date.now(),
+			recordDate = 120 * 60 * 1000,
+			recordSize = 2;
+		const uniIdLogCollection = db.collection('uni-id-log')
+		let recentRecord = await uniIdLogCollection.where({
+				deviceId: params.deviceId || context.DEVICEID,
+				create_date: dbCmd.gt(now - recordDate),
+				type: 'login'
+			})
+			.orderBy('create_date', 'desc')
+			.limit(recordSize)
+			.get();
+		return recentRecord.data.filter(item => item.state === 0).length === recordSize;
 	}
 
 	let res = {}
@@ -224,27 +242,16 @@ exports.main = async (event, context) => {
 				await registerSuccess(res.uid)
 			}
 			break;
-		case 'login':
-			//防止黑客恶意破解登录，连续登录失败一定次数后，需要用户提供验证码
-			const getNeedCaptcha = async () => {
-				//当用户最近“2小时内(recordDate)”登录失败达到2次(recordSize)时。要求用户提交验证码
-				const now = Date.now(),
-					recordDate = 120 * 60 * 1000,
-					recordSize = 2;
-				const uniIdLogCollection = db.collection('uni-id-log')
-				let recentRecord = await uniIdLogCollection.where({
-						deviceId: params.deviceId || context.DEVICEID,
-						create_date: dbCmd.gt(now - recordDate),
-						type: 'login'
-					})
-					.orderBy('create_date', 'desc')
-					.limit(recordSize)
-					.get();
-				return recentRecord.data.filter(item => item.state === 0).length === recordSize;
-			}
 
+		case 'getNeedCaptcha': {
+			const needCaptcha = await isNeedCaptcha()
+			res.needCaptcha = needCaptcha
+			break;
+		}
+
+		case 'login':
 			let passed = false;
-			let needCaptcha = await getNeedCaptcha();
+			let needCaptcha = await isNeedCaptcha();
 			console.log('needCaptcha', needCaptcha);
 			if (needCaptcha) {
 				res = await uniCaptcha.verify({
@@ -261,7 +268,7 @@ exports.main = async (event, context) => {
 				});
 				res.type = 'login'
 				await loginLog(res);
-				needCaptcha = await getNeedCaptcha();
+				needCaptcha = await isNeedCaptcha();
 			}
 
 			res.needCaptcha = needCaptcha;
@@ -297,7 +304,7 @@ exports.main = async (event, context) => {
 								fileID
 							} = await uniCloud.uploadFile({
 								cloudPath,
-							 fileContent: getImgBuffer.data
+								fileContent: getImgBuffer.data
 							});
 							headimgurlFile = {
 								name: cloudPath,
@@ -586,9 +593,24 @@ exports.main = async (event, context) => {
 			...params
 		})
 		break;
-	case 'managerMultiTag':
+	case 'managerMultiTag': {
+		const {
+			userInfo
+		} = await uniID.getUserInfo({
+			uid: params.uid
+		})
+		// 限制只有 admin 角色的用户可管理标签，如需非 admin 角色需自行实现
+		if (userInfo.role.indexOf('admin') === -1) {
+			res = {
+				code: 403,
+				message: '非法访问, 无权限修改用户标签',
+			}
+			return
+		}
 		let {
-			ids, type, value
+			ids,
+			type,
+			value
 		} = params
 		if (type === 'add') {
 			res = await db.collection('uni-id-users').where({
@@ -612,7 +634,8 @@ exports.main = async (event, context) => {
 			return
 		}
 		break;
-		// =========================== admin api end =========================
+	}
+	// =========================== admin api end =========================
 	default:
 		res = {
 			code: 403,

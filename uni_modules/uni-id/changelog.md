@@ -1,3 +1,13 @@
+## 3.3.12（2022-01-15）
+- 新增 preferedAppPlatform 配置用于解决uni-app vue2版本vue3版本获取platform不一致的问题 [详情](https://uniapp.dcloud.net.cn/uniCloud/uni-id?id=prefered-app-platform)
+- 修复 checkToken 未返回自定义token内容的Bug
+## 3.3.11（2022-01-11）
+- 修复用户名密码登录时多个应用出现重复用户名登录报错的Bug
+## 3.3.10（2022-01-07）
+- 新增 自定义国际化语言支持 [详情](https://uniapp.dcloud.net.cn/uniCloud/uni-id?id=custom-i8n)
+- 修复 一键登录时未校验重复手机号是否已验证的Bug
+- 修复 Apple登录时用户邮箱为空时报错的Bug
+- 修复 登录接口未传username时错误提示不正确的Bug
 ## 3.3.9（2021-11-09）
 - 去除重复的context.xxx未找到的提示语
 ## 3.3.8（2021-10-28）
