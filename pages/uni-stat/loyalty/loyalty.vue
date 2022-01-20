@@ -60,7 +60,6 @@
 			return {
 				fieldsMap,
 				query: {
-					dimension: "day",
 					appid: '',
 					platform_id: '',
 					channel_id: '',
@@ -113,25 +112,6 @@
 				}
 			}
 		},
-		computed: {
-			chartTabs() {
-				const tabs = []
-				fieldsMap.forEach(item => {
-					const {
-						field: _id,
-						title: name
-					} = item
-					const isTab = item.hasOwnProperty('value')
-					if (_id && name && isTab) {
-						tabs.push({
-							_id,
-							name
-						})
-					}
-				})
-				return tabs
-			}
-		},
 		watch: {
 			query: {
 				deep: true,
@@ -157,8 +137,8 @@
 			},
 
 			getAllData(query) {
-				this.getPanelData(query)
-				this.getChartData(query)
+				// this.getPanelData(query)
+				// this.getChartData(query)
 				this.getTabelData(query)
 			},
 
@@ -216,8 +196,9 @@
 				console.log('..............Table query：', query);
 				this.loading = true
 				const db = uniCloud.database()
-				db.collection('opendb-stat-app-session-result')
+				db.collection('opendb-stat-loyalty-result')
 					.where(query)
+					.field('visit_depth_data')
 					.orderBy('start_time', 'asc')
 					.get({
 						getCount: true
@@ -227,13 +208,43 @@
 							count,
 							data
 						} = res.result
-						// console.log('.......table:', data);
+						console.log('.......table:', data);
+						const rows = []
 						for (const item of data) {
-							mapfields(fieldsMap, item, item)
+							if (typeof item === 'object') {
+								for (const fields in item) {
+									const field = item[fields]
+									const subs = [],
+										x = ''
+									if (typeof field === 'object') {
+										for (const f in field) {
+											x = f
+											for (const key in field[f]) {
+												const sub = {}
+												sub[fields] = key
+												sub[f] = field[f][key]
+												subs.push(sub)
+											}
+										}
+									}
+									console.log(22222222, subs);
+									subs.forEach(s => {
+										const row = {}
+										if (row[fields] && row[fields] === s[fields]) {
+											row[x] = s[x]
+										} else {
+											row[fields] = s[fields]
+											row[x] = s[x]
+										}
+										rows.push(row)
+									})
+								}
+							}
 						}
-						this.tableData = []
-						this.options.total = count
-						this.tableData = data
+						console.log(111111, rows);
+						// this.tableData = []
+						// this.options.total = count
+						// this.tableData = data
 					}).catch((err) => {
 						console.error(err)
 						// err.message 错误信息
@@ -251,7 +262,7 @@
 					.where(query)
 					.groupBy('appid')
 					.groupField(
-						'sum(new_user_count) as total_new_user_count, sum(active_user_count) as total_active_user_count, sum(page_visit_count) as total_page_visit_count, sum(app_launch_count) as total_app_launch_count, avg(avg_session_time) as total_avg_session_time, avg(avg_user_time) as total_avg_user_time, avg(bounce_rate) as total_bounce_rate, max(total_users) as total_total_users'
+						'sum(page_visit_count) as total_page_visit_count, max(total_users) as total_total_users'
 					)
 					.orderBy('start_time', 'desc')
 					.get({

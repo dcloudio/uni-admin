@@ -4,13 +4,13 @@ export default [{
 	tooltip: '',
 	formatter: '',
 }, {
-	title: '访问次数',
-	field: 'page_visit_count',
+	title: '访问人数',
+	field: 'total_users',
 	tooltip: '',
 	value: 0
 }, {
-	title: '总用户数',
-	field: 'total_users',
+	title: '访问次数',
+	field: 'page_visit_count',
 	tooltip: '',
 	value: 0
 }]
