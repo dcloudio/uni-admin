@@ -227,14 +227,25 @@
 											}
 										}
 									}
-									console.log(22222222, subs);
-									subs.forEach(s => {
+									const titles = []
+									subs.forEach( s => {
+										const t = s[fields]
+										if (titles.indexOf(t)=== -1) {
+											titles.push(t)
+										}
+									})
+									console.log(22222222, subs, titles);
+									titles.forEach(title => {
 										const row = {}
-										if (row[fields] && row[fields] === s[fields]) {
-											row[x] = s[x]
-										} else {
-											row[fields] = s[fields]
-											row[x] = s[x]
+										row[fields] = title
+										for(const sub of subs) {
+											if (sub[fields] === title) {
+												for (const key in sub) {
+													if (key !== fields)
+													row[key] = sub[key]
+												}
+
+											}
 										}
 										rows.push(row)
 									})
