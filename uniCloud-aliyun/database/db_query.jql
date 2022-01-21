@@ -36,3 +36,6 @@
 
 
 db.collection('opendb-stat-app-platforms').get()
+
+
+db.collection('opendb-stat-loyalty-result').groupBy('appid').groupField('sum(visit_depth_data.visit_times.p_1) as p_1').get()

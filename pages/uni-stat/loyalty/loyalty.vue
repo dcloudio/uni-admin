@@ -23,15 +23,15 @@
 			</view>
 			<view class="uni-stat--x mb-l" style="padding-top: 0;">
 				<view class="mb-m line-bottom">
-					<uni-stat-tabs type="boldLine" :tabs="items" style="line-height: 40px; margin-bottom: -17px;" />
+					<uni-stat-tabs type="boldLine" :tabs="types" v-model="type"
+						style="line-height: 40px; margin-bottom: -17px;" />
 				</view>
 				<uni-stat-panel :items="panelData" style="box-shadow: unset; border-bottom: 1px solid #eee;" />
-				<uni-stat-tabs type="box" :tabs="vitalities" class="mb-l" />
+				<uni-stat-tabs type="box" :tabs="fields" v-model="field" class="mb-l" />
 				<view class="p-m">
 					<view class="uni-charts-box">
 						<qiun-data-charts type="column" :echartsApp="true"
-							:opts="{extra:{area:{type:'curve',addLine:true,gradient:true}}}"
-							:chartData="linearareadata" />
+							:opts="{extra:{area:{type:'curve',addLine:true,gradient:true}}}" :chartData="chartData" />
 					</view>
 				</view>
 			</view>
@@ -60,56 +60,43 @@
 			return {
 				fieldsMap,
 				query: {
-					appid: '',
+					appid: '61c041fb34458700013e700a',
 					platform_id: '',
 					channel_id: '',
 					start_time: [],
 				},
-				items: [{
-					_id: 1,
-					name: '访问深度'
-				}, {
-					_id: 2,
-					name: '访问时长'
-				}],
-				vitalities: [{
-					_id: 1,
-					name: '访问人数'
-				}, {
-					_id: 1,
-					name: '访问次数'
-				}],
 				loading: false,
-				currentDateTab: 1,
+				currentDateTab: 2,
 				// currentChartTab: ,
 				tableData: [],
 				panelData: [],
 				chartData: {},
-				defaultChart: {
-					field: 'new_user_count',
-					name: '新增用户'
-				},
-				linearareadata: {
-					categories: [
-						"2021-12-03",
-						"2021-12-04",
-						"2021-12-05",
-						"2021-12-06",
-						"2021-12-07",
-						"2021-12-08"
-					],
-					series: [{
-						name: "日活",
-						"data": [
-							866,
-							620,
-							566,
-							884,
-							905,
-							643
-						]
-					}]
-				}
+				type: 'visit_depth_data',
+				types: [{
+					_id: 'visit_depth_data',
+					name: '访问深度'
+				}, {
+					_id: 'duration_data',
+					name: '访问时长'
+				}],
+				field: 'visit_users',
+				fields: [{
+					_id: 'visit_users',
+					name: '访问人数'
+				}, {
+					_id: 'visit_times',
+					name: '访问次数'
+				}],
+
+			}
+		},
+		computed: {
+			fieldName() {
+				return this.fields.forEach(item => {
+					if (item._id === this.field) {
+						return item.name
+					}
+				})
 			}
 		},
 		watch: {
@@ -119,6 +106,12 @@
 					this.options.pageCurrent = 1 // 重置分页
 					this.getAllData(val)
 				}
+			},
+			type() {
+				this.getAllData(this.query)
+			},
+			field() {
+				this.getAllData(this.query)
 			}
 		},
 		methods: {
@@ -132,36 +125,58 @@
 				this.query.start_time = [start, end]
 			},
 
-			changeChartTab(id, index, name) {
-				this.getChartData(this.query, id, name)
+			createStr(fields, type = "visit_depth_data") {
+				const options = {
+					visit_depth_data: {
+						prefix: 'p',
+						value: [1, 2, 3, 4, 5, 10]
+					},
+					duration_data: {
+						prefix: 's',
+						value: [0, 3, 6, 11, 21, 31, 51, 100]
+					}
+				}
+				const l = fields.length
+				const p = options[type].prefix
+				const value = options[type].value
+				const strArr = value.map(item => {
+					return fields.map(field => {
+						return `sum(${type}.${field}.${p + '_' + item}) as ${l > 1 ? field + '_' + p +'_'+item :  p + '_' + item}`
+					})
+				})
+				const str = strArr.join()
+				return str
 			},
 
 			getAllData(query) {
-				// this.getPanelData(query)
-				// this.getChartData(query)
+				this.getPanelData(query)
+				this.getChartData(query, this.field, this.fieldName)
 				this.getTabelData(query)
 			},
 
-			getChartData(query, field = 'new_user_count', name = '新增用户') {
+			getChartData(query, field = 'visit_users', name = '访问人数') {
 				const {
 					pageCurrent
 				} = this.options
 				query = stringifyQuery(query)
+				const groupField = this.createStr([field], this.type)
 				console.log('..............Chart query：', query);
 				const db = uniCloud.database()
-				db.collection('opendb-stat-app-session-result')
+				db.collection('opendb-stat-loyalty-result')
 					.where(query)
-					.field(`${field}, start_time, stat_date`)
+					.groupBy('appid')
+					.groupField(groupField)
 					.orderBy('start_time', 'asc')
 					.get({
 						getCount: true
 					})
 					.then(res => {
-						const {
+						let {
 							count,
 							data
 						} = res.result
-						// console.log('.......chart:', data);
+						data = data[0]
+						console.log('.......chart:', data);
 						const options = {
 							categories: [],
 							series: [{
@@ -170,12 +185,14 @@
 							}]
 						}
 						this.chartData = []
-						for (const item of data) {
-							const x = item.stat_date
-							const y = item[field]
-							if (y) {
-								options.series[0].data.push(y)
-								options.categories.push(x)
+						for (const key in data) {
+							if (key !== 'appid') {
+								const x = key
+								const y = data[key]
+								if (y) {
+									options.series[0].data.push(y)
+									options.categories.push(x)
+								}
 							}
 						}
 						this.chartData = options
@@ -193,12 +210,14 @@
 					pageCurrent
 				} = this.options
 				query = stringifyQuery(query)
+				const groupField = this.createStr(['visit_users', 'visit_times'], this.type)
 				console.log('..............Table query：', query);
 				this.loading = true
 				const db = uniCloud.database()
 				db.collection('opendb-stat-loyalty-result')
 					.where(query)
-					.field('visit_depth_data')
+					.groupBy('appid')
+					.groupField(groupField)
 					.orderBy('start_time', 'asc')
 					.get({
 						getCount: true
@@ -209,53 +228,63 @@
 							data
 						} = res.result
 						console.log('.......table:', data);
+						const options = {
+							visit_depth_data: {
+								prefix: 'p',
+								value: [1, 2, 3, 4, 5, 10]
+							},
+							duration_data: {
+								prefix: 's',
+								value: [0, 3, 6, 11, 21, 31, 51, 100]
+							}
+						}
+						const type = this.type
 						const rows = []
+						let splitor = options[type].prefix
+						splitor = `_${splitor}_`
 						for (const item of data) {
-							if (typeof item === 'object') {
-								for (const fields in item) {
-									const field = item[fields]
-									const subs = [],
-										x = ''
-									if (typeof field === 'object') {
-										for (const f in field) {
-											x = f
-											for (const key in field[f]) {
-												const sub = {}
-												sub[fields] = key
-												sub[f] = field[f][key]
-												subs.push(sub)
-											}
-										}
-									}
-									const titles = []
-									subs.forEach( s => {
-										const t = s[fields]
-										if (titles.indexOf(t)=== -1) {
-											titles.push(t)
-										}
-									})
-									console.log(22222222, subs, titles);
-									titles.forEach(title => {
-										const row = {}
-										row[fields] = title
-										for(const sub of subs) {
-											if (sub[fields] === title) {
-												for (const key in sub) {
-													if (key !== fields)
-													row[key] = sub[key]
-												}
-
-											}
-										}
-										rows.push(row)
-									})
+							for (const key in item) {
+								if (key !== 'appid') {
+									const row = {}
+									const keys = key.split(splitor)
+									row.name = keys[1]
+									row[keys[0]] = item[key]
+									rows.push(row)
 								}
 							}
 						}
-						console.log(111111, rows);
-						// this.tableData = []
+						const tableData = []
+						const reducer = (previousValue, currentValue) => previousValue + currentValue;
+						const total = {}
+						total.visit_users = rows.filter(row => row.visit_users)
+							.map(row => row.visit_users)
+							.reduce(reducer)
+						total.visit_times = rows.filter(row => row.visit_times)
+							.map(row => row.visit_times)
+							.reduce(reducer)
+						options[type].value.forEach(val => {
+							const item = {}
+							item.name = val + 'p'
+							rows.forEach(row => {
+								if (Number(row.name) === val) {
+									for (const key in row) {
+										if (key !== name) {
+											item[key] = row[key]
+											item['total_' + key] = total[key]
+										}
+									}
+								}
+							})
+							tableData.push(item)
+						})
+						console.log(33333, tableData)
+						for (const item of tableData) {
+							mapfields(fieldsMap, item, item)
+						}
+						console.log(4444444, tableData)
 						// this.options.total = count
-						// this.tableData = data
+						this.tableData = []
+						this.tableData = tableData
 					}).catch((err) => {
 						console.error(err)
 						// err.message 错误信息
@@ -273,7 +302,7 @@
 					.where(query)
 					.groupBy('appid')
 					.groupField(
-						'sum(page_visit_count) as total_page_visit_count, max(total_users) as total_total_users'
+						'sum(page_visit_count) as total_visit_times, max(total_users) as total_visit_users'
 					)
 					.orderBy('start_time', 'desc')
 					.get({

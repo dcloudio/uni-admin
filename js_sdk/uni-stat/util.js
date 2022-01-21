@@ -116,8 +116,8 @@ function mapfields(map, data, goal, prefix = '', prop = 'value') {
 				if (computed) {
 					const computedFields = computed.split('/')
 					let [dividend, divisor] = computedFields
-					dividend = data[prefix + dividend]
-					divisor = data[prefix + divisor]
+					dividend = Number(data[prefix + dividend])
+					divisor = Number(data[prefix + divisor])
 					if (dividend && divisor) {
 						const val = format(division(dividend, divisor), formatter)
 						// const val = division(dividend, divisor)
