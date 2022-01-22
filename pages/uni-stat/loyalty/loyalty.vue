@@ -256,12 +256,15 @@
 						const tableData = []
 						const reducer = (previousValue, currentValue) => previousValue + currentValue;
 						const total = {}
-						total.visit_users = rows.filter(row => row.visit_users)
+
+						let users = rows.filter(row => row.visit_users)
 							.map(row => row.visit_users)
-							.reduce(reducer)
-						total.visit_times = rows.filter(row => row.visit_times)
+						users = users.length ? users.reduce(reducer) : 0
+						let times = rows.filter(row => row.visit_times)
 							.map(row => row.visit_times)
-							.reduce(reducer)
+						times = times.length ? times.reduce(reducer) : 0
+						total.visit_times = times
+						total.visit_users = users
 						options[type].value.forEach(val => {
 							const item = {}
 							item.name = val + 'p'

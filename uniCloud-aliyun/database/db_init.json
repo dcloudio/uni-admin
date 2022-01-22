@@ -288,7 +288,85 @@
 				"dimension": "day",
 				"stat_date": 20220114,
 				"start_time": 1642089600000,
-				"end_time": 1610639999999
+				"end_time": 1610639999999,
+				"retention": {
+					"active_user": {
+						"d_1": {
+							"used_count": 100,
+							"used_rate":  80.30
+						},
+						"d_2": {
+							"used_count": 80,
+							"used_rate":  64.24
+						},
+						"d_3": {
+							"used_count": 70,
+							"used_rate":  56.21
+						},
+						"d_4": {
+							"used_count": 60,
+							"used_rate":  48.18
+						},
+						"d_5": {
+							"used_count": 50,
+							"used_rate":  40.15
+						},
+						"d_6": {
+							"used_count": 40,
+							"used_rate":  32.12
+						},
+						"d_7": {
+							"used_count": 30,
+							"used_rate":  24.90
+						},
+						"d_14": {
+							"used_count": 20,
+							"used_rate":  16.60
+						},
+						"d_30": {
+							"used_count": 10,
+							"used_rate":  8.30
+						}
+					},
+					"new_user": {
+						"d_1": {
+							"used_count": 100,
+							"used_rate":  80.30
+						},
+						"d_2": {
+							"used_count": 80,
+							"used_rate":  64.24
+						},
+						"d_3": {
+							"used_count": 70,
+							"used_rate":  56.21
+						},
+						"d_4": {
+							"used_count": 60,
+							"used_rate":  48.18
+						},
+						"d_5": {
+							"used_count": 50,
+							"used_rate":  40.15
+						},
+						"d_6": {
+							"used_count": 40,
+							"used_rate":  32.12
+						},
+						"d_7": {
+							"used_count": 30,
+							"used_rate":  24.90
+						},
+						"d_14": {
+							"used_count": 20,
+							"used_rate":  16.60
+						},
+						"d_30": {
+							"used_count": 10,
+							"used_rate":  8.30
+						}
+					}
+				}
 			}, {
 				"_id": "61c041fb34458700013e700b",
 				"channel_id": "61c041fb34458700013e700a",
@@ -308,7 +386,85 @@
 				"dimension": "day",
 				"stat_date": 20220113,
 				"start_time": 1642003200000,
-				"end_time": 1642175999999
+				"end_time": 1642175999999,
+				"retention": {
+					"active_user": {
+						"d_1": {
+							"used_count": 100,
+							"used_rate":  80.30
+						},
+						"d_2": {
+							"used_count": 80,
+							"used_rate":  64.24
+						},
+						"d_3": {
+							"used_count": 70,
+							"used_rate":  56.21
+						},
+						"d_4": {
+							"used_count": 60,
+							"used_rate":  48.18
+						},
+						"d_5": {
+							"used_count": 50,
+							"used_rate":  40.15
+						},
+						"d_6": {
+							"used_count": 40,
+							"used_rate":  32.12
+						},
+						"d_7": {
+							"used_count": 30,
+							"used_rate":  24.90
+						},
+						"d_14": {
+							"used_count": 20,
+							"used_rate":  16.60
+						},
+						"d_30": {
+							"used_count": 10,
+							"used_rate":  8.30
+						}
+					},
+					"new_user": {
+						"d_1": {
+							"used_count": 100,
+							"used_rate":  80.30
+						},
+						"d_2": {
+							"used_count": 80,
+							"used_rate":  64.24
+						},
+						"d_3": {
+							"used_count": 70,
+							"used_rate":  56.21
+						},
+						"d_4": {
+							"used_count": 60,
+							"used_rate":  48.18
+						},
+						"d_5": {
+							"used_count": 50,
+							"used_rate":  40.15
+						},
+						"d_6": {
+							"used_count": 40,
+							"used_rate":  32.12
+						},
+						"d_7": {
+							"used_count": 30,
+							"used_rate":  24.90
+						},
+						"d_14": {
+							"used_count": 20,
+							"used_rate":  16.60
+						},
+						"d_30": {
+							"used_count": 10,
+							"used_rate":  8.30
+						}
+					}
+				}
 			},
 			{
 				"_id": "61c041fb34458700013e700c",
@@ -329,7 +485,85 @@
 				"dimension": "day",
 				"stat_date": 20220112,
 				"start_time": 1641916800000,
-				"end_time": 1642003199999
+				"end_time": 1642003199999,
+				"retention": {
+					"active_user": {
+						"d_1": {
+							"used_count": 100,
+							"used_rate":  80.30
+						},
+						"d_2": {
+							"used_count": 80,
+							"used_rate":  64.24
+						},
+						"d_3": {
+							"used_count": 70,
+							"used_rate":  56.21
+						},
+						"d_4": {
+							"used_count": 60,
+							"used_rate":  48.18
+						},
+						"d_5": {
+							"used_count": 50,
+							"used_rate":  40.15
+						},
+						"d_6": {
+							"used_count": 40,
+							"used_rate":  32.12
+						},
+						"d_7": {
+							"used_count": 30,
+							"used_rate":  24.90
+						},
+						"d_14": {
+							"used_count": 20,
+							"used_rate":  16.60
+						},
+						"d_30": {
+							"used_count": 10,
+							"used_rate":  8.30
+						}
+					},
+					"new_user": {
+						"d_1": {
+							"used_count": 100,
+							"used_rate":  80.30
+						},
+						"d_2": {
+							"used_count": 80,
+							"used_rate":  64.24
+						},
+						"d_3": {
+							"used_count": 70,
+							"used_rate":  56.21
+						},
+						"d_4": {
+							"used_count": 60,
+							"used_rate":  48.18
+						},
+						"d_5": {
+							"used_count": 50,
+							"used_rate":  40.15
+						},
+						"d_6": {
+							"used_count": 40,
+							"used_rate":  32.12
+						},
+						"d_7": {
+							"used_count": 30,
+							"used_rate":  24.90
+						},
+						"d_14": {
+							"used_count": 20,
+							"used_rate":  16.60
+						},
+						"d_30": {
+							"used_count": 10,
+							"used_rate":  8.30
+						}
+					}
+				}
 			}, {
 				"_id": "61c041fb34458700013e700d",
 				"channel_id": "61c041fb34458700013e700b",
@@ -349,7 +583,85 @@
 				"dimension": "day",
 				"stat_date": 20220114,
 				"start_time": 1642089600000,
-				"end_time": 1610639999999
+				"end_time": 1610639999999,
+				"retention": {
+					"active_user": {
+						"d_1": {
+							"used_count": 1000,
+							"used_rate":  80.30
+						},
+						"d_2": {
+							"used_count": 800,
+							"used_rate":  64.24
+						},
+						"d_3": {
+							"used_count": 700,
+							"used_rate":  56.21
+						},
+						"d_4": {
+							"used_count": 600,
+							"used_rate":  48.18
+						},
+						"d_5": {
+							"used_count": 500,
+							"used_rate":  40.15
+						},
+						"d_6": {
+							"used_count": 400,
+							"used_rate":  32.12
+						},
+						"d_7": {
+							"used_count": 300,
+							"used_rate":  24.90
+						},
+						"d_14": {
+							"used_count": 200,
+							"used_rate":  16.60
+						},
+						"d_30": {
+							"used_count": 100,
+							"used_rate":  8.30
+						}
+					},
+					"new_user": {
+						"d_1": {
+							"used_count": 1000,
+							"used_rate":  80.30
+						},
+						"d_2": {
+							"used_count": 800,
+							"used_rate":  64.24
+						},
+						"d_3": {
+							"used_count": 700,
+							"used_rate":  56.21
+						},
+						"d_4": {
+							"used_count": 600,
+							"used_rate":  48.18
+						},
+						"d_5": {
+							"used_count": 500,
+							"used_rate":  40.15
+						},
+						"d_6": {
+							"used_count": 400,
+							"used_rate":  32.12
+						},
+						"d_7": {
+							"used_count": 300,
+							"used_rate":  24.90
+						},
+						"d_14": {
+							"used_count": 200,
+							"used_rate":  16.60
+						},
+						"d_30": {
+							"used_count": 100,
+							"used_rate":  8.30
+						}
+					}
+				}
 			}, {
 				"_id": "61c041fb34458700013e700e",
 				"channel_id": "61c041fb34458700013e700b",
@@ -369,7 +681,85 @@
 				"dimension": "day",
 				"stat_date": 20220113,
 				"start_time": 1642003200000,
-				"end_time": 1642175999999
+				"end_time": 1642175999999,
+				"retention": {
+					"active_user": {
+						"d_1": {
+							"used_count": 100,
+							"used_rate":  80.30
+						},
+						"d_2": {
+							"used_count": 80,
+							"used_rate":  64.24
+						},
+						"d_3": {
+							"used_count": 70,
+							"used_rate":  56.21
+						},
+						"d_4": {
+							"used_count": 60,
+							"used_rate":  48.18
+						},
+						"d_5": {
+							"used_count": 50,
+							"used_rate":  40.15
+						},
+						"d_6": {
+							"used_count": 40,
+							"used_rate":  32.12
+						},
+						"d_7": {
+							"used_count": 30,
+							"used_rate":  24.90
+						},
+						"d_14": {
+							"used_count": 20,
+							"used_rate":  16.60
+						},
+						"d_30": {
+							"used_count": 10,
+							"used_rate":  8.30
+						}
+					},
+					"new_user": {
+						"d_1": {
+							"used_count": 100,
+							"used_rate":  80.30
+						},
+						"d_2": {
+							"used_count": 80,
+							"used_rate":  64.24
+						},
+						"d_3": {
+							"used_count": 70,
+							"used_rate":  56.21
+						},
+						"d_4": {
+							"used_count": 60,
+							"used_rate":  48.18
+						},
+						"d_5": {
+							"used_count": 50,
+							"used_rate":  40.15
+						},
+						"d_6": {
+							"used_count": 40,
+							"used_rate":  32.12
+						},
+						"d_7": {
+							"used_count": 30,
+							"used_rate":  24.90
+						},
+						"d_14": {
+							"used_count": 20,
+							"used_rate":  16.60
+						},
+						"d_30": {
+							"used_count": 10,
+							"used_rate":  8.30
+						}
+					}
+				}
 			}, {
 				"_id": "61c041fb34458700013e700f",
 				"channel_id": "61c041fb34458700013e700b",
