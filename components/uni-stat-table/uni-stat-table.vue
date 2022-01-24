@@ -16,9 +16,6 @@
 </template>
 
 <script>
-	import {
-		format
-	} from '@/js_sdk/uni-stat/util.js'
 	export default {
 		name: "uni-stat-table",
 		data() {

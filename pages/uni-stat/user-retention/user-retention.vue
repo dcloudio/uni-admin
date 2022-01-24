@@ -34,8 +34,32 @@
 					</view>
 				</view>
 			</view>
-			<view class="uni-stat--x p-m">
-				<uni-stat-table :data="tableData" :filedsMap="fieldsMap" :loading="loading" />
+			<view class="uni-stat--x">
+				<uni-table :loading="loading" :border="false" stripe :emptyText="$t('common.empty')">
+					<uni-tr style="background-color: #eee;">
+						<template v-for="(mapper, index) in fieldsMap">
+							<uni-th v-if="mapper.title" :key="index" align="center">{{mapper.title}}</uni-th>
+						</template>
+					</uni-tr>
+					<uni-tr v-for="(item ,i) in tableData" :key="i">
+						<template v-for="(mapper, index) in fieldsMap">
+							<uni-td v-if="mapper.title" :key="index" align="center" :class="/[d|w|m]_\d/.test(mapper.field)&&[item[mapper.field] ? 'uni-stat-table-bg' : '']">
+								{{item[mapper.field]}}
+							</uni-td>
+						</template>
+					</uni-tr>
+				</uni-table>
+				<view class="uni-pagination-box">
+					<picker class="select-picker" mode="selector" :value="options.pageSizeIndex"
+						:range="options.pageSizeRange" @change="changePageSize">
+						<button type="default" size="mini" :plain="true">
+							<text>{{pageSize}} 条/页</text>
+							<uni-icons class="select-picker-icon" type="arrowdown" size="12" color="#999"></uni-icons>
+						</button>
+					</picker>
+					<uni-pagination show-icon :page-size="pageSize" :current="options.pageCurrent"
+						:total="options.total" @change="changePageCurrent" />
+				</view>
 			</view>
 		</view>
 
@@ -53,22 +77,26 @@
 		division,
 		format
 	} from '@/js_sdk/uni-stat/util.js'
-	import fieldsMap from './fieldsMap.js'
+	import fieldsFactory from './fieldsMap.js'
 	export default {
 		data() {
 			return {
-				fieldsMap,
+				fieldsMap: fieldsFactory(),
 				query: {
 					appid: '61c041fb34458700013e700a',
 					platform_id: '',
 					channel_id: '',
 					start_time: [],
 				},
+				options: {
+					pageCurrent: 1, // 当前页
+					total: 0, // 数据总量
+					pageSizeIndex: 0, // 与 pageSizeRange 一起计算得出 pageSize
+					pageSizeRange: [10, 20, 50, 100],
+				},
 				loading: false,
 				currentDateTab: 2,
-				// currentChartTab: ,
 				tableData: [],
-				panelData: [],
 				chartData: {},
 				field: 'new_user',
 				fields: [{
@@ -82,12 +110,21 @@
 			}
 		},
 		computed: {
+			pageSize() {
+				const {
+					pageSizeRange,
+					pageSizeIndex
+				} = this.options
+				return pageSizeRange[pageSizeIndex]
+			},
 			fieldName() {
-				return this.fields.forEach(item => {
+				let name = ''
+				this.fields.forEach(item => {
 					if (item._id === this.field) {
-						return item.name
+						name = item.name
 					}
 				})
+				return name
 			},
 			keyName() {
 				return this.keys.forEach(item => {
@@ -132,7 +169,22 @@
 				this.query.start_time = [start, end]
 			},
 
-			createStr(type = "used_count", vals, fields) {
+			changePageCurrent(e) {
+				this.options.pageCurrent = e.current
+				this.getTabelData(this.query)
+			},
+
+			changePageSize(e) {
+				const {
+					value
+				} = e.detail
+				this.options.pageCurrent = 1 // 重置分页
+				this.options.pageSizeIndex = value
+				this.getTabelData(this.query)
+			},
+
+			createStr(type = "used_count", vals, fields, tail) {
+				tail = tail ? ',' + tail : ''
 				const value = vals || [1, 2, 3, 4, 5, 6, 7, 14, 30]
 				const p = 'd'
 				const f = this.fields.map(item => item._id)
@@ -140,7 +192,7 @@
 				const l = fields.length
 				const strArr = value.map(item => {
 					return fields.map(field => {
-						return `retention${type}.${field}.${p + '_' + item}.${type} as ${l > 1 ? field + '_' + p +'_'+item :  p + '_' + item}`
+						return `retention.${field}.${p + '_' + item}.${type} as ${l > 1 ? field + '_' + p +'_'+item :  p + '_' + item}${tail}`
 					})
 				})
 				const str = strArr.join()
@@ -149,7 +201,7 @@
 			},
 
 			getAllData(query) {
-				// this.getChartData(query, this.key, this.keyName)
+				this.getChartData(query, this.key, this.keyName)
 				this.getTabelData(query)
 			},
 
@@ -158,7 +210,7 @@
 					pageCurrent
 				} = this.options
 				query = stringifyQuery(query)
-				const groupField = this.createStr(undefined, [key], [this.field])
+				const groupField = this.createStr("used_count", [key], [this.field])
 				console.log('..............Chart query：', query);
 				const db = uniCloud.database()
 				db.collection('opendb-stat-app-session-result')
@@ -208,13 +260,16 @@
 					pageCurrent
 				} = this.options
 				query = stringifyQuery(query)
-				const groupField = this.createStr('used_rate')
+				const tail = this.field + "_count"
+				const groupField = this.createStr('used_rate', '', [this.field], tail)
 				console.log('..............Table query：', query);
 				this.loading = true
 				const db = uniCloud.database()
 				db.collection('opendb-stat-app-session-result')
 					.where(query)
 					.field(`${groupField}, stat_date, start_time`)
+					.skip((pageCurrent - 1) * this.pageSize)
+					.limit(this.pageSize)
 					.orderBy('start_time', 'asc')
 					.get({
 						getCount: true
@@ -225,57 +280,15 @@
 							data
 						} = res.result
 						console.log('.......table:', data);
-						const type = this.type
-						const rows = []
-						let splitor = 'd'
-						splitor = `_${splitor}_`
-						for (const item of data) {
-							for (const key in item) {
-								if (key !== 'appid') {
-									const row = {}
-									const keys = key.split(splitor)
-									row.name = keys[1]
-									row[keys[0]] = item[key]
-									rows.push(row)
-								}
-							}
-						}
-						const tableData = []
-						const reducer = (previousValue, currentValue) => previousValue + currentValue;
-						const total = {}
-
-						let users = rows.filter(row => row.visit_users)
-							.map(row => row.visit_users)
-						users = users.length ? users.reduce(reducer) : 0
-						let times = rows.filter(row => row.visit_times)
-							.map(row => row.visit_times)
-						times = times.length ? times.reduce(reducer) : 0
-						total.visit_times = times
-						total.visit_users = users
-						const values = [1, 2, 3, 4, 5, 6, 7, 14, 30]
-						values.forEach(val => {
-							const item = {}
-							item.name = val + 'p'
-							rows.forEach(row => {
-								if (Number(row.name) === val) {
-									for (const key in row) {
-										if (key !== name) {
-											item[key] = row[key]
-											item['total_' + key] = total[key]
-										}
-									}
-								}
-							})
-							tableData.push(item)
-						})
-						console.log(33333, tableData)
-						for (const item of tableData) {
-							mapfields(fieldsMap, item, item)
-						}
-						console.log(4444444, tableData)
-						// this.options.total = count
+						const title = tail === 'active_user_count' ? '活跃用户' : '新增用户'
+						const maps = [{
+							title,
+							field: tail
+						}]
+						this.fieldsMap = fieldsFactory(maps)
+						this.options.total = count
 						this.tableData = []
-						this.tableData = tableData
+						this.tableData = data
 					}).catch((err) => {
 						console.error(err)
 						// err.message 错误信息
@@ -312,5 +325,10 @@
 
 	.line-bottom {
 		border-bottom: 2px solid #eee;
+	}
+
+	.uni-stat-table-bg {
+		background-color: #4e82d9;
+		color: #fff;
 	}
 </style>
