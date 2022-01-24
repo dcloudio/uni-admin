@@ -1,64 +1,45 @@
 <template>
 	<view class="fix-top-window">
-		<view class="uni-header">
-			<view class="uni-group hide-on-phone">
+		<view class="uni-header hide-on-phone">
+			<view class="uni-group">
 				<view class="uni-title">渠道（app）</view>
 				<view class="uni-sub-title">支持Android App多渠道统计。设置App渠道包的方法，请参考 https://ask.dcloud.net.cn/article/35974。</view>
 			</view>
 		</view>
 		<view class="uni-container">
-			<view class="uni-stat--x uni-stat--tab mb-m">
-				<uni-stat-tabs :tabs="tabItems" />
+			<view class="uni-stat--x flex">
+				<uni-stat-select mode="app" label="应用选择" v-model="query.appid" />
 			</view>
-			<view class="uni-stat--x flex mb-m">
-				<uni-datetime-picker type="daterange" style="max-width: 400px; margin-right: 30px;" />
-				<view class="label-text">渠道:</view>
-				<uni-combox :candidates="candidates" placeholder="请选择" style="max-width: 400px;"></uni-combox>
+			<view class="uni-stat--x">
+				<uni-stat-tabs label="平台选择" type="boldLine" mode="platform" v-model="query.platform_id" />
 			</view>
-			<view class="uni-stat--x mb-m">
-				<view class="uni-stat--sum mb-l" style="border-bottom: 1px solid #eee;">
-					<view v-for="(item, index) in sumData" :key="index" class="uni-stat--sum-item">
-						<view class="uni-stat--sum-item-title" >
-							{{item.title}}
-							<span v-if="item.title" class="uni-icons-help"></span>
-						</view>
-						<view class="uni-stat--sum-item-today">{{item.today}}</view>
-						<!-- <view class="uni-stat--sum-item-yesterday">{{item.yesterday}}</view> -->
-					</view>
+			<view class="uni-stat--x flex">
+				<uni-stat-tabs label="日期选择" :current="currentDateTab" mode="date" @change="changeTimeRange" />
+				<uni-datetime-picker type="daterange" v-model="query.start_time" returnType="timestamp"
+					:clearIcon="false" class="uni-stat-datetime-picker"
+					:class="{'uni-stat__actived': currentDateTab < 0 && !!query.start_time.length}"
+					@change="useDatetimePicker" />
+			</view>
+			<view class="uni-stat--x" style="padding: 15px 0;">
+				<uni-stat-panel :items="panelData" class="uni-stat-panel" />
+				<uni-stat-tabs type="box" :tabs="chartTabs" class="mb-l" @change="changeChartTab" />
+				<qiun-data-charts type="area" :echartsApp="true" :chartData="chartData"
+					:opts="{extra:{area:{type:'curve',addLine:true,gradient:true}}}" />
+			</view>
+
+			<view class="uni-stat--x p-m">
+				<uni-stat-table :data="tableData" :filedsMap="fieldsMap" :loading="loading" />
+				<view class="uni-pagination-box">
+					<picker class="select-picker" mode="selector" :value="options.pageSizeIndex"
+						:range="options.pageSizeRange" @change="changePageSize">
+						<button type="default" size="mini" :plain="true">
+							<text>{{pageSize}} 条/页</text>
+							<uni-icons class="select-picker-icon" type="arrowdown" size="12" color="#999"></uni-icons>
+						</button>
+					</picker>
+					<uni-pagination show-icon :page-size="pageSize" :current="options.pageCurrent"
+						:total="options.total" @change="changePageCurrent" />
 				</view>
-				<view class="uni-charts-box">
-					<uni-stat-tabs type="box" :tabs="chartTabs" class="mb-l" />
-					<qiun-data-charts type="area" :echartsApp="true"
-						:opts="{extra:{area:{type:'curve',addLine:true,gradient:true}}}" :chartData="linearareadata" />
-				</view>
-			</view>
-			<uni-table :loading="loading" border stripe :emptyText="$t('common.empty')">
-				<uni-tr>
-					<uni-th align="center">受访页</uni-th>
-					<uni-th align="center">页面名称</uni-th>
-					<uni-th align="center">访问人数</uni-th>
-					<uni-th align="center">访问次数</uni-th>
-					<uni-th align="center">退出页次数</uni-th>
-					<uni-th align="center">退出率</uni-th>
-					<uni-th align="center">次均停留时长</uni-th>
-					<uni-th align="center">人均停留时长</uni-th>
-					<uni-th align="center">分享次数</uni-th>
-				</uni-tr>
-				<uni-tr v-for="(item ,index) in tableData" :key="index" style="text-align: center; !important">
-					<uni-td>{{item.url}}</uni-td>
-					<uni-td>{{item.name}}</uni-td>
-					<uni-td>{{item.num_visitor}}</uni-td>
-					<uni-td>{{item.num_visits}}</uni-td>
-					<uni-td>{{item.exit_num_visits}}</uni-td>
-					<uni-td>{{item.exit_rate}}</uni-td>
-					<uni-td>{{item.visit_avg_time}}</uni-td>
-					<uni-td>{{item.visitor_avg_time}}</uni-td>
-					<uni-td>{{item.num_share}}</uni-td>
-				</uni-tr>
-			</uni-table>
-			<view class="uni-pagination-box">
-				<uni-pagination show-icon :page-size="pageSize" :current="pageCurrent" :total="total"
-					@change="change" />
 			</view>
 		</view>
 
@@ -69,284 +50,232 @@
 </template>
 
 <script>
+	import {
+		mapfields,
+		stringifyQuery,
+		getTimeOfSomeDayAgo,
+		division,
+		format
+	} from '@/js_sdk/uni-stat/util.js'
+	import fieldsMap from './fieldsMap.js'
 	export default {
 		data() {
 			return {
-				tableData: [],
-				// 每页数据量
-				pageSize: 10,
-				// 当前页
-				pageCurrent: 1,
-				// 数据总量
-				total: 0,
+				fieldsMap,
+				query: {
+					dimension: "day",
+					appid: '',
+					platform_id: '',
+					start_time: [],
+				},
+				options: {
+					pageCurrent: 1, // 当前页
+					total: 0, // 数据总量
+					pageSizeIndex: 0, // 与 pageSizeRange 一起计算得出 pageSize
+					pageSizeRange: [10, 20, 50, 100],
+				},
 				loading: false,
-				sumData: [{
-					title: '访问人数',
-					today: 140,
-					yesterday: 150
-				}, {
-					title: '访问次数',
-					today: 140,
-					yesterday: 150
-				}, {
-					title: '退出页次数',
-					today: 140,
-					yesterday: 150
-				}, {
-					title: '退出率',
-					today: 140,
-					yesterday: 150
-				}, {
-					title: '分享次数',
-					today: 140,
-					yesterday: 150
-				}],
-				current: 0,
-				tabItems: ['最近七天', '最近30天', '最近90天'],
-				activeTab: '最近七天',
-				chartTabs: [
-					'新增用户',
-					'活跃用户',
-					'访问次数',
-					'启动次数',
-					'次均停留时长',
-					'人均停留时长',
-					'跳出率',
-					'总用户数'
-				],
-				candidates: ['北京', '南京', '东京', '武汉', '天津', '上海', '海口'],
-				linearareadata: {
-					categories: [
-						"2021-11-08",
-						"2021-11-09",
-						"2021-11-10",
-						"2021-11-11",
-						"2021-11-12",
-						"2021-11-13",
-						"2021-11-14",
-						"2021-11-15",
-						"2021-11-16",
-						"2021-11-17",
-						"2021-11-18",
-						"2021-11-19",
-						"2021-11-20",
-						"2021-11-21",
-						"2021-11-22",
-						"2021-11-23",
-						"2021-11-24",
-						"2021-11-25",
-						"2021-11-26",
-						"2021-11-27",
-						"2021-11-28",
-						"2021-11-29",
-						"2021-11-30",
-						"2021-12-01",
-						"2021-12-02",
-						"2021-12-03",
-						"2021-12-04",
-						"2021-12-05",
-						"2021-12-06",
-						"2021-12-07",
-						"2021-12-08"
-					],
-					series: [{
-						name: "日活",
-						smooth: true,
-						areaStyle: {
-							color: {
-								type: 'linear',
-								x: 0,
-								y: 0,
-								x2: 0,
-								y2: 1,
-								colorStops: [{
-									offset: 0,
-									color: '#1890FF' // 0% 处的颜色
-								}, {
-									offset: 1,
-									color: '#FFFFFF' // 100% 处的颜色
-								}],
-								global: false // 缺省为 false
-							}
-						},
-						"data": [
-						  1520,
-						  1523,
-						  1462,
-						  1445,
-						  1433,
-						  972,
-						  768,
-						  1421,
-						  1581,
-						  1613,
-						  1549,
-						  1517,
-						  989,
-						  839,
-						  1579,
-						  1539,
-						  1574,
-						  1518,
-						  1584,
-						  1043,
-						  853,
-						  1498,
-						  1553,
-						  1170,
-						  909,
-						  866,
-						  620,
-						  566,
-						  884,
-						  905,
-						  643
-						]
-					}]
+				currentDateTab: 2,
+				// currentChartTab: ,
+				tableData: [],
+				panelData: [],
+				chartData: {},
+				defaultChart: {
+					field: 'new_user_count',
+					name: '新增用户'
+				},
+			}
+		},
+		computed: {
+			pageSize() {
+				const {
+					pageSizeRange,
+					pageSizeIndex
+				} = this.options
+				return pageSizeRange[pageSizeIndex]
+			},
+			chartTabs() {
+				const tabs = []
+				fieldsMap.forEach(item => {
+					const {
+						field: _id,
+						title: name
+					} = item
+					const isTab = item.hasOwnProperty('value')
+					if (_id && name && isTab) {
+						tabs.push({
+							_id,
+							name
+						})
+					}
+				})
+				return tabs
+			}
+		},
+		watch: {
+			query: {
+				deep: true,
+				handler(val) {
+					this.options.pageCurrent = 1 // 重置分页
+					this.getAllData(val)
 				}
 			}
 		},
-		onLoad() {
-			this.getData('/pageRes', 1)
-		},
-
 		methods: {
+			useDatetimePicker() {
+				this.currentDateTab = -1
+			},
+			changeTimeRange(id, index) {
+				this.currentDateTab = index
+				const start = getTimeOfSomeDayAgo(id),
+					end = getTimeOfSomeDayAgo(0) - 1
+				this.query.start_time = [start, end]
+			},
+			changePageCurrent(e) {
+				this.options.pageCurrent = e.current
+				this.getTabelData(this.query)
+			},
 
-			// 分页触发
-			change(e) {
-				this.getData('/pageRes', e.current)
-			},
-			// 搜索
-			search() {
-				this.getData(1, this.searchVal)
-			},
-			// 获取数据
-			getData(url, pageCurrent, value = "") {
-				if (pageCurrent) {
-					this.loading = true
-					this.pageCurrent = pageCurrent
-					this.request(url, {
-						pageSize: this.pageSize,
-						pageCurrent: pageCurrent,
-						value: value,
-						success: (res) => {
-							this.tableData = res.data
-							this.total = res.total
-							this.loading = false
-						}
-					})
-				} else {
-					this.request(url, {
-						success: (res) => {
-							console.log('.........else', res);
-
-						}
-					})
-				}
-			},
-			// 伪request请求
-			request(path, options) {
+			changePageSize(e) {
 				const {
-					pageSize,
-					pageCurrent,
-					success,
 					value
-				} = options
-				const origin = 'http://localhost:5000'
-				const url = origin + path
-				this.$fetch(url)
-					
-					.then(res => {
-						console.log('........', res);
-						let data, total
-						if (res.item) {
-							const tableData = res.item
-							total = tableData.length
-							data = tableData.filter((item, index) => {
-								const idx = index - (pageCurrent - 1) * pageSize
-								return idx < pageSize && idx >= 0
-							})
-						} else {
-							data = res
-						}
+				} = e.detail
+				this.options.pageCurrent = 1 // 重置分页
+				this.options.pageSizeIndex = value
+				this.getTabelData(this.query)
+			},
 
-						setTimeout(() => {
-							typeof success === 'function' && success({
-								data: data,
-								total: total
-							})
-						}, 500)
+			changeChartTab(id, index, name) {
+				this.getChartData(this.query, id, name)
+			},
+
+			getAllData(query) {
+				this.getPanelData(query)
+				this.getChartData(query)
+				this.getTabelData(query)
+			},
+
+			getChartData(query, field = 'new_user_count', name = '新增用户') {
+				const {
+					pageCurrent
+				} = this.options
+				query = stringifyQuery(query)
+				console.log('..............Chart query：', query);
+				const db = uniCloud.database()
+				db.collection('opendb-stat-app-session-result')
+					.where(query)
+					.field(`${field}, start_time, stat_date`)
+					.orderBy('start_time', 'asc')
+					.get({
+						getCount: true
+					})
+					.then(res => {
+						const {
+							count,
+							data
+						} = res.result
+						// console.log('.......chart:', data);
+						const options = {
+							categories: [],
+							series: [{
+								name,
+								data: []
+							}]
+						}
+						this.chartData = []
+						for (const item of data) {
+							const x = item.stat_date
+							const y = item[field]
+							if (y) {
+								options.series[0].data.push(y)
+								options.categories.push(x)
+							}
+						}
+						this.chartData = options
+					}).catch((err) => {
+						console.error(err)
+						// err.message 错误信息
+						// err.code 错误码
+					}).finally(() => {
+						this.loading = false
 					})
 			},
+
+			getTabelData(query) {
+				const {
+					pageCurrent
+				} = this.options
+				query = stringifyQuery(query)
+				console.log('..............Table query：', query);
+				this.loading = true
+				const db = uniCloud.database()
+				db.collection('opendb-stat-app-session-result')
+					.where(query)
+					.skip((pageCurrent - 1) * this.pageSize)
+					.limit(this.pageSize)
+					.orderBy('start_time', 'asc')
+					.get({
+						getCount: true
+					})
+					.then(res => {
+						const {
+							count,
+							data
+						} = res.result
+						// console.log('.......table:', data);
+						for (const item of data) {
+							mapfields(fieldsMap, item, item)
+						}
+						this.tableData = []
+						this.options.total = count
+						this.tableData = data
+					}).catch((err) => {
+						console.error(err)
+						// err.message 错误信息
+						// err.code 错误码
+					}).finally(() => {
+						this.loading = false
+					})
+			},
+
+			getPanelData(query) {
+				query = stringifyQuery(query)
+				console.log('..............Panel query：', query);
+				const db = uniCloud.database()
+				const subTable = db.collection('opendb-stat-app-session-result')
+					.where(query)
+					.groupBy('appid')
+					.groupField(
+						'sum(new_user_count) as total_new_user_count, sum(active_user_count) as total_active_user_count, sum(page_visit_count) as total_page_visit_count, sum(app_launch_count) as total_app_launch_count, avg(avg_session_time) as total_avg_session_time, avg(avg_user_time) as total_avg_user_time, avg(bounce_rate) as total_bounce_rate, max(total_users) as total_total_users'
+					)
+					.orderBy('start_time', 'desc')
+					.get({
+						getCount: true
+					})
+					.then(res => {
+						console.log('.......table:', res);
+						const items = res.result.data[0]
+						this.panelData = []
+						this.panelData = mapfields(fieldsMap, items, undefined, 'total_')
+					})
+			},
+
+			navTo(id) {
+				const url = `/pages/uni-stat/overview/overview?id=${id}`
+				uni.navigateTo({
+					url
+				})
+			}
 		}
 
 	}
 </script>
 
-<style lang="scss">
-	.flex {
-		display: flex;
-		align-items: center;
-	}
-
-	.label-text {
-		font-size: 14px;
-		color: #666;
-		margin-right: 5px;
-	}
-
-	.uni-stat {
-		&--x {
-			border-radius: 4px;
-			padding: 15px;
-			box-shadow: -1px -1px 5px 0 rgba(0, 0, 0, 0.1);
-		}
-
-		&--sum {
-			display: flex;
-			justify-content: space-around;
-			flex-wrap: wrap;
-
-			&-item {
-				text-align: center;
-				margin: 10px 30px;
-			}
-
-			&-item-title {
-				min-height: 17px;
-				font-size: 12px;
-				color: #666;
-			}
-
-			&-item-today {
-				font-size: 24px;
-				line-height: 48px;
-				font-weight: 700;
-				color: #333;
-			}
-
-			&-item-yesterday {
-				font-size: 14px;
-				color: #666;
-			}
-		}
-
-		&--tab {
-			display: flex;
-
-			&-item {
-				font-size: 14px;
-				color: #666;
-				text-align: center;
-				margin-right: 30px;
-				padding: 2px 0;
-
-				&-active {
-					color: $uni-color-primary;
-					border-bottom: 1px solid $uni-color-primary;
-				}
-			}
-
-		}
+<style>
+	.uni-stat-panel {
+		box-shadow: unset;
+		border-bottom: 1px solid #eee;
+		padding: 0;
+		margin: 0 15px;
 	}
 </style>

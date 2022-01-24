@@ -26,7 +26,7 @@
 					<uni-stat-tabs type="boldLine" :tabs="types" v-model="type"
 						style="line-height: 40px; margin-bottom: -17px;" />
 				</view>
-				<uni-stat-panel :items="panelData" style="box-shadow: unset; border-bottom: 1px solid #eee;" />
+				<uni-stat-panel :items="panelData" class="uni-stat-panel" />
 				<uni-stat-tabs type="box" :tabs="fields" v-model="field" class="mb-l" />
 				<view class="p-m">
 					<view class="uni-charts-box">
@@ -346,5 +346,12 @@
 
 	.line-bottom {
 		border-bottom: 2px solid #eee;
+	}
+
+	.uni-stat-panel {
+		box-shadow: unset;
+		border-bottom: 1px solid #eee;
+		padding: 0;
+		margin: 0 15px;
 	}
 </style>
