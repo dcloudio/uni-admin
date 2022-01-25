@@ -1,13 +1,13 @@
 export default [{
-	title: '日期',
-	field: 'stat_date',
+	title: '渠道值',
+	field: 'channel_code',
 	tooltip: '',
 	formatter: '',
 }, {
-	title: '新增用户',
-	field: 'new_user_count',
+	title: '渠道名称',
+	field: 'channel_name',
 	tooltip: '',
-	value: 0
+	formatter: '',
 }, {
 	title: '活跃用户',
 	field: 'active_user_count',

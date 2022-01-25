@@ -3,12 +3,14 @@
 		<view class="uni-header hide-on-phone">
 			<view class="uni-group">
 				<view class="uni-title">渠道（app）</view>
-				<view class="uni-sub-title">支持Android App多渠道统计。设置App渠道包的方法，请参考 https://ask.dcloud.net.cn/article/35974。</view>
+				<view class="uni-sub-title">支持Android App多渠道统计。设置App渠道包的方法，请参考 https://ask.dcloud.net.cn/article/35974。
+				</view>
 			</view>
 		</view>
 		<view class="uni-container">
 			<view class="uni-stat--x flex">
 				<uni-stat-select mode="app" label="应用选择" v-model="query.appid" />
+				<uni-stat-select mode="version" label="版本选择" v-model="query.version_id" />
 			</view>
 			<view class="uni-stat--x">
 				<uni-stat-tabs label="平台选择" type="boldLine" mode="platform" v-model="query.platform_id" />
@@ -28,7 +30,8 @@
 			</view>
 
 			<view class="uni-stat--x p-m">
-				<uni-stat-table :data="tableData" :filedsMap="fieldsMap" :loading="loading" />
+				<uni-stat-table :data="tableData" :filedsMap="fieldsMap.slice(0, fieldsMap.length-1)"
+					:loading="loading" />
 				<view class="uni-pagination-box">
 					<picker class="select-picker" mode="selector" :value="options.pageSizeIndex"
 						:range="options.pageSizeRange" @change="changePageSize">
@@ -64,7 +67,7 @@
 				fieldsMap,
 				query: {
 					dimension: "day",
-					appid: '',
+					appid: "61c041fb34458700013e700a",
 					platform_id: '',
 					start_time: [],
 				},
@@ -110,6 +113,13 @@
 					}
 				})
 				return tabs
+			},
+			queryStr() {
+				let defaultQuery = ''
+				if (!this.query.platform_id) {
+					defaultQuery = 'platform_id == "61c046e691a75000014c255f" || platform_id == "61c046e691a75000014c2560"'
+				}
+				return stringifyQuery(this.query, defaultQuery)
 			}
 		},
 		watch: {
@@ -117,7 +127,7 @@
 				deep: true,
 				handler(val) {
 					this.options.pageCurrent = 1 // 重置分页
-					this.getAllData(val)
+					this.getAllData(this.queryStr)
 				}
 			}
 		},
@@ -133,7 +143,7 @@
 			},
 			changePageCurrent(e) {
 				this.options.pageCurrent = e.current
-				this.getTabelData(this.query)
+				this.getTabelData(this.queryStr)
 			},
 
 			changePageSize(e) {
@@ -142,11 +152,11 @@
 				} = e.detail
 				this.options.pageCurrent = 1 // 重置分页
 				this.options.pageSizeIndex = value
-				this.getTabelData(this.query)
+				this.getTabelData(this.queryStr)
 			},
 
 			changeChartTab(id, index, name) {
-				this.getChartData(this.query, id, name)
+				this.getChartData(this.queryStr, id, name)
 			},
 
 			getAllData(query) {
@@ -155,17 +165,17 @@
 				this.getTabelData(query)
 			},
 
-			getChartData(query, field = 'new_user_count', name = '新增用户') {
+			getChartData(query, field = 'new_user_count') {
 				const {
 					pageCurrent
 				} = this.options
-				query = stringifyQuery(query)
 				console.log('..............Chart query：', query);
 				const db = uniCloud.database()
 				db.collection('opendb-stat-app-session-result')
 					.where(query)
-					.field(`${field}, start_time, stat_date`)
-					.orderBy('start_time', 'asc')
+					.groupBy('channel_id,stat_date')
+					.groupField(`sum(${field}) as total_${field}`)
+					.orderBy('stat_date', 'asc')
 					.get({
 						getCount: true
 					})
@@ -174,23 +184,50 @@
 							count,
 							data
 						} = res.result
-						// console.log('.......chart:', data);
+						console.log('.......chart:', data);
 						const options = {
 							categories: [],
-							series: [{
-								name,
-								data: []
-							}]
+							series: []
 						}
-						this.chartData = []
-						for (const item of data) {
-							const x = item.stat_date
-							const y = item[field]
-							if (y) {
-								options.series[0].data.push(y)
-								options.categories.push(x)
+						const hasChannels = []
+						data.forEach(item => {
+							if (hasChannels.indexOf(item.channel_id) < 0) {
+								hasChannels.push(item.channel_id)
 							}
-						}
+						})
+						const hasDates = []
+						data.forEach(item => {
+							if (hasDates.indexOf(item.stat_date) < 0) {
+								hasDates.push(item.stat_date)
+							}
+						})
+						console.log(9999, hasDates);
+						hasChannels.forEach((channel, index) => {
+							const line = options.series[index] = {
+								name: channel,
+								data: []
+							}
+							const xAxis = options.categories
+							// hasDates.forEach(date => {
+								for (const item of data) {
+									const x = item.stat_date
+									const y = item[`total_${field}`]
+									const dateIndex = xAxis.indexOf(x)
+									if (channel === item.channel_id) {
+										if (dateIndex < 0) {
+											xAxis.push(x)
+											line.data.push(y)
+										} else {
+											line.data[dateIndex] = y
+										}
+									}
+
+								}
+							// })
+						})
+						console.log(6666666, options);
+						this.chartData = []
+
 						this.chartData = options
 					}).catch((err) => {
 						console.error(err)
@@ -201,16 +238,24 @@
 					})
 			},
 
+			getChannels() {
+				const db = uniCloud.database()
+				return db.collection('opendb-stat-app-channels')
+					.get()
+			},
+
 			getTabelData(query) {
 				const {
 					pageCurrent
 				} = this.options
-				query = stringifyQuery(query)
-				console.log('..............Table query：', query);
 				this.loading = true
 				const db = uniCloud.database()
 				db.collection('opendb-stat-app-session-result')
 					.where(query)
+					.groupBy('appid, channel_id')
+					.groupField(
+						'sum(new_user_count) as total_new_user_count, sum(active_user_count) as total_active_user_count, sum(page_visit_count) as total_page_visit_count, sum(app_launch_count) as total_app_launch_count, avg(avg_session_time) as total_avg_session_time, avg(avg_user_time) as total_avg_user_time, avg(bounce_rate) as total_bounce_rate'
+					)
 					.skip((pageCurrent - 1) * this.pageSize)
 					.limit(this.pageSize)
 					.orderBy('start_time', 'asc')
@@ -223,12 +268,26 @@
 							data
 						} = res.result
 						// console.log('.......table:', data);
-						for (const item of data) {
-							mapfields(fieldsMap, item, item)
-						}
-						this.tableData = []
-						this.options.total = count
-						this.tableData = data
+
+						this.getChannels().then(res => {
+							const channels = res.result.data
+							for (const item of data) {
+								channels.forEach(channel => {
+									if (item.channel_id === channel._id) {
+										item.channel_code = channel.channel_code
+										item.channel_name = channel.channel_name
+									}
+								})
+							}
+						}).finally(() => {
+							for (const item of data) {
+								mapfields(fieldsMap, item, item, 'total_')
+							}
+							this.tableData = []
+							this.options.total = count
+							this.tableData = data
+						})
+
 					}).catch((err) => {
 						console.error(err)
 						// err.message 错误信息
@@ -238,9 +297,18 @@
 					})
 			},
 
+			createStr(maps, fn, prefix = 'total_') {
+				const strArr = []
+				maps.forEach(mapper => {
+					if (field.hasOwnProperty('value')) {
+						const fieldName = mapper.field
+						strArr.push(`${fn}(${fieldName}) as ${prefix + fieldName}`)
+					}
+				})
+				return strArr.join()
+			},
+
 			getPanelData(query) {
-				query = stringifyQuery(query)
-				console.log('..............Panel query：', query);
 				const db = uniCloud.database()
 				const subTable = db.collection('opendb-stat-app-session-result')
 					.where(query)
@@ -253,7 +321,6 @@
 						getCount: true
 					})
 					.then(res => {
-						console.log('.......table:', res);
 						const items = res.result.data[0]
 						this.panelData = []
 						this.panelData = mapfields(fieldsMap, items, undefined, 'total_')
