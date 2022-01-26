@@ -8,7 +8,11 @@ const uniIdConfig = createConfig({
 const db = uniCloud.database()
 const dbCmd = db.command
 const usersDB = db.collection('uni-id-users')
+const deviceDB = db.collection('uni-id-device')
 exports.main = async (event, context) => {
+	console.log({
+		context
+	});
 	//UNI_WYQ:这里的uniID换成新的，保证多人访问不会冲突
 	uniID = uniID.createInstance({
 		context
@@ -16,9 +20,9 @@ exports.main = async (event, context) => {
 	console.log('event : ' + JSON.stringify(event))
 	/*
 	1.event为客户端 uniCloud.callFunction填写的data的值，这里介绍一下其中的属性
-	  action：表示要执行的任务名称、比如：登录login、退出登录 logout等
-	  params：业务数据内容
-	  uniIdToken：系统自动传递的token，数据来源客户端的 uni.getStorageSync('uni_id_token')
+		action：表示要执行的任务名称、比如：登录login、退出登录 logout等
+		params：业务数据内容
+		uniIdToken：系统自动传递的token，数据来源客户端的 uni.getStorageSync('uni_id_token')
 	*/
 	const {
 		action,
@@ -26,13 +30,13 @@ exports.main = async (event, context) => {
 		inviteCode
 	} = event;
 	const deviceInfo = event.deviceInfo || {};
-	let params = event.params || {};
+	let params = event.params || {},
+		tokenExpired;
 	/*
 	2.在某些操作之前我们要对用户对身份进行校验（也就是要检查用户的token）再将得到的uid写入params.uid
-	  校验用到的方法是uniID.checkToken 详情：https://uniapp.dcloud.io/uniCloud/uni-id?id=checktoken
-
-	  讨论，我们假设一个这样的场景，代码如下。
-	  如：
+		校验用到的方法是uniID.checkToken 详情：https://uniapp.dcloud.io/uniCloud/uni-id?id=checktoken
+		讨论，我们假设一个这样的场景，代码如下。
+		如：
 		uniCloud.callFunction({
 			name:"xxx",
 			data:{
@@ -41,8 +45,8 @@ exports.main = async (event, context) => {
 				}
 			}
 		})
-	  用户就这样轻易地伪造了他人的uid传递给服务端，有一句话叫：前端传来的数据都是不可信任的
-	  所以这里我们需要将uniID.checkToken返回的uid写入到params.uid
+		用户就这样轻易地伪造了他人的uid传递给服务端，有一句话叫：前端传来的数据都是不可信任的
+		所以这里我们需要将uniID.checkToken返回的uid写入到params.uid
 	*/
 	let noCheckAction = ['register', 'checkToken', 'login', 'logout', 'sendSmsCode', 'getNeedCaptcha',
 		'createCaptcha', 'verifyCaptcha', 'refreshCaptcha', 'inviteLogin', 'loginByWeixin',
@@ -60,6 +64,7 @@ exports.main = async (event, context) => {
 			return payload
 		}
 		params.uid = payload.uid
+		tokenExpired = payload.tokenExpired
 	}
 
 	//禁止前台用户传递角色
@@ -73,7 +78,7 @@ exports.main = async (event, context) => {
 	}
 
 	// 3.注册成功后触发。
-	async function registerSuccess(uid) {
+	async function registerSuccess(res) {
 		//用户接受邀请
 		if (inviteCode) {
 			await uniID.acceptInvite({
@@ -82,18 +87,15 @@ exports.main = async (event, context) => {
 			});
 		}
 		//添加当前用户设备信息
-		await db.collection('uni-id-device').add({
-			...deviceInfo,
-			user_id: uid
-		})
+		await addDeviceInfo(res)
 	}
 	//4.记录成功登录的日志方法
 	const loginLog = async (res = {}) => {
 		const now = Date.now()
 		const uniIdLogCollection = db.collection('uni-id-log')
 		let logData = {
-			deviceId: params.deviceId || context.DEVICEID,
-			ip: params.ip || context.CLIENTIP,
+			deviceId: context.DEVICEID,
+			ip: context.CLIENTIP,
 			type: res.type,
 			ua: context.CLIENTUA,
 			create_date: now
@@ -106,23 +108,54 @@ exports.main = async (event, context) => {
 				delete res.userInfo.password
 			}
 			if (res.type == 'register') {
-				await registerSuccess(res.uid)
+				await registerSuccess(res)
 			} else {
 				if (Object.keys(deviceInfo).length) {
-					// console.log(979797, {
-					// 	deviceInfo,
-					// 	user_id: res
-					// });
-					//更新当前用户设备信息
-					await db.collection('uni-id-device').where({
-						user_id: res.uid
-					}).update(deviceInfo)
+					console.log(context.DEVICEID);
+					//避免重复新增设备信息，先判断是否已存在
+					let getDeviceRes = await deviceDB.where({
+						"device_id": context.DEVICEID
+					}).get()
+					if (getDeviceRes.data.length == 0) {
+						await addDeviceInfo(res)
+					} else {
+						await deviceDB.where({
+							"device_id": context.DEVICEID,
+						}).update({
+							...deviceInfo,
+							"tokenExpired": res.tokenExpired,
+							"user_id": res.uid,
+							"device_id": context.DEVICEID,
+							"ua": context.CLIENTUA,
+							"platform": context.PLATFORM,
+							"create_date": Date.now(),
+							"last_active_date": Date.now(),
+							"last_active_ip": context.CLIENTIP
+						})
+					}
 				}
 			}
 		} else {
 			logData.state = 0
 		}
 		return await uniIdLogCollection.add(logData)
+	}
+
+	async function addDeviceInfo({
+		uid,
+		tokenExpired
+	}) {
+		return await deviceDB.add({
+			...deviceInfo,
+			tokenExpired,
+			"user_id": uid,
+			"device_id": context.DEVICEID,
+			"ua": context.CLIENTUA,
+			"platform": context.PLATFORM,
+			"create_date": Date.now(),
+			"last_active_date": Date.now(),
+			"last_active_ip": context.CLIENTIP
+		})
 	}
 
 	//5.防止恶意破解登录，连续登录失败一定次数后，需要用户提供验证码
@@ -145,6 +178,16 @@ exports.main = async (event, context) => {
 
 	let res = {}
 	switch (action) { //根据action的值执行对应的操作
+		case 'renewDeviceTokenExpired':
+			return await deviceDB.where({
+				"user_id": params.uid,
+				"device_id": context.DEVICEID
+			}).update({
+				"user_id": params.uid,
+				"push_clientid": params.push_clientid,
+				tokenExpired
+			})
+			break;
 		case 'refreshSessionKey':
 			let getSessionKey = await uniID.code2SessionWeixin({
 				code: params.code
@@ -239,7 +282,7 @@ exports.main = async (event, context) => {
 				inviteCode
 			});
 			if (res.code === 0) {
-				await registerSuccess(res.uid)
+				await registerSuccess(res)
 			}
 			break;
 
@@ -353,6 +396,11 @@ exports.main = async (event, context) => {
 			break;
 		case 'logout':
 			res = await uniID.logout(uniIdToken)
+			await deviceDB.where({
+				"device_id": context.DEVICEID,
+			}).update({
+				"tokenExpired": Date.now()
+			})
 			break;
 		case 'sendSmsCode':
 			/* -开始- 测试期间，为节约资源。统一虚拟短信验证码为： 123456；开启以下代码块即可  */
@@ -511,137 +559,139 @@ exports.main = async (event, context) => {
 				}
 
 			}
+			break;
 		}
-		break;
-	case 'registerUser':
-		const {
-			userInfo
-		} = await uniID.getUserInfo({
-			uid: params.uid
-		})
-		if (userInfo.role.indexOf('admin') === -1) {
-			res = {
-				code: 403,
-				message: '非法访问, 无权限注册超级管理员',
-			}
-		} else {
-			// 过滤 dcloud_appid，注册用户成功后再提交
-			const dcloudAppidList = params.dcloud_appid
-			delete params.dcloud_appid
-			res = await uniID.register({
-				autoSetDcloudAppid: false,
-				...params
+		case 'registerUser': {
+			const {
+				userInfo
+			} = await uniID.getUserInfo({
+				uid: params.uid
 			})
-			if (res.code === 0) {
-				delete res.token
-				delete res.tokenExpired
-				await uniID.setAuthorizedAppLogin({
-					uid: res.uid,
-					dcloudAppidList
+			if (userInfo.role.indexOf('admin') === -1) {
+				res = {
+					code: 403,
+					message: '非法访问, 无权限注册超级管理员',
+				}
+			} else {
+				// 过滤 dcloud_appid，注册用户成功后再提交
+				const dcloudAppidList = params.dcloud_appid
+				delete params.dcloud_appid
+				delete params.uid
+				res = await uniID.register({
+					autoSetDcloudAppid: false,
+					...params
 				})
-			}
-		}
-		break;
-	case 'updateUser': {
-		const {
-			userInfo
-		} = await uniID.getUserInfo({
-			uid: params.uid
-		})
-		if (userInfo.role.indexOf('admin') === -1) {
-			res = {
-				code: 403,
-				message: '非法访问, 无权限注册超级管理员',
-			}
-		} else {
-			// 过滤 dcloud_appid，注册用户成功后再提交
-			const dcloudAppidList = params.dcloud_appid
-			delete params.dcloud_appid
-
-			// 过滤 password，注册用户成功后再提交
-			const password = params.password
-			delete params.password
-
-			// 过滤 uid、id
-			const id = params.id
-			delete params.id
-			delete params.uid
-
-
-			res = await uniID.updateUser({
-				uid: id,
-				...params
-			})
-			if (res.code === 0) {
-				if (password) {
-					await uniID.resetPwd({
-						uid: id,
-						password
+				if (res.code === 0) {
+					delete res.token
+					delete res.tokenExpired
+					await uniID.setAuthorizedAppLogin({
+						uid: res.uid,
+						dcloudAppidList
 					})
 				}
-				await uniID.setAuthorizedAppLogin({
+			}
+			break;
+		}
+		case 'updateUser': {
+			const {
+				userInfo
+			} = await uniID.getUserInfo({
+				uid: params.uid
+			})
+			if (userInfo.role.indexOf('admin') === -1) {
+				res = {
+					code: 403,
+					message: '非法访问, 无权限注册超级管理员',
+				}
+			} else {
+				// 过滤 dcloud_appid，注册用户成功后再提交
+				const dcloudAppidList = params.dcloud_appid
+				delete params.dcloud_appid
+
+				// 过滤 password，注册用户成功后再提交
+				const password = params.password
+				delete params.password
+
+				// 过滤 uid、id
+				const id = params.id
+				delete params.id
+				delete params.uid
+
+
+				res = await uniID.updateUser({
 					uid: id,
-					dcloudAppidList
+					...params
 				})
+				if (res.code === 0) {
+					if (password) {
+						await uniID.resetPwd({
+							uid: id,
+							password
+						})
+					}
+					await uniID.setAuthorizedAppLogin({
+						uid: id,
+						dcloudAppidList
+					})
+				}
 			}
+			break;
 		}
-		break;
-	}
-	case 'getCurrentUserInfo':
-		res = await uniID.getUserInfo({
-			uid: params.uid,
-			...params
-		})
-		break;
-	case 'managerMultiTag': {
-		const {
-			userInfo
-		} = await uniID.getUserInfo({
-			uid: params.uid
-		})
-		// 限制只有 admin 角色的用户可管理标签，如需非 admin 角色需自行实现
-		if (userInfo.role.indexOf('admin') === -1) {
+		case 'getCurrentUserInfo':
+			res = await uniID.getUserInfo({
+				uid: params.uid,
+				...params
+			})
+			break;
+		case 'managerMultiTag': {
+			const {
+				userInfo
+			} = await uniID.getUserInfo({
+				uid: params.uid
+			})
+			// 限制只有 admin 角色的用户可管理标签，如需非 admin 角色需自行实现
+			if (userInfo.role.indexOf('admin') === -1) {
+				res = {
+					code: 403,
+					message: '非法访问, 无权限修改用户标签',
+				}
+				return
+			}
+			let {
+				ids,
+				type,
+				value
+			} = params
+			if (type === 'add') {
+				res = await db.collection('uni-id-users').where({
+					_id: dbCmd.in(ids)
+				}).update({
+					tags: dbCmd.addToSet({
+						$each: value
+					})
+				})
+			} else if (type === 'del') {
+				res = await db.collection('uni-id-users').where({
+					_id: dbCmd.in(ids)
+				}).update({
+					tags: dbCmd.pull(dbCmd.in(value))
+				})
+			} else {
+				res = {
+					code: 403,
+					msg: '无效操作'
+				}
+				return
+			}
+			break;
+		}
+		// =========================== admin api end =========================
+		default:
 			res = {
 				code: 403,
-				message: '非法访问, 无权限修改用户标签',
+				msg: '非法访问'
 			}
-			return
-		}
-		let {
-			ids,
-			type,
-			value
-		} = params
-		if (type === 'add') {
-			res = await db.collection('uni-id-users').where({
-				_id: dbCmd.in(ids)
-			}).update({
-				tags: dbCmd.addToSet({
-					$each: value
-				})
-			})
-		} else if (type === 'del') {
-			res = await db.collection('uni-id-users').where({
-				_id: dbCmd.in(ids)
-			}).update({
-				tags: dbCmd.pull(dbCmd.in(value))
-			})
-		} else {
-			res = {
-				code: 403,
-				msg: '无效操作'
-			}
-			return
-		}
-		break;
-	}
-	// =========================== admin api end =========================
-	default:
-		res = {
-			code: 403,
-			msg: '非法访问'
-		}
-		break;
+			break;
 	}
 	//返回数据给客户端
 	return res
