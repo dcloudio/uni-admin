@@ -9,6 +9,11 @@ export default [{
 	tooltip: '',
 	formatter: '',
 }, {
+	title: '新增用户',
+	field: 'new_user_count',
+	tooltip: '',
+	value: 0
+}, {
 	title: '活跃用户',
 	field: 'active_user_count',
 	tooltip: '',

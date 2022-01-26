@@ -195,35 +195,26 @@
 								hasChannels.push(item.channel_id)
 							}
 						})
-						const hasDates = []
-						data.forEach(item => {
-							if (hasDates.indexOf(item.stat_date) < 0) {
-								hasDates.push(item.stat_date)
-							}
-						})
-						console.log(9999, hasDates);
 						hasChannels.forEach((channel, index) => {
 							const line = options.series[index] = {
 								name: channel,
 								data: []
 							}
 							const xAxis = options.categories
-							// hasDates.forEach(date => {
-								for (const item of data) {
-									const x = item.stat_date
-									const y = item[`total_${field}`]
-									const dateIndex = xAxis.indexOf(x)
-									if (channel === item.channel_id) {
-										if (dateIndex < 0) {
-											xAxis.push(x)
-											line.data.push(y)
-										} else {
-											line.data[dateIndex] = y
-										}
+							for (const item of data) {
+								const x = item.stat_date
+								const y = item[`total_${field}`]
+								const dateIndex = xAxis.indexOf(x)
+								if (channel === item.channel_id) {
+									if (dateIndex < 0) {
+										xAxis.push(x)
+										line.data.push(y)
+									} else {
+										line.data[dateIndex] = y
 									}
-
 								}
-							// })
+
+							}
 						})
 						console.log(6666666, options);
 						this.chartData = []
