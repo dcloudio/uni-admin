@@ -1,5 +1,7 @@
+## 1.0.14（2022-01-26）
+- 修复 uni-admin 的 'registerUser' 接口，注册用户含有多余字段 uid 
 ## 1.0.13（2022-01-26）
-新增逻辑:调用logout接口后刷新设备信息中token的有效期
+- 新增逻辑:调用logout接口后刷新设备信息中token的有效期
 ## 1.0.12（2022-01-24）
 - 优化设备信息存储逻辑
 - 新增刷新设备信息token有效期的API `renewDeviceTokenExpired`
