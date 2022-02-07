@@ -68,7 +68,7 @@
 			}
 		},
 		mounted() {
-			if (this.mode === 'platform') {
+			if (this.mode.indexOf('platform') > -1) {
 				this.getPlatform()
 			} else if (this.mode === 'date') {
 				const dates = [{
@@ -126,7 +126,13 @@
 					.field('name, code')
 					.get()
 					.then(res => {
-						const platforms = res.result.data
+						let platforms = res.result.data
+						if (this.mode === 'platform-channel') {
+							platforms = platforms.filter(item => item.code.indexOf('native') > -1)
+						}
+						if (this.mode === 'platform-scene') {
+							platforms = platforms.filter(item => item.code.indexOf('native') === -1 && item.code.indexOf('h5') === -1)
+						}
 						platforms.unshift({
 							name: '全部',
 							code: 'all'

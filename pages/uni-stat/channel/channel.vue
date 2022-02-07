@@ -13,7 +13,7 @@
 				<uni-stat-select mode="version" label="版本选择" v-model="query.version_id" />
 			</view>
 			<view class="uni-stat--x">
-				<uni-stat-tabs label="平台选择" type="boldLine" mode="platform" v-model="query.platform_id" />
+				<uni-stat-tabs label="平台选择" type="boldLine" mode="platform-channel" v-model="query.platform_id" />
 			</view>
 			<view class="uni-stat--x flex">
 				<uni-stat-tabs label="日期选择" :current="currentDateTab" mode="date" @change="changeTimeRange" />
@@ -82,11 +82,7 @@
 				// currentChartTab: ,
 				tableData: [],
 				panelData: [],
-				chartData: {},
-				defaultChart: {
-					field: 'new_user_count',
-					name: '新增用户'
-				},
+				chartData: {}
 			}
 		},
 		computed: {
@@ -187,7 +183,10 @@
 						console.log('.......chart:', data);
 						const options = {
 							categories: [],
-							series: []
+							series: [{
+								name: '暂无数据',
+								data: []
+							}]
 						}
 						const hasChannels = []
 						data.forEach(item => {

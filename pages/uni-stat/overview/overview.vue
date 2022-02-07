@@ -192,6 +192,7 @@
 								options.categories.push(x)
 							}
 						}
+						console.log(11111111111, options);
 						this.chartData = options
 
 						this.tableData = []
