@@ -9,9 +9,9 @@
 // 详细JQL语法，请参考 https://uniapp.dcloud.net.cn/uniCloud/clientdb?id=jsquery
 
 // 下面示例查询uni-id-users表的所有数据
-// db.collection('uni-stat-app-pages')
-// 	.orderBy('stat_time', 'desc')
-// 	.get()
+db.collection('opendb-stat-events-result')
+	// .orderBy('stat_time', 'desc')
+	.get()
 
 // const mainTable = db.collection('uni-stat-app-pages').getTemp()
 // const subTable = db.collection('uni-stat-app-page-view-daily')
@@ -35,7 +35,7 @@
 // db.collection('opendb-stat-app-session-result').field('active_user_count, month(add(new Date(0),start_time), "Asia/Shanghai") as month,year(add(new Date(0),start_time), "Asia/Shanghai") as year').groupBy('year,month').groupField('sum(active_user_count) as count').get()
 
 
-db.collection('opendb-stat-app-platforms').get()
+// db.collection('opendb-stat-app-platforms').get()
 
 
-db.collection('opendb-stat-loyalty-result').groupBy('appid').groupField('sum(visit_depth_data.visit_times.p_1) as p_1').get()
+// db.collection('opendb-stat-loyalty-result').groupBy('appid').groupField('sum(visit_depth_data.visit_times.p_1) as p_1').get()

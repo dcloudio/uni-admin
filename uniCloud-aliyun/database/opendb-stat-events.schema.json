@@ -14,8 +14,8 @@
 		},
 		"appid": {
 			"bsonType": "string",
-			"description": "应用表ID，对应opendb-app-list._id",
-			"foreignKey": "opendb-app-list._id"
+			"description": "统计应用ID，对应opendb-app-list.appid",
+			"foreignKey": "opendb-app-list.appid"
 		},
 		"event_key": {
 			"bsonType": "string",

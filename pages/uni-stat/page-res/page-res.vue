@@ -162,9 +162,9 @@
 								const line = lines[0]
 								if (line && Object.keys(line).length) {
 									mapfields(fieldsMap, line, item)
+									this.tableData.push(item)
 								}
 							}
-							this.tableData.push(item)
 						}
 					}).catch((err) => {
 						console.error(err)

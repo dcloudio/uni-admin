@@ -16,8 +16,10 @@
 			</view>
 			<view class="uni-stat--x flex">
 				<uni-stat-tabs label="日期选择" :current="currentDateTab" mode="date" @change="changeTimeRange" />
-				<uni-datetime-picker type="daterange" v-model="query.start_time" returnType="timestamp" :clearIcon="false"
-					class="uni-stat-datetime-picker" :class="{'uni-stat__actived': currentDateTab < 0 && !!query.start_time.length}" @change="useDatetimePicker" />
+				<uni-datetime-picker type="daterange" v-model="query.start_time" returnType="timestamp"
+					:clearIcon="false" class="uni-stat-datetime-picker"
+					:class="{'uni-stat__actived': currentDateTab < 0 && !!query.start_time.length}"
+					@change="useDatetimePicker" />
 			</view>
 			<uni-stat-panel :items="panelData" />
 			<view class="uni-stat--x p-m">
@@ -161,9 +163,9 @@
 								const line = lines[0]
 								if (line && Object.keys(line).length) {
 									mapfields(fieldsMap, line, item)
+									this.tableData.push(item)
 								}
 							}
-							this.tableData.push(item)
 						}
 					}).catch((err) => {
 						console.error(err)
