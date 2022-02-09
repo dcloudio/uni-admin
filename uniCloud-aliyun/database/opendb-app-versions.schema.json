@@ -17,9 +17,9 @@
 			"description": "应用表ID，对应opendb-app-list._id",
 			"foreignKey": "opendb-app-list._id"
 		},
-		"platform_id": {
+		"platform": {
 			"bsonType": "int",
-			"description": "应用平台ID，对应opendb-stat-app-platforms._id",
+			"description": "应用平台ID，对应opendb-stat-app-platforms.code",
 			"foreignKey": "opendb-app-list._id"
 		},
 		"version": {

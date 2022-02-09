@@ -23,14 +23,12 @@
 			</view>
 			<view class="uni-stat--x" style="padding: 15px 0;">
 				<uni-stat-panel :items="panelData" class="uni-stat-panel" />
-				<uni-stat-tabs type="box" :tabs="chartTabs" class="mb-l" @change="changeChartTab" />
 				<qiun-data-charts type="area" :echartsApp="true" :chartData="chartData"
 					:opts="{extra:{area:{type:'curve',addLine:true,gradient:true}}}" />
 			</view>
 
 			<view class="uni-stat--x p-m">
-				<uni-stat-table :data="tableData" :filedsMap="fieldsMap.slice(0, fieldsMap.length-1)"
-					:loading="loading" />
+				<uni-stat-table :data="tableData" :filedsMap="fieldsMap" :loading="loading" />
 				<view class="uni-pagination-box">
 					<picker class="select-picker" mode="selector" :value="options.pageSizeIndex"
 						:range="options.pageSizeRange" @change="changePageSize">
@@ -65,7 +63,6 @@
 			return {
 				fieldsMap,
 				query: {
-					dimension: "day",
 					appid: "61c041fb34458700013e700a",
 					platform_id: '',
 					start_time: [],
@@ -92,29 +89,8 @@
 				} = this.options
 				return pageSizeRange[pageSizeIndex]
 			},
-			chartTabs() {
-				const tabs = []
-				fieldsMap.forEach(item => {
-					const {
-						field: _id,
-						title: name
-					} = item
-					const isTab = item.hasOwnProperty('value')
-					if (_id && name && isTab) {
-						tabs.push({
-							_id,
-							name
-						})
-					}
-				})
-				return tabs
-			},
 			queryStr() {
-				let defaultQuery = ''
-				if (!this.query.platform_id) {
-					defaultQuery = 'platform_id == "61c046e691a75000014c255f" || platform_id == "61c046e691a75000014c2560"'
-				}
-				return stringifyQuery(this.query, defaultQuery)
+				return stringifyQuery(this.query)
 			}
 		},
 		watch: {
@@ -136,6 +112,7 @@
 					end = getTimeOfSomeDayAgo(0) - 1
 				this.query.start_time = [start, end]
 			},
+
 			changePageCurrent(e) {
 				this.options.pageCurrent = e.current
 				this.getTabelData(this.queryStr)
@@ -150,26 +127,22 @@
 				this.getTabelData(this.queryStr)
 			},
 
-			changeChartTab(id, index, name) {
-				this.getChartData(this.queryStr, id, name)
-			},
-
 			getAllData(query) {
-				this.getPanelData(query)
+				// this.getPanelData(query)
 				this.getChartData(query)
-				this.getTabelData(query)
+				this.getTableData(query)
 			},
 
-			getChartData(query, field = 'new_user_count') {
+			getChartData(query, field = 'day_count') {
 				const {
 					pageCurrent
 				} = this.options
 				console.log('..............Chart query：', query);
 				const db = uniCloud.database()
-				db.collection('opendb-stat-app-session-result')
+				db.collection('opendb-stat-error-result')
 					.where(query)
-					.groupBy('channel_id,stat_date')
-					.groupField(`sum(${field}) as total_${field}`)
+					.groupBy('stat_date')
+					.groupField('sum(count) as total_day_count')
 					.orderBy('stat_date', 'asc')
 					.get({
 						getCount: true
@@ -180,44 +153,46 @@
 							data
 						} = res.result
 						console.log('.......chart:', data);
-						const options = {
-							categories: [],
-							series: [{
-								name: '暂无数据',
-								data: []
-							}]
-						}
-						const hasChannels = []
-						data.forEach(item => {
-							if (hasChannels.indexOf(item.channel_id) < 0) {
-								hasChannels.push(item.channel_id)
+
+						let dayAppLaunchs = []
+						this.getDayLaunch(query).then(res => {
+							dayAppLaunchs = res.result.data
+							console.log(3333333333, dayAppLaunchs);
+						}).finally(() => {
+							const options = {
+								categories: [],
+								series: [{
+									name: '暂无数据',
+									data: []
+								}]
 							}
-						})
-						hasChannels.forEach((channel, index) => {
-							const line = options.series[index] = {
-								name: channel,
+							const countLine = options.series[0] = {
+								name: '错误次数',
+								data: []
+							}
+							const rateLine = options.series[1] = {
+								name: '错误率',
 								data: []
 							}
 							const xAxis = options.categories
 							for (const item of data) {
 								const x = item.stat_date
-								const y = item[`total_${field}`]
-								const dateIndex = xAxis.indexOf(x)
-								if (channel === item.channel_id) {
-									if (dateIndex < 0) {
-										xAxis.push(x)
-										line.data.push(y)
-									} else {
-										line.data[dateIndex] = y
-									}
+								const countY = item[`total_${field}`]
+								xAxis.push(x)
+								countLine.data.push(countY)
+								if (dayAppLaunchs.length) {
+									dayAppLaunchs.forEach(day => {
+										if (day.stat_date === x) {
+											const rateY = item[`total_${field}`] / day.day_app_launch_count
+											rateLine.data.push(rateY)
+										}
+									})
 								}
-
 							}
+							console.log(6666666, options);
+							this.chartData = []
+							this.chartData = options
 						})
-						console.log(6666666, options);
-						this.chartData = []
-
-						this.chartData = options
 					}).catch((err) => {
 						console.error(err)
 						// err.message 错误信息
@@ -227,27 +202,53 @@
 					})
 			},
 
-			getChannels() {
+			getTotalCount(query) {
 				const db = uniCloud.database()
-				return db.collection('opendb-stat-app-channels')
+				return db.collection('opendb-stat-error-result')
+					.where(query)
+					.groupBy('appid')
+					.groupField('sum(count) as total_count')
 					.get()
 			},
 
-			getTabelData(query) {
+			getTotalLaunch(query) {
+				const db = uniCloud.database()
+				return db.collection('opendb-stat-app-session-result')
+					.where(query)
+					.groupBy('appid')
+					.groupField('sum(app_launch_count) as total_app_launch_count')
+					.get()
+			},
+
+			getDayLaunch(query) {
+				const db = uniCloud.database()
+				return db.collection('opendb-stat-app-session-result')
+					.where(query)
+					.groupBy('stat_date')
+					.groupField('sum(app_launch_count) as day_app_launch_count')
+					.orderBy('stat_date', 'asc')
+					.get()
+			},
+
+			getTableData(query = stringifyQuery(this.query)) {
 				const {
 					pageCurrent
 				} = this.options
+				console.log('..............query：', query);
 				this.loading = true
 				const db = uniCloud.database()
-				db.collection('opendb-stat-app-session-result')
-					.where(query)
-					.groupBy('appid, channel_id')
-					.groupField(
-						'sum(new_user_count) as total_new_user_count, sum(active_user_count) as total_active_user_count, sum(page_visit_count) as total_page_visit_count, sum(app_launch_count) as total_app_launch_count, avg(avg_session_time) as total_avg_session_time, avg(avg_user_time) as total_avg_user_time, avg(bounce_rate) as total_bounce_rate'
-					)
+				const filterAppid = stringifyQuery({
+					appid: this.query.appid
+				})
+				const mainTableTemp = db.collection('opendb-stat-error-result').where(query).getTemp()
+				const subTableTemp = db.collection('opendb-app-versions')
+					.where(filterAppid)
+					.orderBy('start_time ', 'desc ')
+					.getTemp()
+
+				db.collection(mainTableTemp, subTableTemp)
 					.skip((pageCurrent - 1) * this.pageSize)
 					.limit(this.pageSize)
-					.orderBy('start_time', 'asc')
 					.get({
 						getCount: true
 					})
@@ -256,25 +257,49 @@
 							count,
 							data
 						} = res.result
-						// console.log('.......table:', data);
-
-						this.getChannels().then(res => {
-							const channels = res.result.data
-							for (const item of data) {
-								channels.forEach(channel => {
-									if (item.channel_id === channel._id) {
-										item.channel_code = channel.channel_code
-										item.channel_name = channel.channel_name
+						const tempData = []
+						const panelData = []
+						for (const item of data) {
+							const lines = item.version_id
+							if (Array.isArray(lines)) {
+								delete(item.version_id)
+								const version = lines[0].version
+								if (version) {
+									item.version = version
+								}
+							}
+							tempData.push(item)
+						}
+						this.getTotalCount(query).then(res => {
+							const total = res.result.data[0]
+							const total_count = total && total.total_count
+							if (total_count) {
+								tempData.forEach(item => item.total_count = Number(total_count))
+								panelData[0] = {
+									title: '错误总数',
+									value: total_count
+								}
+							}
+							let launch_count = ''
+							this.getTotalLaunch(query).then(res => {
+								const total = res.result.data[0]
+								launch_count = total && total.total_app_launch_count
+								if (total_count && launch_count) {
+									panelData[1] = {
+										title: '错误率',
+										value: total_count / launch_count
 									}
-								})
-							}
+								}
+							}).finally(() => {
+								this.panelData = []
+								this.panelData = panelData
+							})
+
 						}).finally(() => {
-							for (const item of data) {
-								mapfields(fieldsMap, item, item, 'total_')
-							}
 							this.tableData = []
 							this.options.total = count
-							this.tableData = data
+							tempData.forEach(item => mapfields(fieldsMap, item, item))
+							this.tableData = tempData
 						})
 
 					}).catch((err) => {
@@ -299,7 +324,7 @@
 
 			getPanelData(query) {
 				const db = uniCloud.database()
-				const subTable = db.collection('opendb-stat-app-session-result')
+				const subTable = db.collection('opendb-stat-error-result')
 					.where(query)
 					.groupBy('appid')
 					.groupField(

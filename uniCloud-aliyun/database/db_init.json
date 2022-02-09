@@ -3,6 +3,23 @@
 // 编写完毕后对本文件点右键，可按配置规则创建表和添加数据
 
 {
+	"opendb-app-versions": {
+		"data": [{
+			"_id": "61c041fb34458700013e700a",
+			"appid": "61c041fb34458700013e700a",
+			"platform": "61c046e691a75000014c255f",
+			"version": "1.0.0",
+			"create_time": 163998979103,
+			"last_modify_time": 163998979103
+		}, {
+			"_id": "61c041fb34458700013e700b",
+			"appid": "61c041fb34458700013e700a",
+			"platform": "61c046e691a75000014c255f",
+			"version": "2.0.0",
+			"create_time": 163998979103,
+			"last_modify_time": 163998979103
+		}]
+	},
 	"opendb-stat-app-platforms": {
 		"data": [{
 			"_id": "61c046e691a75000014c255f",
@@ -1055,6 +1072,43 @@
 			"stat_date": 20220110,
 			"start_time": 1641812842552,
 			"end_time": 1641816442552
+		}]
+	},
+
+	"opendb-stat-error-result": {
+		"data": [{
+			"appid": "61c041fb34458700013e700a",
+			"version_id": "61c041fb34458700013e700a",
+			"platform_id": "61c046e691a75000014c255f",
+			"channel_id": "61c041fb34458700013e700a",
+			"count": 1,
+			"hash": "TypeError: Cannot read property '$scope' of undefined at Q( & lt; anonymous & gt;: 8: 193314)at i.value( & lt; anonymous & gt;: 8: 196185)at i.value( & lt; anonymous & gt;: 8: 202015)at gn.onHide( & lt; anonymous & gt;: 8: 202755)at Array.map( & lt; anonymous & gt;)",
+			"last_time": 1642089600000,
+			"stat_date": 20220114,
+			"start_time": 1642089600000,
+			"end_time": 1610639999999
+		}, {
+			"appid": "61c041fb34458700013e700a",
+			"version_id": "61c041fb34458700013e700b",
+			"platform_id": "61c046e691a75000014c255f",
+			"channel_id": "61c041fb34458700013e700a",
+			"count": 3,
+			"hash": "TypeError: Cannot read property 'indexOf' of undefinedat Xr( & lt; anonymous & gt;: 2: 93045)at & lt;anonymous & gt;: 2: 169472at createUploadTask( & lt; anonymous & gt;: 2: 169791)at qc( & lt; anonymous & gt;: 2: 181540)at uploadFile( & lt; anonymous & gt;: 2: 254995)at & lt;anonymous & gt;: 2: 88391at L( & lt; anonymous & gt;: 2: 55003)at Object.vp. & lt;computed & gt;.gp. & lt;computed & gt;[as uploadFile]( & lt; anonymous & gt;: 2: 262798)at Be( & lt; anonymous & gt;: 2: 367327)at o( & lt; anonymous & gt;: 2: 368592)",
+			"last_time": 1642003200000,
+			"stat_date": 20220113,
+			"start_time": 1642003200000,
+			"end_time": 1642175999999
+		}, {
+			"appid": "61c041fb34458700013e700a",
+			"version_id": "61c041fb34458700013e700a",
+			"platform_id": "61c046e691a75000014c255f",
+			"channel_id": "61c041fb34458700013e700a",
+			"count": 2,
+			"hash": "TypeError: Cannot read property '$scope' of undefined",
+			"last_time": 1641916800000,
+			"stat_date": 20220112,
+			"start_time": 1641916800000,
+			"end_time": 1642003199999
 		}]
 	},
 

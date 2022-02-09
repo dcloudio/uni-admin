@@ -29,8 +29,8 @@
 		},
 		"version_id": {
 			"bsonType": "string",
-			"description": "应用版本ID，对应opendb-stat-app-versions._id",
-			"foreignKey": "opendb-stat-app-versions._id"
+			"description": "应用版本ID，对应opendb-app-versions._id",
+			"foreignKey": "opendb-app-versions._id"
 		},
 		"sdk_version": {
 			"bsonType": "string",
