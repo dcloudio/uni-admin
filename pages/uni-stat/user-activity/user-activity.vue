@@ -167,7 +167,7 @@
 				query = stringifyQuery(query)
 				const db = uniCloud.database()
 				if (type === 'day') {
-					db.collection('opendb-stat-app-session-result')
+					db.collection('opendb-stat-result')
 						.where(query)
 						.field(`${field}, start_time, stat_date`)
 						.orderBy('start_time', 'asc')
@@ -221,7 +221,7 @@
 				console.log('..............Table query：', query);
 				this.loading = true
 				const db = uniCloud.database()
-				db.collection('opendb-stat-app-session-result')
+				db.collection('opendb-stat-result')
 					.where(query)
 					.field('active_user_count, start_time, stat_date')
 					.skip((pageCurrent - 1) * this.pageSize)
@@ -280,7 +280,7 @@
 					pageCurrent
 				} = this.options
 				const db = uniCloud.database()
-				return db.collection('opendb-stat-app-session-result')
+				return db.collection('opendb-stat-result')
 					.where(query)
 					.field(
 						`active_user_count, start_time, ${type}(add(new Date(0),start_time), "Asia/Shanghai") as ${type},year(add(new Date(0),start_time), "Asia/Shanghai") as year`

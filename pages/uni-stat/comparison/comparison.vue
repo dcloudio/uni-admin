@@ -78,7 +78,7 @@
 				query = stringifyQuery(query)
 				console.log('.............query:', query);
 				const db = uniCloud.database()
-				db.collection('opendb-stat-app-session-result')
+				db.collection('opendb-stat-result')
 					.where(query)
 					.field(
 						`active_user_count,new_user_count,total_users,platform_id`
@@ -100,7 +100,7 @@
 				} = this.options
 				query = stringifyQuery(query)
 				const db = uniCloud.database()
-				const sub = db.collection('opendb-stat-app-session-result')
+				const sub = db.collection('opendb-stat-result')
 					.where(query)
 					.field(
 						`active_user_count, new_user_count, platform_id, ${type}(add(new Date(0),start_time), "Asia/Shanghai") as ${type},year(add(new Date(0),start_time), "Asia/Shanghai") as year`

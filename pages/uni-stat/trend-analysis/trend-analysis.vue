@@ -168,7 +168,7 @@
 				query = stringifyQuery(query)
 				console.log('..............Chart query：', query);
 				const db = uniCloud.database()
-				db.collection('opendb-stat-app-session-result')
+				db.collection('opendb-stat-result')
 					.where(query)
 					.field(`${field}, start_time, stat_date`)
 					.orderBy('start_time', 'asc')
@@ -215,7 +215,7 @@
 				console.log('..............Table query：', query);
 				this.loading = true
 				const db = uniCloud.database()
-				db.collection('opendb-stat-app-session-result')
+				db.collection('opendb-stat-result')
 					.where(query)
 					.skip((pageCurrent - 1) * this.pageSize)
 					.limit(this.pageSize)
@@ -248,7 +248,7 @@
 				query = stringifyQuery(query)
 				console.log('..............Panel query：', query);
 				const db = uniCloud.database()
-				const subTable = db.collection('opendb-stat-app-session-result')
+				const subTable = db.collection('opendb-stat-result')
 					.where(query)
 					.groupBy('appid')
 					.groupField(

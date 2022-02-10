@@ -167,7 +167,7 @@
 				} = this.options
 				console.log('..............Chart query：', query);
 				const db = uniCloud.database()
-				db.collection('opendb-stat-app-session-result')
+				db.collection('opendb-stat-result')
 					.where(query)
 					.groupBy('channel_id,stat_date')
 					.groupField(`sum(${field}) as total_${field}`)
@@ -240,7 +240,7 @@
 				} = this.options
 				this.loading = true
 				const db = uniCloud.database()
-				db.collection('opendb-stat-app-session-result')
+				db.collection('opendb-stat-result')
 					.where(query)
 					.groupBy('appid, channel_id')
 					.groupField(
@@ -300,7 +300,7 @@
 
 			getPanelData(query) {
 				const db = uniCloud.database()
-				const subTable = db.collection('opendb-stat-app-session-result')
+				const subTable = db.collection('opendb-stat-result')
 					.where(query)
 					.groupBy('appid')
 					.groupField(

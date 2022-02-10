@@ -213,7 +213,7 @@
 
 			getTotalLaunch(query) {
 				const db = uniCloud.database()
-				return db.collection('opendb-stat-app-session-result')
+				return db.collection('opendb-stat-result')
 					.where(query)
 					.groupBy('appid')
 					.groupField('sum(app_launch_count) as total_app_launch_count')
@@ -222,7 +222,7 @@
 
 			getDayLaunch(query) {
 				const db = uniCloud.database()
-				return db.collection('opendb-stat-app-session-result')
+				return db.collection('opendb-stat-result')
 					.where(query)
 					.groupBy('stat_date')
 					.groupField('sum(app_launch_count) as day_app_launch_count')

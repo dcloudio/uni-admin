@@ -30,13 +30,13 @@
 					<uni-td>
 						<view class="name">{{item.name}}</view>
 					</uni-td>
-					<uni-td>{{item.today_num_new_visitor}}</uni-td>
-					<uni-td>{{item.today_num_visitor}}</uni-td>
-					<uni-td>{{item.today_num_page_views}}</uni-td>
-					<uni-td>{{item.yesterday_num_new_visitor}}</uni-td>
-					<uni-td>{{item.yesterday_num_visitor}}</uni-td>
-					<uni-td>{{item.yesterday_num_page_views}}</uni-td>
-					<uni-td>{{item.today_num_total_visitor}}</uni-td>
+					<uni-td>{{item.today_new_user_count}}</uni-td>
+					<uni-td>{{item.today_active_user_count}}</uni-td>
+					<uni-td>{{item.today_page_visit_count}}</uni-td>
+					<uni-td>{{item.yesterday_new_user_count}}</uni-td>
+					<uni-td>{{item.yesterday_active_user_count}}</uni-td>
+					<uni-td>{{item.yesterday_page_visit_count}}</uni-td>
+					<uni-td>{{item.today_total_users}}</uni-td>
 					<uni-td>
 						<view class="uni-group">
 							<button class="uni-button" size="mini" type="primary" @click="navTo(item.appid)">查看</button>
@@ -66,8 +66,9 @@
 		data() {
 			return {
 				query: {
+					dimension: "day",
 					platform_id: '',
-					stat_time: 30  // 昨天
+					start_time: [1636646400000, 1644422486399]
 				},
 				tableData: [],
 				// 每页数据量
@@ -84,23 +85,23 @@
 					value: '今天',
 					contrast: '昨天'
 				}, {
-					field: 'num_new_visitor',
+					field: 'new_user_count',
 					title: '新增用户',
 					tooltip: '首次访问应用的用户数（以设备为判断标准，去重）',
 					value: 0,
 					contrast: 0
 				}, {
-					field: 'num_visitor',
+					field: 'active_user_count',
 					title: '活跃用户',
 					value: 0,
 					contrast: 0
 				}, {
-					field: 'num_page_views',
+					field: 'page_visit_count',
 					title: '访问次数',
 					value: 0,
 					contrast: 0
 				}, {
-					field: 'num_total_visitor',
+					field: 'total_users',
 					title: '总用户数',
 					value: 0,
 					contrast: 0
@@ -125,14 +126,14 @@
 				this.loading = true
 				const db = uniCloud.database()
 				const appList = db.collection('opendb-app-list').getTemp()
-				const appDaily = db.collection('uni-stat-app-visit-daily')
+				const appDaily = db.collection('opendb-stat-result')
 					.where(query)
-					.orderBy('stat_time', 'desc')
+					.orderBy('start_time', 'desc')
 					.getTemp()
 
 				db.collection(appList, appDaily)
 					.field(
-						'appid, name, _id{"uni-stat-app-visit-daily"{num_new_visitor, num_visitor, num_page_views, num_total_visitor, stat_date, stat_time}}'
+						'appid, name, _id{"opendb-stat-result"{new_user_count, active_user_count, page_visit_count, total_users, stat_date, stat_time}}'
 					)
 					.get()
 					.then((res) => {
@@ -147,8 +148,8 @@
 							}
 						})
 						for (const item of data) {
-							const lines = item._id["uni-stat-app-visit-daily"]
-							if (Array.isArray(lines)) {
+							const lines = item._id["opendb-stat-result"]
+							if (Array.isArray(lines) && lines.length) {
 								delete(item._id)
 								const today = lines[0] || []
 								const yesterday = lines[1] || []
@@ -163,8 +164,8 @@
 										}
 									}
 								}
+								this.tableData.push(item)
 							}
-							this.tableData.push(item)
 						}
 						for (const sum of this.panelData) {
 							const val = sum.value
@@ -174,7 +175,7 @@
 							}
 							if (con) {
 								sum.contrast = format(con)
-							} 
+							}
 						}
 					}).catch((err) => {
 						console.error(err)

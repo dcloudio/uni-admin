@@ -301,7 +301,7 @@
 				query = stringifyQuery(query)
 				console.log('..............Panel query：', query);
 				const db = uniCloud.database()
-				const subTable = db.collection('opendb-stat-app-session-result')
+				const subTable = db.collection('opendb-stat-result')
 					.where(query)
 					.groupBy('appid')
 					.groupField(

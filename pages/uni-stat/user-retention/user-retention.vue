@@ -213,7 +213,7 @@
 				const groupField = this.createStr("used_count", [key], [this.field])
 				console.log('..............Chart query：', query);
 				const db = uniCloud.database()
-				db.collection('opendb-stat-app-session-result')
+				db.collection('opendb-stat-result')
 					.where(query)
 					.field(`${groupField}, stat_date, start_time`)
 					.orderBy('start_time', 'asc')
@@ -265,7 +265,7 @@
 				console.log('..............Table query：', query);
 				this.loading = true
 				const db = uniCloud.database()
-				db.collection('opendb-stat-app-session-result')
+				db.collection('opendb-stat-result')
 					.where(query)
 					.field(`${groupField}, stat_date, start_time`)
 					.skip((pageCurrent - 1) * this.pageSize)
