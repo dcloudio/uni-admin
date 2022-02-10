@@ -14,7 +14,8 @@
 				<uni-stat-tabs label="平台选择" type="boldLine" mode="platform" v-model="query.platform_id" />
 			</view>
 			<view class="uni-stat--x flex">
-				<uni-stat-tabs label="日期选择" :current="currentDateTab" mode="date" :today="true" @change="changeTimeRange" />
+				<uni-stat-tabs label="日期选择" :current="currentDateTab" mode="date" :today="true"
+					@change="changeTimeRange" />
 				<uni-datetime-picker type="daterange" v-model="query.start_time" returnType="timestamp"
 					:clearIcon="false" class="uni-stat-datetime-picker"
 					:class="{'uni-stat__actived': currentDateTab < 0 && !!query.start_time.length}"
@@ -23,7 +24,7 @@
 			<uni-stat-panel :items="panelData" :contrast="true" />
 
 			<view class="uni-stat--x p-m">
-				<view class="label-text mb-l">
+				<view class="uni-stat-card-header">
 					趋势图
 				</view>
 				<uni-stat-tabs type="box" :tabs="chartTabs" class="mb-l" @change="changeChartTab" />
@@ -31,18 +32,33 @@
 					:opts="{extra:{area:{type:'curve',addLine:true,gradient:true}}}" />
 			</view>
 
-			<view class="uni-stat--x p-m">
-				<uni-stat-table :data="tableData" :filedsMap="fieldsMap" :loading="loading" />
-				<view class="uni-pagination-box">
-					<picker class="select-picker" mode="selector" :value="options.pageSizeIndex"
-						:range="options.pageSizeRange" @change="changePageSize">
-						<button type="default" size="mini" :plain="true">
-							<text>{{pageSize}} 条/页</text>
-							<uni-icons class="select-picker-icon" type="arrowdown" size="12" color="#999"></uni-icons>
-						</button>
-					</picker>
-					<uni-pagination show-icon :page-size="pageSize" :current="options.pageCurrent"
-						:total="options.total" @change="changePageCurrent" />
+			<view style="display: flex;">
+				<view class="uni-stat--x p-m" style="margin-right: 7.5px; width: 50%; min-width: 350px;">
+					<view class="uni-stat-card-header">
+						<view>受访页 TOP10</view>
+						<view class="uni-stat-card-header-link" @click="navTo('/pages/uni-stat/page-res/page-res')">查看更多
+						</view>
+					</view>
+					<uni-table :loading="loading" border stripe :emptyText="$t('common.empty')">
+						<uni-tr>
+							<uni-th align="center">受访页</uni-th>
+							<uni-th align="center">访问次数</uni-th>
+							<uni-th align="center">占比</uni-th>
+						</uni-tr>
+						<uni-tr v-for="(item ,index) in resTableData" :key="index" style="text-align: center; !important">
+							<uni-td>{{item.url}}</uni-td>
+							<uni-td>{{item.access_times}}</uni-td>
+							<uni-td>{{item.rate}}</uni-td>
+						</uni-tr>
+					</uni-table>
+				</view>
+				<view class="uni-stat--x uni-stat-card p-m" style="margin-left: 7.5px; width: 50%; min-width: 350px;">
+					<view class="uni-stat-card-header">
+						<view>入口页 TOP10</view>
+						<view class="uni-stat-card-header-link" @click="navTo('/pages/uni-stat/page-ent/page-ent')">查看更多
+						</view>
+					</view>
+					<uni-stat-table :data="[]" :filedsMap="[]" :loading="loading" />
 				</view>
 			</view>
 		</view>
@@ -79,16 +95,18 @@
 					pageSizeRange: [10, 20, 50, 100],
 				},
 				loading: false,
-				currentDateTab: 2,
+				currentDateTab: 4,
 				// currentChartTab: ,
 				tableData: [],
+				resTableData: [],
+				entTableData: [],
 				panelData: [],
-				chartData: {},
-				defaultChart: {
-					field: 'new_user_count',
-					name: '新增用户'
-				},
+				chartData: {}
 			}
+		},
+		onLoad(option) {
+			console.log(22222222, option);
+			this.query.appid = option.appid
 		},
 		computed: {
 			pageSize() {
@@ -129,7 +147,7 @@
 			changeTimeRange(id, index) {
 				this.currentDateTab = index
 				const start = getTimeOfSomeDayAgo(id),
-					end = getTimeOfSomeDayAgo(0) + 24*60*60 - 1
+					end = getTimeOfSomeDayAgo(0) + 24 * 60 * 60 - 1
 				this.query.start_time = [start, end]
 			},
 			changePageCurrent(e) {
@@ -153,9 +171,10 @@
 			getAllData(query) {
 				this.getPanelData()
 				this.getChartData(query)
+				this.getPageTableData()
 			},
 
-			getChartData(query, field='new_user_count', name='新增用户') {
+			getChartData(query, field = 'new_user_count', name = '新增用户') {
 				const {
 					pageCurrent
 				} = this.options
@@ -207,6 +226,60 @@
 					})
 			},
 
+			getPageTableData(query = stringifyQuery(this.query)) {
+				const {
+					pageCurrent
+				} = this.options
+				console.log('..............query：', query);
+				this.loading = true
+				const db = uniCloud.database()
+				const filterAppid = stringifyQuery({
+					appid: this.query.appid
+				})
+				const mainTableTemp = db.collection('opendb-stat-app-pages').where(filterAppid).getTemp()
+				const subTableTemp = db.collection('opendb-stat-app-page-result')
+					.where(query)
+					.orderBy('access_times', 'desc')
+					.getTemp()
+
+				db.collection(mainTableTemp, subTableTemp)
+					.field(
+						'title, url, _id{"opendb-stat-app-page-result"{access_times, stat_date}}'
+					)
+					.limit(10)
+					.get({
+						getCount: true
+					})
+					.then(res => {
+						const {
+							count,
+							data
+						} = res.result
+						this.resTableData = []
+						this.options.total = count
+						for (const item of data) {
+							const lines = item._id["opendb-stat-app-page-result"]
+							if (Array.isArray(lines)) {
+								delete(item._id)
+								const line = lines[0]
+								if (line && Object.keys(line).length) {
+									item.access_times = line.access_times
+									item.rate = line.access_times / 1100
+									// mapfields(fieldsMap, line, item)
+									this.resTableData.push(item)
+								}
+							}
+						}
+						console.log(666666666, this.resTableData);
+					}).catch((err) => {
+						console.error(err)
+						// err.message 错误信息
+						// err.code 错误码
+					}).finally(() => {
+						this.loading = false
+					})
+			},
+
 			getPanelData() {
 				const {
 					appid,
@@ -235,8 +308,8 @@
 					})
 			},
 
-			navTo(id) {
-				const url = `/pages/uni-stat/overview/overview?id=${id}`
+			navTo(url) {
+				if (!url) return
 				uni.navigateTo({
 					url
 				})
@@ -247,5 +320,17 @@
 </script>
 
 <style>
+	.uni-stat-card-header {
+		display: flex;
+		justify-content: space-between;
+		color: #555;
+		font-size: 14px;
+		font-weight: 600;
+		padding: 10px 0;
+		margin-bottom: 15px;
+	}
 
+	.uni-stat-card-header-link {
+		cursor: pointer;
+	}
 </style>

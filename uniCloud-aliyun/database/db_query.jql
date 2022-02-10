@@ -9,33 +9,7 @@
 // 详细JQL语法，请参考 https://uniapp.dcloud.net.cn/uniCloud/clientdb?id=jsquery
 
 // 下面示例查询uni-id-users表的所有数据
-db.collection('opendb-stat-events-result')
-	// .orderBy('stat_time', 'desc')
-	.get()
 
-// const mainTable = db.collection('uni-stat-app-pages').getTemp()
-// const subTable = db.collection('uni-stat-app-page-view-daily')
-// 	.orderBy('stat_time', 'desc')
-// 	.getTemp()
-
-// db.collection(mainTable, subTable)
-// 	.field(
-// 		'title, url, _id{"uni-stat-app-page-view-daily"{exit_num_visits, num_visitor, num_visits,divide(num_visits,num_visitor) as abc, sum_visit_length, num_share,entry_num_visitor, entry_num_visits, entry_sum_visit_length, stat_time}}'
-// 	)
-// 	.get()
-
-//  db.collection('uni-stat-app-page-view-daily')
-// 	// .orderBy('stat_time', 'desc')
-// 	.field('divide(num_visits,num_visitor) as abc')
-// 	.get()
-
-
-// db.collection('opendb-stat-app-session-result').field('active_user_count, week(add(new Date(0),start_time), "Asia/Shanghai") as week,year(add(new Date(0),start_time), "Asia/Shanghai") as year').groupBy('year,week').groupField('sum(active_user_count) as count').get()
-
-// db.collection('opendb-stat-app-session-result').field('active_user_count, month(add(new Date(0),start_time), "Asia/Shanghai") as month,year(add(new Date(0),start_time), "Asia/Shanghai") as year').groupBy('year,month').groupField('sum(active_user_count) as count').get()
-
-
-// db.collection('opendb-stat-app-platforms').get()
-
-
-// db.collection('opendb-stat-loyalty-result').groupBy('appid').groupField('sum(visit_depth_data.visit_times.p_1) as p_1').get()
+ db.collection('opendb-stat-app-page-result')
+					.orderBy('access_times', 'desc')
+					.get()
