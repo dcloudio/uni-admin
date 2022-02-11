@@ -52,7 +52,7 @@ function division(dividend, divisor) {
 	}
 }
 
-function format(num, type=',') {
+function format(num, type = ',') {
 	if (!type) return num
 	if (typeof num !== 'number') return num
 	if (type === '%') {
@@ -89,9 +89,11 @@ function format(num, type=',') {
 	}
 }
 
-function mapfields(map, data, goal, prefix = '', prop = 'value') {
-	const goals = [], argsGoal = goal
+function mapfields(map, data={}, goal, prefix = '', prop = 'value') {
+	const goals = [],
+		argsGoal = goal
 	map = JSON.parse(JSON.stringify(map))
+	const origin = JSON.parse(JSON.stringify(data))
 	for (const mapper of map) {
 		let {
 			field,
@@ -103,8 +105,9 @@ function mapfields(map, data, goal, prefix = '', prop = 'value') {
 		const hasValue = goal.hasOwnProperty(prop)
 		const preField = prefix + field
 		if (data) {
-			if (data[preField]) {
-				const val = format(data[preField], formatter)
+			const value = data[preField]
+			if (value) {
+				const val = format(value, formatter)
 				if (hasValue) {
 					if (goal.field === field) {
 						goal[prop] = val
@@ -116,8 +119,8 @@ function mapfields(map, data, goal, prefix = '', prop = 'value') {
 				if (computed) {
 					const computedFields = computed.split('/')
 					let [dividend, divisor] = computedFields
-					dividend = Number(data[prefix + dividend])
-					divisor = Number(data[prefix + divisor])
+					dividend = Number(origin[prefix + dividend])
+					divisor = Number(origin[prefix + divisor])
 					if (dividend && divisor) {
 						const val = format(division(dividend, divisor), formatter)
 						// const val = division(dividend, divisor)
