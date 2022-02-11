@@ -142,7 +142,7 @@
 
 				db.collection(mainTableTemp, subTableTemp)
 					.field(
-						'title, url, _id1{"opendb-stat-app-page-result"{access_times,access_users,access_time,share_count,entry_users,entry_count,entry_access_time,dimension,stat_date,bounce_rate}}'
+						'title, url, _id{"opendb-stat-app-page-result"{access_times,access_users,access_time,share_count,entry_users,entry_count,entry_access_time,dimension,stat_date,bounce_rate}}'
 					)
 					.skip((pageCurrent - 1) * this.pageSize)
 					.limit(this.pageSize)

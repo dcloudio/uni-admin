@@ -47,7 +47,7 @@
 						<view class="uni-stat-card-header-link" @click="navTo('/pages/uni-stat/page-ent/page-ent')">查看更多
 						</view>
 					</view>
-					<uni-stat-table :data="resTableData" :filedsMap="resFieldsMap" :loading="loading" />
+					<uni-stat-table :data="entTableData" :filedsMap="entFieldsMap" :loading="loading" />
 				</view>
 			</view>
 		</view>
@@ -104,6 +104,22 @@
 					title: '占比',
 					field: 'rate',
 					computed: 'access_times/total_app_access',
+					formatter: '%',
+					tooltip: ''
+				}],
+				entFieldsMap: [{
+					title: '入口页',
+					field: 'url',
+					tooltip: '',
+					formatter: ''
+				}, {
+					title: '访问次数',
+					field: 'entry_count',
+					tooltip: ''
+				}, {
+					title: '占比',
+					field: 'rate',
+					computed: 'entry_count/total_app_access',
 					formatter: '%',
 					tooltip: ''
 				}]
@@ -175,7 +191,8 @@
 			getAllData(query) {
 				this.getPanelData()
 				this.getChartData(query)
-				this.getPageData()
+				this.getPageData(query, 'res')
+				this.getPageData(query, 'ent')
 			},
 
 			getChartData(query, field = 'new_user_count', name = '新增用户') {
@@ -184,7 +201,7 @@
 				} = this.options
 				query = stringifyQuery(query)
 				console.log('..............Table query：', query);
-				this.loading = true
+				// this.loading = true
 				const db = uniCloud.database()
 				db.collection('opendb-stat-result')
 					.where(query)
@@ -216,10 +233,6 @@
 							}
 						}
 						this.chartData = options
-
-						this.tableData = []
-						this.options.total = count
-						this.tableData = data
 					}).catch((err) => {
 						console.error(err)
 						// err.message 错误信息
@@ -238,10 +251,13 @@
 					.get()
 			},
 
-			getPageData(query = stringifyQuery(this.query)) {
+			getPageData(query, type) {
+				query = stringifyQuery(query)
 				const {
 					pageCurrent
 				} = this.options
+				const map = this[`${type}FieldsMap`]
+				const field = map[1].field
 				console.log('..............query：', query);
 				this.loading = true
 				const db = uniCloud.database()
@@ -254,13 +270,13 @@
 					.getTemp()
 				const subTableTemp = db.collection('opendb-stat-app-page-result')
 					.where(query)
-					.orderBy('access_times', 'desc')
+					.orderBy(field, 'desc')
 					.limit(10)
 					.getTemp()
 
 				db.collection(subTableTemp, mainTableTemp)
 					.field(
-						'access_times, page_id'
+						`${field}, page_id`
 					)
 					.get({
 						getCount: true
@@ -275,8 +291,7 @@
 							const data = res.result.data
 							total_app_access = data && data[0].total_app_access
 						}).finally(() => {
-							this.resTableData = []
-							this.options.total = count
+							this[`${type}TableData`] = []
 							for (const item of data) {
 								item.total_app_access = total_app_access
 								const lines = item.page_id
@@ -292,8 +307,8 @@
 
 									}
 								}
-								mapfields(this.resFieldsMap, item, item)
-								this.resTableData.push(item)
+								mapfields(map, item, item)
+								this[`${type}TableData`].push(item)
 							}
 						})
 					}).catch((err) => {
