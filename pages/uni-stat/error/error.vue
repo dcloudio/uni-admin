@@ -115,7 +115,7 @@
 
 			changePageCurrent(e) {
 				this.options.pageCurrent = e.current
-				this.getTabelData(this.queryStr)
+				this.getTableData(this.queryStr)
 			},
 
 			changePageSize(e) {
@@ -124,7 +124,7 @@
 				} = e.detail
 				this.options.pageCurrent = 1 // 重置分页
 				this.options.pageSizeIndex = value
-				this.getTabelData(this.queryStr)
+				this.getTableData(this.queryStr)
 			},
 
 			getAllData(query) {

@@ -26,7 +26,7 @@
 					<uni-stat-tabs type="boldLine" :tabs="types" v-model="type"
 						style="line-height: 40px; margin-bottom: -17px;" />
 				</view>
-				<uni-stat-panel :items="panelData" class="uni-stat-panel" />
+				<uni-stat-panel v-if="type === 'visit_depth_data'" :items="panelData" class="uni-stat-panel" />
 				<uni-stat-tabs type="box" :tabs="fields" v-model="field" class="mb-l" />
 				<view class="p-m">
 					<view class="uni-charts-box">
