@@ -166,8 +166,9 @@
 			},
 			changeTimeRange(id, index) {
 				this.currentDateTab = index
+				const day = 24 * 60 * 60 * 1000
 				const start = getTimeOfSomeDayAgo(id),
-					end = getTimeOfSomeDayAgo(0) + 24 * 60 * 60 - 1
+					end = getTimeOfSomeDayAgo(0) + day - 1
 				this.query.start_time = [start, end]
 			},
 			changePageCurrent(e) {
@@ -199,8 +200,18 @@
 				const {
 					pageCurrent
 				} = this.options
+				const days = this.currentDateTab
+				const date = getTimeOfSomeDayAgo(days)
+				const day = 24 * 60 * 60 * 1000
+				if (days < 2) {
+					const start = date - day
+					const end = date + day - 1
+					query = JSON.parse(JSON.stringify(query))
+					query.start_time = [start, end]
+					query.dimension = 'hour'
+				}
 				query = stringifyQuery(query)
-				console.log('..............Table query：', query);
+				console.log('..............getChartData query：', query);
 				// this.loading = true
 				const db = uniCloud.database()
 				db.collection('opendb-stat-result')
@@ -223,15 +234,42 @@
 								data: []
 							}]
 						}
-						this.chartData = []
-						for (const item of data) {
-							const x = item.stat_date
-							const y = item[field]
-							if (y) {
-								options.series[0].data.push(y)
-								options.categories.push(x)
+						if (days < 2) {
+							const line = options.series[0] = {
+								name: 'a',
+								data: []
+							}
+							const cont = options.series[1] = {
+								name: 'b',
+								data: []
+							}
+							for (let i=0; i<24; ++i) {
+								options.categories.push(i)
+								data.forEach(item => {
+									const d = new Date(item.start_time)
+									if (item.start_time < date) {
+										if (d.getHours() === i) {
+											line.data[i] = item[field] ? item[field] : 0
+										}
+									} else {
+										if (d.getHours() === i) {
+											cont.data[i] = item[field] ? item[field] : 0
+										}
+									}
+								})
+							}
+						} else {
+							for (const item of data) {
+								const x = item.stat_date
+								const y = item[field]
+								if (y) {
+									options.series[0].data.push(y)
+									options.categories.push(x)
+								}
 							}
 						}
+
+						this.chartData = []
 						this.chartData = options
 					}).catch((err) => {
 						console.error(err)
@@ -258,7 +296,6 @@
 				} = this.options
 				const map = this[`${type}FieldsMap`]
 				const field = map[1].field
-				console.log('..............query：', query);
 				this.loading = true
 				const db = uniCloud.database()
 				const filterAppid = stringifyQuery({
@@ -288,8 +325,8 @@
 						} = res.result
 						let total_app_access
 						this.getAppAccessTimes(query).then(res => {
-							const data = res.result.data
-							total_app_access = data && data[0].total_app_access
+							const data = res.result.data[0]
+							total_app_access = data && data.total_app_access
 						}).finally(() => {
 							this[`${type}TableData`] = []
 							for (const item of data) {
