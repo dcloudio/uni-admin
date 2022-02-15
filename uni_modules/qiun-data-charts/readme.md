@@ -2,7 +2,6 @@
 ## [DEMO演示及在线生成工具（v2.0文档）https://demo.ucharts.cn](https://demo.ucharts.cn)
 ## [优秀的nvue全端组件与模版库nPro](https://ext.dcloud.net.cn/plugin?id=5169)
 ## [图表组件在项目中的应用 UReport数据报表](https://ext.dcloud.net.cn/plugin?id=4651) 
-### [v1.0文档（将在9月30日作废，请尽快转v2.0）](http://doc.ucharts.cn)
 ## [如何安装、更新 uni_modules 插件点这里，必看，必看，必看](https://uniapp.dcloud.io/uni_modules?id=%e4%bd%bf%e7%94%a8-uni_modules-%e6%8f%92%e4%bb%b6)
 ## 点击右侧绿色【使用HBuilderX导入插件】即可使用，示例项目请点击右侧蓝色按钮【使用HBuilderX导入示例项目】。
 ## 初次使用不显示问题详见[常见问题选项卡](https://demo.ucharts.cn)
@@ -29,12 +28,12 @@
 - localdata`后端数据直接渲染`，无需自行拼接chartData的categories及series，从后端拿回的数据简单处理即可生成图表。
 - 小程序端不必担心包体积过大问题，ECharts引擎将不会编译到各小程序端，u-charts.js编译后`仅为93kb`。
 - 未来将支持通过HbuilderX的[schema2code自动生成全端全平台图表](https://ext.dcloud.net.cn/plugin?id=4684)，敬请期待！！！
-- uCharts官方拥有3个2000人的QQ群支持，庞大的用户量证明我们一直在努力，本组件将持续更新，请各位放心使用，本组件问题请在`QQ3群`反馈，您的宝贵建议是我们努力的动力！！
+- uCharts官方拥有4个2000人的QQ群支持，庞大的用户量证明我们一直在努力，本组件将持续更新，请各位放心使用，您的宝贵建议是我们努力的动力！！
 
 
 ## 致开发者
 
-感谢各位开发者`两年`来对秋云及uCharts的支持，uCharts的进步离不开各位开发者的鼓励与贡献，为更好的帮助各位开发者在uni-app生态系统更好的应用图表，uCharts始终坚持开源，并提供社群帮助开发者解决问题。 为确保您能更好的应用图表组件，建议您先`仔细阅读本页文档`以及uCharts官方文档，而不是下载下来`直接使用`。 如遇到问题请先阅读文档，如仍然不能解决，请加入QQ群咨询，如群友均不能解决或者您有特殊需求，请在群内私聊我，因工作原因，回复不一定很及时，您可直接说问题，有时间一定会回复您。
+感谢各位开发者`三年`来对秋云及uCharts的支持，uCharts的进步离不开各位开发者的鼓励与贡献，为更好的帮助各位开发者在uni-app生态系统更好的应用图表，uCharts始终坚持开源，并提供社群帮助开发者解决问题。 为确保您能更好的应用图表组件，建议您先`仔细阅读本页文档`以及uCharts官方文档，而不是下载下来`直接使用`。 如遇到问题请先阅读文档，如仍然不能解决，请加入QQ群咨询，如群友均不能解决或者您有特殊需求，请在群内私聊我，因工作原因，回复不一定很及时，您可直接说问题，有时间一定会回复您。
 
 uCharts的开源图表组件的开发，付出了大量的个人时间与精力，经过两年来的考验，不会有比较明显的bug，请各位放心使用。不求您5星评价，也不求您赞赏，`只求您对开源贡献的支持态度`，所以，当您想给`1星评价`的时候，秋云真的会`含泪希望您绕路而行……`。如果您有更好的想法，可以在`码云提交Pull Requests`以帮助更多开发者完成需求，再次感谢各位对uCharts的鼓励与支持！
 
@@ -431,20 +430,17 @@ tooltipCustom属性如下：
 
 ## QQ群号码
 ## <font color=#FF0000> 请先完整阅读【帮助文档】及【常见问题】3遍，右侧蓝色按钮【示例项目】请看2遍！不看文档不看常见问题进群就问的拒绝回答问题！咨询量太大请理解作者！ </font> 
-- 放在下面是为了让您先看文档，看好群分类，再进群！！
 - 交流群1：371774600（已满）
-- 交流群2：619841586（不回答本组件问题，只回答uCharts基础库问题）
-- 交流群3：955340127<font color=#FF0000>（优先解答本组件问题，其他问题群友互助）</font>
+- 交流群2：619841586
+- 交流群3：955340127（已满）
+- 交流群4：641669795
 - 口令`uniapp`
 
 
 ## 相关链接
 - [DCloud插件市场地址](https://ext.dcloud.net.cn/plugin?id=271)
 - [uCharts官网](https://www.ucharts.cn)
-- [uCharts在线生成工具](http://demo.ucharts.cn)<font color=#FF0000>（注：v2.0版本后将不提供配置手册，请通过在线生成工具生成图表配置）</font>
 - [uCharts码云开源托管地址](https://gitee.com/uCharts/uCharts) [![star](https://gitee.com/uCharts/uCharts/badge/star.svg?theme=gvp)](https://gitee.com/uCharts/uCharts/stargazers)
-- [uCharts基础库更新记录](https://gitee.com/uCharts/uCharts/wikis/%E6%9B%B4%E6%96%B0%E8%AE%B0%E5%BD%95?sort_id=1535998)
-- [uCharts改造教程](https://gitee.com/uCharts/uCharts/wikis/%E6%94%B9%E9%80%A0uCharts%E6%89%93%E9%80%A0%E4%B8%93%E5%B1%9E%E5%9B%BE%E8%A1%A8?sort_id=1535997)
 - [图表组件在项目中的应用 UReport数据报表](https://ext.dcloud.net.cn/plugin?id=4651) 
 - [ECharts官网](https://echarts.apache.org/zh/index.html)
 - [ECharts配置手册](https://echarts.apache.org/zh/option.html)

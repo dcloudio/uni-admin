@@ -328,8 +328,6 @@ const cfu = {
 			"column": {
 				"type": "group",
 				"width": 30,
-				"meterBorde": 1,
-				"meterFillColor": "#FFFFFF",
 				"activeBgColor": "#000000",
 				"activeBgOpacity": 0.08
 			},

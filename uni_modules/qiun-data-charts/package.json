@@ -1,8 +1,8 @@
 {
   "id": "qiun-data-charts",
   "displayName": "秋云 ucharts echarts 高性能跨全端图表组件",
-  "version": "2.3.6-20211201",
-  "description": "uCharts v2.3上线，支持nvue！全新官方图表组件，支持H5及APP用ECharts渲染图表，uniapp可视化首选组件",
+  "version": "2.3.7-20220122",
+  "description": "uCharts v2.3.7支持Vue3！全新官方图表组件，支持H5及APP用ECharts渲染图表，uniapp可视化首选组件",
   "keywords": [
     "ucharts",
     "echarts",
@@ -12,7 +12,7 @@
 ],
   "repository": "https://gitee.com/uCharts/uCharts",
   "engines": {
-    "HBuilderX": "^3.1.0"
+    "HBuilderX": "^3.3.8"
   },
   "dcloudext": {
     "category": [

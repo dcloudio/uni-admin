@@ -1,3 +1,15 @@
+## 2.3.7-20220122（2022-01-22）
+## 重要！使用vue3编译，请使用cli模式并升级至最新依赖，HbuilderX编译需要使用3.3.8以上版本
+- uCharts.js 修复uni-app平台组件模式使用vue3编译到小程序报错的bug。
+## 2.3.7-20220118（2022-01-18）
+## 注意，使用vue3的前提是需要3.3.8.20220114-alpha版本的HBuilder！
+## 2.3.67-20220118（2022-01-18）
+- 秋云图表组件 组件初步支持vue3，全端编译会有些问题，具体详见下面修改：
+1. 小程序端运行时，在uni_modules文件夹的qiun-data-charts.js中搜索 new uni_modules_qiunDataCharts_js_sdk_uCharts_uCharts.uCharts，将.uCharts去掉。
+2. 小程序端发行时，在uni_modules文件夹的qiun-data-charts.js中搜索 new e.uCharts，将.uCharts去掉，变为 new e。
+3. 如果觉得上述步骤比较麻烦，如果您的项目只编译到小程序端，可以修改u-charts.js最后一行导出方式，将 export default uCharts;变更为 export default { uCharts: uCharts }; 这样变更后，H5和App端的renderjs会有问题，请开发者自行选择。（此问题非组件问题，请等待DC官方修复Vue3的小程序端）
+## 2.3.6-20220111（2022-01-11）
+- 秋云图表组件 修改组件 props 属性中的 background 默认值为 rgba(0,0,0,0)
 ## 2.3.6-20211201（2021-12-01）
 - uCharts.js 修复bar条状图开启圆角模式时，值很小时圆角渲染错误的bug
 ## 2.3.5-20211014（2021-10-15）

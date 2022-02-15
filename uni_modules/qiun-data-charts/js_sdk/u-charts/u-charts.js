@@ -19,7 +19,7 @@
 'use strict';
 
 var config = {
-  version: 'v2.3.6-20211201',
+  version: 'v2.3.7-20220122',
   yAxisWidth: 15,
   yAxisSplit: 5,
   xAxisHeight: 22,
@@ -6801,9 +6801,4 @@ uCharts.prototype.scrollEnd = function(e) {
   }
 };
 
-if (typeof module === "object" && typeof module.exports === "object") {
-  module.exports = uCharts;
-}
-
 export default uCharts;
-
