@@ -28,8 +28,7 @@
 					趋势图
 				</view>
 				<uni-stat-tabs type="box" :tabs="chartTabs" class="mb-l" @change="changeChartTab" />
-				<qiun-data-charts type="area" :echartsApp="true" :chartData="chartData"
-					:opts="{extra:{area:{type:'curve',addLine:true,gradient:true}}}" />
+				<qiun-data-charts type="area" :echartsApp="true" :chartData="chartData" :opts="chartOption" />
 			</view>
 
 			<view style="display: flex;">
@@ -122,7 +121,16 @@
 					computed: 'entry_count/total_app_access',
 					formatter: '%',
 					tooltip: ''
-				}]
+				}],
+				chartOption: {
+					extra: {
+						area: {
+							type: 'curve',
+							addLine: true,
+							gradient: true
+						}
+					}
+				}
 			}
 		},
 		onLoad(option) {
@@ -243,17 +251,21 @@
 								name: 'b',
 								data: []
 							}
-							for (let i=0; i<24; ++i) {
-								options.categories.push(i)
+							for (let i = 0; i < 24; ++i) {
+								const hour = i < 10 ? '0' + i : i
+								const x = `${hour}:00 ~ ${hour}:59`
+								options.categories.push(x)
+								line.data[i] = 0
+								cont.data[i] = 0
 								data.forEach(item => {
 									const d = new Date(item.start_time)
 									if (item.start_time < date) {
 										if (d.getHours() === i) {
-											line.data[i] = item[field] ? item[field] : 0
+											line.data[i] = item[field]
 										}
 									} else {
 										if (d.getHours() === i) {
-											cont.data[i] = item[field] ? item[field] : 0
+											cont.data[i] = item[field]
 										}
 									}
 								})
