@@ -78,8 +78,8 @@
 					pageSizeRange: [10, 20, 50, 100],
 				},
 				loading: false,
-				currentDateTab: 2,
-				// currentChartTab: ,
+				currentDateTab: 3,
+				days: 0,
 				tableData: [],
 				panelData: [],
 				chartData: {}
@@ -113,9 +113,20 @@
 			queryStr() {
 				let defaultQuery = ''
 				if (!this.query.platform_id) {
-					defaultQuery = 'platform_id == "61c046e691a75000014c255f" || platform_id == "61c046e691a75000014c2560"'
+					defaultQuery =
+						'(platform_id == "61c046e691a75000014c255f" || platform_id == "61c046e691a75000014c2560")'
 				}
-				return stringifyQuery(this.query, defaultQuery)
+				const query = JSON.parse(JSON.stringify(this.query))
+				const days = this.days
+				if (days < 2) {
+					const date = getTimeOfSomeDayAgo(days)
+					const day = 24 * 60 * 60 * 1000
+					const start = date
+					const end = date + day - 1
+					query.start_time = [start, end]
+					query.dimension = 'hour'
+				}
+				return stringifyQuery(query, defaultQuery)
 			}
 		},
 		watch: {
@@ -133,6 +144,8 @@
 			},
 			changeTimeRange(id, index) {
 				this.currentDateTab = index
+				this.days = id
+				console.log(111111111, this.days);
 				const start = getTimeOfSomeDayAgo(id),
 					end = getTimeOfSomeDayAgo(0) - 1
 				this.query.start_time = [start, end]
@@ -169,9 +182,9 @@
 				const db = uniCloud.database()
 				db.collection('opendb-stat-result')
 					.where(query)
-					.groupBy('channel_id,stat_date')
+					.groupBy('channel_id,start_time,stat_date')
 					.groupField(`sum(${field}) as total_${field}`)
-					.orderBy('stat_date', 'asc')
+					.orderBy('start_time', 'asc')
 					.get({
 						getCount: true
 					})
@@ -181,50 +194,88 @@
 							data
 						} = res.result
 						console.log('.......chart:', data);
-						const options = {
-							categories: [],
-							series: [{
-								name: '暂无数据',
-								data: []
-							}]
-						}
-						const hasChannels = []
-						data.forEach(item => {
-							if (hasChannels.indexOf(item.channel_id) < 0) {
-								hasChannels.push(item.channel_id)
+						let channels = []
+						this.getChannels().then(res => {
+							const {
+								data
+							} = res.result
+							channels = data
+						}).finally(() => {
+							const options = {
+								categories: [],
+								series: [{
+									name: '暂无数据',
+									data: []
+								}]
 							}
-						})
-						hasChannels.forEach((channel, index) => {
-							const line = options.series[index] = {
-								name: channel,
-								data: []
-							}
-							const xAxis = options.categories
-							for (const item of data) {
-								const x = item.stat_date
-								const y = item[`total_${field}`]
-								const dateIndex = xAxis.indexOf(x)
-								if (channel === item.channel_id) {
-									if (dateIndex < 0) {
+							const hasChannels = []
+							const ids = []
+							data.forEach(item => {
+								const id = item.channel_id
+								if (ids.indexOf(id) < 0) {
+									let name
+									channels.forEach(c => {
+										if (c._id === id) {
+											name = c.channel_name
+										}
+									})
+									hasChannels.push({
+										id,
+										name
+									})
+									ids.push(id)
+								}
+							})
+
+							hasChannels.forEach((channel, index) => {
+								const line = options.series[index] = {
+									name: channel.name,
+									data: []
+								}
+								const xAxis = options.categories
+								const days = this.currentDateTab
+								if (this.days < 2) {
+									for (let i = 0; i < 24; ++i) {
+										const hour = i < 10 ? '0' + i : i
+										const x = `${hour}:00 ~ ${hour}:59`
 										xAxis.push(x)
-										line.data.push(y)
-									} else {
-										line.data[dateIndex] = y
+										line.data[i] = 0
+										for (const item of data) {
+											const y = item[`total_${field}`]
+											const d = new Date(item.start_time)
+											if (channel.id === item.channel_id && d.getHours() === i) {
+												line.data[i] = y
+											}
+
+										}
+									}
+								} else {
+									for (const item of data) {
+										const x = item.stat_date
+										const y = item[`total_${field}`]
+										const dateIndex = xAxis.indexOf(x)
+										if (channel.id === item.channel_id) {
+											if (dateIndex < 0) {
+												xAxis.push(x)
+												line.data.push(y)
+											} else {
+												line.data[dateIndex] = y
+											}
+										}
+
 									}
 								}
-
-							}
+							})
+							console.log(6666666, options);
+							this.chartData = []
+							this.chartData = options
 						})
-						console.log(6666666, options);
-						this.chartData = []
-
-						this.chartData = options
 					}).catch((err) => {
 						console.error(err)
 						// err.message 错误信息
 						// err.code 错误码
 					}).finally(() => {
-						this.loading = false
+						// this.loading = false
 					})
 			},
 
@@ -257,7 +308,7 @@
 							count,
 							data
 						} = res.result
-						// console.log('.......table:', data);
+						console.log('.......table:', data);
 
 						this.getChannels().then(res => {
 							const channels = res.result.data
