@@ -66,7 +66,7 @@
 					start_time: [],
 				},
 				loading: false,
-				currentDateTab: 2,
+				currentDateTab: 3,
 				// currentChartTab: ,
 				tableData: [],
 				panelData: [],

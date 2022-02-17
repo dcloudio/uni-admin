@@ -71,7 +71,7 @@
 					pageSizeRange: [10, 20, 50, 100],
 				},
 				loading: false,
-				currentDateTab: 0,
+				currentDateTab: 3,
 				tableData: [],
 				panelData: []
 			}

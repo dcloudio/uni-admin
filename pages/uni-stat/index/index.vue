@@ -68,7 +68,8 @@
 				query: {
 					dimension: "day",
 					platform_id: '',
-					start_time: [1636646400000, 1644422486399]
+					// start_time: [getTimeOfSomeDayAgo(2), getTimeOfSomeDayAgo(1)],
+					start_time: [1611681600000, 1644767999999]
 				},
 				tableData: [],
 				// 每页数据量
@@ -93,16 +94,19 @@
 				}, {
 					field: 'active_user_count',
 					title: '活跃用户',
+					tooltip: '访问过应用内任意页面的总用户数（去重）',
 					value: 0,
 					contrast: 0
 				}, {
 					field: 'page_visit_count',
 					title: '访问次数',
+					tooltip: '访问过应用内任意页面总次数，多个页面之间跳转、同一页面的重复访问计为多次访问',
 					value: 0,
 					contrast: 0
 				}, {
 					field: 'total_users',
 					title: '总用户数',
+					tooltip: '从添加统计到当前选择时间的总用户数（去重）',
 					value: 0,
 					contrast: 0
 				}]
@@ -140,6 +144,7 @@
 						const {
 							data
 						} = res.result
+						console.log(222222, data);
 						this.tableData = []
 						this.panelData.forEach((sum, index) => {
 							if (sum.title) {

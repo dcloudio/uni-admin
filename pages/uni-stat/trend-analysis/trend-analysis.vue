@@ -2,8 +2,8 @@
 	<view class="fix-top-window">
 		<view class="uni-header hide-on-phone">
 			<view class="uni-group">
-				<view class="uni-title">今日概况</view>
-				<view class="uni-sub-title">今日概况</view>
+				<view class="uni-title">趋势分析</view>
+				<view class="uni-sub-title">各指标趋势分析</view>
 			</view>
 		</view>
 		<view class="uni-container">
@@ -81,7 +81,7 @@
 					pageSizeRange: [10, 20, 50, 100],
 				},
 				loading: false,
-				currentDateTab: 1,
+				currentDateTab: 3,
 				// currentChartTab: ,
 				tableData: [],
 				panelData: [],

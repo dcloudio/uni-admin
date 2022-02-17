@@ -170,7 +170,7 @@
 		},
 		methods: {
 			useDatetimePicker() {
-				this.currentDateTab = -1
+				this.currentDateTab = null
 			},
 			changeTimeRange(id, index) {
 				this.currentDateTab = index
@@ -204,6 +204,15 @@
 				this.getPageData(query, 'ent')
 			},
 
+			getDays() {
+				const day = 24 * 60 * 60 * 1000
+				const [start, end] = this.query.start_time
+				console.log(start, end, end - start);
+				const lessTwoDay = end - start >= day
+				console.log(55555555, lessTwoDay);
+				return lessTwoDay
+			},
+
 			getChartData(query, field = 'new_user_count', name = '新增用户') {
 				const {
 					pageCurrent
@@ -211,11 +220,12 @@
 				const days = this.currentDateTab
 				const date = getTimeOfSomeDayAgo(days)
 				const day = 24 * 60 * 60 * 1000
-				if (days < 2) {
+				if (!this.getDays()) {
 					const start = date - day
 					const end = date + day - 1
 					query = JSON.parse(JSON.stringify(query))
-					query.start_time = [start, end]
+					// query.start_time = [start, end]
+					query.start_time = [1644681600000, 1644854399999]
 					query.dimension = 'hour'
 				}
 				query = stringifyQuery(query)
@@ -242,7 +252,7 @@
 								data: []
 							}]
 						}
-						if (days < 2) {
+						if (!this.getDays()) {
 							const line = options.series[0] = {
 								name: 'a',
 								data: []
@@ -378,7 +388,8 @@
 					dimension: "day",
 					appid,
 					platform_id,
-					start_time: [getTimeOfSomeDayAgo(2), getTimeOfSomeDayAgo(1)]
+					// start_time: [getTimeOfSomeDayAgo(2), getTimeOfSomeDayAgo(1)]
+					start_time: [1611681600000, 1644767999999]
 				})
 				console.log('..............Panel query：', query);
 				const db = uniCloud.database()
