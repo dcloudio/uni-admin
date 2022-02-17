@@ -57,8 +57,9 @@ function format(num, type = ',') {
 	if (typeof num !== 'number') return num
 	if (type === '%') {
 		// 注意浮点数精度
-		num = Number.parseFloat(num).toPrecision(4)
-		return num * 100 + type
+		// num = Number.parseFloat(num).toPrecision(4)
+		num = (num * 100).toFixed(2)
+		return num + type
 	} else if (type === ':') {
 		num = Math.ceil(num)
 		let h, m, s
