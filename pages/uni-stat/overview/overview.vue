@@ -205,6 +205,7 @@
 			},
 
 			getDays() {
+				if(!this.query.start_time.length) return true
 				const day = 24 * 60 * 60 * 1000
 				const [start, end] = this.query.start_time
 				console.log(start, end, end - start);
