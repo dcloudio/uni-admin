@@ -3,11 +3,7 @@
 		<view v-for="(item, index) in items" :key="index" class="uni-stat--sum-item">
 			<view class="uni-stat--sum-item-title">
 				{{item.title}}
-				<view v-if="item.title && item.tooltip" class="uni-icons-help uni-stat-tooltip">
-					<view class="uni-stat-tooltip-popup">
-						{{item.tooltip}}
-					</view>
-				</view>
+				<uni-stat-tooltip :text="item.tooltip" />
 			</view>
 			<view class="uni-stat--sum-item-value">{{item.value ? item.value : 0}}</view>
 			<view v-if="contrast" class="uni-stat--sum-item-contrast">{{item.contrast ? item.contrast : 0}}</view>
@@ -73,30 +69,5 @@
 			font-size: 14px;
 			color: #666;
 		}
-	}
-
-	.uni-stat-tooltip {
-		position: relative;
-		margin-left: 5px;
-		cursor: pointer;
-	}
-
-	.uni-stat-tooltip-popup {
-		display: none;
-		position: absolute;
-		left: -85px;
-		top: 20px;
-		width: 160px;
-		background-color: #333;
-		border-radius: 8px;
-		color: #fff;
-		font-size: 12px;
-		text-align: left;
-		line-height: 16px;
-		padding: 12px;
-	}
-
-	.uni-stat-tooltip:hover .uni-stat-tooltip-popup {
-		display: block;
 	}
 </style>

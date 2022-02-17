@@ -38,7 +38,7 @@
 						<view class="uni-stat-card-header-link" @click="navTo('/pages/uni-stat/page-res/page-res')">查看更多
 						</view>
 					</view>
-					<uni-stat-table :data="resTableData" :filedsMap="resFieldsMap" :loading="loading" />
+					<uni-stat-table :data="resTableData" :filedsMap="resFieldsMap" :loading="loading" tooltip />
 				</view>
 				<view class="uni-stat--x uni-stat-card p-m" style="margin-left: 7.5px; width: 50%; min-width: 350px;">
 					<view class="uni-stat-card-header">
@@ -46,7 +46,7 @@
 						<view class="uni-stat-card-header-link" @click="navTo('/pages/uni-stat/page-ent/page-ent')">查看更多
 						</view>
 					</view>
-					<uni-stat-table :data="entTableData" :filedsMap="entFieldsMap" :loading="loading" />
+					<uni-stat-table :data="entTableData" :filedsMap="entFieldsMap" :loading="loading" tooltip />
 				</view>
 			</view>
 		</view>
@@ -93,34 +93,34 @@
 				resFieldsMap: [{
 					title: '受访页',
 					field: 'url',
-					tooltip: '',
+					tooltip: '用户进入应用访问的所有页面，例如用户从页面1进入应用，跳转到页面2，1,2均为受访页',
 					formatter: ''
 				}, {
 					title: '访问次数',
 					field: 'access_times',
-					tooltip: ''
+					tooltip: '访问该页面的总次数'
 				}, {
 					title: '占比',
 					field: 'rate',
 					computed: 'access_times/total_app_access',
+					tooltip: '某个页面的访问次数占所有页面访问次数的比例',
 					formatter: '%',
-					tooltip: ''
 				}],
 				entFieldsMap: [{
 					title: '入口页',
 					field: 'url',
-					tooltip: '',
+					tooltip: '用户进入应用访问的第一个页面，例如用户从页面1进入应用，跳转到页面2，1为入口页，而2不是',
 					formatter: ''
 				}, {
 					title: '访问次数',
 					field: 'entry_count',
-					tooltip: ''
+					tooltip: '访问该页面的总次数'
 				}, {
 					title: '占比',
 					field: 'rate',
 					computed: 'entry_count/total_app_access',
-					formatter: '%',
-					tooltip: ''
+					tooltip: '某个页面的访问次数占所有页面访问次数的比例',
+					formatter: '%'
 				}],
 				chartOption: {
 					extra: {
