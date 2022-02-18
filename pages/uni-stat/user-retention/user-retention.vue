@@ -83,6 +83,7 @@
 			return {
 				fieldsMap: fieldsFactory(),
 				query: {
+					dimension: "day",
 					appid: '61c041fb34458700013e700a',
 					platform_id: '',
 					channel_id: '',

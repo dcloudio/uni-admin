@@ -77,7 +77,15 @@
 			"appid": "61c041fb34458700013e700a",
 			"platform_id": "61c046e691a75000014c255f",
 			"channel_code": "1001",
-			"channel_name": "test-channel",
+			"channel_name": "Android - 默认",
+			"create_time": 163998979103,
+			"last_modify_time": 163998979103
+		}, {
+			"_id": "61c041fb34458700013e700b",
+			"appid": "61c041fb34458700013e700a",
+			"platform_id": "61c046e691a75000014c2560",
+			"channel_code": "1001",
+			"channel_name": "ios - 默认",
 			"create_time": 163998979103,
 			"last_modify_time": 163998979103
 		}]
