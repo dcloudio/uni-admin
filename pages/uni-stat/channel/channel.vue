@@ -30,8 +30,27 @@
 			</view>
 
 			<view class="uni-stat--x p-m">
-				<uni-stat-table :data="tableData" :filedsMap="fieldsMap.slice(0, fieldsMap.length-1)"
-					:loading="loading" />
+				<uni-table :loading="loading" border stripe :emptyText="$t('common.empty')">
+					<uni-tr>
+						<template v-for="(mapper, index) in fieldsMap.slice(0, fieldsMap.length-1)">
+							<uni-th v-if="mapper.title" :key="index" align="center">
+								{{mapper.title}}
+							</uni-th>
+						</template>
+					</uni-tr>
+					<uni-tr v-for="(item ,i) in tableData" :key="i">
+						<template v-for="(mapper, index) in fieldsMap.slice(0, fieldsMap.length-1)">
+							<uni-td v-if="mapper.title && index === 1" :key="index" class="uni-stat-edit--x">
+								{{item[mapper.field] !== undefined ? item[mapper.field] : '-'}}
+								<uni-icons type="compose" color="#2979ff" size="25" class="uni-stat-edit--btn"
+									@click="inputDialogToggle(item.channel_code, item.channel_name)" />
+							</uni-td>
+							<uni-td v-else="mapper.title" :key="index" align="center">
+								{{item[mapper.field] !== undefined ? item[mapper.field] : '-'}}
+							</uni-td>
+						</template>
+					</uni-tr>
+				</uni-table>
 				<view class="uni-pagination-box">
 					<picker class="select-picker" mode="selector" :value="options.pageSizeIndex"
 						:range="options.pageSizeRange" @change="changePageSize">
@@ -45,6 +64,10 @@
 				</view>
 			</view>
 		</view>
+		<uni-popup ref="inputDialog" type="dialog" :maskClick="true">
+			<uni-popup-dialog ref="inputClose" mode="input" title="请编辑名称" v-model="updateValue" placeholder="请输入内容"
+				@confirm="editName"></uni-popup-dialog>
+		</uni-popup>
 
 		<!-- #ifndef H5 -->
 		<fix-window />
@@ -82,7 +105,9 @@
 				days: 0,
 				tableData: [],
 				panelData: [],
-				chartData: {}
+				chartData: {},
+				queryId: '',
+				updateValue: ''
 			}
 		},
 		computed: {
@@ -152,7 +177,7 @@
 			},
 			changePageCurrent(e) {
 				this.options.pageCurrent = e.current
-				this.getTabelData(this.queryStr)
+				this.getTableData(this.queryStr)
 			},
 
 			changePageSize(e) {
@@ -161,7 +186,7 @@
 				} = e.detail
 				this.options.pageCurrent = 1 // 重置分页
 				this.options.pageSizeIndex = value
-				this.getTabelData(this.queryStr)
+				this.getTableData(this.queryStr)
 			},
 
 			changeChartTab(id, index, name) {
@@ -171,7 +196,7 @@
 			getAllData(query) {
 				this.getPanelData(query)
 				this.getChartData(query)
-				this.getTabelData(query)
+				this.getTableData(query)
 			},
 
 			getChartData(query, field = 'new_user_count') {
@@ -285,7 +310,7 @@
 					.get()
 			},
 
-			getTabelData(query) {
+			getTableData(query) {
 				const {
 					pageCurrent
 				} = this.options
@@ -368,12 +393,37 @@
 					})
 			},
 
-			navTo(id) {
-				const url = `/pages/uni-stat/overview/overview?id=${id}`
-				uni.navigateTo({
-					url
-				})
+			inputDialogToggle(queryId, updateValue) {
+				this.queryId = queryId
+				this.updateValue = updateValue
+				this.$refs.inputDialog.open()
+			},
+
+			editName(value) {
+				// 使用 clientDB 提交数据
+				const db = uniCloud.database()
+				db.collection('opendb-stat-app-channels')
+					.where({
+						channel_code: this.queryId
+					})
+					.update({
+						channel_name: value
+					})
+					.then((res) => {
+						uni.showToast({
+							title: '修改成功'
+						})
+						this.getTableData(this.queryStr)
+					}).catch((err) => {
+						uni.showModal({
+							content: err.message || '请求服务失败',
+							showCancel: false
+						})
+					}).finally(() => {
+						uni.hideLoading()
+					})
 			}
+
 		}
 
 	}
@@ -386,4 +436,13 @@
 		padding: 0;
 		margin: 0 15px;
 	}
+	.uni-stat-edit--x {
+		display: flex;
+		justify-content: space-between;
+	}
+	
+	.uni-stat-edit--btn {
+		cursor: pointer;
+	}
+	
 </style>

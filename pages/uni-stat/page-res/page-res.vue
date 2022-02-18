@@ -59,7 +59,7 @@
 			</view>
 		</view>
 		<uni-popup ref="inputDialog" type="dialog" :maskClick="true">
-			<uni-popup-dialog ref="inputClose" mode="input" title="请编辑名称" v-model="pageTitle" placeholder="请输入内容"
+			<uni-popup-dialog ref="inputClose" mode="input" title="请编辑名称" v-model="updateValue" placeholder="请输入内容"
 				@confirm="editName"></uni-popup-dialog>
 		</uni-popup>
 
@@ -99,8 +99,8 @@
 				currentDateTab: 3,
 				tableData: [],
 				panelData: [],
-				pageUrl: '',
-				pageTitle: ''
+				queryId: '',
+				updateValue: ''
 			}
 		},
 		computed: {
@@ -220,23 +220,18 @@
 					})
 			},
 
-			navTo(id) {
-				const url = `/pages/uni-stat/overview/overview?id=${id}`
-				uni.navigateTo({
-					url
-				})
-			},
 			inputDialogToggle(url, title) {
-				this.pageUrl = url
-				this.pageTitle = title
+				this.queryId = url
+				this.updateValue = title
 				this.$refs.inputDialog.open()
 			},
-			editName(title) {
+
+			editName(value) {
 				// 使用 clientDB 提交数据
 				const db = uniCloud.database()
 				db.collection('opendb-stat-app-pages')
-				.where({url: this.pageUrl})
-				.update({title})
+				.where({url: this.queryId})
+				.update({title: value})
 				.then((res) => {
 					uni.showToast({
 						title: '修改成功'
@@ -261,8 +256,9 @@
 		display: flex;
 		justify-content: space-between;
 	}
-
+	
 	.uni-stat-edit--btn {
 		cursor: pointer;
 	}
+	
 </style>

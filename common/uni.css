@@ -416,6 +416,7 @@ button:after {
 .m-m {
 	margin: 15px;
 }
+
 .mb-s {
 	margin-bottom: 5px;
 }
@@ -475,4 +476,13 @@ button:after {
 .uni-stat-datetime-picker {
 	max-width: 350px;
 	margin: 15px
+}
+
+.uni-stat-edit--x {
+	display: flex;
+	justify-content: space-between;
+}
+
+.uni-stat-edit--btn {
+	cursor: pointer;
 }
