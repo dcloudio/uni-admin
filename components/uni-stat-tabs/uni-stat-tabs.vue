@@ -11,6 +11,7 @@
 				item.disabled ? 'uni-stat--tab-item-disabled' : ''
 			]">
 			{{item.name}}
+			<uni-stat-tooltip v-if="tooltip" :text="item.tooltip" />
 		</view>
 
 	</view>
@@ -51,6 +52,10 @@
 				default: true
 			},
 			disabled: {
+				type: Boolean,
+				default: false
+			},
+			tooltip: {
 				type: Boolean,
 				default: false
 			},

@@ -32,7 +32,7 @@
 			</view>
 
 			<view class="uni-stat--x p-m">
-				<uni-stat-table :data="tableData" :filedsMap="fieldsMap" :loading="loading" />
+				<uni-stat-table :data="tableData" :filedsMap="fieldsMap" :loading="loading" tooltip />
 				<view class="uni-pagination-box">
 					<picker class="select-picker" mode="selector" :value="options.pageSizeIndex"
 						:range="options.pageSizeRange" @change="changePageSize">

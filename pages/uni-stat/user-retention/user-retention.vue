@@ -24,7 +24,7 @@
 			<view class="uni-stat--x mb-l" style="padding-top: 0;">
 				<view class="mb-m line-bottom">
 					<uni-stat-tabs type="boldLine" :tabs="fields" v-model="field"
-						style="line-height: 40px; margin-bottom: -17px;" />
+						tooltip style="line-height: 40px; margin-bottom: -17px;" />
 				</view>
 				<uni-stat-tabs type="box" :tabs="keys" v-model="key" class="mb-l" />
 				<view class="p-m">
@@ -102,10 +102,12 @@
 				field: 'new_user',
 				fields: [{
 					_id: 'new_user',
-					name: '新增留存'
+					name: '新增留存',
+					tooltip: '指定时间新增（即首次访问应用）用户，在之后的第N天，再次访问应用的用户数占比'
 				}, {
 					_id: 'active_user',
-					name: '活跃留存'
+					name: '活跃留存',
+					tooltip: '指定时间活跃（即访问应用）用户，在之后的第N天，再次访问应用的用户数占比'
 				}],
 				key: 1,
 			}
