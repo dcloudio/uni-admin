@@ -1,6 +1,6 @@
 export default [{
 	title: '日期',
-	field: 'stat_date',
+	field: 'start_time',
 	tooltip: '',
 	formatter: '',
 }, {

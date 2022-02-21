@@ -20,6 +20,7 @@
 					:clearIcon="false" class="uni-stat-datetime-picker"
 					:class="{'uni-stat__actived': currentDateTab < 0 && !!query.start_time.length}"
 					@change="useDatetimePicker" />
+				<uni-stat-tabs type="box" :current="currentDimensionTab" :tabs="dimensionTabs" class="ml-l" v-model="query.dimension" />
 			</view>
 			<uni-stat-panel :items="panelData" />
 
@@ -60,7 +61,8 @@
 		stringifyQuery,
 		getTimeOfSomeDayAgo,
 		division,
-		format
+		format,
+		formatDate
 	} from '@/js_sdk/uni-stat/util.js'
 	import fieldsMap from './fieldsMap.js'
 	export default {
@@ -68,7 +70,7 @@
 			return {
 				fieldsMap,
 				query: {
-					dimension: "day",
+					dimension: "hour",
 					appid: '',
 					platform_id: '',
 					channel_id: '',
@@ -82,7 +84,7 @@
 				},
 				loading: false,
 				currentDateTab: 3,
-				// currentChartTab: ,
+				currentDimensionTab: 0,
 				tableData: [],
 				panelData: [],
 				chartData: {},
@@ -116,6 +118,43 @@
 					}
 				})
 				return tabs
+			},
+			dimensionTabs() {
+				const tabs = [{
+					_id: 'hour',
+					name: '按时'
+				}, {
+					_id: 'day',
+					name: '按日'
+				}, {
+					_id: 'week',
+					name: '按周'
+				}, {
+					_id: 'month',
+					name: '按月'
+				}]
+				if (!this.getDays()) {
+					this.query.dimension = 'hour'
+					tabs.forEach((tab, index) => {
+						if (tab._id === 'hour') {
+							tab.disabled = false
+						} else {
+							tab.disabled = true
+						}
+					})
+					this.currentDimensionTab = 0
+				} else {
+					this.query.dimension = 'day'
+					tabs.forEach((tab, index) => {
+						if (tab._id === 'hour') {
+							tab.disabled = true
+						} else {
+							tab.disabled = false
+						}
+					})
+					this.currentDimensionTab = 1
+				}
+				return tabs
 			}
 		},
 		watch: {
@@ -128,6 +167,13 @@
 			}
 		},
 		methods: {
+			getDays() {
+				if(!this.query.start_time.length) return true
+				const day = 24 * 60 * 60 * 1000
+				const [start, end] = this.query.start_time
+				const lessTwoDay = end - start >= day
+				return lessTwoDay
+			},
 			useDatetimePicker() {
 				this.currentDateTab = -1
 			},
@@ -162,11 +208,9 @@
 			},
 
 			getChartData(query, field = 'new_user_count', name = '新增用户') {
-				const {
-					pageCurrent
-				} = this.options
 				query = stringifyQuery(query)
 				console.log('..............Chart query：', query);
+				const dimension = this.query.dimension
 				const db = uniCloud.database()
 				db.collection('opendb-stat-result')
 					.where(query)
@@ -180,7 +224,7 @@
 							count,
 							data
 						} = res.result
-						// console.log('.......chart:', data);
+						console.log('.......chart:', data);
 						const options = {
 							categories: [],
 							series: [{
@@ -188,9 +232,9 @@
 								data: []
 							}]
 						}
-						this.chartData = []
+						this.chartData = {}
 						for (const item of data) {
-							const x = item.stat_date
+							const x = formatDate(item.start_time, dimension)
 							const y = item[field]
 							if (y) {
 								options.series[0].data.push(y)
@@ -212,7 +256,7 @@
 					pageCurrent
 				} = this.options
 				query = stringifyQuery(query)
-				console.log('..............Table query：', query);
+				// console.log('..............Table query：', query);
 				this.loading = true
 				const db = uniCloud.database()
 				db.collection('opendb-stat-result')
@@ -230,6 +274,11 @@
 						} = res.result
 						// console.log('.......table:', data);
 						for (const item of data) {
+							let date = item.start_time
+							if (date) {
+								const dimension = this.query.dimension
+								item.start_time = formatDate(date, dimension)
+							}
 							mapfields(fieldsMap, item, item)
 						}
 						this.tableData = []

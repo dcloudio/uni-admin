@@ -5,9 +5,11 @@
 			:class="[`uni-stat--tab-item-${type}`]">
 			{{placeholder}}
 		</view>
-		<view v-else v-for="(item, index) in renderTabs" :key="index" @click="change(item._id, index, item.name)"
-			class="uni-stat--tab-item"
-			:class="[index === currentTab ? `uni-stat--tab-item-${type}-active` : '' , `uni-stat--tab-item-${type}`]">
+		<view v-else v-for="(item, index) in renderTabs" :key="index" @click="change(item, index)"
+			class="uni-stat--tab-item" :class="[
+				index === currentTab ? `uni-stat--tab-item-${type}-active` : '' , `uni-stat--tab-item-${type}`,
+				item.disabled ? 'uni-stat--tab-item-disabled' : ''
+			]">
 			{{item.name}}
 		</view>
 
@@ -68,54 +70,67 @@
 			}
 		},
 		mounted() {
-			if (this.mode.indexOf('platform') > -1) {
-				this.getPlatform()
-			} else if (this.mode === 'date') {
-				const dates = [{
-					_id: 7,
-					name: '最近七天',
-				}, {
-					_id: 30,
-					name: '最近30天',
-				}, {
-					_id: 90,
-					name: '最近90天',
-				}]
-				if (this.yesterday) {
-					dates.unshift({
-						_id: 1,
-						name: '昨天',
-					})
-				}
-				if (this.today) {
-					dates.unshift({
-						_id: 0,
-						name: '今天',
-					})
-				}
-				this.renderTabs = dates
-			} else {
-				this.renderTabs = this.tabs
-			}
-
-			const index = this.current
-			this.currentTab = index
-			if (this.mode === 'date' && index >= 0) {
-				this.$nextTick(function() {
-					const id = this.renderTabs[index]._id
-					const name = this.renderTabs[index].name
-					this.$emit('change', id, index, name)
-					this.$emit('input', id, index, name)
-				})
-			}
+			this.init()
 		},
 		watch: {
 			current(val) {
 				this.currentTab = val
+			},
+
+			tabs: {
+				immediate: false,
+				handler(val) {
+					this.init()
+				}
 			}
 		},
 		methods: {
-			change(id, index, name) {
+			init() {
+				if (this.mode.indexOf('platform') > -1) {
+					this.getPlatform()
+				} else if (this.mode === 'date') {
+					const dates = [{
+						_id: 7,
+						name: '最近七天',
+					}, {
+						_id: 30,
+						name: '最近30天',
+					}, {
+						_id: 90,
+						name: '最近90天',
+					}]
+					if (this.yesterday) {
+						dates.unshift({
+							_id: 1,
+							name: '昨天',
+						})
+					}
+					if (this.today) {
+						dates.unshift({
+							_id: 0,
+							name: '今天',
+						})
+					}
+					this.renderTabs = dates
+				} else {
+					this.renderTabs = this.tabs
+				}
+
+				const index = this.current
+				this.currentTab = index
+				if (this.mode === 'date' && index >= 0) {
+					this.$nextTick(function() {
+						const id = this.renderTabs[index]._id
+						const name = this.renderTabs[index].name
+						this.$emit('change', id, index, name)
+						this.$emit('input', id, index, name)
+					})
+				}
+			},
+			change(item, index) {
+				if (item.disabled) return
+				const id = item._id
+				const name = item.name
 				this.currentTab = index
 				this.$emit('change', id, index, name)
 				this.$emit('input', id, index, name)
@@ -131,7 +146,8 @@
 							platforms = platforms.filter(item => item.code.indexOf('native') > -1)
 						}
 						if (this.mode === 'platform-scene') {
-							platforms = platforms.filter(item => item.code.indexOf('native') === -1 && item.code.indexOf('h5') === -1)
+							platforms = platforms.filter(item => item.code.indexOf('native') === -1 && item.code
+								.indexOf('h5') === -1)
 						}
 						platforms.unshift({
 							name: '全部',
@@ -159,6 +175,11 @@
 				cursor: pointer;
 				box-sizing: border-box;
 				margin: 15px 0;
+
+				&-disabled {
+					cursor: unset;
+					opacity: 0.4;
+				}
 
 				&-line {
 					margin-right: 30px;
@@ -198,7 +219,7 @@
 
 				&-box {
 					padding: 5px 15px;
-					border: 1px solid #eee;
+					border: 1px solid #dcdfe6;
 					margin: 0;
 
 					&:not(:last-child) {

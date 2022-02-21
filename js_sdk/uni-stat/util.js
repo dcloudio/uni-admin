@@ -90,7 +90,43 @@ function format(num, type = ',') {
 	}
 }
 
-function mapfields(map, data={}, goal, prefix = '', prop = 'value') {
+function formatDate(date, type) {
+	const d = new Date(date)
+	if (type === 'hour') {
+		let h = d.getHours()
+		h = h < 10 ? '0' + h : h
+		return `${h}:00 ~ ${h}:59`
+	} else if (type === 'week') {
+		const first = d.getDate() - d.getDay(); // First day is the day of the month - the day of the week
+		const last = first + 6; // last day is the first day + 6
+		let firstday = new Date(d.setDate(first));
+		firstday = parseDate(firstday)
+		let lastday = new Date(d.setDate(last));
+		lastday = parseDate(lastday)
+		return `${firstday} ~ ${lastday}`
+	} else if (type === 'month') {
+		let firstday = new Date(d.getFullYear(), d.getMonth(), 1);
+		firstday = parseDate(firstday)
+		let lastday = new Date(d.getFullYear(), d.getMonth() + 1, 0);
+		lastday = parseDate(lastday)
+		return `${firstday} ~ ${lastday}`
+	} else {
+		return parseDate(d)
+	}
+}
+
+function parseDate(date) {
+	const d = new Date(date)
+	const year = d.getFullYear()
+	let month = d.getMonth() + 1
+	let day = d.getDate()
+	month = month < 10 ? '0' + month : month
+	day = day < 10 ? '0' + day : day
+	const ymd = year + '-' + month + '-' + day
+	return ymd
+}
+
+function mapfields(map, data = {}, goal, prefix = '', prop = 'value') {
 	const goals = [],
 		argsGoal = goal
 	map = JSON.parse(JSON.stringify(map))
@@ -147,5 +183,6 @@ export {
 	stringifyQuery,
 	getTimeOfSomeDayAgo,
 	division,
-	format
+	format,
+	formatDate
 }
