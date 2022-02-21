@@ -28,7 +28,7 @@
 			</view>
 
 			<view class="uni-stat--x p-m">
-				<uni-stat-table :data="tableData" :filedsMap="fieldsMap" :loading="loading" />
+				<uni-stat-table :data="tableData" :filedsMap="fieldsMap" :loading="loading" tooltip />
 				<view class="uni-pagination-box">
 					<picker class="select-picker" mode="selector" :value="options.pageSizeIndex"
 						:range="options.pageSizeRange" @change="changePageSize">
@@ -277,7 +277,8 @@
 								tempData.forEach(item => item.total_count = Number(total_count))
 								panelData[0] = {
 									title: '错误总数',
-									value: total_count
+									value: total_count,
+									tooltip: '指应用在某个时间段内出现错误的总数'
 								}
 							}
 							let launch_count = ''
@@ -287,7 +288,8 @@
 								if (total_count && launch_count) {
 									panelData[1] = {
 										title: '错误率',
-										value: total_count / launch_count
+										value: total_count / launch_count,
+										tooltip: '时间范围内的总错误数/应用启动次数，如果小于0.01%，默认显示为0'
 									}
 								}
 							}).finally(() => {

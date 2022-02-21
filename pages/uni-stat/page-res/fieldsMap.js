@@ -7,42 +7,42 @@ export default [{
 }, {
 	title: '访问人数',
 	field: 'access_users',
-	tooltip: '访问人数',
+	tooltip: '访问过应用内任意页面的总用户数（去重）',
 	value: 0
 }, {
 	title: '访问次数',
 	field: 'access_times',
-	tooltip: '',
+	tooltip: '访问过应用内任意页面总次数，多个页面之间跳转、同一页面的重复访问计为多次访问；',
 	value: 0
 }, {
 	title: '退出页次数',
 	field: 'exit_times',
-	tooltip: '',
+	tooltip: '作为访问会话最后一个访问页面(即离开页）的次数',
 	value: 0
 }, {
 	title: '退出率',
 	field: 'exitRate',
 	computed: 'exit_times/access_times',
 	formatter: '%',
-	tooltip: '',
+	tooltip: '在此页面，选择离开应用占此页面访问次数的比例',
 	value: 0
 }, {
 	title: '次均停留时长',
 	field: 'visitAvgTime',
 	computed: 'access_time/access_times',
 	formatter: ':',
-	tooltip: '',
+	tooltip: '平均每次打开应用停留在应用内的总时长，即应用停留总时长/启动次数',
 	value: 0
 }, {
 	title: '人均停留时长 ',
 	field: 'visitorAvgTime',
 	computed: 'access_time/access_users',
 	formatter: ':',
-	tooltip: '',
+	tooltip: '平均每个用户停留在应用内的总时长，即应用停留总时长/访问人数',
 	value: 0
 }, {
 	title: '分享次数',
 	field: 'share_count',
-	tooltip: '',
+	tooltip: '页面被分享成功的次数',
 	value: 0
 }]
