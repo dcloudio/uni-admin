@@ -24,6 +24,10 @@
 				type: String,
 				default: ''
 			},
+			modelValue: {
+				type: String,
+				default: ''
+			},
 			mode: {
 				type: String,
 				default: ''
@@ -80,6 +84,7 @@
 			change(e) {
 				this.$emit('change', e)
 				this.$emit('input', e)
+				this.$emit('update:modelValue', e)
 			},
 			getApps() {
 				const db = uniCloud.database()

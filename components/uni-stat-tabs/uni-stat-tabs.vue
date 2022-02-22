@@ -31,10 +31,14 @@
 				type: String,
 				default: 'line'
 			},
-			// value: {
-			// 	type: [String, Number],
-			// 	default: ''
-			// },
+			value: {
+				type: [String, Number],
+				default: ''
+			},
+			modelValue: {
+				type: [String, Number],
+				default: ''
+			},
 			current: {
 				type: [String, Number],
 				default: 0
@@ -127,8 +131,7 @@
 					this.$nextTick(function() {
 						const id = this.renderTabs[index]._id
 						const name = this.renderTabs[index].name
-						this.$emit('change', id, index, name)
-						this.$emit('input', id, index, name)
+						this.emit(id, index, name)
 					})
 				}
 			},
@@ -137,8 +140,12 @@
 				const id = item._id
 				const name = item.name
 				this.currentTab = index
+				this.emit(id, index, name)
+			},
+			emit(id, index, name) {
 				this.$emit('change', id, index, name)
 				this.$emit('input', id, index, name)
+				this.$emit('update:modelValue', id, index, name)
 			},
 			getPlatform() {
 				const db = uniCloud.database()
