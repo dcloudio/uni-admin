@@ -96,7 +96,7 @@
 			},
 			getChannels() {
 				const db = uniCloud.database()
-				const channels = db.collection('opendb-stat-app-channels').get().then(res => {
+				const channels = db.collection('opendb-app-channels').get().then(res => {
 					this.channels = res.result.data
 					this.renderData = res.result.data.map(item => item.channel_name)
 				})

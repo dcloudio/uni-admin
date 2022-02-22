@@ -121,7 +121,7 @@
 
 			initChartOption(data, goal, type = 'day') {
 				const db = uniCloud.database()
-				db.collection('opendb-stat-app-platforms').get().then(res => {
+				db.collection('opendb-app-platforms').get().then(res => {
 					const options = [{
 						field: `${type}_new_user_count`,
 						title: `${type === 'day' ? '日' : '月'}新增用户对比`,

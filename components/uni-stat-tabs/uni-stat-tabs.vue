@@ -149,7 +149,7 @@
 			},
 			getPlatform() {
 				const db = uniCloud.database()
-				const appList = db.collection('opendb-stat-app-platforms')
+				const appList = db.collection('opendb-app-platforms')
 					.field('name, code')
 					.get()
 					.then(res => {

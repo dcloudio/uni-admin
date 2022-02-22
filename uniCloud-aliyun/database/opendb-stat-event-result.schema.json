@@ -14,8 +14,7 @@
 		},
 		"appid": {
 			"bsonType": "string",
-			"description": "应用表ID，对应opendb-app-list._id",
-			"foreignKey": "opendb-app-list._id"
+			"description": "应用ID"
 		},
 		"platform_id": {
 			"bsonType": "string",
@@ -32,13 +31,18 @@
 			"description": "应用版本ID，对应opendb-stat-app-versions._id",
 			"foreignKey": "opendb-stat-app-versions._id"
 		},
-		"visit_depth_data": {
-			"bsonType":"object",
-			"description":"访问深度数据"
+		"event_id": {
+			"bsonType": "string",
+			"description": "事件ID, 同opendb-stat-events._id",
+			"foreignKey":"opendb-stat-events._id"
 		},
-		"duration_data": {
-			"bsonType":"object",
-			"description":"访问时长数据"
+		"event_count": {
+			"bsonType": "int",
+			"description": "触发次数"
+		},
+		"user_count": {
+			"bsonType": "int",
+			"description": "触发该事件的用户数"
 		},
 		"stat_date":{
 			"bsonType":"int",

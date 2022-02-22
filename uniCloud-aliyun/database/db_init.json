@@ -3,7 +3,7 @@
 // 编写完毕后对本文件点右键，可按配置规则创建表和添加数据
 
 {
-	"opendb-app-versions": {
+	"opendb-stat-app-versions": {
 		"data": [{
 			"_id": "61c041fb34458700013e700a",
 			"appid": "61c041fb34458700013e700a",
@@ -13,14 +13,14 @@
 			"last_modify_time": 163998979103
 		}, {
 			"_id": "61c041fb34458700013e700b",
-			"appid": "61c041fb34458700013e700a",
+			"appid": "61c041fb34458700013e700b",
 			"platform": "61c046e691a75000014c255f",
 			"version": "2.0.0",
 			"create_time": 163998979103,
 			"last_modify_time": 163998979103
 		}]
 	},
-	"opendb-stat-app-platforms": {
+	"opendb-app-platforms": {
 		"data": [{
 			"_id": "61c046e691a75000014c255f",
 			"name": "原生-安卓",
@@ -71,7 +71,7 @@
 			"create_time": 163998979103
 		}]
 	},
-	"opendb-stat-app-channels": {
+	"opendb-app-channels": {
 		"data": [{
 			"_id": "61c041fb34458700013e700a",
 			"appid": "61c041fb34458700013e700a",
@@ -1498,7 +1498,7 @@
 		]
 
 	},
-	"opendb-stat-app-pages": {
+	"opendb-stat-pages": {
 		"data": [{
 			"_id": "61c041fb34458700013e70p1",
 			"appid": "61c041fb34458700013e700a",
@@ -1538,7 +1538,7 @@
 		}]
 	},
 
-	"opendb-stat-app-page-result": {
+	"opendb-stat-page-result": {
 		"data": [{
 			"appid": "61c041fb34458700013e700a",
 			"version_id": "61c041fb34458700013e700a",
@@ -1685,7 +1685,7 @@
 		}]
 	},
 
-	"opendb-stat-events-result": {
+	"opendb-stat-event-result": {
 		"data": [{
 			"appid": "61c041fb34458700013e700a",
 			"version_id": "61c041fb34458700013e700a",
@@ -2102,36 +2102,6 @@
 			"icon": "",
 			"url": "",
 			"sort": 2190,
-			"create_date": 1638356902516
-		}, {
-			"parent_id": "uni-stat-link-help",
-			"permission": [],
-			"enable": true,
-			"menu_id": "uni-stat-link-help-article-1",
-			"name": "如何开通统计",
-			"icon": "",
-			"url": "https://ask.dcloud.net.cn/article/36303",
-			"sort": 2191,
-			"create_date": 1638356902516
-		}, {
-			"parent_id": "uni-stat-link-help",
-			"permission": [],
-			"enable": true,
-			"menu_id": "uni-stat-link-help-article-2",
-			"name": "内容统计说明",
-			"icon": "",
-			"url": "https://ask.dcloud.net.cn/article/36299",
-			"sort": 2192,
-			"create_date": 1638356902516
-		}, {
-			"parent_id": "uni-stat-link-help",
-			"permission": [],
-			"enable": true,
-			"menu_id": "uni-stat-link-help-article-3",
-			"name": "自定义事件说明",
-			"icon": "",
-			"url": "https://ask.dcloud.net.cn/article/36304",
-			"sort": 2193,
 			"create_date": 1638356902516
 		}, {
 			"parent_id": "uni-stat-link-help",

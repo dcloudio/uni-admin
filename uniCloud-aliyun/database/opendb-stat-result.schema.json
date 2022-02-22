@@ -19,13 +19,13 @@
 		},
 		"platform_id": {
 			"bsonType": "string",
-			"description": "应用平台ID，对应opendb-stat-app-platforms._id	",
-			"foreignKey": "opendb-stat-app-platforms._id"
+			"description": "应用平台ID，对应opendb-app-platforms._id	",
+			"foreignKey": "opendb-app-platforms._id"
 		},
 		"channel_id": {
 			"bsonType": "string",
-			"description": "渠道/场景值ID，对应opendb-stat-app-channels._id",
-			"foreignKey": "opendb-stat-app-channels._id"
+			"description": "渠道/场景值ID，对应opendb-app-channels._id",
+			"foreignKey": "opendb-app-channels._id"
 		},
 		"version_id": {
 			"bsonType": "string",

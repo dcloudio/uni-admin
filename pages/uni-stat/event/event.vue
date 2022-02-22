@@ -159,13 +159,13 @@
 					appid: this.query.appid
 				})
 				const mainTableTemp = db.collection('opendb-stat-events').where(filterAppid).getTemp()
-				const subTableTemp = db.collection('opendb-stat-events-result')
+				const subTableTemp = db.collection('opendb-stat-event-result')
 					.where(query)
 					.getTemp()
 
 				db.collection(mainTableTemp, subTableTemp)
 					.field(
-						'event_key, event_name, _id1{"opendb-stat-events-result"{event_count, user_count, stat_date, start_time}}'
+						'event_key, event_name, _id1{"opendb-stat-event-result"{event_count, user_count, stat_date, start_time}}'
 					)
 					.skip((pageCurrent - 1) * this.pageSize)
 					.limit(this.pageSize)
@@ -180,7 +180,7 @@
 						this.tableData = []
 						this.options.total = count
 						for (const item of data) {
-							const lines = item._id["opendb-stat-events-result"]
+							const lines = item._id["opendb-stat-event-result"]
 							if (Array.isArray(lines)) {
 								delete(item._id)
 								const line = lines[0]

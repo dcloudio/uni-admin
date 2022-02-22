@@ -324,11 +324,11 @@
 				const filterAppid = stringifyQuery({
 					appid: this.query.appid
 				})
-				const mainTableTemp = db.collection('opendb-stat-app-pages')
+				const mainTableTemp = db.collection('opendb-stat-pages')
 					.where(filterAppid)
 					.field('_id, title, url')
 					.getTemp()
-				const subTableTemp = db.collection('opendb-stat-app-page-result')
+				const subTableTemp = db.collection('opendb-stat-page-result')
 					.where(query)
 					.orderBy(field, 'desc')
 					.limit(10)

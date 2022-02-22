@@ -10,6 +10,6 @@
 
 // 下面示例查询uni-id-users表的所有数据
 
- db.collection('opendb-stat-app-page-result')
+ db.collection('opendb-stat-page-result')
 					.orderBy('access_times', 'desc')
 					.get()

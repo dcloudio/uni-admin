@@ -241,7 +241,7 @@
 					appid: this.query.appid
 				})
 				const mainTableTemp = db.collection('opendb-stat-error-result').where(query).getTemp()
-				const subTableTemp = db.collection('opendb-app-versions')
+				const subTableTemp = db.collection('opendb-stat-app-versions')
 					.where(filterAppid)
 					.orderBy('start_time ', 'desc ')
 					.getTemp()

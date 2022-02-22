@@ -228,7 +228,7 @@
 
 			getChannels() {
 				const db = uniCloud.database()
-				return db.collection('opendb-stat-app-channels')
+				return db.collection('opendb-app-channels')
 					.get()
 			},
 

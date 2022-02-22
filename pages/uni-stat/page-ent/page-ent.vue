@@ -134,15 +134,15 @@
 				const filterAppid = stringifyQuery({
 					appid: this.query.appid
 				})
-				const mainTableTemp = db.collection('opendb-stat-app-pages').where(filterAppid).getTemp()
-				const subTableTemp = db.collection('opendb-stat-app-page-result')
+				const mainTableTemp = db.collection('opendb-stat-pages').where(filterAppid).getTemp()
+				const subTableTemp = db.collection('opendb-stat-page-result')
 					.where(query)
 					.orderBy('start_time ', 'desc ')
 					.getTemp()
 
 				db.collection(mainTableTemp, subTableTemp)
 					.field(
-						'title, url, _id{"opendb-stat-app-page-result"{access_times,access_users,access_time,share_count,entry_users,entry_count,entry_access_time,dimension,stat_date,bounce_rate}}'
+						'title, url, _id{"opendb-stat-page-result"{access_times,access_users,access_time,share_count,entry_users,entry_count,entry_access_time,dimension,stat_date,bounce_rate}}'
 					)
 					.skip((pageCurrent - 1) * this.pageSize)
 					.limit(this.pageSize)
@@ -157,7 +157,7 @@
 						this.tableData = []
 						this.options.total = count
 						for (const item of data) {
-							const lines = item._id["opendb-stat-app-page-result"]
+							const lines = item._id["opendb-stat-page-result"]
 							if (Array.isArray(lines)) {
 								delete(item._id)
 								const line = lines[0]
@@ -178,7 +178,7 @@
 
 			getPanelData(query = stringifyQuery(this.query)) {
 				const db = uniCloud.database()
-				const subTable = db.collection('opendb-stat-app-page-result')
+				const subTable = db.collection('opendb-stat-page-result')
 					.where(query)
 					.groupBy('appid')
 					.groupField(

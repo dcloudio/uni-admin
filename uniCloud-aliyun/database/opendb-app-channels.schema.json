@@ -19,7 +19,7 @@
 		},
 		"platform_id": {
 			"bsonType": "int",
-			"description": "应用平台ID，对应opendb-stat-app-platforms._id",
+			"description": "应用平台ID，对应opendb-app-platforms._id",
 			"foreignKey": "opendb-app-list._id"
 		},
 		"channel_code": {

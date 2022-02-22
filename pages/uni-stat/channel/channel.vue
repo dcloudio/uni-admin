@@ -306,7 +306,7 @@
 
 			getChannels() {
 				const db = uniCloud.database()
-				return db.collection('opendb-stat-app-channels')
+				return db.collection('opendb-app-channels')
 					.get()
 			},
 
@@ -402,7 +402,7 @@
 			editName(value) {
 				// 使用 clientDB 提交数据
 				const db = uniCloud.database()
-				db.collection('opendb-stat-app-channels')
+				db.collection('opendb-app-channels')
 					.where({
 						channel_code: this.queryId
 					})
