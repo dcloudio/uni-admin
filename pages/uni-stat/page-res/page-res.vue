@@ -34,12 +34,12 @@
 					</uni-tr>
 					<uni-tr v-for="(item ,i) in tableData" :key="i">
 						<template v-for="(mapper, index) in fieldsMap">
-							<uni-td v-if="mapper.title && index === 1" :key="index" class="uni-stat-edit--x">
+							<uni-td v-if="mapper.title && index === 1" :key="mapper.title" class="uni-stat-edit--x">
 								{{item[mapper.field] !== undefined ? item[mapper.field] : '-'}}
 								<uni-icons type="compose" color="#2979ff" size="25" class="uni-stat-edit--btn"
 									@click="inputDialogToggle(item.url, item.title)" />
 							</uni-td>
-							<uni-td v-else="mapper.title" :key="index" align="center">
+							<uni-td v-else="mapper.title" :key="mapper.title" align="center">
 								{{item[mapper.field] !== undefined ? item[mapper.field] : '-'}}
 							</uni-td>
 						</template>
@@ -256,9 +256,9 @@
 		display: flex;
 		justify-content: space-between;
 	}
-	
+
 	.uni-stat-edit--btn {
 		cursor: pointer;
 	}
-	
+
 </style>
