@@ -12,10 +12,10 @@
 		<!-- #endif -->
 		<view class="navbar" :class="{'navbar-mini':!matchLeftWindow,'popup-menu':popupMenuOpened}">
 			<view class="navbar-left pointer">
-				<navigator class="logo" open-type="reLaunch" url="/">
+				<view class="logo" @click="linkTo">
 					<image :src="logo" mode="heightFix"></image>
 					<text>{{appName}}</text>
-				</navigator>
+				</view>
 				<uni-icons @click="toggleSidebar" type="bars" class="menu-icon" size="30" color="#999"></uni-icons>
 			</view>
 			<view class="navbar-middle">
@@ -192,6 +192,11 @@
 					this.$i18n.locale = 'en'
 					uni.setLocale('en')
 				}
+			},
+			linkTo(){
+				uni.reLaunch({
+					url: '/'
+				})
 			}
 		}
 	}
