@@ -37,11 +37,11 @@
 			"description": "页面表ID，对应页面表ID，对应pendb-stat-app-pages._id",
 			"foreignKey": "opendb-stat-pages._id"
 		},
-		"access_times": {
+		"visit_times": {
 			"bsonType": "int",
 			"description": "访问次数"
 		},
-		"access_users": {
+		"visit_users": {
 			"bsonType": "int",
 			"description": "访问用户数"
 		},
@@ -49,7 +49,7 @@
 			"bsonType": "int",
 			"description": "退出次数"
 		},
-		"access_time": {
+		"duration": {
 			"bsonType": "int",
 			"description": "访问总时长,单位秒"
 		},
@@ -65,7 +65,7 @@
 			"bsonType": "int",
 			"description": "当前页作为入口页的总次数"
 		},
-		"entry_access_time": {
+		"entry_duration": {
 			"bsonType": "int",
 			"description": "当前页作为入口时，本页面的总访问时长,单位秒"
 		},

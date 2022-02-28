@@ -37,7 +37,7 @@
 									<uni-th align="center">分享次数</uni-th>
 								</uni-tr>
 								<uni-tr v-for="(item ,index) in tableData" :key="index" style="text-align: center; !important">
-									<uni-td>{{item.url}}</uni-td>
+									<uni-td>{{item.path}}</uni-td>
 									<uni-td>{{item.name}}</uni-td>
 									<uni-td>{{item.num_visitor}}</uni-td>
 									<uni-td>{{item.num_visits}}</uni-td>
@@ -185,7 +185,7 @@
 
 							db.collection(mainTableTemp, subTableTemp)
 								.field(
-									'title, url, _id{"uni-stat-app-page-view-daily"{exit_num_visits, num_visitor, num_visits, sum_visit_length, num_share,entry_num_visitor, entry_num_visits, entry_sum_visit_length, stat_time}}'
+									'title, path, _id{"uni-stat-app-page-view-daily"{exit_num_visits, num_visitor, num_visits, sum_visit_length, num_share,entry_num_visitor, entry_num_visits, entry_sum_visit_length, stat_time}}'
 								)
 								.skip((pageCurrent - 1) * pageSize)
 								.limit(pageSize)

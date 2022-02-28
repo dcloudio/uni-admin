@@ -37,9 +37,9 @@
 							<uni-td v-if="mapper.title && index === 1" :key="mapper.title" class="uni-stat-edit--x">
 								{{item[mapper.field] !== undefined ? item[mapper.field] : '-'}}
 								<uni-icons type="compose" color="#2979ff" size="25" class="uni-stat-edit--btn"
-									@click="inputDialogToggle(item.url, item.title)" />
+									@click="inputDialogToggle(item.path, item.title)" />
 							</uni-td>
-							<uni-td v-else="mapper.title" :key="mapper.title" align="center">
+							<uni-td v-else :key="mapper.title" align="center">
 								{{item[mapper.field] !== undefined ? item[mapper.field] : '-'}}
 							</uni-td>
 						</template>
@@ -169,7 +169,7 @@
 
 				db.collection(mainTableTemp, subTableTemp)
 					.field(
-						'title, url, _id{"opendb-stat-page-result"{page_id,access_times,access_users,exit_times,access_time,share_count,entry_users,entry_count,entry_access_time,dimension,stat_date}}'
+						'title, path, _id{"opendb-stat-page-result"{page_id,visit_times,visit_users,exit_times,duration,share_count,entry_users,entry_count,entry_duration,dimension,stat_date}}'
 					)
 					.skip((pageCurrent - 1) * this.pageSize)
 					.limit(this.pageSize)
@@ -209,7 +209,7 @@
 					.where(query)
 					.groupBy('appid')
 					.groupField(
-						'sum(access_times) as total_access_times, sum(access_users) as total_access_users, sum(exit_times) as total_exit_times, sum(share_count) as total_share_count, sum(access_time) as total_access_time'
+						'sum(visit_times) as total_visit_times, sum(visit_users) as total_visit_users, sum(exit_times) as total_exit_times, sum(share_count) as total_share_count, sum(duration) as total_duration'
 					)
 					.orderBy('start_time', 'desc ')
 					.get()

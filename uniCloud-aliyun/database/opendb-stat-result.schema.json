@@ -52,7 +52,7 @@
 			"bsonType": "int",
 			"description": "本时间段报错次数"
 		},
-		"access_time": {
+		"duration": {
 			"bsonType": "int",
 			"description": "访问总时长,单位秒"
 		},

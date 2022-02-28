@@ -11,5 +11,5 @@
 // 下面示例查询uni-id-users表的所有数据
 
  db.collection('opendb-stat-page-result')
-					.orderBy('access_times', 'desc')
+					.orderBy('visit_times', 'desc')
 					.get()

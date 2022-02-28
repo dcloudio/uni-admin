@@ -142,7 +142,7 @@
 
 				db.collection(mainTableTemp, subTableTemp)
 					.field(
-						'title, url, _id{"opendb-stat-page-result"{access_times,access_users,access_time,share_count,entry_users,entry_count,entry_access_time,dimension,stat_date,bounce_rate}}'
+						'title, path, _id{"opendb-stat-page-result"{visit_times,visit_users,duration,share_count,entry_users,entry_count,entry_duration,dimension,stat_date,bounce_rate}}'
 					)
 					.skip((pageCurrent - 1) * this.pageSize)
 					.limit(this.pageSize)
@@ -182,7 +182,7 @@
 					.where(query)
 					.groupBy('appid')
 					.groupField(
-						'sum(access_times) as total_access_times, sum(access_users) as total_access_users, sum(entry_count) as total_entry_count, sum(bounce_rate) as total_bounce_rate, sum(access_time) as total_access_time'
+						'sum(visit_times) as total_visit_times, sum(visit_users) as total_visit_users, sum(entry_count) as total_entry_count, sum(bounce_rate) as total_bounce_rate, sum(duration) as total_duration'
 					)
 					.orderBy('start_time', 'desc ')
 					.get()

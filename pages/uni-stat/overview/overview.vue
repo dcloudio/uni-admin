@@ -92,23 +92,23 @@
 				chartData: {},
 				resFieldsMap: [{
 					title: '受访页',
-					field: 'url',
+					field: 'path',
 					tooltip: '用户进入应用访问的所有页面，例如用户从页面1进入应用，跳转到页面2，1,2均为受访页',
 					formatter: ''
 				}, {
 					title: '访问次数',
-					field: 'access_times',
+					field: 'visit_times',
 					tooltip: '访问该页面的总次数'
 				}, {
 					title: '占比',
 					field: 'rate',
-					computed: 'access_times/total_app_access',
+					computed: 'visit_times/total_app_access',
 					tooltip: '某个页面的访问次数占所有页面访问次数的比例',
 					formatter: '%',
 				}],
 				entFieldsMap: [{
 					title: '入口页',
-					field: 'url',
+					field: 'path',
 					tooltip: '用户进入应用访问的第一个页面，例如用户从页面1进入应用，跳转到页面2，1为入口页，而2不是',
 					formatter: ''
 				}, {
@@ -326,7 +326,7 @@
 				})
 				const mainTableTemp = db.collection('opendb-stat-pages')
 					.where(filterAppid)
-					.field('_id, title, url')
+					.field('_id, title, path')
 					.getTemp()
 				const subTableTemp = db.collection('opendb-stat-page-result')
 					.where(query)
