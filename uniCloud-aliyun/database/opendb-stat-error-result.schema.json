@@ -1,4 +1,3 @@
-// uni统计-应用错误数据日统计表
 {
 	"bsonType": "object",
 	"required": [],
@@ -14,17 +13,16 @@
 		},
 		"appid": {
 			"bsonType": "string",
-			"description": "应用表ID，对应opendb-app-list._id",
-			"foreignKey": "opendb-app-list._id"
+			"description": "应用ID"
 		},
 		"platform_id": {
 			"bsonType": "string",
-			"description": "应用平台ID，对应opendb-app-platforms._id	",
+			"description": "应用平台ID，对应opendb-app-platforms._id",
 			"foreignKey": "opendb-app-platforms._id"
 		},
 		"channel_id": {
 			"bsonType": "string",
-			"description": "渠道/场景值ID，对应opendb-app-channels._id",
+			"description": "渠道\/场景值ID，对应opendb-app-channels._id",
 			"foreignKey": "opendb-app-channels._id"
 		},
 		"version_id": {
@@ -32,41 +30,46 @@
 			"description": "应用版本ID，对应opendb-stat-app-versions._id",
 			"foreignKey": "opendb-stat-app-versions._id"
 		},
-		"sdk_version": {
-			"bsonType": "string",
-			"description": " 基础库的版本号"
-		},
-		"platform_version": {
-			"bsonType": "string",
-			"description": "宿主App的版本号"
-		},
 		"hash": {
 			"bsonType": "string",
 			"description": "错误hash码"
 		},
 		"count": {
-			"bsonType":"int",
-			"description":"报错次数"
+			"bsonType": "int",
+			"description": "报错次数"
 		},
 		"last_time": {
-			"bsonType":"timestamp",
-			"description":"最近一次报错事件"
+			"bsonType": "timestamp",
+			"description": "最近一次报错事件"
 		},
 		"dimension": {
 			"bsonType": "string",
-			"description": "统计范围 day:按天统计，hour:按小时统计"
+			"description": "统计范围 day:按天统计，hour:按小时统计",
+			"enum": [{
+				"text": "月",
+				"value": "month"
+			}, {
+				"text": "周",
+				"value": "week"
+			}, {
+				"text": "天",
+				"value": "day"
+			}, {
+				"text": "小时",
+				"value": "hour"
+			}]
 		},
-		"stat_date":{
-			"bsonType":"int",
-			"description":"统计日期，格式yyyymmdd，例:20211201"
+		"stat_date": {
+			"bsonType": "int",
+			"description": "统计日期，格式yyyymmdd，例:20211201"
 		},
-		"start_time":{
-			"bsonType":"timestamp",
-			"description":"开始时间"
+		"start_time": {
+			"bsonType": "timestamp",
+			"description": "开始时间"
 		},
-		"end_time":{
-			"bsonType":"timestamp",
-			"description":"结束时间"
+		"end_time": {
+			"bsonType": "timestamp",
+			"description": "结束时间"
 		}
 	}
 }

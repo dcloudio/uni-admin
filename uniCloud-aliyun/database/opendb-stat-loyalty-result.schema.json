@@ -1,4 +1,3 @@
-// 文档教程: https://uniapp.dcloud.net.cn/uniCloud/schema
 {
 	"bsonType": "object",
 	"required": [],
@@ -14,17 +13,16 @@
 		},
 		"appid": {
 			"bsonType": "string",
-			"description": "应用表ID，对应opendb-app-list._id",
-			"foreignKey": "opendb-app-list._id"
+			"description": "应用ID"
 		},
 		"platform_id": {
 			"bsonType": "string",
-			"description": "应用平台ID，对应opendb-app-platforms._id	",
+			"description": "应用平台ID，对应opendb-app-platforms._id",
 			"foreignKey": "opendb-app-platforms._id"
 		},
 		"channel_id": {
 			"bsonType": "string",
-			"description": "渠道/场景值ID，对应opendb-app-channels._id",
+			"description": "渠道\/场景值ID，对应opendb-app-channels._id",
 			"foreignKey": "opendb-app-channels._id"
 		},
 		"version_id": {
@@ -33,24 +31,24 @@
 			"foreignKey": "opendb-stat-app-versions._id"
 		},
 		"visit_depth_data": {
-			"bsonType":"object",
-			"description":"访问深度数据"
+			"bsonType": "object",
+			"description": "访问深度数据"
 		},
 		"duration_data": {
-			"bsonType":"object",
-			"description":"访问时长数据"
+			"bsonType": "object",
+			"description": "访问时长数据"
 		},
-		"stat_date":{
-			"bsonType":"int",
-			"description":"统计日期，格式yyyymmdd，例:20211201"
+		"stat_date": {
+			"bsonType": "int",
+			"description": "统计日期，格式yyyymmdd，例:20211201"
 		},
-		"start_time":{
-			"bsonType":"timestamp",
-			"description":"开始时间"
+		"start_time": {
+			"bsonType": "timestamp",
+			"description": "开始时间"
 		},
-		"end_time":{
-			"bsonType":"timestamp",
-			"description":"结束时间"
+		"end_time": {
+			"bsonType": "timestamp",
+			"description": "结束时间"
 		}
 	}
 }
