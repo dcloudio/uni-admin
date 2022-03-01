@@ -31,10 +31,10 @@
 			"description": "应用版本ID，对应opendb-stat-app-versions._id",
 			"foreignKey": "opendb-stat-app-versions._id"
 		},
-		"event_id": {
+		"event_key": {
 			"bsonType": "string",
-			"description": "事件ID, 同opendb-stat-events._id",
-			"foreignKey":"opendb-stat-events._id"
+			"description": "事件ID, 同opendb-stat-events.event_key",
+			"foreignKey":"opendb-stat-events.event_key"
 		},
 		"event_count": {
 			"bsonType": "int",

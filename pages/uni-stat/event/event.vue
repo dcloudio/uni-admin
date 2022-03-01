@@ -165,7 +165,7 @@
 
 				db.collection(mainTableTemp, subTableTemp)
 					.field(
-						'event_key, event_name, _id1{"opendb-stat-event-result"{event_count, user_count, stat_date, start_time}}'
+						'event_name, event_key{"opendb-stat-event-result"{event_key, event_count, user_count, stat_date, start_time}}'
 					)
 					.skip((pageCurrent - 1) * this.pageSize)
 					.limit(this.pageSize)
@@ -180,9 +180,9 @@
 						this.tableData = []
 						this.options.total = count
 						for (const item of data) {
-							const lines = item._id["opendb-stat-event-result"]
+							const lines = item.event_key["opendb-stat-event-result"]
 							if (Array.isArray(lines)) {
-								delete(item._id)
+								delete(item.event_key)
 								const line = lines[0]
 								if (line && Object.keys(line).length) {
 									mapfields(fieldsMap, line, item)
@@ -200,6 +200,7 @@
 			},
 
 			inputDialogToggle(queryId, updateValue) {
+				console.log(3333333333333, queryId, updateValue);
 				this.queryId = queryId
 				this.updateValue = updateValue
 				this.$refs.inputDialog.open()

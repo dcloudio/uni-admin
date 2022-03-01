@@ -74,7 +74,7 @@
 					pageSizeRange: [10, 20, 50, 100],
 				},
 				loading: false,
-				currentDateTab: 2,
+				currentDateTab: 3,
 				// currentChartTab: ,
 				tableData: [],
 				panelData: [],
@@ -190,7 +190,7 @@
 								}
 							}
 							console.log(6666666, options);
-							this.chartData = []
+							this.chartData = {}
 							this.chartData = options
 						})
 					}).catch((err) => {
@@ -263,7 +263,7 @@
 							const lines = item.version_id
 							if (Array.isArray(lines)) {
 								delete(item.version_id)
-								const version = lines[0].version
+								const version = lines[0] && lines[0].version
 								if (version) {
 									item.version = version
 								}
@@ -341,13 +341,6 @@
 						this.panelData = []
 						this.panelData = mapfields(fieldsMap, items, undefined, 'total_')
 					})
-			},
-
-			navTo(id) {
-				const url = `/pages/uni-stat/overview/overview?id=${id}`
-				uni.navigateTo({
-					url
-				})
 			}
 		}
 
