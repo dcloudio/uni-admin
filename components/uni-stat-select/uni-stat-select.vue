@@ -65,7 +65,7 @@
 				if (this.mode === 'app') {
 					this.apps.forEach(a => {
 						if (a.name === val) {
-							id = a._id
+							id = a.appid
 						}
 					})
 				} else if (this.mode === 'channel') {

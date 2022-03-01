@@ -84,7 +84,7 @@
 				fieldsMap: fieldsFactory(),
 				query: {
 					dimension: "day",
-					appid: '61c041fb34458700013e700a',
+					appid: '',
 					platform_id: '',
 					channel_id: '',
 					start_time: [],
@@ -186,8 +186,7 @@
 				this.getTabelData(this.query)
 			},
 
-			createStr(type = "used_count", vals, fields, tail) {
-				tail = tail ? ',' + tail : ''
+			createStr(type = "user_count", vals, fields, tail) {
 				const value = vals || [1, 2, 3, 4, 5, 6, 7, 14, 30]
 				const p = 'd'
 				const f = this.fields.map(item => item._id)
@@ -195,11 +194,14 @@
 				const l = fields.length
 				const strArr = value.map(item => {
 					return fields.map(field => {
-						return `retention.${field}.${p + '_' + item}.${type} as ${l > 1 ? field + '_' + p +'_'+item :  p + '_' + item}${tail}`
+						return `retention.${field}.${p + '_' + item}.${type} as ${l > 1 ? field + '_' + p +'_'+item :  p + '_' + item}`
 					})
 				})
+				if (tail) {
+					strArr.push(tail)
+				}
 				const str = strArr.join()
-				console.log(66666666, str);
+				// console.log('..............str:', str)
 				return str
 			},
 
@@ -213,7 +215,7 @@
 					pageCurrent
 				} = this.options
 				query = stringifyQuery(query)
-				const groupField = this.createStr("used_count", [key], [this.field])
+				const groupField = this.createStr("user_count", [key], [this.field])
 				console.log('..............Chart query：', query);
 				const db = uniCloud.database()
 				db.collection('opendb-stat-result')
@@ -264,7 +266,7 @@
 				} = this.options
 				query = stringifyQuery(query)
 				const tail = this.field + "_count"
-				const groupField = this.createStr('used_rate', '', [this.field], tail)
+				const groupField = this.createStr('user_rate', '', [this.field], tail)
 				console.log('..............Table query：', query);
 				this.loading = true
 				const db = uniCloud.database()
@@ -299,13 +301,6 @@
 					}).finally(() => {
 						this.loading = false
 					})
-			},
-
-			navTo(id) {
-				const url = `/pages/uni-stat/overview/overview?id=${id}`
-				uni.navigateTo({
-					url
-				})
 			}
 		}
 

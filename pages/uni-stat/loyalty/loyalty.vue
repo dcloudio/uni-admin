@@ -60,7 +60,8 @@
 			return {
 				fieldsMap,
 				query: {
-					appid: '61c041fb34458700013e700a',
+					// dimension: "hour",
+					appid: '',
 					platform_id: '',
 					channel_id: '',
 					start_time: [],
@@ -103,7 +104,6 @@
 			query: {
 				deep: true,
 				handler(val) {
-					this.options.pageCurrent = 1 // 重置分页
 					this.getAllData(val)
 				}
 			},
@@ -155,9 +155,6 @@
 			},
 
 			getChartData(query, field = 'visit_users', name = '访问人数') {
-				const {
-					pageCurrent
-				} = this.options
 				query = stringifyQuery(query)
 				const groupField = this.createStr([field], this.type)
 				console.log('..............Chart query：', query);
@@ -206,9 +203,6 @@
 			},
 
 			getTabelData(query) {
-				const {
-					pageCurrent
-				} = this.options
 				query = stringifyQuery(query)
 				const groupField = this.createStr(['visit_users', 'visit_times'], this.type)
 				console.log('..............Table query：', query);

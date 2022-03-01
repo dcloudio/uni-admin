@@ -967,78 +967,78 @@
 				"retention": {
 					"active_user": {
 						"d_1": {
-							"used_count": 100,
-							"used_rate": 80.30
+							"user_count": 100,
+							"user_rate": 80.30
 						},
 						"d_2": {
-							"used_count": 80,
-							"used_rate": 64.24
+							"user_count": 80,
+							"user_rate": 64.24
 						},
 						"d_3": {
-							"used_count": 70,
-							"used_rate": 56.21
+							"user_count": 70,
+							"user_rate": 56.21
 						},
 						"d_4": {
-							"used_count": 60,
-							"used_rate": 48.18
+							"user_count": 60,
+							"user_rate": 48.18
 						},
 						"d_5": {
-							"used_count": 50,
-							"used_rate": 40.15
+							"user_count": 50,
+							"user_rate": 40.15
 						},
 						"d_6": {
-							"used_count": 40,
-							"used_rate": 32.12
+							"user_count": 40,
+							"user_rate": 32.12
 						},
 						"d_7": {
-							"used_count": 30,
-							"used_rate": 24.90
+							"user_count": 30,
+							"user_rate": 24.90
 						},
 						"d_14": {
-							"used_count": 20,
-							"used_rate": 16.60
+							"user_count": 20,
+							"user_rate": 16.60
 						},
 						"d_30": {
-							"used_count": 10,
-							"used_rate": 8.30
+							"user_count": 10,
+							"user_rate": 8.30
 						}
 					},
 					"new_user": {
 						"d_1": {
-							"used_count": 100,
-							"used_rate": 80.30
+							"user_count": 100,
+							"user_rate": 80.30
 						},
 						"d_2": {
-							"used_count": 80,
-							"used_rate": 64.24
+							"user_count": 80,
+							"user_rate": 64.24
 						},
 						"d_3": {
-							"used_count": 70,
-							"used_rate": 56.21
+							"user_count": 70,
+							"user_rate": 56.21
 						},
 						"d_4": {
-							"used_count": 60,
-							"used_rate": 48.18
+							"user_count": 60,
+							"user_rate": 48.18
 						},
 						"d_5": {
-							"used_count": 50,
-							"used_rate": 40.15
+							"user_count": 50,
+							"user_rate": 40.15
 						},
 						"d_6": {
-							"used_count": 40,
-							"used_rate": 32.12
+							"user_count": 40,
+							"user_rate": 32.12
 						},
 						"d_7": {
-							"used_count": 30,
-							"used_rate": 24.90
+							"user_count": 30,
+							"user_rate": 24.90
 						},
 						"d_14": {
-							"used_count": 20,
-							"used_rate": 16.60
+							"user_count": 20,
+							"user_rate": 16.60
 						},
 						"d_30": {
-							"used_count": 10,
-							"used_rate": 8.30
+							"user_count": 10,
+							"user_rate": 8.30
 						}
 					}
 				}
@@ -1065,78 +1065,78 @@
 				"retention": {
 					"active_user": {
 						"d_1": {
-							"used_count": 100,
-							"used_rate": 80.30
+							"user_count": 100,
+							"user_rate": 80.30
 						},
 						"d_2": {
-							"used_count": 80,
-							"used_rate": 64.24
+							"user_count": 80,
+							"user_rate": 64.24
 						},
 						"d_3": {
-							"used_count": 70,
-							"used_rate": 56.21
+							"user_count": 70,
+							"user_rate": 56.21
 						},
 						"d_4": {
-							"used_count": 60,
-							"used_rate": 48.18
+							"user_count": 60,
+							"user_rate": 48.18
 						},
 						"d_5": {
-							"used_count": 50,
-							"used_rate": 40.15
+							"user_count": 50,
+							"user_rate": 40.15
 						},
 						"d_6": {
-							"used_count": 40,
-							"used_rate": 32.12
+							"user_count": 40,
+							"user_rate": 32.12
 						},
 						"d_7": {
-							"used_count": 30,
-							"used_rate": 24.90
+							"user_count": 30,
+							"user_rate": 24.90
 						},
 						"d_14": {
-							"used_count": 20,
-							"used_rate": 16.60
+							"user_count": 20,
+							"user_rate": 16.60
 						},
 						"d_30": {
-							"used_count": 10,
-							"used_rate": 8.30
+							"user_count": 10,
+							"user_rate": 8.30
 						}
 					},
 					"new_user": {
 						"d_1": {
-							"used_count": 100,
-							"used_rate": 80.30
+							"user_count": 100,
+							"user_rate": 80.30
 						},
 						"d_2": {
-							"used_count": 80,
-							"used_rate": 64.24
+							"user_count": 80,
+							"user_rate": 64.24
 						},
 						"d_3": {
-							"used_count": 70,
-							"used_rate": 56.21
+							"user_count": 70,
+							"user_rate": 56.21
 						},
 						"d_4": {
-							"used_count": 60,
-							"used_rate": 48.18
+							"user_count": 60,
+							"user_rate": 48.18
 						},
 						"d_5": {
-							"used_count": 50,
-							"used_rate": 40.15
+							"user_count": 50,
+							"user_rate": 40.15
 						},
 						"d_6": {
-							"used_count": 40,
-							"used_rate": 32.12
+							"user_count": 40,
+							"user_rate": 32.12
 						},
 						"d_7": {
-							"used_count": 30,
-							"used_rate": 24.90
+							"user_count": 30,
+							"user_rate": 24.90
 						},
 						"d_14": {
-							"used_count": 20,
-							"used_rate": 16.60
+							"user_count": 20,
+							"user_rate": 16.60
 						},
 						"d_30": {
-							"used_count": 10,
-							"used_rate": 8.30
+							"user_count": 10,
+							"user_rate": 8.30
 						}
 					}
 				}
@@ -1164,78 +1164,78 @@
 				"retention": {
 					"active_user": {
 						"d_1": {
-							"used_count": 100,
-							"used_rate": 80.30
+							"user_count": 100,
+							"user_rate": 80.30
 						},
 						"d_2": {
-							"used_count": 80,
-							"used_rate": 64.24
+							"user_count": 80,
+							"user_rate": 64.24
 						},
 						"d_3": {
-							"used_count": 70,
-							"used_rate": 56.21
+							"user_count": 70,
+							"user_rate": 56.21
 						},
 						"d_4": {
-							"used_count": 60,
-							"used_rate": 48.18
+							"user_count": 60,
+							"user_rate": 48.18
 						},
 						"d_5": {
-							"used_count": 50,
-							"used_rate": 40.15
+							"user_count": 50,
+							"user_rate": 40.15
 						},
 						"d_6": {
-							"used_count": 40,
-							"used_rate": 32.12
+							"user_count": 40,
+							"user_rate": 32.12
 						},
 						"d_7": {
-							"used_count": 30,
-							"used_rate": 24.90
+							"user_count": 30,
+							"user_rate": 24.90
 						},
 						"d_14": {
-							"used_count": 20,
-							"used_rate": 16.60
+							"user_count": 20,
+							"user_rate": 16.60
 						},
 						"d_30": {
-							"used_count": 10,
-							"used_rate": 8.30
+							"user_count": 10,
+							"user_rate": 8.30
 						}
 					},
 					"new_user": {
 						"d_1": {
-							"used_count": 100,
-							"used_rate": 80.30
+							"user_count": 100,
+							"user_rate": 80.30
 						},
 						"d_2": {
-							"used_count": 80,
-							"used_rate": 64.24
+							"user_count": 80,
+							"user_rate": 64.24
 						},
 						"d_3": {
-							"used_count": 70,
-							"used_rate": 56.21
+							"user_count": 70,
+							"user_rate": 56.21
 						},
 						"d_4": {
-							"used_count": 60,
-							"used_rate": 48.18
+							"user_count": 60,
+							"user_rate": 48.18
 						},
 						"d_5": {
-							"used_count": 50,
-							"used_rate": 40.15
+							"user_count": 50,
+							"user_rate": 40.15
 						},
 						"d_6": {
-							"used_count": 40,
-							"used_rate": 32.12
+							"user_count": 40,
+							"user_rate": 32.12
 						},
 						"d_7": {
-							"used_count": 30,
-							"used_rate": 24.90
+							"user_count": 30,
+							"user_rate": 24.90
 						},
 						"d_14": {
-							"used_count": 20,
-							"used_rate": 16.60
+							"user_count": 20,
+							"user_rate": 16.60
 						},
 						"d_30": {
-							"used_count": 10,
-							"used_rate": 8.30
+							"user_count": 10,
+							"user_rate": 8.30
 						}
 					}
 				}
@@ -1262,78 +1262,78 @@
 				"retention": {
 					"active_user": {
 						"d_1": {
-							"used_count": 1000,
-							"used_rate": 80.30
+							"user_count": 1000,
+							"user_rate": 80.30
 						},
 						"d_2": {
-							"used_count": 800,
-							"used_rate": 64.24
+							"user_count": 800,
+							"user_rate": 64.24
 						},
 						"d_3": {
-							"used_count": 700,
-							"used_rate": 56.21
+							"user_count": 700,
+							"user_rate": 56.21
 						},
 						"d_4": {
-							"used_count": 600,
-							"used_rate": 48.18
+							"user_count": 600,
+							"user_rate": 48.18
 						},
 						"d_5": {
-							"used_count": 500,
-							"used_rate": 40.15
+							"user_count": 500,
+							"user_rate": 40.15
 						},
 						"d_6": {
-							"used_count": 400,
-							"used_rate": 32.12
+							"user_count": 400,
+							"user_rate": 32.12
 						},
 						"d_7": {
-							"used_count": 300,
-							"used_rate": 24.90
+							"user_count": 300,
+							"user_rate": 24.90
 						},
 						"d_14": {
-							"used_count": 200,
-							"used_rate": 16.60
+							"user_count": 200,
+							"user_rate": 16.60
 						},
 						"d_30": {
-							"used_count": 100,
-							"used_rate": 8.30
+							"user_count": 100,
+							"user_rate": 8.30
 						}
 					},
 					"new_user": {
 						"d_1": {
-							"used_count": 1000,
-							"used_rate": 80.30
+							"user_count": 1000,
+							"user_rate": 80.30
 						},
 						"d_2": {
-							"used_count": 800,
-							"used_rate": 64.24
+							"user_count": 800,
+							"user_rate": 64.24
 						},
 						"d_3": {
-							"used_count": 700,
-							"used_rate": 56.21
+							"user_count": 700,
+							"user_rate": 56.21
 						},
 						"d_4": {
-							"used_count": 600,
-							"used_rate": 48.18
+							"user_count": 600,
+							"user_rate": 48.18
 						},
 						"d_5": {
-							"used_count": 500,
-							"used_rate": 40.15
+							"user_count": 500,
+							"user_rate": 40.15
 						},
 						"d_6": {
-							"used_count": 400,
-							"used_rate": 32.12
+							"user_count": 400,
+							"user_rate": 32.12
 						},
 						"d_7": {
-							"used_count": 300,
-							"used_rate": 24.90
+							"user_count": 300,
+							"user_rate": 24.90
 						},
 						"d_14": {
-							"used_count": 200,
-							"used_rate": 16.60
+							"user_count": 200,
+							"user_rate": 16.60
 						},
 						"d_30": {
-							"used_count": 100,
-							"used_rate": 8.30
+							"user_count": 100,
+							"user_rate": 8.30
 						}
 					}
 				}
@@ -1360,78 +1360,78 @@
 				"retention": {
 					"active_user": {
 						"d_1": {
-							"used_count": 100,
-							"used_rate": 80.30
+							"user_count": 100,
+							"user_rate": 80.30
 						},
 						"d_2": {
-							"used_count": 80,
-							"used_rate": 64.24
+							"user_count": 80,
+							"user_rate": 64.24
 						},
 						"d_3": {
-							"used_count": 70,
-							"used_rate": 56.21
+							"user_count": 70,
+							"user_rate": 56.21
 						},
 						"d_4": {
-							"used_count": 60,
-							"used_rate": 48.18
+							"user_count": 60,
+							"user_rate": 48.18
 						},
 						"d_5": {
-							"used_count": 50,
-							"used_rate": 40.15
+							"user_count": 50,
+							"user_rate": 40.15
 						},
 						"d_6": {
-							"used_count": 40,
-							"used_rate": 32.12
+							"user_count": 40,
+							"user_rate": 32.12
 						},
 						"d_7": {
-							"used_count": 30,
-							"used_rate": 24.90
+							"user_count": 30,
+							"user_rate": 24.90
 						},
 						"d_14": {
-							"used_count": 20,
-							"used_rate": 16.60
+							"user_count": 20,
+							"user_rate": 16.60
 						},
 						"d_30": {
-							"used_count": 10,
-							"used_rate": 8.30
+							"user_count": 10,
+							"user_rate": 8.30
 						}
 					},
 					"new_user": {
 						"d_1": {
-							"used_count": 100,
-							"used_rate": 80.30
+							"user_count": 100,
+							"user_rate": 80.30
 						},
 						"d_2": {
-							"used_count": 80,
-							"used_rate": 64.24
+							"user_count": 80,
+							"user_rate": 64.24
 						},
 						"d_3": {
-							"used_count": 70,
-							"used_rate": 56.21
+							"user_count": 70,
+							"user_rate": 56.21
 						},
 						"d_4": {
-							"used_count": 60,
-							"used_rate": 48.18
+							"user_count": 60,
+							"user_rate": 48.18
 						},
 						"d_5": {
-							"used_count": 50,
-							"used_rate": 40.15
+							"user_count": 50,
+							"user_rate": 40.15
 						},
 						"d_6": {
-							"used_count": 40,
-							"used_rate": 32.12
+							"user_count": 40,
+							"user_rate": 32.12
 						},
 						"d_7": {
-							"used_count": 30,
-							"used_rate": 24.90
+							"user_count": 30,
+							"user_rate": 24.90
 						},
 						"d_14": {
-							"used_count": 20,
-							"used_rate": 16.60
+							"user_count": 20,
+							"user_rate": 16.60
 						},
 						"d_30": {
-							"used_count": 10,
-							"used_rate": 8.30
+							"user_count": 10,
+							"user_rate": 8.30
 						}
 					}
 				}

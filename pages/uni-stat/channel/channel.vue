@@ -90,7 +90,7 @@
 				fieldsMap,
 				query: {
 					dimension: "day",
-					appid: "61c041fb34458700013e700a",
+					appid: "",
 					platform_id: '',
 					start_time: [],
 				},
@@ -440,9 +440,9 @@
 		display: flex;
 		justify-content: space-between;
 	}
-	
+
 	.uni-stat-edit--btn {
 		cursor: pointer;
 	}
-	
+
 </style>
