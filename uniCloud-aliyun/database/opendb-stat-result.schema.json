@@ -13,7 +13,8 @@
 		},
 		"appid": {
 			"bsonType": "string",
-			"description": "应用ID"
+			"description": "统计应用ID，对应opendb-app-list.appid",
+			"foreignKey": "opendb-app-list.appid"
 		},
 		"platform_id": {
 			"bsonType": "string",

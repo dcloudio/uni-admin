@@ -136,7 +136,7 @@
 
 				db.collection(appList, appDaily)
 					.field(
-						'appid, name, _id{"opendb-stat-result"{new_user_count, active_user_count, page_visit_count, total_users, stat_date, stat_time}}'
+						'name, appid'
 					)
 					.get()
 					.then((res) => {
@@ -152,9 +152,9 @@
 							}
 						})
 						for (const item of data) {
-							const lines = item._id["opendb-stat-result"]
+							const lines = item.appid["opendb-stat-result"]
 							if (Array.isArray(lines) && lines.length) {
-								delete(item._id)
+								item.appid = item.appid._value
 								const today = lines[0] || []
 								const yesterday = lines[1] || []
 								for (const key in today) {

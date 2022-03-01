@@ -32,7 +32,8 @@
 		},
 		"event_key": {
 			"bsonType": "string",
-			"description": "事件key"
+			"description": "事件key，对应opendb-stat-events.event_key",
+			"foreignKey": "opendb-stat-events.event_key"
 		},
 		"event_count": {
 			"bsonType": "int",
