@@ -60,6 +60,10 @@ function format(num, type = ',') {
 		// num = Number.parseFloat(num).toPrecision(4)
 		num = (num * 100).toFixed(2)
 		return num + type
+	} else if (type === '%%') {
+		return num + '%'
+	} else if (type === '-') {
+		return formatDate(num, 'day')
 	} else if (type === ':') {
 		num = Math.ceil(num)
 		let h, m, s
@@ -100,30 +104,39 @@ function formatDate(date, type) {
 		const first = d.getDate() - d.getDay(); // First day is the day of the month - the day of the week
 		const last = first + 6; // last day is the first day + 6
 		let firstday = new Date(d.setDate(first));
-		firstday = parseDate(firstday)
+		firstday = parseDateTime(firstday)
 		let lastday = new Date(d.setDate(last));
-		lastday = parseDate(lastday)
+		lastday = parseDateTime(lastday)
 		return `${firstday} ~ ${lastday}`
 	} else if (type === 'month') {
 		let firstday = new Date(d.getFullYear(), d.getMonth(), 1);
-		firstday = parseDate(firstday)
+		firstday = parseDateTime(firstday)
 		let lastday = new Date(d.getFullYear(), d.getMonth() + 1, 0);
-		lastday = parseDate(lastday)
+		lastday = parseDateTime(lastday)
 		return `${firstday} ~ ${lastday}`
 	} else {
-		return parseDate(d)
+		return parseDateTime(d)
 	}
 }
 
-function parseDate(date) {
-	const d = new Date(date)
+function parseDateTime(d, type) {
+	d = new Date(d)
 	const year = d.getFullYear()
-	let month = d.getMonth() + 1
-	let day = d.getDate()
-	month = month < 10 ? '0' + month : month
-	day = day < 10 ? '0' + day : day
-	const ymd = year + '-' + month + '-' + day
-	return ymd
+	const month = d.getMonth() + 1
+	const day = d.getDate()
+	const hour = d.getHours()
+	const minute = d.getMinutes()
+	const second = d.getSeconds()
+	const date = year + '-' + lessTen(month) + '-' + lessTen(day)
+	const time = lessTen(hour) + ':' + lessTen(minute) + ':'  + lessTen(second)
+	if (type === "dateTime") {
+		return date + ' ' + time
+	}
+	return date
+}
+
+function lessTen(item) {
+	return item < 10 ? '0' + item : item
 }
 
 function mapfields(map, data = {}, goal, prefix = '', prop = 'value') {
@@ -184,5 +197,6 @@ export {
 	getTimeOfSomeDayAgo,
 	division,
 	format,
-	formatDate
+	formatDate,
+	parseDateTime
 }

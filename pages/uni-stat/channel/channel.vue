@@ -81,7 +81,8 @@
 		stringifyQuery,
 		getTimeOfSomeDayAgo,
 		division,
-		format
+		format,
+		formatDate
 	} from '@/js_sdk/uni-stat/util.js'
 	import fieldsMap from './fieldsMap.js'
 	export default {
@@ -207,7 +208,7 @@
 				const db = uniCloud.database()
 				db.collection('opendb-stat-result')
 					.where(query)
-					.groupBy('channel_id,start_time,stat_date')
+					.groupBy('channel_id,start_time')
 					.groupField(`sum(${field}) as total_${field}`)
 					.orderBy('start_time', 'asc')
 					.get({
@@ -276,7 +277,9 @@
 									}
 								} else {
 									for (const item of data) {
-										const x = item.stat_date
+										let date = item.start_time
+										const dimension = this.query.dimension
+										const x = formatDate(date, dimension)
 										const y = item[`total_${field}`]
 										const dateIndex = xAxis.indexOf(x)
 										if (channel.id === item.channel_id) {
@@ -436,6 +439,7 @@
 		padding: 0;
 		margin: 0 15px;
 	}
+
 	.uni-stat-edit--x {
 		display: flex;
 		justify-content: space-between;
@@ -444,5 +448,4 @@
 	.uni-stat-edit--btn {
 		cursor: pointer;
 	}
-
 </style>

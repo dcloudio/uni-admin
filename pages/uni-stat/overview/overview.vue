@@ -63,13 +63,20 @@
 		stringifyQuery,
 		getTimeOfSomeDayAgo,
 		division,
-		format
+		format,
+		formatDate
 	} from '@/js_sdk/uni-stat/util.js'
-	import fieldsMap from './fieldsMap.js'
+	import {
+		fieldsMap,
+		resFieldsMap,
+		entFieldsMap
+	} from './fieldsMap.js'
 	export default {
 		data() {
 			return {
 				fieldsMap,
+				resFieldsMap,
+				entFieldsMap,
 				query: {
 					dimension: "day",
 					appid: '',
@@ -90,38 +97,6 @@
 				entTableData: [],
 				panelData: [],
 				chartData: {},
-				resFieldsMap: [{
-					title: '受访页',
-					field: 'path',
-					tooltip: '用户进入应用访问的所有页面，例如用户从页面1进入应用，跳转到页面2，1,2均为受访页',
-					formatter: ''
-				}, {
-					title: '访问次数',
-					field: 'visit_times',
-					tooltip: '访问该页面的总次数'
-				}, {
-					title: '占比',
-					field: 'rate',
-					computed: 'visit_times/total_app_access',
-					tooltip: '某个页面的访问次数占所有页面访问次数的比例',
-					formatter: '%',
-				}],
-				entFieldsMap: [{
-					title: '入口页',
-					field: 'path',
-					tooltip: '用户进入应用访问的第一个页面，例如用户从页面1进入应用，跳转到页面2，1为入口页，而2不是',
-					formatter: ''
-				}, {
-					title: '访问次数',
-					field: 'entry_count',
-					tooltip: '访问该页面的总次数'
-				}, {
-					title: '占比',
-					field: 'rate',
-					computed: 'entry_count/total_app_access',
-					tooltip: '某个页面的访问次数占所有页面访问次数的比例',
-					formatter: '%'
-				}],
 				chartOption: {
 					extra: {
 						area: {
@@ -205,7 +180,7 @@
 			},
 
 			getDays() {
-				if(!this.query.start_time.length) return true
+				if (!this.query.start_time.length) return true
 				const day = 24 * 60 * 60 * 1000
 				const [start, end] = this.query.start_time
 				console.log(start, end, end - start);
@@ -235,7 +210,7 @@
 				const db = uniCloud.database()
 				db.collection('opendb-stat-result')
 					.where(query)
-					.field(`${field}, start_time, stat_date`)
+					.field(`${field}, start_time`)
 					.orderBy('start_time', 'asc')
 					.get({
 						getCount: true
@@ -283,7 +258,7 @@
 							}
 						} else {
 							for (const item of data) {
-								const x = item.stat_date
+								const x = formatDate(item.start_time, 'day')
 								const y = item[field]
 								if (y) {
 									options.series[0].data.push(y)

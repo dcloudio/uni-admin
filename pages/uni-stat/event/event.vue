@@ -38,7 +38,7 @@
 								<uni-icons type="compose" color="#2979ff" size="25" class="uni-stat-edit--btn"
 									@click="inputDialogToggle(item.event_key, item.event_name)" />
 							</uni-td>
-							<uni-td v-else="mapper.title" :key="mapper.title" align="center">
+							<uni-td v-else :key="mapper.title" align="center">
 								{{item[mapper.field] !== undefined ? item[mapper.field] : '-'}}
 							</uni-td>
 						</template>

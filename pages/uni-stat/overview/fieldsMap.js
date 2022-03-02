@@ -1,4 +1,4 @@
-export default [{
+const fieldsMap = [{
 	value: '今天',
 	contrast: '昨天'
 }, {
@@ -53,3 +53,43 @@ export default [{
 	value: 0,
 	contrast: 0
 }]
+
+const resFieldsMap = [{
+	title: '受访页',
+	field: 'path',
+	tooltip: '用户进入应用访问的所有页面，例如用户从页面1进入应用，跳转到页面2，1,2均为受访页',
+	formatter: ''
+}, {
+	title: '访问次数',
+	field: 'visit_times',
+	tooltip: '访问该页面的总次数'
+}, {
+	title: '占比',
+	field: 'rate',
+	computed: 'visit_times/total_app_access',
+	tooltip: '某个页面的访问次数占所有页面访问次数的比例',
+	formatter: '%',
+}]
+
+const entFieldsMap = [{
+	title: '入口页',
+	field: 'path',
+	tooltip: '用户进入应用访问的第一个页面，例如用户从页面1进入应用，跳转到页面2，1为入口页，而2不是',
+	formatter: ''
+}, {
+	title: '访问次数',
+	field: 'entry_count',
+	tooltip: '访问该页面的总次数'
+}, {
+	title: '占比',
+	field: 'rate',
+	computed: 'entry_count/total_app_access',
+	tooltip: '某个页面的访问次数占所有页面访问次数的比例',
+	formatter: '%'
+}]
+
+export {
+	fieldsMap,
+	resFieldsMap,
+	entFieldsMap
+}

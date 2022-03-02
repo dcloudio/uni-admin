@@ -75,7 +75,8 @@
 		stringifyQuery,
 		getTimeOfSomeDayAgo,
 		division,
-		format
+		format,
+		formatDate,
 	} from '@/js_sdk/uni-stat/util.js'
 	import fieldsFactory from './fieldsMap.js'
 	export default {
@@ -241,7 +242,7 @@
 						this.chartData = []
 						for (const item of data) {
 							console.log(22222, key);
-							const x = item.stat_date
+							const x = formatDate(item.start_time, 'day')
 							const y = item[`d_${key}`]
 							if (y) {
 								options.series[0].data.push(y)
@@ -291,6 +292,9 @@
 							field: tail
 						}]
 						this.fieldsMap = fieldsFactory(maps)
+						for (const item of data) {
+							mapfields(this.fieldsMap, item, item)
+						}
 						this.options.total = count
 						this.tableData = []
 						this.tableData = data

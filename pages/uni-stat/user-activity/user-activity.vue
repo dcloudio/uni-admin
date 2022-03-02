@@ -59,7 +59,8 @@
 		stringifyQuery,
 		getTimeOfSomeDayAgo,
 		division,
-		format
+		format,
+		formatDate
 	} from '@/js_sdk/uni-stat/util.js'
 	import fieldsMap from './fieldsMap.js'
 	export default {
@@ -182,7 +183,7 @@
 							// console.log('.......chart:', data);
 							this.chartData = []
 							for (const item of data) {
-								const x = item.stat_date
+								const x = formatDate(item.start_time, 'day')
 								const y = item[field]
 								if (y) {
 									options.series[0].data.push(y)

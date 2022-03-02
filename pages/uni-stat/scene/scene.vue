@@ -57,7 +57,8 @@
 		stringifyQuery,
 		getTimeOfSomeDayAgo,
 		division,
-		format
+		format,
+		formatDate
 	} from '@/js_sdk/uni-stat/util.js'
 	import fieldsMap from './fieldsMap.js'
 	export default {
@@ -200,7 +201,9 @@
 							}
 							const xAxis = options.categories
 							for (const item of data) {
-								const x = item.stat_date
+								let date = item.start_time
+								const dimension = this.query.dimension
+								const x = formatDate(date, dimension)
 								const y = item[`total_${field}`]
 								const dateIndex = xAxis.indexOf(x)
 								if (channel === item.channel_id) {

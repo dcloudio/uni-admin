@@ -55,7 +55,9 @@
 		stringifyQuery,
 		getTimeOfSomeDayAgo,
 		division,
-		format
+		format,
+		formatDate,
+		parseDateTime
 	} from '@/js_sdk/uni-stat/util.js'
 	import fieldsMap from './fieldsMap.js'
 	export default {
@@ -63,7 +65,7 @@
 			return {
 				fieldsMap,
 				query: {
-					appid: "61c041fb34458700013e700a",
+					appid: "",
 					platform_id: '',
 					start_time: [],
 				},
@@ -141,9 +143,9 @@
 				const db = uniCloud.database()
 				db.collection('opendb-stat-error-result')
 					.where(query)
-					.groupBy('stat_date')
+					.groupBy('start_time')
 					.groupField('sum(count) as total_day_count')
-					.orderBy('stat_date', 'asc')
+					.orderBy('start_time', 'asc')
 					.get({
 						getCount: true
 					})
@@ -176,14 +178,16 @@
 							}
 							const xAxis = options.categories
 							for (const item of data) {
-								const x = item.stat_date
+								let date = item.start_time
+								const x = formatDate(date, 'day')
 								const countY = item[`total_${field}`]
 								xAxis.push(x)
 								countLine.data.push(countY)
 								if (dayAppLaunchs.length) {
 									dayAppLaunchs.forEach(day => {
-										if (day.stat_date === x) {
-											const rateY = item[`total_${field}`] / day.day_app_launch_count
+										if (day.start_time === item.start_time) {
+											const rateY = item[`total_${field}`] / day
+												.day_app_launch_count
 											rateLine.data.push(rateY)
 										}
 									})
@@ -198,7 +202,6 @@
 						// err.message 错误信息
 						// err.code 错误码
 					}).finally(() => {
-						this.loading = false
 					})
 			},
 
@@ -224,9 +227,9 @@
 				const db = uniCloud.database()
 				return db.collection('opendb-stat-result')
 					.where(query)
-					.groupBy('stat_date')
+					.groupBy('start_time')
 					.groupField('sum(app_launch_count) as day_app_launch_count')
-					.orderBy('stat_date', 'asc')
+					.orderBy('start_time', 'asc')
 					.get()
 			},
 
@@ -260,6 +263,7 @@
 						const tempData = []
 						const panelData = []
 						for (const item of data) {
+							item.last_time = parseDateTime(item.last_time, 'dateTime')
 							const lines = item.version_id
 							if (Array.isArray(lines)) {
 								delete(item.version_id)

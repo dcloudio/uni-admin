@@ -2,13 +2,13 @@ function fieldsFactory(maps = [{
 	title: '新增用户',
 	field: 'new_user_count',
 	tooltip: '',
-	formatter: '',
+	formatter: ',',
 }]) {
 	let fieldsMap = [{
 		title: '日期',
-		field: 'stat_date',
+		field: 'start_time',
 		tooltip: '',
-		formatter: '',
+		formatter: '-',
 	}]
 
 	if (maps) {
@@ -20,7 +20,7 @@ function fieldsFactory(maps = [{
 		return {
 			title: `${val}天后`,
 			field: `d_${val}`,
-			formatter: '%',
+			formatter: '%%',
 			tooltip: ''
 		}
 	})
