@@ -95,7 +95,8 @@ function format(num, type = ',') {
 }
 
 function formatDate(date, type) {
-	const d = new Date(date)
+	console.log('-------date:', date)
+	let d = new Date(date)
 	if (type === 'hour') {
 		let h = d.getHours()
 		h = h < 10 ? '0' + h : h
@@ -119,8 +120,12 @@ function formatDate(date, type) {
 	}
 }
 
-function parseDateTime(d, type) {
-	d = new Date(d)
+function parseDateTime(datetime , type) {
+	let d = datetime
+	console.log('--------ddd', 	d)
+	if (typeof d !== 'object') {
+		d  = new Date(d)
+	}
 	const year = d.getFullYear()
 	const month = d.getMonth() + 1
 	const day = d.getDate()

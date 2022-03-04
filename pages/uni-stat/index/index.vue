@@ -67,8 +67,8 @@
 				query: {
 					dimension: "day",
 					platform_id: '',
-					// start_time: [getTimeOfSomeDayAgo(2), getTimeOfSomeDayAgo(1)],
-					start_time: [1611681600000, 1644767999999]
+					start_time: [getTimeOfSomeDayAgo(2), getTimeOfSomeDayAgo(1)]
+					// start_time: [1611681600000, 1644767999999]
 				},
 				tableData: [],
 				// 每页数据量

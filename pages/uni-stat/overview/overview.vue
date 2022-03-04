@@ -64,7 +64,8 @@
 		getTimeOfSomeDayAgo,
 		division,
 		format,
-		formatDate
+		formatDate,
+		parseDateTime
 	} from '@/js_sdk/uni-stat/util.js'
 	import {
 		fieldsMap,
@@ -90,7 +91,7 @@
 					pageSizeRange: [10, 20, 50, 100],
 				},
 				loading: false,
-				currentDateTab: 4,
+				currentDateTab: 0,
 				// currentChartTab: ,
 				tableData: [],
 				resTableData: [],
@@ -196,12 +197,12 @@
 				const days = this.currentDateTab
 				const date = getTimeOfSomeDayAgo(days)
 				const day = 24 * 60 * 60 * 1000
+				let start_time
 				if (!this.getDays()) {
 					const start = date - day
 					const end = date + day - 1
 					query = JSON.parse(JSON.stringify(query))
-					// query.start_time = [start, end]
-					query.start_time = [1644681600000, 1644854399999]
+					start_time = query.start_time = [start, end]
 					query.dimension = 'hour'
 				}
 				query = stringifyQuery(query)
@@ -229,12 +230,13 @@
 							}]
 						}
 						if (!this.getDays()) {
+							const [start, end] = start_time
 							const line = options.series[0] = {
-								name: 'a',
+								name: formatDate(start),
 								data: []
 							}
 							const cont = options.series[1] = {
-								name: 'b',
+								name: formatDate(end),
 								data: []
 							}
 							for (let i = 0; i < 24; ++i) {
@@ -364,8 +366,8 @@
 					dimension: "day",
 					appid,
 					platform_id,
-					// start_time: [getTimeOfSomeDayAgo(2), getTimeOfSomeDayAgo(1)]
-					start_time: [1611681600000, 1644767999999]
+					start_time: [getTimeOfSomeDayAgo(2), getTimeOfSomeDayAgo(1)]
+					// start_time: [1611681600000, 1644767999999]
 				})
 				console.log('..............Panel query：', query);
 				const db = uniCloud.database()
