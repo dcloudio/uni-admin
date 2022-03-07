@@ -157,11 +157,10 @@
 					.then(res => {
 						let platforms = res.result.data
 						if (this.mode === 'platform-channel') {
-							platforms = platforms.filter(item => item.code.indexOf('native') > -1)
+							platforms = platforms.filter(item => /^android|ios$/.test(item.code))
 						}
 						if (this.mode === 'platform-scene') {
-							platforms = platforms.filter(item => item.code.indexOf('native') === -1 && item.code
-								.indexOf('h5') === -1)
+							platforms = platforms.filter(item => !/^android|ios|h5|qn|qw$/.test(item.code))
 						}
 						platforms.unshift({
 							name: '全部',
@@ -170,6 +169,10 @@
 						this.renderTabs = platforms
 					})
 			},
+
+			// list(items, goal){
+			// 	items.map( item => goal.code.indexOf("android") === -1)
+			// }
 		}
 	}
 </script>

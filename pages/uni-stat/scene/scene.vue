@@ -112,8 +112,14 @@
 			queryStr() {
 				let defaultQuery = ''
 				if (!this.query.platform_id) {
-					defaultQuery =
-						'platform_id != "61c046e691a75000014c255f" && platform_id != "61c046e691a75000014c2560" && platform_id != "61c046e691a75000014c2561"'
+					const notMiniProgramPlatform = [
+						"6221e59b428244000187a11d",
+						"6221e59b428244000187a11e",
+						"6221e59b428244000187a11f",
+						"6221e59b428244000187a125",
+						"6221e59b428244000187a126"
+					]
+					defaultQuery = notMiniProgramPlatform.map(p => `platform_id != "${p}"`).join(' && ')
 				}
 				return stringifyQuery(this.query, defaultQuery)
 			}
@@ -169,9 +175,9 @@
 				const db = uniCloud.database()
 				db.collection('opendb-stat-result')
 					.where(query)
-					.groupBy('channel_id,stat_date')
+					.groupBy('channel_id,start_time')
 					.groupField(`sum(${field}) as total_${field}`)
-					.orderBy('stat_date', 'asc')
+					.orderBy('start_time', 'asc')
 					.get({
 						getCount: true
 					})
