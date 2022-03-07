@@ -186,8 +186,8 @@
 								if (dayAppLaunchs.length) {
 									dayAppLaunchs.forEach(day => {
 										if (day.start_time === item.start_time) {
-											const rateY = item[`total_${field}`] / day
-												.day_app_launch_count
+											let rateY = item[`total_${field}`] / day.day_app_launch_count
+											rateY = rateY.toFixed(2)
 											rateLine.data.push(rateY)
 										}
 									})
@@ -290,9 +290,11 @@
 								const total = res.result.data[0]
 								launch_count = total && total.total_app_launch_count
 								if (total_count && launch_count) {
+									let errorRate = total_count / launch_count
+									errorRate = (errorRate*100).toFixed(2) + '%'
 									panelData[1] = {
 										title: '错误率',
-										value: total_count / launch_count,
+										value: errorRate,
 										tooltip: '时间范围内的总错误数/应用启动次数，如果小于0.01%，默认显示为0'
 									}
 								}

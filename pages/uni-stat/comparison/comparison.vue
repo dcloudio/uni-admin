@@ -52,7 +52,7 @@
 				query: {
 					dimension: "day",
 					appid: '',
-					start_time: 1642089600000,
+					start_time: new Date().getTime(),
 				},
 				platforms: [],
 				dayChartsData: [],
@@ -189,7 +189,7 @@
 	.uni-charts-box {
 		padding: 15px;
 		width: calc((50% - 37.5px));
-		height: 350px;
+		height: 400px;
 		margin-bottom: 15px;
 	}
 
