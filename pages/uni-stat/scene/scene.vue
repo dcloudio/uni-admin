@@ -66,7 +66,7 @@
 			return {
 				fieldsMap,
 				query: {
-					dimension: "day",
+					dimension: "hour",
 					appid: "",
 					platform_id: '',
 					start_time: [],

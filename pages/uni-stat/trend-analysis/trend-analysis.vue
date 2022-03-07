@@ -263,7 +263,7 @@
 					.where(query)
 					.skip((pageCurrent - 1) * this.pageSize)
 					.limit(this.pageSize)
-					.orderBy('start_time', 'asc')
+					.orderBy('start_time', 'desc')
 					.get({
 						getCount: true
 					})

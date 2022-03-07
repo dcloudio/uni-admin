@@ -1,5 +1,5 @@
 <template>
-	<uni-table :loading="loading" border stripe :emptyText="$t('common.empty')">
+	<uni-table :loading="loading" border stripe emptyText="今日无实时数据，请查看历史数据">
 		<uni-tr>
 			<template v-for="(mapper, index) in filedsMap">
 				<uni-th v-if="mapper.title" :key="index" align="center">

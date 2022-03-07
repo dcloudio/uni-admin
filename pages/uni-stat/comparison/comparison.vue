@@ -52,7 +52,7 @@
 				query: {
 					dimension: "day",
 					appid: '',
-					start_time: new Date().getTime(),
+					start_time: getTimeOfSomeDayAgo(1),
 				},
 				platforms: [],
 				dayChartsData: [],
