@@ -61,7 +61,7 @@ function format(num, type = ',') {
 		num = (num * 100).toFixed(2)
 		return num + type
 	} else if (type === '%%') {
-		return num + '%'
+		return num.toFixed(2) + '%'
 	} else if (type === '-') {
 		return formatDate(num, 'day')
 	} else if (type === ':') {

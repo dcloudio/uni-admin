@@ -42,7 +42,7 @@ const fieldsMap = [{
 }, {
 	title: '跳出率',
 	field: 'bounce_rate',
-	formatter: '%',
+	formatter: '%%',
 	tooltip: '只浏览一个页面便离开应用的次数占总启动次数的百分比',
 	value: 0,
 	contrast: 0
