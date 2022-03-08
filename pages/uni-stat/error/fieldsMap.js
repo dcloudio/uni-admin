@@ -20,6 +20,6 @@ export default [{
 	tooltip: '某个错误发生的次数/总错误数',
 }, {
 	title: '错误信息',
-	field: 'hash',
+	field: 'msg',
 	formatter: '',
 }]
