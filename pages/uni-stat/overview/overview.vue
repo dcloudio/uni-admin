@@ -110,7 +110,10 @@
 			}
 		},
 		onLoad(option) {
-			this.query.appid = option.appid
+			const { appid } = option
+			if (appid) {
+				this.query.appid = appid
+			}
 		},
 		computed: {
 			pageSize() {
