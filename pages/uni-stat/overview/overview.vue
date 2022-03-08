@@ -80,7 +80,7 @@
 				entFieldsMap,
 				query: {
 					dimension: "day",
-					appid: '',
+					appid: '__UNI__HelloUniApp',
 					platform_id: '',
 					start_time: [],
 				},

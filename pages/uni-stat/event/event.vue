@@ -82,7 +82,7 @@
 			return {
 				fieldsMap,
 				query: {
-					appid: '',
+					appid: '__UNI__HelloUniApp',
 					platform_id: '',
 					channel_id: '',
 					start_time: [],
