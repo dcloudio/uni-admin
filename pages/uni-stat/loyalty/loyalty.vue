@@ -155,6 +155,7 @@
 			},
 
 			getChartData(query, field = 'visit_users', name = '访问人数') {
+				this.chartData = {}
 				query = stringifyQuery(query)
 				const groupField = this.createStr([field], this.type)
 				console.log('..............Chart query：', query);
@@ -181,7 +182,6 @@
 								data: []
 							}]
 						}
-						this.chartData = []
 						for (const key in data) {
 							if (key !== 'appid') {
 								const x = key
@@ -200,6 +200,10 @@
 					}).finally(() => {
 						this.loading = false
 					})
+			},
+
+			formatRange() {
+				
 			},
 
 			getTabelData(query) {

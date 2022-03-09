@@ -11,38 +11,7 @@
 				<uni-stat-tabs label="平台选择" type="boldLine" mode="platform" v-model="query.platform_id" />
 			</view>
 			<uni-stat-panel :items="panelData" :contrast="true" />
-			<uni-table :loading="loading" border stripe :emptyText="$t('common.empty')">
-				<uni-tr>
-					<uni-th align="center">APPID</uni-th>
-					<uni-th align="center">应用名</uni-th>
-					<uni-th align="center">今日新增用户</uni-th>
-					<uni-th align="center">今日活跃用户</uni-th>
-					<uni-th align="center">今日访问数</uni-th>
-					<uni-th align="center">昨日新增用户</uni-th>
-					<uni-th align="center">昨日活跃用户</uni-th>
-					<uni-th align="center">昨日访问数</uni-th>
-					<uni-th align="center">总用户数</uni-th>
-					<uni-th align="center">操作</uni-th>
-				</uni-tr>
-				<uni-tr v-for="(item ,index) in tableData" :key="index" style="text-align: center; !important">
-					<uni-td>{{item.appid}}</uni-td>
-					<uni-td>
-						<view class="name">{{item.name}}</view>
-					</uni-td>
-					<uni-td>{{item.today_new_user_count}}</uni-td>
-					<uni-td>{{item.today_active_user_count}}</uni-td>
-					<uni-td>{{item.today_page_visit_count}}</uni-td>
-					<uni-td>{{item.yesterday_new_user_count}}</uni-td>
-					<uni-td>{{item.yesterday_active_user_count}}</uni-td>
-					<uni-td>{{item.yesterday_page_visit_count}}</uni-td>
-					<uni-td>{{item.today_total_users}}</uni-td>
-					<uni-td>
-						<view class="uni-group">
-							<button class="uni-button" size="mini" type="primary" @click="navTo(item.appid)">查看</button>
-						</view>
-					</uni-td>
-				</uni-tr>
-			</uni-table>
+			<uni-stat-table :data="tableData" :filedsMap="tableFieldsMap" :loading="loading" />
 			<view class="uni-pagination-box">
 				<uni-pagination show-icon :page-size="pageSize" :current="pageCurrent" :total="tableData.length" />
 			</view>
@@ -61,16 +30,18 @@
 		division,
 		format
 	} from '@/js_sdk/uni-stat/util.js'
+	import fieldsMap from './fieldsMap.js'
 	export default {
 		data() {
 			return {
 				query: {
-					dimension: "day",
+					dimension: "hour",
 					platform_id: '',
-					start_time: [getTimeOfSomeDayAgo(2), getTimeOfSomeDayAgo(1)]
+					start_time: [getTimeOfSomeDayAgo(1), new Date().getTime()]
 					// start_time: [1611681600000, 1644767999999]
 				},
 				tableData: [],
+				panelData: fieldsMap.filter(f => f.hasOwnProperty('value')),
 				// 每页数据量
 				pageSize: 10,
 				// 当前页
@@ -78,37 +49,7 @@
 				// 数据总量
 				total: 0,
 				loading: false,
-				panelData: [{
-					field: '',
-					title: '',
-					tooltip: '',
-					value: '今天',
-					contrast: '昨天'
-				}, {
-					field: 'new_user_count',
-					title: '新增用户',
-					tooltip: '首次访问应用的用户数（以设备为判断标准，去重）',
-					value: 0,
-					contrast: 0
-				}, {
-					field: 'active_user_count',
-					title: '活跃用户',
-					tooltip: '访问过应用内任意页面的总用户数（去重）',
-					value: 0,
-					contrast: 0
-				}, {
-					field: 'page_visit_count',
-					title: '访问次数',
-					tooltip: '访问过应用内任意页面总次数，多个页面之间跳转、同一页面的重复访问计为多次访问',
-					value: 0,
-					contrast: 0
-				}, {
-					field: 'total_users',
-					title: '总用户数',
-					tooltip: '从添加统计到当前选择时间的总用户数（去重）',
-					value: 0,
-					contrast: 0
-				}]
+				fieldsMap
 			}
 		},
 
@@ -123,21 +64,62 @@
 				}
 			}
 		},
+		computed: {
+			tableFieldsMap() {
+				let tableFields = []
+				const today = []
+				const yesterday = []
+				const other = []
+				for (const mapper of fieldsMap) {
+					if (mapper.field) {
+						if (mapper.hasOwnProperty('value')) {
+							const t = JSON.parse(JSON.stringify(mapper))
+							const y = JSON.parse(JSON.stringify(mapper))
+							if (mapper.field !== 'total_users') {
+								t.title = '今日' + mapper.title
+								t.field = mapper.field + '_value'
+								y.title = '昨日' + mapper.title
+								y.field = mapper.field + '_contrast'
+								today.push(t)
+								yesterday.push(y)
+							} else {
+								t.field = mapper.field + '_value'
+								other.push(t)
+							}
+						} else {
+							tableFields.push(mapper)
+						}
+					}
+				}
+				tableFields = [...tableFields, ...today, ...yesterday, ...other]
+				return tableFields
+			}
+		},
 		methods: {
-			getApps(query) {
-				console.log('..............query', query);
+			getApps(query, type = "day") {
+				const fields = fieldsMap
+					.filter(f => f.field && f.hasOwnProperty('value'))
+					.map(f => `${f.field} as ${ 'temp_' + f.field}`)
+					.join()
+				const groupField = fieldsMap
+					.filter(f => f.field && f.hasOwnProperty('value'))
+					.map(f => `${f.stat ? f.stat : 'sum' }(${'temp_' + f.field}) as ${f.field}`)
+					.join()
+				console.log('..............query', query, '----', fields, '----', groupField);
 				this.loading = true
 				const db = uniCloud.database()
 				const appList = db.collection('opendb-app-list').getTemp()
 				const appDaily = db.collection('opendb-stat-result')
 					.where(query)
-					.orderBy('start_time', 'desc')
 					.getTemp()
 
-				db.collection(appList, appDaily)
+				db.collection(appDaily, appList)
 					.field(
-						'name, appid'
+						`${fields},stat_date,appid`
 					)
+					.groupBy(`appid, stat_date`)
+					.groupField(groupField)
+					.orderBy('stat_date', 'desc')
 					.get()
 					.then((res) => {
 						const {
@@ -145,41 +127,55 @@
 						} = res.result
 						console.log(222222, data);
 						this.tableData = []
-						this.panelData.forEach((sum, index) => {
-							if (sum.title) {
-								sum.value = 0
-								sum.contrast = 0
+						this.panelData.forEach((panel, index) => {
+							if (panel.title) {
+								panel.value = 0
+								panel.contrast = 0
 							}
 						})
+						if (!data.length) return
+						const rowData = {}
 						for (const item of data) {
-							const lines = item.appid["opendb-stat-result"]
-							if (Array.isArray(lines) && lines.length) {
-								item.appid = item.appid._value
-								const today = lines[0] || []
-								const yesterday = lines[1] || []
-								for (const key in today) {
-									item['today_' + key] = format(today[key] ? today[key] : '')
-									item['yesterday_' + key] = format(yesterday[key] ? yesterday[key] : '')
-
-									for (const sum of this.panelData) {
-										if (key === sum.field) {
-											sum.value += today[key] ? today[key] : 0
-											sum.contrast += yesterday[key] ? yesterday[key] : 0
+							const {
+								appid,
+								name
+							} = item.appid[0]
+							item.appid = appid
+							item.name = name
+						}
+						const keys = this.fieldsMap.map(f => f.field).filter(Boolean)
+						for (const a of data) {
+							a.used = true
+							for (const b of data) {
+								if (data.length === 1 || (!b.used && a.appid === b.appid && a.stat_date !== b
+										.stat_date)) {
+									let today, yesterday
+									if (data.length < 2) {
+										today = data[0]
+									} else {
+										Number(a.stat_date) > Number(b.stat_date) ? [today, yesterday] = [a, b] : [today, yesterday] = [b, a]
+									}
+									for (const key of keys) {
+										if (key === 'appid' || key === 'name') {
+											rowData[key] = today[key]
+										} else {
+											rowData[key + '_value'] = format(today && today[key] ? today[key] : '')
+											rowData[key + '_contrast'] = format(yesterday && yesterday[key] ? yesterday[key] : '')
+											for (const panel of this.panelData) {
+												if (key === panel.field) {
+													panel.value += today && today[key] ? today[key] : 0
+													panel.contrast += yesterday && yesterday[key] ? yesterday[key] : 0
+												}
+											}
 										}
 									}
+									this.tableData.push(rowData)
 								}
-								this.tableData.push(item)
 							}
 						}
-						for (const sum of this.panelData) {
-							const val = sum.value
-							const con = sum.contrast
-							if (val) {
-								sum.value = format(val)
-							}
-							if (con) {
-								sum.contrast = format(con)
-							}
+						for (const panel of this.panelData) {
+							panel.value = format(panel.value)
+							panel.contrast = format(panel.contrast)
 						}
 					}).catch((err) => {
 						console.error(err)

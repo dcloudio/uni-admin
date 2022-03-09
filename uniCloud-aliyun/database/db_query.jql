@@ -10,6 +10,7 @@
 
 // 下面示例查询uni-id-users表的所有数据
 
- db.collection('opendb-stat-page-result')
-					.orderBy('visit_times', 'desc')
-					.get()
+ db.collection('opendb-stat-result')
+ 	.where('dimension == "hour" && platform_id == "6221e59b428244000187a11f" && start_time >= 1646668800000 && start_time <= 1646826186817')
+  .get()
+  
