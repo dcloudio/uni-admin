@@ -72,6 +72,8 @@
 	import {
 		mapfields,
 		stringifyQuery,
+		stringifyField,
+		stringifyGroupField,
 		getTimeOfSomeDayAgo,
 		division,
 		format
@@ -163,10 +165,11 @@
 					.where(query)
 					.getTemp()
 
-				db.collection(mainTableTemp, subTableTemp)
-					.field(
-						'event_name, event_key{"opendb-stat-event-result"{event_key, event_count, user_count, stat_date, start_time}}'
-					)
+				db.collection(subTableTemp, mainTableTemp)
+					.field(stringifyField(fieldsMap))
+					.groupBy('event_key')
+					.groupField(stringifyGroupField(fieldsMap))
+					.orderBy('user_count', 'desc')
 					.skip((pageCurrent - 1) * this.pageSize)
 					.limit(this.pageSize)
 					.get({
@@ -177,19 +180,17 @@
 							count,
 							data
 						} = res.result
+						console.log(111111111, data);
 						this.tableData = []
 						this.options.total = count
 						for (const item of data) {
-							const lines = item.event_key["opendb-stat-event-result"]
-							if (Array.isArray(lines)) {
-								delete(item.event_key)
-								const line = lines[0]
-								if (line && Object.keys(line).length) {
-									mapfields(fieldsMap, line, item)
-									this.tableData.push(item)
-								}
-							}
+							const event = item.event_key[0]
+							item.event_key = event.event_key
+							item.event_name = event.event_name
+							mapfields(fieldsMap, item, item)
+							this.tableData.push(item)
 						}
+						console.log(222222222222, this.tableData);
 					}).catch((err) => {
 						console.error(err)
 						// err.message 错误信息

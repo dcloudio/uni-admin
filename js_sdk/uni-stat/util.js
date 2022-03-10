@@ -122,6 +122,9 @@ function format(num, type = ',') {
 		const hms = [h, m, s].map(i => i < 10 ? '0' + i : i)
 		return hms.join(type)
 	} else if (type === ',') {
+		if (String(num).indexOf('.') > -1) {
+			num = num.toFixed(2)
+		}
 		return num.toLocaleString()
 	} else {
 		return num
