@@ -1,9 +1,11 @@
 export default [{
 	title: '受访页',
 	field: 'path',
+	stat: -1
 }, {
 	title: '页面名称',
 	field: 'title',
+	stat: -1
 }, {
 	title: '访问人数',
 	field: 'visit_users',
@@ -25,21 +27,28 @@ export default [{
 	computed: 'exit_times/visit_times',
 	formatter: '%',
 	tooltip: '在此页面，选择离开应用占此页面访问次数的比例',
-	value: 0
+	value: 0,
+	stat: -1
 }, {
 	title: '次均停留时长',
 	field: 'avg_session_time',
 	computed: 'duration/visit_times',
 	formatter: ':',
 	tooltip: '平均每次打开应用停留在应用内的总时长，即应用停留总时长/启动次数',
-	value: 0
+	value: 0,
+	stat: -1
 }, {
-	title: '人均停留时长 ',
+	title: '人均停留时长',
 	field: 'avg_user_time',
 	computed: 'duration/visit_users',
 	formatter: ':',
 	tooltip: '平均每个用户停留在应用内的总时长，即应用停留总时长/访问人数',
-	value: 0
+	value: 0,
+	stat: -1
+}, {
+	title: '访问总时长',
+	field: 'duration',
+	disabled: true,
 }, {
 	title: '分享次数',
 	field: 'share_count',
