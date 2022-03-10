@@ -43,22 +43,26 @@ function stringifyQuery(query, customQuery) {
 	return queryStr || {}
 }
 
-function stringifyField(mapping, goal) {
+function stringifyField(mapping, goal, prop) {
 	if (goal) {
 		mapping = mapping.filter(f => f.field === goal)
 	}
-	const fields = mapping.filter(f => f.field && f.hasOwnProperty('value'))
-		.map(f => `${f.field} as ${ 'temp_' + f.field}`)
+	if (prop) {
+		mapping = mapping.filter(f => f.field && f.hasOwnProperty(prop))
+	}
+	const fields = mapping.map(f => `${f.field} as ${ 'temp_' + f.field}`)
 		.join()
 	return fields
 }
 
-function stringifyGroupField(mapping, goal) {
+function stringifyGroupField(mapping, goal, prop) {
 	if (goal) {
 		mapping = mapping.filter(f => f.field === goal)
 	}
-	const groupField = mapping.filter(f => f.field && f.hasOwnProperty('value'))
-		.map(f => `${f.stat ? f.stat : 'sum' }(${'temp_' + f.field}) as ${f.field}`)
+	if (prop) {
+		mapping = mapping.filter(f => f.field && f.hasOwnProperty(prop))
+	}
+	const groupField = mapping.map(f => `${f.stat ? f.stat : 'sum' }(${'temp_' + f.field}) as ${f.field}`)
 		.join()
 
 	return groupField

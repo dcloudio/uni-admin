@@ -30,7 +30,6 @@
 				<qiun-data-charts type="area" :echartsApp="true" :chartData="chartData"
 					:opts="{extra:{area:{type:'curve',addLine:true,gradient:true}}}" />
 			</view>
-
 			<view class="uni-stat--x p-m">
 				<uni-stat-table :data="tableData" :filedsMap="fieldsMap" :loading="loading" tooltip />
 				<view class="uni-pagination-box">
@@ -57,6 +56,8 @@
 	import {
 		mapfields,
 		stringifyQuery,
+		stringifyField,
+		stringifyGroupField,
 		getTimeOfSomeDayAgo,
 		division,
 		format,
@@ -66,6 +67,7 @@
 	export default {
 		data() {
 			return {
+				tableName: 'opendb-stat-result',
 				fieldsMap,
 				query: {
 					dimension: "day",
@@ -129,8 +131,14 @@
 			},
 			changeTimeRange(id, index) {
 				this.currentDateTab = index
-				const start = getTimeOfSomeDayAgo(id),
-					end = getTimeOfSomeDayAgo(0) + 24 * 60 * 60 - 1
+				const day = 24 * 60 * 60 * 1000
+				let start, end
+				start = getTimeOfSomeDayAgo(id)
+				if (!id) {
+					end = getTimeOfSomeDayAgo(0) + day - 1
+				} else {
+					end = getTimeOfSomeDayAgo(0) - 1
+				}
 				this.query.start_time = [start, end]
 			},
 			changePageCurrent(e) {
@@ -168,9 +176,11 @@
 				query = stringifyQuery(query)
 				const db = uniCloud.database()
 				if (type === 'day') {
-					db.collection('opendb-stat-result')
+					db.collection(this.tableName)
 						.where(query)
-						.field(`${field}, start_time, stat_date`)
+						.field(`${stringifyField(fieldsMap, field)}, start_time`)
+						.groupBy('start_time')
+						.groupField(stringifyGroupField(fieldsMap, field))
 						.orderBy('start_time', 'asc')
 						.get({
 							getCount: true
@@ -214,20 +224,22 @@
 				}
 			},
 
-			getTabelData(query) {
+			getTabelData(query, field = 'active_user_count') {
 				const {
 					pageCurrent
 				} = this.options
 				query = stringifyQuery(query)
-				console.log('..............Table query：', query);
+				console.log('..............Table query：', query, stringifyField(fieldsMap, field), stringifyGroupField(fieldsMap, field));
 				this.loading = true
 				const db = uniCloud.database()
-				db.collection('opendb-stat-result')
+				db.collection(this.tableName)
 					.where(query)
-					.field('active_user_count, start_time, stat_date')
+					.field(`${stringifyField(fieldsMap, field)}, start_time`)
+					.groupBy('start_time')
+					.groupField(stringifyGroupField(fieldsMap, field))
+					.orderBy('start_time', 'desc')
 					.skip((pageCurrent - 1) * this.pageSize)
 					.limit(this.pageSize)
-					.orderBy('start_time', 'asc')
 					.get({
 						getCount: true
 					})
@@ -263,6 +275,8 @@
 								this.tableData = []
 								this.options.total = daysCount
 								this.tableData = allData
+							}).finally(() => {
+								this.loading = false
 							})
 						})
 
@@ -271,23 +285,21 @@
 						console.error(err)
 						// err.message 错误信息
 						// err.code 错误码
-					}).finally(() => {
-						this.loading = false
 					})
 			},
 
-			getRangeCountData(query, type) {
+			getRangeCountData(query, type, field = 'active_user_count') {
 				const {
 					pageCurrent
 				} = this.options
 				const db = uniCloud.database()
-				return db.collection('opendb-stat-result')
+				return db.collection(this.tableName)
 					.where(query)
 					.field(
-						`active_user_count, start_time, ${type}(add(new Date(0),start_time), "Asia/Shanghai") as ${type},year(add(new Date(0),start_time), "Asia/Shanghai") as year`
+						`${field}, start_time, ${type}(add(new Date(0),start_time), "Asia/Shanghai") as ${type},year(add(new Date(0),start_time), "Asia/Shanghai") as year`
 					)
 					.groupBy(`year, ${type}`)
-					.groupField(`sum(active_user_count) as ${type}_active_user_count`)
+					.groupField(`sum(${field}) as ${type}_${field}`)
 					.orderBy(`year asc, ${type} asc`)
 					.get({
 						getCount: true
@@ -295,7 +307,7 @@
 			},
 
 
-			mapWithWeekAndMonth(data, weeks, months) {
+			mapWithWeekAndMonth(data, weeks, months, field = 'active_user_count') {
 				for (const item of data) {
 					const date = new Date(item.start_time)
 					const year = date.getUTCFullYear()
@@ -303,12 +315,12 @@
 					const week = this.getWeekNumber(date)
 					for (const w of weeks) {
 						if (w.week === week && w.year === year) {
-							item[`week_active_user_count`] = w[`week_active_user_count`]
+							item[`week_${field}`] = w[`week_${field}`]
 						}
 					}
 					for (const m of months) {
 						if (m.month === month && m.year === year) {
-							item[`month_active_user_count`] = m[`month_active_user_count`]
+							item[`month_${field}`] = m[`month_${field}`]
 						}
 					}
 				}

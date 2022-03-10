@@ -108,10 +108,10 @@
 
 				db.collection(appDaily, appList)
 					.field(
-						`${stringifyField(fieldsMap)},stat_date,appid`
+						`${stringifyField(fieldsMap, '', 'value')},stat_date,appid`
 					)
 					.groupBy(`appid, stat_date`)
-					.groupField(stringifyGroupField(fieldsMap))
+					.groupField(stringifyGroupField(fieldsMap, '', 'value'))
 					.orderBy('stat_date', 'desc')
 					.get()
 					.then((res) => {

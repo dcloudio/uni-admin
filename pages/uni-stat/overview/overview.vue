@@ -156,7 +156,6 @@
 				this.currentDateTab = null
 			},
 			changeTimeRange(id, index) {
-				console.log('.........id,index', id, ',', index)
 				this.currentDateTab = index
 				const day = 24 * 60 * 60 * 1000
 				let start, end
