@@ -102,7 +102,7 @@
 					pageSizeRange: [10, 20, 50, 100],
 				},
 				loading: false,
-				currentDateTab: 3,
+				currentDateTab: 0,
 				days: 0,
 				tableData: [],
 				panelData: [],
