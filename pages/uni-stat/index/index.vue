@@ -26,6 +26,8 @@
 <script>
 	import {
 		stringifyQuery,
+		stringifyField,
+		stringifyGroupField,
 		getTimeOfSomeDayAgo,
 		division,
 		format
@@ -38,7 +40,6 @@
 					dimension: "hour",
 					platform_id: '',
 					start_time: [getTimeOfSomeDayAgo(1), new Date().getTime()]
-					// start_time: [1611681600000, 1644767999999]
 				},
 				tableData: [],
 				panelData: fieldsMap.filter(f => f.hasOwnProperty('value')),
@@ -97,15 +98,7 @@
 		},
 		methods: {
 			getApps(query, type = "day") {
-				const fields = fieldsMap
-					.filter(f => f.field && f.hasOwnProperty('value'))
-					.map(f => `${f.field} as ${ 'temp_' + f.field}`)
-					.join()
-				const groupField = fieldsMap
-					.filter(f => f.field && f.hasOwnProperty('value'))
-					.map(f => `${f.stat ? f.stat : 'sum' }(${'temp_' + f.field}) as ${f.field}`)
-					.join()
-				console.log('..............query', query, '----', fields, '----', groupField);
+				console.log('..............query', query);
 				this.loading = true
 				const db = uniCloud.database()
 				const appList = db.collection('opendb-app-list').getTemp()
@@ -115,10 +108,10 @@
 
 				db.collection(appDaily, appList)
 					.field(
-						`${fields},stat_date,appid`
+						`${stringifyField(fieldsMap)},stat_date,appid`
 					)
 					.groupBy(`appid, stat_date`)
-					.groupField(groupField)
+					.groupField(stringifyGroupField(fieldsMap))
 					.orderBy('stat_date', 'desc')
 					.get()
 					.then((res) => {

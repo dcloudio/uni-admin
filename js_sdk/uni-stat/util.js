@@ -43,6 +43,26 @@ function stringifyQuery(query, customQuery) {
 	return queryStr || {}
 }
 
+function stringifyField(mapping, goal) {
+	if (goal) {
+		mapping = mapping.filter(f => f.field === goal)
+	}
+	const fields = mapping.filter(f => f.field && f.hasOwnProperty('value'))
+		.map(f => `${f.field} as ${ 'temp_' + f.field}`)
+		.join()
+	return fields
+}
+
+function stringifyGroupField(mapping, goal) {
+	if (goal) {
+		mapping = mapping.filter(f => f.field === goal)
+	}
+	const groupField = mapping.filter(f => f.field && f.hasOwnProperty('value'))
+		.map(f => `${f.stat ? f.stat : 'sum' }(${'temp_' + f.field}) as ${f.field}`)
+		.join()
+
+	return groupField
+}
 
 function division(dividend, divisor) {
 	if (divisor) {
@@ -120,11 +140,11 @@ function formatDate(date, type) {
 	}
 }
 
-function parseDateTime(datetime , type) {
+function parseDateTime(datetime, type) {
 	let d = datetime
-	console.log('--------ddd', 	d)
+	console.log('--------ddd', d)
 	if (typeof d !== 'object') {
-		d  = new Date(d)
+		d = new Date(d)
 	}
 	const year = d.getFullYear()
 	const month = d.getMonth() + 1
@@ -133,7 +153,7 @@ function parseDateTime(datetime , type) {
 	const minute = d.getMinutes()
 	const second = d.getSeconds()
 	const date = year + '-' + lessTen(month) + '-' + lessTen(day)
-	const time = lessTen(hour) + ':' + lessTen(minute) + ':'  + lessTen(second)
+	const time = lessTen(hour) + ':' + lessTen(minute) + ':' + lessTen(second)
 	if (type === "dateTime") {
 		return date + ' ' + time
 	}
@@ -197,8 +217,10 @@ function mapfields(map, data = {}, goal, prefix = '', prop = 'value') {
 
 
 export {
-	mapfields,
 	stringifyQuery,
+	stringifyField,
+	stringifyGroupField,
+	mapfields,
 	getTimeOfSomeDayAgo,
 	division,
 	format,

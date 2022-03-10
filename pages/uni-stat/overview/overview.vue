@@ -61,6 +61,8 @@
 	import {
 		mapfields,
 		stringifyQuery,
+		stringifyField,
+		stringifyGroupField,
 		getTimeOfSomeDayAgo,
 		division,
 		format,
@@ -110,7 +112,9 @@
 			}
 		},
 		onLoad(option) {
-			const { appid } = option
+			const {
+				appid
+			} = option
 			if (appid) {
 				this.query.appid = appid
 			}
@@ -152,10 +156,16 @@
 				this.currentDateTab = null
 			},
 			changeTimeRange(id, index) {
+				console.log('.........id,index', id, ',', index)
 				this.currentDateTab = index
 				const day = 24 * 60 * 60 * 1000
-				const start = getTimeOfSomeDayAgo(id),
+				let start, end
+				start = getTimeOfSomeDayAgo(id)
+				if (!id) {
 					end = getTimeOfSomeDayAgo(0) + day - 1
+				} else {
+					end = getTimeOfSomeDayAgo(0) - 1
+				}
 				this.query.start_time = [start, end]
 			},
 			changePageCurrent(e) {
@@ -193,6 +203,39 @@
 				return lessTwoDay
 			},
 
+			getPanelData() {
+				const {
+					appid,
+					platform_id
+				} = this.query
+				const query = stringifyQuery({
+					dimension: "hour",
+					appid,
+					platform_id,
+					start_time: [getTimeOfSomeDayAgo(1), new Date().getTime()]
+				})
+				console.log('..............Panel query：', query);
+				const db = uniCloud.database()
+				const subTable = db.collection('opendb-stat-result')
+					.where(query)
+					.field(
+						`${stringifyField(fieldsMap)},stat_date`
+					)
+					.groupBy(`stat_date`)
+					.groupField(stringifyGroupField(fieldsMap))
+					.orderBy('stat_date', 'desc')
+					.get()
+					.then(res => {
+						const today = res.result.data[0]
+						const yesterday = res.result.data[1]
+						this.panelData = []
+						this.panelData = mapfields(fieldsMap, today)
+						this.panelData.map(item => {
+							mapfields(fieldsMap, yesterday, item, '', 'contrast')
+						})
+					})
+			},
+
 			getChartData(query, field = 'new_user_count', name = '新增用户') {
 				const {
 					pageCurrent
@@ -214,7 +257,9 @@
 				const db = uniCloud.database()
 				db.collection('opendb-stat-result')
 					.where(query)
-					.field(`${field}, start_time`)
+					.field(`${stringifyField(fieldsMap, field)}, start_time`)
+					.groupBy(`start_time`)
+					.groupField(stringifyGroupField(fieldsMap, field))
 					.orderBy('start_time', 'asc')
 					.get({
 						getCount: true
@@ -278,9 +323,7 @@
 						console.error(err)
 						// err.message 错误信息
 						// err.code 错误码
-					}).finally(() => {
-						this.loading = false
-					})
+					}).finally(() => {})
 			},
 
 			getAppAccessTimes(query) {
@@ -294,11 +337,12 @@
 
 			getPageData(query, type) {
 				query = stringifyQuery(query)
+				console.log('..........page q:', query);
 				const {
 					pageCurrent
 				} = this.options
-				const map = this[`${type}FieldsMap`]
-				const field = map[1].field
+				const mapping = this[`${type}FieldsMap`]
+				const field = mapping[1].field
 				this.loading = true
 				const db = uniCloud.database()
 				const filterAppid = stringifyQuery({
@@ -310,14 +354,16 @@
 					.getTemp()
 				const subTableTemp = db.collection('opendb-stat-page-result')
 					.where(query)
-					.orderBy(field, 'desc')
-					.limit(10)
 					.getTemp()
 
 				db.collection(subTableTemp, mainTableTemp)
 					.field(
-						`${field}, page_id`
+						`${stringifyField(mapping, field)}, stat_date, page_id`
 					)
+					.groupBy("page_id")
+					.groupField(stringifyGroupField(mapping, field))
+					.orderBy(field, 'desc')
+					.limit(10)
 					.get({
 						getCount: true
 					})
@@ -330,6 +376,7 @@
 						this.getAppAccessTimes(query).then(res => {
 							const data = res.result.data[0]
 							total_app_access = data && data.total_app_access
+							console.log('..............total_app_access', total_app_access);
 						}).finally(() => {
 							this[`${type}TableData`] = []
 							for (const item of data) {
@@ -347,46 +394,16 @@
 
 									}
 								}
-								mapfields(map, item, item)
+								mapfields(mapping, item, item)
 								this[`${type}TableData`].push(item)
 							}
+							this.loading = false
 						})
 					}).catch((err) => {
 						console.error(err)
 						// err.message 错误信息
 						// err.code 错误码
-					}).finally(() => {
-						this.loading = false
-					})
-			},
-
-			getPanelData() {
-				const {
-					appid,
-					platform_id
-				} = this.query
-				const query = stringifyQuery({
-					dimension: "day",
-					appid,
-					platform_id,
-					start_time: [getTimeOfSomeDayAgo(2), getTimeOfSomeDayAgo(1)]
-					// start_time: [1611681600000, 1644767999999]
-				})
-				console.log('..............Panel query：', query);
-				const db = uniCloud.database()
-				const subTable = db.collection('opendb-stat-result')
-					.where(query)
-					.orderBy('start_time', 'desc')
-					.get()
-					.then(res => {
-						const today = res.result.data[0]
-						const yesterday = res.result.data[1]
-						this.panelData = []
-						this.panelData = mapfields(fieldsMap, today)
-						this.panelData.map(item => {
-							mapfields(fieldsMap, yesterday, item, '', 'contrast')
-						})
-					})
+					}).finally(() => {})
 			},
 
 			navTo(url) {
