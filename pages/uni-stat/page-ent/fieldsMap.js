@@ -26,6 +26,10 @@ export default [{
 	tooltip: '只浏览一个页面便离开应用的次数占总启动次数的百分比',
 	value: 0
 }, {
+	title: '访问总时长',
+	field: 'duration',
+	disabled: true,
+}, {
 	title: '次均停留时长',
 	field: 'avg_session_time',
 	computed: 'duration/visit_times',

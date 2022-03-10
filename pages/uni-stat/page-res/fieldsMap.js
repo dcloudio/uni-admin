@@ -30,6 +30,10 @@ export default [{
 	value: 0,
 	stat: -1
 }, {
+	title: '访问总时长',
+	field: 'duration',
+	disabled: true,
+}, {
 	title: '次均停留时长',
 	field: 'avg_session_time',
 	computed: 'duration/visit_times',
@@ -45,10 +49,6 @@ export default [{
 	tooltip: '平均每个用户停留在应用内的总时长，即应用停留总时长/访问人数',
 	value: 0,
 	stat: -1
-}, {
-	title: '访问总时长',
-	field: 'duration',
-	disabled: true,
 }, {
 	title: '分享次数',
 	field: 'share_count',

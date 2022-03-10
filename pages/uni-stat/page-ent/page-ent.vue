@@ -48,6 +48,8 @@
 	import {
 		mapfields,
 		stringifyQuery,
+		stringifyField,
+		stringifyGroupField,
 		getTimeOfSomeDayAgo,
 		division,
 		format
@@ -71,7 +73,7 @@
 					pageSizeRange: [10, 20, 50, 100],
 				},
 				loading: false,
-				currentDateTab: 3,
+				currentDateTab: 0,
 				tableData: [],
 				panelData: []
 			}
@@ -124,26 +126,32 @@
 				this.getTableData(query)
 			},
 
-			getTableData(query = stringifyQuery(this.query)) {
+			getTableData(query) {
+				query = stringifyQuery(this.query)
+				console.log('..........page q:', query);
 				const {
 					pageCurrent
 				} = this.options
-				console.log('..............query：', query);
 				this.loading = true
 				const db = uniCloud.database()
 				const filterAppid = stringifyQuery({
 					appid: this.query.appid
 				})
-				const mainTableTemp = db.collection('opendb-stat-pages').where(filterAppid).getTemp()
+				const mainTableTemp = db.collection('opendb-stat-pages')
+					.where(filterAppid)
+					.field('_id, title, path')
+					.getTemp()
 				const subTableTemp = db.collection('opendb-stat-page-result')
 					.where(query)
-					.orderBy('start_time ', 'desc ')
 					.getTemp()
 
-				db.collection(mainTableTemp, subTableTemp)
+				db.collection(subTableTemp, mainTableTemp)
 					.field(
-						'title, path, _id{"opendb-stat-page-result"{visit_times,visit_users,duration,share_count,entry_users,entry_count,entry_duration,dimension,stat_date,bounce_rate}}'
+						`${stringifyField(fieldsMap)}, stat_date, page_id`
 					)
+					.groupBy("page_id")
+					.groupField(stringifyGroupField(fieldsMap))
+					.orderBy('visit_times', 'desc')
 					.skip((pageCurrent - 1) * this.pageSize)
 					.limit(this.pageSize)
 					.get({
@@ -154,18 +162,25 @@
 							count,
 							data
 						} = res.result
-						this.tableData = []
+						console.log('........table data:', data);
 						this.options.total = count
+						this.tableData = []
 						for (const item of data) {
-							const lines = item._id["opendb-stat-page-result"]
+							const lines = item.page_id
 							if (Array.isArray(lines)) {
-								delete(item._id)
+								delete(item.page_id)
 								const line = lines[0]
 								if (line && Object.keys(line).length) {
-									mapfields(fieldsMap, line, item)
-									this.tableData.push(item)
+									for (const key in line) {
+										if (key !== '_id') {
+											item[key] = line[key]
+										}
+									}
+
 								}
 							}
+							mapfields(fieldsMap, item, item)
+							this.tableData.push(item)
 						}
 					}).catch((err) => {
 						console.error(err)
@@ -182,7 +197,7 @@
 					.where(query)
 					.groupBy('appid')
 					.groupField(
-						'sum(visit_times) as total_visit_times, sum(visit_users) as total_visit_users, sum(entry_count) as total_entry_count, sum(bounce_rate) as total_bounce_rate, sum(duration) as total_duration'
+						'sum(visit_times) as total_visit_times, sum(visit_users) as total_visit_users, sum(entry_count) as total_entry_count, avg(bounce_rate) as total_bounce_rate, sum(duration) as total_duration'
 					)
 					.orderBy('start_time', 'desc ')
 					.get()
