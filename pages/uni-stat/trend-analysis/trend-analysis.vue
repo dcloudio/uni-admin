@@ -20,7 +20,8 @@
 					:clearIcon="false" class="uni-stat-datetime-picker"
 					:class="{'uni-stat__actived': currentDateTab < 0 && !!query.start_time.length}"
 					@change="useDatetimePicker" />
-				<uni-stat-tabs type="box" :current="currentDimensionTab" :tabs="dimensionTabs" class="ml-l" v-model="query.dimension" />
+				<uni-stat-tabs type="box" :current="currentDimensionTab" :tabs="dimensionTabs" class="ml-l"
+					v-model="query.dimension" />
 			</view>
 			<uni-stat-panel :items="panelData" />
 
@@ -59,6 +60,8 @@
 	import {
 		mapfields,
 		stringifyQuery,
+		stringifyField,
+		stringifyGroupField,
 		getTimeOfSomeDayAgo,
 		division,
 		format,
@@ -83,15 +86,11 @@
 					pageSizeRange: [10, 20, 50, 100],
 				},
 				loading: false,
-				currentDateTab: 3,
+				currentDateTab: 0,
 				currentDimensionTab: 0,
 				tableData: [],
 				panelData: [],
-				chartData: {},
-				defaultChart: {
-					field: 'new_user_count',
-					name: '新增用户'
-				},
+				chartData: {}
 			}
 		},
 		computed: {
@@ -168,7 +167,7 @@
 		},
 		methods: {
 			getDays() {
-				if(!this.query.start_time.length) return true
+				if (!this.query.start_time.length) return true
 				const day = 24 * 60 * 60 * 1000
 				const [start, end] = this.query.start_time
 				const lessTwoDay = end - start >= day
@@ -179,8 +178,14 @@
 			},
 			changeTimeRange(id, index) {
 				this.currentDateTab = index
-				const start = getTimeOfSomeDayAgo(id),
+				const day = 24 * 60 * 60 * 1000
+				let start, end
+				start = getTimeOfSomeDayAgo(id)
+				if (!id) {
+					end = getTimeOfSomeDayAgo(0) + day - 1
+				} else {
 					end = getTimeOfSomeDayAgo(0) - 1
+				}
 				this.query.start_time = [start, end]
 			},
 			changePageCurrent(e) {
@@ -202,19 +207,22 @@
 			},
 
 			getAllData(query) {
-				this.getPanelData(query)
+				this.getPanelData()
 				this.getChartData(query)
 				this.getTabelData(query)
 			},
 
 			getChartData(query, field = 'new_user_count', name = '新增用户') {
+				this.chartData = {}
 				query = stringifyQuery(query)
 				console.log('..............Chart query：', query);
 				const dimension = this.query.dimension
 				const db = uniCloud.database()
 				db.collection('opendb-stat-result')
 					.where(query)
-					.field(`${field}, start_time, stat_date`)
+					.field(`${stringifyField(fieldsMap, field)}, start_time`)
+					.groupBy('start_time')
+					.groupField(stringifyGroupField(fieldsMap, field))
 					.orderBy('start_time', 'asc')
 					.get({
 						getCount: true
@@ -232,7 +240,6 @@
 								data: []
 							}]
 						}
-						this.chartData = {}
 						for (const item of data) {
 							const x = formatDate(item.start_time, dimension)
 							const y = item[field]
@@ -261,6 +268,9 @@
 				const db = uniCloud.database()
 				db.collection('opendb-stat-result')
 					.where(query)
+					.field(stringifyField(fieldsMap))
+					.groupBy('start_time')
+					.groupField(stringifyGroupField(fieldsMap))
 					.skip((pageCurrent - 1) * this.pageSize)
 					.limit(this.pageSize)
 					.orderBy('start_time', 'desc')
@@ -293,25 +303,25 @@
 					})
 			},
 
-			getPanelData(query) {
+			getPanelData() {
+				let query = JSON.parse(JSON.stringify(this.query))
+				query.dimension = 'day'
 				query = stringifyQuery(query)
 				console.log('..............Panel query：', query);
 				const db = uniCloud.database()
 				const subTable = db.collection('opendb-stat-result')
 					.where(query)
-					.groupBy('appid')
-					.groupField(
-						'sum(new_user_count) as total_new_user_count, sum(active_user_count) as total_active_user_count, sum(page_visit_count) as total_page_visit_count, sum(app_launch_count) as total_app_launch_count, avg(avg_session_time) as total_avg_session_time, avg(avg_user_time) as total_avg_user_time, avg(bounce_rate) as total_bounce_rate, max(total_users) as total_total_users'
-					)
-					.orderBy('start_time', 'desc')
+					.field(`${stringifyField(fieldsMap)},stat_date`)
+					.groupBy('stat_date')
+					.groupField(stringifyGroupField(fieldsMap))
+					.orderBy('stat_date', 'desc')
 					.get({
 						getCount: true
 					})
 					.then(res => {
-						console.log('.......table:', res);
-						const items = res.result.data[0]
+						const item = res.result.data[0]
 						this.panelData = []
-						this.panelData = mapfields(fieldsMap, items, undefined, 'total_')
+						this.panelData = mapfields(fieldsMap, item)
 					})
 			},
 

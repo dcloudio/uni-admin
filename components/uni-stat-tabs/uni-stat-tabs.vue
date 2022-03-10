@@ -82,10 +82,9 @@
 			this.init()
 		},
 		watch: {
-			// current(val) {
-			// 	if ()
-			// 	this.currentTab = val
-			// },
+			current(val) {
+				this.currentTab = val
+			},
 
 			tabs: {
 				immediate: false,
@@ -126,8 +125,8 @@
 					this.renderTabs = this.tabs
 				}
 
-				// const index = this.current
-				const index = 0
+				const index = this.current
+				// const index = 0
 				this.currentTab = index
 				if (this.mode === 'date' && index >= 0) {
 					this.$nextTick(function() {

@@ -50,8 +50,13 @@ function stringifyField(mapping, goal, prop) {
 	if (prop) {
 		mapping = mapping.filter(f => f.field && f.hasOwnProperty(prop))
 	}
-	const fields = mapping.map(f => `${f.field} as ${ 'temp_' + f.field}`)
-		.join()
+	const fields = mapping.map(f => {
+		if (f.stat === -1) {
+			return f.field
+		} else {
+			return `${f.field} as ${ 'temp_' + f.field}`
+		}
+	}).join()
 	return fields
 }
 
@@ -62,7 +67,12 @@ function stringifyGroupField(mapping, goal, prop) {
 	if (prop) {
 		mapping = mapping.filter(f => f.field && f.hasOwnProperty(prop))
 	}
-	const groupField = mapping.map(f => `${f.stat ? f.stat : 'sum' }(${'temp_' + f.field}) as ${f.field}`)
+	const groupField = mapping.map(f => {
+			if (f.stat !== -1) {
+				return `${f.stat ? f.stat : 'sum' }(${'temp_' + f.field}) as ${f.field}`
+			}
+		})
+		.filter(Boolean)
 		.join()
 
 	return groupField
@@ -119,7 +129,7 @@ function format(num, type = ',') {
 }
 
 function formatDate(date, type) {
-	console.log('-------date:', date)
+	// console.log('-------date:', date)
 	let d = new Date(date)
 	if (type === 'hour') {
 		let h = d.getHours()
@@ -146,7 +156,7 @@ function formatDate(date, type) {
 
 function parseDateTime(datetime, type) {
 	let d = datetime
-	console.log('--------ddd', d)
+	// console.log('--------ddd', d)
 	if (typeof d !== 'object') {
 		d = new Date(d)
 	}
