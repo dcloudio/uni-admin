@@ -43,7 +43,7 @@
 					</uni-tr>
 					<uni-tr v-for="(item ,i) in tableData" :key="i">
 						<template v-for="(mapper, index) in fieldsMap">
-							<uni-td v-if="mapper.title" :key="index" align="center" :class="/[d|w|m]_\d/.test(mapper.field)&&[item[mapper.field] ? 'uni-stat-table-bg' : '']">
+							<uni-td v-if="mapper.title" :key="index" align="center" :class="/[d|w|m]_\d/.test(mapper.field)&&[item[mapper.field] !== undefined ? 'uni-stat-table-bg' : '']">
 								{{item[mapper.field]}}
 							</uni-td>
 						</template>
@@ -217,6 +217,8 @@
 				} = this.options
 				query = stringifyQuery(query)
 				const groupField = this.createStr("user_count", [key], [this.field])
+				console.log('..............fieldsMap:', this.fieldsMap);
+				console.log('..............Chart Field:', groupField);
 				console.log('..............Chart query：', query);
 				const db = uniCloud.database()
 				db.collection('opendb-stat-result')
@@ -268,6 +270,7 @@
 				query = stringifyQuery(query)
 				const tail = this.field + "_count"
 				const groupField = this.createStr('user_rate', '', [this.field], tail)
+				console.log('..............Table Field:', groupField);
 				console.log('..............Table query：', query);
 				this.loading = true
 				const db = uniCloud.database()
