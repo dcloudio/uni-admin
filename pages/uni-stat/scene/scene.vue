@@ -200,32 +200,37 @@
 								hasChannels.push(item.channel_id)
 							}
 						})
-						hasChannels.forEach((channel, index) => {
-							const line = options.series[index] = {
-								name: channel,
-								data: []
-							}
-							const xAxis = options.categories
-							for (const item of data) {
-								let date = item.start_time
-								const dimension = this.query.dimension
-								const x = formatDate(date, dimension)
-								const y = item[`total_${field}`]
-								const dateIndex = xAxis.indexOf(x)
-								if (channel === item.channel_id) {
-									if (dateIndex < 0) {
-										xAxis.push(x)
-										line.data.push(y)
-									} else {
-										line.data[dateIndex] = y
-									}
+						let allChannels = []
+						this.getChannels().then(res => {
+							allChannels = res.result.data
+						}).finally(() => {
+							hasChannels.forEach((channel, index) => {
+								const c = allChannels.find(item => item._id === channel)
+								const line = options.series[index] = {
+									name: c && c.channel_code || '其他',
+									data: []
 								}
+								const xAxis = options.categories
+								for (const item of data) {
+									let date = item.start_time
+									const dimension = this.query.dimension
+									const x = formatDate(date, dimension)
+									const y = item[`total_${field}`]
+									const dateIndex = xAxis.indexOf(x)
+									if (channel === item.channel_id) {
+										if (dateIndex < 0) {
+											xAxis.push(x)
+											line.data.push(y)
+										} else {
+											line.data[dateIndex] = y
+										}
+									}
 
-							}
+								}
+							})
+							this.chartData = {}
+							this.chartData = options
 						})
-						this.chartData = {}
-
-						this.chartData = options
 					}).catch((err) => {
 						console.error(err)
 						// err.message 错误信息
