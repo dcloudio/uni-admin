@@ -25,7 +25,7 @@
 				<uni-stat-panel :items="panelData" class="uni-stat-panel" />
 				<uni-stat-tabs type="box" :tabs="chartTabs" class="mb-l" @change="changeChartTab" />
 				<qiun-data-charts class="uni-charts-box" type="area" :echartsApp="true" :chartData="chartData"
-					:opts="{extra:{area:{type:'curve',addLine:true,gradient:true}}}" />
+					:opts="{extra:{area:{type:'curve',addLine:true,gradient:true}}}" style="height:350px" />
 			</view>
 
 			<view class="uni-stat--x p-m">
