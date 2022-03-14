@@ -12,6 +12,15 @@ function getTimeOfSomeDayAgo(days = 0, date = Date.now()) {
 	return someDaysAgoTime
 }
 
+function maxDeltaDay(times, delta = 2) {
+	if (!times.length) return true
+	const wunDay = 24 * 60 * 60 * 1000
+	const [start, end] = times
+	const max = end - start < wunDay * delta
+	console.log('........max:', max);
+	return max
+}
+
 // 将查询条件拼接为字符串
 function stringifyQuery(query, customQuery) {
 	const queryArr = []
@@ -19,6 +28,7 @@ function stringifyQuery(query, customQuery) {
 		queryArr.push(customQuery)
 	}
 	const keys = Object.keys(query)
+	const time = query.start_time
 	keys.forEach(key => {
 		if (key === 'time_range') return
 		let val = query[key]
@@ -27,11 +37,20 @@ function stringifyQuery(query, customQuery) {
 				val = `"${val}"`
 			}
 			if (key === 'start_time') {
-				const time = query.start_time
 				if (Array.isArray(time) && time.length === 2) {
 					queryArr.push(`start_time >= ${time[0]} && start_time <= ${time[1]}`)
 				} else {
 					queryArr.push(`start_time == ${time}`)
+				}
+			} else if (key === 'dimension') {
+				if (maxDeltaDay(time)) {
+					queryArr.push(`dimension == "hour"`)
+				} else {
+					if (val && val !== `"hour"`) {
+						queryArr.push(`${key} == ${val}`)
+					} else {
+						queryArr.push(`dimension == "day"`)
+					}
 				}
 			} else {
 				queryArr.push(`${key} == ${val}`)
@@ -242,5 +261,6 @@ export {
 	division,
 	format,
 	formatDate,
-	parseDateTime
+	parseDateTime,
+	maxDeltaDay
 }

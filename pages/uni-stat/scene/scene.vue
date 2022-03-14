@@ -24,7 +24,7 @@
 			<view class="uni-stat--x" style="padding: 15px 0;">
 				<uni-stat-panel :items="panelData" class="uni-stat-panel" />
 				<uni-stat-tabs type="box" :tabs="chartTabs" class="mb-l" @change="changeChartTab" />
-				<qiun-data-charts type="area" :echartsApp="true" :chartData="chartData"
+				<qiun-data-charts class="uni-charts-box" type="area" :echartsApp="true" :chartData="chartData"
 					:opts="{extra:{area:{type:'curve',addLine:true,gradient:true}}}" />
 			</view>
 
@@ -55,10 +55,13 @@
 	import {
 		mapfields,
 		stringifyQuery,
+		stringifyField,
+		stringifyGroupField,
 		getTimeOfSomeDayAgo,
 		division,
 		format,
-		formatDate
+		formatDate,
+		maxDeltaDay
 	} from '@/js_sdk/uni-stat/util.js'
 	import fieldsMap from './fieldsMap.js'
 	export default {
@@ -122,6 +125,13 @@
 					defaultQuery = notMiniProgramPlatform.map(p => `platform_id != "${p}"`).join(' && ')
 				}
 				return stringifyQuery(this.query, defaultQuery)
+			},
+			dimension() {
+				if (maxDeltaDay(this.query.start_time, 1)) {
+					return 'hour'
+				} else {
+					return 'day'
+				}
 			}
 		},
 		watch: {
@@ -168,15 +178,19 @@
 			},
 
 			getChartData(query, field = 'new_user_count') {
+				this.chartData = {}
 				const {
 					pageCurrent
 				} = this.options
 				console.log('..............Chart query：', query);
+				console.log('..............Chart stringifyGroupField(fieldsMap, field)：', stringifyGroupField(fieldsMap,
+					field));
 				const db = uniCloud.database()
 				db.collection('opendb-stat-result')
 					.where(query)
+					.field(`${stringifyField(fieldsMap, field)}, start_time, channel_id`)
 					.groupBy('channel_id,start_time')
-					.groupField(`sum(${field}) as total_${field}`)
+					.groupField(stringifyGroupField(fieldsMap, field))
 					.orderBy('start_time', 'asc')
 					.get({
 						getCount: true
@@ -194,6 +208,14 @@
 								data: []
 							}]
 						}
+						const xAxis = options.categories
+						if (this.dimension === 'hour') {
+							for (let i = 0; i < 24; ++i) {
+								const hour = i < 10 ? '0' + i : i
+								const x = `${hour}:00 ~ ${hour}:59`
+								xAxis.push(x)
+							}
+						}
 						const hasChannels = []
 						data.forEach(item => {
 							if (hasChannels.indexOf(item.channel_id) < 0) {
@@ -207,15 +229,17 @@
 							hasChannels.forEach((channel, index) => {
 								const c = allChannels.find(item => item._id === channel)
 								const line = options.series[index] = {
-									name: c && c.channel_code || '其他',
+									name: c && c.channel_code || '未知',
 									data: []
 								}
-								const xAxis = options.categories
+								for (let i = 0; i < 24; ++i) {
+									line.data[i] = 0
+								}
+
 								for (const item of data) {
 									let date = item.start_time
-									const dimension = this.query.dimension
-									const x = formatDate(date, dimension)
-									const y = item[`total_${field}`]
+									const x = formatDate(date, this.dimension)
+									const y = item[field]
 									const dateIndex = xAxis.indexOf(x)
 									if (channel === item.channel_id) {
 										if (dateIndex < 0) {
@@ -228,7 +252,6 @@
 
 								}
 							})
-							this.chartData = {}
 							this.chartData = options
 						})
 					}).catch((err) => {
@@ -299,16 +322,16 @@
 					})
 			},
 
-			createStr(maps, fn, prefix = 'total_') {
-				const strArr = []
-				maps.forEach(mapper => {
-					if (field.hasOwnProperty('value')) {
-						const fieldName = mapper.field
-						strArr.push(`${fn}(${fieldName}) as ${prefix + fieldName}`)
-					}
-				})
-				return strArr.join()
-			},
+			// createStr(maps, fn, prefix = 'total_') {
+			// 	const strArr = []
+			// 	maps.forEach(mapper => {
+			// 		if (field.hasOwnProperty('value')) {
+			// 			const fieldName = mapper.field
+			// 			strArr.push(`${fn}(${fieldName}) as ${prefix + fieldName}`)
+			// 		}
+			// 	})
+			// 	return strArr.join()
+			// },
 
 			getPanelData(query) {
 				const db = uniCloud.database()

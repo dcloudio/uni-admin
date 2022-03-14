@@ -33,22 +33,26 @@ export default [{
 	field: 'avg_session_time',
 	formatter: ':',
 	tooltip: '平均每次打开应用停留在应用内的总时长，即应用停留总时长/启动次数',
-	value: 0
+	value: 0,
+	stat: 'avg'
 }, {
 	title: '人均停留时长 ',
 	field: 'avg_user_time',
 	formatter: ':',
 	tooltip: '平均每个用户停留在应用内的总时长，即应用停留总时长/活跃用户',
-	value: 0
+	value: 0,
+	stat: 'avg'
 }, {
 	title: '跳出率',
 	field: 'bounce_rate',
 	formatter: '%%',
 	tooltip: '只浏览一个页面便离开应用的次数占总启动次数的百分比',
-	value: 0
+	value: 0,
+	stat: 'avg'
 }, {
 	title: '总用户数',
 	field: 'total_users',
 	tooltip: '从添加统计到当前选择时间的总用户数（去重）',
 	value: 0,
+	stat: 'max'
 }]
