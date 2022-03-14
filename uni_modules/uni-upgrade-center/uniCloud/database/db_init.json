@@ -1,0 +1,56 @@
+// 在本文件中可配置云数据库初始化，数据格式见：https://uniapp.dcloud.io/uniCloud/hellodb?id=db-init
+
+// 编写完毕后对本文件点右键，可按配置规则创建表和添加数据
+
+{
+	"opendb-app-list": {
+		"data": [],
+		"index": [{
+			"IndexName": "appid",
+			"MgoKeySchema": {
+				"MgoIndexKeys": [{
+					"Name": "appid",
+					"Direction": "1"
+				}],
+				"MgoIsUnique": true
+			}
+		}, {
+			"IndexName": "name",
+			"MgoKeySchema": {
+				"MgoIndexKeys": [{
+					"Name": "name",
+					"Direction": "1"
+				}],
+				"MgoIsUnique": false
+			}
+		}]
+	},
+	"opendb-app-versions": {
+		"data": [],
+		"index": [{
+			"IndexName": "appid",
+			"MgoKeySchema": {
+				"MgoIndexKeys": [{
+					"Name": "appid",
+					"Direction": "1"
+				}],
+				"MgoIsUnique": false
+			}
+		}, {
+			"IndexName": "查找上线发行应用",
+			"MgoKeySchema": {
+				"MgoIndexKeys": [{
+					"Name": "appid",
+					"Direction": "1"
+				}, {
+					"Name": "platform",
+					"Direction": "1"
+				}, {
+					"Name": "stable_publish",
+					"Direction": "1"
+				}],
+				"MgoIsUnique": false
+			}
+		}]
+	}
+}
