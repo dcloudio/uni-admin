@@ -84,6 +84,7 @@
 			return {
 				fieldsMap,
 				query: {
+					dimension: "day",
 					appid: '__UNI__HelloUniApp',
 					platform_id: '',
 					channel_id: '',
@@ -238,13 +239,12 @@
 </script>
 
 <style>
-.uni-stat-edit--x {
-	display: flex;
-	justify-content: space-between;
-}
+	.uni-stat-edit--x {
+		display: flex;
+		justify-content: space-between;
+	}
 
-.uni-stat-edit--btn {
-	cursor: pointer;
-}
-
+	.uni-stat-edit--btn {
+		cursor: pointer;
+	}
 </style>

@@ -57,11 +57,11 @@
 		stringifyQuery,
 		stringifyField,
 		stringifyGroupField,
+		maxDeltaDay,
 		getTimeOfSomeDayAgo,
 		division,
 		format,
-		formatDate,
-		maxDeltaDay
+		formatDate
 	} from '@/js_sdk/uni-stat/util.js'
 	import fieldsMap from './fieldsMap.js'
 	export default {
@@ -124,7 +124,7 @@
 					]
 					defaultQuery = notMiniProgramPlatform.map(p => `platform_id != "${p}"`).join(' && ')
 				}
-				return stringifyQuery(this.query, defaultQuery)
+				return stringifyQuery(this.query, true) + ' && ' + defaultQuery
 			},
 			dimension() {
 				if (maxDeltaDay(this.query.start_time, 1)) {

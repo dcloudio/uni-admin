@@ -15,7 +15,8 @@
 				<uni-stat-tabs label="平台选择" type="boldLine" mode="platform" v-model="query.platform_id" />
 			</view>
 			<view class="uni-stat--x flex">
-				<uni-stat-tabs label="日期选择" :current="currentDateTab" :yesterday="false" mode="date" @change="changeTimeRange" />
+				<uni-stat-tabs label="日期选择" :current="currentDateTab" :yesterday="false" mode="date"
+					@change="changeTimeRange" />
 				<uni-datetime-picker type="daterange" v-model="query.start_time" returnType="timestamp"
 					:clearIcon="false" class="uni-stat-datetime-picker"
 					:class="{'uni-stat__actived': currentDateTab < 0 && !!query.start_time.length}"
@@ -65,6 +66,7 @@
 			return {
 				fieldsMap,
 				query: {
+					dimension: "day",
 					appid: "__UNI__HelloUniApp",
 					platform_id: '',
 					start_time: [],
@@ -186,7 +188,8 @@
 								if (dayAppLaunchs.length) {
 									dayAppLaunchs.forEach(day => {
 										if (day.start_time === item.start_time) {
-											let rateY = item[`total_${field}`] / day.day_app_launch_count
+											let rateY = item[`total_${field}`] / day
+												.day_app_launch_count
 											rateY = rateY.toFixed(2)
 											rateLine.data.push(rateY)
 										}
@@ -201,8 +204,7 @@
 						console.error(err)
 						// err.message 错误信息
 						// err.code 错误码
-					}).finally(() => {
-					})
+					}).finally(() => {})
 			},
 
 			getTotalCount(query) {
@@ -291,7 +293,7 @@
 								launch_count = total && total.total_app_launch_count
 								if (total_count && launch_count) {
 									let errorRate = total_count / launch_count
-									errorRate = (errorRate*100).toFixed(2) + '%'
+									errorRate = (errorRate * 100).toFixed(2) + '%'
 									panelData[1] = {
 										title: '错误率',
 										value: errorRate,

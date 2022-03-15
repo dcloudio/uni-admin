@@ -17,16 +17,13 @@ function maxDeltaDay(times, delta = 2) {
 	const wunDay = 24 * 60 * 60 * 1000
 	const [start, end] = times
 	const max = end - start < wunDay * delta
-	console.log('........max:', max);
+	// console.log('........max:', max);
 	return max
 }
 
 // 将查询条件拼接为字符串
-function stringifyQuery(query, customQuery) {
+function stringifyQuery(query, dimension=false) {
 	const queryArr = []
-	if (customQuery && typeof customQuery === 'string') {
-		queryArr.push(customQuery)
-	}
 	const keys = Object.keys(query)
 	const time = query.start_time
 	keys.forEach(key => {
@@ -42,7 +39,7 @@ function stringifyQuery(query, customQuery) {
 				} else {
 					queryArr.push(`start_time == ${time}`)
 				}
-			} else if (key === 'dimension') {
+			} else if (dimension && key === 'dimension') {
 				if (maxDeltaDay(time)) {
 					queryArr.push(`dimension == "hour"`)
 				} else {
