@@ -135,7 +135,7 @@ const cfu = {
 	"ring": {
 		"type": "ring",
 		"color": color,
-		"padding": [5, 5, 5, 5],
+		"padding": [0, 20, 30, 20],
 		"rotate": false,
 		"dataLabel": true,
 		"legend": {
@@ -374,7 +374,7 @@ const cfu = {
 	"area": {
 		"type": "area",
 		"color": color,
-		"padding": [15, 15, 0, 15],
+		"padding": [20, 50, 0, 20],
 		"xAxis": {
 			"disableGrid": true,
 			"labelCount": 12,
