@@ -27,7 +27,7 @@
 				<view class="uni-stat-card-header">
 					趋势图
 				</view>
-				<uni-stat-tabs type="box" :tabs="chartTabs" class="mb-l" @change="changeChartTab" />
+				<uni-stat-tabs type="box" v-model="chartTab" :tabs="chartTabs" class="mb-l" @change="changeChartTab" />
 				<qiun-data-charts type="area" :echartsApp="true" :chartData="chartData" :opts="chartOption" />
 			</view>
 
@@ -94,7 +94,7 @@
 				},
 				loading: false,
 				currentDateTab: 0,
-				// currentChartTab: ,
+				chartTab: 'new_user_count',
 				tableData: [],
 				resTableData: [],
 				entTableData: [],
@@ -235,7 +235,7 @@
 					})
 			},
 
-			getChartData(query, field = 'new_user_count', name = '新增用户') {
+			getChartData(query, field = this.chartTab, name = '新增用户') {
 				const {
 					pageCurrent
 				} = this.options
