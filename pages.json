@@ -35,6 +35,13 @@
 			"style": {
 				"navigationBarTitleText": "版本信息查看"
 			}
+		},
+		{
+			"path": "uni_modules/uni-portal/pages/index",
+			"style": {
+				"navigationBarTitleText": "发布应用",
+				"enablePullDownRefresh": false
+			}
 		}
 	],
 	"subPackages": [{

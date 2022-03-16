@@ -52,6 +52,7 @@
 								-
 							</view>
 							<view v-else class="uni-group">
+								<button @click="navigateTo('/uni_modules/uni-portal/pages/index?id='+item.appid, false)" class="uni-button" size="mini" type="primary">发布</button>
 								<button @click="navigateTo('./edit?id='+item._id, false)" class="uni-button" size="mini"
 									type="primary">{{$t('common.button.edit	')}}</button>
 								<button @click="confirmDelete(item._id)" class="uni-button" size="mini"
