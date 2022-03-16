@@ -312,7 +312,7 @@
 				const subTable = db.collection('opendb-stat-result')
 					.where(query)
 					.field(`${stringifyField(fieldsMap)},stat_date`)
-					.groupBy('stat_date')
+					.groupBy('appid')
 					.groupField(stringifyGroupField(fieldsMap))
 					.orderBy('stat_date', 'desc')
 					.get({

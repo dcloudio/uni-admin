@@ -43,8 +43,8 @@
 					</uni-tr>
 					<uni-tr v-for="(item ,i) in tableData" :key="i">
 						<template v-for="(mapper, index) in fieldsMap">
-							<uni-td v-if="mapper.title" :key="index" align="center" :class="/[d|w|m]_\d/.test(mapper.field)&&[item[mapper.field] !== undefined ? 'uni-stat-table-bg' : '']">
-								{{item[mapper.field]}}
+							<uni-td v-if="mapper.title" :key="index" align="center" :class="/[d|w|m]_\d/.test(mapper.field)&&[item[mapper.field] ? 'uni-stat-table-bg' : '']">
+								{{item[mapper.field] ? item[mapper.field] : ''}}
 							</uni-td>
 						</template>
 					</uni-tr>
@@ -73,6 +73,8 @@
 	import {
 		mapfields,
 		stringifyQuery,
+		stringifyField,
+		stringifyGroupField,
 		getTimeOfSomeDayAgo,
 		division,
 		format,
@@ -82,7 +84,6 @@
 	export default {
 		data() {
 			return {
-				fieldsMap: fieldsFactory(),
 				query: {
 					dimension: "day",
 					appid: '__UNI__HelloUniApp',
@@ -114,6 +115,15 @@
 			}
 		},
 		computed: {
+			fieldsMap() {
+				const title = this.field === 'active_user' ? '活跃用户' : '新增用户'
+				const maps = [{
+					title,
+					field: `${this.field}_count`,
+					stat: 0
+				}]
+				return fieldsFactory(maps)
+			},
 			pageSize() {
 				const {
 					pageSizeRange,
@@ -187,6 +197,27 @@
 				this.getTabelData(this.query)
 			},
 
+
+			stringifyField(mapping, goal, prop) {
+				if (goal) {
+					mapping = mapping.filter(f => f.field === goal)
+				}
+				if (prop) {
+					mapping = mapping.filter(f => f.field && f.hasOwnProperty(prop))
+				}
+				const fields = mapping.map(f => {
+					if (f.stat === -1) {
+						return f.field
+					} else if (f.stat === 0) {
+						return `${f.field} as ${ 'temp_' + f.field}`
+					} else {
+						return `retention.${this.field}.${f.field}.user_count as ${ 'temp_' + f.field}`
+					}
+				}).join()
+				console.log('..............Chart ffffff:', fields);
+				return fields
+			},
+
 			createStr(type = "user_count", vals, fields, tail) {
 				const value = vals || [1, 2, 3, 4, 5, 6, 7, 14, 30]
 				const p = 'd'
@@ -216,13 +247,14 @@
 				} = this.options
 				query = stringifyQuery(query)
 				const groupField = this.createStr("user_count", [key], [this.field])
-				console.log('..............fieldsMap:', this.fieldsMap);
 				console.log('..............Chart Field:', groupField);
 				console.log('..............Chart query：', query);
 				const db = uniCloud.database()
 				db.collection('opendb-stat-result')
 					.where(query)
-					.field(`${groupField}, start_time`)
+					.field(`${this.stringifyField(this.fieldsMap, `d_${key}`)}, start_time`)
+					.groupBy('start_time')
+					.groupField(stringifyGroupField(this.fieldsMap, `d_${key}`))
 					.orderBy('start_time', 'asc')
 					.get({
 						getCount: true
@@ -274,10 +306,12 @@
 				const db = uniCloud.database()
 				db.collection('opendb-stat-result')
 					.where(query)
-					.field(`${groupField}, start_time`)
+					.field(this.stringifyField(this.fieldsMap))
+					.groupBy('start_time')
+					.groupField(stringifyGroupField(this.fieldsMap))
+					.orderBy('start_time', 'desc')
 					.skip((pageCurrent - 1) * this.pageSize)
 					.limit(this.pageSize)
-					.orderBy('start_time', 'desc')
 					.get({
 						getCount: true
 					})
@@ -287,12 +321,6 @@
 							data
 						} = res.result
 						console.log('.......table:', data);
-						const title = tail === 'active_user_count' ? '活跃用户' : '新增用户'
-						const maps = [{
-							title,
-							field: tail
-						}]
-						this.fieldsMap = fieldsFactory(maps)
 						for (const item of data) {
 							mapfields(this.fieldsMap, item, item)
 						}

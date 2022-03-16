@@ -214,31 +214,30 @@ function mapfields(map, data = {}, goal, prefix = '', prop = 'value') {
 		const preField = prefix + field
 		if (data) {
 			const value = data[preField]
-			if (value) {
-				const val = format(value, formatter)
-				if (hasValue) {
-					if (goal.field === field) {
+			if (computed) {
+				const computedFields = computed.split('/')
+				let [dividend, divisor] = computedFields
+				dividend = Number(origin[prefix + dividend])
+				divisor = Number(origin[prefix + divisor])
+				if (dividend && divisor) {
+					const val = format(division(dividend, divisor), formatter)
+					if (hasValue) {
 						goal[prop] = val
+					} else {
+						goal[field] = val
 					}
-				} else {
-					goal[field] = val
 				}
 			} else {
-				if (computed) {
-					const computedFields = computed.split('/')
-					let [dividend, divisor] = computedFields
-					dividend = Number(origin[prefix + dividend])
-					divisor = Number(origin[prefix + divisor])
-					if (dividend && divisor) {
-						const val = format(division(dividend, divisor), formatter)
-						// const val = division(dividend, divisor)
-						if (hasValue) {
+				if (value) {
+					const val = format(value, formatter)
+					if (hasValue) {
+						if (goal.field === field) {
 							goal[prop] = val
-						} else {
-							goal[field] = val
 						}
+					} else {
+						goal[field] = val
 					}
-				}
+				} 
 			}
 		}
 		if (hasValue) {
