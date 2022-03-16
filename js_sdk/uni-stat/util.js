@@ -6,7 +6,7 @@
 function getTimeOfSomeDayAgo(days = 0, date = Date.now()) {
 	const d = new Date(date)
 	const oneDayTime = 24 * 60 * 60 * 1000
-	let ymd = [d.getFullYear(), d.getMonth() + 1, d.getDate()].join('-')
+	let ymd = [d.getFullYear(), d.getMonth() + 1, d.getDate()].join('/')
 	ymd = ymd + ' 00:00:00'
 	const someDaysAgoTime = new Date(ymd).getTime() - oneDayTime * days
 	return someDaysAgoTime
