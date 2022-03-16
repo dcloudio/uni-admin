@@ -88,7 +88,18 @@
 					_id: 'visit_times',
 					name: '访问次数'
 				}],
-
+				options: {
+					visit_depth_data: {
+						prefix: 'p',
+						title: '页',
+						value: [1, 2, 3, 4, 5, 10]
+					},
+					duration_data: {
+						prefix: 's',
+						title: '秒',
+						value: [0, 3, 6, 11, 21, 31, 51, 100]
+					}
+				}
 			}
 		},
 		computed: {
@@ -126,19 +137,9 @@
 			},
 
 			createStr(fields, type = "visit_depth_data") {
-				const options = {
-					visit_depth_data: {
-						prefix: 'p',
-						value: [1, 2, 3, 4, 5, 10]
-					},
-					duration_data: {
-						prefix: 's',
-						value: [0, 3, 6, 11, 21, 31, 51, 100]
-					}
-				}
 				const l = fields.length
-				const p = options[type].prefix
-				const value = options[type].value
+				const p = this.options[type].prefix
+				const value = this.options[type].value
 				const strArr = value.map(item => {
 					return fields.map(field => {
 						return `sum(${type}.${field}.${p + '_' + item}) as ${l > 1 ? field + '_' + p +'_'+item :  p + '_' + item}`
@@ -146,6 +147,25 @@
 				})
 				const str = strArr.join()
 				return str
+			},
+
+			parseChars(str) {
+				str = str.split('_')
+				const option = this.options[this.type]
+				let  chars = option.title
+				const strArr = option.value.forEach((val, i) => {
+					const next = option.value[i+1]
+					if (val === Number(str[str.length-1])) {
+						if (!next) {
+							chars = val + '+' + chars
+ 						} else if (val + 1 === next) {
+							chars = val + chars
+						} else {
+							chars = val + '-' + (next - 1) + chars
+						}
+					}
+				})
+				return chars
 			},
 
 			getAllData(query) {
@@ -184,7 +204,7 @@
 						}
 						for (const key in data) {
 							if (key !== 'appid') {
-								const x = key
+								const x = this.parseChars(key)
 								const y = data[key]
 								if (y) {
 									options.series[0].data.push(y)
@@ -200,10 +220,6 @@
 					}).finally(() => {
 						this.loading = false
 					})
-			},
-
-			formatRange() {
-				
 			},
 
 			getTabelData(query) {
@@ -226,19 +242,9 @@
 							data
 						} = res.result
 						console.log('.......table:', data);
-						const options = {
-							visit_depth_data: {
-								prefix: 'p',
-								value: [1, 2, 3, 4, 5, 10]
-							},
-							duration_data: {
-								prefix: 's',
-								value: [0, 3, 6, 11, 21, 31, 51, 100]
-							}
-						}
 						const type = this.type
 						const rows = []
-						let splitor = options[type].prefix
+						let splitor = this.options[type].prefix
 						splitor = `_${splitor}_`
 						for (const item of data) {
 							for (const key in item) {
@@ -263,7 +269,7 @@
 						times = times.length ? times.reduce(reducer) : 0
 						total.visit_times = times
 						total.visit_users = users
-						options[type].value.forEach(val => {
+						this.options[type].value.forEach(val => {
 							const item = {}
 							item.name = val + 'p'
 							rows.forEach(row => {
@@ -276,6 +282,7 @@
 									}
 								}
 							})
+							item.name = this.parseChars(String(val))
 							tableData.push(item)
 						})
 						console.log(33333, tableData)

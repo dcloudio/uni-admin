@@ -192,10 +192,9 @@
 				const p = 'd'
 				const f = this.fields.map(item => item._id)
 				fields = fields || f
-				const l = fields.length
 				const strArr = value.map(item => {
 					return fields.map(field => {
-						return `retention.${field}.${p + '_' + item}.${type} as ${l > 1 ? field + '_' + p +'_'+item :  p + '_' + item}`
+						return `retention.${field}.${p + '_' + item}.${type} as ${p + '_' + item}`
 					})
 				})
 				if (tail) {
@@ -223,7 +222,7 @@
 				const db = uniCloud.database()
 				db.collection('opendb-stat-result')
 					.where(query)
-					.field(`${groupField}, stat_date, start_time`)
+					.field(`${groupField}, start_time`)
 					.orderBy('start_time', 'asc')
 					.get({
 						getCount: true
@@ -243,7 +242,6 @@
 						}
 						this.chartData = []
 						for (const item of data) {
-							console.log(22222, key);
 							const x = formatDate(item.start_time, 'day')
 							const y = item[`d_${key}`]
 							if (y) {
@@ -276,7 +274,7 @@
 				const db = uniCloud.database()
 				db.collection('opendb-stat-result')
 					.where(query)
-					.field(`${groupField}, stat_date, start_time`)
+					.field(`${groupField}, start_time`)
 					.skip((pageCurrent - 1) * this.pageSize)
 					.limit(this.pageSize)
 					.orderBy('start_time', 'desc')
