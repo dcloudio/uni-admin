@@ -30,14 +30,15 @@
 		stringifyGroupField,
 		getTimeOfSomeDayAgo,
 		division,
-		format
+		format,
+		parseDateTime
 	} from '@/js_sdk/uni-stat/util.js'
 	import fieldsMap from './fieldsMap.js'
 	export default {
 		data() {
 			return {
 				query: {
-					dimension: "hour",
+					// dimension: "hour",
 					platform_id: '',
 					start_time: [getTimeOfSomeDayAgo(1), new Date().getTime()]
 				},
@@ -108,17 +109,16 @@
 
 				db.collection(appDaily, appList)
 					.field(
-						`${stringifyField(fieldsMap, '', 'value')},stat_date,appid`
+						`${stringifyField(fieldsMap, '', 'value')},stat_date,appid,dimension`
 					)
-					.groupBy(`appid, stat_date`)
+					.groupBy(`appid,dimension,stat_date`)
 					.groupField(stringifyGroupField(fieldsMap, '', 'value'))
 					.orderBy('stat_date', 'desc')
 					.get()
 					.then((res) => {
-						const {
+						let {
 							data
 						} = res.result
-						console.log(222222, data);
 						this.tableData = []
 						this.panelData.forEach((panel, index) => {
 							if (panel.title) {
@@ -128,6 +128,8 @@
 						})
 						if (!data.length) return
 						const rowData = {}
+						const start = this.query.start_time[0]
+						data = data.filter(item => !(item.stat_date === parseDateTime(start, 'date', '') && item.dimension === 'hour'))
 						for (const item of data) {
 							const {
 								appid,
@@ -137,11 +139,53 @@
 							item.name = name
 						}
 						const keys = this.fieldsMap.map(f => f.field).filter(Boolean)
+						// todo: mulit app
+						// data = [
+						//     {
+						//         "appid": "__UNI__HelloUniApp",
+						//         "dimension": "hour",
+						//         "stat_date": "20220317",
+						//         "new_user_count": 1525,
+						//         "active_user_count": 8758,
+						//         "page_visit_count": 91435,
+						//         "total_users": 4452,
+						//         "name": "Hello uni-app",
+						//     },
+						//     {
+						//         "appid": "__UNI__HelloUniApp",
+						//         "dimension": "day",
+						//         "stat_date": "20220316",
+						//         "new_user_count": 1864,
+						//         "active_user_count": 5356,
+						//         "page_visit_count": 115397,
+						//         "total_users": 1590,
+						//         "name": "Hello uni-app",
+						//     },
+						// 	{
+						// 	    "appid": "__UNI__HelloUniApp111",
+						// 	    "dimension": "hour",
+						// 	    "stat_date": "20220317",
+						// 	    "new_user_count": 1525,
+						// 	    "active_user_count": 8758,
+						// 	    "page_visit_count": 91435,
+						// 	    "total_users": 4452,
+						// 	    "name": "Hello uni-app11111",
+						// 	},
+						// 	{
+						// 	    "appid": "__UNI__HelloUniApp111",
+						// 	    "dimension": "day",
+						// 	    "stat_date": "20220316",
+						// 	    "new_user_count": 1864,
+						// 	    "active_user_count": 5356,
+						// 	    "page_visit_count": 115397,
+						// 	    "total_users": 1590,
+						// 	    "name": "Hello uni-app1111",
+						// 	}
+						// ]
 						for (const a of data) {
 							a.used = true
 							for (const b of data) {
-								if (data.length === 1 || (!b.used && a.appid === b.appid && a.stat_date !== b
-										.stat_date)) {
+								if (data.length === 1 || (!b.used && a.appid === b.appid && a.stat_date !== b.stat_date)) {
 									let today, yesterday
 									if (data.length < 2) {
 										today = data[0]

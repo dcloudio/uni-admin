@@ -173,7 +173,7 @@ function formatDate(date, type) {
 	}
 }
 
-function parseDateTime(datetime, type) {
+function parseDateTime(datetime, type, splitor = '-') {
 	let d = datetime
 	// console.log('--------ddd', d)
 	if (typeof d !== 'object') {
@@ -185,8 +185,8 @@ function parseDateTime(datetime, type) {
 	const hour = d.getHours()
 	const minute = d.getMinutes()
 	const second = d.getSeconds()
-	const date = year + '-' + lessTen(month) + '-' + lessTen(day)
-	const time = lessTen(hour) + ':' + lessTen(minute) + ':' + lessTen(second)
+	const date = [year,lessTen(month),lessTen(day)].join(splitor)
+	const time = [lessTen(hour),lessTen(minute),lessTen(second)].join(':')
 	if (type === "dateTime") {
 		return date + ' ' + time
 	}
@@ -237,7 +237,7 @@ function mapfields(map, data = {}, goal, prefix = '', prop = 'value') {
 					} else {
 						goal[field] = val
 					}
-				} 
+				}
 			}
 		}
 		if (hasValue) {

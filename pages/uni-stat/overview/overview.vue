@@ -198,7 +198,6 @@
 				const [start, end] = this.query.start_time
 				console.log(start, end, end - start);
 				const lessTwoDay = end - start >= day
-				console.log(55555555, lessTwoDay);
 				return lessTwoDay
 			},
 
@@ -208,7 +207,7 @@
 					platform_id
 				} = this.query
 				const query = stringifyQuery({
-					dimension: "hour",
+					// dimension: "hour",
 					appid,
 					platform_id,
 					start_time: [getTimeOfSomeDayAgo(1), new Date().getTime()]
@@ -218,15 +217,16 @@
 				const subTable = db.collection('opendb-stat-result')
 					.where(query)
 					.field(
-						`${stringifyField(fieldsMap)},stat_date`
+						`${stringifyField(fieldsMap)},dimension,stat_date`
 					)
-					.groupBy(`stat_date`)
+					.groupBy(`stat_date, dimension`)
 					.groupField(stringifyGroupField(fieldsMap))
 					.orderBy('stat_date', 'desc')
 					.get()
 					.then(res => {
-						const today = res.result.data[0]
-						const yesterday = res.result.data[1]
+						const data = res.result.data
+						const today = data[0]
+						const yesterday = data.find(item => item.dimension === 'day')
 						this.panelData = []
 						this.panelData = mapfields(fieldsMap, today)
 						this.panelData.map(item => {
