@@ -4,7 +4,8 @@
 			<view class="uni-group">
 				<view class="uni-title">渠道（app）</view>
 				<view class="uni-sub-title">
-					<uni-link href="https://ask.dcloud.net.cn/article/35974" text="支持Android App多渠道统计。设置App渠道包的方法，请参考 https://ask.dcloud.net.cn/article/35974。"></uni-link>
+					<uni-link href="https://ask.dcloud.net.cn/article/35974"
+						text="支持Android App多渠道统计。设置App渠道包的方法，请参考 https://ask.dcloud.net.cn/article/35974。"></uni-link>
 				</view>
 			</view>
 		</view>
@@ -97,6 +98,7 @@
 					dimension: "day",
 					appid: "__UNI__HelloUniApp",
 					platform_id: '',
+					version_id: '',
 					start_time: [],
 				},
 				options: {

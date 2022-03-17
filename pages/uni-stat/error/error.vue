@@ -69,6 +69,7 @@
 					dimension: "day",
 					appid: "__UNI__HelloUniApp",
 					platform_id: '',
+          version_id: '',
 					start_time: [],
 				},
 				options: {
