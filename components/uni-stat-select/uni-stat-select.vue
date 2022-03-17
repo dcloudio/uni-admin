@@ -86,7 +86,7 @@
 					if (val.length) {
 						const defOption = val.filter(item => item.value === this.value)
 						const text = defOption.length ? defOption[0].text : ''
-						this.current =  text ? `${text} (${this.value})` : ''
+						this.current = text ? (this.mode === 'app' ? `${text} (${this.value})` : text) : ''
 					}
 				}
 			}
@@ -106,7 +106,7 @@
 			change(item) {
 				this.showSelector = false
 				console.log(1111, item)
-				this.current = `${item.text} (${item.value})`
+				this.current = this.mode === 'app' ? `${item.text} (${item.value})` : item.text
 				this.$emit('change', item.value)
 				this.$emit('input', item.value)
 				this.$emit('update:modelValue', item.value)
