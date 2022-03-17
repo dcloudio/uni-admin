@@ -315,14 +315,33 @@
 					.groupBy('appid')
 					.groupField(stringifyGroupField(fieldsMap))
 					.orderBy('stat_date', 'desc')
-					.get({
-						getCount: true
-					})
+					.get()
 					.then(res => {
-						const item = res.result.data[0]
-						this.panelData = []
-						this.panelData = mapfields(fieldsMap, item)
+						let currentTotalUser = ''
+						this.getCurrentTotalUser()
+						.then(cur => {
+							const data = cur.result.data
+							currentTotalUser = Math.max(...data.map(item => item.total_users))
+						}).finally(() => {
+							const item = res.result.data[0]
+							item.total_users = currentTotalUser
+							this.panelData = []
+							this.panelData = mapfields(fieldsMap, item)
+						})
 					})
+			},
+
+			getCurrentTotalUser(query = this.query, field = "total_users") {
+				query = stringifyQuery(query)
+				const db = uniCloud.database()
+				const table = db.collection('opendb-stat-result')
+					.where(query)
+					.field(`${stringifyField(fieldsMap, field)}, start_time`)
+					.groupBy('start_time')
+					.groupField(stringifyGroupField(fieldsMap, field))
+					.orderBy('start_time', 'desc')
+					.get()
+				return table
 			},
 
 			navTo(id) {

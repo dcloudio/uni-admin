@@ -4,3 +4,4 @@ dev-script/
 uni-admin.param.json
 .hbuilderx/
 mock/
+db_query.jql

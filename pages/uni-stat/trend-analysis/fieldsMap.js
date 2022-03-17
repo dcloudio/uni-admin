@@ -50,5 +50,4 @@ export default [{
 	field: 'total_users',
 	tooltip: '从添加统计到当前选择时间的总用户数（去重）',
 	value: 0,
-	stat: 'max'
 }]
