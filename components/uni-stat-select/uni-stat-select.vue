@@ -17,7 +17,7 @@
 						</view>
 						<view class="uni-combox__selector-item" v-for="(item,index) in renderData" :key="index"
 							@click="change(item)">
-							<text>{{`${item.text} (${item.value})`}}</text>
+							<text>{{mode === 'app' ? `${item.text} (${item.value})` : `${item.text}`}}</text>
 						</view>
 					</scroll-view>
 				</view>
@@ -97,6 +97,8 @@
 					this.getApps()
 				} else if (mode === 'channel') {
 					this.getChannels()
+				} else if (mode === 'version') {
+					this.getVersions()
 				} else {
 					this.renderData = this.data
 				}
@@ -132,6 +134,19 @@
 						this.renderData.push({
 							value: item._id,
 							text: item.channel_name
+						})
+					})
+				})
+			},
+			getVersions() {
+				const db = uniCloud.database()
+				const versions = db.collection('opendb-app-versions').get().then(res => {
+					this.versions = res.result.data
+					this.renderData = []
+					res.result.data.forEach(item => {
+						this.renderData.push({
+							value: item._id,
+							text: item.name + ' ' + item.version
 						})
 					})
 				})
