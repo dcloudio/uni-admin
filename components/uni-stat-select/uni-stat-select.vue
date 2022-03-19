@@ -255,7 +255,7 @@
 		line-height: 36px;
 		font-size: 14px;
 		text-align: center;
-		// border-bottom: solid 1px #DDDDDD;
+		/* border-bottom: solid 1px #DDDDDD; */
 		padding: 0px 10px;
 	}
 
@@ -270,7 +270,7 @@
 		/* #endif */
 	}
 
-	// picker 弹出层通用的指示小三角
+	/* picker 弹出层通用的指示小三角 */
 	.uni-popper__arrow,
 	.uni-popper__arrow::after {
 		position: absolute;

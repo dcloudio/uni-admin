@@ -54,8 +54,7 @@ const fieldsMap = [{
 	field: 'total_users',
 	tooltip: '从添加统计到当前选择时间的总用户数（去重）',
 	value: 0,
-	contrast: 0,
-	stat: 'max'
+	contrast: 0
 }]
 
 const resFieldsMap = [{
@@ -68,7 +67,7 @@ const resFieldsMap = [{
 	field: 'visit_times',
 	tooltip: '访问该页面的总次数',
 	value: 0
-	
+
 }, {
 	title: '占比',
 	field: 'rate',

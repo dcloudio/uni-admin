@@ -67,7 +67,8 @@
 		division,
 		format,
 		formatDate,
-		parseDateTime
+		parseDateTime,
+		getCurrentTotalUser
 	} from '@/js_sdk/uni-stat/util.js'
 	import {
 		fieldsMap,
@@ -81,7 +82,7 @@
 				resFieldsMap,
 				entFieldsMap,
 				query: {
-					dimension: "day",
+					dimension: "hour",
 					appid: '__UNI__HelloUniApp',
 					platform_id: '',
 					start_time: [],
@@ -225,13 +226,16 @@
 					.get()
 					.then(res => {
 						const data = res.result.data
+						// console.log(111111111, data);
 						const today = data[0]
+						today.total_users = 0
 						const yesterday = data.find(item => item.dimension === 'day')
 						this.panelData = []
 						this.panelData = mapfields(fieldsMap, today)
 						this.panelData.map(item => {
 							mapfields(fieldsMap, yesterday, item, '', 'contrast')
 						})
+						getCurrentTotalUser.call(this)
 					})
 			},
 
@@ -248,9 +252,9 @@
 					const end = date + day - 1
 					query = JSON.parse(JSON.stringify(query))
 					start_time = query.start_time = [start, end]
-					query.dimension = 'hour'
+					// query.dimension = 'hour'
 				}
-				query = stringifyQuery(query)
+				query = stringifyQuery(query, true)
 				console.log('..............getChartData query：', query);
 				// this.loading = true
 				const db = uniCloud.database()
@@ -335,7 +339,7 @@
 			},
 
 			getPageData(query, type) {
-				query = stringifyQuery(query)
+				query = stringifyQuery(query, true)
 				console.log('..........page q:', query);
 				const {
 					pageCurrent
@@ -375,7 +379,7 @@
 						this.getAppAccessTimes(query).then(res => {
 							const data = res.result.data[0]
 							total_app_access = data && data.total_app_access
-							console.log('..............total_app_access', total_app_access);
+							// console.log('..............total_app_access', total_app_access);
 						}).finally(() => {
 							this[`${type}TableData`] = []
 							for (const item of data) {

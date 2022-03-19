@@ -87,7 +87,8 @@
 		getTimeOfSomeDayAgo,
 		division,
 		format,
-		formatDate
+		formatDate,
+		getCurrentTotalUser
 	} from '@/js_sdk/uni-stat/util.js'
 	import fieldsMap from './fieldsMap.js'
 	export default {
@@ -142,27 +143,30 @@
 				})
 				return tabs
 			},
-			queryStr() {
-				let defaultQuery = ''
+			defQuery() {
+				let def = ''
 				if (!this.query.platform_id) {
 					const nativePlatform = [
 						"6221e59b428244000187a11d",
 						"6221e59b428244000187a11e"
 					]
-					defaultQuery = nativePlatform.map(p => `platform_id == "${p}"`).join(' || ')
-					defaultQuery = `(${defaultQuery})`
+					def = nativePlatform.map(p => `platform_id == "${p}"`).join(' || ')
+					def = `(${def})`
 				}
-				const query = JSON.parse(JSON.stringify(this.query))
-				const days = this.days
-				if (days < 2) {
-					const date = getTimeOfSomeDayAgo(days)
-					const day = 24 * 60 * 60 * 1000
-					const start = date
-					const end = date + day - 1
-					query.start_time = [start, end]
-					query.dimension = 'hour'
-				}
-				return stringifyQuery(this.query, true) + ' && ' + defaultQuery
+				return def
+			},
+			queryStr() {
+				// const query = JSON.parse(JSON.stringify(this.query))
+				// const days = this.days
+				// if (days < 2) {
+				// 	const date = getTimeOfSomeDayAgo(days)
+				// 	const day = 24 * 60 * 60 * 1000
+				// 	const start = date
+				// 	const end = date + day - 1
+				// 	query.start_time = [start, end]
+				// 	query.dimension = 'hour'
+				// }
+				return stringifyQuery(this.query, true) + ' && ' + this.defQuery
 			},
 			dimension() {
 				if (maxDeltaDay(this.query.start_time, 1)) {
@@ -185,14 +189,28 @@
 			useDatetimePicker() {
 				this.currentDateTab = -1
 			},
+			// changeTimeRange(id, index) {
+			// 	this.currentDateTab = index
+			// 	this.days = id
+			// 	console.log(111111111, this.days);
+			// 	const start = getTimeOfSomeDayAgo(id),
+			// 		end = getTimeOfSomeDayAgo(0) - 1
+			// 	this.query.start_time = [start, end]
+			// },
+
 			changeTimeRange(id, index) {
 				this.currentDateTab = index
-				this.days = id
-				console.log(111111111, this.days);
-				const start = getTimeOfSomeDayAgo(id),
+				const day = 24 * 60 * 60 * 1000
+				let start, end
+				start = getTimeOfSomeDayAgo(id)
+				if (!id) {
+					end = getTimeOfSomeDayAgo(0) + day - 1
+				} else {
 					end = getTimeOfSomeDayAgo(0) - 1
+				}
 				this.query.start_time = [start, end]
 			},
+
 			changePageCurrent(e) {
 				this.options.pageCurrent = e.current
 				this.getTableData(this.queryStr)
@@ -373,7 +391,10 @@
 				return strArr.join()
 			},
 
-			getPanelData(query) {
+			getPanelData() {
+				let cloneQuery = JSON.parse(JSON.stringify(this.query))
+				cloneQuery.dimension = 'day'
+				let query = stringifyQuery(cloneQuery) + ' && ' + this.defQuery
 				const db = uniCloud.database()
 				const subTable = db.collection('opendb-stat-result')
 					.where(query)
@@ -386,9 +407,11 @@
 						getCount: true
 					})
 					.then(res => {
-						const items = res.result.data[0]
+						const item = res.result.data[0]
+						item.total_total_users = 0
+						getCurrentTotalUser.call(this, query)
 						this.panelData = []
-						this.panelData = mapfields(fieldsMap, items, undefined, 'total_')
+						this.panelData = mapfields(fieldsMap, item, undefined, 'total_')
 					})
 			},
 
