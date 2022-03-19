@@ -241,7 +241,8 @@
 				this.getTabelData(query)
 			},
 
-			getChartData(query, key = 1, name = '访问人数') {
+			getChartData(query, key = this.key, name = '访问人数') {
+				this.chartData = {}
 				const {
 					pageCurrent
 				} = this.options
@@ -272,7 +273,6 @@
 								data: []
 							}]
 						}
-						this.chartData = []
 						for (const item of data) {
 							const x = formatDate(item.start_time, 'day')
 							const y = item[`d_${key}`]

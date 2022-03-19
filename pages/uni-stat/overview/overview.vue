@@ -240,6 +240,7 @@
 			},
 
 			getChartData(query, field = this.chartTab, name = '新增用户') {
+				this.chartData = {}
 				const {
 					pageCurrent
 				} = this.options
@@ -298,7 +299,7 @@
 								cont.data[i] = 0
 								data.forEach(item => {
 									let val = item[field]
-									if (String(val).indexOf('.')) {
+									if (String(val).indexOf('.') > -1) {
 										if (field === 'bounce_rate') {
 											val = val.toFixed(2)
 										} else {
@@ -320,15 +321,20 @@
 						} else {
 							for (const item of data) {
 								const x = formatDate(item.start_time, 'day')
-								const y = item[field]
+								let y = item[field]
+								if (String(y).indexOf('.')) {
+									if (field === 'bounce_rate') {
+										y = y.toFixed(2)
+									} else {
+										y = y.toFixed(0)
+									}
+								}
 								if (y) {
 									options.series[0].data.push(y)
 									options.categories.push(x)
 								}
 							}
 						}
-
-						this.chartData = []
 						this.chartData = options
 					}).catch((err) => {
 						console.error(err)

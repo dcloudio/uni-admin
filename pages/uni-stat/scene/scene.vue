@@ -23,7 +23,7 @@
 			</view>
 			<view class="uni-stat--x" style="padding: 15px 0;">
 				<uni-stat-panel :items="panelData" class="uni-stat-panel" />
-				<uni-stat-tabs type="box" :tabs="chartTabs" class="mb-l" @change="changeChartTab" />
+				<uni-stat-tabs type="box" v-model="chartTab" :tabs="chartTabs" class="mb-l" @change="changeChartTab" />
 				<qiun-data-charts class="uni-charts-box" type="area" :echartsApp="true" :chartData="chartData"
 					:opts="{extra:{area:{type:'curve',addLine:true,gradient:true}}}" style="height:350px" />
 			</view>
@@ -73,7 +73,7 @@
 					dimension: "hour",
 					appid: "__UNI__HelloUniApp",
 					platform_id: '',
-          version_id: '',
+					version_id: '',
 					start_time: [],
 				},
 				options: {
@@ -86,7 +86,8 @@
 				currentDateTab: 0,
 				tableData: [],
 				panelData: [],
-				chartData: {}
+				chartData: {},
+				chartTab: 'new_user_count',
 			}
 		},
 		computed: {
@@ -182,7 +183,7 @@
 				this.getTabelData(query)
 			},
 
-			getChartData(query, field = 'new_user_count') {
+			getChartData(query, field = this.chartTab) {
 				this.chartData = {}
 				const {
 					pageCurrent
@@ -244,7 +245,14 @@
 								for (const item of data) {
 									let date = item.start_time
 									const x = formatDate(date, this.dimension)
-									const y = item[field]
+									let y = item[field]
+									if (String(y).indexOf('.' > -1)) {
+										if (field === 'bounce_rate') {
+											y = y.toFixed(2)
+										} else {
+											y = y.toFixed(0)
+										}
+									}
 									const dateIndex = xAxis.indexOf(x)
 									if (channel === item.channel_id) {
 										if (dateIndex < 0) {
@@ -326,36 +334,6 @@
 						this.loading = false
 					})
 			},
-
-			// createStr(maps, fn, prefix = 'total_') {
-			// 	const strArr = []
-			// 	maps.forEach(mapper => {
-			// 		if (field.hasOwnProperty('value')) {
-			// 			const fieldName = mapper.field
-			// 			strArr.push(`${fn}(${fieldName}) as ${prefix + fieldName}`)
-			// 		}
-			// 	})
-			// 	return strArr.join()
-			// },
-
-			// getPanelData(query) {
-			// 	const db = uniCloud.database()
-			// 	const subTable = db.collection('opendb-stat-result')
-			// 		.where(query)
-			// 		.groupBy('appid')
-			// 		.groupField(
-			// 			'sum(new_user_count) as total_new_user_count, sum(active_user_count) as total_active_user_count, sum(page_visit_count) as total_page_visit_count, sum(app_launch_count) as total_app_launch_count, avg(avg_session_time) as total_avg_session_time, avg(avg_user_time) as total_avg_user_time, avg(bounce_rate) as total_bounce_rate, max(total_users) as total_total_users'
-			// 		)
-			// 		.orderBy('start_time', 'desc')
-			// 		.get({
-			// 			getCount: true
-			// 		})
-			// 		.then(res => {
-			// 			const items = res.result.data[0]
-			// 			this.panelData = []
-			// 			this.panelData = mapfields(fieldsMap, items, undefined, 'total_')
-			// 		})
-			// },
 
 			getPanelData() {
 				let cloneQuery = JSON.parse(JSON.stringify(this.query))
