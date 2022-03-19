@@ -297,14 +297,22 @@
 								line.data[i] = 0
 								cont.data[i] = 0
 								data.forEach(item => {
+									let val = item[field]
+									if (String(val).indexOf('.')) {
+										if (field === 'bounce_rate') {
+											val = val.toFixed(2)
+										} else {
+											val = val.toFixed(0)
+										}
+									}
 									const d = new Date(item.start_time)
 									if (item.start_time < date) {
 										if (d.getHours() === i) {
-											line.data[i] = item[field]
+											line.data[i] = val
 										}
 									} else {
 										if (d.getHours() === i) {
-											cont.data[i] = item[field]
+											cont.data[i] = val
 										}
 									}
 								})

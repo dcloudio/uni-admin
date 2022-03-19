@@ -243,7 +243,14 @@
 						}
 						for (const item of data) {
 							const x = formatDate(item.start_time, dimension)
-							const y = item[field]
+							let y = item[field]
+							if (String(y).indexOf('.')) {
+								if (field === 'bounce_rate') {
+									y = y.toFixed(2)
+								} else {
+									y = y.toFixed(0)
+								}
+							}
 							if (y) {
 								options.series[0].data.push(y)
 								options.categories.push(x)
