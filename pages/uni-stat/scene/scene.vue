@@ -61,7 +61,8 @@
 		getTimeOfSomeDayAgo,
 		division,
 		format,
-		formatDate
+		formatDate,
+		getCurrentTotalUser
 	} from '@/js_sdk/uni-stat/util.js'
 	import fieldsMap from './fieldsMap.js'
 	export default {
@@ -113,8 +114,8 @@
 				})
 				return tabs
 			},
-			queryStr() {
-				let defaultQuery = ''
+			defQuery() {
+				let def = ''
 				if (!this.query.platform_id) {
 					const notMiniProgramPlatform = [
 						"6221e59b428244000187a11d",
@@ -123,9 +124,12 @@
 						"6221e59b428244000187a125",
 						"6221e59b428244000187a126"
 					]
-					defaultQuery = notMiniProgramPlatform.map(p => `platform_id != "${p}"`).join(' && ')
+					def = notMiniProgramPlatform.map(p => `platform_id != "${p}"`).join(' && ')
 				}
-				return stringifyQuery(this.query, true) + ' && ' + defaultQuery
+				return def
+			},
+			queryStr() {
+				return stringifyQuery(this.query, true) + ' && ' + this.defQuery
 			},
 			dimension() {
 				if (maxDeltaDay(this.query.start_time, 1)) {
@@ -334,7 +338,30 @@
 			// 	return strArr.join()
 			// },
 
-			getPanelData(query) {
+			// getPanelData(query) {
+			// 	const db = uniCloud.database()
+			// 	const subTable = db.collection('opendb-stat-result')
+			// 		.where(query)
+			// 		.groupBy('appid')
+			// 		.groupField(
+			// 			'sum(new_user_count) as total_new_user_count, sum(active_user_count) as total_active_user_count, sum(page_visit_count) as total_page_visit_count, sum(app_launch_count) as total_app_launch_count, avg(avg_session_time) as total_avg_session_time, avg(avg_user_time) as total_avg_user_time, avg(bounce_rate) as total_bounce_rate, max(total_users) as total_total_users'
+			// 		)
+			// 		.orderBy('start_time', 'desc')
+			// 		.get({
+			// 			getCount: true
+			// 		})
+			// 		.then(res => {
+			// 			const items = res.result.data[0]
+			// 			this.panelData = []
+			// 			this.panelData = mapfields(fieldsMap, items, undefined, 'total_')
+			// 		})
+			// },
+
+			getPanelData() {
+				let cloneQuery = JSON.parse(JSON.stringify(this.query))
+				cloneQuery.dimension = 'day'
+				let query = stringifyQuery(cloneQuery) + ' && ' + this.defQuery
+				console.log(99999999, query)
 				const db = uniCloud.database()
 				const subTable = db.collection('opendb-stat-result')
 					.where(query)
@@ -347,9 +374,11 @@
 						getCount: true
 					})
 					.then(res => {
-						const items = res.result.data[0]
+						const item = res.result.data[0]
+						item.total_total_users = 0
+						getCurrentTotalUser.call(this, query)
 						this.panelData = []
-						this.panelData = mapfields(fieldsMap, items, undefined, 'total_')
+						this.panelData = mapfields(fieldsMap, item, undefined, 'total_')
 					})
 			},
 

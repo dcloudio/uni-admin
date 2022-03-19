@@ -31,7 +31,8 @@
 		getTimeOfSomeDayAgo,
 		division,
 		format,
-		parseDateTime
+		parseDateTime,
+		getCurrentTotalUser
 	} from '@/js_sdk/uni-stat/util.js'
 	import fieldsMap from './fieldsMap.js'
 	export default {
@@ -140,48 +141,7 @@
 						}
 						const keys = this.fieldsMap.map(f => f.field).filter(Boolean)
 						// todo: mulit app
-						// data = [
-						//     {
-						//         "appid": "__UNI__HelloUniApp",
-						//         "dimension": "hour",
-						//         "stat_date": "20220317",
-						//         "new_user_count": 1525,
-						//         "active_user_count": 8758,
-						//         "page_visit_count": 91435,
-						//         "total_users": 4452,
-						//         "name": "Hello uni-app",
-						//     },
-						//     {
-						//         "appid": "__UNI__HelloUniApp",
-						//         "dimension": "day",
-						//         "stat_date": "20220316",
-						//         "new_user_count": 1864,
-						//         "active_user_count": 5356,
-						//         "page_visit_count": 115397,
-						//         "total_users": 1590,
-						//         "name": "Hello uni-app",
-						//     },
-						// 	{
-						// 	    "appid": "__UNI__HelloUniApp111",
-						// 	    "dimension": "hour",
-						// 	    "stat_date": "20220317",
-						// 	    "new_user_count": 1525,
-						// 	    "active_user_count": 8758,
-						// 	    "page_visit_count": 91435,
-						// 	    "total_users": 4452,
-						// 	    "name": "Hello uni-app11111",
-						// 	},
-						// 	{
-						// 	    "appid": "__UNI__HelloUniApp111",
-						// 	    "dimension": "day",
-						// 	    "stat_date": "20220316",
-						// 	    "new_user_count": 1864,
-						// 	    "active_user_count": 5356,
-						// 	    "page_visit_count": 115397,
-						// 	    "total_users": 1590,
-						// 	    "name": "Hello uni-app1111",
-						// 	}
-						// ]
+
 						for (const a of data) {
 							a.used = true
 							for (const b of data) {
@@ -192,6 +152,7 @@
 									} else {
 										Number(a.stat_date) > Number(b.stat_date) ? [today, yesterday] = [a, b] : [today, yesterday] = [b, a]
 									}
+									today.total_users = 0  // total_users 不准确，置空后由 getCurrentTotalUser 处理
 									for (const key of keys) {
 										if (key === 'appid' || key === 'name') {
 											rowData[key] = today[key]
@@ -214,6 +175,9 @@
 							panel.value = format(panel.value)
 							panel.contrast = format(panel.contrast)
 						}
+						getCurrentTotalUser.call(this).then( users=> {
+							this.tableData[0].total_users_value = users
+						})
 					}).catch((err) => {
 						console.error(err)
 						// err.message 错误信息

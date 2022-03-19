@@ -22,7 +22,7 @@ function maxDeltaDay(times, delta = 2) {
 }
 
 // 将查询条件拼接为字符串
-function stringifyQuery(query, dimension=false) {
+function stringifyQuery(query, dimension = false) {
 	const queryArr = []
 	const keys = Object.keys(query)
 	const time = query.start_time
@@ -185,8 +185,8 @@ function parseDateTime(datetime, type, splitor = '-') {
 	const hour = d.getHours()
 	const minute = d.getMinutes()
 	const second = d.getSeconds()
-	const date = [year,lessTen(month),lessTen(day)].join(splitor)
-	const time = [lessTen(hour),lessTen(minute),lessTen(second)].join(':')
+	const date = [year, lessTen(month), lessTen(day)].join(splitor)
+	const time = [lessTen(hour), lessTen(minute), lessTen(second)].join(':')
 	if (type === "dateTime") {
 		return date + ' ' + time
 	}
@@ -247,6 +247,33 @@ function mapfields(map, data = {}, goal, prefix = '', prop = 'value') {
 	return goals
 }
 
+function getCurrentTotalUser(query = this.query, field = "total_users") {
+	let currentTotalUser
+	if (typeof query === 'object') {
+		query = stringifyQuery(query)
+	}
+	const db = uniCloud.database()
+	return db.collection('opendb-stat-result')
+		.where(query)
+		.field(`${stringifyField(this.fieldsMap, field)}, start_time`)
+		.groupBy('start_time')
+		.groupField(stringifyGroupField(this.fieldsMap, field))
+		.orderBy('start_time', 'desc')
+		.get()
+		.then(cur => {
+			const data = cur.result.data
+			currentTotalUser = data.length && Math.max(...data.map(item => item.total_users))
+			currentTotalUser = format(currentTotalUser)
+			console.log('=========currentTotalUser', data,'======', currentTotalUser);
+			this.panelData.forEach(item => {
+				if (item.field === 'total_users') {
+					item.value = currentTotalUser
+				}
+			})
+			// return new Promise((resolve, reject) => resolve(currentTotalUser))
+			return Promise.resolve(currentTotalUser)
+		})
+}
 
 export {
 	stringifyQuery,
@@ -258,5 +285,7 @@ export {
 	format,
 	formatDate,
 	parseDateTime,
-	maxDeltaDay
+	maxDeltaDay,
+
+	getCurrentTotalUser
 }

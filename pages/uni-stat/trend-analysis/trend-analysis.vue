@@ -65,7 +65,8 @@
 		getTimeOfSomeDayAgo,
 		division,
 		format,
-		formatDate
+		formatDate,
+		getCurrentTotalUser
 	} from '@/js_sdk/uni-stat/util.js'
 	import fieldsMap from './fieldsMap.js'
 	export default {
@@ -232,7 +233,7 @@
 							count,
 							data
 						} = res.result
-						console.log('.......chart:', data);
+						// console.log('.......chart:', data);
 						const options = {
 							categories: [],
 							series: [{
@@ -304,9 +305,9 @@
 			},
 
 			getPanelData() {
-				let query = JSON.parse(JSON.stringify(this.query))
-				query.dimension = 'day'
-				query = stringifyQuery(query)
+				let cloneQuery = JSON.parse(JSON.stringify(this.query))
+				cloneQuery.dimension = 'day'
+				let query = stringifyQuery(cloneQuery)
 				console.log('..............Panel query：', query);
 				const db = uniCloud.database()
 				const subTable = db.collection('opendb-stat-result')
@@ -317,31 +318,12 @@
 					.orderBy('stat_date', 'desc')
 					.get()
 					.then(res => {
-						let currentTotalUser = ''
-						this.getCurrentTotalUser()
-						.then(cur => {
-							const data = cur.result.data
-							currentTotalUser = Math.max(...data.map(item => item.total_users))
-						}).finally(() => {
-							const item = res.result.data[0]
-							item.total_users = currentTotalUser
-							this.panelData = []
-							this.panelData = mapfields(fieldsMap, item)
-						})
+						const item = res.result.data[0]
+						item.total_users = 0
+						getCurrentTotalUser.call(this, cloneQuery)
+						this.panelData = []
+						this.panelData = mapfields(fieldsMap, item)
 					})
-			},
-
-			getCurrentTotalUser(query = this.query, field = "total_users") {
-				query = stringifyQuery(query)
-				const db = uniCloud.database()
-				const table = db.collection('opendb-stat-result')
-					.where(query)
-					.field(`${stringifyField(fieldsMap, field)}, start_time`)
-					.groupBy('start_time')
-					.groupField(stringifyGroupField(fieldsMap, field))
-					.orderBy('start_time', 'desc')
-					.get()
-				return table
 			},
 
 			navTo(id) {
