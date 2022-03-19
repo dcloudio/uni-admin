@@ -174,7 +174,7 @@
 				this.getTabelData(query)
 			},
 
-			getChartData(query, field = 'visit_users', name = '访问人数') {
+			getChartData(query, field = this.field, name = this.fields.find(f => f._id  === this.field).name) {
 				this.chartData = {}
 				query = stringifyQuery(query)
 				const groupField = this.createStr([field], this.type)

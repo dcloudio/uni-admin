@@ -26,7 +26,7 @@
 			</view>
 			<view class="uni-stat--x" style="padding: 15px 0;">
 				<uni-stat-panel :items="panelData" class="uni-stat-panel" />
-				<uni-stat-tabs type="box" :tabs="chartTabs" class="mb-l" @change="changeChartTab" />
+				<uni-stat-tabs type="box" v-model="chartTab" :tabs="chartTabs" class="mb-l" @change="changeChartTab" />
 				<qiun-data-charts type="area" :echartsApp="true" :chartData="chartData"
 					:opts="{extra:{area:{type:'curve',addLine:true,gradient:true}}}" />
 			</view>
@@ -114,6 +114,7 @@
 				tableData: [],
 				panelData: [],
 				chartData: {},
+				chartTab: 'new_user_count',
 				queryId: '',
 				updateValue: ''
 			}
@@ -189,14 +190,6 @@
 			useDatetimePicker() {
 				this.currentDateTab = -1
 			},
-			// changeTimeRange(id, index) {
-			// 	this.currentDateTab = index
-			// 	this.days = id
-			// 	console.log(111111111, this.days);
-			// 	const start = getTimeOfSomeDayAgo(id),
-			// 		end = getTimeOfSomeDayAgo(0) - 1
-			// 	this.query.start_time = [start, end]
-			// },
 
 			changeTimeRange(id, index) {
 				this.currentDateTab = index
@@ -235,7 +228,7 @@
 				this.getTableData(query)
 			},
 
-			getChartData(query, field = 'new_user_count') {
+			getChartData(query, field = this.chartTab) {
 				this.chartData = {}
 				const {
 					pageCurrent
@@ -297,7 +290,14 @@
 								for (const item of data) {
 									let date = item.start_time
 									const x = formatDate(date, this.dimension)
-									const y = item[field]
+									let y = item[field]
+									if (String(y).indexOf('.') > -1) {
+										if (field === 'bounce_rate') {
+											y = y.toFixed(2)
+										} else {
+											y = y.toFixed(0)
+										}
+									}
 									const dateIndex = xAxis.indexOf(x)
 									if (channel === item.channel_id) {
 										if (dateIndex < 0) {

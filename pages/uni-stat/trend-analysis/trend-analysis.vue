@@ -29,7 +29,7 @@
 				<view class="label-text mb-l">
 					趋势图
 				</view>
-				<uni-stat-tabs type="box" :tabs="chartTabs" class="mb-l" @change="changeChartTab" />
+				<uni-stat-tabs type="box" v-model="chartTab" :tabs="chartTabs" class="mb-l" @change="changeChartTab" />
 				<qiun-data-charts type="area" :echartsApp="true" :chartData="chartData"
 					:opts="{extra:{area:{type:'curve',addLine:true,gradient:true}}}" />
 			</view>
@@ -91,7 +91,8 @@
 				currentDimensionTab: 0,
 				tableData: [],
 				panelData: [],
-				chartData: {}
+				chartData: {},
+				chartTab: 'new_user_count'
 			}
 		},
 		computed: {
@@ -213,7 +214,7 @@
 				this.getTabelData(query)
 			},
 
-			getChartData(query, field = 'new_user_count', name = '新增用户') {
+			getChartData(query, field = this.chartTab, name = '新增用户') {
 				this.chartData = {}
 				query = stringifyQuery(query)
 				console.log('..............Chart query：', query);
@@ -244,7 +245,7 @@
 						for (const item of data) {
 							const x = formatDate(item.start_time, dimension)
 							let y = item[field]
-							if (String(y).indexOf('.')) {
+							if (String(y).indexOf('.') > -1) {
 								if (field === 'bounce_rate') {
 									y = y.toFixed(2)
 								} else {
