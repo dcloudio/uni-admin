@@ -66,7 +66,8 @@
 		division,
 		format,
 		formatDate,
-		getCurrentTotalUser
+		getCurrentTotalUser,
+		debounce
 	} from '@/js_sdk/uni-stat/util.js'
 	import fieldsMap from './fieldsMap.js'
 	export default {
@@ -94,6 +95,9 @@
 				chartData: {},
 				chartTab: 'new_user_count'
 			}
+		},
+		created() {
+			this.debounceGetAllData = debounce(() => this.getAllData(this.query))
 		},
 		computed: {
 			pageSize() {
@@ -162,8 +166,7 @@
 			query: {
 				deep: true,
 				handler(val) {
-					this.options.pageCurrent = 1 // 重置分页
-					this.getAllData(val)
+					this.debounceGetAllData(val)
 				}
 			}
 		},
@@ -199,7 +202,7 @@
 				const {
 					value
 				} = e.detail
-				this.options.pageCurrent = 1 // 重置分页
+				// this.options.pageCurrent = 1 // 重置分页
 				this.options.pageSizeIndex = value
 				this.getTabelData(this.query)
 			},
@@ -216,7 +219,7 @@
 
 			getChartData(query, field = this.chartTab, name = '新增用户') {
 				this.chartData = {}
-				query = stringifyQuery(query)
+				query = stringifyQuery(query, true)
 				console.log('..............Chart query：', query);
 				const dimension = this.query.dimension
 				const db = uniCloud.database()
@@ -271,8 +274,9 @@
 				const {
 					pageCurrent
 				} = this.options
-				query = stringifyQuery(query)
+				query = stringifyQuery(query, true)
 				// console.log('..............Table query：', query);
+				this.options.pageCurrent = 1 // 重置分页
 				this.loading = true
 				const db = uniCloud.database()
 				db.collection('opendb-stat-result')
@@ -280,9 +284,9 @@
 					.field(stringifyField(fieldsMap))
 					.groupBy('start_time')
 					.groupField(stringifyGroupField(fieldsMap))
+					.orderBy('start_time', 'desc')
 					.skip((pageCurrent - 1) * this.pageSize)
 					.limit(this.pageSize)
-					.orderBy('start_time', 'desc')
 					.get({
 						getCount: true
 					})

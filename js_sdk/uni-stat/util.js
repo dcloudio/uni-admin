@@ -275,6 +275,16 @@ function getCurrentTotalUser(query = this.query, field = "total_users") {
 		})
 }
 
+function debounce(fn, time = 0) {
+	let timer = null
+	return function(...args) {
+		if (timer) clearTimeout(timer)
+		timer = setTimeout(() => {
+			fn.apply(this, args)
+		}, time)
+	}
+}
+
 export {
 	stringifyQuery,
 	stringifyField,
@@ -286,6 +296,7 @@ export {
 	formatDate,
 	parseDateTime,
 	maxDeltaDay,
+	debounce,
 
 	getCurrentTotalUser
 }

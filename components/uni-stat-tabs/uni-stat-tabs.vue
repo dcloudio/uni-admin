@@ -85,6 +85,10 @@
 			current(val) {
 				this.currentTab = val
 			},
+			
+			// value(val) {
+			// 	this.currentTab = val
+			// },
 
 			tabs: {
 				immediate: false,
