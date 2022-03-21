@@ -175,7 +175,9 @@
 							panel.value = format(panel.value)
 							panel.contrast = format(panel.contrast)
 						}
-						getCurrentTotalUser.call(this).then( users=> {
+						const query = JSON.parse(JSON.stringify(this.query))
+						query.start_time = [getTimeOfSomeDayAgo(0), new Date().getTime()]
+						getCurrentTotalUser.call(this, query).then( users=> {
 							this.tableData[0].total_users_value = users
 						})
 					}).catch((err) => {
