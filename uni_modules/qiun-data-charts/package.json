@@ -35,7 +35,7 @@
       "data": "插件不采集任何数据",
       "permissions": "无"
     },
-    "npmurl": ""
+    "npmurl": "https://www.npmjs.com/package/@qiun/ucharts"
   },
   "uni_modules": {
     "dependencies": [],

@@ -18,15 +18,17 @@
 			</view>
 			<view class="flex">
 				<view v-for="(item,index) in dayChartsData" class="uni-stat--x uni-charts-box">
-					<view class="label-text">{{dayChartsData[index].title}}</view>
-					<qiun-data-charts type="ring" :opts="{legend:{position:'left'}}" :chartData="dayChartsData[index]"
-						:echartsApp="true" />
+					<view class="label-text" style="margin: 5px 0 20px 0;">{{dayChartsData[index].title}}</view>
+					<!-- <qiun-data-charts type="ring" :opts="{legend:{position:'left'}}" :chartData="dayChartsData[index]"
+						:echartsApp="true" /> -->
+					<qiun-data-charts type="ring" :chartData="dayChartsData[index]" echartsH5 echartsApp />
 				</view>
 
 				<view v-for="(item,index) in monChartsData" class="uni-stat--x uni-charts-box">
 					<view class="label-text">{{monChartsData[index].title}}</view>
-					<qiun-data-charts type="ring" :opts="{legend:{position:'left'}}" :chartData="monChartsData[index]"
-						:echartsApp="true" />
+					<!-- <qiun-data-charts type="ring" :opts="{legend:{position:'left'}}" :chartData="monChartsData[index]"
+						:echartsApp="true" /> -->
+					<qiun-data-charts type="ring" :chartData="monChartsData[index]" echartsH5 echartsApp />
 				</view>
 			</view>
 

@@ -30,8 +30,7 @@
 				<uni-stat-tabs type="box" :tabs="fields" v-model="field" class="mb-l" />
 				<view class="p-m">
 					<view class="uni-charts-box">
-						<qiun-data-charts type="column" :echartsApp="true"
-							:opts="{extra:{area:{type:'curve',addLine:true,gradient:true}}}" :chartData="chartData" />
+						<qiun-data-charts type="column" :chartData="chartData" echartsH5 echartsApp />
 					</view>
 				</view>
 			</view>
