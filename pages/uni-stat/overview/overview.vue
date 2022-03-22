@@ -28,7 +28,9 @@
 					趋势图
 				</view>
 				<uni-stat-tabs type="box" v-model="chartTab" :tabs="chartTabs" class="mb-l" @change="changeChartTab" />
-				<qiun-data-charts type="area" :echartsApp="true" :chartData="chartData" :opts="chartOption" />
+				<view class="uni-charts-box">
+					<qiun-data-charts type="area" :chartData="chartData" echartsH5 echartsApp />
+				</view>
 			</view>
 
 			<view style="display: flex;">
