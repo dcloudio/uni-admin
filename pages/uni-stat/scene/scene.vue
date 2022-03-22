@@ -24,7 +24,7 @@
 			<view class="uni-stat--x" style="padding: 15px 0;">
 				<uni-stat-panel :items="panelData" class="uni-stat-panel" />
 				<uni-stat-tabs type="box" v-model="chartTab" :tabs="chartTabs" class="mb-l" @change="changeChartTab" />
-				<view class="uni-charts-box">
+				<view class="uni-charts-box" style="height: 400px;">
 					<qiun-data-charts type="area" :chartData="chartData" echartsH5 echartsApp />
 				</view>
 			</view>
