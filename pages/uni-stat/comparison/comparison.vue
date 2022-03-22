@@ -17,14 +17,14 @@
 				</view>
 			</view>
 			<view class="flex">
-				<view v-for="(item,index) in dayChartsData" class="uni-stat--x uni-charts-box">
+				<view v-for="(item,index) in dayChartsData" class="uni-stat--x uni-charts-box1">
 					<view class="label-text" style="margin: 5px 0 20px 0;">{{dayChartsData[index].title}}</view>
 					<!-- <qiun-data-charts type="ring" :opts="{legend:{position:'left'}}" :chartData="dayChartsData[index]"
 						:echartsApp="true" /> -->
 					<qiun-data-charts type="ring" :chartData="dayChartsData[index]" echartsH5 echartsApp />
 				</view>
 
-				<view v-for="(item,index) in monChartsData" class="uni-stat--x uni-charts-box">
+				<view v-for="(item,index) in monChartsData" class="uni-stat--x uni-charts-box1">
 					<view class="label-text">{{monChartsData[index].title}}</view>
 					<!-- <qiun-data-charts type="ring" :opts="{legend:{position:'left'}}" :chartData="monChartsData[index]"
 						:echartsApp="true" /> -->
@@ -185,14 +185,14 @@
 </script>
 
 <style lang="scss">
-	.uni-charts-box {
+	.uni-charts-box1 {
 		padding: 15px;
 		width: calc((50% - 37.5px));
 		height: 400px;
 		margin-bottom: 15px;
 	}
 
-	.uni-charts-box:nth-last-child(2n-1) {
+	.uni-charts-box1:nth-last-child(2n-1) {
 		margin-right: 15px;
 	}
 </style>
