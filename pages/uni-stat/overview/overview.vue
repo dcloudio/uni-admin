@@ -287,11 +287,40 @@
 							const [start, end] = start_time
 							const line = options.series[0] = {
 								name: formatDate(start),
-								data: []
+								data: [],
+								smooth: false,
+								lineStyle: {
+									color: '#ea7ccc',
+									width: 2,
+									type: 'dashed'
+								},
+								itemStyle: {
+									borderWidth: 1,
+									borderColor: '#ea7ccc',
+									color: '#ea7ccc'
+								},
+								areaStyle: null
 							}
 							const cont = options.series[1] = {
 								name: formatDate(end),
-								data: []
+								data: [],
+								color: '#1890FF',
+								itemStyle: {
+									borderWidth: 2,
+									borderColor: '#1890FF',
+									color: '#1890FF'
+								},
+								areaStyle: {
+									color: {
+										colorStops: [{
+											offset: 0,
+											color: '#1890FF', // 0% 处的颜色
+										}, {
+											offset: 1,
+											color: '#FFFFFF' // 100% 处的颜色
+										}]
+									}
+								}
 							}
 							for (let i = 0; i < 24; ++i) {
 								const hour = i < 10 ? '0' + i : i
@@ -336,6 +365,7 @@
 									options.categories.push(x)
 								}
 							}
+							console.log(2222222, options);
 						}
 						this.chartData = options
 					}).catch((err) => {

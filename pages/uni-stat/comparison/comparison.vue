@@ -97,9 +97,6 @@
 					})
 			},
 			getRangeCountData(query, type) {
-				const {
-					pageCurrent
-				} = this.options
 				query = stringifyQuery(query)
 				const db = uniCloud.database()
 				const sub = db.collection('opendb-stat-result')

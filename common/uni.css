@@ -448,6 +448,7 @@ button:after {
 .uni-charts-box {
 	width: 100%;
 	height: 350px;
+	margin: 15px;
 }
 
 .uni-stat--x {

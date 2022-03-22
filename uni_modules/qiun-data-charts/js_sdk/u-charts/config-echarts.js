@@ -19,7 +19,20 @@
 // 通用配置项
 
 // 主题颜色配置：如每个图表类型需要不同主题，请在对应图表类型上更改color属性
-const color = ['#1890FF', '#91CB74', '#FAC858', '#EE6666', '#73C0DE', '#3CA272', '#FC8452', '#9A60B4', '#ea7ccc'];
+const color = ['#1890FF', '#91CB74', '#FAC858', '#EE6666', '#73C0DE', '#3CA272', '#FC8452', '#9A60B4', '#ea7ccc', ...generateHslaColors(100, 50, 1, 10), ...generateHslaColors(60, 50, 1, 10), ...generateHslaColors(30, 50, 1, 10)];
+
+function generateHslaColors(saturation, lightness, alpha, amount) {
+	let colors = []
+	let huedelta = Math.trunc(360 / amount)
+
+	for (let i = 0; i < amount; i++) {
+		let hue = i * huedelta
+		if (hue) {
+			colors.push(`hsla(${hue},${saturation}%,${lightness}%,${alpha})`)
+		}
+	}
+	return colors
+}
 
 const cfe = {
 	//demotype为自定义图表类型
@@ -192,16 +205,16 @@ const cfe = {
 			"text": ''
 		},
 		"tooltip": {
-			"trigger": 'axis'
+			"trigger": 'axis',
 		},
 		"grid": {
-			"top": 30,
+			"top": 50,
 			"bottom": 50,
 			"right": 15,
-			"left": 40
+			"left": 60
 		},
 		"legend": {
-			"bottom": 'left',
+			"left": 'left'
 		},
 		"toolbox": {
 			"show": false,
@@ -233,34 +246,36 @@ const cfe = {
 				}
 			},
 		},
-		"seriesTemplate": {
-			"data": [],
-			"type": 'line',
-			"name": "成交量A",
-			"smooth": true,
-			"areaStyle": {
-				"color": {
-					"type": 'linear',
-					"x": 0,
-					"y": 0,
-					"x2": 0,
-					"y2": 1,
-					"colorStops": [{
-						"offset": 0,
-						"color": '#1890FF' // 0% 处的颜色
-					}, {
-						"offset": 1,
-						"color": '#FFFFFF' // 100% 处的颜色
-					}],
-					"global": false // 缺省为 false
-				}
-			},
-			"label": {
-				"show": true,
-				"color": "#666666",
-				"position": 'top',
-			},
-		},
+		"seriesTemplate": color.map(item => {
+			return {
+				"data": [],
+				"type": 'line',
+				"name": "",
+				"color": item,
+				"smooth": true,
+				"areaStyle": {
+					"color": {
+						"x": 0,
+						"y": 0,
+						"x2": 0,
+						"y2": 1,
+						"colorStops": [{
+							"offset": 0,
+							"color": item, // 0% 处的颜色
+						}, {
+							"offset": 1,
+							"color": '#FFFFFF' // 100% 处的颜色
+						}],
+						"global": false // 缺省为 false
+					}
+				},
+				"label": {
+					"show": true,
+					"color": "#666666",
+					"position": 'top',
+				},
+			}
+		})
 	},
 	"pie": {
 		"color": color,
