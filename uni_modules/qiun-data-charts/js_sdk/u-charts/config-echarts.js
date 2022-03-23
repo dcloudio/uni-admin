@@ -19,12 +19,11 @@
 // 通用配置项
 
 // 主题颜色配置：如每个图表类型需要不同主题，请在对应图表类型上更改color属性
-const color = ['#1890FF', '#91CB74', '#FAC858', '#EE6666', '#73C0DE', '#3CA272', '#FC8452', '#9A60B4', '#ea7ccc', ...generateHslaColors(100, 50, 1, 10), ...generateHslaColors(60, 50, 1, 10), ...generateHslaColors(30, 50, 1, 10)];
+const color = ['#1890FF', '#91CB74', '#FAC858', '#EE6666', '#73C0DE', '#3CA272', '#FC8452', '#9A60B4', '#ea7ccc', ...generateHslaColors(100, 50, 1, 20), ...generateHslaColors(60, 50, 1, 20), ...generateHslaColors(30, 50, 1, 20)];
 
 function generateHslaColors(saturation, lightness, alpha, amount) {
 	let colors = []
 	let huedelta = Math.trunc(360 / amount)
-
 	for (let i = 0; i < amount; i++) {
 		let hue = i * huedelta
 		if (hue) {
@@ -210,11 +209,14 @@ const cfe = {
 		"grid": {
 			"top": 50,
 			"bottom": 50,
-			"right": 15,
+			"right": 60,
 			"left": 60
 		},
 		"legend": {
-			"left": 'left'
+			"type": 'scroll',
+			"left": 'left',
+			"padding": [0, 60, 10, 60],
+			"itemGap": 30
 		},
 		"toolbox": {
 			"show": false,
