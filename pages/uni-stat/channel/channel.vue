@@ -12,10 +12,11 @@
 		<view class="uni-container">
 			<view class="uni-stat--x flex">
 				<uni-stat-select mode="app" label="应用选择" v-model="query.appid" />
-				<uni-stat-select mode="version" label="版本选择" v-model="query.version_id" />
 			</view>
 			<view class="uni-stat--x">
-				<uni-stat-tabs label="平台选择" type="boldLine" mode="platform-channel" v-model="query.platform_id" />
+				<uni-stat-tabs label="平台选择" type="boldLine" mode="platform" v-model="query.platform_id"
+					@change="changePlatform" />
+				<uni-stat-select mode="version" label="版本选择" :query="versionQuery" v-model="query.version_id" />
 			</view>
 			<view class="uni-stat--x flex">
 				<uni-stat-tabs label="日期选择" :current="currentDateTab" mode="date" @change="changeTimeRange" />
@@ -158,17 +159,10 @@
 				return def
 			},
 			queryStr() {
-				// const query = JSON.parse(JSON.stringify(this.query))
-				// const days = this.days
-				// if (days < 2) {
-				// 	const date = getTimeOfSomeDayAgo(days)
-				// 	const day = 24 * 60 * 60 * 1000
-				// 	const start = date
-				// 	const end = date + day - 1
-				// 	query.start_time = [start, end]
-				// 	query.dimension = 'hour'
-				// }
-				return stringifyQuery(this.query, true) + ' && ' + this.defQuery
+				const query = stringifyQuery(this.query, true)
+				return this.defQuery
+				? query + ' && ' + this.defQuery
+				: query
 			},
 			dimension() {
 				if (maxDeltaDay(this.query.start_time, 1)) {
@@ -176,6 +170,12 @@
 				} else {
 					return 'day'
 				}
+			},
+			versionQuery() {
+				const platform_id = this.query.platform_id
+				return stringifyQuery({
+					platform_id
+				})
 			}
 		},
 		watch: {
@@ -191,7 +191,9 @@
 			useDatetimePicker() {
 				this.currentDateTab = -1
 			},
-
+			changePlatform() {
+				this.query.version_id = ''
+			},
 			changeTimeRange(id, index) {
 				this.currentDateTab = index
 				const day = 24 * 60 * 60 * 1000
