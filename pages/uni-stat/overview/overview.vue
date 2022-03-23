@@ -13,6 +13,7 @@
 			<view class="uni-stat--x">
 				<uni-stat-tabs label="平台选择" type="boldLine" mode="platform" v-model="query.platform_id" />
 			</view>
+			<uni-stat-panel :items="panelData" :contrast="true" />
 			<view class="uni-stat--x flex">
 				<uni-stat-tabs label="日期选择" :current="currentDateTab" mode="date" :today="true"
 					@change="changeTimeRange" />
@@ -21,8 +22,6 @@
 					:class="{'uni-stat__actived': currentDateTab < 0 && !!query.start_time.length}"
 					@change="useDatetimePicker" />
 			</view>
-			<uni-stat-panel :items="panelData" :contrast="true" />
-
 			<view class="uni-stat--x p-m">
 				<view class="uni-stat-card-header">
 					趋势图
