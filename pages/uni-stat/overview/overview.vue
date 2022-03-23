@@ -29,7 +29,8 @@
 				</view>
 				<uni-stat-tabs type="box" v-model="chartTab" :tabs="chartTabs" class="mb-l" @change="changeChartTab" />
 				<view class="uni-charts-box">
-					<qiun-data-charts type="area" :chartData="chartData" echartsH5 echartsApp />
+					<qiun-data-charts type="area" :chartData="chartData" :eopts="{notMerge:true}" echartsH5
+						echartsApp />
 				</view>
 			</view>
 
@@ -385,7 +386,9 @@
 			},
 
 			getPageData(query, type) {
-				query = stringifyQuery(query, true)
+				query = JSON.parse(JSON.stringify(query))
+				query.dimension = 'day'
+				query = stringifyQuery(query)
 				console.log('..........page q:', query);
 				const {
 					pageCurrent
