@@ -3,19 +3,19 @@
 		<view class="uni-header hide-on-phone">
 			<view class="uni-group">
 				<view class="uni-title">事件分析管理</view>
-				<view class="uni-sub-title">分析用户自定义事件 
-				<uni-link href="https://ask.dcloud.net.cn/article/36304" text="自定义事件说明>>"></uni-link>
+				<view class="uni-sub-title">分析用户自定义事件
+					<uni-link href="https://ask.dcloud.net.cn/article/36304" text="自定义事件说明>>"></uni-link>
 				</view>
 			</view>
 		</view>
 		<view class="uni-container">
 			<view class="uni-stat--x flex">
 				<uni-stat-select mode="app" label="应用选择" v-model="query.appid" />
-				<uni-stat-select mode="channel" label="渠道选择" v-model="query.channel_id" />
-				<uni-stat-select mode="version" label="版本选择" v-model="query.version_id" />
 			</view>
 			<view class="uni-stat--x">
-				<uni-stat-tabs label="平台选择" type="boldLine" mode="platform" v-model="query.platform_id" />
+				<uni-stat-tabs label="平台选择" type="boldLine" mode="platform" v-model="query.platform_id"
+					@change="changePlatform" />
+				<uni-stat-select mode="channel" label="渠道选择" :query="channelQuery" v-model="query.channel_id" />
 			</view>
 			<view class="uni-stat--x flex">
 				<uni-stat-tabs label="日期选择" :current="currentDateTab" mode="date" @change="changeTimeRange" />
@@ -90,7 +90,7 @@
 					appid: '__UNI__HelloUniApp',
 					platform_id: '',
 					channel_id: '',
-          version_id: '',
+					version_id: '',
 					start_time: [],
 				},
 				options: {
@@ -114,6 +114,12 @@
 					pageSizeIndex
 				} = this.options
 				return pageSizeRange[pageSizeIndex]
+			},
+			channelQuery() {
+				const platform_id = this.query.platform_id
+				return stringifyQuery({
+					platform_id
+				})
 			}
 		},
 		watch: {
@@ -129,6 +135,9 @@
 		methods: {
 			useDatetimePicker() {
 				this.currentDateTab = -1
+			},
+			changePlatform() {
+				this.query.channel_id = ''
 			},
 			changeTimeRange(id, index) {
 				this.currentDateTab = index

@@ -9,10 +9,11 @@
 		<view class="uni-container">
 			<view class="uni-stat--x flex">
 				<uni-stat-select mode="app" label="应用选择" v-model="query.appid" />
-				<uni-stat-select mode="channel" label="渠道选择" v-model="query.channel_id" />
 			</view>
 			<view class="uni-stat--x">
-				<uni-stat-tabs label="平台选择" type="boldLine" mode="platform" v-model="query.platform_id" />
+				<uni-stat-tabs label="平台选择" type="boldLine" mode="platform" v-model="query.platform_id"
+					@change="changePlatform" />
+				<uni-stat-select mode="channel" label="渠道选择" :query="channelQuery" v-model="query.channel_id" />
 			</view>
 			<view class="uni-stat--x flex">
 				<uni-stat-tabs label="日期选择" :current="currentDateTab" mode="date" @change="changeTimeRange" />
@@ -85,6 +86,12 @@
 					pageSizeIndex
 				} = this.options
 				return pageSizeRange[pageSizeIndex]
+			},
+			channelQuery() {
+				const platform_id = this.query.platform_id
+				return stringifyQuery({
+					platform_id
+				})
 			}
 		},
 		watch: {
@@ -100,6 +107,9 @@
 		methods: {
 			useDatetimePicker() {
 				this.currentDateTab = -1
+			},
+			changePlatform() {
+				this.query.channel_id = ''
 			},
 			changeTimeRange(id, index) {
 				this.currentDateTab = index

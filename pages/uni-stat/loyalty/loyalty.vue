@@ -9,10 +9,11 @@
 		<view class="uni-container">
 			<view class="uni-stat--x flex">
 				<uni-stat-select mode="app" label="应用选择" v-model="query.appid" />
-				<uni-stat-select mode="channel" label="渠道选择" v-model="query.channel_id" />
 			</view>
 			<view class="uni-stat--x">
-				<uni-stat-tabs label="平台选择" type="boldLine" mode="platform" v-model="query.platform_id" />
+				<uni-stat-tabs label="平台选择" type="boldLine" mode="platform" v-model="query.platform_id"
+					@change="changePlatform" />
+				<uni-stat-select mode="channel" label="渠道选择" :query="channelQuery" v-model="query.channel_id" />
 			</view>
 			<view class="uni-stat--x flex">
 				<uni-stat-tabs label="日期选择" :current="currentDateTab" mode="date" @change="changeTimeRange" />
@@ -108,6 +109,12 @@
 						return item.name
 					}
 				})
+			},		
+			channelQuery() {
+				const platform_id = this.query.platform_id
+				return stringifyQuery({
+					platform_id
+				})
 			}
 		},
 		watch: {
@@ -127,6 +134,9 @@
 		methods: {
 			useDatetimePicker() {
 				this.currentDateTab = -1
+			},
+			changePlatform() {
+				this.query.channel_id = ''
 			},
 			changeTimeRange(id, index) {
 				this.currentDateTab = index
@@ -151,10 +161,10 @@
 			parseChars(str) {
 				str = str.split('_')
 				const option = this.options[this.type]
-				let  chars = option.title
+				let chars = option.title
 				const strArr = option.value.forEach((val, i) => {
-					const next = option.value[i+1]
-					if (val === Number(str[str.length-1])) {
+					const next = option.value[i + 1]
+					if (val === Number(str[str.length - 1])) {
 						if (!next) {
 							chars = val + '+' + chars
  						} else if (val + 1 === next) {
@@ -173,7 +183,7 @@
 				this.getTabelData(query)
 			},
 
-			getChartData(query, field = this.field, name = this.fields.find(f => f._id  === this.field).name) {
+			getChartData(query, field = this.field, name = this.fields.find(f => f._id === this.field).name) {
 				this.chartData = {}
 				query = stringifyQuery(query)
 				const groupField = this.createStr([field], this.type)

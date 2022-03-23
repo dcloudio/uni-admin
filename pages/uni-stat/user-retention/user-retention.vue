@@ -9,13 +9,15 @@
 		<view class="uni-container">
 			<view class="uni-stat--x flex">
 				<uni-stat-select mode="app" label="应用选择" v-model="query.appid" />
-				<uni-stat-select mode="channel" label="渠道选择" v-model="query.channel_id" />
 			</view>
 			<view class="uni-stat--x">
-				<uni-stat-tabs label="平台选择" type="boldLine" mode="platform" v-model="query.platform_id" />
+				<uni-stat-tabs label="平台选择" type="boldLine" mode="platform" v-model="query.platform_id"
+					@change="changePlatform" />
+				<uni-stat-select mode="channel" label="渠道选择" :query="channelQuery" v-model="query.channel_id" />
 			</view>
 			<view class="uni-stat--x flex">
-				<uni-stat-tabs label="日期选择" :current="currentDateTab" mode="date" :yesterday="false" @change="changeTimeRange" />
+				<uni-stat-tabs label="日期选择" :current="currentDateTab" mode="date" :yesterday="false"
+					@change="changeTimeRange" />
 				<uni-datetime-picker type="daterange" v-model="query.start_time" returnType="timestamp"
 					:clearIcon="false" class="uni-stat-datetime-picker"
 					:class="{'uni-stat__actived': currentDateTab < 0 && !!query.start_time.length}"
@@ -23,8 +25,8 @@
 			</view>
 			<view class="uni-stat--x mb-l" style="padding-top: 0;">
 				<view class="mb-m line-bottom">
-					<uni-stat-tabs type="boldLine" :tabs="fields" v-model="field"
-						tooltip style="line-height: 40px; margin-bottom: -17px;" />
+					<uni-stat-tabs type="boldLine" :tabs="fields" v-model="field" tooltip
+						style="line-height: 40px; margin-bottom: -17px;" />
 				</view>
 				<uni-stat-tabs type="box" :tabs="keys" v-model="key" class="mb-l" />
 				<view class="p-m">
@@ -42,7 +44,8 @@
 					</uni-tr>
 					<uni-tr v-for="(item ,i) in tableData" :key="i">
 						<template v-for="(mapper, index) in fieldsMap">
-							<uni-td v-if="mapper.title" :key="index" align="center" :class="/[d|w|m]_\d/.test(mapper.field)&&[item[mapper.field] ? 'uni-stat-table-bg' : '']">
+							<uni-td v-if="mapper.title" :key="index" align="center"
+								:class="/[d|w|m]_\d/.test(mapper.field)&&[item[mapper.field] ? 'uni-stat-table-bg' : '']">
 								{{item[mapper.field] ? item[mapper.field] : ''}}
 							</uni-td>
 						</template>
@@ -154,6 +157,12 @@
 						name: `${val}天后`
 					}
 				})
+			},
+			channelQuery() {
+				const platform_id = this.query.platform_id
+				return stringifyQuery({
+					platform_id
+				})
 			}
 		},
 		watch: {
@@ -174,6 +183,9 @@
 		methods: {
 			useDatetimePicker() {
 				this.currentDateTab = -1
+			},
+			changePlatform() {
+				this.query.channel_id = ''
 			},
 			changeTimeRange(id, index) {
 				this.currentDateTab = index

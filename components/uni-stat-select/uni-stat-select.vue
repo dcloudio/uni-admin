@@ -15,9 +15,9 @@
 						<view class="uni-combox__selector-empty" v-if="renderData.length === 0">
 							<text>{{emptyTips}}</text>
 						</view>
-						<view class="uni-combox__selector-item" v-for="(item,index) in renderData" :key="index"
+						<view v-else class="uni-combox__selector-item" v-for="(item,index) in renderData" :key="index"
 							@click="change(item)">
-							<text>{{mode === 'app' ? `${item.text} (${item.value})` : `${item.text}`}}</text>
+							<text>{{formatItemName(item)}}</text>
 						</view>
 					</scroll-view>
 				</view>
@@ -51,6 +51,12 @@
 				type: String,
 				default: ''
 			},
+			query: {
+				type: [Object, String],
+				default () {
+					return {}
+				}
+			},
 			data: {
 				type: Array,
 				default () {
@@ -78,6 +84,12 @@
 				immediate: true,
 				handler(val) {
 					this.init(val)
+				}
+			},
+			query: {
+				immediate: true,
+				handler(val) {
+					this.init(this.mode)
 				}
 			},
 			renderData: {
@@ -127,32 +139,44 @@
 			},
 			getChannels() {
 				const db = uniCloud.database()
-				const channels = db.collection('opendb-app-channels').get().then(res => {
+				const channels = db.collection('opendb-app-channels').where(this.query).get().then(res => {
 					this.channels = res.result.data
 					this.renderData = []
 					res.result.data.forEach(item => {
 						this.renderData.push({
 							value: item._id,
-							text: item.channel_name
+							text: item.channel_name,
+							channel_code: item.channel_code
 						})
 					})
 				})
 			},
 			getVersions() {
 				const db = uniCloud.database()
-				const versions = db.collection('opendb-app-versions').get().then(res => {
+				const versions = db.collection('opendb-stat-app-versions').where(this.query).get().then(res => {
 					this.versions = res.result.data
 					this.renderData = []
 					res.result.data.forEach(item => {
 						this.renderData.push({
 							value: item._id,
-							text: item.name + ' ' + item.version
+							text: item.version
 						})
 					})
 				})
 			},
 			toggleSelector() {
 				this.showSelector = !this.showSelector
+			},
+			formatItemName(item) {
+				let { text, value, channel_code} = item
+				channel_code = channel_code ? `(${channel_code})` : ''
+				return this.mode === 'app'
+				 ? `${text}(${value})`
+				 : (
+					text
+					? text
+					: `未命名${channel_code}`
+				 )
 			}
 		}
 	}
@@ -162,7 +186,7 @@
 	.uni-stat__select {
 		display: flex;
 		align-items: center;
-		margin: 15px;
+		padding: 15px;
 		cursor: pointer;
 	}
 
