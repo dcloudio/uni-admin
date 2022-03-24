@@ -321,20 +321,20 @@ const cfe = {
 			"trigger": 'item'
 		},
 		"grid": {
-			"top": 80,
+			"top": 0,
 			"bottom": 0,
 			"right": 15,
 			"left": 15
 		},
 		"legend": {
-			"orient": 'vertical',
-			"left": 'left'
+			"type": "scroll",
+			"top": 'left'
 		},
 		"seriesTemplate": {
 			"name": '',
 			"type": 'pie',
 			"data": [],
-			"radius": ['40%', '60%'],
+			"radius": ['30%', '45%'],
 			"avoidLabelOverlap": true,
 			"label": {
 				"show": true,
