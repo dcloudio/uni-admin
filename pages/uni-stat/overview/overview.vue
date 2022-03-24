@@ -33,8 +33,8 @@
 				</view>
 			</view>
 
-			<view style="display: flex;">
-				<view class="uni-stat--x p-m" style="margin-right: 7.5px; width: 50%; min-width: 350px;">
+			<view class="dispaly-grid">
+				<view class="uni-stat--x p-m">
 					<view class="uni-stat-card-header">
 						<view>受访页 TOP10</view>
 						<view class="uni-stat-card-header-link" @click="navTo('/pages/uni-stat/page-res/page-res')">查看更多
@@ -42,7 +42,7 @@
 					</view>
 					<uni-stat-table :data="resTableData" :filedsMap="resFieldsMap" :loading="loading" tooltip />
 				</view>
-				<view class="uni-stat--x uni-stat-card p-m" style="margin-left: 7.5px; width: 50%; min-width: 350px;">
+				<view class="uni-stat--x uni-stat-card p-m">
 					<view class="uni-stat-card-header">
 						<view>入口页 TOP10</view>
 						<view class="uni-stat-card-header-link" @click="navTo('/pages/uni-stat/page-ent/page-ent')">查看更多
