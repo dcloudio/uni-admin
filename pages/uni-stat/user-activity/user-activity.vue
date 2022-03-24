@@ -62,7 +62,9 @@
 		getTimeOfSomeDayAgo,
 		division,
 		format,
-		formatDate
+		formatDate,
+		maxDeltaDay,
+		debounce,
 	} from '@/js_sdk/uni-stat/util.js'
 	import fieldsMap from './fieldsMap.js'
 	export default {
@@ -114,6 +116,15 @@
 					_id: 'month',
 					name: '月活'
 				}]
+				if (maxDeltaDay(this.query.start_time, 7)) {
+					tabs.forEach((tab, index) => {
+						if (tab._id === 'month') {
+							tab.disabled = true
+						} else {
+							tab.disabled = false
+						}
+					})
+				}
 				return tabs
 			},
 			channelQuery() {

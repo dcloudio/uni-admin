@@ -95,7 +95,8 @@ const cfe = {
 			"left": 40
 		},
 		"legend": {
-			"bottom": 'left',
+			"left": 'left',
+			"padding": [0, 0, 200, 0]
 		},
 		"toolbox": {
 			"show": false,
@@ -122,6 +123,7 @@ const cfe = {
 				"color": '#666666'
 			},
 			"axisLine": {
+				"show": false,
 				"lineStyle": {
 					"color": '#CCCCCC'
 				}
@@ -231,7 +233,7 @@ const cfe = {
 					"color": '#CCCCCC'
 				}
 			},
-			"boundaryGap": true,
+			"boundaryGap": false,
 			"data": []
 		},
 		"yAxis": {
@@ -243,6 +245,7 @@ const cfe = {
 				"color": '#666666'
 			},
 			"axisLine": {
+				"show": false,
 				"lineStyle": {
 					"color": '#CCCCCC'
 				}
