@@ -1,6 +1,6 @@
 <template>
 	<view class="uni-stat--tab">
-		<span v-if="label" class="label-text">{{label + '：'}}</span>
+		<span v-if="label" class="label-text hide-on-phone">{{label + '：'}}</span>
 		<view v-if="!renderTabs.length" class="uni-stat--tab-item uni-stat--tab-item-disabled"
 			:class="[`uni-stat--tab-item-${type}`]">
 			{{placeholder}}
@@ -85,7 +85,7 @@
 			current(val) {
 				this.currentTab = val
 			},
-			
+
 			// value(val) {
 			// 	this.currentTab = val
 			// },
@@ -181,6 +181,15 @@
 </script>
 
 <style lang="scss">
+	/* #ifndef APP-NVUE */
+	@media screen and (max-width: 500px) {
+		.hide-on-phone {
+			display: none;
+		}
+	}
+
+	/* #endif */
+	
 	.uni-stat {
 
 		&--tab {

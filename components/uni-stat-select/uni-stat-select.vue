@@ -1,21 +1,21 @@
 <template>
 	<view class="uni-stat__select">
-		<span v-if="label" class="label-text">{{label + '：'}}</span>
+		<span v-if="label" class="label-text hide-on-phone">{{label + '：'}}</span>
 		<view :class="{'uni-stat__actived': current}">
-			<view class="uni-combox">
-				<view class="uni-combox__input-box" @click="toggleSelector">
-					<view v-if="current" class="uni-combox__input-text">{{current}}</view>
-					<view v-else class="uni-combox__input-text uni-combox__input-placeholder">{{placeholder}}</view>
+			<view class="uni-select">
+				<view class="uni-select__input-box" @click="toggleSelector">
+					<view v-if="current" class="uni-select__input-text">{{current}}</view>
+					<view v-else class="uni-select__input-text uni-select__input-placeholder">{{placeholder}}</view>
 					<uni-icons :type="showSelector? 'top' : 'bottom'" size="14" color="#999" />
 				</view>
 				<view class="uni-select--mask" v-if="showSelector" @click="toggleSelector" />
-				<view class="uni-combox__selector" v-if="showSelector">
+				<view class="uni-select__selector" v-if="showSelector">
 					<view class="uni-popper__arrow"></view>
-					<scroll-view scroll-y="true" class="uni-combox__selector-scroll">
-						<view class="uni-combox__selector-empty" v-if="renderData.length === 0">
+					<scroll-view scroll-y="true" class="uni-select__selector-scroll">
+						<view class="uni-select__selector-empty" v-if="renderData.length === 0">
 							<text>{{emptyTips}}</text>
 						</view>
-						<view v-else class="uni-combox__selector-item" v-for="(item,index) in renderData" :key="index"
+						<view v-else class="uni-select__selector-item" v-for="(item,index) in renderData" :key="index"
 							@click="change(item)">
 							<text>{{formatItemName(item)}}</text>
 						</view>
@@ -183,6 +183,14 @@
 </script>
 
 <style>
+	/* #ifndef APP-NVUE */
+	@media screen and (max-width: 500px) {
+		.hide-on-phone {
+			display: none;
+		}
+	}
+
+	/* #endif */
 	.uni-stat__select {
 		display: flex;
 		align-items: center;
@@ -201,7 +209,7 @@
 		margin-right: 5px;
 	}
 
-	.uni-combox {
+	.uni-select {
 		font-size: 14px;
 		border: 1px solid #DCDFE6;
 		box-sizing: border-box;
@@ -217,14 +225,14 @@
 		border-bottom: solid 1px #DDDDDD;
 	}
 
-	.uni-combox__label {
+	.uni-select__label {
 		font-size: 16px;
 		line-height: 22px;
 		padding-right: 10px;
 		color: #999999;
 	}
 
-	.uni-combox__input-box {
+	.uni-select__input-box {
 		min-height: 34px;
 		position: relative;
 		/* #ifndef APP-NVUE */
@@ -235,19 +243,19 @@
 		align-items: center;
 	}
 
-	.uni-combox__input {
+	.uni-select__input {
 		flex: 1;
 		font-size: 14px;
 		height: 22px;
 		line-height: 22px;
 	}
 
-	.uni-combox__input-plac {
+	.uni-select__input-plac {
 		font-size: 14px;
 		color: #999;
 	}
 
-	.uni-combox__selector {
+	.uni-select__selector {
 		/* #ifndef APP-NVUE */
 		box-sizing: border-box;
 		/* #endif */
@@ -263,15 +271,15 @@
 		padding: 4px 0;
 	}
 
-	.uni-combox__selector-scroll {
+	.uni-select__selector-scroll {
 		/* #ifndef APP-NVUE */
 		max-height: 200px;
 		box-sizing: border-box;
 		/* #endif */
 	}
 
-	.uni-combox__selector-empty,
-	.uni-combox__selector-item {
+	.uni-select__selector-empty,
+	.uni-select__selector-item {
 		/* #ifndef APP-NVUE */
 		display: flex;
 		cursor: pointer;
@@ -283,12 +291,12 @@
 		padding: 0px 10px;
 	}
 
-	.uni-combox__selector-item:hover {
+	.uni-select__selector-item:hover {
 		background-color: #f9f9f9;
 	}
 
-	.uni-combox__selector-empty:last-child,
-	.uni-combox__selector-item:last-child {
+	.uni-select__selector-empty:last-child,
+	.uni-select__selector-item:last-child {
 		/* #ifndef APP-NVUE */
 		border-bottom: none;
 		/* #endif */
@@ -323,7 +331,7 @@
 		border-bottom-color: #fff;
 	}
 
-	.uni-combox__input-text {
+	.uni-select__input-text {
 		width: 280px;
 		color: #333;
 		white-space: nowrap;
@@ -332,7 +340,7 @@
 		overflow: hidden;
 	}
 
-	.uni-combox__input-placeholder {
+	.uni-select__input-placeholder {
 		color: #666;
 	}
 
