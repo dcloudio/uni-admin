@@ -181,23 +181,18 @@
 </script>
 
 <style lang="scss">
-	/* #ifndef APP-NVUE */
-	@media screen and (max-width: 500px) {
-		.hide-on-phone {
-			display: none;
-		}
+	.uni-stat--tab {
+		display: flex;
+		flex-wrap: wrap;
+		margin: 0 15px;
 	}
 
-	/* #endif */
-	
 	.uni-stat {
 
 		&--tab {
-			display: flex;
-			flex-wrap: wrap;
-			margin: 0 15px;
 
 			&-item {
+				white-space: nowrap;
 				font-size: 14px;
 				color: #666;
 				text-align: center;
@@ -265,4 +260,21 @@
 
 		}
 	}
+
+	/* #ifndef APP-NVUE */
+	@media screen and (max-width: 500px) {
+		.hide-on-phone {
+			display: none;
+		}
+
+		.uni-stat--tab {
+			flex-wrap: unset;
+			overflow-x: auto !important;
+		}
+		::-webkit-scrollbar {
+		    display: none;
+		}
+	}
+	/* #endif */
+
 </style>

@@ -28,8 +28,7 @@
 				</view>
 				<uni-stat-tabs type="box" v-model="chartTab" :tabs="chartTabs" class="mb-l" @change="changeChartTab" />
 				<view class="uni-charts-box">
-					<qiun-data-charts type="area" :chartData="chartData" :eopts="{notMerge:true}" echartsH5
-						echartsApp />
+					<qiun-data-charts type="area" :chartData="chartData" :eopts="eopts" echartsH5 echartsApp />
 				</view>
 			</view>
 
@@ -103,15 +102,7 @@
 				entTableData: [],
 				panelData: [],
 				chartData: {},
-				chartOption: {
-					extra: {
-						area: {
-							type: 'curve',
-							addLine: true,
-							gradient: true
-						}
-					}
-				}
+				isPc: true
 			}
 		},
 		onLoad(option) {
@@ -143,6 +134,53 @@
 					}
 				})
 				return tabs
+			},
+			eopts() {
+				// pc 端的 echart 配置
+				const options = {
+					notMerge: true,
+					seriesTemplate: [{
+						itemStyle: {
+							borderWidth: 2,
+							borderColor: '#1890FF',
+							color: '#1890FF'
+						},
+						areaStyle: {
+							color: {
+								colorStops: [{
+									offset: 0,
+									color: '#1890FF', // 0% 处的颜色
+								}, {
+									offset: 1,
+									color: '#FFFFFF' // 100% 处的颜色
+								}]
+							}
+						}
+					}, {
+						smooth: false,
+						lineStyle: {
+							color: '#ea7ccc',
+							width: 2,
+							type: 'dashed'
+						},
+						itemStyle: {
+							borderWidth: 1,
+							borderColor: '#ea7ccc',
+							color: '#ea7ccc'
+						},
+						areaStyle: null
+					}]
+				}
+				if (!this.isPc) {
+					options.grid = {
+						right: 20,
+						left: 50
+					}
+					options.seriesTemplate.forEach(item => {
+						item.showSymbol = false
+					})
+				}
+				return options
 			}
 		},
 		watch: {
@@ -154,7 +192,22 @@
 				}
 			}
 		},
+		mounted() {
+			this.deviceWidth()
+		},
+		unmounted() {
+			this.ob.disconect()
+		},
 		methods: {
+			deviceWidth() {
+				this.ob = uni.createMediaQueryObserver(this)
+				this.ob.observe({
+					minWidth: 500
+				}, match => {
+					console.log('---------match', match);
+					this.isPc = match
+				})
+			},
 			useDatetimePicker() {
 				this.currentDateTab = null
 			},
@@ -285,42 +338,13 @@
 						}
 						if (!this.getDays()) {
 							const [start, end] = start_time
-							const line = options.series[0] = {
+							const line = options.series[1] = {
 								name: formatDate(start),
 								data: [],
-								smooth: false,
-								lineStyle: {
-									color: '#ea7ccc',
-									width: 2,
-									type: 'dashed'
-								},
-								itemStyle: {
-									borderWidth: 1,
-									borderColor: '#ea7ccc',
-									color: '#ea7ccc'
-								},
-								areaStyle: null
 							}
-							const cont = options.series[1] = {
+							const cont = options.series[0] = {
 								name: formatDate(end),
 								data: [],
-								color: '#1890FF',
-								itemStyle: {
-									borderWidth: 2,
-									borderColor: '#1890FF',
-									color: '#1890FF'
-								},
-								areaStyle: {
-									color: {
-										colorStops: [{
-											offset: 0,
-											color: '#1890FF', // 0% 处的颜色
-										}, {
-											offset: 1,
-											color: '#FFFFFF' // 100% 处的颜色
-										}]
-									}
-								}
 							}
 							for (let i = 0; i < 24; ++i) {
 								const hour = i < 10 ? '0' + i : i

@@ -32,7 +32,7 @@ function generateHslaColors(saturation, lightness, alpha, amount) {
 	}
 	return colors
 }
-
+console.log('++++++++++++++++ uni', uni);
 const cfe = {
 	//demotype为自定义图表类型
 	"type": ["pie", "ring", "rose", "funnel", "line", "column", "area", "radar", "gauge", "candle", "demotype"],
@@ -210,12 +210,13 @@ const cfe = {
 		},
 		"grid": {
 			"top": 50,
-			"bottom": 50,
+			"bottom": 30,
 			"right": 60,
 			"left": 60
 		},
 		"legend": {
 			"type": 'scroll',
+			"orient": 'horizontal',
 			"left": 'left',
 			"padding": [0, 60, 10, 60],
 			"itemGap": 30
@@ -258,6 +259,7 @@ const cfe = {
 				"name": "",
 				"color": item,
 				"smooth": true,
+				// "showSymbol": false,
 				"areaStyle": {
 					"color": {
 						"x": 0,
@@ -275,7 +277,7 @@ const cfe = {
 					}
 				},
 				"label": {
-					"show": true,
+					"show": false,
 					"color": "#666666",
 					"position": 'top',
 				},

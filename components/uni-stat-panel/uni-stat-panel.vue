@@ -39,7 +39,6 @@
 	.uni-stat--sum {
 		&-x {
 			display: flex;
-			align-items: left;
 			justify-content: space-around;
 			flex-wrap: wrap;
 			border-radius: 4px;
@@ -48,6 +47,7 @@
 		}
 
 		&-item {
+			white-space: nowrap;
 			text-align: center;
 			margin: 10px 30px;
 		}
@@ -70,4 +70,18 @@
 			color: #666;
 		}
 	}
+
+	/* #ifndef APP-NVUE */
+	@media screen and (max-width: 500px) {
+		.uni-stat--sum-x {
+			padding: 15px 0;
+			justify-content: unset;
+			flex-wrap: unset;
+			overflow-x: auto !important;
+		}
+		::-webkit-scrollbar {
+		    display: none;
+		}
+	}
+	/* #endif */
 </style>
