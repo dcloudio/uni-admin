@@ -149,8 +149,9 @@
 				})
 				const mainTableTemp = db.collection('opendb-stat-pages')
 					.where(filterAppid)
-					.field('_id, title, path')
 					.getTemp()
+
+					console.log('.........mainTableTemp', mainTableTemp);
 				const subTableTemp = db.collection('opendb-stat-page-result')
 					.where(query)
 					.getTemp()
@@ -161,7 +162,7 @@
 					)
 					.groupBy("page_id")
 					.groupField(stringifyGroupField(fieldsMap))
-					.orderBy('visit_times', 'desc')
+					.orderBy('visit_users', 'desc')
 					.skip((pageCurrent - 1) * this.pageSize)
 					.limit(this.pageSize)
 					.get({
@@ -172,7 +173,7 @@
 							count,
 							data
 						} = res.result
-						console.log('........table data:', data);
+						console.log('........table data:',data);
 						this.options.total = count
 						this.tableData = []
 						for (const item of data) {
