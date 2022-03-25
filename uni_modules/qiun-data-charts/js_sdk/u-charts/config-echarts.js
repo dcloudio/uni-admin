@@ -220,7 +220,7 @@ const cfe = {
 			"orient": 'horizontal',
 			"left": 'left',
 			"padding": [0, 60, 10, 60],
-			"itemGap": 30
+			"itemGap": 20
 		},
 		"toolbox": {
 			"show": false,

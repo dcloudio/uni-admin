@@ -4,16 +4,16 @@
  * Copyright (c) 2021 QIUN®秋云 https://www.ucharts.cn All rights reserved.
  * Licensed ( http://www.apache.org/licenses/LICENSE-2.0 )
  * 复制使用请保留本段注释，感谢支持开源！
- * 
+ *
  * uCharts®官方网站
  * https://www.uCharts.cn
- * 
+ *
  * 开源地址:
  * https://gitee.com/uCharts/uCharts
- * 
+ *
  * uni-app插件市场地址：
  * http://ext.dcloud.net.cn/plugin?id=271
- * 
+ *
  */
 
 // 主题颜色配置：如每个图表类型需要不同主题，请在对应图表类型上更改color属性
@@ -334,6 +334,7 @@ const cfu = {
 			"disableGrid": true,
 		},
 		"yAxis": {
+			"disabled": true,
 			"data": [{
 				"min": 0
 			}]
@@ -374,22 +375,29 @@ const cfu = {
 	"area": {
 		"type": "area",
 		"color": color,
-		"padding": [15, 15, 0, 15],
+		"padding": [35, 45, 15, 45],
+		"dataLabel": false,
+		"dataPointShape": false,
 		"xAxis": {
 			"disableGrid": true,
+			"labelCount": 2,
+			"min": 1,
+			"max": 3,
 		},
 		"yAxis": {
+			"disabled": true,
 			"gridType": "dash",
-			"dashLength": 2,
 		},
-		"legend": {},
+		"legend": {
+			"type": 'scroll'
+		},
 		"extra": {
 			"area": {
-				"type": "straight",
+				"type": "curve",
 				"opacity": 0.2,
 				"addLine": true,
 				"width": 2,
-				"gradient": false
+				"gradient": true
 			},
 		}
 	},
