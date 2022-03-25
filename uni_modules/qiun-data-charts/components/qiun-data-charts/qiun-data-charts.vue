@@ -1346,8 +1346,8 @@
 					} = window.location
 					const rooturl = origin + pathname
 
-					const directory = instance.getDataset().directory
-					script.src = rooturl + directory + 'uni_modules/qiun-data-charts/static/h5/echarts.min.js'
+					// const directory = instance.getDataset().directory
+					script.src = rooturl + 'uni_modules/qiun-data-charts/static/h5/echarts.min.js'
 					// #endif
 					script.onload = this.newEChart
 					document.head.appendChild(script)

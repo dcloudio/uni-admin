@@ -19,7 +19,9 @@
 // 通用配置项
 
 // 主题颜色配置：如每个图表类型需要不同主题，请在对应图表类型上更改color属性
-const color = ['#1890FF', '#91CB74', '#FAC858', '#EE6666', '#73C0DE', '#3CA272', '#FC8452', '#9A60B4', '#ea7ccc', ...generateHslaColors(100, 50, 1, 20), ...generateHslaColors(60, 50, 1, 20), ...generateHslaColors(30, 50, 1, 20)];
+const color = ['#1890FF', '#91CB74', '#FAC858', '#EE6666', '#73C0DE', '#3CA272', '#FC8452', '#9A60B4', '#ea7ccc', ...
+	generateHslaColors(100, 50, 1, 20), ...generateHslaColors(60, 50, 1, 20), ...generateHslaColors(30, 50, 1, 20)
+];
 
 function generateHslaColors(saturation, lightness, alpha, amount) {
 	let colors = []
@@ -32,7 +34,6 @@ function generateHslaColors(saturation, lightness, alpha, amount) {
 	}
 	return colors
 }
-console.log('++++++++++++++++ uni', uni);
 const cfe = {
 	//demotype为自定义图表类型
 	"type": ["pie", "ring", "rose", "funnel", "line", "column", "area", "radar", "gauge", "candle", "demotype"],
@@ -135,7 +136,7 @@ const cfe = {
 			"data": [],
 			"barWidth": 30,
 			"label": {
-				"show": true,
+				"show": false,
 				"color": "#666666",
 				"position": 'top',
 			},
@@ -464,5 +465,22 @@ const cfe = {
 		},
 	}
 }
+
+function deviceWidth() {
+	const device = uni.getSystemInfoSync()
+	console.log(1111111, device)
+	const type = cfe.area
+	if (device.windowWidth < 500) {
+		type.grid = {
+			right: 20,
+			left: 50
+		}
+		type.seriesTemplate.forEach(item => {
+			item.showSymbol = false
+		})
+	}
+}
+
+deviceWidth()
 
 export default cfe;

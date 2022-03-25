@@ -102,42 +102,7 @@
 				entTableData: [],
 				panelData: [],
 				chartData: {},
-				isPc: true
-			}
-		},
-		onLoad(option) {
-			const {
-				appid
-			} = option
-			if (appid) {
-				this.query.appid = appid
-			}
-		},
-		computed: {
-			pageSize() {
-				const {
-					pageSizeRange,
-					pageSizeIndex
-				} = this.options
-				return pageSizeRange[pageSizeIndex]
-			},
-			chartTabs() {
-				const tabs = []
-				fieldsMap.forEach(item => {
-					const _id = item.field
-					const name = item.title
-					if (_id && name) {
-						tabs.push({
-							_id,
-							name
-						})
-					}
-				})
-				return tabs
-			},
-			eopts() {
-				// pc 端的 echart 配置
-				const options = {
+				eopts: {
 					notMerge: true,
 					seriesTemplate: [{
 						itemStyle: {
@@ -171,16 +136,37 @@
 						areaStyle: null
 					}]
 				}
-				if (!this.isPc) {
-					options.grid = {
-						right: 20,
-						left: 50
+			}
+		},
+		onLoad(option) {
+			const {
+				appid
+			} = option
+			if (appid) {
+				this.query.appid = appid
+			}
+		},
+		computed: {
+			pageSize() {
+				const {
+					pageSizeRange,
+					pageSizeIndex
+				} = this.options
+				return pageSizeRange[pageSizeIndex]
+			},
+			chartTabs() {
+				const tabs = []
+				fieldsMap.forEach(item => {
+					const _id = item.field
+					const name = item.title
+					if (_id && name) {
+						tabs.push({
+							_id,
+							name
+						})
 					}
-					options.seriesTemplate.forEach(item => {
-						item.showSymbol = false
-					})
-				}
-				return options
+				})
+				return tabs
 			}
 		},
 		watch: {
@@ -192,22 +178,7 @@
 				}
 			}
 		},
-		mounted() {
-			this.deviceWidth()
-		},
-		unmounted() {
-			this.ob.disconect()
-		},
 		methods: {
-			deviceWidth() {
-				this.ob = uni.createMediaQueryObserver(this)
-				this.ob.observe({
-					minWidth: 500
-				}, match => {
-					console.log('---------match', match);
-					this.isPc = match
-				})
-			},
 			useDatetimePicker() {
 				this.currentDateTab = null
 			},
