@@ -9,7 +9,6 @@
 		<view class="uni-container">
 			<view class="uni-stat--x flex">
 				<uni-stat-select mode="app" label="应用选择" v-model="query.appid" />
-				<uni-stat-select mode="version" label="版本选择" v-model="query.version_id" />
 			</view>
 			<view class="uni-stat--x">
 				<uni-stat-tabs label="平台选择" type="boldLine" mode="platform-scene" v-model="query.platform_id" />
@@ -74,7 +73,6 @@
 					dimension: "hour",
 					appid: "__UNI__HelloUniApp",
 					platform_id: '',
-					version_id: '',
 					start_time: [],
 				},
 				options: {
