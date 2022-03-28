@@ -14,7 +14,7 @@
 				<uni-stat-select mode="app" label="应用选择" v-model="query.appid" :clear="false" />
 			</view>
 			<view class="uni-stat--x">
-				<uni-stat-tabs label="平台选择" type="boldLine" mode="platform" v-model="query.platform_id"
+				<uni-stat-tabs label="平台选择" type="boldLine" mode="platform-channel" v-model="query.platform_id"
 					@change="changePlatform" />
 				<uni-stat-select mode="version" label="版本选择" :query="versionQuery" v-model="query.version_id" />
 			</view>
