@@ -6,7 +6,8 @@
 				<view class="uni-select__input-box" @click="toggleSelector">
 					<view v-if="current" class="uni-select__input-text">{{current}}</view>
 					<view v-else class="uni-select__input-text uni-select__input-placeholder">{{placeholder}}</view>
-					<uni-icons :type="showSelector? 'top' : 'bottom'" size="14" color="#999" />
+					<uni-icons v-if="current && clear" type="clear" color="#e1e1e1" size="18" @click="clearVal" />
+					<uni-icons v-else :type="showSelector? 'top' : 'bottom'" size="14" color="#999" />
 				</view>
 				<view class="uni-select--mask" v-if="showSelector" @click="toggleSelector" />
 				<view class="uni-select__selector" v-if="showSelector">
@@ -74,12 +75,26 @@
 			emptyTips: {
 				type: String,
 				default: '无选项'
+			},
+			clear: {
+				type: Boolean,
+				default: true
+			},
+			defItem: {
+				type: Number,
+				default: 0
 			}
 		},
 		mounted() {
 			this.init(this.mode)
 		},
 		watch: {
+			value() {
+				this.initDefVal()
+			},
+			modelValue() {
+				this.initDefVal()
+			},
 			mode: {
 				immediate: true,
 				handler(val) {
@@ -96,14 +111,23 @@
 				immediate: true,
 				handler(val) {
 					if (val.length) {
-						const defOption = val.filter(item => item.value === this.value)
-						const text = defOption.length ? defOption[0].text : ''
-						this.current = text ? (this.mode === 'app' ? `${text} (${this.value})` : text) : ''
+						this.initDefVal()
 					}
 				}
 			}
 		},
 		methods: {
+			initDefVal() {
+				let defItem = ''
+				if (this.defItem > 0 &&  this.defItem < this.renderData.length) {
+					defItem = this.renderData[this.defItem - 1].value
+				}
+				const defValue = this.value || this.modelValue || defItem
+				const def = this.renderData.find(item => item.value === defValue)
+				const text = def ? def.text : ''
+				this.current = text ? (this.mode === 'app' ? `${text} (${defValue})` : text) : ''
+				this.emit(defValue)
+			},
 			init(mode) {
 				if (mode === 'app') {
 					this.getApps()
@@ -115,13 +139,21 @@
 					this.renderData = this.data
 				}
 			},
+			clearVal() {
+				console.log(7777777777);
+				this.emit('')
+				// this.showSelector = false
+			},
 			change(item) {
 				this.showSelector = false
 				console.log(1111, item)
 				this.current = this.mode === 'app' ? `${item.text} (${item.value})` : item.text
-				this.$emit('change', item.value)
-				this.$emit('input', item.value)
-				this.$emit('update:modelValue', item.value)
+				this.emit(item.value)
+			},
+			emit(val) {
+				this.$emit('change', val)
+				this.$emit('input', val)
+				this.$emit('update:modelValue', val)
 			},
 			getApps() {
 				const db = uniCloud.database()
@@ -168,15 +200,19 @@
 				this.showSelector = !this.showSelector
 			},
 			formatItemName(item) {
-				let { text, value, channel_code} = item
+				let {
+					text,
+					value,
+					channel_code
+				} = item
 				channel_code = channel_code ? `(${channel_code})` : ''
-				return this.mode === 'app'
-				 ? `${text}(${value})`
-				 : (
-					text
-					? text
-					: `未命名${channel_code}`
-				 )
+				return this.mode === 'app' ?
+					`${text}(${value})` :
+					(
+						text ?
+						text :
+						`未命名${channel_code}`
+					)
 			}
 		}
 	}

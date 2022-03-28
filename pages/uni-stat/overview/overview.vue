@@ -8,7 +8,7 @@
 		</view>
 		<view class="uni-container">
 			<view class="uni-stat--x flex">
-				<uni-stat-select mode="app" label="应用选择" v-model="query.appid" />
+				<uni-stat-select mode="app" label="应用选择" v-model="query.appid" :clear="false" :defItem="2" />
 			</view>
 			<view class="uni-stat--x">
 				<uni-stat-tabs label="平台选择" type="boldLine" mode="platform" v-model="query.platform_id" />
@@ -69,7 +69,8 @@
 		format,
 		formatDate,
 		parseDateTime,
-		getCurrentTotalUser
+		getCurrentTotalUser,
+		debounce
 	} from '@/js_sdk/uni-stat/util.js'
 	import {
 		fieldsMap,
@@ -84,7 +85,7 @@
 				entFieldsMap,
 				query: {
 					dimension: "hour",
-					appid: '__UNI__HelloUniApp',
+					appid: '',
 					platform_id: '',
 					start_time: [],
 				},
@@ -174,9 +175,12 @@
 				deep: true,
 				handler(val) {
 					this.options.pageCurrent = 1 // 重置分页
-					this.getAllData(val)
+					this.debounceGet()
 				}
 			}
+		},
+		created() {
+			this.debounceGet = debounce(() => this.getAllData(this.query), 1000)
 		},
 		methods: {
 			useDatetimePicker() {
@@ -254,7 +258,7 @@
 						const data = res.result.data
 						// console.log(111111111, data);
 						const today = data[0]
-						today.total_users = 0
+						today && (today.total_users = 0)
 						const yesterday = data.find(item => item.dimension === 'day')
 						this.panelData = []
 						this.panelData = mapfields(fieldsMap, today)

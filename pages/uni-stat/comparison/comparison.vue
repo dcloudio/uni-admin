@@ -8,7 +8,7 @@
 		</view>
 		<view class="uni-container">
 			<view class="uni-stat--x flex mb-m">
-				<uni-stat-select mode="app" label="应用选择" v-model="query.appid" />
+				<uni-stat-select mode="app" label="应用选择" v-model="query.appid" :clear="false" />
 				<view class="flex ml-m">
 					<view class="label-text">日期选择:</view>
 					<uni-datetime-picker type="date" v-model="query.start_time" returnType="timestamp"

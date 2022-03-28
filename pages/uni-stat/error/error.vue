@@ -8,7 +8,7 @@
 		</view>
 		<view class="uni-container">
 			<view class="uni-stat--x flex">
-				<uni-stat-select mode="app" label="应用选择" v-model="query.appid" />
+				<uni-stat-select mode="app" label="应用选择" v-model="query.appid" :clear="false" />
 				<uni-stat-select mode="version" label="版本选择" v-model="query.version_id" />
 			</view>
 			<view class="uni-stat--x">
