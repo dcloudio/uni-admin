@@ -24,13 +24,36 @@
 			</view>
 			<view class="uni-stat--x" style="padding: 15px 0;">
 				<uni-stat-panel :items="panelData" class="uni-stat-panel" />
+				<uni-stat-tabs type="box" v-model="chartTab" :tabs="chartTabs" class="mb-l" />
 				<view class="uni-charts-box">
-					<qiun-data-charts type="area" :chartData="chartData" echartsH5 echartsApp />
+					<qiun-data-charts type="area" :chartData="chartData" :eopts="{notMerge:true}" echartsH5
+						echartsApp />
 				</view>
 			</view>
 
 			<view class="uni-stat--x p-m">
-				<uni-stat-table :data="tableData" :filedsMap="fieldsMap" :loading="loading" tooltip />
+				<uni-table :loading="loading" border stripe :emptyText="$t('common.empty')">
+					<uni-tr>
+						<template v-for="(mapper, index) in fieldsMap">
+							<uni-th v-if="mapper.title" :key="index" align="center">
+								{{mapper.title}}
+								<uni-stat-tooltip :text="mapper.tooltip" />
+							</uni-th>
+						</template>
+					</uni-tr>
+					<uni-tr v-for="(item ,i) in tableData" :key="i">
+						<template v-for="(mapper, index) in fieldsMap">
+							<uni-td v-if="mapper.field !== 'msg'" :key="mapper.title" >
+								{{item[mapper.field] !== undefined ? item[mapper.field] : '-'}}
+							</uni-td>
+							<uni-td v-else :key="mapper.title" align="center" >
+								<uni-stat-tooltip :text="item.msgTooltip" placement="left" :width="600">
+									{{item[mapper.field] !== undefined ? item[mapper.field] : '-'}}
+								</uni-stat-tooltip>
+							</uni-td>
+						</template>
+					</uni-tr>
+				</uni-table>
 				<view class="uni-pagination-box">
 					<picker class="select-picker" mode="selector" :value="options.pageSizeIndex"
 						:range="options.pageSizeRange" @change="changePageSize">
@@ -84,7 +107,15 @@
 				// currentChartTab: ,
 				tableData: [],
 				panelData: [],
-				chartData: {}
+				chartData: {},
+				chartTab: 'errorCount',
+				chartTabs: [{
+					_id: 'errorCount',
+					name: '错误次数'
+				}, {
+					_id: 'errorRate',
+					name: '错误率'
+				}],
 			}
 		},
 		computed: {
@@ -106,6 +137,9 @@
 					this.options.pageCurrent = 1 // 重置分页
 					this.getAllData(this.queryStr)
 				}
+			},
+			chartTab(val) {
+				this.getChartData(this.queryStr)
 			}
 		},
 		methods: {
@@ -118,7 +152,6 @@
 					end = getTimeOfSomeDayAgo(0) - 1
 				this.query.start_time = [start, end]
 			},
-
 			changePageCurrent(e) {
 				this.options.pageCurrent = e.current
 				this.getTableData(this.queryStr)
@@ -140,6 +173,7 @@
 			},
 
 			getChartData(query, field = 'day_count') {
+				this.chartData = {}
 				const {
 					pageCurrent
 				} = this.options
@@ -159,25 +193,16 @@
 							data
 						} = res.result
 						console.log('.......chart:', data);
-
-						let dayAppLaunchs = []
-						this.getDayLaunch(query).then(res => {
-							dayAppLaunchs = res.result.data
-							console.log(3333333333, dayAppLaunchs);
-						}).finally(() => {
-							const options = {
-								categories: [],
-								series: [{
-									name: '暂无数据',
-									data: []
-								}]
-							}
+						const options = {
+							categories: [],
+							series: [{
+								name: '暂无数据',
+								data: []
+							}]
+						}
+						if (this.chartTab === 'errorCount') {
 							const countLine = options.series[0] = {
 								name: '错误次数',
-								data: []
-							}
-							const rateLine = options.series[1] = {
-								name: '错误率',
 								data: []
 							}
 							const xAxis = options.categories
@@ -187,21 +212,61 @@
 								const countY = item[`total_${field}`]
 								xAxis.push(x)
 								countLine.data.push(countY)
-								if (dayAppLaunchs.length) {
-									dayAppLaunchs.forEach(day => {
-										if (day.start_time === item.start_time) {
-											let rateY = item[`total_${field}`] / day
-												.day_app_launch_count
-											rateY = rateY.toFixed(2)
-											rateLine.data.push(rateY)
-										}
-									})
-								}
 							}
 							console.log(6666666, options);
-							this.chartData = {}
 							this.chartData = options
-						})
+						} else {
+							let dayAppLaunchs = []
+							this.getDayLaunch(query).then(res => {
+								dayAppLaunchs = res.result.data
+								console.log(3333333333, dayAppLaunchs);
+							}).finally(() => {
+								const rateLine = options.series[0] = {
+									name: '错误率',
+									data: [],
+									lineStyle: {
+										color: '#EE6666',
+										width: 1,
+									},
+									itemStyle: {
+										borderWidth: 1,
+										borderColor: '#EE6666',
+										color: '#EE6666'
+									},
+									areaStyle: {
+										color: {
+											colorStops: [{
+												offset: 0,
+												color: '#EE6666', // 0% 处的颜色
+											}, {
+												offset: 1,
+												color: '#FFFFFF' // 100% 处的颜色
+											}]
+										}
+									}
+								}
+								const xAxis = options.categories
+								for (const item of data) {
+									let date = item.start_time
+									const x = formatDate(date, 'day')
+									const countY = item[`total_${field}`]
+									xAxis.push(x)
+									if (dayAppLaunchs.length) {
+										dayAppLaunchs.forEach(day => {
+											if (day.start_time === item.start_time) {
+												let rateY = countY / day.day_app_launch_count
+												rateY = rateY.toFixed(2)
+												const index = xAxis.indexOf(x)
+												rateLine.data[index] = rateY
+											}
+										})
+									}
+								}
+								console.log(6666666, options);
+								this.chartData = options
+							})
+						}
+
 					}).catch((err) => {
 						console.error(err)
 						// err.message 错误信息
@@ -268,6 +333,8 @@
 						const panelData = []
 						for (const item of data) {
 							item.last_time = parseDateTime(item.last_time, 'dateTime')
+							item.msgTooltip = item.msg
+							item.msg = item.msg.substring(0, 100) + '...'
 							const lines = item.version_id
 							if (Array.isArray(lines)) {
 								delete(item.version_id)
