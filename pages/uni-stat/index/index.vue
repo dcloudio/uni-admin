@@ -152,7 +152,7 @@
 									} else {
 										Number(a.stat_date) > Number(b.stat_date) ? [today, yesterday] = [a, b] : [today, yesterday] = [b, a]
 									}
-									today.total_users = 0  // total_users 不准确，置空后由 getCurrentTotalUser 处理
+									 today && (today.total_users = 0)  // total_users 不准确，置空后由 getCurrentTotalUser 处理
 									for (const key of keys) {
 										if (key === 'appid' || key === 'name') {
 											rowData[key] = today[key]

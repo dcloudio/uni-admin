@@ -352,7 +352,7 @@
 					})
 					.then(res => {
 						const item = res.result.data[0]
-						item.total_total_users = 0
+						item && (item.total_total_users = 0)
 						getCurrentTotalUser.call(this, query)
 						this.panelData = []
 						this.panelData = mapfields(fieldsMap, item, undefined, 'total_')
