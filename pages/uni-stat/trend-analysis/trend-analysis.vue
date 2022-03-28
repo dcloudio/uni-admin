@@ -8,7 +8,7 @@
 		</view>
 		<view class="uni-container">
 			<view class="uni-stat--x flex">
-				<uni-stat-select mode="app" label="应用选择" v-model="query.appid" />
+				<uni-stat-select mode="app" label="应用选择" v-model="query.appid" :clear="false" />
 			</view>
 			<view class="uni-stat--x">
 				<uni-stat-tabs label="平台选择" type="boldLine" mode="platform" v-model="query.platform_id"
@@ -342,7 +342,7 @@
 					.get()
 					.then(res => {
 						const item = res.result.data[0]
-						item.total_users = 0
+						item && (item.total_users = 0)
 						getCurrentTotalUser.call(this, cloneQuery)
 						this.panelData = []
 						this.panelData = mapfields(fieldsMap, item)
