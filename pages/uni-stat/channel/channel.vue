@@ -339,13 +339,12 @@
 				const db = uniCloud.database()
 				db.collection('opendb-stat-result')
 					.where(query)
+					.field(`${stringifyField(fieldsMap)},appid, channel_id`)
 					.groupBy('appid, channel_id')
-					.groupField(
-						'sum(new_user_count) as total_new_user_count, sum(active_user_count) as total_active_user_count, sum(page_visit_count) as total_page_visit_count, sum(app_launch_count) as total_app_launch_count, avg(avg_session_time) as total_avg_session_time, avg(avg_user_time) as total_avg_user_time, avg(bounce_rate) as total_bounce_rate'
-					)
+					.groupField(stringifyGroupField(fieldsMap))
+					.orderBy('new_user_count', 'desc')
 					.skip((pageCurrent - 1) * this.pageSize)
 					.limit(this.pageSize)
-					.orderBy('start_time', 'asc')
 					.get({
 						getCount: true
 					})
@@ -405,20 +404,17 @@
 				const db = uniCloud.database()
 				const subTable = db.collection('opendb-stat-result')
 					.where(query)
+					.field(stringifyField(fieldsMap))
 					.groupBy('appid')
-					.groupField(
-						'sum(new_user_count) as total_new_user_count, sum(active_user_count) as total_active_user_count, sum(page_visit_count) as total_page_visit_count, sum(app_launch_count) as total_app_launch_count, avg(avg_session_time) as total_avg_session_time, avg(avg_user_time) as total_avg_user_time, avg(bounce_rate) as total_bounce_rate, max(total_users) as total_total_users'
-					)
+					.groupField(stringifyGroupField(fieldsMap))
 					.orderBy('start_time', 'desc')
-					.get({
-						getCount: true
-					})
+					.get()
 					.then(res => {
 						const item = res.result.data[0]
 						item && (item.total_total_users = 0)
 						getCurrentTotalUser.call(this, query)
 						this.panelData = []
-						this.panelData = mapfields(fieldsMap, item, undefined, 'total_')
+						this.panelData = mapfields(fieldsMap, item)
 					})
 			},
 

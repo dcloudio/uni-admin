@@ -256,7 +256,7 @@
 					.get()
 					.then(res => {
 						const data = res.result.data
-						// console.log(111111111, data);
+						console.log(111111111, data);
 						const today = data[0]
 						today && (today.total_users = 0)
 						const yesterday = data.find(item => item.dimension === 'day')

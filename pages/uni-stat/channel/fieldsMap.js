@@ -42,11 +42,16 @@ export default [{
 	value: 0
 }, {
 	title: '跳出率',
-	field: 'bounce_rate',
-	formatter: '%%',
+	field: 'bounceRate',
+	computed: 'bounce_times/app_launch_count',
+	formatter: '%',
 	tooltip: '只浏览一个页面便离开应用的次数占总启动次数的百分比',
-	value: 0
+	value: 0,
+	contrast: 0,
 }, {
+	field: 'bounce_times',
+	disable: true
+},{
 	title: '总用户数',
 	field: 'total_users',
 	tooltip: '从添加统计到当前选择时间的总用户数（去重）',

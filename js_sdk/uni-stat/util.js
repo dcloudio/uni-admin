@@ -206,42 +206,45 @@ function mapfields(map, data = {}, goal, prefix = '', prop = 'value') {
 		let {
 			field,
 			computed,
-			formatter
+			formatter,
+			disable
 		} = mapper
-		// if (!field) return // stat index
-		goal = argsGoal || mapper
-		const hasValue = goal.hasOwnProperty(prop)
-		const preField = prefix + field
-		if (data) {
-			const value = data[preField]
-			if (computed) {
-				const computedFields = computed.split('/')
-				let [dividend, divisor] = computedFields
-				dividend = Number(origin[prefix + dividend])
-				divisor = Number(origin[prefix + divisor])
-				if (dividend && divisor) {
-					const val = format(division(dividend, divisor), formatter)
-					if (hasValue) {
-						goal[prop] = val
-					} else {
-						goal[field] = val
-					}
-				}
-			} else {
-				if (value) {
-					const val = format(value, formatter)
-					if (hasValue) {
-						if (goal.field === field) {
+		if (!disable) {
+			goal = argsGoal || mapper
+			const hasValue = goal.hasOwnProperty(prop)
+			const preField = prefix + field
+			if (data) {
+				const value = data[preField]
+				console.log(preField ,'......value:', value);
+				if (computed) {
+					const computedFields = computed.split('/')
+					let [dividend, divisor] = computedFields
+					dividend = Number(origin[prefix + dividend])
+					divisor = Number(origin[prefix + divisor])
+					if (dividend && divisor) {
+						const val = format(division(dividend, divisor), formatter)
+						if (hasValue && field === goal.field) {
 							goal[prop] = val
+						} else {
+							goal[field] = val
 						}
-					} else {
-						goal[field] = val
+					}
+				} else {
+					if (value) {
+						const val = format(value, formatter)
+						if (hasValue) {
+							if (goal.field === field) {
+								goal[prop] = val
+							}
+						} else {
+							goal[field] = val
+						}
 					}
 				}
 			}
-		}
-		if (hasValue) {
-			goals.push(goal)
+			if (hasValue) {
+				goals.push(goal)
+			}
 		}
 	}
 	return goals
@@ -264,7 +267,7 @@ function getCurrentTotalUser(query = this.query, field = "total_users") {
 			const data = cur.result.data
 			currentTotalUser = data.length && Math.max(...data.map(item => item.total_users))
 			currentTotalUser = format(currentTotalUser)
-			console.log('=========currentTotalUser', data,'======', currentTotalUser);
+			console.log('=========currentTotalUser', data, '======', currentTotalUser);
 			this.panelData.forEach(item => {
 				if (item.field === 'total_users') {
 					item.value = currentTotalUser
