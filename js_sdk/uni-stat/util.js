@@ -248,7 +248,6 @@ function mapfields(map, data = {}, goal, prefix = '', prop = 'value') {
 }
 
 function getCurrentTotalUser(query = this.query, field = "total_users") {
-	console.log(11111111111, query);
 	let currentTotalUser
 	if (typeof query === 'object') {
 		query = stringifyQuery(query)

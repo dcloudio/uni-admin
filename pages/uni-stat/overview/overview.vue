@@ -105,7 +105,6 @@
 				panelData: panelOption,
 				chartData: {},
 				eopts: {
-					notMerge: true,
 					seriesTemplate: [{
 						itemStyle: {
 							borderWidth: 2,

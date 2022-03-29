@@ -253,6 +253,7 @@ const cfe = {
 				}
 			},
 		},
+		"notMerge": true,
 		"seriesTemplate": color.map(item => {
 			return {
 				"data": [],

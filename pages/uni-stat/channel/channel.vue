@@ -114,7 +114,7 @@
 				currentDateTab: 0,
 				days: 0,
 				tableData: [],
-				panelData: [],
+				panelData: fieldsMap.filter(f => f.hasOwnProperty('value')),
 				chartData: {},
 				chartTab: 'new_user_count',
 				queryId: '',
@@ -160,9 +160,9 @@
 			},
 			queryStr() {
 				const query = stringifyQuery(this.query, true)
-				return this.defQuery
-				? query + ' && ' + this.defQuery
-				: query
+				return this.defQuery ?
+					query + ' && ' + this.defQuery :
+					query
 			},
 			dimension() {
 				if (maxDeltaDay(this.query.start_time, 1)) {
@@ -286,8 +286,10 @@
 									name: c && c.channel_code || '未知',
 									data: []
 								}
-								for (let i = 0; i < 24; ++i) {
-									line.data[i] = 0
+								if (this.dimension === 'hour') {
+									for (let i = 0; i < 24; ++i) {
+										line.data[i] = 0
+									}
 								}
 
 								for (const item of data) {
@@ -313,15 +315,14 @@
 
 								}
 							})
+							console.log(1111111, options);
 							this.chartData = options
 						})
 					}).catch((err) => {
 						console.error(err)
 						// err.message 错误信息
 						// err.code 错误码
-					}).finally(() => {
-						this.loading = false
-					})
+					}).finally(() => {})
 			},
 
 			getChannels() {
@@ -397,7 +398,10 @@
 			getPanelData() {
 				let cloneQuery = JSON.parse(JSON.stringify(this.query))
 				cloneQuery.dimension = 'day'
-				let query = stringifyQuery(cloneQuery) + ' && ' + this.defQuery
+				let query = stringifyQuery(cloneQuery)
+				if (this.defQuery) {
+					query = query + ' && ' + this.defQuery
+				}
 				const db = uniCloud.database()
 				const subTable = db.collection('opendb-stat-result')
 					.where(query)
