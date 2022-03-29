@@ -35,6 +35,7 @@
 		getCurrentTotalUser
 	} from '@/js_sdk/uni-stat/util.js'
 	import fieldsMap from './fieldsMap.js'
+	const panelOption = fieldsMap.filter(f => f.hasOwnProperty('value'))
 	export default {
 		data() {
 			return {
@@ -44,7 +45,7 @@
 					start_time: [getTimeOfSomeDayAgo(1), new Date().getTime()]
 				},
 				tableData: [],
-				panelData: fieldsMap.filter(f => f.hasOwnProperty('value')),
+				panelData: panelOption,
 				// 每页数据量
 				pageSize: 10,
 				// 当前页
@@ -121,12 +122,7 @@
 							data
 						} = res.result
 						this.tableData = []
-						this.panelData.forEach((panel, index) => {
-							if (panel.title) {
-								panel.value = 0
-								panel.contrast = 0
-							}
-						})
+						this.panelData = JSON.parse(JSON.stringify(panelOption))
 						if (!data.length) return
 						const rowData = {}
 						const start = this.query.start_time[0]

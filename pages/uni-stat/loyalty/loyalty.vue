@@ -70,7 +70,7 @@
 				currentDateTab: 0,
 				// currentChartTab: ,
 				tableData: [],
-				panelData: [],
+				panelData: fieldsMap.filter(f => f.hasOwnProperty('value')),
 				chartData: {},
 				type: 'visit_depth_data',
 				types: [{

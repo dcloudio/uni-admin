@@ -43,10 +43,10 @@
 					</uni-tr>
 					<uni-tr v-for="(item ,i) in tableData" :key="i">
 						<template v-for="(mapper, index) in fieldsMap">
-							<uni-td v-if="mapper.field !== 'msg'" :key="mapper.title" >
+							<uni-td v-if="mapper.field !== 'msg'" :key="mapper.title">
 								{{item[mapper.field] !== undefined ? item[mapper.field] : '-'}}
 							</uni-td>
-							<uni-td v-else :key="mapper.title" align="center" >
+							<uni-td v-else :key="mapper.title" align="left">
 								<uni-stat-tooltip :text="item.msgTooltip" placement="left" :width="600">
 									{{item[mapper.field] !== undefined ? item[mapper.field] : '-'}}
 								</uni-stat-tooltip>
@@ -85,6 +85,17 @@
 		parseDateTime
 	} from '@/js_sdk/uni-stat/util.js'
 	import fieldsMap from './fieldsMap.js'
+
+	const panelOption = [{
+		title: '错误总数',
+		value: 0,
+		tooltip: '指应用在某个时间段内出现错误的总数'
+	}, {
+		title: '错误率',
+		value: 0,
+		tooltip: '时间范围内的总错误数/应用启动次数，如果小于0.01%，默认显示为0'
+	}]
+
 	export default {
 		data() {
 			return {
@@ -106,7 +117,7 @@
 				currentDateTab: 0,
 				// currentChartTab: ,
 				tableData: [],
-				panelData: [],
+				panelData: JSON.parse(JSON.stringify(panelOption)),
 				chartData: {},
 				chartTab: 'errorCount',
 				chartTabs: [{
@@ -167,7 +178,6 @@
 			},
 
 			getAllData(query) {
-				// this.getPanelData(query)
 				this.getChartData(query)
 				this.getTableData(query)
 			},
@@ -330,7 +340,7 @@
 							data
 						} = res.result
 						const tempData = []
-						const panelData = []
+						this.panelData = JSON.parse(JSON.stringify(panelOption))
 						for (const item of data) {
 							item.last_time = parseDateTime(item.last_time, 'dateTime')
 							item.msgTooltip = item.msg
@@ -350,11 +360,7 @@
 							const total_count = total && total.total_count
 							if (total_count) {
 								tempData.forEach(item => item.total_count = Number(total_count))
-								panelData[0] = {
-									title: '错误总数',
-									value: total_count,
-									tooltip: '指应用在某个时间段内出现错误的总数'
-								}
+								this.panelData[0].value = total_count
 							}
 							let launch_count = ''
 							this.getTotalLaunch(query).then(res => {
@@ -363,15 +369,8 @@
 								if (total_count && launch_count) {
 									let errorRate = total_count / launch_count
 									errorRate = (errorRate * 100).toFixed(2) + '%'
-									panelData[1] = {
-										title: '错误率',
-										value: errorRate,
-										tooltip: '时间范围内的总错误数/应用启动次数，如果小于0.01%，默认显示为0'
-									}
+									this.panelData[1].value = errorRate
 								}
-							}).finally(() => {
-								this.panelData = []
-								this.panelData = panelData
 							})
 
 						}).finally(() => {
@@ -399,25 +398,6 @@
 					}
 				})
 				return strArr.join()
-			},
-
-			getPanelData(query) {
-				const db = uniCloud.database()
-				const subTable = db.collection('opendb-stat-error-result')
-					.where(query)
-					.groupBy('appid')
-					.groupField(
-						'sum(new_user_count) as total_new_user_count, sum(active_user_count) as total_active_user_count, sum(page_visit_count) as total_page_visit_count, sum(app_launch_count) as total_app_launch_count, avg(avg_session_time) as total_avg_session_time, avg(avg_user_time) as total_avg_user_time, avg(bounce_rate) as total_bounce_rate, max(total_users) as total_total_users'
-					)
-					.orderBy('start_time', 'desc')
-					.get({
-						getCount: true
-					})
-					.then(res => {
-						const items = res.result.data[0]
-						this.panelData = []
-						this.panelData = mapfields(fieldsMap, items, undefined, 'total_')
-					})
 			}
 		}
 

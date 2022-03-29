@@ -77,6 +77,7 @@
 		resFieldsMap,
 		entFieldsMap
 	} from './fieldsMap.js'
+	const panelOption = fieldsMap.filter(f => f.hasOwnProperty('value'))
 	export default {
 		data() {
 			return {
@@ -85,7 +86,7 @@
 				entFieldsMap,
 				query: {
 					dimension: "hour",
-					appid: '',
+					appid: '__UNI__HelloUniApp',
 					platform_id: '',
 					start_time: [],
 				},
@@ -101,7 +102,7 @@
 				tableData: [],
 				resTableData: [],
 				entTableData: [],
-				panelData: [],
+				panelData: panelOption,
 				chartData: {},
 				eopts: {
 					notMerge: true,

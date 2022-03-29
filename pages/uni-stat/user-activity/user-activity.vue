@@ -89,7 +89,6 @@
 				currentDateTab: 0,
 				currentChartTab: 'day',
 				tableData: [],
-				panelData: [],
 				chartData: {},
 				defaultChart: {
 					field: 'new_user_count',

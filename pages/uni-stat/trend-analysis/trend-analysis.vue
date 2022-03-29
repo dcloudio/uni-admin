@@ -93,7 +93,7 @@
 				currentDateTab: 0,
 				currentDimensionTab: 0,
 				tableData: [],
-				panelData: [],
+				panelData: fieldsMap.filter(f => f.hasOwnProperty('value')),
 				chartData: {},
 				chartTab: 'new_user_count'
 			}

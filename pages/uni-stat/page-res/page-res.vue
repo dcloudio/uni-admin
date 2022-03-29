@@ -101,7 +101,7 @@
 				loading: false,
 				currentDateTab: 0,
 				tableData: [],
-				panelData: [],
+				panelData: fieldsMap.filter(f => f.hasOwnProperty('value')),
 				queryId: '',
 				updateValue: ''
 			}
