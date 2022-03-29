@@ -7,6 +7,8 @@
 			</view>
 		</view>
 		<view class="uni-container">
+			<uni-notice-bar v-if="showNotice" showGetMore showIcon class="mb-m"
+				text="统计相关功能需开通 uni 统计后才能使用, 具体流程参见 https://uniapp.dcloud.net.cn/, 点击打开" @click="navTo('https://uniapp.dcloud.net.cn/')" />
 			<view class="uni-stat--x flex mb-m">
 				<uni-stat-tabs label="平台选择" type="boldLine" mode="platform" v-model="query.platform_id" />
 			</view>
@@ -53,7 +55,8 @@
 				// 数据总量
 				total: 0,
 				loading: false,
-				fieldsMap
+				fieldsMap,
+				showNotice: true
 			}
 		},
 
@@ -126,7 +129,8 @@
 						if (!data.length) return
 						const rowData = {}
 						const start = this.query.start_time[0]
-						data = data.filter(item => !(item.stat_date === parseDateTime(start, 'date', '') && item.dimension === 'hour'))
+						data = data.filter(item => !(item.stat_date === parseDateTime(start, 'date', '') && item
+							.dimension === 'hour'))
 						for (const item of data) {
 							const {
 								appid,
@@ -141,20 +145,24 @@
 						for (const a of data) {
 							a.used = true
 							for (const b of data) {
-								if (data.length === 1 || (!b.used && a.appid === b.appid && a.stat_date !== b.stat_date)) {
+								if (data.length === 1 || (!b.used && a.appid === b.appid && a.stat_date !== b
+										.stat_date)) {
 									let today, yesterday
 									if (data.length < 2) {
 										today = data[0]
 									} else {
-										Number(a.stat_date) > Number(b.stat_date) ? [today, yesterday] = [a, b] : [today, yesterday] = [b, a]
+										Number(a.stat_date) > Number(b.stat_date) ? [today, yesterday] = [a, b] : [
+											today, yesterday
+										] = [b, a]
 									}
-									 today && (today.total_users = 0)  // total_users 不准确，置空后由 getCurrentTotalUser 处理
+									today && (today.total_users = 0) // total_users 不准确，置空后由 getCurrentTotalUser 处理
 									for (const key of keys) {
 										if (key === 'appid' || key === 'name') {
 											rowData[key] = today[key]
 										} else {
 											rowData[key + '_value'] = format(today && today[key] ? today[key] : '')
-											rowData[key + '_contrast'] = format(yesterday && yesterday[key] ? yesterday[key] : '')
+											rowData[key + '_contrast'] = format(yesterday && yesterday[key] ?
+												yesterday[key] : '')
 											for (const panel of this.panelData) {
 												if (key === panel.field) {
 													panel.value += today && today[key] ? today[key] : 0
@@ -173,7 +181,7 @@
 						}
 						const query = JSON.parse(JSON.stringify(this.query))
 						query.start_time = [getTimeOfSomeDayAgo(0), new Date().getTime()]
-						getCurrentTotalUser.call(this, query).then( users=> {
+						getCurrentTotalUser.call(this, query).then(users => {
 							this.tableData[0].total_users_value = users
 						})
 					}).catch((err) => {
@@ -185,11 +193,17 @@
 					})
 			},
 
-			navTo(id) {
-				const url = `/pages/uni-stat/overview/overview?id=${id}`
-				uni.navigateTo({
-					url
-				})
+			navTo(url, id) {
+				if (id) {
+					url = `${id}`
+				}
+				if (url.indexOf('http') > -1) {
+					window.open(url)
+				} else {
+					uni.navigateTo({
+						url
+					})
+				}
 			}
 		}
 
