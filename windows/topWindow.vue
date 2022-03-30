@@ -11,12 +11,16 @@
 		</svg>
 		<!-- #endif -->
 		<view class="navbar" :class="{'navbar-mini':!matchLeftWindow,'popup-menu':popupMenuOpened}">
-			<view class="navbar-left pointer">
-				<view class="logo" @click="linkTo">
+			<view class="navbar-left">
+				<view class="logo pointer" @click="linkTo">
 					<image :src="logo" mode="heightFix"></image>
 					<text>{{appName}}</text>
 				</view>
 				<uni-icons @click="toggleSidebar" type="bars" class="menu-icon" size="30" color="#999"></uni-icons>
+				<uni-breadcrumb separator="/">
+					<uni-breadcrumb-item :to="{ path: '/' }">首页</uni-breadcrumb-item>
+					<uni-breadcrumb-item v-for="route in routes" :to="route.to">{{route.name}}</uni-breadcrumb-item>
+				</uni-breadcrumb>
 			</view>
 			<view class="navbar-middle">
 				<text class="title-text">{{navigationBarTitleText}}</text>
@@ -113,6 +117,7 @@
 		},
 		computed: {
 			...mapState('app', ['appName']),
+			...mapState('app', ['routes']),
 			...mapState('user', ['userInfo']),
 			...mapState('error', ['logs'])
 		},
@@ -129,6 +134,7 @@
 				this.changeLanguage('zh-Hans')
 			})
 			// #endif
+			console.log(888888888, this.routes);
 		},
 		methods: {
 			...mapMutations({
@@ -193,7 +199,7 @@
 					uni.setLocale('en')
 				}
 			},
-			linkTo(){
+			linkTo() {
 				uni.reLaunch({
 					url: '/'
 				})
@@ -223,7 +229,7 @@
 	}
 
 	.logo {
-
+		min-width: 223px;
 		display: flex;
 		align-items: center;
 
@@ -248,6 +254,9 @@
 		/* #ifdef MP */
 		margin-right: 97px;
 		/* #endif */
+	}
+	.navbar-left {
+		display: flex;
 	}
 
 	// 在平板以下，保持navbar-middle

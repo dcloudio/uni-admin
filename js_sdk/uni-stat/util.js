@@ -215,7 +215,6 @@ function mapfields(map, data = {}, goal, prefix = '', prop = 'value') {
 			const preField = prefix + field
 			if (data) {
 				const value = data[preField]
-				console.log(preField ,'......value:', value);
 				if (computed) {
 					const computedFields = computed.split('/')
 					let [dividend, divisor] = computedFields

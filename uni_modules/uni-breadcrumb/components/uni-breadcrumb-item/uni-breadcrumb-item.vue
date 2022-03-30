@@ -2,7 +2,7 @@
 	<view class="uni-breadcrumb-item">
 		<view :class="{
 			'uni-breadcrumb-item--slot': true,
-			'uni-breadcrumb-item--slot-link': to
+			'uni-breadcrumb-item--slot-link': to && currentPage !== to.path
 			}" @click="navTo">
 			<slot />
 		</view>
@@ -13,7 +13,9 @@
 <script>
 	export default {
 		data() {
-			return {}
+			return {
+				currentPage: ''
+			}
 		},
 		props: {
 			to: {
@@ -30,12 +32,21 @@
 				return this.uniBreadcrumb.separatorClass
 			}
 		},
+		watch: {
+			$route: {
+				immediate: true,
+				handler(val) {
+					this.currentPage = val.path
+				}
+			}
+		},
 		methods: {
 			navTo() {
 				const {
 					to,
 					$router
 				} = this
+				if (this.currentPage === to.path) return
 				if (to && $router) {
 					this.replace ?
 						$router.replace(to) :
@@ -50,6 +61,7 @@
 	.uni-breadcrumb-item {
 		display: flex;
 		align-items: center;
+		white-space: nowrap;
 
 		&--slot {
 			font-size: 14px;

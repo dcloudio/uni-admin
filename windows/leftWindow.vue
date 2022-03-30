@@ -51,15 +51,16 @@
 		// #endif
 		methods: {
 			...mapActions({
-				changeMenuActive: 'app/changeMenuActive'
+				changeMenuActive: 'app/changeMenuActive',
+				setRoutes: 'app/setRoutes'
 			}),
-			select(e) {
+			select(e, routes) {
 				let url = e.value
-
 				if (!url) {
 					url = this.active
 				}
 				this.clickMenuItem(url)
+				this.setRoutes(routes)
 			},
 			clickMenuItem(url) {
 				// #ifdef H5
