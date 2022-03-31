@@ -46,6 +46,7 @@
 				query: {
 					dimension: "day",
 					appid: '__UNI__HelloUniApp',
+					// start_time: new Date().getTime(),
 					start_time: getTimeOfSomeDayAgo(1),
 				},
 				platforms: [],
