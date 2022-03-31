@@ -62,9 +62,9 @@
 		display: flex;
 		align-items: center;
 		white-space: nowrap;
+		font-size: 14px;
 
 		&--slot {
-			font-size: 14px;
 			color: #666;
 			padding: 0 10px;
 
@@ -83,11 +83,14 @@
 
 		&--separator {
 			font-size: 12px;
-			color: #999;
+			color: #666;
 		}
 
 		&:last-child &--separator {
 			display: none;
+		}
+		&:first-child &--slot {
+			padding-left: 0;
 		}
 	}
 </style>

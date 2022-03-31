@@ -1,14 +1,16 @@
 <template>
 	<view class="fix-top-window">
-		<view class="uni-header hide-on-phone">
+		<view class="uni-header">
+			<uni-stat-breadcrumb class="uni-stat-breadcrumb-on-phone" />
 			<view class="uni-group">
-				<view class="uni-title">统计首页</view>
-				<view class="uni-sub-title"></view>
+				<!-- <view class="uni-title">统计首页</view> -->
+				<view class="uni-sub-title  hide-on-phone"></view>
 			</view>
 		</view>
 		<view class="uni-container">
 			<uni-notice-bar v-if="showNotice" showGetMore showIcon class="mb-m"
-				text="统计相关功能需开通 uni 统计后才能使用, 具体流程参见 https://uniapp.dcloud.net.cn/ (点击打开)" @click="navTo('https://uniapp.dcloud.net.cn/')" />
+				text="统计相关功能需开通 uni 统计后才能使用, 具体流程参见 https://uniapp.dcloud.net.cn/ (点击打开)"
+				@click="navTo('https://uniapp.dcloud.net.cn/')" />
 			<view class="uni-stat--x flex mb-m">
 				<uni-stat-tabs label="平台选择" type="boldLine" mode="platform" v-model="query.platform_id" />
 			</view>

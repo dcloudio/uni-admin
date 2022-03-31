@@ -1,8 +1,9 @@
 <template>
 	<view class="fix-top-window">
-		<view class="uni-header hide-on-phone">
-			<view class="uni-group">
-				<view class="uni-title">平台对比</view>
+		<view class="uni-header">
+			<uni-stat-breadcrumb class="uni-stat-breadcrumb-on-phone" />
+			<view class="uni-group hide-on-phone">
+				<!-- <view class="uni-title">平台对比</view> -->
 				<view class="uni-sub-title">多个指标在不同平台数据的占比，可以直观看出各个平台引流的效果</view>
 			</view>
 		</view>

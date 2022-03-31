@@ -1,9 +1,10 @@
 <template>
 	<view class="fix-top-window">
-		<view class="uni-header hide-on-phone">
+		<view class="uni-header">
+			<uni-stat-breadcrumb class="uni-stat-breadcrumb-on-phone" />
 			<view class="uni-group">
-				<view class="uni-title">渠道（app）</view>
-				<view class="uni-sub-title">
+				<!-- <view class="uni-title">渠道（app）</view> -->
+				<view class="uni-sub-title hide-on-phone">
 					<uni-link href="https://ask.dcloud.net.cn/article/35974"
 						text="支持Android App多渠道统计。设置App渠道包的方法，请参考 https://ask.dcloud.net.cn/article/35974。"></uni-link>
 				</view>

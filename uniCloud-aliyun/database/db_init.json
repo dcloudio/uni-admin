@@ -1804,6 +1804,16 @@
 	},
 	"opendb-admin-menus": {
 		"data": [{
+			"menu_id": "index",
+			"name": "首页",
+			"icon": "uni-icons-home",
+			"url": "/",
+			"sort": 100,
+			"parent_id": "",
+			"permission": [],
+			"enable": true,
+			"create_date": 1602662469396
+		}, {
 			"menu_id": "system_management",
 			"name": "系统管理",
 			"icon": "uni-icons-gear",

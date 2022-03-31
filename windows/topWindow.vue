@@ -17,10 +17,6 @@
 					<text>{{appName}}</text>
 				</view>
 				<uni-icons @click="toggleSidebar" type="bars" class="menu-icon" size="30" color="#999"></uni-icons>
-				<uni-breadcrumb separator="/">
-					<uni-breadcrumb-item :to="{ path: '/' }">首页</uni-breadcrumb-item>
-					<uni-breadcrumb-item v-for="route in routes" :to="route.to">{{route.name}}</uni-breadcrumb-item>
-				</uni-breadcrumb>
 			</view>
 			<view class="navbar-middle">
 				<text class="title-text">{{navigationBarTitleText}}</text>

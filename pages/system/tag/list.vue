@@ -1,13 +1,10 @@
 <template>
 	<view class="fix-top-window">
 		<view class="uni-header">
-			<view class="uni-group hide-on-phone">
-				<view class="uni-title">标签管理</view>
-				<view class="uni-sub-title"></view>
-			</view>
+			<uni-stat-breadcrumb class="uni-stat-breadcrumb-on-phone" />
 			<view class="uni-group">
 				<input class="uni-search" type="text" v-model="query" @confirm="search" placeholder="请输入搜索内容" />
-				<button class="uni-button" type="default" size="mini" @click="search">搜索</button>
+				<button class="uni-button hide-on-phone" type="default" size="mini" @click="search">搜索</button>
 				<button class="uni-button" type="primary" size="mini" @click="navigateTo('./add')">新增</button>
 				<button class="uni-button" type="warn" size="mini" :disabled="!selectedIndexs.length"
 					@click="delTable">批量删除</button>

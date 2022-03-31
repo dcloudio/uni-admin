@@ -1,9 +1,10 @@
 Î<template>
 	<view class="fix-top-window">
-		<view class="uni-header hide-on-phone">
+		<view class="uni-header">
+			<uni-stat-breadcrumb class="uni-stat-breadcrumb-on-phone" />
 			<view class="uni-group">
-				<view class="uni-title">事件分析管理</view>
-				<view class="uni-sub-title">分析用户自定义事件
+				<!-- <view class="uni-title">事件分析管理</view> -->
+				<view class="uni-sub-title hide-on-phone">分析用户自定义事件
 					<uni-link href="https://ask.dcloud.net.cn/article/36304" text="自定义事件说明>>"></uni-link>
 				</view>
 			</view>

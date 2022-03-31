@@ -183,19 +183,6 @@
 				"enablePullDownRefresh": false
 			}
 		}, {
-			"path": "page-content/page-content",
-			"style": {
-				"navigationBarTitleText": "",
-				"enablePullDownRefresh": false
-			}
-		}, {
-			"path": "page-rule/page-rule",
-			"style": {
-				"navigationBarTitleText": "",
-				"enablePullDownRefresh": false
-			}
-
-		}, {
 			"path": "overview/overview",
 			"style": {
 				"navigationBarTitleText": "今日概况",

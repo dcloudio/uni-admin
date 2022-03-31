@@ -1,9 +1,9 @@
 <template>
 	<view class="fix-top-window">
-		<view class="uni-header hide-on-phone">
+		<view class="uni-header">				<uni-stat-breadcrumb class="uni-stat-breadcrumb-on-phone" />
 			<view class="uni-group">
-				<view class="uni-title">用户活跃度</view>
-				<view class="uni-sub-title">用户活跃度分析</view>
+				<!-- <view class="uni-title">用户活跃度</view> -->
+				<view class="uni-sub-title hide-on-phone">用户活跃度分析</view>
 			</view>
 		</view>
 		<view class="uni-container">
@@ -11,7 +11,8 @@
 				<uni-stat-select mode="app" label="应用选择" v-model="query.appid" :clear="false" />
 			</view>
 			<view class="uni-stat--x">
-				<uni-stat-tabs label="平台选择" type="boldLine" mode="platform" v-model="query.platform_id" @change="changePlatform" />
+				<uni-stat-tabs label="平台选择" type="boldLine" mode="platform" v-model="query.platform_id"
+					@change="changePlatform" />
 				<uni-stat-select mode="channel" label="渠道选择" :query="channelQuery" v-model="query.channel_id" />
 			</view>
 			<view class="uni-stat--x flex">
@@ -249,7 +250,8 @@
 					pageCurrent
 				} = this.options
 				query = stringifyQuery(query)
-				console.log('..............Table query：', query, stringifyField(fieldsMap, field), stringifyGroupField(fieldsMap, field));
+				console.log('..............Table query：', query, stringifyField(fieldsMap, field), stringifyGroupField(
+					fieldsMap, field));
 				this.loading = true
 				const db = uniCloud.database()
 				db.collection(this.tableName)

@@ -1,9 +1,11 @@
 <template>
 	<view class="fix-top-window">
-		<view class="uni-header hide-on-phone">
+		<view class="uni-header">
+			<uni-stat-breadcrumb class="uni-stat-breadcrumb-on-phone" />
 			<view class="uni-group">
-				<view class="uni-title">场景值（小程序）</view>
-				<view class="uni-sub-title">小程序平台有效。用户打开小程序时的场景，如通过扫描二维码打开小程序，场景为二维码。注意：部分平台可能获取不到场景值，如支付宝小程序</view>
+				<!-- <view class="uni-title">场景值（小程序）</view> -->
+				<view class="uni-sub-title hide-on-phone">
+					小程序平台有效。用户打开小程序时的场景，如通过扫描二维码打开小程序，场景为二维码。注意：部分平台可能获取不到场景值，如支付宝小程序</view>
 			</view>
 		</view>
 		<view class="uni-container">

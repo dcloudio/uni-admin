@@ -1,14 +1,11 @@
 <template>
 	<view class="fix-top-window">
 		<view class="uni-header">
-			<view class="uni-group hide-on-phone">
-				<view class="uni-title">{{$t('user.text.userManager')}}</view>
-				<view class="uni-sub-title"></view>
-			</view>
+			<uni-stat-breadcrumb class="uni-stat-breadcrumb-on-phone" />
 			<view class="uni-group">
 				<input class="uni-search" type="text" v-model="query" @confirm="search"
 					:placeholder="$t('common.placeholder.query')" />
-				<button class="uni-button" type="default" size="mini"
+				<button class="uni-button hide-on-phone" type="default" size="mini"
 					@click="search">{{$t('common.button.search')}}</button>
 				<button class="uni-button" type="primary" size="mini"
 					@click="navigateTo('./add')">{{$t('common.button.add')}}</button>
@@ -104,13 +101,12 @@
 		<uni-popup ref="tagsPopup" type="center">
 			<view class="tags-manager--x">
 				<view class="tags-manager--header mb">管理标签</view>
-				<uni-data-checkbox ref="checkbox" v-model="managerTags" class="mb ml" :multiple="true" collection="uni-id-tag"
-					field="tagid as value, name as text"></uni-data-checkbox>
+				<uni-data-checkbox ref="checkbox" v-model="managerTags" class="mb ml" :multiple="true"
+					collection="uni-id-tag" field="tagid as value, name as text"></uni-data-checkbox>
 				<view class="uni-group">
-					<button @click="managerMultiTag('add')" class="uni-button"
-						type="primary" style="margin-right: 75px;">添加</button>
-					<button @click="managerMultiTag('del')" class="uni-button"
-						type="warn">删除</button>
+					<button @click="managerMultiTag('add')" class="uni-button" type="primary"
+						style="margin-right: 75px;">添加</button>
+					<button @click="managerMultiTag('del')" class="uni-button" type="warn">删除</button>
 				</view>
 			</view>
 		</uni-popup>
@@ -419,6 +415,7 @@
 	.mb {
 		margin-bottom: 80px;
 	}
+
 	.ml {
 		margin-left: 30px;
 	}
