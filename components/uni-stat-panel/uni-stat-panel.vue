@@ -79,7 +79,7 @@
 	@media screen and (max-width: 500px) {
 		.uni-stat--sum-x {
 			padding: 15px 0;
-			justify-content: unset;
+			justify-content: space-between;
 			flex-wrap: unset;
 			overflow-x: auto !important;
 		}

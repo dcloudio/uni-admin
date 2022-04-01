@@ -458,14 +458,10 @@ button:after {
 
 .label-text {
 	font-size: 14px;
-	color: #666;
+	font-weight: bold;
+	color: #555;
 	margin: auto 0;
 	margin-right: 5px;
-}
-
-.uni-stat-datetime-picker {
-	max-width: 350px;
-	margin: 15px
 }
 
 .uni-stat-edit--x {
@@ -477,6 +473,9 @@ button:after {
 	cursor: pointer;
 }
 
+.uni-stat-datetime-picker {
+	margin: 15px
+}
 
 /* #ifndef APP-NVUE */
 @media screen and (max-width: 500px) {
@@ -495,6 +494,7 @@ button:after {
 		width: 100%;
 		margin: 20px 20px 10px 20px;
 	}
+
 	.uni-header {
 		padding-left: 0px;
 		padding-right: 0px;
@@ -508,6 +508,10 @@ button:after {
 	.uni-stat-breadcrumb-on-phone {
 		padding: 0 20px !important;
 		border-bottom: 1px #f5f5f5 solid;
+	}
+
+	.uni-stat-datetime-picker {
+		flex: 1;
 	}
 }
 
@@ -524,6 +528,10 @@ button:after {
 		display: flex;
 		flex-wrap: wrap;
 		align-items: center;
+	}
+
+	.uni-stat-datetime-picker {
+		max-width: 350px;
 	}
 
 }
