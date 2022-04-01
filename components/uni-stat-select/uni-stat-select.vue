@@ -269,7 +269,7 @@
 	}
 
 	.uni-select__input-box {
-		min-height: 34px;
+		min-height: 36px;
 		position: relative;
 		/* #ifndef APP-NVUE */
 		display: flex;
