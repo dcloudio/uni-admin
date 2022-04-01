@@ -188,7 +188,6 @@
 				this.chartData = {}
 				query = stringifyQuery(query)
 				const groupField = this.createStr([field], this.type)
-				console.log('..............Chart query：', query);
 				const db = uniCloud.database()
 				db.collection('opendb-stat-loyalty-result')
 					.where(query)
@@ -204,7 +203,6 @@
 							data
 						} = res.result
 						data = data[0]
-						console.log('.......chart:', data);
 						const options = {
 							categories: [],
 							series: [{
@@ -235,7 +233,6 @@
 			getTabelData(query) {
 				query = stringifyQuery(query)
 				const groupField = this.createStr(['visit_users', 'visit_times'], this.type)
-				console.log('..............Table query：', query);
 				this.loading = true
 				const db = uniCloud.database()
 				db.collection('opendb-stat-loyalty-result')
@@ -251,7 +248,6 @@
 							count,
 							data
 						} = res.result
-						console.log('.......table:', data);
 						const type = this.type
 						const rows = []
 						let splitor = this.options[type].prefix
@@ -295,11 +291,9 @@
 							item.name = this.parseChars(String(val))
 							tableData.push(item)
 						})
-						console.log(33333, tableData)
 						for (const item of tableData) {
 							mapfields(fieldsMap, item, item)
 						}
-						console.log(4444444, tableData)
 						// this.options.total = count
 						this.tableData = []
 						this.tableData = tableData
@@ -314,7 +308,6 @@
 
 			getPanelData(query) {
 				query = stringifyQuery(query)
-				console.log('..............Panel query：', query);
 				const db = uniCloud.database()
 				const subTable = db.collection('opendb-stat-result')
 					.where(query)
@@ -327,7 +320,6 @@
 						getCount: true
 					})
 					.then(res => {
-						console.log('.......table:', res);
 						const items = res.result.data[0]
 						this.panelData = []
 						this.panelData = mapfields(fieldsMap, items, undefined, 'total_')

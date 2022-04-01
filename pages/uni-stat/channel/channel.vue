@@ -237,9 +237,6 @@
 				const {
 					pageCurrent
 				} = this.options
-				console.log('..............Chart query：', query);
-				console.log('..............Chart stringifyGroupField(fieldsMap, field)：', stringifyGroupField(fieldsMap,
-					field));
 				const db = uniCloud.database()
 				db.collection('opendb-stat-result')
 					.where(query)
@@ -255,7 +252,6 @@
 							count,
 							data
 						} = res.result
-						console.log('.......chart:', data);
 						const options = {
 							categories: [],
 							series: [{
@@ -316,7 +312,6 @@
 
 								}
 							})
-							console.log(1111111, options);
 							this.chartData = options
 						})
 					}).catch((err) => {
@@ -354,7 +349,6 @@
 							count,
 							data
 						} = res.result
-						console.log('.......table:', data);
 
 						this.getChannels().then(res => {
 							const channels = res.result.data

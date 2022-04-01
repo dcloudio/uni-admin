@@ -145,7 +145,6 @@
 				this.query.start_time = [start, end]
 			},
 			changePageCurrent(e) {
-				console.log(2222222222222, e);
 				this.options.pageCurrent = e.current
 				this.getTableData(this.query)
 			},
@@ -166,7 +165,6 @@
 
 			getTableData(query) {
 				query = stringifyQuery(this.query)
-				console.log('..........page q:', query);
 				const {
 					pageCurrent
 				} = this.options
@@ -200,7 +198,6 @@
 							count,
 							data
 						} = res.result
-						console.log('........table data:', data);
 						this.options.total = count
 						this.tableData = []
 						for (const item of data) {

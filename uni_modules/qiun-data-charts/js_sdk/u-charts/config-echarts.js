@@ -469,7 +469,6 @@ const cfe = {
 
 function deviceWidth() {
 	const device = uni.getSystemInfoSync()
-	console.log(1111111, device)
 	const type = cfe.area
 	if (device.windowWidth < 500) {
 		type.grid = {

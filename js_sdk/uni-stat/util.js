@@ -17,7 +17,6 @@ function maxDeltaDay(times, delta = 2) {
 	const wunDay = 24 * 60 * 60 * 1000
 	const [start, end] = times
 	const max = end - start < wunDay * delta
-	// console.log('........max:', max);
 	return max
 }
 
@@ -148,7 +147,6 @@ function format(num, type = ',') {
 }
 
 function formatDate(date, type) {
-	// console.log('-------date:', date)
 	let d = new Date(date)
 	if (type === 'hour') {
 		let h = d.getHours()
@@ -175,7 +173,6 @@ function formatDate(date, type) {
 
 function parseDateTime(datetime, type, splitor = '-') {
 	let d = datetime
-	// console.log('--------ddd', d)
 	if (typeof d !== 'object') {
 		d = new Date(d)
 	}
@@ -266,13 +263,11 @@ function getCurrentTotalUser(query = this.query, field = "total_users") {
 			const data = cur.result.data
 			currentTotalUser = data.length && Math.max(...data.map(item => item.total_users))
 			currentTotalUser = format(currentTotalUser)
-			console.log('=========currentTotalUser', data, '======', currentTotalUser);
 			this.panelData.forEach(item => {
 				if (item.field === 'total_users') {
 					item.value = currentTotalUser
 				}
 			})
-			// return new Promise((resolve, reject) => resolve(currentTotalUser))
 			return Promise.resolve(currentTotalUser)
 		})
 }

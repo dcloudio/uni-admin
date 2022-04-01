@@ -224,7 +224,6 @@
 				if (!this.query.start_time.length) return true
 				const day = 24 * 60 * 60 * 1000
 				const [start, end] = this.query.start_time
-				console.log(start, end, end - start);
 				const lessTwoDay = end - start >= day
 				return lessTwoDay
 			},
@@ -240,7 +239,6 @@
 					platform_id,
 					start_time: [getTimeOfSomeDayAgo(1), new Date().getTime()]
 				})
-				console.log('..............Panel query：', query);
 				const db = uniCloud.database()
 				const subTable = db.collection('opendb-stat-result')
 					.where(query)
@@ -253,7 +251,6 @@
 					.get()
 					.then(res => {
 						const data = res.result.data
-						console.log(111111111, data);
 						const today = data[0]
 						today && (today.total_users = 0)
 						const yesterday = data.find(item => item.dimension === 'day')
@@ -283,8 +280,6 @@
 					// query.dimension = 'hour'
 				}
 				query = stringifyQuery(query, true)
-				console.log('..............getChartData query：', query);
-				// this.loading = true
 				const db = uniCloud.database()
 				db.collection('opendb-stat-result')
 					.where(query)
@@ -300,7 +295,6 @@
 							count,
 							data
 						} = res.result
-						console.log('.......chart:', data);
 						const options = {
 							categories: [],
 							series: [{
@@ -361,7 +355,6 @@
 									options.categories.push(x)
 								}
 							}
-							console.log(2222222, options);
 						}
 						this.chartData = options
 					}).catch((err) => {
@@ -384,7 +377,6 @@
 				query = JSON.parse(JSON.stringify(query))
 				query.dimension = 'day'
 				query = stringifyQuery(query)
-				console.log('..........page q:', query);
 				const {
 					pageCurrent
 				} = this.options
@@ -423,7 +415,6 @@
 						this.getAppAccessTimes(query).then(res => {
 							const data = res.result.data[0]
 							total_app_access = data && data.total_app_access
-							// console.log('..............total_app_access', total_app_access);
 						}).finally(() => {
 							this[`${type}TableData`] = []
 							for (const item of data) {

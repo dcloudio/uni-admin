@@ -106,7 +106,6 @@
 		},
 		methods: {
 			getApps(query, type = "day") {
-				console.log('..............query', query);
 				this.loading = true
 				const db = uniCloud.database()
 				const appList = db.collection('opendb-app-list').getTemp()

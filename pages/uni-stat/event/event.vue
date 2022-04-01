@@ -168,7 +168,6 @@
 				const {
 					pageCurrent
 				} = this.options
-				console.log('..............query：', query);
 				this.loading = true
 				const db = uniCloud.database()
 				const filterAppid = stringifyQuery({
@@ -194,7 +193,6 @@
 							count,
 							data
 						} = res.result
-						console.log(111111111, data);
 						this.tableData = []
 						this.options.total = count
 						for (const item of data) {
@@ -204,7 +202,6 @@
 							mapfields(fieldsMap, item, item)
 							this.tableData.push(item)
 						}
-						console.log(222222222222, this.tableData);
 					}).catch((err) => {
 						console.error(err)
 						// err.message 错误信息
@@ -215,7 +212,6 @@
 			},
 
 			inputDialogToggle(queryId, updateValue) {
-				console.log(3333333333333, queryId, updateValue);
 				this.queryId = queryId
 				this.updateValue = updateValue
 				this.$refs.inputDialog.open()

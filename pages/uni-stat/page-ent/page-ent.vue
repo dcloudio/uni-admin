@@ -138,7 +138,6 @@
 
 			getTableData(query) {
 				query = stringifyQuery(this.query)
-				console.log('..........page q:', query);
 				const {
 					pageCurrent
 				} = this.options
@@ -151,7 +150,6 @@
 					.where(filterAppid)
 					.getTemp()
 
-				console.log('.........mainTableTemp', mainTableTemp);
 				const subTableTemp = db.collection('opendb-stat-page-result')
 					.where(query)
 					.getTemp()
@@ -173,7 +171,6 @@
 							count,
 							data
 						} = res.result
-						console.log('........table data:', data);
 						this.options.total = count
 						this.tableData = []
 						for (const item of data) {

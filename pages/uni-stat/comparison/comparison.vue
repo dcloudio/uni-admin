@@ -75,7 +75,6 @@
 		methods: {
 			getChartData(query, type = 'day') {
 				query = stringifyQuery(query)
-				console.log('.............query:', query);
 				const db = uniCloud.database()
 				db.collection('opendb-stat-result')
 					.where(query)
@@ -88,7 +87,6 @@
 					)
 					.get()
 					.then(res => {
-						console.log(111111, res);
 						const data = res.result.data
 						this.initChartOption(data, 'dayChartsData')
 					})
@@ -108,7 +106,6 @@
 					.orderBy(`year asc, ${type} asc`)
 					.get()
 					.then(res => {
-						console.log(2222222, res);
 						const data = res.result.data
 						this.initChartOption(data, 'monChartsData', 'month')
 					})

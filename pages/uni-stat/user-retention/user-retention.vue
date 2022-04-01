@@ -225,7 +225,6 @@
 						return `retention.${this.field}.${f.field}.user_count as ${ 'temp_' + f.field}`
 					}
 				}).join()
-				console.log('..............Chart ffffff:', fields);
 				return fields
 			},
 
@@ -243,7 +242,6 @@
 					strArr.push(tail)
 				}
 				const str = strArr.join()
-				// console.log('..............str:', str)
 				return str
 			},
 
@@ -259,8 +257,6 @@
 				} = this.options
 				query = stringifyQuery(query)
 				const groupField = this.createStr("user_count", [key], [this.field])
-				console.log('..............Chart Field:', groupField);
-				console.log('..............Chart query：', query);
 				const db = uniCloud.database()
 				db.collection('opendb-stat-result')
 					.where(query)
@@ -276,7 +272,6 @@
 							count,
 							data
 						} = res.result
-						console.log('.......chart:', data);
 						const options = {
 							categories: [],
 							series: [{
@@ -293,7 +288,6 @@
 							}
 
 						}
-						console.log(333333, options);
 						this.chartData = options
 					}).catch((err) => {
 						console.error(err)
@@ -311,8 +305,6 @@
 				query = stringifyQuery(query)
 				const tail = this.field + "_count"
 				const groupField = this.createStr('user_rate', '', [this.field], tail)
-				console.log('..............Table Field:', groupField);
-				console.log('..............Table query：', query);
 				this.loading = true
 				const db = uniCloud.database()
 				db.collection('opendb-stat-result')
@@ -331,7 +323,6 @@
 							count,
 							data
 						} = res.result
-						console.log('.......table:', data);
 						for (const item of data) {
 							mapfields(this.fieldsMap, item, item)
 						}

@@ -211,7 +211,6 @@
 								count,
 								data
 							} = res.result
-							// console.log('.......chart:', data);
 							this.chartData = []
 							for (const item of data) {
 								const x = formatDate(item.start_time, 'day')
@@ -250,8 +249,6 @@
 					pageCurrent
 				} = this.options
 				query = stringifyQuery(query)
-				console.log('..............Table query：', query, stringifyField(fieldsMap, field), stringifyGroupField(
-					fieldsMap, field));
 				this.loading = true
 				const db = uniCloud.database()
 				db.collection(this.tableName)

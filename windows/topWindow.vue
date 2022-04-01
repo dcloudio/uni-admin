@@ -130,7 +130,6 @@
 				this.changeLanguage('zh-Hans')
 			})
 			// #endif
-			console.log(888888888, this.routes);
 		},
 		methods: {
 			...mapMutations({

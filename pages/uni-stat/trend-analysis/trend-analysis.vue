@@ -232,7 +232,6 @@
 			getChartData(query, field = this.chartTab, name = '新增用户') {
 				this.chartData = {}
 				query = stringifyQuery(query, true)
-				console.log('..............Chart query：', query);
 				const dimension = this.query.dimension
 				const db = uniCloud.database()
 				db.collection('opendb-stat-result')
@@ -249,7 +248,6 @@
 							count,
 							data
 						} = res.result
-						// console.log('.......chart:', data);
 						const options = {
 							categories: [],
 							series: [{
@@ -287,7 +285,6 @@
 					pageCurrent
 				} = this.options
 				query = stringifyQuery(query, true)
-				// console.log('..............Table query：', query);
 				this.options.pageCurrent = 1 // 重置分页
 				this.loading = true
 				const db = uniCloud.database()
@@ -307,7 +304,6 @@
 							count,
 							data
 						} = res.result
-						// console.log('.......table:', data);
 						for (const item of data) {
 							let date = item.start_time
 							if (date) {
@@ -332,7 +328,6 @@
 				let cloneQuery = JSON.parse(JSON.stringify(this.query))
 				cloneQuery.dimension = 'day'
 				let query = stringifyQuery(cloneQuery)
-				console.log('..............Panel query：', query);
 				const db = uniCloud.database()
 				const subTable = db.collection('opendb-stat-result')
 					.where(query)

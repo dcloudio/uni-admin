@@ -188,7 +188,6 @@
 				const {
 					pageCurrent
 				} = this.options
-				console.log('..............Chart query：', query);
 				const db = uniCloud.database()
 				db.collection('opendb-stat-error-result')
 					.where(query)
@@ -203,7 +202,6 @@
 							count,
 							data
 						} = res.result
-						console.log('.......chart:', data);
 						const options = {
 							categories: [],
 							series: [{
@@ -224,13 +222,11 @@
 								xAxis.push(x)
 								countLine.data.push(countY)
 							}
-							console.log(6666666, options);
 							this.chartData = options
 						} else {
 							let dayAppLaunchs = []
 							this.getDayLaunch(query).then(res => {
 								dayAppLaunchs = res.result.data
-								console.log(3333333333, dayAppLaunchs);
 							}).finally(() => {
 								const rateLine = options.series[0] = {
 									name: '错误率',
@@ -273,7 +269,6 @@
 										})
 									}
 								}
-								console.log(6666666, options);
 								this.chartData = options
 							})
 						}
@@ -317,7 +312,6 @@
 				const {
 					pageCurrent
 				} = this.options
-				console.log('..............query：', query);
 				this.loading = true
 				const db = uniCloud.database()
 				const filterAppid = stringifyQuery({
