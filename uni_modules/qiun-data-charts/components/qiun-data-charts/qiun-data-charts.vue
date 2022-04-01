@@ -1387,7 +1387,7 @@
 								name: "getHighlight",
 								params: {
 									type: "highlight",
-									dataIndex: resdata.batch[0].dataIndex,
+									dataIndex: resdata.batch && resdata.batch[0].dataIndex,
 									id: cid
 								}
 							})
