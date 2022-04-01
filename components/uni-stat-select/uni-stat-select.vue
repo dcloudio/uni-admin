@@ -1,6 +1,6 @@
 <template>
 	<view class="uni-stat__select">
-		<span v-if="label" class="label-text hide-on-phone">{{label + '：'}}</span>
+		<span v-if="label" class="uni-label-text hide-on-phone">{{label + '：'}}</span>
 		<view :class="{'uni-stat__actived': current}">
 			<view class="uni-select">
 				<view class="uni-select__input-box" @click="toggleSelector">
@@ -238,9 +238,10 @@
 		outline: 1px solid #2979ff;
 	}
 
-	.label-text {
+	.uni-label-text {
 		font-size: 14px;
-		color: #666;
+		font-weight: bold;
+		color: #555;
 		margin: auto 0;
 		margin-right: 5px;
 	}

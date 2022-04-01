@@ -219,7 +219,7 @@ const cfe = {
 			"type": 'scroll',
 			"orient": 'horizontal',
 			"left": 'left',
-			"padding": [0, 60, 10, 60],
+			"padding": [0, 30, 10, 30],
 			"itemGap": 20
 		},
 		"toolbox": {

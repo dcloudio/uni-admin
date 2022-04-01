@@ -1,6 +1,6 @@
 <template>
 	<view class="uni-stat--sum-x mb-m">
-		<view v-for="(item, index) in items" :key="index" class="uni-stat--sum-item">
+		<view v-for="(item, index) in items" :key="index" class="uni-stat--sum-item" :class="[item.value === '今天' ? 'uni-stat--sum-item-width' : '']">
 			<view class="uni-stat--sum-item-title">
 				{{item.title}}
 				<uni-stat-tooltip :text="item.tooltip" />
@@ -39,7 +39,7 @@
 	.uni-stat--sum {
 		&-x {
 			display: flex;
-			justify-content: space-around;
+			justify-content: space-evenly;
 			flex-wrap: wrap;
 			border-radius: 4px;
 			padding: 15px;
@@ -50,6 +50,10 @@
 			white-space: nowrap;
 			text-align: center;
 			margin: 10px 30px;
+
+			&-width {
+				width: 100px
+			}
 		}
 
 		&-item-title {

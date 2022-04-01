@@ -1,20 +1,23 @@
 <template>
-	<view class="uni-stat--tab">
-		<span v-if="label" class="label-text hide-on-phone">{{label + '：'}}</span>
-		<view v-if="!renderTabs.length" class="uni-stat--tab-item uni-stat--tab-item-disabled"
-			:class="[`uni-stat--tab-item-${type}`]">
-			{{placeholder}}
-		</view>
-		<view v-else v-for="(item, index) in renderTabs" :key="index" @click="change(item, index)"
-			class="uni-stat--tab-item" :class="[
-				index === currentTab ? `uni-stat--tab-item-${type}-active` : '' , `uni-stat--tab-item-${type}`,
-				item.disabled ? 'uni-stat--tab-item-disabled' : ''
-			]">
-			{{item.name}}
-			<uni-stat-tooltip v-if="tooltip" :text="item.tooltip" />
-		</view>
+	<view class="uni-stat--tab-x">
+		<view v-if="label" class="uni-label-text hide-on-phone">{{label + '：'}}</view>
+		<view class="uni-stat--tab">
+			<view v-if="!renderTabs.length" class="uni-stat--tab-item uni-stat--tab-item-disabled"
+				:class="[`uni-stat--tab-item-${type}`]">
+				{{placeholder}}
+			</view>
+			<view v-else v-for="(item, index) in renderTabs" :key="index" @click="change(item, index)"
+				class="uni-stat--tab-item" :class="[
+					index === currentTab ? `uni-stat--tab-item-${type}-active` : '' , `uni-stat--tab-item-${type}`,
+					item.disabled ? 'uni-stat--tab-item-disabled' : ''
+				]">
+				{{item.name}}
+				<uni-stat-tooltip v-if="tooltip" :text="item.tooltip" />
+			</view>
 
+		</view>
 	</view>
+
 </template>
 
 <script>
@@ -181,10 +184,23 @@
 </script>
 
 <style lang="scss">
+	.uni-label-text {
+		font-size: 14px;
+		font-weight: bold;
+		color: #555;
+		margin-top: 17px;
+		margin-bottom: 17px;
+		margin-right: 5px;
+	}
+	.uni-stat--tab-x {
+		display: flex;
+		margin: 0 15px;
+		white-space: nowrap;
+	}
+
 	.uni-stat--tab {
 		display: flex;
 		flex-wrap: wrap;
-		margin: 0 15px;
 	}
 
 	.uni-stat {
