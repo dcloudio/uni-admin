@@ -107,6 +107,11 @@
 		padding-bottom: 10px;
 	}
 
+	.sidebar ::-webkit-scrollbar {
+		display: none;
+		// scrollbar-width: thin;
+	}
+
 	.title {
 		margin-left: 5px;
 	}
