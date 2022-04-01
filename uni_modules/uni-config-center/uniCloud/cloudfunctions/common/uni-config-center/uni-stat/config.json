@@ -73,10 +73,10 @@
 		"open": true,
 		"reserveDays": {
 			"sessionLog": 7,
-			"pageLog": 3,
-			"eventLog": 3,
-			"shareLog": 3,
-			"errorLog": 3
+			"pageLog": 7,
+			"eventLog": 7,
+			"shareLog": 7,
+			"errorLog": 7
 		}
 	}
 }
