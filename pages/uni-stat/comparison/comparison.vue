@@ -47,7 +47,7 @@
 					dimension: "day",
 					appid: '__UNI__HelloUniApp',
 					// start_time: new Date().getTime(),
-					start_time: getTimeOfSomeDayAgo(1),
+					start_time: getTimeOfSomeDayAgo(0),
 				},
 				platforms: [],
 				dayChartsData: [],
@@ -74,7 +74,16 @@
 		},
 		methods: {
 			getChartData(query, type = 'day') {
-				query = stringifyQuery(query)
+				query = JSON.parse(JSON.stringify(query))
+				const today = getTimeOfSomeDayAgo(0)
+				if (query.start_time >= today) {
+					const now = new Date().getTime()
+					query.start_time = [today, now]
+					query = stringifyQuery(query, true)
+				} else {
+					query = stringifyQuery(query)
+				}
+				console.log('...........query', query);
 				const db = uniCloud.database()
 				db.collection('opendb-stat-result')
 					.where(query)
