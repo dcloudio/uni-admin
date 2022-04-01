@@ -1,0 +1,19 @@
+{
+	"name": "uni-stat-report",
+	"version": "1.0.0",
+	"description": "",
+	"main": "index.js",
+	"scripts": {
+		"test": "echo \"Error: no test specified\" && exit 1"
+	},
+	"author": "",
+	"license": "ISC",
+	"dependencies": {
+		"uni-stat": "file:../../../uni_modules/uni-config-center/uniCloud/cloudfunctions/common/uni-stat"
+	},
+	"cloudfunction-config": {
+		"concurrency": 100,
+		"memorySize": 128,
+		"timeout": 100
+	}
+}
