@@ -5,7 +5,7 @@
 			<view class="uni-select">
 				<view class="uni-select__input-box" @click="toggleSelector">
 					<view v-if="current" class="uni-select__input-text">{{current}}</view>
-					<view v-else class="uni-select__input-text uni-select__input-placeholder">{{placeholder}}</view>
+					<view v-else class="uni-select__input-text uni-select__input-placeholder">{{typePlaceholder}}</view>
 					<uni-icons v-if="current && clear" type="clear" color="#e1e1e1" size="18" @click="clearVal" />
 					<uni-icons v-else :type="showSelector? 'top' : 'bottom'" size="14" color="#999" />
 				</view>
@@ -87,6 +87,20 @@
 		},
 		mounted() {
 			this.init(this.mode)
+		},
+		computed: {
+			typePlaceholder() {
+				const text = {
+					version: '版本',
+					channel: '渠道',
+					app: '应用'
+				}
+				const common = '请选择'
+				const placeholder = text[this.mode]
+				return placeholder
+						? common + placeholder
+						: common
+			}
 		},
 		watch: {
 			value() {
