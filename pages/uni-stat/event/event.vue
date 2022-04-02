@@ -20,7 +20,7 @@
 			</view>
 			<view class="uni-stat--x flex">
 				<uni-stat-tabs label="日期选择" :current="currentDateTab" mode="date" @change="changeTimeRange" />
-				<uni-datetime-picker type="daterange" v-model="query.start_time" returnType="timestamp"
+				<uni-datetime-picker type="daterange" :end="new Date().getTime()"  v-model="query.start_time" returnType="timestamp"
 					:clearIcon="false" class="uni-stat-datetime-picker"
 					:class="{'uni-stat__actived': currentDateTab < 0 && !!query.start_time.length}"
 					@change="useDatetimePicker" />

@@ -75,7 +75,7 @@
             "base" : "/admin/"
         }
     },
-    "vueVersion" : "3",
+    "vueVersion" : "2",
     "networkTimeout" : {
         "uploadFile" : 1200000 //ms， 如果不配置，上传大文件可能会超时
     }

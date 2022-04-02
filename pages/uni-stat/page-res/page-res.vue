@@ -1,6 +1,6 @@
 <template>
 	<view class="fix-top-window">
-		<view class="uni-header">				<uni-stat-breadcrumb class="uni-stat-breadcrumb-on-phone" />
+		<view class="uni-header">				<uni-stat-breadcrumb class="uni-stat-breadcrumb-on-phone" />
 			<view class="uni-group">
 				<!-- <view class="uni-title">受访页</view> -->
 				<view class="uni-sub-title hide-on-phone">受访页数据分析</view>
@@ -17,7 +17,7 @@
 			</view>
 			<view class="uni-stat--x flex">
 				<uni-stat-tabs label="日期选择" :current="currentDateTab" mode="date" @change="changeTimeRange" />
-				<uni-datetime-picker type="daterange" v-model="query.start_time" returnType="timestamp"
+				<uni-datetime-picker type="daterange" :end="new Date().getTime()"  v-model="query.start_time" returnType="timestamp"
 					:clearIcon="false" class="uni-stat-datetime-picker"
 					:class="{'uni-stat__actived': currentDateTab < 0 && !!query.start_time.length}"
 					@change="useDatetimePicker" />
