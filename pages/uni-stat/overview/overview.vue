@@ -120,7 +120,7 @@
 							}
 						}
 					}, {
-						smooth: false,
+						// smooth: false,
 						lineStyle: {
 							color: '#ea7ccc',
 							width: 2,
@@ -302,6 +302,11 @@
 								data: []
 							}]
 						}
+
+						let mapper = fieldsMap.filter(f => f.field === field)
+						mapper = JSON.parse(JSON.stringify(mapper))
+						delete mapper[0].value
+						delete mapper[0].formatter
 						if (!this.getDays()) {
 							const [start, end] = start_time
 							const line = options.series[1] = {
@@ -319,9 +324,12 @@
 								line.data[i] = 0
 								cont.data[i] = 0
 								data.forEach(item => {
-									let val = item[field]
+									if (mapper.length && mapper[0].computed) {
+										mapfields(mapper, item, item)
+									}
+									let val = Number(item[field])
 									if (String(val).indexOf('.') > -1) {
-										if (field === 'bounce_rate') {
+										if (field === 'bounceRate') {
 											val = val.toFixed(2)
 										} else {
 											val = val.toFixed(0)
@@ -341,10 +349,13 @@
 							}
 						} else {
 							for (const item of data) {
+								if (mapper.length && mapper[0].computed) {
+									mapfields(mapper, item, item)
+								}
 								const x = formatDate(item.start_time, 'day')
-								let y = item[field]
+								let y = Number(item[field])
 								if (String(y).indexOf('.')) {
-									if (field === 'bounce_rate') {
+									if (field === 'bounceRate') {
 										y = y.toFixed(2)
 									} else {
 										y = y.toFixed(0)

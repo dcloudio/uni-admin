@@ -65,14 +65,23 @@ function stringifyField(mapping, goal, prop) {
 	if (prop) {
 		mapping = mapping.filter(f => f.field && f.hasOwnProperty(prop))
 	}
-	const fields = mapping.map(f => {
-		if (f.stat === -1) {
-			return f.field
+	const fieldString = mapping.map(f => {
+		let fields = []
+		if (f.computed) {
+			fields = f.computed.split('/')
 		} else {
-			return `${f.field} as ${ 'temp_' + f.field}`
+			fields.push(f.field)
 		}
-	}).join()
-	return fields
+		fields = fields.map(field => {
+			if (f.stat === -1) {
+				return field
+			} else {
+				return `${field} as ${ 'temp_' + field}`
+			}
+		})
+		return fields.join()
+	})
+	return fieldString.join()
 }
 
 function stringifyGroupField(mapping, goal, prop) {
@@ -83,9 +92,19 @@ function stringifyGroupField(mapping, goal, prop) {
 		mapping = mapping.filter(f => f.field && f.hasOwnProperty(prop))
 	}
 	const groupField = mapping.map(f => {
-			if (f.stat !== -1) {
-				return `${f.stat ? f.stat : 'sum' }(${'temp_' + f.field}) as ${f.field}`
+			const stat = f.stat
+			let fields = []
+			if (f.computed) {
+				fields = f.computed.split('/')
+			} else {
+				fields.push(f.field)
 			}
+			fields = fields.map(field => {
+				if (stat !== -1) {
+					return `${stat ? stat : 'sum' }(${'temp_' + field}) as ${field}`
+				}
+			})
+			return fields.join()
 		})
 		.filter(Boolean)
 		.join()
@@ -107,8 +126,11 @@ function format(num, type = ',') {
 	if (type === '%') {
 		// 注意浮点数精度
 		// num = Number.parseFloat(num).toPrecision(4)
-		num = (num * 100).toFixed(2)
-		return num + type
+		if (String(num).indexOf('.') > -1) {
+			num = (num * 100).toFixed(2)
+		}
+		num = num ? num + type : num
+		return num
 	} else if (type === '%%') {
 		return num.toFixed(2) + '%'
 	} else if (type === '-') {
@@ -217,14 +239,14 @@ function mapfields(map, data = {}, goal, prefix = '', prop = 'value') {
 					let [dividend, divisor] = computedFields
 					dividend = Number(origin[prefix + dividend])
 					divisor = Number(origin[prefix + divisor])
-					if (dividend && divisor) {
+					// if (dividend && divisor) {
 						const val = format(division(dividend, divisor), formatter)
 						if (hasValue && field === goal.field) {
 							goal[prop] = val
 						} else {
 							goal[field] = val
 						}
-					}
+					// }
 				} else {
 					if (value) {
 						const val = format(value, formatter)
