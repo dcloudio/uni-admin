@@ -73,7 +73,7 @@ function stringifyField(mapping, goal, prop) {
 			fields.push(f.field)
 		}
 		fields = fields.map(field => {
-			if (f.stat === -1) {
+			if (f.stat === -1 && !f.computed) {
 				return field
 			} else {
 				return `${field} as ${ 'temp_' + field}`
@@ -104,7 +104,7 @@ function stringifyGroupField(mapping, goal, prop) {
 					return `${stat ? stat : 'sum' }(${'temp_' + field}) as ${field}`
 				}
 			})
-			return fields.join()
+			return fields.filter(Boolean).join()
 		})
 		.filter(Boolean)
 		.join()
