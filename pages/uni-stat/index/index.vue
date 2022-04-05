@@ -106,6 +106,7 @@
 		},
 		methods: {
 			getApps(query, type = "day") {
+				console.log('...........query:', query);
 				this.loading = true
 				const db = uniCloud.database()
 				const appList = db.collection('opendb-app-list').getTemp()
@@ -125,6 +126,7 @@
 						let {
 							data
 						} = res.result
+						console.log('+++++++++data:', data);
 						this.tableData = []
 						this.panelData = JSON.parse(JSON.stringify(panelOption))
 						if (!data.length) return
@@ -183,7 +185,7 @@
 						const query = JSON.parse(JSON.stringify(this.query))
 						query.start_time = [getTimeOfSomeDayAgo(0), new Date().getTime()]
 						getCurrentTotalUser.call(this, query).then(users => {
-							this.tableData[0].total_users_value = users
+							this.tableData[0] && (this.tableData[0].total_users_value = users)
 						})
 					}).catch((err) => {
 						console.error(err)
