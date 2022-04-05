@@ -324,17 +324,10 @@
 								line.data[i] = 0
 								cont.data[i] = 0
 								data.forEach(item => {
-									if (mapper.length && mapper[0].computed) {
+									// if (mapper.length && mapper[0].computed) {
 										mapfields(mapper, item, item)
-									}
+									// }
 									let val = Number(item[field])
-									if (String(val).indexOf('.') > -1) {
-										if (field === 'bounceRate') {
-											val = val.toFixed(2)
-										} else {
-											val = val.toFixed(0)
-										}
-									}
 									const d = new Date(item.start_time)
 									if (item.start_time < date) {
 										if (d.getHours() === i) {
@@ -349,18 +342,18 @@
 							}
 						} else {
 							for (const item of data) {
-								if (mapper.length && mapper[0].computed) {
+								// if (mapper.length && mapper[0].computed) {
 									mapfields(mapper, item, item)
-								}
+								// }
 								const x = formatDate(item.start_time, 'day')
 								let y = Number(item[field])
-								if (String(y).indexOf('.')) {
-									if (field === 'bounceRate') {
-										y = y.toFixed(2)
-									} else {
-										y = y.toFixed(0)
-									}
-								}
+								// if (String(y).indexOf('.')) {
+								// 	if (field === 'bounceRate') {
+								// 		y = y.toFixed(2)
+								// 	} else {
+								// 		y = y.toFixed(0)
+								// 	}
+								// }
 								if (y) {
 									options.series[0].data.push(y)
 									options.categories.push(x)

@@ -120,9 +120,16 @@ function division(dividend, divisor) {
 	}
 }
 
-function format(num, type = ',') {
+function format(num, type = ',', fix=0) {
 	if (!type) return num
 	if (typeof num !== 'number') return num
+	if (String(num).indexOf('.') > -1 && typeof fix === 'number') {
+		// if (Math.abs(num) > 1) {
+		num = num.toFixed(fix)
+		// } else {
+			
+		// }
+	}
 	if (type === '%') {
 		// 注意浮点数精度
 		// num = Number.parseFloat(num).toPrecision(4)
@@ -159,9 +166,9 @@ function format(num, type = ',') {
 		const hms = [h, m, s].map(i => i < 10 ? '0' + i : i)
 		return hms.join(type)
 	} else if (type === ',') {
-		if (String(num).indexOf('.') > -1) {
-			num = num.toFixed(2)
-		}
+		// if (String(num).indexOf('.') > -1) {
+		// 	num = num.toFixed(2)
+		// }
 		return num.toLocaleString()
 	} else {
 		return num
@@ -226,7 +233,8 @@ function mapfields(map, data = {}, goal, prefix = '', prop = 'value') {
 			field,
 			computed,
 			formatter,
-			disable
+			disable,
+			fix
 		} = mapper
 		if (!disable) {
 			goal = argsGoal || mapper
@@ -240,16 +248,16 @@ function mapfields(map, data = {}, goal, prefix = '', prop = 'value') {
 					dividend = Number(origin[prefix + dividend])
 					divisor = Number(origin[prefix + divisor])
 					// if (dividend && divisor) {
-						const val = format(division(dividend, divisor), formatter)
-						if (hasValue && field === goal.field) {
-							goal[prop] = val
-						} else {
-							goal[field] = val
-						}
+					const val = format(division(dividend, divisor), formatter, fix)
+					if (hasValue && field === goal.field) {
+						goal[prop] = val
+					} else {
+						goal[field] = val
+					}
 					// }
 				} else {
 					if (value) {
-						const val = format(value, formatter)
+						const val = format(value, formatter, fix)
 						if (hasValue) {
 							if (goal.field === field) {
 								goal[prop] = val
