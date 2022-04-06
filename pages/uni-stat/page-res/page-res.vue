@@ -89,7 +89,6 @@
 					appid: '__UNI__HelloUniApp',
 					platform_id: '',
 					channel_id: '',
-					version_id: '',
 					start_time: [],
 				},
 				options: {
@@ -230,16 +229,15 @@
 				const db = uniCloud.database()
 				const subTable = db.collection('opendb-stat-page-result')
 					.where(query)
+					.field(stringifyField(fieldsMap))
 					.groupBy('appid')
-					.groupField(
-						'sum(visit_times) as total_visit_times, sum(visit_users) as total_visit_users, sum(exit_times) as total_exit_times, sum(share_count) as total_share_count, sum(duration) as total_duration'
-					)
+					.groupField(stringifyGroupField(fieldsMap))
 					.orderBy('start_time', 'desc ')
 					.get()
 					.then(res => {
 						const items = res.result.data[0]
 						this.panelData = []
-						this.panelData = mapfields(fieldsMap, items, undefined, 'total_')
+						this.panelData = mapfields(fieldsMap, items)
 					})
 			},
 
