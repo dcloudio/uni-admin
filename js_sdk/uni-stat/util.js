@@ -121,15 +121,15 @@ function division(dividend, divisor) {
 }
 
 function format(num, type = ',', fix=0) {
-	if (!type) return num
+	// if (!type) return num
 	if (typeof num !== 'number') return num
-	if (String(num).indexOf('.') > -1 && typeof fix === 'number') {
+	// if (String(num).indexOf('.') > -1 && typeof fix === 'number') {
 		// if (Math.abs(num) > 1) {
 		num = num.toFixed(fix)
 		// } else {
-			
+
 		// }
-	}
+	// }
 	if (type === '%') {
 		// 注意浮点数精度
 		// num = Number.parseFloat(num).toPrecision(4)
