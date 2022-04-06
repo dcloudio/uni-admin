@@ -18,8 +18,8 @@
 			</view>
 			<view class="uni-stat--x flex">
 				<uni-stat-tabs label="日期选择" :current="currentDateTab" mode="date" @change="changeTimeRange" />
-				<uni-datetime-picker type="daterange" :end="new Date().getTime()"  v-model="query.start_time" returnType="timestamp"
-					:clearIcon="false" class="uni-stat-datetime-picker"
+				<uni-datetime-picker type="daterange" :end="new Date().getTime()" v-model="query.start_time"
+					returnType="timestamp" :clearIcon="false" class="uni-stat-datetime-picker"
 					:class="{'uni-stat__actived': currentDateTab < 0 && !!query.start_time.length}"
 					@change="useDatetimePicker" />
 				<uni-stat-tabs type="box" :current="currentDimensionTab" :tabs="dimensionTabs" class="ml-l"
@@ -255,16 +255,14 @@
 								data: []
 							}]
 						}
+						let mapper = fieldsMap.filter(f => f.field === field)
+						mapper = JSON.parse(JSON.stringify(mapper))
+						delete mapper[0].value
+						mapper[0].formatter = ''
 						for (const item of data) {
+							mapfields(mapper, item, item)
 							const x = formatDate(item.start_time, dimension)
 							let y = item[field]
-							if (String(y).indexOf('.') > -1) {
-								if (field === 'bounce_rate') {
-									y = y.toFixed(2)
-								} else {
-									y = y.toFixed(0)
-								}
-							}
 							if (y) {
 								options.series[0].data.push(y)
 								options.categories.push(x)

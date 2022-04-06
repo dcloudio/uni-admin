@@ -302,7 +302,6 @@
 								data: []
 							}]
 						}
-
 						let mapper = fieldsMap.filter(f => f.field === field)
 						mapper = JSON.parse(JSON.stringify(mapper))
 						delete mapper[0].value
@@ -324,9 +323,7 @@
 								line.data[i] = 0
 								cont.data[i] = 0
 								data.forEach(item => {
-									// if (mapper.length && mapper[0].computed) {
-										mapfields(mapper, item, item)
-									// }
+									mapfields(mapper, item, item)
 									let val = Number(item[field])
 									const d = new Date(item.start_time)
 									if (item.start_time < date) {
@@ -342,18 +339,9 @@
 							}
 						} else {
 							for (const item of data) {
-								// if (mapper.length && mapper[0].computed) {
-									mapfields(mapper, item, item)
-								// }
+								mapfields(mapper, item, item)
 								const x = formatDate(item.start_time, 'day')
 								let y = Number(item[field])
-								// if (String(y).indexOf('.')) {
-								// 	if (field === 'bounceRate') {
-								// 		y = y.toFixed(2)
-								// 	} else {
-								// 		y = y.toFixed(0)
-								// 	}
-								// }
 								if (y) {
 									options.series[0].data.push(y)
 									options.categories.push(x)

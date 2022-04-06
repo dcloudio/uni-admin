@@ -46,6 +46,7 @@ export default [{
 	tooltip: '只浏览一个页面便离开应用的次数占总启动次数的百分比',
 	value: 0,
 	contrast: 0,
+	fix: 2
 }, {
 	field: 'bounce_times',
 	disable: true
