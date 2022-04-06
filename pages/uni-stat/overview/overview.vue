@@ -306,7 +306,7 @@
 						let mapper = fieldsMap.filter(f => f.field === field)
 						mapper = JSON.parse(JSON.stringify(mapper))
 						delete mapper[0].value
-						delete mapper[0].formatter
+						mapper[0].formatter = ''
 						if (!this.getDays()) {
 							const [start, end] = start_time
 							const line = options.series[1] = {
