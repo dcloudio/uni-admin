@@ -24,7 +24,8 @@ export default [{
 	field: 'bounce_rate',
 	formatter: '%%',
 	tooltip: '只浏览一个页面便离开应用的次数占总启动次数的百分比',
-	value: 0
+	value: 0,
+	stat: 'avg'
 }, {
 	title: '访问总时长',
 	field: 'duration',

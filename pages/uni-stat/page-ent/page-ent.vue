@@ -203,16 +203,20 @@
 				const db = uniCloud.database()
 				const subTable = db.collection('opendb-stat-page-result')
 					.where(query)
+					// .groupBy('appid')
+					// .groupField(
+					// 	'sum(visit_times) as total_visit_times, sum(visit_users) as total_visit_users, sum(entry_count) as total_entry_count, avg(bounce_rate) as total_bounce_rate, sum(duration) as total_duration'
+					// )
+					.field(stringifyField(fieldsMap))
 					.groupBy('appid')
-					.groupField(
-						'sum(visit_times) as total_visit_times, sum(visit_users) as total_visit_users, sum(entry_count) as total_entry_count, avg(bounce_rate) as total_bounce_rate, sum(duration) as total_duration'
-					)
+					.groupField(stringifyGroupField(fieldsMap))
 					.orderBy('start_time', 'desc ')
 					.get()
 					.then(res => {
 						const items = res.result.data[0]
 						this.panelData = []
-						this.panelData = mapfields(fieldsMap, items, undefined, 'total_')
+						// this.panelData = mapfields(fieldsMap, items, undefined, 'total_')
+						this.panelData = mapfields(fieldsMap, items)
 					})
 			},
 

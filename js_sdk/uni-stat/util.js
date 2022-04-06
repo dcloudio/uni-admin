@@ -139,6 +139,7 @@ function format(num, type = ',', fix=0) {
 		num = num ? num + type : num
 		return num
 	} else if (type === '%%') {
+		num = Number(num)
 		return num.toFixed(2) + '%'
 	} else if (type === '-') {
 		return formatDate(num, 'day')
