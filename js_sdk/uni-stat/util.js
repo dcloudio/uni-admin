@@ -2,23 +2,6 @@
  *  以下为 uni-stat 的工具方法
  */
 
-// 获取指定日期当天或 n 天前零点的时间戳，丢弃时分秒
-function getTimeOfSomeDayAgo(days = 0, date = Date.now()) {
-	const d = new Date(date)
-	const oneDayTime = 24 * 60 * 60 * 1000
-	let ymd = [d.getFullYear(), d.getMonth() + 1, d.getDate()].join('/')
-	ymd = ymd + ' 00:00:00'
-	const someDaysAgoTime = new Date(ymd).getTime() - oneDayTime * days
-	return someDaysAgoTime
-}
-
-function maxDeltaDay(times, delta = 2) {
-	if (!times.length) return true
-	const wunDay = 24 * 60 * 60 * 1000
-	const [start, end] = times
-	const max = end - start < wunDay * delta
-	return max
-}
 
 // 将查询条件拼接为字符串
 function stringifyQuery(query, dimension = false) {
@@ -58,6 +41,60 @@ function stringifyQuery(query, dimension = false) {
 	return queryStr || {}
 }
 
+// 根据 fieldsMap 和数据计算、格式化字段
+function mapfields(map, data = {}, goal, prefix = '', prop = 'value') {
+	const goals = [],
+		argsGoal = goal
+	map = JSON.parse(JSON.stringify(map))
+	const origin = JSON.parse(JSON.stringify(data))
+	for (const mapper of map) {
+		let {
+			field,
+			computed,
+			formatter,
+			disable,
+			fix
+		} = mapper
+		if (!disable) {
+			goal = argsGoal || mapper
+			const hasValue = goal.hasOwnProperty(prop)
+			const preField = prefix + field
+			if (data) {
+				const value = data[preField]
+				if (computed) {
+					const computedFields = computed.split('/')
+					let [dividend, divisor] = computedFields
+					dividend = Number(origin[prefix + dividend])
+					divisor = Number(origin[prefix + divisor])
+					// if (dividend && divisor) {
+					const val = format(division(dividend, divisor), formatter, fix)
+					if (hasValue && field === goal.field) {
+						goal[prop] = val
+					} else {
+						goal[field] = val
+					}
+					// }
+				} else {
+					if (value) {
+						const val = format(value, formatter, fix)
+						if (hasValue) {
+							if (goal.field === field) {
+								goal[prop] = val
+							}
+						} else {
+							goal[field] = val
+						}
+					}
+				}
+			}
+			if (hasValue) {
+				goals.push(goal)
+			}
+		}
+	}
+	return goals
+}
+
 function stringifyField(mapping, goal, prop) {
 	if (goal) {
 		mapping = mapping.filter(f => f.field === goal)
@@ -73,7 +110,7 @@ function stringifyField(mapping, goal, prop) {
 			fields.push(f.field)
 		}
 		fields = fields.map(field => {
-			if (f.stat === -1 && !f.computed) {
+			if (f.stat === -1) {
 				return field
 			} else {
 				return `${field} as ${ 'temp_' + field}`
@@ -120,16 +157,9 @@ function division(dividend, divisor) {
 	}
 }
 
-function format(num, type = ',', fix=0) {
+function format(num, type = ',', fix) {
 	// if (!type) return num
 	if (typeof num !== 'number') return num
-	if (String(num).indexOf('.') > -1 && typeof fix === 'number') {
-		// if (Math.abs(num) > 1) {
-		num = num.toFixed(fix)
-		// } else {
-
-		// }
-	}
 	if (type === '%') {
 		// 注意浮点数精度
 		// num = Number.parseFloat(num).toPrecision(4)
@@ -172,6 +202,13 @@ function format(num, type = ',', fix=0) {
 		// }
 		return num.toLocaleString()
 	} else {
+		if (String(num).indexOf('.') > -1) {
+			if (Math.abs(num) > 1) {
+				num = num.toFixed(fix || 0)
+			} else {
+				num = num.toFixed(fix || 2)
+			}
+		}
 		return num
 	}
 }
@@ -224,57 +261,22 @@ function lessTen(item) {
 	return item < 10 ? '0' + item : item
 }
 
-function mapfields(map, data = {}, goal, prefix = '', prop = 'value') {
-	const goals = [],
-		argsGoal = goal
-	map = JSON.parse(JSON.stringify(map))
-	const origin = JSON.parse(JSON.stringify(data))
-	for (const mapper of map) {
-		let {
-			field,
-			computed,
-			formatter,
-			disable,
-			fix
-		} = mapper
-		if (!disable) {
-			goal = argsGoal || mapper
-			const hasValue = goal.hasOwnProperty(prop)
-			const preField = prefix + field
-			if (data) {
-				const value = data[preField]
-				if (computed) {
-					const computedFields = computed.split('/')
-					let [dividend, divisor] = computedFields
-					dividend = Number(origin[prefix + dividend])
-					divisor = Number(origin[prefix + divisor])
-					// if (dividend && divisor) {
-					const val = format(division(dividend, divisor), formatter, fix)
-					if (hasValue && field === goal.field) {
-						goal[prop] = val
-					} else {
-						goal[field] = val
-					}
-					// }
-				} else {
-					if (value) {
-						const val = format(value, formatter, fix)
-						if (hasValue) {
-							if (goal.field === field) {
-								goal[prop] = val
-							}
-						} else {
-							goal[field] = val
-						}
-					}
-				}
-			}
-			if (hasValue) {
-				goals.push(goal)
-			}
-		}
-	}
-	return goals
+// 获取指定日期当天或 n 天前零点的时间戳，丢弃时分秒
+function getTimeOfSomeDayAgo(days = 0, date = Date.now()) {
+	const d = new Date(date)
+	const oneDayTime = 24 * 60 * 60 * 1000
+	let ymd = [d.getFullYear(), d.getMonth() + 1, d.getDate()].join('/')
+	ymd = ymd + ' 00:00:00'
+	const someDaysAgoTime = new Date(ymd).getTime() - oneDayTime * days
+	return someDaysAgoTime
+}
+
+function maxDeltaDay(times, delta = 2) {
+	if (!times.length) return true
+	const wunDay = 24 * 60 * 60 * 1000
+	const [start, end] = times
+	const max = end - start < wunDay * delta
+	return max
 }
 
 function getCurrentTotalUser(query = this.query, field = "total_users") {
