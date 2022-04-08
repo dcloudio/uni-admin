@@ -15,7 +15,27 @@
 				<uni-stat-tabs label="平台选择" type="boldLine" mode="platform" v-model="query.platform_id" />
 			</view>
 			<uni-stat-panel :items="panelData" :contrast="true" />
-			<uni-stat-table :data="tableData" :filedsMap="tableFieldsMap" :loading="loading" />
+			<uni-table :loading="loading" border stripe emptyText="暂无数据">
+				<uni-tr>
+					<template v-for="(mapper, index) in tableFieldsMap">
+						<uni-th v-if="mapper.title" :key="index" align="center">
+							{{mapper.title}}
+						</uni-th>
+					</template>
+					<uni-th align="center">操作</uni-th>
+				</uni-tr>
+				<uni-tr v-for="(item ,i) in tableData" :key="i">
+					<template v-for="(mapper, index) in tableFieldsMap">
+						<uni-td v-if="mapper.title" :key="index" align="center">
+							{{item[mapper.field] !== undefined ? item[mapper.field] : '-'}}
+						</uni-td>
+					</template>
+					<uni-td align="center">
+						<button class="uni-button" size="mini" type="primary" @click="navTo('/pages/uni-stat/overview/overview', item.appid)">查看</button>
+					</uni-td>
+				</uni-tr>
+			</uni-table>
+			<!-- <uni-stat-table :data="tableData" :filedsMap="tableFieldsMap" :loading="loading" /> -->
 			<view class="uni-pagination-box">
 				<uni-pagination show-icon :page-size="pageSize" :current="pageCurrent" :total="tableData.length" />
 			</view>
@@ -197,12 +217,12 @@
 			},
 
 			navTo(url, id) {
-				if (id) {
-					url = `${id}`
-				}
 				if (url.indexOf('http') > -1) {
 					window.open(url)
 				} else {
+					if (id) {
+						url = `${url}?appid=${id}`
+					}
 					uni.navigateTo({
 						url
 					})
