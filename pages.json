@@ -19,22 +19,7 @@
 			"style": {
 				"navigationBarTitleText": "修改密码"
 			}
-		},
-		{
-			"path": "uni_modules/uni-upgrade-center/pages/version/list",
-			"style": {
-				"navigationBarTitleText": "版本列表"
-			}
-		}, {
-			"path": "uni_modules/uni-upgrade-center/pages/version/add",
-			"style": {
-				"navigationBarTitleText": "新版发布"
-			}
-		}, {
-			"path": "uni_modules/uni-upgrade-center/pages/version/detail",
-			"style": {
-				"navigationBarTitleText": "版本信息查看"
-			}
+
 		}
 	],
 	"subPackages": [{

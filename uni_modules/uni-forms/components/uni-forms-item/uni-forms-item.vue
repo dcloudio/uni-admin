@@ -3,7 +3,7 @@
 		<view class="uni-forms-item__box">
 			<view class="uni-forms-item__inner" :class="['is-direction-' + labelPos]">
 				<view class="uni-forms-item__label" :style="{ width: labelWid , justifyContent: justifyContent }">
-					<slot name="label">
+					<slot name="left">
 						<text v-if="required" class="is-required">*</text>
 						<uni-icons v-if="leftIcon" class="label-icon" size="16" :type="leftIcon" :color="iconColor" />
 						<text class="label-text">{{ label }}</text>
@@ -379,7 +379,7 @@ export default {
 };
 </script>
 
-<style lang="scss" >
+<style lang="scss" scoped>
 .uni-forms-item {
 	position: relative;
 	padding: 0px;
@@ -427,8 +427,8 @@ export default {
 	// margin-right: 5px;
 
 	.label-text {
-		font-size: 13px;
-		color: #666666;
+		font-size: 14px;
+		color: #333;
 	}
 	.label-seat {
 		margin-right: 5px;
@@ -452,7 +452,7 @@ export default {
 // 必填
 .is-required {
 	// color: $uni-color-error;
-	color: #dd524d;
+	color: #f00;
 	font-weight: bold;
 }
 
@@ -465,7 +465,7 @@ export default {
 
 .uni-error-message-text {
 	line-height: 22px;
-	color: #dd524d;
+	color: $uni-color-error;
 	font-size: 12px;
 }
 
@@ -476,7 +476,7 @@ export default {
 }
 
 .is-input-error-border {
-	border-color: #dd524d;
+	border-color: $uni-color-error;
 }
 
 .uni-forms-item--border {
