@@ -86,7 +86,7 @@
 				fieldsMap,
 				query: {
 					dimension: "day",
-					appid: '__UNI__HelloUniApp',
+					appid: '',
 					platform_id: '',
 					channel_id: '',
 					start_time: [],

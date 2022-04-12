@@ -45,7 +45,7 @@
 			return {
 				query: {
 					dimension: "day",
-					appid: '__UNI__HelloUniApp',
+					appid: '',
 					// start_time: new Date().getTime(),
 					start_time: getTimeOfSomeDayAgo(0),
 				},

@@ -100,7 +100,7 @@
 				fieldsMap,
 				query: {
 					dimension: "day",
-					appid: "__UNI__HelloUniApp",
+					appid: '',
 					platform_id: '',
 					version_id: '',
 					start_time: [],
