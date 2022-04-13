@@ -294,7 +294,7 @@ function getCurrentTotalUser(query = this.query, field = "total_users") {
 		.get()
 		.then(cur => {
 			const data = cur.result.data
-			currentTotalUser = data.length && Math.max(...data.map(item => item.total_users))
+			currentTotalUser = data.length && data[0].total_users
 			currentTotalUser = format(currentTotalUser)
 			this.panelData.forEach(item => {
 				if (item.field === 'total_users') {

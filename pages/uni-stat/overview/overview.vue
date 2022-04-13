@@ -212,7 +212,6 @@
 			changeChartTab(id, index, name) {
 				this.getChartData(this.query, id, name)
 			},
-
 			getAllData(query) {
 				this.getPanelData()
 				this.getChartData(query)
@@ -259,7 +258,7 @@
 						this.panelData.map(item => {
 							mapfields(fieldsMap, yesterday, item, '', 'contrast')
 						})
-						getCurrentTotalUser.call(this)
+						getCurrentTotalUser.call(this, query)
 					})
 			},
 
