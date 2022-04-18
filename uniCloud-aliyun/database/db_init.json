@@ -2073,37 +2073,39 @@
 			"url": "/pages/uni-stat/error/error",
 			"sort": 2171,
 			"create_date": 1638356902516
-		}, {
-			"parent_id": "uni-stat",
-			"permission": [],
-			"enable": true,
-			"menu_id": "uni-stat-link-push",
-			"name": "推送统计",
-			"icon": "",
-			"url": "https://dev.dcloud.net.cn/uni/push",
-			"sort": 2180,
-			"create_date": 1638356902516
-		}, {
-			"parent_id": "uni-stat",
-			"permission": [],
-			"enable": true,
-			"menu_id": "uni-stat-link-alliance",
-			"name": "广告统计",
-			"icon": "",
-			"url": "https://dev.dcloud.net.cn/alliance/app",
-			"sort": 2182,
-			"create_date": 1638356902516
-		}, {
-			"parent_id": "uni-stat",
-			"permission": [],
-			"enable": true,
-			"menu_id": "uni-stat-link-exchange",
-			"name": "换量统计",
-			"icon": "",
-			"url": "https://dev.dcloud.net.cn/exchange/stats",
-			"sort": 2184,
-			"create_date": 1638356902516
-		}, {
+		}, 
+		// {
+		// 	"parent_id": "uni-stat",
+		// 	"permission": [],
+		// 	"enable": true,
+		// 	"menu_id": "uni-stat-link-push",
+		// 	"name": "推送统计",
+		// 	"icon": "",
+		// 	"url": "https://dev.dcloud.net.cn/uni/push",
+		// 	"sort": 2180,
+		// 	"create_date": 1638356902516
+		// }, {
+		// 	"parent_id": "uni-stat",
+		// 	"permission": [],
+		// 	"enable": true,
+		// 	"menu_id": "uni-stat-link-alliance",
+		// 	"name": "广告统计",
+		// 	"icon": "",
+		// 	"url": "https://dev.dcloud.net.cn/alliance/app",
+		// 	"sort": 2182,
+		// 	"create_date": 1638356902516
+		// }, {
+		// 	"parent_id": "uni-stat",
+		// 	"permission": [],
+		// 	"enable": true,
+		// 	"menu_id": "uni-stat-link-exchange",
+		// 	"name": "换量统计",
+		// 	"icon": "",
+		// 	"url": "https://dev.dcloud.net.cn/exchange/stats",
+		// 	"sort": 2184,
+		// 	"create_date": 1638356902516
+		// }, 
+		{
 			"parent_id": "uni-stat",
 			"permission": [],
 			"enable": true,
