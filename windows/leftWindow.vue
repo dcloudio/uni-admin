@@ -16,24 +16,22 @@
 		data() {
 			return {
 				...config.sideBar,
-				field: 'url as value, name as text, menu_id, parent_id, sort, icon, permission'
+				field: 'url as value, name as text, menu_id, parent_id, sort, icon, permission',
+				currentMenu: '/'
 			}
 		},
 		computed: {
 			...mapState('app', ['inited', 'navMenu', 'active']),
 			...mapState('user', ['userInfo']),
-
-			currentMenu() {
-				return this.splitFullPath(this.active)
-			}
 		},
 		// #ifdef H5
 		watch: {
 			$route: {
 				immediate: true,
 				handler(newRoute, oldRoute) {
-					if (newRoute.fullPath !== (oldRoute && oldRoute.fullPath)) {
-						this.changeMenuActive(newRoute.fullPath)
+					const path = newRoute.fullPath
+					if (path) {
+						this.currentMenu = this.splitFullPath(path)
 					}
 				}
 			},
@@ -51,7 +49,6 @@
 		// #endif
 		methods: {
 			...mapActions({
-				changeMenuActive: 'app/changeMenuActive',
 				setRoutes: 'app/setRoutes'
 			}),
 			select(e, routes) {

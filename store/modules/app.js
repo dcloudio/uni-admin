@@ -12,7 +12,6 @@ export default {
 		inited: false,
 		navMenu: [],
 		routes: [],
-		active: '',
 		appName: process.env.VUE_APP_NAME || process.env.UNI_APP_NAME || '',
 		// #ifndef VUE3
 		appid: statConfig && statConfig.appid || ''
@@ -31,9 +30,6 @@ export default {
 		},
 		SET_ROUTES: (state, routes) => {
 			state.routes = routes
-		},
-		TOGGLE_MENU_ACTIVE: (state, url) => {
-			state.active = url
 		}
 	},
 	actions: {
@@ -57,11 +53,6 @@ export default {
 			commit
 		}, appName) {
 			commit('SET_APP_NAME', appName)
-		},
-		changeMenuActive({
-			commit
-		}, url) {
-			commit('TOGGLE_MENU_ACTIVE', url)
 		},
 		setRoutes({
 			commit
