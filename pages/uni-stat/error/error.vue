@@ -18,8 +18,8 @@
 			<view class="uni-stat--x flex">
 				<uni-stat-tabs label="日期选择" :current="currentDateTab" :yesterday="false" mode="date"
 					@change="changeTimeRange" />
-				<uni-datetime-picker type="daterange" :end="new Date().getTime()"  v-model="query.start_time" returnType="timestamp"
-					:clearIcon="false" class="uni-stat-datetime-picker"
+				<uni-datetime-picker type="daterange" :end="new Date().getTime()" v-model="query.start_time"
+					returnType="timestamp" :clearIcon="false" class="uni-stat-datetime-picker"
 					:class="{'uni-stat__actived': currentDateTab < 0 && !!query.start_time.length}"
 					@change="useDatetimePicker" />
 			</view>
@@ -44,13 +44,17 @@
 					</uni-tr>
 					<uni-tr v-for="(item ,i) in tableData" :key="i">
 						<template v-for="(mapper, index) in fieldsMap">
-							<uni-td v-if="mapper.field !== 'msg'" :key="mapper.title">
-								{{item[mapper.field] !== undefined ? item[mapper.field] : '-'}}
-							</uni-td>
-							<uni-td v-else :key="mapper.title" align="left">
+							<uni-td v-if="mapper.field === 'msg'" :key="mapper.title" align="left">
 								<uni-stat-tooltip :text="item.msgTooltip" placement="left" :width="600">
 									{{item[mapper.field] !== undefined ? item[mapper.field] : '-'}}
 								</uni-stat-tooltip>
+							</uni-td>
+							<uni-td v-else-if="mapper.field === 'count'" :key="mapper.title" align="center"
+								class="link-btn" @click="togglePopup(item)">
+								{{item[mapper.field] !== undefined ? item[mapper.field] : '-'}}
+							</uni-td>
+							<uni-td v-else :key="mapper.title" align="center">
+								{{item[mapper.field] !== undefined ? item[mapper.field] : '-'}}
 							</uni-td>
 						</template>
 					</uni-tr>
@@ -69,6 +73,20 @@
 			</view>
 		</view>
 
+		<uni-popup ref="popup" type="center" :maskClick="true">
+			<view class="modal">
+				<view class="modal-header">
+					错误设备信息
+				</view>
+				<view class="modal-content">
+					<view class="uni-form-item-tips">
+						注：仅展示最近10条
+					</view>
+					<uni-stat-table :data="popupTableData" :filedsMap="popupFieldsMap" :loading="loading" />
+				</view>
+			</view>
+		</uni-popup>
+
 		<!-- #ifndef H5 -->
 		<fix-window />
 		<!-- #endif -->
@@ -85,7 +103,10 @@
 		formatDate,
 		parseDateTime
 	} from '@/js_sdk/uni-stat/util.js'
-	import fieldsMap from './fieldsMap.js'
+	import {
+		fieldsMap,
+		popupFieldsMap
+	} from './fieldsMap.js'
 
 	const panelOption = [{
 		title: '错误总数',
@@ -101,6 +122,7 @@
 		data() {
 			return {
 				fieldsMap,
+				popupFieldsMap,
 				query: {
 					dimension: "day",
 					appid: "__UNI__HelloUniApp",
@@ -118,6 +140,7 @@
 				currentDateTab: 0,
 				// currentChartTab: ,
 				tableData: [],
+				popupTableData: [],
 				panelData: JSON.parse(JSON.stringify(panelOption)),
 				chartData: {},
 				chartTab: 'errorCount',
@@ -318,12 +341,16 @@
 					appid: this.query.appid
 				})
 				const mainTableTemp = db.collection('opendb-stat-error-result').where(query).getTemp()
-				const subTableTemp = db.collection('opendb-stat-app-versions')
+				const versions = db.collection('opendb-stat-app-versions')
 					.where(filterAppid)
 					.orderBy('start_time ', 'desc ')
 					.getTemp()
 
-				db.collection(mainTableTemp, subTableTemp)
+				const platforms = db.collection('opendb-app-platforms')
+					.getTemp()
+
+				db.collection(mainTableTemp, versions, platforms)
+					.orderBy('count', 'desc')
 					.skip((pageCurrent - 1) * this.pageSize)
 					.limit(this.pageSize)
 					.get({
@@ -340,14 +367,10 @@
 							item.last_time = parseDateTime(item.last_time, 'dateTime')
 							item.msgTooltip = item.msg
 							item.msg = item.msg.substring(0, 100) + '...'
-							const lines = item.version_id
-							if (Array.isArray(lines)) {
-								delete(item.version_id)
-								const version = lines[0] && lines[0].version
-								if (version) {
-									item.version = version
-								}
-							}
+							const v = item.version_id[0]
+							const p = item.platform_id[0]
+							item.version = v && v.version
+							item.platform = p && p.name
 							tempData.push(item)
 						}
 						this.getTotalCount(query).then(res => {
@@ -382,6 +405,30 @@
 					}).finally(() => {
 						this.loading = false
 					})
+			},
+
+			getPopupTableData(hash) {
+				this.popupTableData = []
+				console.log(`error_hash == "${hash}"`)
+				const db = uniCloud.database()
+				db.collection('opendb-stat-error-logs')
+					.where(`error_hash == "${hash}"`)
+					.orderBy('create_time', 'desc')
+					.limit(10)
+					.get()
+					.then(res => {
+						// console.log('..........', res);
+						const data = res.result.data
+						for (const item of data) {
+							item.create_time = parseDateTime(item.create_time, 'dateTime')
+						}
+						this.popupTableData = data
+					})
+			},
+
+			togglePopup(item) {
+				this.getPopupTableData(item.hash)
+				this.$refs.popup.open()
 			},
 
 			createStr(maps, fn, prefix = 'total_') {

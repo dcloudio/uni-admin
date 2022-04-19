@@ -309,7 +309,7 @@ uni-page-head .uni-btn-icon {
 .link-btn {
 	line-height: 26px;
 	margin-top: 5px;
-	color: #007AFF;
+	color: #007AFF !important;
 	text-decoration: underline;
 	cursor: pointer;
 }
@@ -476,6 +476,27 @@ button:after {
 .uni-stat-datetime-picker {
 	margin: 15px
 }
+
+/* uni-popup modal start */
+.modal {
+	width: 100%;
+	max-width: 980px;
+	margin: 0 auto;
+	background-color: #FFFFFF;
+}
+
+.modal-header {
+	padding: 20px 0;
+	text-align: center;
+	border-bottom: 1px solid #eee;
+}
+
+.modal-content {
+	padding: 15px;
+	height: 500px;
+	box-sizing: border-box;
+}
+/* uni-popup modal end */
 
 /* #ifndef APP-NVUE */
 @media screen and (max-width: 500px) {

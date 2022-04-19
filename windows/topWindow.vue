@@ -432,19 +432,6 @@
 		overflow: hidden;
 	}
 
-	.modal {
-		width: 100%;
-		max-width: 980px;
-		margin: 0 auto;
-		background-color: #FFFFFF;
-	}
-
-	.modal-content {
-		padding: 15px;
-		height: 500px;
-		box-sizing: border-box;
-	}
-
 	.password-popup {
 		padding: 30px;
 	}

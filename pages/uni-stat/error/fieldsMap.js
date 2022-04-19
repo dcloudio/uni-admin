@@ -1,7 +1,11 @@
-export default [{
+const fieldsMap = [{
 	title: '最近发生时间',
 	field: 'last_time',
 	tooltip: '',
+	formatter: '',
+}, {
+	title: '平台',
+	field: 'platform',
 	formatter: '',
 }, {
 	title: '平台版本号',
@@ -23,3 +27,34 @@ export default [{
 	field: 'msg',
 	formatter: '',
 }]
+
+const popupFieldsMap = [{
+	title: '创建时间',
+	field: 'create_time',
+	formatter: '',
+}, {
+	title: '设备标识',
+	field: 'device_id',
+	formatter: '',
+}, {
+	title: '客户端操作系统',
+	field: 'os',
+	formatter: '',
+}, {
+	title: '客户端 user-agent 信息',
+	field: 'ua',
+	formatter: '',
+}, {
+	title: '服务空间编号',
+	field: 'space_id',
+	formatter: '',
+}, {
+	title: '服务空间提供商',
+	field: 'space_provider',
+	formatter: '',
+}]
+
+export {
+	fieldsMap,
+	popupFieldsMap,
+}
