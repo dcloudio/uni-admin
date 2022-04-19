@@ -82,7 +82,7 @@
 					<view class="uni-form-item-tips">
 						注：仅展示最近10条
 					</view>
-					<uni-stat-table :data="popupTableData" :filedsMap="popupFieldsMap" :loading="loading" />
+					<uni-stat-table :data="popupTableData" :filedsMap="popupFieldsMap" :loading="popupLoading" />
 				</view>
 			</view>
 		</uni-popup>
@@ -137,6 +137,7 @@
 					pageSizeRange: [10, 20, 50, 100],
 				},
 				loading: false,
+				popupLoading: false,
 				currentDateTab: 0,
 				// currentChartTab: ,
 				tableData: [],
@@ -409,6 +410,7 @@
 
 			getPopupTableData(hash) {
 				this.popupTableData = []
+				this.popupLoading = true
 				console.log(`error_hash == "${hash}"`)
 				const db = uniCloud.database()
 				db.collection('opendb-stat-error-logs')
@@ -423,6 +425,9 @@
 							item.create_time = parseDateTime(item.create_time, 'dateTime')
 						}
 						this.popupTableData = data
+					})
+					.finally(() => {
+						this.popupLoading = false
 					})
 			},
 
