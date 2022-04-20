@@ -28,11 +28,11 @@
 					<uni-stat-tabs type="boldLine" :tabs="types" v-model="type"
 						style="line-height: 40px; margin-bottom: -17px;" />
 				</view>
-				<uni-stat-panel v-if="type === 'visit_depth_data'" :items="panelData" class="uni-stat-panel" />
-				<uni-stat-tabs type="box" :tabs="fields" v-model="field" class="mb-l" />
+				<!-- <uni-stat-panel v-if="type === 'visit_depth_data'" :items="panelData" class="uni-stat-panel" /> -->
+				<!-- <uni-stat-tabs type="box" :tabs="fields" v-model="field" class="mb-l" /> -->
 				<view class="p-m">
 					<view class="uni-charts-box">
-						<qiun-data-charts type="column" :chartData="chartData" echartsH5 echartsApp />
+						<qiun-data-charts type="pie" :chartData="chartData" echartsH5 echartsApp />
 					</view>
 				</view>
 			</view>
@@ -179,7 +179,7 @@
 			},
 
 			getAllData(query) {
-				this.getPanelData(query)
+				// this.getPanelData(query)
 				this.getChartData(query, this.field, this.fieldName)
 				this.getTabelData(query)
 			},
@@ -204,10 +204,8 @@
 						} = res.result
 						data = data[0]
 						const options = {
-							categories: [],
 							series: [{
-								name,
-								data: []
+								data: [],
 							}]
 						}
 						for (const key in data) {
@@ -215,8 +213,11 @@
 								const x = this.parseChars(key)
 								const y = data[key]
 								if (y) {
-									options.series[0].data.push(y)
-									options.categories.push(x)
+									options.series[0].data.push({
+										name: x,
+										value: y
+									})
+									// options.categories.push(x)
 								}
 							}
 						}

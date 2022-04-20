@@ -5,13 +5,13 @@ export default [{
 	formatter: '',
 }, {
 	title: '访问人数',
-	field: 'visit_users',
+	field: 'visit_devices',
 	tooltip: '访问人数（活跃用户数）：访问过应用内任意页面的总用户数（去重）',
 	value: 0
 }, {
 	title: '访问人数占比',
-	field: 'visit_users/total_visit_users',
-	computed: 'visit_users/total_visit_users',
+	field: 'visit_devices/total_visit_devices',
+	computed: 'visit_devices/total_visit_devices',
 	formatter: '%',
 }, {
 	title: '访问次数',

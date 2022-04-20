@@ -28,11 +28,11 @@
 					<uni-stat-tabs type="boldLine" :tabs="types" v-model="type"
 						style="line-height: 40px; margin-bottom: -17px;" />
 				</view>
-				<uni-stat-panel v-if="type === 'visit_depth_data'" :items="panelData" class="uni-stat-panel" />
-				<uni-stat-tabs type="box" :tabs="fields" v-model="field" class="mb-l" />
+				<!-- <uni-stat-panel v-if="type === 'visit_depth_data'" :items="panelData" class="uni-stat-panel" /> -->
+				<!-- <uni-stat-tabs type="box" :tabs="fields" v-model="field" class="mb-l" /> -->
 				<view class="p-m">
 					<view class="uni-charts-box">
-						<qiun-data-charts type="column" :chartData="chartData" echartsH5 echartsApp />
+						<qiun-data-charts type="pie" :chartData="chartData" echartsH5 echartsApp />
 					</view>
 				</view>
 			</view>
@@ -81,9 +81,9 @@
 					_id: 'duration_data',
 					name: '访问时长'
 				}],
-				field: 'visit_users',
+				field: 'visit_devices',
 				fields: [{
-					_id: 'visit_users',
+					_id: 'visit_devices',
 					name: '访问人数'
 				}, {
 					_id: 'visit_times',
@@ -179,7 +179,7 @@
 			},
 
 			getAllData(query) {
-				this.getPanelData(query)
+				// this.getPanelData(query)
 				this.getChartData(query, this.field, this.fieldName)
 				this.getTabelData(query)
 			},
@@ -204,10 +204,8 @@
 						} = res.result
 						data = data[0]
 						const options = {
-							categories: [],
 							series: [{
-								name,
-								data: []
+								data: [],
 							}]
 						}
 						for (const key in data) {
@@ -215,8 +213,11 @@
 								const x = this.parseChars(key)
 								const y = data[key]
 								if (y) {
-									options.series[0].data.push(y)
-									options.categories.push(x)
+									options.series[0].data.push({
+										name: x,
+										value: y
+									})
+									// options.categories.push(x)
 								}
 							}
 						}
@@ -232,7 +233,7 @@
 
 			getTabelData(query) {
 				query = stringifyQuery(query)
-				const groupField = this.createStr(['visit_users', 'visit_times'], this.type)
+				const groupField = this.createStr(['visit_devices', 'visit_times'], this.type)
 				this.loading = true
 				const db = uniCloud.database()
 				db.collection('opendb-stat-loyalty-result')
@@ -267,14 +268,14 @@
 						const reducer = (previousValue, currentValue) => previousValue + currentValue;
 						const total = {}
 
-						let users = rows.filter(row => row.visit_users)
-							.map(row => row.visit_users)
+						let users = rows.filter(row => row.visit_devices)
+							.map(row => row.visit_devices)
 						users = users.length ? users.reduce(reducer) : 0
 						let times = rows.filter(row => row.visit_times)
 							.map(row => row.visit_times)
 						times = times.length ? times.reduce(reducer) : 0
 						total.visit_times = times
-						total.visit_users = users
+						total.visit_devices = users
 						this.options[type].value.forEach(val => {
 							const item = {}
 							item.name = val + 'p'
@@ -313,7 +314,7 @@
 					.where(query)
 					.groupBy('appid')
 					.groupField(
-						'sum(page_visit_count) as total_visit_times, max(total_users) as total_visit_users'
+						'sum(page_visit_count) as total_visit_times, max(total_users) as total_visit_devices'
 					)
 					.orderBy('start_time', 'desc')
 					.get({
