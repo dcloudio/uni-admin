@@ -9,7 +9,7 @@
 	"author": "",
 	"license": "ISC",
 	"dependencies": {
-		"uni-stat": "file:../../../uni_modules/uni-config-center/uniCloud/cloudfunctions/common/uni-stat"
+		"uni-stat": "file:../common/uni-stat"
 	},
 	"cloudfunction-config": {
 		"concurrency": 1,
@@ -22,5 +22,8 @@
 				"config": "0 0 * * * * *"
 			}
 		]
+	},
+	"extensions": {
+		"uni-cloud-redis": {}
 	}
 }

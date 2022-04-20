@@ -9,11 +9,15 @@
 	"author": "",
 	"license": "ISC",
 	"dependencies": {
-		"uni-stat": "file:../../../uni_modules/uni-config-center/uniCloud/cloudfunctions/common/uni-stat"
+		"uni-id": "file:../../../../uni-id/uniCloud/cloudfunctions/common/uni-id",
+		"uni-stat": "file:../common/uni-stat"
 	},
 	"cloudfunction-config": {
 		"concurrency": 100,
 		"memorySize": 128,
 		"timeout": 100
+	},
+	"extensions": {
+		"uni-cloud-redis": {}
 	}
 }

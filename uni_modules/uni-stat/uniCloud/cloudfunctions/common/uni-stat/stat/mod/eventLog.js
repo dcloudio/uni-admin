@@ -1,0 +1,134 @@
+// 事件日志
+const BaseMod = require('./base')
+const Platform = require('./platform')
+const Channel = require('./channel')
+const StatEvent = require('./event')
+const SessionLog = require('./sessionLog')
+const ShareLog = require('./shareLog')
+const {
+	DateTime
+} = require('../lib')
+module.exports = class EventLog extends BaseMod {
+	constructor() {
+		super()
+		this.tableName = 'event-logs'
+		this.sessionLogInfo = []
+	}
+
+	// 日志填充
+	async fill(reportParams) {
+		let params;
+		let sessionKey, sessionLogKey;
+		let sessionLogInfo;
+		const sessionData = []
+		const fillParams = []
+		const shareParams = []
+		const sessionLog = new SessionLog()
+		const event = new StatEvent()
+		const platform = new Platform()
+		const dateTime = new DateTime()
+		const channel = new Channel()
+		for (const rk in reportParams) {
+			params = reportParams[rk]
+
+			sessionKey = params.ak + params.did + params.p
+			if (!this.sessionLogInfo[sessionKey]) {
+				// 会话日志
+				sessionLogInfo = await sessionLog.getSession(params)
+				if (sessionLogInfo.code) {
+					return sessionLogInfo
+				}
+				if (this.debug) {
+					console.log('sessionLogInfo', JSON.stringify(sessionLogInfo))
+				}
+				this.sessionLogInfo[sessionKey] = sessionLogInfo
+			} else {
+				sessionLogInfo = this.sessionLogInfo[sessionKey]
+			}
+
+			// 会话数据
+			sessionLogKey = sessionLogInfo.data.sessionLogId.toString()
+			if (!sessionData[sessionLogKey]) {
+				sessionData[sessionLogKey] = {
+					eventCount: sessionLogInfo.data.eventCount + 1,
+					addEventCount: 1,
+					uid: sessionLogInfo.data.uid,
+					createTime: sessionLogInfo.data.createTime
+				}
+			} else {
+				sessionData[sessionLogKey].eventCount++
+				sessionData[sessionLogKey].addEventCount++
+			}
+
+			// 事件
+			const eventInfo = await event.getEventAndCreate(params.ak, params.e_n)
+
+			// 填充数据
+			fillParams.push({
+				appid: params.ak,
+				version: params.v ? params.v : '',
+				platform: platform.getPlatformCode(params.ut, params.p),
+				channel: channel.getChannelCode(params),
+				device_id: params.did,
+				uid: params.uid ? params.uid : '',
+				session_id: sessionLogInfo.data.sessionLogId,
+				page_id: sessionLogInfo.data.pageId,
+				event_key: eventInfo.event_key,
+				param: params.e_v ? params.e_v : '',
+				create_time: dateTime.getTime()
+			})
+			// 分享数据
+			if (eventInfo.event_key === 'share') {
+				shareParams.push(params)
+			}
+		}
+
+		if (fillParams.length === 0) {
+			return {
+				code: 200,
+				msg: 'Invild param'
+			}
+		}
+
+		if (shareParams.length > 0) {
+			const shareLog = new ShareLog()
+			await shareLog.fill(shareParams, this.sessionLogInfo)
+		}
+
+		const res = await this.insert(this.tableName, fillParams)
+		if (res && res.inserted) {
+			const nowTime = dateTime.getTime()
+			for (const sid in sessionData) {
+				await sessionLog.updateSession(sid, sessionData[sid])
+			}
+			return {
+				code: 0,
+				msg: 'success'
+			}
+		} else {
+			return {
+				code: 500,
+				msg: 'Filled error'
+			}
+		}
+	}
+
+	// 清理数据
+	async clean(days) {
+		days = Math.max(parseInt(days), 1)
+		console.log('clean event logs - day:', days)
+
+		const dateTime = new DateTime()
+
+		const res = await this.delete(this.tableName, {
+			create_time: {
+				$lt: dateTime.getTimeBySetDays(0 - days)
+			}
+		})
+
+		if (!res.code) {
+			console.log('clean event log:', res)
+		}
+		return res
+	}
+}

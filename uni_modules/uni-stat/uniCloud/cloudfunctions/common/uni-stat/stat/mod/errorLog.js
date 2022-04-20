@@ -1,0 +1,118 @@
+// 错误日志
+const BaseMod = require('./base')
+const Platform = require('./platform')
+const Channel = require('./channel')
+const {DateTime, UniCrypto} = require('../lib')
+module.exports = class ErrorLog extends BaseMod {
+  constructor () {
+    super()
+    this.tableName = 'error-logs'
+  }
+
+  // 日志填充
+  async fill (reportParams) {
+    let params, errorHash, errorCount, cacheKey; const fillParams = []
+    const platform = new Platform()
+    const dateTime = new DateTime()
+    const uniCrypto = new UniCrypto()
+    const channel = new Channel()
+    const {
+      needCheck,
+      checkTime
+    } = this.getConfig('errorCheck')
+    const errorCheckTime = Math.max(checkTime, 1)
+	let spaceId
+	let spaceProvider
+    for (const rk in reportParams) {
+      params = reportParams[rk]
+      errorHash = uniCrypto.md5(params.em)
+      cacheKey = 'error-count-' + errorHash
+      // 校验在指定时间段内是否已存在相同的错误项
+      if (needCheck) {
+        errorCount = await this.getCache(cacheKey)
+        if (!errorCount) {
+          errorCount = await this.getCollection(this.tableName).where({
+            error_hash: errorHash,
+            create_time: {
+              $gte: dateTime.getTime() - errorCheckTime * 60000
+            }
+          }).count()
+          if (errorCount && errorCount.total > 0) {
+            await this.setCache(cacheKey, errorCount, errorCheckTime * 60)
+          }
+        }
+
+        if (errorCount && errorCount.total > 0) {
+          if (this.debug) {
+            console.log('This error have already existsed: ' + params.em)
+          }
+          continue
+        }
+      }
+	  
+	  spaceId = null
+	  spaceProvider = null
+	  if(params.spi) {
+		  spaceId = params.spi.spaceId
+		  spaceProvider = params.spi.provider
+	  }
+
+      // 填充数据
+      fillParams.push({
+        appid: params.ak,
+        version: params.v ? params.v :  '',
+        platform: platform.getPlatformCode(params.ut, params.p),
+        channel: channel.getChannelCode(params),
+        device_id: params.did,
+		uid: params.uid ? params.uid :  '',
+		os: params.p ? params.p :  '',
+		ua: params.ua ? params.ua :  '',
+		space_id: spaceId ? spaceId :  '',
+		space_provider: spaceProvider ? spaceProvider :  '',
+        platform_version: params.mpv ? params.mpv :  '',
+        error_msg: params.em ? params.em :  '',
+        error_hash: errorHash,
+        create_time: dateTime.getTime()
+      })
+    }
+
+    if (fillParams.length === 0) {
+      return {
+        code: 200,
+        msg: 'Invild param'
+      }
+    }
+
+    const res = await this.insert(this.tableName, fillParams)
+    if (res && res.inserted) {
+      return {
+        code: 0,
+        msg: 'success'
+      }
+    } else {
+      return {
+        code: 500,
+        msg: 'Filled error'
+      }
+    }
+  }
+
+  // 清理数据
+  async clean (days) {
+    days = Math.max(parseInt(days), 1)
+    console.log('clean error logs - day:', days)
+
+    const dateTime = new DateTime()
+
+    const res = await this.delete(this.tableName, {
+      create_time: {
+        $lt: dateTime.getTimeBySetDays(0 - days)
+      }
+    })
+
+    if (!res.code) {
+      console.log('clean error log:', res)
+    }
+    return res
+  }
+}
