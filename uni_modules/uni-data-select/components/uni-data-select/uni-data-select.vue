@@ -89,9 +89,9 @@
 		mounted() {
 			// this.init(this.mode)
 			this.mixinDatacomEasyGet()
-			setTimeout(() => {
-				console.log(7777777777777, this.mixinDatacomResData);
-			}, 3000)
+			// setTimeout(() => {
+			// 	console.log(7777777777777, this.mixinDatacomResData);
+			// }, 3000)
 		},
 		computed: {
 			typePlaceholder() {

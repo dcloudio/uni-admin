@@ -78,11 +78,12 @@
 	export default {
 		data() {
 			return {
+				tableName: 'opendb-stat-result',
 				fieldsMap,
 				resFieldsMap,
 				entFieldsMap,
 				query: {
-					dimension: "hour",
+					dimension: 'hour',
 					appid: '',
 					platform_id: '',
 					start_time: [],
@@ -239,7 +240,7 @@
 					start_time: [getTimeOfSomeDayAgo(1), new Date().getTime()]
 				})
 				const db = uniCloud.database()
-				const subTable = db.collection('opendb-stat-result')
+				const subTable = db.collection(this.tableName)
 					.where(query)
 					.field(
 						`${stringifyField(fieldsMap)},dimension,stat_date`
@@ -262,7 +263,7 @@
 					})
 			},
 
-			getChartData(query, field = this.chartTab, name = '新增用户') {
+			getChartData(query, field = this.chartTabs[0]._id, name=this.chartTabs[0].name) {
 				this.chartData = {}
 				const {
 					pageCurrent
@@ -280,7 +281,7 @@
 				}
 				query = stringifyQuery(query, true)
 				const db = uniCloud.database()
-				db.collection('opendb-stat-result')
+				db.collection(this.tableName)
 					.where(query)
 					.field(`${stringifyField(fieldsMap, field)}, start_time`)
 					.groupBy(`start_time`)
@@ -357,7 +358,7 @@
 
 			getAppAccessTimes(query) {
 				const db = uniCloud.database()
-				return db.collection('opendb-stat-result')
+				return db.collection(this.tableName)
 					.where(query)
 					.groupBy('appid')
 					.groupField(`sum(page_visit_count) as total_app_access`)
