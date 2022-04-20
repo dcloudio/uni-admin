@@ -52,7 +52,7 @@ const fieldsMap = [{
 	fix: 2
 }, {
 	title: '总设备数',
-	field: 'total_users',
+	field: 'total_devices',
 	tooltip: '从添加统计到当前选择时间的总设备数（去重）',
 	value: 0,
 	contrast: 0

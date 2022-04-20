@@ -76,6 +76,7 @@
 	export default {
 		data() {
 			return {
+				tableName: 'opendb-stat-result',
 				fieldsMap,
 				query: {
 					dimension: "hour",
@@ -229,12 +230,12 @@
 				this.getTabelData(query)
 			},
 
-			getChartData(query, field = this.chartTab, name = '新增用户') {
+			getChartData(query, field = this.chartTabs[0]._id, name = this.chartTabs[0].name) {
 				this.chartData = {}
 				query = stringifyQuery(query, true)
 				const dimension = this.query.dimension
 				const db = uniCloud.database()
-				db.collection('opendb-stat-result')
+				db.collection(this.tableName)
 					.where(query)
 					.field(`${stringifyField(fieldsMap, field)}, start_time`)
 					.groupBy('start_time')
@@ -286,7 +287,7 @@
 				this.options.pageCurrent = 1 // 重置分页
 				this.loading = true
 				const db = uniCloud.database()
-				db.collection('opendb-stat-result')
+				db.collection(this.tableName)
 					.where(query)
 					.field(stringifyField(fieldsMap))
 					.groupBy('start_time')
@@ -327,7 +328,7 @@
 				cloneQuery.dimension = 'day'
 				let query = stringifyQuery(cloneQuery)
 				const db = uniCloud.database()
-				const subTable = db.collection('opendb-stat-result')
+				const subTable = db.collection(this.tableName)
 					.where(query)
 					.field(`${stringifyField(fieldsMap)},stat_date`)
 					.groupBy('appid')
