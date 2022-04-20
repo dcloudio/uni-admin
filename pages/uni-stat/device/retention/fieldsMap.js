@@ -1,6 +1,6 @@
 function fieldsFactory(maps = [{
 	title: '新增用户',
-	field: 'new_user_count',
+	field: 'new_device_count',
 	stat: 0
 }]) {
 	let fieldsMap = [{

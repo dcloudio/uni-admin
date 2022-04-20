@@ -1,9 +1,10 @@
 <template>
 	<view class="fix-top-window">
-		<view class="uni-header">				<uni-stat-breadcrumb class="uni-stat-breadcrumb-on-phone" />
+		<view class="uni-header">
+			<uni-stat-breadcrumb class="uni-stat-breadcrumb-on-phone" />
 			<view class="uni-group">
 				<!-- <view class="uni-title">用户留存</view> -->
-				<view class="uni-sub-title hide-on-phone">用户留存趋势分析</view>
+				<view class="uni-sub-title hide-on-phone">设备留存趋势分析</view>
 			</view>
 		</view>
 		<view class="uni-container">
@@ -18,8 +19,8 @@
 			<view class="uni-stat--x flex">
 				<uni-stat-tabs label="日期选择" :current="currentDateTab" mode="date" :yesterday="false"
 					@change="changeTimeRange" />
-				<uni-datetime-picker type="daterange" :end="new Date().getTime()"  v-model="query.start_time" returnType="timestamp"
-					:clearIcon="false" class="uni-stat-datetime-picker"
+				<uni-datetime-picker type="daterange" :end="new Date().getTime()" v-model="query.start_time"
+					returnType="timestamp" :clearIcon="false" class="uni-stat-datetime-picker"
 					:class="{'uni-stat__actived': currentDateTab < 0 && !!query.start_time.length}"
 					@change="useDatetimePicker" />
 			</view>
@@ -103,13 +104,13 @@
 				currentDateTab: 0,
 				tableData: [],
 				chartData: {},
-				field: 'new_user',
+				field: 'new_device',
 				fields: [{
-					_id: 'new_user',
+					_id: 'new_device',
 					name: '新增留存',
 					tooltip: '指定时间新增（即首次访问应用）用户，在之后的第N天，再次访问应用的用户数占比'
 				}, {
-					_id: 'active_user',
+					_id: 'active_device',
 					name: '活跃留存',
 					tooltip: '指定时间活跃（即访问应用）用户，在之后的第N天，再次访问应用的用户数占比'
 				}],
@@ -118,7 +119,7 @@
 		},
 		computed: {
 			fieldsMap() {
-				const title = this.field === 'active_user' ? '活跃用户' : '新增用户'
+				const title = this.field === 'active_device' ? '活跃用户' : '新增用户'
 				const maps = [{
 					title,
 					field: `${this.field}_count`,
@@ -222,13 +223,13 @@
 					} else if (f.stat === 0) {
 						return `${f.field} as ${ 'temp_' + f.field}`
 					} else {
-						return `retention.${this.field}.${f.field}.user_count as ${ 'temp_' + f.field}`
+						return `retention.${this.field}.${f.field}.device_count as ${ 'temp_' + f.field}`
 					}
 				}).join()
 				return fields
 			},
 
-			createStr(type = "user_count", vals, fields, tail) {
+			createStr(type = "device_count", vals, fields, tail) {
 				const value = vals || [1, 2, 3, 4, 5, 6, 7, 14, 30]
 				const p = 'd'
 				const f = this.fields.map(item => item._id)
@@ -256,7 +257,7 @@
 					pageCurrent
 				} = this.options
 				query = stringifyQuery(query)
-				const groupField = this.createStr("user_count", [key], [this.field])
+				const groupField = this.createStr("device_count", [key], [this.field])
 				const db = uniCloud.database()
 				db.collection('opendb-stat-result')
 					.where(query)
