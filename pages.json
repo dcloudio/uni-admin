@@ -168,48 +168,6 @@
 				"enablePullDownRefresh": false
 			}
 		}, {
-			"path": "overview/overview",
-			"style": {
-				"navigationBarTitleText": "今日概况",
-				"enablePullDownRefresh": false
-			}
-
-		}, {
-			"path": "user-activity/user-activity",
-			"style": {
-				"navigationBarTitleText": "用户活跃度",
-				"enablePullDownRefresh": false
-			}
-
-		}, {
-			"path": "trend-analysis/trend-analysis",
-			"style": {
-				"navigationBarTitleText": "趋势分析",
-				"enablePullDownRefresh": false
-			}
-
-		}, {
-			"path": "user-retention/user-retention",
-			"style": {
-				"navigationBarTitleText": "用户留存",
-				"enablePullDownRefresh": false
-			}
-
-		}, {
-			"path": "comparison/comparison",
-			"style": {
-				"navigationBarTitleText": "平台对比",
-				"enablePullDownRefresh": false
-			}
-
-		}, {
-			"path": "loyalty/loyalty",
-			"style": {
-				"navigationBarTitleText": "用户忠诚度",
-				"enablePullDownRefresh": false
-			}
-
-		}, {
 			"path": "scene/scene",
 			"style": {
 				"navigationBarTitleText": "场景值（小程序）",
@@ -234,6 +192,96 @@
 			"path": "event/event",
 			"style": {
 				"navigationBarTitleText": "事件和转化",
+				"enablePullDownRefresh": false
+			}
+
+		}]
+	}, {
+		"root": "pages/uni-stat/device",
+		"pages": [{
+			"path": "overview/overview",
+			"style": {
+				"navigationBarTitleText": "今日概况",
+				"enablePullDownRefresh": false
+			}
+
+		}, {
+			"path": "activity/activity",
+			"style": {
+				"navigationBarTitleText": "活跃度",
+				"enablePullDownRefresh": false
+			}
+
+		}, {
+			"path": "trend/trend",
+			"style": {
+				"navigationBarTitleText": "趋势分析",
+				"enablePullDownRefresh": false
+			}
+
+		}, {
+			"path": "retention/retention",
+			"style": {
+				"navigationBarTitleText": "留存",
+				"enablePullDownRefresh": false
+			}
+
+		}, {
+			"path": "comparison/comparison",
+			"style": {
+				"navigationBarTitleText": "平台对比",
+				"enablePullDownRefresh": false
+			}
+
+		}, {
+			"path": "stickiness/stickiness",
+			"style": {
+				"navigationBarTitleText": "粘性",
+				"enablePullDownRefresh": false
+			}
+
+		}]
+	}, {
+		"root": "pages/uni-stat/user",
+		"pages": [{
+			"path": "overview/overview",
+			"style": {
+				"navigationBarTitleText": "今日概况",
+				"enablePullDownRefresh": false
+			}
+
+		}, {
+			"path": "activity/activity",
+			"style": {
+				"navigationBarTitleText": "活跃度",
+				"enablePullDownRefresh": false
+			}
+
+		}, {
+			"path": "trend/trend",
+			"style": {
+				"navigationBarTitleText": "趋势分析",
+				"enablePullDownRefresh": false
+			}
+
+		}, {
+			"path": "retention/retention",
+			"style": {
+				"navigationBarTitleText": "留存",
+				"enablePullDownRefresh": false
+			}
+
+		}, {
+			"path": "comparison/comparison",
+			"style": {
+				"navigationBarTitleText": "平台对比",
+				"enablePullDownRefresh": false
+			}
+
+		}, {
+			"path": "stickiness/stickiness",
+			"style": {
+				"navigationBarTitleText": "粘性",
 				"enablePullDownRefresh": false
 			}
 
