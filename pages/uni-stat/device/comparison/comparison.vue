@@ -88,11 +88,11 @@
 				db.collection('opendb-stat-result')
 					.where(query)
 					.field(
-						`active_user_count,new_user_count,total_users,platform_id`
+						`active_device_count,new_device_count,total_devices,platform_id`
 					)
 					.groupBy(`platform_id`)
 					.groupField(
-						`sum(active_user_count) as ${type}_active_user_count, sum(new_user_count) as ${type}_new_user_count, max(total_users) as ${type}_total_users`
+						`sum(active_device_count) as ${type}_active_device_count, sum(new_device_count) as ${type}_new_device_count, max(total_devices) as ${type}_total_devices`
 					)
 					.get()
 					.then(res => {
@@ -106,11 +106,11 @@
 				const sub = db.collection('opendb-stat-result')
 					.where(query)
 					.field(
-						`active_user_count, new_user_count, platform_id, ${type}(add(new Date(0),start_time), "Asia/Shanghai") as ${type},year(add(new Date(0),start_time), "Asia/Shanghai") as year`
+						`active_device_count, new_device_count, platform_id, ${type}(add(new Date(0),start_time), "Asia/Shanghai") as ${type},year(add(new Date(0),start_time), "Asia/Shanghai") as year`
 					)
 					.groupBy(`year, ${type ? type + ',' : ''}platform_id`)
 					.groupField(
-						`sum(active_user_count) as ${type}_active_user_count, sum(new_user_count) as ${type}_new_user_count`
+						`sum(active_device_count) as ${type}_active_device_count, sum(new_device_count) as ${type}_new_device_count`
 					)
 					.orderBy(`year asc, ${type} asc`)
 					.get()
@@ -125,14 +125,14 @@
 				const db = uniCloud.database()
 				db.collection('opendb-app-platforms').get().then(res => {
 					const options = [{
-						field: `${type}_new_user_count`,
-						title: `${type === 'day' ? '日' : '月'}新增用户对比`,
+						field: `${type}_new_device_count`,
+						title: `${type === 'day' ? '日' : '月'}新增设备对比`,
 						series: [{
 							data: []
 						}]
 					}, {
-						field: `${type}_active_user_count`,
-						title: `${type === 'day' ? '日' : '月'}活跃用户对比`,
+						field: `${type}_active_device_count`,
+						title: `${type === 'day' ? '日' : '月'}活跃设备对比`,
 						series: [{
 							data: []
 						}]
@@ -140,8 +140,8 @@
 
 					if (type === 'day') {
 						options.unshift({
-							field: `day_total_users`,
-							title: `总用户数对比`,
+							field: `day_total_devices`,
+							title: `总设备数对比`,
 							series: [{
 								data: [],
 							}]
