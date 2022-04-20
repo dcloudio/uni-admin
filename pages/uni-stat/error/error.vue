@@ -49,9 +49,10 @@
 									{{item[mapper.field] !== undefined ? item[mapper.field] : '-'}}
 								</uni-stat-tooltip>
 							</uni-td>
-							<uni-td v-else-if="mapper.field === 'count'" :key="mapper.title" align="center"
-								class="link-btn" @click="togglePopup(item)">
+							<uni-td v-else-if="mapper.field === 'count'" :key="mapper.title" align="center">
+								<text class="link-btn" @click="togglePopup(item)">
 								{{item[mapper.field] !== undefined ? item[mapper.field] : '-'}}
+								</text>
 							</uni-td>
 							<uni-td v-else :key="mapper.title" align="center">
 								{{item[mapper.field] !== undefined ? item[mapper.field] : '-'}}
@@ -73,7 +74,7 @@
 			</view>
 		</view>
 
-		<uni-popup ref="popup" type="center" :maskClick="true">
+		<uni-popup ref="popupTable" type="center" :maskClick="true">
 			<view class="modal">
 				<view class="modal-header">
 					错误设备信息
@@ -433,7 +434,7 @@
 
 			togglePopup(item) {
 				this.getPopupTableData(item.hash)
-				this.$refs.popup.open()
+				this.$refs.popupTable.open()
 			},
 
 			createStr(maps, fn, prefix = 'total_') {
