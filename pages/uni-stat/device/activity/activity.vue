@@ -3,7 +3,6 @@
 		<view class="uni-header">
 			<uni-stat-breadcrumb class="uni-stat-breadcrumb-on-phone" />
 			<view class="uni-group">
-				<!-- <view class="uni-title">用户活跃度</view> -->
 				<view class="uni-sub-title hide-on-phone">用户活跃度分析</view>
 			</view>
 		</view>
@@ -187,7 +186,7 @@
 				this.getTabelData(query)
 			},
 
-			getChartData(query, type, name = '日活', field = 'active_user_count') {
+			getChartData(query, type, name = '日活', field = 'active_device_count') {
 				const options = {
 					categories: [],
 					series: [{
@@ -245,7 +244,7 @@
 				}
 			},
 
-			getTabelData(query, field = 'active_user_count') {
+			getTabelData(query, field = 'active_device_count') {
 				const {
 					pageCurrent
 				} = this.options
@@ -308,7 +307,7 @@
 					})
 			},
 
-			getRangeCountData(query, type, field = 'active_user_count') {
+			getRangeCountData(query, type, field = 'active_device_count') {
 				const {
 					pageCurrent
 				} = this.options
@@ -327,7 +326,7 @@
 			},
 
 
-			mapWithWeekAndMonth(data, weeks, months, field = 'active_user_count') {
+			mapWithWeekAndMonth(data, weeks, months, field = 'active_device_count') {
 				for (const item of data) {
 					const date = new Date(item.start_time)
 					const year = date.getUTCFullYear()
