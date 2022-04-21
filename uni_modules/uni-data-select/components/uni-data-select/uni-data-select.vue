@@ -28,6 +28,24 @@
 </template>
 
 <script>
+	/**
+	 * DataChecklist 数据选择器
+	 * @description 通过数据渲染 select
+	 * @tutorial https://ext.dcloud.net.cn/plugin?id=xxx
+	 * @property {String} value 默认值
+	 * @property {Array} localdata 本地数据 ，格式 [{text:'',value:''}]
+	 * @property {Number|String} min 最小选择个数 ，multiple为true时生效
+	 * @property {Number|String} max 最大选择个数 ，multiple为true时生效
+	 * @property {String} icon = [left|right]  list 列表模式下icon显示位置
+	 * @property {Boolean} selectedColor 选中颜色
+	 * @property {Boolean} emptyText 没有数据时显示的文字 ，本地数据无效
+	 * @property {Boolean} selectedTextColor 选中文本颜色，如不填写则自动显示
+	 * @property {Object} map 字段映射， 默认 map={text:'text',value:'value'}
+	 * @value left 左侧显示
+	 * @value right 右侧显示
+	 * @event {Function} change  选中发生变化触发
+	 */
+
 	export default {
 		name: "uni-stat-select",
 		mixins: [uniCloud.mixinDatacom || {}],
@@ -67,7 +85,7 @@
 			},
 			label: {
 				type: String,
-				default: 'label'
+				default: ''
 			},
 			placeholder: {
 				type: String,
@@ -87,11 +105,7 @@
 			}
 		},
 		mounted() {
-			// this.init(this.mode)
 			this.mixinDatacomEasyGet()
-			// setTimeout(() => {
-			// 	console.log(7777777777777, this.mixinDatacomResData);
-			// }, 3000)
 		},
 		computed: {
 			typePlaceholder() {
