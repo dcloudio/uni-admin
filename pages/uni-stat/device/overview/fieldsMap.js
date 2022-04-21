@@ -2,15 +2,15 @@ const fieldsMap = [{
 	value: '今天',
 	contrast: '昨天'
 }, {
-	title: '新增用户',
-	field: 'new_user_count',
-	tooltip: '首次访问应用的用户数（以设备为判断标准，去重）',
+	title: '新增设备',
+	field: 'new_device_count',
+	tooltip: '首次访问应用的设备数（以设备为判断标准，去重）',
 	value: 0,
 	contrast: 0
 }, {
-	title: '活跃用户',
-	field: 'active_user_count',
-	tooltip: '访问过应用内任意页面的总用户数（去重）',
+	title: '活跃设备',
+	field: 'active_device_count',
+	tooltip: '访问过应用内任意页面的总设备数（去重）',
 	value: 0,
 	contrast: 0
 }, {
@@ -22,7 +22,7 @@ const fieldsMap = [{
 }, {
 	title: '启动次数',
 	field: 'app_launch_count',
-	tooltip: '用户从打开应用到主动关闭应用或超时退出计为一次启动',
+	tooltip: '设备从打开应用到主动关闭应用或超时退出计为一次启动',
 	value: 0,
 	contrast: 0
 }, {
@@ -34,10 +34,10 @@ const fieldsMap = [{
 	contrast: 0,
 	stat: 'avg'
 }, {
-	title: '人均停留时长 ',
-	field: 'avg_user_time',
+	title: '设备平均停留时长 ',
+	field: 'avg_device_time',
 	formatter: ':',
-	tooltip: '平均每个用户停留在应用内的总时长，即应用停留总时长/活跃用户',
+	tooltip: '平均每个设备停留在应用内的总时长，即应用停留总时长/活跃设备',
 	value: 0,
 	contrast: 0,
 	stat: 'avg'
@@ -51,12 +51,9 @@ const fieldsMap = [{
 	contrast: 0,
 	fix: 2
 }, {
-	field: 'bounce_times',
-	disable: true
-}, {
-	title: '总用户数',
-	field: 'total_users',
-	tooltip: '从添加统计到当前选择时间的总用户数（去重）',
+	title: '总设备数',
+	field: 'total_devices',
+	tooltip: '从添加统计到当前选择时间的总设备数（去重）',
 	value: 0,
 	contrast: 0
 }]
@@ -64,7 +61,7 @@ const fieldsMap = [{
 const resFieldsMap = [{
 	title: '受访页',
 	field: 'path',
-	tooltip: '用户进入应用访问的所有页面，例如用户从页面1进入应用，跳转到页面2，1,2均为受访页',
+	tooltip: '设备进入应用访问的所有页面，例如设备从页面1进入应用，跳转到页面2，1,2均为受访页',
 	formatter: ''
 }, {
 	title: '访问次数',
@@ -83,7 +80,7 @@ const resFieldsMap = [{
 const entFieldsMap = [{
 	title: '入口页',
 	field: 'path',
-	tooltip: '用户进入应用访问的第一个页面，例如用户从页面1进入应用，跳转到页面2，1为入口页，而2不是',
+	tooltip: '设备进入应用访问的第一个页面，例如设备从页面1进入应用，跳转到页面2，1为入口页，而2不是',
 	formatter: ''
 }, {
 	title: '访问次数',

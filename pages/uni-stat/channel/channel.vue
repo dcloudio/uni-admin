@@ -35,6 +35,9 @@
 			</view>
 
 			<view class="uni-stat--x p-m">
+				<view class="mb-m">
+					<uni-link color="" href="https://ask.dcloud.net.cn/article/35974" text="如何自定义渠道包?"></uni-link>
+				</view>
 				<uni-table :loading="loading" border stripe :emptyText="$t('common.empty')">
 					<uni-tr>
 						<template v-for="(mapper, index) in fieldsMap.slice(0, fieldsMap.length-1)">

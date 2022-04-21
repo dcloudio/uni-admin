@@ -18,8 +18,8 @@
 			</view>
 			<view class="uni-stat--x flex">
 				<uni-stat-tabs label="日期选择" :current="currentDateTab" mode="date" @change="changeTimeRange" />
-				<uni-datetime-picker type="daterange" :end="new Date().getTime()"  v-model="query.start_time" returnType="timestamp"
-					:clearIcon="false" class="uni-stat-datetime-picker"
+				<uni-datetime-picker type="daterange" :end="new Date().getTime()" v-model="query.start_time"
+					returnType="timestamp" :clearIcon="false" class="uni-stat-datetime-picker"
 					:class="{'uni-stat__actived': currentDateTab < 0 && !!query.start_time.length}"
 					@change="useDatetimePicker" />
 			</view>
@@ -28,11 +28,9 @@
 					<uni-stat-tabs type="boldLine" :tabs="types" v-model="type"
 						style="line-height: 40px; margin-bottom: -17px;" />
 				</view>
-				<uni-stat-panel v-if="type === 'visit_depth_data'" :items="panelData" class="uni-stat-panel" />
-				<uni-stat-tabs type="box" :tabs="fields" v-model="field" class="mb-l" />
 				<view class="p-m">
 					<view class="uni-charts-box">
-						<qiun-data-charts type="column" :chartData="chartData" echartsH5 echartsApp />
+						<qiun-data-charts type="pie" :chartData="chartData" echartsH5 echartsApp />
 					</view>
 				</view>
 			</view>
@@ -179,7 +177,6 @@
 			},
 
 			getAllData(query) {
-				this.getPanelData(query)
 				this.getChartData(query, this.field, this.fieldName)
 				this.getTabelData(query)
 			},
@@ -204,20 +201,18 @@
 						} = res.result
 						data = data[0]
 						const options = {
-							categories: [],
 							series: [{
-								name,
-								data: []
+								data: [],
 							}]
 						}
 						for (const key in data) {
 							if (key !== 'appid') {
 								const x = this.parseChars(key)
 								const y = data[key]
-								if (y) {
-									options.series[0].data.push(y)
-									options.categories.push(x)
-								}
+								options.series[0].data.push({
+									name: x,
+									value: y
+								})
 							}
 						}
 						this.chartData = options
@@ -303,26 +298,6 @@
 						// err.code 错误码
 					}).finally(() => {
 						this.loading = false
-					})
-			},
-
-			getPanelData(query) {
-				query = stringifyQuery(query)
-				const db = uniCloud.database()
-				const subTable = db.collection('opendb-stat-result')
-					.where(query)
-					.groupBy('appid')
-					.groupField(
-						'sum(page_visit_count) as total_visit_times, max(total_users) as total_visit_users'
-					)
-					.orderBy('start_time', 'desc')
-					.get({
-						getCount: true
-					})
-					.then(res => {
-						const items = res.result.data[0]
-						this.panelData = []
-						this.panelData = mapfields(fieldsMap, items, undefined, 'total_')
 					})
 			},
 

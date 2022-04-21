@@ -1,10 +1,10 @@
 {
-  "id": "uni-breadcrumb",
-  "displayName": "uni-breadcrumb",
+  "id": "uni-tooltip",
+  "displayName": "uni-tooltip",
   "version": "0.1.0",
-  "description": "uni-breadcrumb",
+  "description": "uni-tooltip",
   "keywords": [
-    "uni-breadcrumb"
+    "uni-tooltip"
 ],
   "repository": "",
   "engines": {
