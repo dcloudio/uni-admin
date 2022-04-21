@@ -1,5 +1,5 @@
 
-## breadcrumb 数字角标
+## breadcrumb 面包屑导航
 > **组件名：uni-breadcrumb**
 > 代码块： `ubreadcrumb`
 

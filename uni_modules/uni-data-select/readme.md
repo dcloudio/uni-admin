@@ -1,6 +1,6 @@
 
 
-## DataSelect 数据驱动的单选复选框
+## DataSelect 数据驱动的下拉框
 > **组件名：uni-data-select**
 > 代码块： `uDataSelect`
 
