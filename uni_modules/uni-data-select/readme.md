@@ -82,11 +82,10 @@ export default {
 | :-:			| :-:			|:-:	|:-:						| :-:															|
 |value/v-model	|String/Number	|-		|-							|默认值，multiple=true时为 Array类型，否则为 String或Number类型	|
 |localdata		|Array			|-		|-							|本地渲染数据，													|
-|clear			|Boolean		|-		|-							|是否清空已选项													|
+|clear			|Boolean		|-		|-							|是否可以清空已选项													|
 |label			|String			|		|							|左侧标题														|
 |placeholder	|String			|-		|请选择						|输入框的提示文字												|
 |emptyText		|String			|-		|暂无数据					|没有数据时显示的文字 ，本地数据无效							|
-|map			|Object			|-		|{text:'text',value:'value'}|字段映射，将text/value映射到数据中的其他字段					|
 
 #### DataCom Props
 

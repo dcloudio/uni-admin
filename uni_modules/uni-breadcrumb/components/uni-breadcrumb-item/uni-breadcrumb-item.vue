@@ -11,6 +11,11 @@
 	</view>
 </template>
 <script>
+	/**
+	 * BreadcrumbItem 面包屑导航子组件
+	 * @property {String/Object} to 路由跳转页面路径/对象  
+	 * @property {Boolean} replace 在使用 to 进行路由跳转时，启用 replace 将不会向 history 添加新记录(仅 h5 支持）
+	 */
 	export default {
 		data() {
 			return {

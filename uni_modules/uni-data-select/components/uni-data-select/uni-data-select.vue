@@ -30,19 +30,15 @@
 <script>
 	/**
 	 * DataChecklist 数据选择器
-	 * @description 通过数据渲染 select
+	 * @description 通过数据渲染的下拉框组件
 	 * @tutorial https://ext.dcloud.net.cn/plugin?id=xxx
 	 * @property {String} value 默认值
 	 * @property {Array} localdata 本地数据 ，格式 [{text:'',value:''}]
-	 * @property {Number|String} min 最小选择个数 ，multiple为true时生效
-	 * @property {Number|String} max 最大选择个数 ，multiple为true时生效
-	 * @property {String} icon = [left|right]  list 列表模式下icon显示位置
-	 * @property {Boolean} selectedColor 选中颜色
+	 * @property {Boolean} clear 是否可以清空已选项
 	 * @property {Boolean} emptyText 没有数据时显示的文字 ，本地数据无效
-	 * @property {Boolean} selectedTextColor 选中文本颜色，如不填写则自动显示
+	 * @property {String} label 左侧标题
+	 * @property {String} placeholder 输入框的提示文字
 	 * @property {Object} map 字段映射， 默认 map={text:'text',value:'value'}
-	 * @value left 左侧显示
-	 * @value right 右侧显示
 	 * @event {Function} change  选中发生变化触发
 	 */
 
@@ -71,18 +67,6 @@
 				type: String,
 				default: ''
 			},
-			query: {
-				type: [Object, String],
-				default () {
-					return {}
-				}
-			},
-			data: {
-				type: Array,
-				default () {
-					return []
-				}
-			},
 			label: {
 				type: String,
 				default: ''
@@ -110,12 +94,12 @@
 		computed: {
 			typePlaceholder() {
 				const text = {
-					version: '版本',
-					channel: '渠道',
-					app: '应用'
+					'opendb-stat-app-versions': '版本',
+					'opendb-app-channels': '渠道',
+					'opendb-app-list': '应用'
 				}
 				const common = '请选择'
-				const placeholder = text[this.mode]
+				const placeholder = text[this.collection]
 				return placeholder
 						? common + placeholder
 						: common
@@ -127,18 +111,6 @@
 			},
 			modelValue() {
 				this.initDefVal()
-			},
-			mode: {
-				immediate: true,
-				handler(val) {
-					// this.init(val)
-				}
-			},
-			query: {
-				immediate: true,
-				handler(val) {
-					// this.init(this.mode)
-				}
 			},
 			mixinDatacomResData: {
 				immediate: true,
@@ -158,29 +130,16 @@
 				const defValue = this.value || this.modelValue || defItem
 				const def = this.mixinDatacomResData.find(item => item.value === defValue)
 				const text = def ? def.text : ''
-				this.current = text ? (this.mode === 'app' ? `${text} (${defValue})` : text) : ''
+				this.current = text ? (this.collection.indexOf('app-list') > 0  ? `${text} (${defValue})` : text) : ''
 				this.emit(defValue)
 			},
-			init(mode) {
-				if (mode === 'app') {
-					this.getApps()
-				} else if (mode === 'channel') {
-					this.getChannels()
-				} else if (mode === 'version') {
-					this.getVersions()
-				} else {
-					this.mixinDatacomResData = this.data
-				}
-			},
+
 			clearVal() {
-				console.log(7777777777);
 				this.emit('')
-				// this.showSelector = false
 			},
 			change(item) {
 				this.showSelector = false
-				console.log(1111, item)
-				this.current = this.mode === 'app' ? `${item.text} (${item.value})` : item.text
+				this.current = this.collection.indexOf('app-list') > 0  ? `${item.text} (${item.value})` : item.text
 				this.emit(item.value)
 			},
 			emit(val) {
@@ -188,47 +147,7 @@
 				this.$emit('input', val)
 				this.$emit('update:modelValue', val)
 			},
-			getApps() {
-				const db = uniCloud.database()
-				const apps = db.collection('opendb-app-list').field('appid, name').get().then(res => {
-					this.apps = res.result.data
-					this.mixinDatacomResData = []
-					res.result.data.forEach(item => {
-						this.mixinDatacomResData.push({
-							value: item.appid,
-							text: item.name
-						})
-					})
-					// this.mixinDatacomResData.unshift('全部')
-				})
-			},
-			getChannels() {
-				const db = uniCloud.database()
-				const channels = db.collection('opendb-app-channels').where(this.query).get().then(res => {
-					this.channels = res.result.data
-					this.mixinDatacomResData = []
-					res.result.data.forEach(item => {
-						this.mixinDatacomResData.push({
-							value: item._id,
-							text: item.channel_name,
-							channel_code: item.channel_code
-						})
-					})
-				})
-			},
-			getVersions() {
-				const db = uniCloud.database()
-				const versions = db.collection('opendb-stat-app-versions').where(this.query).get().then(res => {
-					this.versions = res.result.data
-					this.mixinDatacomResData = []
-					res.result.data.forEach(item => {
-						this.mixinDatacomResData.push({
-							value: item._id,
-							text: item.version
-						})
-					})
-				})
-			},
+
 			toggleSelector() {
 				this.showSelector = !this.showSelector
 			},
@@ -239,7 +158,7 @@
 					channel_code
 				} = item
 				channel_code = channel_code ? `(${channel_code})` : ''
-				return this.mode === 'app' ?
+				return this.collection.indexOf('app-list') > 0 ?
 					`${text}(${value})` :
 					(
 						text ?
