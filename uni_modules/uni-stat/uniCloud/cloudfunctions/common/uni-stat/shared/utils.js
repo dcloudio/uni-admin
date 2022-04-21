@@ -30,42 +30,65 @@ function parseUrlParams(str, context) {
 			[arr[0]]: arr[1]
 		}, res)
 	}, {})
-	
-	
+
+
 	//原以下数据要从客户端上报，现调整为如果以下参数客户端未上报，则通过请求附带的context参数中获取
-	const convertParams = {
-		//appid
-		ak: 'APPID',
-		//当前登录用户编号
-		uid: 'uid',
-		//设备编号
-		did: 'DEVICEID',
-		//系统
-		p: 'OS',
-		//客户端ip
-		ip: 'CLIENTIP',
-		//客户端的UA
-		ua: 'CLIENTUA',
-		//当前服务空间信息 {spaceId:'xxx',provider:'tencent'}
-		spi: 'SPACEINFO',
-		//云函数调用来源
-		fs: 'SOURCE'
+	let convertParams = {}
+	if (context.hasOwnProperty('APPID')) {
+		convertParams = {
+			//appid
+			ak: 'APPID',
+			//当前登录用户编号
+			uid: 'uid',
+			//设备编号
+			did: 'DEVICEID',
+			//系统
+			p: 'OS',
+			//客户端ip
+			ip: 'CLIENTIP',
+			//客户端的UA
+			ua: 'CLIENTUA',
+			//当前服务空间信息 {spaceId:'xxx',provider:'tencent'}
+			spi: 'SPACEINFO',
+			//云函数调用来源
+			fs: 'SOURCE'
+		}
+	} else if (context.hasOwnProperty('appId')) {
+		convertParams = {
+			//appid
+			ak: 'appId',
+			//当前登录用户编号
+			uid: 'uid',
+			//设备编号
+			did: 'deviceId',
+			//系统
+			p: 'os',
+			//客户端ip
+			ip: 'clientIP',
+			//客户端的UA
+			ua: 'userAgent',
+			//当前服务空间编号
+			spid: 'spaceId',
+			//当前服务空间提供商
+			sppd: 'provider'
+		}
 	}
-	
+
+
 	context = context ? context : {}
 	//console.log('context', context)
-	for(let key in convertParams) {
-		if(!params[key] && context[convertParams[key]]) {
+	for (let key in convertParams) {
+		if (!params[key] && context[convertParams[key]]) {
 			params[key] = context[convertParams[key]]
 		}
 	}
-	
+
 	return params
 }
 
 //解析url
 function parseUrl(url) {
-	if(typeof url !== "string" || !url) {
+	if (typeof url !== "string" || !url) {
 		return false
 	}
 	const urlInfo = url.split('?')
@@ -75,12 +98,13 @@ function parseUrl(url) {
 	}
 }
 
-//获取配置文件信息
+
 let createConfig
 try {
 	createConfig = require('uni-config-center')
 } catch (e) {}
 
+//获取配置文件信息
 function getConfig(file, key) {
 	if (!file) {
 		return false
@@ -90,7 +114,8 @@ function getConfig(file, key) {
 		pluginId: 'uni-stat'
 	})
 
-	if (!uniConfig.hasFile(file + '.json')) {
+	if (!uniConfig || !uniConfig.hasFile(file + '.json')) {
+		console.error('Not found the config file')
 		return false
 	}
 

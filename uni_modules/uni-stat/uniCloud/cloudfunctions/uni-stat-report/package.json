@@ -1,23 +1,10 @@
 {
-	"name": "uni-stat-report",
-	"version": "1.0.0",
-	"description": "",
-	"main": "index.js",
-	"scripts": {
-		"test": "echo \"Error: no test specified\" && exit 1"
-	},
-	"author": "",
-	"license": "ISC",
-	"dependencies": {
-		"uni-id": "file:../../../../uni-id/uniCloud/cloudfunctions/common/uni-id",
-		"uni-stat": "file:../common/uni-stat"
-	},
-	"cloudfunction-config": {
-		"concurrency": 100,
-		"memorySize": 128,
-		"timeout": 100
-	},
-	"extensions": {
-		"uni-cloud-redis": {}
-	}
+  "name": "uni-stat-report",
+  "dependencies": {
+    "uni-id": "file:../../../../uni-id/uniCloud/cloudfunctions/common/uni-id",
+    "uni-stat": "file:../common/uni-stat"
+  },
+  "extensions": {
+    "uni-cloud-jql": {}
+  }
 }

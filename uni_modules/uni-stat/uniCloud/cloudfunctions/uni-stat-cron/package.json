@@ -22,8 +22,5 @@
 				"config": "0 0 * * * * *"
 			}
 		]
-	},
-	"extensions": {
-		"uni-cloud-redis": {}
 	}
 }
