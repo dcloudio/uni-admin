@@ -1,7 +1,9 @@
+//日期时间模块
 module.exports = class DateTime {
-
 	constructor() {
+		//默认日期展示格式
 		this.defaultDateFormat = 'Y-m-d H:i:s'
+		//默认时区
 		this.defaultTimezone = 8
 		this.setTimeZone(this.defaultTimezone)
 	}
@@ -97,7 +99,6 @@ module.exports = class DateTime {
 	getUTC(datetime) {
 		return this.getDateObj(datetime).toUTCString()
 	}
-
 
 	//获取ISO 格式时间
 	getISO(datetime) {

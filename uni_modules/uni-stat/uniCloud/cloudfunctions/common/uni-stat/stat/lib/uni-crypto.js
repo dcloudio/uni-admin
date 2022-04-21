@@ -1,3 +1,4 @@
+//数据加密服务
 const crypto = require('crypto')
 module.exports = class UniCrypto {
 	constructor(config) {

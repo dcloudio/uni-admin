@@ -3,21 +3,15 @@
 
 ## 结构说明
 - `shared` 公共模块
-- `stat/index.js` 实际业务入口文件
-- `stat/mod` 数据模型
+- `stat/mod` 数据模型，提供具体功能实现
 - `stat/lib` 类库
+- `stat/report.js` 数据上报功能的分发入口文件
+- `stat/stat.js` 数据统计及日志清理功能的分发入口文件
 - `index.js` 代理入口
 
-数据上报、数据统计及日志清理均由 `/src/stat/index.js` 中的 `UniStat` 类 统一调度实现
-
-### UniStat类方法说明
-- `report` 该方法负责上报数据的处理及入库
-- `stat` 该方法负责进行各项日志统计汇算
-- `cleanLog` 该方法负责各项过期日志数据的清理
-- `statCron` 该方法负责定时任务的分发处理
 
 
-### 相关云函数
+### 相关云对象/云函数
 - 数据上报函数（uni-stat-report）
 ``` javascript
 'use strict';
