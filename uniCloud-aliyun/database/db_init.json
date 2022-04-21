@@ -3,7 +3,7 @@
 // 编写完毕后对本文件点右键，可按配置规则创建表和添加数据
 
 {
-	"opendb-stat-app-versions": {
+	"uni-stat-app-versions": {
 		"data": [{
 			"_id": "61c041fb34458700013e700a",
 			"appid": "__UNI__DF38D05",
@@ -20,58 +20,90 @@
 			"last_modify_time": 163998979103
 		}]
 	},
-	"opendb-app-platforms": {
+	"uni-stat-app-platforms": {
 		"data": [{
-			"_id": "61c046e691a75000014c255f",
-			"name": "原生-安卓",
-			"code": "native-android",
-			"report_code": "n",
+			"name": "App-Android",
+			"code": "android",
+			"order": 1,
 			"create_time": 163998979103
 		}, {
-			"_id": "61c046e691a75000014c2560",
-			"name": "原生-iOS",
-			"code": "native-ios",
-			"report_code": "n",
+			"name": "App-iOS",
+			"code": "ios",
+			"order": 2,
 			"create_time": 163998979103
 		}, {
-			"_id": "61c046e691a75000014c2561",
-			"name": "HTML5",
+			"name": "Web",
 			"code": "h5",
-			"report_code": "h5",
+			"order": 3,
 			"create_time": 163998979103
 		}, {
-			"_id": "61c046e691a75000014c2562",
 			"name": "微信小程序",
 			"code": "wx",
-			"report_code": "wx",
+			"order": 4,
 			"create_time": 163998979103
 		}, {
-			"_id": "61c046e691a75000014c2563",
 			"name": "百度小程序",
 			"code": "bd",
-			"report_code": "bd",
+			"order": 5,
 			"create_time": 163998979103
 		}, {
-			"_id": "61c046e691a75000014c2564",
 			"name": "支付宝小程序",
 			"code": "ali",
-			"report_code": "ali",
+			"order": 6,
 			"create_time": 163998979103
 		}, {
-			"_id": "61c046e691a75000014c2565",
 			"name": "头条小程序",
 			"code": "tt",
-			"report_code": "tt",
+			"order": 7,
 			"create_time": 163998979103
 		}, {
-			"_id": "61c046e691a75000014c2566",
 			"name": "qq小程序",
 			"code": "qq",
-			"report_code": "qq",
+			"order": 8,
 			"create_time": 163998979103
+		}, {
+			"name": "快应用-原生渲染",
+			"code": "qn",
+			"order": 9,
+			"create_time": 163998979103
+		}, {
+			"name": "快应用-webview",
+			"code": "qw",
+			"order": 10,
+			"create_time": 163998979103
+		}, {
+			"name": "钉钉小程序",
+			"code": "dt",
+			"order": 11,
+			"create_time": 163998979103
+		}, {
+			"name": "快手小程序",
+			"code": "ks",
+			"order": 12,
+			"create_time": 163998979103
+		}, {
+			"name": "飞书小程序",
+			"code": "lark",
+			"order": 13,
+			"create_time": 163998979103
+		}, {
+			"name": "京东小程序",
+			"code": "jd",
+			"order": 14,
+			"create_time": 163998979103
+		}],
+		"index": [{
+			"IndexName": "index_search_platforms",
+			"MgoKeySchema": {
+				"MgoIndexKeys": [{
+					"Name": "code",
+					"Direction": "1"
+				}],
+				"MgoIsUnique": true
+			}
 		}]
 	},
-	"opendb-app-channels": {
+	"uni-stat-app-channels": {
 		"data": [{
 			"_id": "61c041fb34458700013e700a",
 			"appid": "__UNI__DF38D05",
@@ -91,7 +123,7 @@
 		}]
 	},
 
-	"opendb-stat-loyalty-result": {
+	"uni-stat-loyalty-result": {
 		"data": [{
 				"_id": "61c041fb34458700013e700a",
 				"channel_id": "61c041fb34458700013e700a",
@@ -293,7 +325,7 @@
 		]
 	},
 
-	"opendb-stat-result": {
+	"uni-stat-result": {
 		"data": [{
 				"channel_id": "61c041fb34458700013e700a",
 				"platform_id": "61c046e691a75000014c255f",
@@ -1498,7 +1530,7 @@
 		]
 
 	},
-	"opendb-stat-pages": {
+	"uni-stat-pages": {
 		"data": [{
 			"_id": "61c041fb34458700013e70p1",
 			"appid": "__UNI__DF38D05",
@@ -1538,7 +1570,7 @@
 		}]
 	},
 
-	"opendb-stat-page-result": {
+	"uni-stat-page-result": {
 		"data": [{
 			"appid": "__UNI__DF38D05",
 			"version_id": "61c041fb34458700013e700a",
@@ -1653,7 +1685,7 @@
 		}]
 	},
 
-	"opendb-stat-events": {
+	"uni-stat-events": {
 		"data": [{
 			"_id": "61c041fb34458700013e70e1",
 			"appid": "__UNI__DF38D05",
@@ -1685,7 +1717,7 @@
 		}]
 	},
 
-	"opendb-stat-event-result": {
+	"uni-stat-event-result": {
 		"data": [{
 			"appid": "__UNI__DF38D05",
 			"version_id": "61c041fb34458700013e700a",
@@ -1733,7 +1765,7 @@
 		}]
 	},
 
-	"opendb-stat-error-result": {
+	"uni-stat-error-result": {
 		"data": [{
 			"appid": "__UNI__DF38D05",
 			"version_id": "61c041fb34458700013e700a",
@@ -2073,7 +2105,7 @@
 			"url": "/pages/uni-stat/error/error",
 			"sort": 2171,
 			"create_date": 1638356902516
-		}, 
+		},
 		// {
 		// 	"parent_id": "uni-stat",
 		// 	"permission": [],
@@ -2104,7 +2136,7 @@
 		// 	"url": "https://dev.dcloud.net.cn/exchange/stats",
 		// 	"sort": 2184,
 		// 	"create_date": 1638356902516
-		// }, 
+		// },
 		{
 			"parent_id": "uni-stat",
 			"permission": [],

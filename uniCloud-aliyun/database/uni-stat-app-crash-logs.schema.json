@@ -1,0 +1,84 @@
+// 原生应用崩溃日志表
+{
+	"bsonType": "object",
+	"required": [],
+	"permission": {
+		"read": false,
+		"create": false,
+		"update": false,
+		"delete": false
+	},
+	"properties": {
+		"_id": {
+			"description": "ID，系统自动生成"
+		},
+		"appid": {
+			"bsonType": "string",
+			"description": "用户端上报的应用ID"
+		},
+		"version": {
+			"bsonType": "string",
+			"description": "用户端上报的应用版本号"
+		},
+		"platform": {
+			"bsonType": "string",
+			"description": "用户端上报的平台code"
+		},
+		"channel": {
+			"bsonType": "string",
+			"description": "用户端上报的渠道code/场景值"
+		},
+		"device_id": {
+			"bsonType": "string",
+			"description": "客户端携带的设备标识"
+		},
+		"device_net": {
+			"bsonType": "string",
+			"description": "设备网络型号wifi/3G/4G/"
+		},
+		"device_os_version": {
+			"bsonType": "string",
+			"description": "设备系统版本"
+		},
+		"device_vendor": {
+			"bsonType": "string",
+			"description": "设备供应商 "
+		},
+		"device_model": {
+			"bsonType": "string",
+			"description": "设备型号"
+		},
+		"sdk_version": {
+			"bsonType": "string",
+			"description": "基础库版本号"
+		},
+		"error_msg": {
+			"bsonType": "string",
+			"description": "错误信息"
+		},
+		"use_memery_size": {
+			"bsonType": "int",
+			"description": "使用的内存量，单位为Byte"
+		},
+		"app_count": {
+			"bsonType": "int",
+			"description": "运行应用的个数"
+		},
+		"webview_count": {
+			"bsonType": "int",
+			"description": "打开Webview窗口的个数"
+		},
+		"page_url": {
+			"bsonType": "string",
+			"description": "页面url"
+		},
+		"package_name": {
+			"bsonType": "string",
+			"description": "原生应用包名"
+		},
+		"create_time": {
+			"bsonType": "timestamp",
+			"description": "创建时间"
+		}
+	}
+}
