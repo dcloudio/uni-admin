@@ -163,7 +163,7 @@ class UniStatDataStat {
 			msg: 'success'
 		}
 
-		//try {
+		try {
 			switch (type) {
 				// 基础统计
 				case 'stat': {
@@ -212,36 +212,36 @@ class UniStatDataStat {
 					res = await this.cleanLog()
 				}
 			}
-		// } catch (e) {
+		} catch (e) {
 
-		// 	//报错则重新尝试2次
-		// 	const maxTryTimes = 2
-		// 	if (!this.tryTimes) {
-		// 		this.tryTimes = 1
-		// 	} else {
-		// 		this.tryTimes++
-		// 	}
+			//报错则重新尝试2次
+			const maxTryTimes = 2
+			if (!this.tryTimes) {
+				this.tryTimes = 1
+			} else {
+				this.tryTimes++
+			}
 
-		// 	if (this.tryTimes <= maxTryTimes) {
-		// 		params.reset = true
-		// 		res = await this.stat(params)
-		// 	} else {
-		// 		// 2次尝试失败后记录错误
-		// 		console.error('server error: ' + e)
-		// 		const runError = new RunErrors()
-		// 		runError.create({
-		// 			mod: 'stat',
-		// 			params: params,
-		// 			error: e,
-		// 			create_time: new DateTime().getTime()
-		// 		})
+			if (this.tryTimes <= maxTryTimes) {
+				params.reset = true
+				res = await this.stat(params)
+			} else {
+				// 2次尝试失败后记录错误
+				console.error('server error: ' + e)
+				const runError = new RunErrors()
+				runError.create({
+					mod: 'stat',
+					params: params,
+					error: e,
+					create_time: new DateTime().getTime()
+				})
 
-		// 		res = {
-		// 			code: 500,
-		// 			msg: 'server error' + e
-		// 		}
-		// 	}
-		// }
+				res = {
+					code: 500,
+					msg: 'server error' + e
+				}
+			}
+		}
 		return res
 	}
 

@@ -1,5 +1,5 @@
 {
-  "name": "uni-stat-report",
+  "name": "uni-stat-receiver",
   "dependencies": {
     "uni-id": "file:../../../../uni-id/uniCloud/cloudfunctions/common/uni-id",
     "uni-stat": "file:../common/uni-stat"
