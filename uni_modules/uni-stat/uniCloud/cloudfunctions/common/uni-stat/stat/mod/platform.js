@@ -1,20 +1,21 @@
-// 平台
+/**
+ * @class Platform 应用平台模型
+ */
 const BaseMod = require('./base')
 const {
 	DateTime
 } = require('../lib')
-
-/**
- * @alias class Platform
- * @description 应用平台信息
- */
 module.exports = class Platform extends BaseMod {
 	constructor() {
 		super()
 		this.tableName = 'app-platforms'
 	}
 
-	// 获取平台信息
+	/**
+	 * 获取平台信息
+	 * @param {String} platform 平台代码
+	 * @param {String} os 系统
+	 */
 	async getPlatform(platform, os) {
 		const cacheKey = 'uni-stat-platform-' + platform + '-' + os
 		let platformData = await this.getCache(cacheKey)
@@ -32,7 +33,11 @@ module.exports = class Platform extends BaseMod {
 		return platformData
 	}
 
-	// 获取平台信息没有则创建
+	/**
+	 * 获取平台信息没有则创建
+	 * @param {String} platform 平台代码
+	 * @param {String} os 系统
+	 */
 	async getPlatformAndCreate(platform, os) {
 		if (!platform) {
 			return false
@@ -56,13 +61,11 @@ module.exports = class Platform extends BaseMod {
 		return platformInfo
 	}
 
-	// 获取平台_id
-	async getPlatformId(platform, os) {
-		const platformInfo = await this.getPlatform(platform, os)
-		return platformInfo.length > 0 ? platformInfo._id : ''
-	}
-
-	// 获取平台代码
+	/**
+	 * 获取平台代码
+	 * @param {String} platform 平台代码
+	 * @param {String} os 系统
+	 */
 	getPlatformCode(platform, os) {
 		let platformCode = platform
 		if (platform === 'n' || platform === 'app-plus') {

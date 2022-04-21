@@ -3,8 +3,12 @@ const {
   isPlainObject
 } = require('./utils')
 
-
-// 注意：不进行递归处理
+/**
+ * 实例参数处理，注意：不进行递归处理
+ * @param {Object} params 初始参数
+ * @param {Object} rule 规则集
+ * @returns {Object} 处理后的参数
+ */
 function parseParams (params = {}, rule) {
   if (!rule || !params) {
     return params
@@ -52,6 +56,12 @@ function parseParams (params = {}, rule) {
   return params
 }
 
+/**
+ * 返回一个提供应用上下文的应用实例。应用实例挂载的整个组件树共享同一个上下文
+ * @param {class} ApiClass 实例类
+ * @param {Object} options 参数
+ * @returns {Object} 实例类对象
+ */
 module.exports = function createApi (ApiClass, options) {
   const apiInstance = new ApiClass(options)
   return new Proxy(apiInstance, {

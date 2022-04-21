@@ -1,4 +1,6 @@
-// 场景值
+/**
+ * @class Scenes 场景值模型
+ */
 const BaseMod = require('./base')
 const Platform = require('./platform')
 module.exports = class Scenes extends BaseMod {
@@ -6,7 +8,12 @@ module.exports = class Scenes extends BaseMod {
     super()
     this.tableName = 'mp-scenes'
   }
-
+ 
+  /**
+   * 获取场景值
+   * @param {String} platform 平台代码
+   * @param {String} code 场景值代码
+   */
   async getScenes (platform, code) {
     const cacheKey = 'uni-stat-scenes-' + platform + '-' + code
     let scenesData = await this.getCache(cacheKey)
@@ -23,7 +30,12 @@ module.exports = class Scenes extends BaseMod {
     }
     return scenesData
   }
-
+ 
+  /**
+   * 通过平台编号获取场景值
+   * @param {String} platformId 平台编号
+   * @param {String} code 场景值代码
+   */
   async getScenesByPlatformId (platformId, code) {
     const platform = new Platform()
     let platformInfo = await this.getCollection(platform.tableName).where({
@@ -38,7 +50,12 @@ module.exports = class Scenes extends BaseMod {
     }
     return scenesData
   }
-
+  
+  /**
+   * 获取场景值名称
+   * @param {String} platform 平台代码
+   * @param {String} code 场景值代码
+   */
   async getScenesName (platform, code) {
     const scenesData = await this.getScenes(platform, code)
     if (scenesData.length === 0) {
@@ -46,7 +63,11 @@ module.exports = class Scenes extends BaseMod {
     }
     return scenesData.scene_name
   }
-
+  /**
+   * 通过平台编号获取场景值名称
+   * @param {String} platformId 平台编号
+   * @param {String} code 场景值代码
+   */
   async getScenesNameByPlatformId (platformId, code) {
     const scenesData = await this.getScenesByPlatformId(platformId, code)
     if (scenesData.length === 0) {

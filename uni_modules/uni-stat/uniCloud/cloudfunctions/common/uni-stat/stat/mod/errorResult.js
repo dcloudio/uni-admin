@@ -1,4 +1,6 @@
-// 错误结果统计
+/**
+ * @class ErrorResult 错误结果统计模型
+ */
 const BaseMod = require('./base')
 const Platform = require('./platform')
 const Channel = require('./channel')
@@ -15,7 +17,12 @@ module.exports = class ErrorResult extends BaseMod {
     this.errors = []
   }
 
-  // 数据统计
+  /**
+   * 错误结果统计
+   * @param {String} type 统计类型 hour：实时统计 day：按天统计，week：按周统计 month：按月统计
+   * @param {Date|Time} date 指定日期或时间戳
+   * @param {Boolean} reset 是否重置，为ture时会重置该批次数据
+   */
   async stat (type, date, reset) {
     const allowedType = ['day']
     if (!allowedType.includes(type)) {
@@ -109,7 +116,11 @@ module.exports = class ErrorResult extends BaseMod {
     }
     return res
   }
-
+ 
+  /**
+   * 统计结果数据填充
+   * @param {Object} data 数据集合
+   */
   async fill (data) {
     // 平台信息
     let platformInfo = null
@@ -180,7 +191,7 @@ module.exports = class ErrorResult extends BaseMod {
       this.errors[data._id.error_hash] = errorInfo
     }
 
-    // 最后一次报错事件
+    // 最近一次报错时间
     const matchCondition = data._id
     Object.assign(matchCondition, {
       create_time: {
@@ -194,7 +205,8 @@ module.exports = class ErrorResult extends BaseMod {
     if (lastErrorLog && lastErrorLog.data.length > 0) {
       lastErrorTime = lastErrorLog.data[0].create_time
     }
-
+	
+	//数据填充
     const datetime = new DateTime()
     const insertParams = {
       appid: data._id.appid,
@@ -212,22 +224,7 @@ module.exports = class ErrorResult extends BaseMod {
     }
 
     this.fillData.push(insertParams)
+	
     return insertParams
-    // const res = await this.insert(this.tableName, insertParams)
-    // if (this.debug) {
-    //   console.log('save res', JSON.stringify(res))
-    // }
-    // if (res && res.id) {
-    //   return {
-    //     code: 0,
-    //     msg: 'have done'
-    //   }
-    // } else {
-    //   console.log(this.tableName + ' log saved failed by params:', JSON.stringify(insertParams))
-    //   return {
-    //     code: 400,
-    //     msg: 'log save error'
-    //   }
-    // }
   }
 }

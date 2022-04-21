@@ -1,3 +1,6 @@
+/**
+ * @class StatEvent 事件统计模型
+ */
 const BaseMod = require('./base')
 const {DateTime} = require('../lib')
 module.exports = class StatEvent extends BaseMod {
@@ -14,7 +17,11 @@ module.exports = class StatEvent extends BaseMod {
     }
   }
 
-  // 获取页面信息
+  /**
+   * 获取事件信息
+   * @param {String} appid: DCloud appid
+   * @param {String} eventKey 事件键值
+   */
   async getEvent (appid, eventKey) {
     const cacheKey = 'uni-stat-event-' + appid + '-' + eventKey
     let eventData = await this.getCache(cacheKey)
@@ -32,7 +39,12 @@ module.exports = class StatEvent extends BaseMod {
     return eventData
   }
 
-  // 获取页面信息不存在则创建
+
+  /**
+   * 获取事件信息不存在则创建
+   * @param {String} appid: DCloud appid
+   * @param {String} eventKey 事件键值
+   */
   async getEventAndCreate (appid, eventKey) {
     const eventInfo = await this.getEvent(appid, eventKey)
     if (eventInfo.length === 0) {

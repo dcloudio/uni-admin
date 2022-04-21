@@ -1,4 +1,9 @@
-//uni统计-数据统计调度模块
+/**
+ * @class UniStatDataStat uni统计-数据统计调度处理模块
+ * @function cron 数据统计定时任务处理函数
+ * @function stat 数据统计调度处理函数
+ * @function cleanLog 日志清理调度处理函数
+ */
 const {
 	DateTime
 } = require('./lib')
@@ -17,13 +22,14 @@ const {
 	ErrorResult,
 	Loyalty,
 	RunErrors,
+	UserSessionLog
 } = require('./mod')
-
-
-class UniStat {
-	
-	// 定时触发
-	async statCron(context) {
+class UniStatDataStat {
+	/**
+	 * 数据统计定时任务处理函数
+	 * @param {Object} context 服务器请求上下文参数
+	 */
+	async cron(context) {
 		const baseMod = new BaseMod()
 		const dateTime = new DateTime()
 		console.log('Cron start time: ', dateTime.getDate('Y-m-d H:i:s'))
@@ -38,12 +44,12 @@ class UniStat {
 			for (var mi in cronConfig) {
 				const cronType = cronConfig[mi].type
 				const cronTime = cronConfig[mi].time.split(' ')
-				
+
 				//未开启分钟级定时任务，则设置为小时级定时任务
 				if (cronTime.length === 4 && !cronMin) {
 					cronTime.splice(3, 1)
 				}
-				
+
 				if (baseMod.debug) {
 					console.log('cronTime', cronTime)
 				}
@@ -141,7 +147,10 @@ class UniStat {
 		}
 	}
 
-	// 统计相关
+	/**
+	 * 数据统计调度处理函数
+	 * @param {Object} params
+	 */
 	async stat(params) {
 		const {
 			type,
@@ -154,7 +163,7 @@ class UniStat {
 			msg: 'success'
 		}
 
-		try {
+		//try {
 			switch (type) {
 				// 基础统计
 				case 'stat': {
@@ -203,40 +212,42 @@ class UniStat {
 					res = await this.cleanLog()
 				}
 			}
-		} catch (e) {
-			
-			//报错则重新尝试2次
-			const maxTryTimes = 2
-			if (!this.tryTimes) {
-				this.tryTimes = 1
-			} else {
-				this.tryTimes ++
-			}
+		// } catch (e) {
 
-			if (this.tryTimes <= maxTryTimes) {
-				params.reset = true
-				res = await this.stat(params)
-			} else {
-				// 2次尝试失败后记录错误
-				console.error('server error: ' + e)
-				const runError = new RunErrors()
-				runError.create({
-					mod: 'stat',
-					params: params,
-					error: e,
-					create_time: new DateTime().getTime()
-				})
-				
-				res = {
-					code: 500,
-					msg: 'server error' + e
-				}
-			}
-		}
+		// 	//报错则重新尝试2次
+		// 	const maxTryTimes = 2
+		// 	if (!this.tryTimes) {
+		// 		this.tryTimes = 1
+		// 	} else {
+		// 		this.tryTimes++
+		// 	}
+
+		// 	if (this.tryTimes <= maxTryTimes) {
+		// 		params.reset = true
+		// 		res = await this.stat(params)
+		// 	} else {
+		// 		// 2次尝试失败后记录错误
+		// 		console.error('server error: ' + e)
+		// 		const runError = new RunErrors()
+		// 		runError.create({
+		// 			mod: 'stat',
+		// 			params: params,
+		// 			error: e,
+		// 			create_time: new DateTime().getTime()
+		// 		})
+
+		// 		res = {
+		// 			code: 500,
+		// 			msg: 'server error' + e
+		// 		}
+		// 	}
+		// }
 		return res
 	}
 
-	// 日志清理
+	/**
+	 * 日志清理调度处理函数
+	 */
 	async cleanLog() {
 		const baseMod = new BaseMod()
 		const cleanLog = baseMod.getConfig('cleanLog')
@@ -257,6 +268,12 @@ class UniStat {
 		if (cleanLog.reserveDays.sessionLog > 0) {
 			const sessionLog = new SessionLog()
 			res.data.sessionLog = await sessionLog.clean(cleanLog.reserveDays.sessionLog)
+		}
+		
+		// 用户会话日志
+		if (cleanLog.reserveDays.userSessionLog > 0) {
+			const userSessionLog = new UserSessionLog()
+			res.data.userSessionLog = await userSessionLog.clean(cleanLog.reserveDays.userSessionLog)
 		}
 
 		// 页面日志
@@ -286,7 +303,7 @@ class UniStat {
 		// 活跃设备日志
 		const activeDevicesLog = new ActvieDevices()
 		res.data.actvieDevicesLog = await activeDevicesLog.clean()
-		
+
 		// 活跃用户日志
 		const activeUsersLog = new ActvieUsers()
 		res.data.activeUsersLog = await activeUsersLog.clean()
@@ -294,7 +311,7 @@ class UniStat {
 		// 实时统计日志
 		const resultHourLog = new StatResult()
 		res.data.resultHourLog = await resultHourLog.cleanHourLog()
-		
+
 		//原生应用崩溃日志
 		const appCrashLogs = new AppCrashLogs()
 		res.data.appCrashLogs = await appCrashLogs.clean()
@@ -303,4 +320,4 @@ class UniStat {
 	}
 }
 
-module.exports = UniStat
+module.exports = UniStatDataStat

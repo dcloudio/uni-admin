@@ -1,4 +1,6 @@
-// 忠诚度（粘性）统计
+/**
+ * 设备/用户忠诚度（粘性）统计模型
+ */
 const BaseMod = require('./base')
 const Platform = require('./platform')
 const Channel = require('./channel')
@@ -17,7 +19,12 @@ module.exports = class Loyalty extends BaseMod {
 		this.versions = []
 	}
 
-	// 设备/用户忠诚度（粘性）统计
+	/**
+	 * 设备/用户忠诚度（粘性）统计
+	 * @param {String} type 统计类型 hour：实时统计 day：按天统计，week：按周统计 month：按月统计
+	 * @param {Date|Time} date 指定日期或时间戳
+	 * @param {Boolean} reset 是否重置，为ture时会重置该批次数据
+	 */
 	async stat(type, date, reset) {
 		const allowedType = ['day']
 		if (!allowedType.includes(type)) {
@@ -118,7 +125,10 @@ module.exports = class Loyalty extends BaseMod {
 		return res
 	}
 
-	// 填充统计数据
+	/**
+	 * 设备/用户忠诚度（粘性）数据填充
+	 * @param {Object} data 数据集合
+	 */
 	async fill(data) {
 		// 平台信息
 		let platformInfo = null
@@ -181,6 +191,7 @@ module.exports = class Loyalty extends BaseMod {
 		})
 
 		const visitDepthData = {
+			visit_devices: {},
 			visit_users: {},
 			visit_times: {}
 		}
@@ -266,8 +277,8 @@ module.exports = class Loyalty extends BaseMod {
 			})
 			
 			if (this.debug) {
-				console.log('userResCondtion', JSON.stringify(searchCondition))
-				console.log('userRes', JSON.stringify(userRes))
+				console.log('searchCondition', JSON.stringify(searchCondition))
+				console.log('deviceRes', JSON.stringify(deviceRes))
 			}
 			
 			let deviceCount = 0
@@ -327,6 +338,7 @@ module.exports = class Loyalty extends BaseMod {
 			[100]
 		]
 		const durationData = {
+			visit_devices: {},
 			visit_users: {},
 			visit_times: {}
 		}

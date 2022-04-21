@@ -1,3 +1,6 @@
+/**
+ * 基础对外模型
+ */
 module.exports = {
 	BaseMod: require('./base'),
 	SessionLog: require('./sessionLog'),

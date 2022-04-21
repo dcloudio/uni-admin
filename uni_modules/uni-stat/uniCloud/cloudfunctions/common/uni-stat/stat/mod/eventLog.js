@@ -1,4 +1,6 @@
-// 事件日志
+/**
+ * @class EventLog 事件日志模型
+ */
 const BaseMod = require('./base')
 const Platform = require('./platform')
 const Channel = require('./channel')
@@ -15,7 +17,10 @@ module.exports = class EventLog extends BaseMod {
 		this.sessionLogInfo = []
 	}
 
-	// 日志填充
+	/**
+	 * 事件日志填充
+	 * @param {Object} reportParams 上报参数
+	 */
 	async fill(reportParams) {
 		let params;
 		let sessionKey, sessionLogKey;
@@ -113,13 +118,16 @@ module.exports = class EventLog extends BaseMod {
 		}
 	}
 
-	// 清理数据
+	/**
+	 * 事件日志清理
+	 * @param {Number} days 保留天数
+	 */
 	async clean(days) {
 		days = Math.max(parseInt(days), 1)
 		console.log('clean event logs - day:', days)
 
 		const dateTime = new DateTime()
-
+		//删除过期数据
 		const res = await this.delete(this.tableName, {
 			create_time: {
 				$lt: dateTime.getTimeBySetDays(0 - days)

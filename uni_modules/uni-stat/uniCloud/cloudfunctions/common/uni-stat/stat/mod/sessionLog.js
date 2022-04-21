@@ -1,4 +1,6 @@
-// 基础会话日志
+/**
+ * @class SessionLog 基础会话日志模型
+ */
 const BaseMod = require('./base')
 const Page = require('./page')
 const Platform = require('./platform')
@@ -14,7 +16,10 @@ module.exports = class SessionLog extends BaseMod {
 	}
 	
 	
-	//会话日志批量填充
+	/**
+	 * 会话日志批量填充
+	 * @param {Object} reportParams 上报参数
+	 */
 	async batchFill(reportParams) {
 		let params, pageInfo, nowTime, firstVistTime, lastVistTime;
 		const fillParams = []
@@ -107,7 +112,10 @@ module.exports = class SessionLog extends BaseMod {
 		return await this.batchInsert(this.tableName, fillParams)
 	}
 
-	// 会话日志填充
+	/**
+	 * 会话日志填充
+	 * @param {Object} params 上报参数
+	 */
 	async fill(params) {
 		// 应用信息
 		if (!params.ak) {
@@ -230,7 +238,10 @@ module.exports = class SessionLog extends BaseMod {
 		}
 	}
 	
-	//获取会话
+	/**
+	 * 获取会话
+	 * @param {Object} params 上报参数
+	 */
 	async getSession(params) {
 		// 页面信息
 		const page = new Page()
@@ -307,7 +318,11 @@ module.exports = class SessionLog extends BaseMod {
 		}
 	}
 	
-	//更新会话信息
+	/**
+	 * 更新会话信息
+	 * @param {String} sid 会话编号
+	 * @param {Object} data 更新数据
+	 */
 	async updateSession(sid, data) {
 		const nowTime = new DateTime().getTime()
 		const accessTime = nowTime - data.createTime
@@ -347,7 +362,10 @@ module.exports = class SessionLog extends BaseMod {
 		return true
 	}
 
-	// 清理日志数据
+	/**
+	 * 清理日志数据
+	 * @param {Number} days 保留天数, 留存统计需要计算30天后留存率，因此至少应保留31天的日志数据
+	 */
 	async clean(days) {
 		days = Math.max(parseInt(days), 1)
 		console.log('clean session logs - day:', days)

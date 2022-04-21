@@ -1,4 +1,6 @@
-// 用户
+/**
+ * @class Users uni统计用户模型
+ */
 const BaseMod = require('./base')
 const {
 	DateTime
@@ -14,7 +16,10 @@ module.exports = class Users extends BaseMod {
 		this.versions = []
 	}
 	
-	//同步用户，将当前访问的uni-id用户 同步至uni统计用户中，此举主要是解决原uni-id用户未关联 渠道、版本的问题（将uni-id用户划分至对应的应用、平台、渠道、版本下）
+	/**
+	 * 同步用户，将当前访问的uni-id用户 同步至uni统计用户中，此举主要是解决原uni-id用户未关联 渠道、版本的问题（将uni-id用户划分至对应的应用、平台、渠道、版本下）
+	 * @param {Object} params 同步参数
+	 */
 	async syncUser(params) {
 		
 		if(!params.uid) {
@@ -66,6 +71,10 @@ module.exports = class Users extends BaseMod {
 		return true
 	}
 	
+	/**
+	 * 通过用户编号获取用户信息
+	 * @param {Object} uid 用户编号
+	 */
 	async getUserByUid(uid) {
 		const cacheKey = this.cacheKeyPre + uid
 		let userData = await this.getCache(cacheKey)

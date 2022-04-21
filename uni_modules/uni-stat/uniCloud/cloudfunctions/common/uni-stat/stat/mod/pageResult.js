@@ -1,4 +1,6 @@
-// 页面结果统计
+/**
+ * @class PageResult 页面结果统计
+ */
 const BaseMod = require('./base')
 const Platform = require('./platform')
 const Channel = require('./channel')
@@ -16,8 +18,14 @@ module.exports = class PageResult extends BaseMod {
     this.versions = []
   }
 
-  // 数据统计
+  /**
+   * 数据统计
+   * @param {String} type 统计类型 hour：实时统计 day：按天统计，week：按周统计 month：按月统计
+   * @param {Date|Time} date 指定日期或时间戳
+   * @param {Boolean} reset 是否重置，为ture时会重置该批次数据
+   */
   async stat (type, date, reset) {
+	//允许的类型
     const allowedType = ['day']
     if (!allowedType.includes(type)) {
       return {
@@ -26,6 +34,7 @@ module.exports = class PageResult extends BaseMod {
       }
     }
     this.fillType = type
+	//获取当前统计的时间范围
     const dateTime = new DateTime()
     const dateDimension = dateTime.getTimeDimensionByType(type, -1, date)
     this.startTime = dateDimension.startTime
@@ -34,17 +43,17 @@ module.exports = class PageResult extends BaseMod {
       console.log('dimension time', this.startTime + '--' + this.endTime)
     }
 
-    // 查看当前时间段日志是否已存在,防止重复生成
+    // 查看当前时间段日志是否已存在,防止重复执行
     if (!reset) {
       const checkRes = await this.getCollection(this.tableName).where({
         start_time: this.startTime,
         end_time: this.endTime
       }).get()
       if (checkRes.data.length > 0) {
-        console.log('log have exists')
+        console.error('This page stat log have exists')
         return {
           code: 1003,
-          msg: 'This log have existed'
+          msg: 'This page stat log have existed'
         }
       }
     } else {
@@ -52,7 +61,7 @@ module.exports = class PageResult extends BaseMod {
         start_time: this.startTime,
         end_time: this.endTime
       })
-      console.log('delete old data result:', JSON.stringify(delRes))
+      console.log('Delete old data result:', JSON.stringify(delRes))
     }
 
     // 数据获取
@@ -99,17 +108,23 @@ module.exports = class PageResult extends BaseMod {
     }
     if (statRes.data.length > 0) {
       this.fillData = []
+	  //获取填充数据
       for (const i in statRes.data) {
         await this.fill(statRes.data[i])
       }
-
+	  
+	  //数据批量入库
       if (this.fillData.length > 0) {
         res = await this.batchInsert(this.tableName, this.fillData)
       }
     }
     return res
   }
-
+  
+  /**
+   * 页面统计数据填充
+   * @param {Object} data 统计数据
+   */
   async fill (data) {
     // 平台信息
     let platformInfo = null
@@ -492,21 +507,5 @@ module.exports = class PageResult extends BaseMod {
 
     this.fillData.push(insertParams)
     return insertParams
-    // const res = await this.insert(this.tableName, insertParams)
-    // if (this.debug) {
-    //   console.log('save res', JSON.stringify(res))
-    // }
-    // if (res && res.id) {
-    //   return {
-    //     code: 0,
-    //     msg: 'have done'
-    //   }
-    // } else {
-    //   console.log(this.tableName + ' log saved failed by params:', JSON.stringify(insertParams))
-    //   return {
-    //     code: 400,
-    //     msg: 'log save error'
-    //   }
-    // }
   }
 }

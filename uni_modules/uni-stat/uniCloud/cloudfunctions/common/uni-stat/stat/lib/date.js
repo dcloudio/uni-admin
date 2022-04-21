@@ -1,4 +1,7 @@
-//日期时间模块
+/**
+ * @class DateTime
+ * @description 日期处理模块
+ */
 module.exports = class DateTime {
 	constructor() {
 		//默认日期展示格式
@@ -8,7 +11,10 @@ module.exports = class DateTime {
 		this.setTimeZone(this.defaultTimezone)
 	}
 
-	//设置时区
+	/**
+	 * 设置时区
+	 * @param {Number} timezone 时区
+	 */
 	setTimeZone(timezone) {
 		if (timezone) {
 			this.timezone = parseInt(timezone)
@@ -16,12 +22,19 @@ module.exports = class DateTime {
 		return this
 	}
 
-	//获取date对象
+	/**
+	 * 获取 Date对象
+	 * @param {Date|Time} time
+	 */
 	getDateObj(time) {
 		return time ? new Date(time) : new Date()
 	}
 
-	//获取时间戳
+	/**
+	 * 获取毫秒/秒级时间戳
+	 * @param {DateTime} datetime 日期 例：'2022-04-21 00:00:00'
+	 * @param {Boolean} showSenconds 是否显示为秒级时间戳
+	 */
 	getTime(datetime, showSenconds) {
 		let time = this.getDateObj(datetime).getTime()
 		if (showSenconds) {
@@ -30,12 +43,21 @@ module.exports = class DateTime {
 		return time
 	}
 
-	//获取日期
+	/**
+	 * 获取日期
+	 * @param {String} dateFormat 日期格式
+	 * @param {Time} time 时间戳
+	 */
 	getDate(dateFormat, time) {
 		return this.dateFormat(dateFormat, time)
 	}
+	
 
-	//获取日期在不同时区下的时间戳
+	/**
+	 * 获取日期在不同时区下的时间戳
+	 * @param {Date|Time}} time 日期或时间戳
+	 * @param {Object} timezone 时区
+	 */
 	getTimeByTimeZone(time, timezone) {
 		this.setTimeZone(timezone)
 		const thisDate = time ? new Date(time) : new Date()
@@ -45,7 +67,11 @@ module.exports = class DateTime {
 		return utc + (3600000 * this.timezone)
 	}
 
-	//获取时间信息
+	/**
+	 * 获取时间信息
+	 * @param {Time} time 时间戳
+	 * @param {Boolean} full 是否完整展示, 为true时小于10的位会自动补0
+	 */
 	getTimeInfo(time, full = true) {
 		time = this.getTimeByTimeZone(time)
 		const date = this.getDateObj(time)
@@ -69,7 +95,11 @@ module.exports = class DateTime {
 		return retData
 	}
 
-	//时间格式转换
+	/**
+	 * 时间格式转换
+	 * @param {String} format 展示格式如:Y-m-d H:i:s
+	 * @param {Time} time 时间戳
+	 */
 	dateFormat(format, time) {
 		const timeInfo = this.getTimeInfo(time)
 		format = format || this.defaultDateFormat
@@ -95,17 +125,27 @@ module.exports = class DateTime {
 		return date
 	}
 
-	//获取utc格式时间
+	/**
+	 * 获取utc格式时间
+	 * @param {Date|Time} datetime 日期或时间戳
+	 */
 	getUTC(datetime) {
 		return this.getDateObj(datetime).toUTCString()
 	}
 
-	//获取ISO 格式时间
+	/**
+	 * 获取ISO 格式时间
+	 *  @param {Date|Time} datetime 日期或时间戳
+	 */
 	getISO(datetime) {
 		return this.getDateObj(datetime).toISOString()
 	}
 
-	// 获取两时间相差天数
+	/**
+	 * 获取两时间相差天数
+	 * @param {Time} time1 时间戳
+	 * @param {Time} time2 时间戳
+	 */
 	getDiffDays(time1, time2) {
 		if (!time1) {
 			return false
@@ -120,7 +160,10 @@ module.exports = class DateTime {
 		return Math.ceil(diffTime / 86400000)
 	}
 
-	// 字符串转时间戳
+	/**
+	 * 字符串转时间戳
+	 * @param {Object} str 字符串类型的时间戳
+	 */
 	strToTime(str) {
 		if (Array.from(str).length === 10) {
 			str += '000'
@@ -128,7 +171,12 @@ module.exports = class DateTime {
 		return this.getTime(parseInt(str))
 	}
 
-	// 根据设置的天数获取时间戳
+	/**
+	 * 根据设置的天数获取指定日期N天后（前）的时间戳
+	 * @param {Number} days 天数
+	 * @param {Date|Time} time 指定的日期或时间戳
+	 * @param {Boolean} getAll 是否获取完整时间戳，为 false 时返回指定日期初始时间戳（当天00:00:00的时间戳）
+	 */
 	getTimeBySetDays(days, time, getAll = false) {
 		const date = this.getDateObj(time)
 		date.setDate(date.getDate() + days)
@@ -140,7 +188,12 @@ module.exports = class DateTime {
 		return startTime
 	}
 
-	// 根据设置的小时数获取时间戳
+	/**
+	 * 根据设置的小时数获取指定日期N小时后（前）的时间戳
+	 * @param {Number} hours 小时数
+	 * @param {Date|Time} time 指定的日期或时间戳
+	 * @param {Boolean} getAll 是否获取完整时间戳，为 false 时返回指定时间初始时间戳（该小时00:00的时间戳）
+	 */
 	getTimeBySetHours(hours, time, getAll = false) {
 		const date = this.getDateObj(time)
 		date.setHours(date.getHours() + hours)
@@ -152,7 +205,12 @@ module.exports = class DateTime {
 		return startTime
 	}
 
-	// 根据设置的周获取时间戳
+	/**
+	 * 根据设置的周数获取指定日期N周后（前）的时间戳
+	 * @param {Number} weeks 周数
+	 * @param {Date|Time} time 指定的日期或时间戳
+	 * @param {Boolean} getAll 是否获取完整时间戳，为 false 时返回指定日期初始时间戳（当天00:00:00的时间戳） 
+	 */
 	getTimeBySetWeek(weeks, time, getAll = false) {
 		const date = this.getDateObj(time)
 		const dateInfo = this.getTimeInfo(time)
@@ -170,7 +228,12 @@ module.exports = class DateTime {
 		return startTime
 	}
 
-	// 根据设置的月份获取时间戳
+	/**
+	 * 根据设置的月数获取指定日期N月后（前）的时间戳
+	 * @param {Number} monthes 月数
+	 * @param {Date|Time} time 指定的日期或时间戳
+	 * @param {Boolean} getAll 是否获取完整时间戳，为 false 时返回指定日期初始时间戳（当天00:00:00的时间戳） 
+	 */
 	getTimeBySetMonth(monthes, time, getAll = false) {
 		const date = this.getDateObj(time)
 		date.setMonth(date.getMonth() + monthes)
@@ -182,7 +245,11 @@ module.exports = class DateTime {
 		return startTime
 	}
 
-	// 根据时区获取指定时间的偏移时间
+	/**
+	 * 根据时区获取指定时间的偏移时间
+	 * @param {Date|Time} 指定的日期或时间戳
+	 * @param {Number} timezone 时区
+	 */
 	getTimeByDateAndTimezone(date, timezone) {
 		if (!timezone) {
 			timezone = this.timezone
@@ -194,7 +261,13 @@ module.exports = class DateTime {
 		return thisTime - offsetTime
 	}
 
-	// 根据类型获取时间范围
+	/**
+	 * 根据指定的时间类型获取时间范围
+	 * @param {String} type 时间类型 hour:小时 day:天 week:周 month：月
+	 * @param {Number} offset 时间的偏移量
+	 * @param {Date|Time} thistime 指定的日期或时间戳
+	* @param {Boolean} getAll 是否获取完整时间戳，为 false 时返回指定日期初始时间戳（当天00:00:00的时间戳） 
+	 */
 	getTimeDimensionByType(type, offset = 0, thistime, getAll = false) {
 		let startTime = 0
 		let endTime = 0

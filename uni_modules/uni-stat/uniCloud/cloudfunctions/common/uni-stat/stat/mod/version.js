@@ -1,4 +1,6 @@
-// 版本
+/**
+ * @class Version 应用版本模型
+ */
 const BaseMod = require('./base')
 const {
 	DateTime
@@ -9,7 +11,12 @@ module.exports = class Version extends BaseMod {
 		this.tableName = 'app-versions'
 	}
 
-	// 获取版本信息
+	/**
+	 * 获取版本信息
+	 * @param {String} appid DCloud-appid
+	 * @param {String} platformId 平台编号
+	 * @param {String} appVersion 平台版本号
+	 */
 	async getVersion(appid, platformId, appVersion) {
 		const cacheKey = 'uni-stat-version-' + appid + '-' + platformId + '-' + appVersion
 		let versionData = await this.getCache(cacheKey)
@@ -28,7 +35,12 @@ module.exports = class Version extends BaseMod {
 		return versionData
 	}
 
-	// 获取版本信息没有则进行创建
+	/**
+	 * 获取版本信息没有则进行创建
+	 * @param {String} appid DCloud-appid
+	 * @param {String} platformId 平台编号
+	 * @param {String} appVersion 平台版本号
+	 */
 	async getVersionAndCreate(appid, platformId, appVersion) {
 		const versionInfo = await this.getVersion(appid, platformId, appVersion)
 		if (versionInfo.length === 0) {
@@ -50,11 +62,5 @@ module.exports = class Version extends BaseMod {
 			}
 		}
 		return versionInfo
-	}
-
-	// 获取版本_id
-	async getVersionId(appid, platformId, appVersion) {
-		const versionInfo = await this.getVersion(appid, platformId, appVersion)
-		return versionInfo.length > 0 ? versionInfo._id : ''
 	}
 }

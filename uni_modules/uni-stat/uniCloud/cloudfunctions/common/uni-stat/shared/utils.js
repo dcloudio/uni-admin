@@ -1,25 +1,46 @@
 const _toString = Object.prototype.toString
 const hasOwnProperty = Object.prototype.hasOwnProperty
 
+/**
+ * 检查对象是否包含某个属性
+ * @param {Object} obj 对象
+ * @param {String} key 属性键值
+ */
 function hasOwn(obj, key) {
 	return hasOwnProperty.call(obj, key)
 }
 
+/**
+ * 参数是否为JavaScript的简单对象
+ * @param {Object} obj 
+ * @returns {Boolean} true|false
+ */
 function isPlainObject(obj) {
 	return _toString.call(obj) === '[object Object]'
 }
 
-//判断参数是否为函数
+/**
+ * 是否为函数
+ * @param {String} fn 函数名
+ */
 function isFn(fn) {
 	return typeof fn === 'function'
 }
 
+/**
+ * 深度克隆对象
+ * @param {Object} obj
+ */
 function deepClone(obj) {
 	return JSON.parse(JSON.stringify(obj))
 }
 
 
-// 解析参数
+/**
+ * 解析客户端上报的参数
+ * @param {String} str 字符串参数
+ * @param {Object} context 附带的上下文
+ */
 function parseUrlParams(str, context) {
 	if (!str || typeof str !== 'string') {
 		return str
@@ -30,8 +51,6 @@ function parseUrlParams(str, context) {
 			[arr[0]]: arr[1]
 		}, res)
 	}, {})
-
-
 	//原以下数据要从客户端上报，现调整为如果以下参数客户端未上报，则通过请求附带的context参数中获取
 	let convertParams = {}
 	if (context.hasOwnProperty('APPID')) {
@@ -73,8 +92,6 @@ function parseUrlParams(str, context) {
 			sppd: 'provider'
 		}
 	}
-
-
 	context = context ? context : {}
 	//console.log('context', context)
 	for (let key in convertParams) {

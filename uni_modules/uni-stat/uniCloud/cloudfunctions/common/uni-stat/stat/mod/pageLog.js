@@ -1,4 +1,6 @@
-// 页面日志模型
+/**
+ * @class PageLog 页面日志模型
+ */
 const BaseMod = require('./base')
 const Page = require('./page')
 const Platform = require('./platform')
@@ -17,7 +19,10 @@ module.exports = class PageLog extends BaseMod {
 		this.sessionLogInfo = []
 	}
 
-	// 日志填充
+	/**
+	 * 页面日志数据填充
+	 * @param {Object} reportParams 上报参数
+	 */
 	async fill(reportParams) {
 		let params;
 		let sessionKey, sessionLogKey;
@@ -138,7 +143,8 @@ module.exports = class PageLog extends BaseMod {
 				msg: 'Invild param'
 			}
 		}
-
+		
+		//日志数据入库
 		const res = await this.insert(this.tableName, fillParams)
 		if (res && res.inserted) {
 			// 更新会话数据
@@ -159,7 +165,10 @@ module.exports = class PageLog extends BaseMod {
 		}
 	}
 
-	// 清理数据
+	/**
+	 * 页面日志清理
+	 * @param {Number} days 页面日志保留天数
+	 */
 	async clean(days) {
 		days = Math.max(parseInt(days), 1)
 		console.log('clean page logs - day:', days)

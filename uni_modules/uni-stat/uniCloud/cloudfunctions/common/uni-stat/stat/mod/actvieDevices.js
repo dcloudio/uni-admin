@@ -1,4 +1,6 @@
-// 活跃用户表 - 由每日跑批合并，仅添加当日新用户，以及本周/本月首次访问的老用户。
+/**
+ * @class ActvieDevices 活跃设备模型 - 每日跑批合并仅添加本周/本月首次访问的设备。
+ */
 const BaseMod = require('./base')
 const Platform = require('./platform')
 const Channel = require('./channel')
@@ -18,7 +20,7 @@ module.exports = class ActvieDevices extends BaseMod {
 	}
 	
 	/**
-	 * @desc 活跃用户统计 - 为周统计/月统计提供周活/月活数据
+	 * @desc 活跃设备统计 - 为周统计/月统计提供周活/月活数据
 	 * @param {date|time} date
 	 * @param {bool} reset
 	 */
@@ -142,7 +144,10 @@ module.exports = class ActvieDevices extends BaseMod {
 		return res
 	}
 	
-	//获取填充数据
+	/**
+	 * 获取填充数据
+	 * @param {Object} data
+	 */
 	async getFillData(data) {
 		// 平台信息
 		let platformInfo = null
@@ -216,15 +221,13 @@ module.exports = class ActvieDevices extends BaseMod {
 		}, {
 			device_id: 1
 		})
-
-		if (this.debug) {
-			console.log('haveWeekList', JSON.stringify(haveWeekList))
-		}
-
 		if (haveWeekList.data.length > 0) {
 			for (const hui in haveWeekList.data) {
 				weekHaveDeviceList.push(haveWeekList.data[hui].device_id)
 			}
+		}
+		if (this.debug) {
+			console.log('weekHaveDeviceList', JSON.stringify(weekHaveDeviceList))
 		}
 
 		// 取出本月已经存储的device_id
@@ -246,18 +249,18 @@ module.exports = class ActvieDevices extends BaseMod {
 		}, {
 			device_id: 1
 		})
-
-		if (this.debug) {
-			console.log('haveMonthList', JSON.stringify(haveMonthList))
-		}
-
 		if (haveMonthList.data.length > 0) {
 			for (const hui in haveMonthList.data) {
 				monthHaveDeviceList.push(haveMonthList.data[hui].device_id)
 			}
 		}
-
+		if (this.debug) {
+			console.log('monthHaveDeviceList', JSON.stringify(monthHaveDeviceList))
+		}
+		
+		//数据填充
 		for (const ui in data.device_ids) {
+			//周活跃数据填充
 			if (!weekHaveDeviceList.includes(data.device_ids[ui])) {
 				this.fillData.push({
 					appid: data.appid,
@@ -270,7 +273,7 @@ module.exports = class ActvieDevices extends BaseMod {
 					create_time: data.info[data.device_ids[ui]].create_time
 				})
 			}
-
+			//月活跃数据填充
 			if (!monthHaveDeviceList.includes(data.device_ids[ui])) {
 				this.fillData.push({
 					appid: data.appid,
@@ -288,10 +291,12 @@ module.exports = class ActvieDevices extends BaseMod {
 		return true
 	}
 	
-	//此处日志清理并不需要用户自己定义，设置为固定值即可
+	/**
+	 * 日志清理，此处日志为临时数据并不需要自定义清理，默认为固定值即可
+	 */
 	async clean() {
-		// 清除周数据
-		const weeks = 2
+		// 清除周数据，周留存统计最高需要10周数据，多余的为无用数据
+		const weeks = 10
 		console.log('Clean device\'s weekly logs - week:', weeks)
 
 		const dateTime = new DateTime()
@@ -307,8 +312,8 @@ module.exports = class ActvieDevices extends BaseMod {
 			console.log('Clean device\'s weekly logs - res:', res)
 		}
 
-		// 清除月数据
-		const monthes = 9
+		// 清除月数据，月留存统计最高需要10个月数据，多余的为无用数据
+		const monthes = 10
 		console.log('Clean device\'s monthly logs - month:', monthes)
 		const monthRes = await this.delete(this.tableName, {
 			dimension: 'month',

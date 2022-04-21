@@ -1,3 +1,6 @@
+/**
+ * @class BaseMod 数据模型基类，提供基础服务支持
+ */
 const {
 	getConfig
 } = require('../../shared')
@@ -26,7 +29,9 @@ module.exports = class BaseMod {
 		this._redisConnection()
 	}
 
-	// 数据库链接
+	/**
+	 * 建立uniCloud数据库连接
+	 */
 	_dbConnection() {
 		if (!this.db) {
 			try {
@@ -40,7 +45,9 @@ module.exports = class BaseMod {
 		}
 	}
 
-	// redis链接
+	/**
+	 * 建立uniCloud redis连接
+	 */
 	_redisConnection() {
 		if (this.config.redis && !this.redis) {
 			try {
@@ -51,34 +58,48 @@ module.exports = class BaseMod {
 		}
 	}
 
-	// 获取配置项
+	/**
+	 * 获取uni统计配置项
+	 * @param {String} key
+	 */
 	getConfig(key) {
 		return this.config[key]
 	}
 
-	// 获取表名
+	/**
+	 * 获取带前缀的数据表名称
+	 * @param {String} tab 无前缀表名
+	 */
 	getTableName(tab) {
 		tab = tab || this.tableName
-		const table = (this.tablePrefix && tab.indexOf(this.tablePrefix) !== 0) ? this.tablePrefix + this.tableConnectors + tab : tab
+		const table = (this.tablePrefix && tab.indexOf(this.tablePrefix) !== 0) ? this.tablePrefix + this
+			.tableConnectors + tab : tab
 		return table
 	}
 
-	// 获取数据集
+	/**
+	 * 获取数据集
+	 * @param {String} tab表名
+	 * @param {Boolean} useDbPre 是否使用数据表前缀
+	 */
 	getCollection(tab, useDbPre = true) {
 		return useDbPre ? this.db.collection(this.getTableName(tab)) : this.db.collection(tab)
 	}
 
-	// 获取reids缓存
+	/**
+	 * 获取reids缓存
+	 * @param {String} key reids缓存键值
+	 */
 	async getCache(key) {
 		if (!this.redis || !key) {
 			return false
 		}
 		let cacheResult = await this.redis.get(key)
-		
+
 		if (this.debug) {
 			console.log('get cache result by key:' + key, cacheResult)
 		}
-		
+
 		if (cacheResult) {
 			try {
 				cacheResult = JSON.parse(cacheResult)
@@ -91,7 +112,12 @@ module.exports = class BaseMod {
 		return cacheResult
 	}
 
-	// 设置redis缓存
+	/**
+	 * 设置redis缓存
+	 * @param {String} key 键值
+	 * @param {String} val 值
+	 * @param {Number} expireTime 过期时间
+	 */
 	async setCache(key, val, expireTime) {
 		if (!this.redis || !key) {
 			return false
@@ -108,7 +134,10 @@ module.exports = class BaseMod {
 		return await this.redis.set(key, val, 'EX', expireTime || this.config.cachetime)
 	}
 
-	// 清除redis缓存
+	/**
+	 * 清除redis缓存
+	 * @param {String} key 键值
+	 */
 	async clearCache(key) {
 		if (!this.redis || !key) {
 			return false
@@ -121,7 +150,11 @@ module.exports = class BaseMod {
 		return await this.redis.del(key)
 	}
 
-	// 通过_id获取数据
+	/**
+	 * 通过数据表主键（_id）获取数据
+	 * @param {String} tab 表名
+	 * @param {String} id 主键值
+	 */
 	async getById(tab, id) {
 		const condition = {}
 		condition[this.primaryKey] = id
@@ -129,19 +162,32 @@ module.exports = class BaseMod {
 		return (info && info.data.length > 0) ? info.data[0] : []
 	}
 
-	// 插入数据
+	/**
+	 * 插入数据到数据表
+	 * @param {String} tab 表名
+	 * @param {Object} params 字段参数
+	 */
 	async insert(tab, params) {
 		params = params || this.params
 		return await this.getCollection(this.getTableName(tab)).add(params)
 	}
 
-	// 修改数据
+	/**
+	 * 修改数据表数据
+	 * @param {String} tab 表名
+	 * @param {Object} params 字段参数
+	 * @param {Object} condition 条件
+	 */
 	async update(tab, params, condition) {
 		params = params || this.params
 		return await this.getCollection(this.getTableName(tab)).where(condition).update(params)
 	}
 
-	// 删除数据
+	/**
+	 * 删除数据表数据
+	 * @param {String} tab 表名
+	 * @param {Object} condition 条件
+	 */
 	async delete(tab, condition) {
 		if (!condition) {
 			return false
@@ -149,7 +195,11 @@ module.exports = class BaseMod {
 		return await this.getCollection(this.getTableName(tab)).where(condition).remove()
 	}
 
-	// 批量插入 - 云服务空间对单条mongo语句执行时间有限制，所以批量插入需限制每次执行条数
+	/**
+	 * 批量插入 - 云服务空间对单条mongo语句执行时间有限制，所以批量插入需限制每次执行条数
+	 * @param {String} tab 表名
+	 * @param {Object} data 数据集合
+	 */
 	async batchInsert(tab, data) {
 		let batchInsertNum = this.getConfig('batchInsertNum') || 3000
 		batchInsertNum = Math.min(batchInsertNum, 5000)
@@ -182,7 +232,11 @@ module.exports = class BaseMod {
 		return res
 	}
 
-	// 批量删除 - 云服务空间对单条mongo语句执行时间有限制，所以批量删除需限制每次执行条数
+	/**
+	 * 批量删除 - 云服务空间对单条mongo语句执行时间有限制，所以批量删除需限制每次执行条数
+	 * @param {String} tab 表名
+	 * @param {Object} condition 条件
+	 */
 	async batchDelete(tab, condition) {
 		const batchDeletetNum = 5000;
 		let deleteIds;
@@ -219,8 +273,12 @@ module.exports = class BaseMod {
 		}
 		return res
 	}
-	
-	// mongo 查询
+
+	/**
+	 * 基础查询
+	 * @param {String} tab 表名
+	 * @param {Object} params
+	 */
 	async select(tab, params) {
 		const {
 			where,
@@ -267,7 +325,12 @@ module.exports = class BaseMod {
 		return await query.get()
 	}
 
-	// 查询全部数据
+	/**
+	 * 查询并返回全部数据
+	 * @param {String} tab 表名
+	 * @param {Object} condition 条件
+	 * @param {Object} field 指定查询返回字段
+	 */
 	async selectAll(tab, condition, field = {}) {
 		const countRes = await this.getCollection(tab).where(condition).count()
 		if (countRes && countRes.total > 0) {
@@ -293,7 +356,11 @@ module.exports = class BaseMod {
 		}
 	}
 
-	// 聚合查询
+	/**
+	 * 聚合查询
+	 * @param {String} tab 表名
+	 * @param {Object} params 参数
+	 */
 	async aggregate(tab, params) {
 		const {
 			project,
@@ -307,19 +374,23 @@ module.exports = class BaseMod {
 		} = params
 
 		const query = this.getCollection(tab).aggregate()
-
+		
+		//设置返回字段
 		if (project) {
 			query.project(project)
 		}
-
+		
+		//设置匹配条件
 		if (match) {
 			query.match(match)
 		}
-
+		
+		//数据表关联
 		if (lookup) {
 			query.lookup(lookup)
 		}
-
+		
+		//分组
 		if (group) {
 			if (group.length > 0) {
 				for (const gi in group) {
@@ -329,25 +400,28 @@ module.exports = class BaseMod {
 				query.group(group)
 			}
 		}
-
+		
+		//排序
 		if (sort) {
 			query.sort(sort)
 		}
-
+		
+		//分页
 		if (skip) {
 			query.skip(skip)
 		}
-
 		if (limit) {
 			query.limit(limit)
 		} else if (!getAll) {
 			query.limit(this.selectMaxLimit)
 		}
-
+		
+		//如果未指定全部返回则直接返回查询结果
 		if (!getAll) {
 			return await query.end()
 		}
-
+		
+		//若指定了全部返回则分页查询全部结果后再返回
 		const resCount = await query.group({
 			_id: {},
 			aggregate_count: {

@@ -1,4 +1,6 @@
-// 分享日志
+/**
+ * @class ShareLog 分享日志模型
+ */
 const BaseMod = require('./base')
 const Platform = require('./platform')
 const Channel = require('./channel')
@@ -10,7 +12,11 @@ module.exports = class ShareLog extends BaseMod {
     this.tableName = 'share-logs'
   }
 
-  // 日志填充
+  /**
+   * 分析日志填充
+   * @param {Object} reportParams 上报参数
+   * @param {Object} sessionLogData 会话日志数据，此参数传递可减少数据库查询
+   */
   async fill (reportParams, sessionLogData) {
     let params, sessionLogInfo, sessionKey; 
 	const fillParams = []
@@ -71,7 +77,10 @@ module.exports = class ShareLog extends BaseMod {
     }
   }
 
-  // 清理数据
+  /**
+   * 分享日志清理
+   * @param {Number} days 保留天数
+   */
   async clean (days) {
     days = Math.max(parseInt(days), 1)
     console.log('clean share logs - day:', days)

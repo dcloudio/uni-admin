@@ -20,7 +20,7 @@ module.exports = {
 			}
 		}
 		//数据上报
-		return await uniStat.initReport().report(params, {
+		return await uniStat.initReceiver().report(params, {
 			...clientInfo,
 			...cloudInfo,
 			uid

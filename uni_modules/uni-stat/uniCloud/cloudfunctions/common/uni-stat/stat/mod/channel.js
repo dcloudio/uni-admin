@@ -1,4 +1,6 @@
-// 渠道
+/**
+ * @class Channel 渠道模型
+ */
 const BaseMod = require('./base')
 const Scenes = require('./scenes')
 const {DateTime} = require('../lib')
@@ -9,7 +11,12 @@ module.exports = class Channel extends BaseMod {
     this.scenes = new Scenes()
   }
 
-  // 获取渠道信息
+  /**
+   * 获取渠道信息
+   * @param {String} appid 
+   * @param {String} platformId 平台编号
+   * @param {String} channel 渠道代码
+   */
   async getChannel (appid, platformId, channel) {
     const cacheKey = 'uni-stat-channel-' + appid + '-' + platformId + '-' + channel
     let channelData = await this.getCache(cacheKey)
@@ -34,7 +41,12 @@ module.exports = class Channel extends BaseMod {
     return channelData
   }
 
-  // 获取渠道信息没有则进行创建
+  /**
+   * 获取渠道信息没有则进行创建
+   * @param {String} appid
+   * @param {String} platformId
+   * @param {String} channel
+   */
   async getChannelAndCreate (appid, platformId, channel) {
     if (!appid || !platformId) {
       return []
@@ -61,13 +73,21 @@ module.exports = class Channel extends BaseMod {
     return channelInfo
   }
 
-  // 获取渠道_id
+  /**
+   * 获取渠道_id
+   * @param {String} appid
+   * @param {String} platformId
+   * @param {String} channel
+   */
   async getChannelId (appid, platformId, channel) {
     const channelInfo = await this.getChannel(appid, platformId, channel)
     return channelInfo.length > 0 ? channelInfo._id : ''
   }
 
-  // 获取渠道码或者场景值
+  /**
+   * 获取渠道码或者场景值
+   * @param {Object} params 上报参数
+   */
   getChannelCode (params) {
     // web默认无渠道
     if (params.ut === 'h5') {

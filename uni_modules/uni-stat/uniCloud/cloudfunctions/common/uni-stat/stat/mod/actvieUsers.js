@@ -1,4 +1,6 @@
-// 活跃用户表 - 由每日跑批合并，仅添加当日新用户，以及本周/本月首次访问的老用户。
+/**
+ * @class ActvieUsers 活跃用户模型 - 每日跑批合并，仅添加本周/本月首次访问的用户。
+ */
 const BaseMod = require('./base')
 const Platform = require('./platform')
 const Channel = require('./channel')
@@ -274,10 +276,12 @@ module.exports = class ActvieUsers extends BaseMod {
 		return true
 	}
 	
-	//此处日志清理并不需要用户自己定义，设置为固定值即可
+	/**
+	 * 日志清理，此处日志为临时数据并不需要自定义清理，默认为固定值即可
+	 */
 	async clean() {
-		// 清除周数据
-		const weeks = 2
+		// 清除周数据，周留存统计最高需要10周数据，多余的为无用数据
+		const weeks = 10
 		console.log('Clean user\'s weekly logs - week:', weeks)
 
 		const dateTime = new DateTime()
@@ -293,8 +297,8 @@ module.exports = class ActvieUsers extends BaseMod {
 			console.log('Clean user\'s weekly logs - res:', res)
 		}
 
-		// 清除月数据
-		const monthes = 9
+		// 清除月数据，月留存统计最高需要10个月数据，多余的为无用数据
+		const monthes = 10
 		console.log('Clean user\'s monthly logs - month:', monthes)
 		const monthRes = await this.delete(this.tableName, {
 			dimension: 'month',

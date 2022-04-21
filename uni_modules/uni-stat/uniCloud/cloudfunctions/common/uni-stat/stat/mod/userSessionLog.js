@@ -1,4 +1,6 @@
-// 用户会话日志
+/**
+ * @class UserSessionLog 用户会话日志模型
+ */
 const BaseMod = require('./base')
 const Platform = require('./platform')
 const Channel = require('./channel')
@@ -12,7 +14,10 @@ module.exports = class UserSessionLog extends BaseMod {
 		this.tableName = 'user-session-logs'
 	}
 
-	// 会话日志填充
+	/**
+	 * 用户会话日志数据填充
+	 * @param {Object} params 上报参数
+	 */
 	async fill(params) {
 
 		if (!params.sid) {
@@ -82,7 +87,10 @@ module.exports = class UserSessionLog extends BaseMod {
 		}
 	}
 
-	//检测用户会话
+	/**
+	 * 检测用户会话是否有变化，并更新
+	 * @param {Object} params 上报参数
+	 */
 	async checkUserSession(params) {
 
 		if (this.debug) {
@@ -128,7 +136,10 @@ module.exports = class UserSessionLog extends BaseMod {
 
 
 
-	//关闭用户会话
+	/**
+	 * 关闭用户会话
+	 * @param {String} sid 基础会话编号
+	 */
 	async closeUserSession(sid) {
 		if (this.debug) {
 			console.log('close user session log by sid:', sid)
@@ -142,7 +153,11 @@ module.exports = class UserSessionLog extends BaseMod {
 	}
 
 
-	//更新会话信息
+	/**
+	 * 更新会话信息
+	 * @param {String} sid 基础会话编号
+	 * @param {Object} data 更新数据
+	 */
 	async updateUserSession(sid, data) {
 
 		const userSession = await this.getCollection(this.tableName).where({
@@ -199,8 +214,11 @@ module.exports = class UserSessionLog extends BaseMod {
 		}
 	}
 
-	// 清理日志数据
-	async clean(days) {
+	/**
+	 * 清理用户会话日志数据
+	 * @param {Object} days 保留天数, 留存统计需要计算30天后留存率，因此至少应保留31天的日志数据
+	 */
+	async clean(days = 31) {
 		days = Math.max(parseInt(days), 1)
 		console.log('clean user session logs - day:', days)
 

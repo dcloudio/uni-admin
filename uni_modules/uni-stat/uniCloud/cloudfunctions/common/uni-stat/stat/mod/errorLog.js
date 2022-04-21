@@ -1,4 +1,6 @@
-// 错误日志
+/**
+ * @class ErrorLog 错误日志模型
+ */
 const BaseMod = require('./base')
 const Platform = require('./platform')
 const Channel = require('./channel')
@@ -12,7 +14,10 @@ module.exports = class ErrorLog extends BaseMod {
 		this.tableName = 'error-logs'
 	}
 
-	// 日志填充
+	/**
+	 * 错误日志数据填充
+	 * @param {Object} reportParams 上报参数
+	 */
 	async fill(reportParams) {
 		let params, errorHash, errorCount, cacheKey;
 		const fillParams = []
@@ -111,7 +116,10 @@ module.exports = class ErrorLog extends BaseMod {
 		}
 	}
 
-	// 清理数据
+	/**
+	 * 错误日志清理
+	 * @param {Number} days 日志保留天数
+	 */
 	async clean(days) {
 		days = Math.max(parseInt(days), 1)
 		console.log('clean error logs - day:', days)

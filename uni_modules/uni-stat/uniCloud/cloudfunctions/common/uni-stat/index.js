@@ -2,22 +2,22 @@ const {
 	createApi
 } = require('./shared/index')
 
-let uniReport, uniStat
+let reportDataReceiver, dataStatCron
 module.exports = {
-	//uni统计数据上报模块初始化
-	initReport: (options = {}) => {
-		if(!uniReport) {
-			uniReport = require('./stat/report')
+	//uni统计数据上报数据接收器初始化
+	initReceiver: (options = {}) => {
+		if(!reportDataReceiver) {
+			reportDataReceiver = require('./stat/receiver')
 		}
 		options.clientType = options.clientType || __ctx__.PLATFORM
-		return createApi(uniReport, options)
+		return createApi(reportDataReceiver, options)
 	},
 	//uni统计数据统计模块初始化
 	initStat: (options = {}) => {
-		if(!uniStat) {
-			uniStat = require('./stat/stat')
+		if(!dataStatCron) {
+			dataStatCron = require('./stat/stat')
 		}
 		options.clientType = options.clientType || __ctx__.PLATFORM
-		return createApi(uniStat, options)
+		return createApi(dataStatCron, options)
 	}
 }

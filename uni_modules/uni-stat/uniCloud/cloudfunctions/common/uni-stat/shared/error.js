@@ -1,3 +1,6 @@
+/**
+ * @class UniCloudError 错误处理模块
+ */
 module.exports = class UniCloudError extends Error {
   constructor (options) {
     super(options.message)

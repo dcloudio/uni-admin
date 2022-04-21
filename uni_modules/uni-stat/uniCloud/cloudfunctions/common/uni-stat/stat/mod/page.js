@@ -1,4 +1,6 @@
-// 页面
+/**
+ * @class Page 页面模型
+ */
 const BaseMod = require('./base')
 const {
 	parseUrl
@@ -12,7 +14,11 @@ module.exports = class Page extends BaseMod {
 		this.tableName = 'pages'
 	}
 
-	// 获取页面信息
+	/**
+	 * 获取页面信息
+	 * @param {String} appid
+	 * @param {String} url 页面地址
+	 */
 	async getPage(appid, url) {
 		const cacheKey = 'uni-stat-page-' + appid + '-' + url
 		let pageData = await this.getCache(cacheKey)
@@ -30,7 +36,12 @@ module.exports = class Page extends BaseMod {
 		return pageData
 	}
 
-	// 获取页面信息不存在则创建
+	/**
+	 * 获取页面信息不存在则创建
+	 * @param {String} appid
+	 * @param {String} url 页面地址
+	 * @param {Object} title 页面标题
+	 */
 	async getPageAndCreate(appid, url, title) {
 		//获取url信息
 		const urlInfo = parseUrl(url)
@@ -68,19 +79,5 @@ module.exports = class Page extends BaseMod {
 		}
 
 		return pageInfo
-	}
-
-	// 获取页面_id
-	async getPageId(appid, url) {
-		const pageInfo = await this.getPage(appid, url)
-		return pageInfo.length > 0 ? pageInfo._id : ''
-	}
-
-	getBaseUrl(url) {
-		let baseurl = url.split('?')[0]
-		if (baseurl !== '/' && baseurl.indexOf('/') === 0) {
-			baseurl = baseurl.substr(1)
-		}
-		return baseurl
 	}
 }

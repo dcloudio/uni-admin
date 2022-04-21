@@ -1,4 +1,6 @@
-// 日志结果统计
+/**
+ * @class StatResult 基础数据结果统计模型
+ */
 const BaseMod = require('./base')
 const Platform = require('./platform')
 const Channel = require('./channel')
@@ -21,7 +23,12 @@ module.exports = class StatResult extends BaseMod {
 		this.versions = []
 	}
 
-	// 基础数据统计
+	/**
+	 * 基础数据统计
+	 * @param {String} type 统计类型 hour：实时统计 day：按天统计，week：按周统计 month：按月统计
+	 * @param {Date|Time} date 指定日期或时间戳
+	 * @param {Boolean} reset 是否重置，为ture时会重置该批次数据
+	 */
 	async stat(type, date, reset) {
 		const allowedType = ['hour', 'day', 'week', 'month']
 		if (!allowedType.includes(type)) {
@@ -140,7 +147,9 @@ module.exports = class StatResult extends BaseMod {
 		return res
 	}
 
-	// 按周/月统计
+	/**
+	 * 按周/月统计
+	 */
 	async statWeekOrMonth() {
 		const statRes = await this.aggregate(this.tableName, {
 			project: {
@@ -229,7 +238,10 @@ module.exports = class StatResult extends BaseMod {
 		return res
 	}
 
-	//获取周/月维度的数据
+	/**
+	 * 获取周/月维度的填充数据
+	 * @param {Object} data 统计数据
+	 */
 	async getWeekOrMonthData(data) {
 
 		const matchCondition = {
@@ -389,7 +401,10 @@ module.exports = class StatResult extends BaseMod {
 		return insertParam
 	}
 
-	// 基础填充数据-目前只有小时和天维度的数据
+	/**
+	 * 基础填充数据-目前只有小时和天维度的数据
+	 * @param {Object} data 统计数据
+	 */
 	async fill(data) {
 		// 平台信息
 		let platformInfo = null
@@ -651,7 +666,9 @@ module.exports = class StatResult extends BaseMod {
 		return insertParam
 	}
 
-	// 基础统计数据补充，防止累计数据丢失
+	/**
+	 * 基础统计数据补充，防止累计数据丢失
+	 */
 	async replenishStat() {
 		if (this.debug) {
 			console.log('composes data', this.composes)
@@ -728,7 +745,12 @@ module.exports = class StatResult extends BaseMod {
 		return true
 	}
 
-	// 留存数据统计
+	/**
+	 * 留存数据统计
+	 * @param {String} type 统计类型 hour：实时统计 day：按天统计，week：按周统计 month：按月统计
+	 * @param {Date|Time} date 指定日期或时间戳
+	 * @param {String} mod 统计模块 device:设备，user:用户
+	 */
 	async retentionStat(type, date, mod = 'device') {
 		date = date ? date : new DateTime().getTimeBySetDays(-1, date)
 		const allowedType = ['day', 'week', 'month']
@@ -775,7 +797,12 @@ module.exports = class StatResult extends BaseMod {
 		return res
 	}
 
-	//设备日留存
+	/**
+	 * 设备日留存统计数据填充
+	 * @param {String} type 统计类型 hour：实时统计 day：按天统计，week：按周统计 month：按月统计
+	 * @param {Date|Time} date 指定日期或时间戳
+	 * @param {Boolean} reset 是否重置，为ture时会重置该批次数据
+	 */
 	async deviceRetentionFillDayly(type, day, date) {
 		if (type !== 'day') {
 			return {
@@ -1114,7 +1141,12 @@ module.exports = class StatResult extends BaseMod {
 		}
 	}
 
-	// 设备周/月留存数据填充
+	/**
+	 * 设备周/月留存数据填充
+	 * @param {String} type 统计类型 hour：实时统计 day：按天统计，week：按周统计 month：按月统计
+	 * @param {Date|Time} date 指定日期或时间戳
+	 * @param {Boolean} reset 是否重置，为ture时会重置该批次数据
+	 */
 	async deviceRetentionFillWeekOrMonth(type, day, date) {
 		if (!['week', 'month'].includes(type)) {
 			return {
@@ -1317,7 +1349,12 @@ module.exports = class StatResult extends BaseMod {
 		}
 	}
 
-	//用户日留存数据填充
+	/**
+	 * 用户日留存数据填充
+	 * @param {String} type 统计类型 hour：实时统计 day：按天统计，week：按周统计 month：按月统计
+	 * @param {Date|Time} date 指定日期或时间戳
+	 * @param {Boolean} reset 是否重置，为ture时会重置该批次数据
+	 */
 	async userRetentionFillDayly(type, day, date) {
 		if (type !== 'day') {
 			return {
@@ -1634,7 +1671,12 @@ module.exports = class StatResult extends BaseMod {
 	}
 
 
-	// 用户周/月留存数据填充
+	/**
+	 * 用户周/月留存数据填充
+	 * @param {String} type 统计类型 hour：实时统计 day：按天统计，week：按周统计 month：按月统计
+	 * @param {Date|Time} date 指定日期或时间戳
+	 * @param {Boolean} reset 是否重置，为ture时会重置该批次数据
+	 */
 	async userRetentionFillWeekOrMonth(type, day, date) {
 		if (!['week', 'month'].includes(type)) {
 			return {
@@ -1840,7 +1882,10 @@ module.exports = class StatResult extends BaseMod {
 	}
 
 
-	//清理实时统计的日志
+	/**
+	 * 清理实时统计的日志
+	 * @param {Number} days 实时统计日志保留天数
+	 */
 	async cleanHourLog(days = 7) {
 
 		console.log('clean hour logs - day:', days)
