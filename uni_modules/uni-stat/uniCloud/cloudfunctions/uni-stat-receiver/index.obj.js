@@ -11,7 +11,7 @@ module.exports = {
 		//当前登录用户id
 		let uid
 		if(token) {
-			const tokenRes  = uniID.createInstance({
+			const tokenRes  = await uniID.createInstance({
 				clientInfo
 			}).checkToken(token)
 			
