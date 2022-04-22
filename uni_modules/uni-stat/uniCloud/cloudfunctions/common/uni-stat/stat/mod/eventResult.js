@@ -223,7 +223,12 @@ module.exports = class EventResult extends BaseMod {
 				uid: 1,
 				create_time: 1
 			},
-			match: matchCondition,
+			match: {
+				...matchCondition,
+				uid: {
+					$ne: ''
+				}
+			},
 			group: [{
 				_id: {
 					uid: '$uid'
