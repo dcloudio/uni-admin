@@ -14,8 +14,8 @@ module.exports = class SessionLog extends BaseMod {
 		super()
 		this.tableName = 'session-logs'
 	}
-	
-	
+
+
 	/**
 	 * 会话日志批量填充
 	 * @param {Object} reportParams 上报参数
@@ -28,88 +28,15 @@ module.exports = class SessionLog extends BaseMod {
 		const platform = new Platform()
 		const dateTime = new DateTime()
 		const channel = new Channel()
+		let res
 		for (const pk in reportParams) {
 			params = reportParams[pk]
-			// 应用信息
-			if (!params.ak) {
-				continue
-			}
-
-			// 平台信息
-			if (!params.ut) {
-				continue
-			}
-
-			// 设备信息
-			if (!params.did) {
-				continue
-			}
-
-			// 页面信息
-			pageInfo = await page.getPageAndCreate(params.ak, params.url, params.ttpj)
-			if (!pageInfo || pageInfo.length === 0) {
-				continue
-			}
-
-			nowTime = dateTime.getTime()
-			//设备首次访问时间
-			firstVistTime = params.fvts ? dateTime.strToTime(params.fvts) : nowTime
-			//设备最终访问时间
-			lastVistTime = params.lvts ? dateTime.strToTime(params.lvts) : 0
-			fillParams.push({
-				appid: params.ak,
-				version: params.v ? params.v : '',
-				platform: platform.getPlatformCode(params.ut, params.p),
-				channel: channel.getChannelCode(params),
-				// 访问设备
-				device_id: params.did,
-				is_first_visit: (!lastVistTime || firstVistTime === lastVistTime) ? 1 : 0,
-				first_visit_time: firstVistTime,
-				last_visit_time: nowTime,
-				visit_count: params.tvc ? parseInt(params.tvc) : 1,
-				// 用户相关
-				last_visit_user_id: '',
-				// 页面相关
-				entry_page_id: pageInfo._id,
-				exit_page_id: pageInfo._id,
-				page_count: 0,
-				event_count: 0,
-				duration: 1,
-				// 版本
-				sdk_version: params.mpsdk ? params.mpsdk : '',
-				platform_version: params.mpv ? params.mpv : '',
-				// 设备相关
-				device_os_name: (params.p && params.p === 'i') ? 'ios' : 'android',
-				device_os_version: params.sv ? params.sv : '',
-				device_vendor: params.brand ? params.brand : '',
-				device_model: params.md ? params.md : '',
-				device_language: params.lang ? params.lang : '',
-				device_pixel_ratio: params.pr ? params.pr : '',
-				device_window_width: params.ww ? params.ww : '',
-				device_window_height: params.wh ? params.wh : '',
-				device_screen_width: params.sw ? params.sw : '',
-				device_screen_height: params.sh ? params.sh : '',
-				// 地区相关
-				location_ip: params.ip ? params.ip : '',
-				location_latitude: params.lat ? parseFloat(params.lat) : 0,
-				location_longitude: params.lng ? parseFloat(params.lng) : 0,
-				location_country: params.cn ? params.cn : '',
-				location_province: params.pn ? params.pn : '',
-				location_city: params.ct ? params.ct : '',
-				is_finish: 0,
-				create_time: nowTime
-			})
-		}
-
-		if (fillParams.length === 0) {
-			console.log('No session params')
-			return {
-				code: 200,
-				msg: 'Invild param'
+			res = await this.fill(params)
+			if (res.code) {
+				console.error(res.msg)
 			}
 		}
-
-		return await this.batchInsert(this.tableName, fillParams)
+		return res
 	}
 
 	/**
@@ -206,16 +133,16 @@ module.exports = class SessionLog extends BaseMod {
 		const res = await this.insert(this.tableName, fillParams)
 
 		if (res && res.id) {
-			
+
 			//填充用户的会话日志
-			if(params.uid) {
+			if (params.uid) {
 				await new UserSessionLog().fill({
 					...params,
 					page_id: pageInfo._id,
 					sid: res.id
 				})
 			}
-			
+
 			return {
 				code: 0,
 				msg: 'success',
@@ -237,7 +164,7 @@ module.exports = class SessionLog extends BaseMod {
 			}
 		}
 	}
-	
+
 	/**
 	 * 获取会话
 	 * @param {Object} params 上报参数
@@ -284,12 +211,12 @@ module.exports = class SessionLog extends BaseMod {
 				})
 				//关闭用户会话
 				await userSessionLog.closeUserSession()
-				
+
 				return await this.fill(params)
 			} else {
-				
+
 				//如果当前会话切换了用户则生成新的用户会话
-				if(params.uid != sessionLogInfoData.uid) {
+				if (params.uid != sessionLogInfoData.uid) {
 					await userSessionLog.checkUserSession({
 						...params,
 						page_id: pageInfo._id,
@@ -297,7 +224,7 @@ module.exports = class SessionLog extends BaseMod {
 						last_visit_user_id: sessionLogInfoData.last_visit_user_id
 					})
 				}
-				
+
 				return {
 					code: 0,
 					msg: 'success',
@@ -317,7 +244,7 @@ module.exports = class SessionLog extends BaseMod {
 			return await this.fill(params)
 		}
 	}
-	
+
 	/**
 	 * 更新会话信息
 	 * @param {String} sid 会话编号
@@ -327,14 +254,14 @@ module.exports = class SessionLog extends BaseMod {
 		const nowTime = new DateTime().getTime()
 		const accessTime = nowTime - data.createTime
 		const accessSenconds = accessTime > 1000 ? parseInt(accessTime / 1000) : 1
-		
+
 		const updateData = {
 			last_visit_time: nowTime,
 			duration: accessSenconds,
 		}
 		//访问页面数量
 		if (data.addPageCount) {
-			updateData.page_count =  data.pageCount
+			updateData.page_count = data.pageCount
 		}
 		//最终访问的页面编号
 		if (data.pageId) {
@@ -344,21 +271,21 @@ module.exports = class SessionLog extends BaseMod {
 		if (data.eventCount) {
 			updateData.event_count = data.eventCount
 		}
-		
+
 		if (this.debug) {
-		  console.log('update session log by sid-' + sid, updateData)
+			console.log('update session log by sid-' + sid, updateData)
 		}
-		
+
 		//更新会话
 		await this.update(this.tableName, updateData, {
-		  _id: sid
+			_id: sid
 		})
-		
+
 		//更新用户会话
-		if(data.uid) {
+		if (data.uid) {
 			await new UserSessionLog().updateUserSession(sid, data)
 		}
-		
+
 		return true
 	}
 

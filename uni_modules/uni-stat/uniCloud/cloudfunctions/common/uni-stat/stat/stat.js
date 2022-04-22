@@ -16,7 +16,8 @@ const {
 	ShareLog,
 	ErrorLog,
 	StatResult,
-	ActvieDevices,
+	ActiveDevices,
+	ActiveUsers,
 	PageResult,
 	EventResult,
 	ErrorResult,
@@ -149,7 +150,7 @@ class UniStatDataStat {
 
 	/**
 	 * 数据统计调度处理函数
-	 * @param {Object} params
+	 * @param {Object} params 统计参数
 	 */
 	async stat(params) {
 		const {
@@ -171,16 +172,28 @@ class UniStatDataStat {
 					res = await resultStat.stat(dimension, date, reset)
 					break
 				}
-				// 周活跃设备表归集
+				// 活跃设备统计归集
 				case 'active-device': {
-					const activeDevices = new ActvieDevices()
+					const activeDevices = new ActiveDevices()
 					res = await activeDevices.stat(date, reset)
 					break
 				}
-				// 留存统计
-				case 'retention': {
+				// 活跃用户统计归集
+				case 'active-user': {
+					const activeUsers = new ActiveUsers()
+					res = await activeUsers.stat(date, reset)
+					break
+				}
+				// 设备留存统计
+				case 'retention-device': {
 					const retentionStat = new StatResult()
-					res = await retentionStat.retentionStat(dimension, date, reset)
+					res = await retentionStat.retentionStat(dimension, date)
+					break
+				}
+				// 用户留存统计
+				case 'retention-user': {
+					const retentionStat = new StatResult()
+					res = await retentionStat.retentionStat(dimension, date, 'user')
 					break
 				}
 				// 页面统计
@@ -301,11 +314,11 @@ class UniStatDataStat {
 		}
 
 		// 活跃设备日志
-		const activeDevicesLog = new ActvieDevices()
-		res.data.actvieDevicesLog = await activeDevicesLog.clean()
+		const activeDevicesLog = new ActiveDevices()
+		res.data.activeDevicesLog = await activeDevicesLog.clean()
 
 		// 活跃用户日志
-		const activeUsersLog = new ActvieUsers()
+		const activeUsersLog = new ActiveUsers()
 		res.data.activeUsersLog = await activeUsersLog.clean()
 
 		// 实时统计日志

@@ -12,19 +12,23 @@
 		},
 		{
 			"type": "stat",
-			"time": "* * 1 20"
+			"time": "* * 1 10"
 		},
 		{
 			"type": "stat",
-			"time": "1 * 1 30"
+			"time": "1 * 1 20"
 		},
 		{
 			"type": "stat",
 			"time": "* 1 3 30"
 		},
 		{
-			"type": "active-user",
+			"type": "active-device",
 			"time": "* * 0 10"
+		},
+		{
+			"type": "active-user",
+			"time": "* * 0 20"
 		},
 		{
 			"type": "page",
@@ -47,16 +51,28 @@
 			"time": "* * 5 30"
 		},
 		{
-			"type": "retention",
+			"type": "retention-device",
 			"time": "* * 2 20"
 		},
 		{
-			"type": "retention",
+			"type": "retention-device",
 			"time": "* 1 4 30"
 		},
 		{
-			"type": "retention",
+			"type": "retention-device",
 			"time": "1 * 2 30"
+		},
+		{
+			"type": "retention-user",
+			"time": "* * 3 40"
+		},
+		{
+			"type": "retention-user",
+			"time": "* 1 5 40"
+		},
+		{
+			"type": "retention-user",
+			"time": "1 * 6 30"
 		}
 	],
 	"batchInsertNum": 5000,

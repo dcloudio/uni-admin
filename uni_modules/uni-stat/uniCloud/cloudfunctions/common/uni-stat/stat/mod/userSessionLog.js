@@ -89,14 +89,9 @@ module.exports = class UserSessionLog extends BaseMod {
 
 	/**
 	 * 检测用户会话是否有变化，并更新
-	 * @param {Object} params 上报参数
+	 * @param {Object} params 校验参数 - sid:基础会话编号 uid:用户编号 last_visit_user_id:基础会话中最近一个访问用户的编号
 	 */
 	async checkUserSession(params) {
-
-		if (this.debug) {
-			console.log('checkUserSession', params)
-		}
-
 		if (!params.sid) {
 			return {
 				code: 200,

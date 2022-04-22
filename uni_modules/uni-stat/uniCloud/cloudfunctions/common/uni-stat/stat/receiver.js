@@ -12,7 +12,7 @@ const ErrorLog = require('./mod/errorLog')
 class UniStatReportDataReceiver {
 	/**
 	 * @description 上报数据调度、处理函数
-	 * @param {Object} params 基础参数
+	 * @param {Object} params 基础上报参数
 	 * @param {Object} context 请求附带的上下文信息
 	 */
 	async report(params, context) {

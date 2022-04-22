@@ -8,8 +8,8 @@ const Version = require('./version')
 const SessionLog = require('./sessionLog')
 const UserSessionLog = require('./userSessionLog')
 const ErrorLog = require('./errorLog')
-const ActvieDevices = require('./actvieDevices')
-const ActvieUsers = require('./actvieUsers')
+const ActiveDevices = require('./activeDevices')
+const ActiveUsers = require('./activeUsers')
 const Users = require('./users')
 const {
 	DateTime
@@ -223,8 +223,8 @@ module.exports = class StatResult extends BaseMod {
 			console.log('statRes', JSON.stringify(statRes))
 		}
 		if (statRes.data.length > 0) {
-			this.activeDevices = new ActvieDevices()
-			this.activeUsers = new ActvieUsers()
+			this.activeDevices = new ActiveDevices()
+			this.activeUsers = new ActiveUsers()
 			this.fillData = []
 			this.composes = []
 			for (const i in statRes.data) {
@@ -1192,7 +1192,7 @@ module.exports = class StatResult extends BaseMod {
 			}
 		}
 
-		const activeDevicesObj = new ActvieDevices()
+		const activeDevicesObj = new ActiveDevices()
 		let res = null;
 		let activeDeviceRes;
 		let activeDeviceRate;
@@ -1722,7 +1722,7 @@ module.exports = class StatResult extends BaseMod {
 			}
 		}
 
-		const activeUserObj = new ActvieUsers()
+		const activeUserObj = new ActiveUsers()
 		let res = null
 		//活跃用户留存率
 		let activeUserRate

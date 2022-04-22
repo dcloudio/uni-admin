@@ -1,24 +1,29 @@
 /**
- * @class ActvieUsers 活跃用户模型 - 每日跑批合并，仅添加本周/本月首次访问的用户。
+ * @class ActiveDevices 活跃设备模型 - 每日跑批合并仅添加本周/本月首次访问的设备。
  */
 const BaseMod = require('./base')
 const Platform = require('./platform')
 const Channel = require('./channel')
 const Version = require('./version')
-const UserSessionLog = require('./userSessionLog')
+const SessionLog = require('./sessionLog')
 const {
 	DateTime,
 	UniCrypto
 } = require('../lib')
-module.exports = class ActvieUsers extends BaseMod {
+module.exports = class ActiveDevices extends BaseMod {
 	constructor() {
 		super()
-		this.tableName = 'active-users'
+		this.tableName = 'active-devices'
 		this.platforms = []
 		this.channels = []
 		this.versions = []
 	}
-
+	
+	/**
+	 * @desc 活跃设备统计 - 为周统计/月统计提供周活/月活数据
+	 * @param {date|time} date
+	 * @param {bool} reset
+	 */
 	async stat(date, reset) {
 		const dateTime = new DateTime()
 		const dateDimension = dateTime.getTimeDimensionByType('day', -1, date)
@@ -35,7 +40,7 @@ module.exports = class ActvieUsers extends BaseMod {
 				console.log('data have exists')
 				return {
 					code: 1003,
-					msg: 'Users data in this time have already existed'
+					msg: 'Devices data in this time have already existed'
 				}
 			}
 		} else {
@@ -48,15 +53,16 @@ module.exports = class ActvieUsers extends BaseMod {
 			console.log('Delete old data result:', JSON.stringify(delRes))
 		}
 
-		const userSessionLog = new UserSessionLog()
-		const statRes = await this.aggregate(userSessionLog.tableName, {
+		const sessionLog = new SessionLog()
+		const statRes = await this.aggregate(sessionLog.tableName, {
 			project: {
 				appid: 1,
 				version: 1,
 				platform: 1,
 				channel: 1,
+				is_first_visit: 1,
 				create_time: 1,
-				uid: 1
+				device_id: 1
 			},
 			match: {
 				create_time: {
@@ -70,7 +76,10 @@ module.exports = class ActvieUsers extends BaseMod {
 					version: '$version',
 					platform: '$platform',
 					channel: '$channel',
-					uid: '$uid'
+					device_id: '$device_id'
+				},
+				is_new: {
+					$max: '$is_first_visit'
 				},
 				create_time: {
 					$min: '$create_time'
@@ -106,16 +115,18 @@ module.exports = class ActvieUsers extends BaseMod {
 						platform: data._id.platform,
 						version: data._id.version,
 						channel: data._id.channel,
-						uids: [],
+						device_ids: [],
 						info: []
 					}
-					statData[statKey].uids.push(data._id.uid)
-					statData[statKey].info[data._id.uid] = {
+					statData[statKey].device_ids.push(data._id.device_id)
+					statData[statKey].info[data._id.device_id] = {
+						is_new: data.is_new,
 						create_time: data.create_time
 					}
 				} else {
-					statData[statKey].uids.push(data._id.uid)
-					statData[statKey].info[data._id.uid] = {
+					statData[statKey].device_ids.push(data._id.device_id)
+					statData[statKey].info[data._id.device_id] = {
+						is_new: data.is_new,
 						create_time: data.create_time
 					}
 				}
@@ -132,7 +143,11 @@ module.exports = class ActvieUsers extends BaseMod {
 		}
 		return res
 	}
-
+	
+	/**
+	 * 获取填充数据
+	 * @param {Object} data
+	 */
 	async getFillData(data) {
 		// 平台信息
 		let platformInfo = null
@@ -188,15 +203,15 @@ module.exports = class ActvieUsers extends BaseMod {
 		const datetime = new DateTime()
 		const dateDimension = datetime.getTimeDimensionByType('week', 0, this.startTime)
 
-		// 取出本周已经存储的uid
-		const weekHaveUserList = []
+		// 取出本周已经存储的device_id
+		const weekHaveDeviceList = []
 		const haveWeekList = await this.selectAll(this.tableName, {
 			appid: data.appid,
 			version_id: versionInfo._id,
 			platform_id: platformInfo._id,
 			channel_id: channelInfo._id,
-			uid: {
-				$in: data.uids
+			device_id: {
+				$in: data.device_ids
 			},
 			dimension: 'week',
 			create_time: {
@@ -204,29 +219,27 @@ module.exports = class ActvieUsers extends BaseMod {
 				$lte: dateDimension.endTime
 			}
 		}, {
-			uid: 1
+			device_id: 1
 		})
-
-		if (this.debug) {
-			console.log('haveWeekList', JSON.stringify(haveWeekList))
-		}
-
 		if (haveWeekList.data.length > 0) {
 			for (const hui in haveWeekList.data) {
-				weekHaveUserList.push(haveWeekList.data[hui].uid)
+				weekHaveDeviceList.push(haveWeekList.data[hui].device_id)
 			}
 		}
+		if (this.debug) {
+			console.log('weekHaveDeviceList', JSON.stringify(weekHaveDeviceList))
+		}
 
-		// 取出本月已经存储的uid
+		// 取出本月已经存储的device_id
 		const dateMonthDimension = datetime.getTimeDimensionByType('month', 0, this.startTime)
-		const monthHaveUserList = []
+		const monthHaveDeviceList = []
 		const haveMonthList = await this.selectAll(this.tableName, {
 			appid: data.appid,
 			version_id: versionInfo._id,
 			platform_id: platformInfo._id,
 			channel_id: channelInfo._id,
-			uid: {
-				$in: data.uids
+			device_id: {
+				$in: data.device_ids
 			},
 			dimension: 'month',
 			create_time: {
@@ -234,41 +247,43 @@ module.exports = class ActvieUsers extends BaseMod {
 				$lte: dateMonthDimension.endTime
 			}
 		}, {
-			uid: 1
+			device_id: 1
 		})
-
-		if (this.debug) {
-			console.log('haveMonthList', JSON.stringify(haveMonthList))
-		}
-
 		if (haveMonthList.data.length > 0) {
 			for (const hui in haveMonthList.data) {
-				monthHaveUserList.push(haveMonthList.data[hui].uid)
+				monthHaveDeviceList.push(haveMonthList.data[hui].device_id)
 			}
 		}
-
-		for (const ui in data.uids) {
-			if (!weekHaveUserList.includes(data.uids[ui])) {
+		if (this.debug) {
+			console.log('monthHaveDeviceList', JSON.stringify(monthHaveDeviceList))
+		}
+		
+		//数据填充
+		for (const ui in data.device_ids) {
+			//周活跃数据填充
+			if (!weekHaveDeviceList.includes(data.device_ids[ui])) {
 				this.fillData.push({
 					appid: data.appid,
 					platform_id: platformInfo._id,
 					channel_id: channelInfo._id,
 					version_id: versionInfo._id,
-					uid: data.uids[ui],
+					is_new: data.info[data.device_ids[ui]].is_new,
+					device_id: data.device_ids[ui],
 					dimension: 'week',
-					create_time: data.info[data.uids[ui]].create_time
+					create_time: data.info[data.device_ids[ui]].create_time
 				})
 			}
-
-			if (!monthHaveUserList.includes(data.uids[ui])) {
+			//月活跃数据填充
+			if (!monthHaveDeviceList.includes(data.device_ids[ui])) {
 				this.fillData.push({
 					appid: data.appid,
 					platform_id: platformInfo._id,
 					channel_id: channelInfo._id,
 					version_id: versionInfo._id,
-					uid: data.uids[ui],
+					is_new: data.info[data.device_ids[ui]].is_new,
+					device_id: data.device_ids[ui],
 					dimension: 'month',
-					create_time: data.info[data.uids[ui]].create_time
+					create_time: data.info[data.device_ids[ui]].create_time
 				})
 			}
 		}
@@ -282,7 +297,7 @@ module.exports = class ActvieUsers extends BaseMod {
 	async clean() {
 		// 清除周数据，周留存统计最高需要10周数据，多余的为无用数据
 		const weeks = 10
-		console.log('Clean user\'s weekly logs - week:', weeks)
+		console.log('Clean device\'s weekly logs - week:', weeks)
 
 		const dateTime = new DateTime()
 
@@ -294,12 +309,12 @@ module.exports = class ActvieUsers extends BaseMod {
 		})
 
 		if (!res.code) {
-			console.log('Clean user\'s weekly logs - res:', res)
+			console.log('Clean device\'s weekly logs - res:', res)
 		}
 
 		// 清除月数据，月留存统计最高需要10个月数据，多余的为无用数据
 		const monthes = 10
-		console.log('Clean user\'s monthly logs - month:', monthes)
+		console.log('Clean device\'s monthly logs - month:', monthes)
 		const monthRes = await this.delete(this.tableName, {
 			dimension: 'month',
 			create_time: {
@@ -307,7 +322,7 @@ module.exports = class ActvieUsers extends BaseMod {
 			}
 		})
 		if (!monthRes.code) {
-			console.log('Clean user\'s monthly logs - res:', res)
+			console.log('Clean device\'s monthly logs - res:', res)
 		}
 		return monthRes
 	}
