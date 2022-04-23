@@ -9,7 +9,7 @@
 		</view>
 		<view class="uni-container">
 			<view class="uni-stat--x flex mb-m">
-				<uni-data-select collection="opendb-app-list" field="appid as value, name as text" label="应用选择" v-model="query.appid" :clear="false" />
+				<uni-data-select collection= "opendb-app-list" field="appid as value, name as text" label="应用选择" v-model="query.appid" :clear="false" />
 				<view class="flex">
 					<view class="ml-m label-text hide-on-phone">日期选择:</view>
 					<uni-datetime-picker type="date" v-model="query.start_time" returnType="timestamp"
@@ -85,7 +85,7 @@
 				}
 				console.log('...........query', query);
 				const db = uniCloud.database()
-				db.collection('opendb-stat-result')
+				db.collection( 'uni-stat-result')
 					.where(query)
 					.field(
 						`active_device_count,new_device_count,total_devices,platform_id`
@@ -103,7 +103,7 @@
 			getRangeCountData(query, type) {
 				query = stringifyQuery(query)
 				const db = uniCloud.database()
-				const sub = db.collection('opendb-stat-result')
+				const sub = db.collection( 'uni-stat-result')
 					.where(query)
 					.field(
 						`active_device_count, new_device_count, platform_id, ${type}(add(new Date(0),start_time), "Asia/Shanghai") as ${type},year(add(new Date(0),start_time), "Asia/Shanghai") as year`
@@ -123,7 +123,7 @@
 
 			initChartOption(data, goal, type = 'day') {
 				const db = uniCloud.database()
-				db.collection('opendb-app-platforms').get().then(res => {
+				db.collection('uni-stat-app-platforms').get().then(res => {
 					const options = [{
 						field: `${type}_new_device_count`,
 						title: `${type === 'day' ? '日' : '月'}新增设备对比`,

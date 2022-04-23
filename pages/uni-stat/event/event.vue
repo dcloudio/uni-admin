@@ -11,12 +11,12 @@
 		</view>
 		<view class="uni-container">
 			<view class="uni-stat--x flex">
-				<uni-data-select collection="opendb-app-list" field="appid as value, name as text" label="应用选择" v-model="query.appid" :clear="false" />
+				<uni-data-select collection= "opendb-app-list" field="appid as value, name as text" label="应用选择" v-model="query.appid" :clear="false" />
 			</view>
 			<view class="uni-stat--x">
 				<uni-stat-tabs label="平台选择" type="boldLine" mode="platform" v-model="query.platform_id"
 					@change="changePlatform" />
-				<uni-data-select collection="opendb-app-channels" field="_id as value, channel_name as text, channel_code" label="渠道选择" v-model="query.channel_id" />
+				<uni-data-select collection="uni-stat-app-channels" field="_id as value, channel_name as text, channel_code" label="渠道选择" v-model="query.channel_id" />
 			</view>
 			<view class="uni-stat--x flex">
 				<uni-stat-tabs label="日期选择" :current="currentDateTab" mode="date" @change="changeTimeRange" />
@@ -173,8 +173,8 @@
 				const filterAppid = stringifyQuery({
 					appid: this.query.appid
 				})
-				const mainTableTemp = db.collection('opendb-stat-events').where(filterAppid).getTemp()
-				const subTableTemp = db.collection('opendb-stat-event-result')
+				const mainTableTemp = db.collection( 'uni-stat-events').where(filterAppid).getTemp()
+				const subTableTemp = db.collection( 'uni-stat-event-result')
 					.where(query)
 					.getTemp()
 
@@ -220,7 +220,7 @@
 			editName(value) {
 				// 使用 clientDB 提交数据
 				const db = uniCloud.database()
-				db.collection('opendb-stat-events')
+				db.collection( 'uni-stat-events')
 					.where({
 						event_key: this.queryId
 					})

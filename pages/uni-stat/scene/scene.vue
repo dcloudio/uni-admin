@@ -10,7 +10,7 @@
 		</view>
 		<view class="uni-container">
 			<view class="uni-stat--x flex">
-				<uni-data-select collection="opendb-app-list" field="appid as value, name as text" label="应用选择" v-model="query.appid" :clear="false" />
+				<uni-data-select collection= "opendb-app-list" field="appid as value, name as text" label="应用选择" v-model="query.appid" :clear="false" />
 			</view>
 			<view class="uni-stat--x">
 				<uni-stat-tabs label="平台选择" type="boldLine" mode="platform-scene" v-model="query.platform_id" />
@@ -193,7 +193,7 @@
 					pageCurrent
 				} = this.options
 				const db = uniCloud.database()
-				db.collection('opendb-stat-result')
+				db.collection( 'uni-stat-result')
 					.where(query)
 					.field(`${stringifyField(fieldsMap, field)}, start_time, channel_id`)
 					.groupBy('channel_id,start_time')
@@ -275,7 +275,7 @@
 
 			getChannels() {
 				const db = uniCloud.database()
-				return db.collection('opendb-app-channels')
+				return db.collection('uni-stat-app-channels')
 					.get()
 			},
 
@@ -285,7 +285,7 @@
 				} = this.options
 				this.loading = true
 				const db = uniCloud.database()
-				db.collection('opendb-stat-result')
+				db.collection( 'uni-stat-result')
 					.where(query)
 					.field(`${stringifyField(fieldsMap)},appid, channel_id`)
 					.groupBy('appid, channel_id')
@@ -338,7 +338,7 @@
 					query = query + ' && ' + this.defQuery
 				}
 				const db = uniCloud.database()
-				const subTable = db.collection('opendb-stat-result')
+				const subTable = db.collection( 'uni-stat-result')
 					.where(query)
 					.field(stringifyField(fieldsMap))
 					.groupBy('appid')

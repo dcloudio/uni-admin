@@ -285,7 +285,7 @@ function getCurrentTotalUser(query = this.query, field = "total_users") {
 		query = stringifyQuery(query)
 	}
 	const db = uniCloud.database()
-	return db.collection('opendb-stat-result')
+	return db.collection('uni-stat-result')
 		.where(query)
 		.field(`${stringifyField(this.fieldsMap, field)}, start_time`)
 		.groupBy('start_time')

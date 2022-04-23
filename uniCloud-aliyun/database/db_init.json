@@ -1920,7 +1920,7 @@
 			"enable": true,
 			"menu_id": "uni-stat",
 			"name": "uni 统计",
-			"icon": "uni-icons-camera",
+			"icon": "uni-icons-compose",
 			"url": "",
 			"sort": 2100,
 			"parent_id": "",

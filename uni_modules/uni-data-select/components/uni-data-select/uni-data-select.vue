@@ -95,7 +95,7 @@
 			typePlaceholder() {
 				const text = {
 					'opendb-stat-app-versions': '版本',
-					'opendb-app-channels': '渠道',
+					'uni-stat-app-channels': '渠道',
 					'opendb-app-list': '应用'
 				}
 				const common = '请选择'

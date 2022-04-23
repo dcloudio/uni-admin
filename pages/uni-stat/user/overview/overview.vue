@@ -5,7 +5,7 @@
 		</view>
 		<view class="uni-container">
 			<view class="uni-stat--x flex">
-				<uni-data-select collection="opendb-app-list" field="appid as value, name as text" label="应用选择" v-model="query.appid" :clear="false" />
+				<uni-data-select collection= "opendb-app-list" field="appid as value, name as text" label="应用选择" v-model="query.appid" :clear="false" />
 			</view>
 			<view class="uni-stat--x">
 				<uni-stat-tabs label="平台选择" type="boldLine" mode="platform" v-model="query.platform_id" />
@@ -78,7 +78,7 @@
 	export default {
 		data() {
 			return {
-				tableName: 'opendb-stat-result',
+				tableName:  'uni-stat-result',
 				fieldsMap,
 				resFieldsMap,
 				entFieldsMap,
@@ -380,11 +380,11 @@
 				const filterAppid = stringifyQuery({
 					appid: this.query.appid
 				})
-				const mainTableTemp = db.collection('opendb-stat-pages')
+				const mainTableTemp = db.collection( 'uni-stat-pages')
 					.where(filterAppid)
 					.field('_id, title, path')
 					.getTemp()
-				const subTableTemp = db.collection('opendb-stat-page-result')
+				const subTableTemp = db.collection( 'uni-stat-page-result')
 					.where(query)
 					.getTemp()
 

@@ -31,7 +31,7 @@
 						</uni-td>
 					</template>
 					<uni-td align="center">
-						<button class="uni-button" size="mini" type="primary" @click="navTo('/pages/uni-stat/overview/overview', item.appid)">查看</button>
+						<button class="uni-button" size="mini" type="primary" @click="navTo('/pages/uni-stat/device/overview/overview', item.appid)">查看</button>
 					</uni-td>
 				</uni-tr>
 			</uni-table>
@@ -130,7 +130,7 @@
 				this.loading = true
 				const db = uniCloud.database()
 				const appList = db.collection('opendb-app-list').getTemp()
-				const appDaily = db.collection('opendb-stat-result')
+				const appDaily = db.collection( 'uni-stat-result')
 					.where(query)
 					.getTemp()
 
@@ -146,7 +146,7 @@
 						let {
 							data
 						} = res.result
-						console.log('+++++++++data:', data);
+						console.log('............data', data);
 						this.tableData = []
 						this.panelData = JSON.parse(JSON.stringify(panelOption))
 						if (!data.length) return
@@ -158,7 +158,7 @@
 							const {
 								appid,
 								name
-							} = item.appid[0]
+							} = item.appid[0] || {}
 							item.appid = appid
 							item.name = name
 						}
