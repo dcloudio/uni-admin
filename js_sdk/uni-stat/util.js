@@ -163,8 +163,9 @@ function format(num, type = ',', fix) {
 	if (type === '%') {
 		// 注意浮点数精度
 		// num = Number.parseFloat(num).toPrecision(4)
+		num = (num * 100)
 		if (String(num).indexOf('.') > -1) {
-			num = (num * 100).toFixed(2)
+			num = num.toFixed(2)
 		}
 		num = num ? num + type : num
 		return num
