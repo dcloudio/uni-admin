@@ -38,7 +38,6 @@
 	 * @property {Boolean} emptyText 没有数据时显示的文字 ，本地数据无效
 	 * @property {String} label 左侧标题
 	 * @property {String} placeholder 输入框的提示文字
-	 * @property {Object} map 字段映射， 默认 map={text:'text',value:'value'}
 	 * @event {Function} change  选中发生变化触发
 	 */
 
@@ -55,8 +54,14 @@
 			};
 		},
 		props: {
+			localdata: {
+				type: Array,
+				default(){
+					return []
+				}
+			},
 			value: {
-				type: String,
+				type: [String, Number],
 				default: ''
 			},
 			modelValue: {
@@ -89,13 +94,15 @@
 			}
 		},
 		mounted() {
-			this.mixinDatacomEasyGet()
+			if (this.collection && !this.localdata.length) {
+				this.mixinDatacomEasyGet()
+			}
 		},
 		computed: {
 			typePlaceholder() {
 				const text = {
 					'opendb-stat-app-versions': '版本',
-					'uni-stat-app-channels': '渠道',
+					'opendb-app-channels': '渠道',
 					'opendb-app-list': '应用'
 				}
 				const common = '请选择'
@@ -106,12 +113,24 @@
 			}
 		},
 		watch: {
+			localdata: {
+				immediate: true,
+				handler(val) {
+					if (Array.isArray(val)) {
+						this.mixinDatacomResData = val
+					}
+				}
+			},
+			// #ifndef VUE3
 			value() {
 				this.initDefVal()
 			},
+			// #endif
+			// #ifdef VUE3
 			modelValue() {
 				this.initDefVal()
 			},
+			// #endif
 			mixinDatacomResData: {
 				immediate: true,
 				handler(val) {
@@ -131,7 +150,7 @@
 				const def = this.mixinDatacomResData.find(item => item.value === defValue)
 				const text = def ? def.text : ''
 				this.current = text ? (this.collection.indexOf('app-list') > 0  ? `${text} (${defValue})` : text) : ''
-				this.emit(defValue)
+				// this.emit(defValue)
 			},
 
 			clearVal() {
