@@ -2013,7 +2013,7 @@
 			"name": "用户统计",
 			"icon": "",
 			"url": "",
-			"sort": 2120.1,
+			"sort": 2125,
 			"create_date": 1638356902516
 		}, {
 			"parent_id": "uni-stat-user",
@@ -2080,10 +2080,10 @@
 			"permission": [],
 			"enable": true,
 			"menu_id": "uni-stat-page-analysis",
-			"name": "页面分析",
+			"name": "页面统计",
 			"icon": "",
 			"url": "",
-			"sort": 2130,
+			"sort": 2123,
 			"create_date": 1638356902516
 		}, {
 			"parent_id": "uni-stat-page-analysis",
