@@ -9,8 +9,10 @@
 		</view>
 		<view class="uni-container">
 			<view class="uni-stat--x flex">
-				<uni-data-select collection= "opendb-app-list" field="appid as value, name as text" label="应用选择" v-model="query.appid" :clear="false" />
-				<uni-data-select collection="uni-stat-stat-app-versions" field="_id as value, version as text" label="版本选择" v-model="query.version_id" />
+				<uni-data-select collection="opendb-app-list" field="appid as value, name as text" label="应用选择"
+					v-model="query.appid" :clear="false" />
+				<uni-data-select collection="uni-stat-stat-app-versions" field="_id as value, version as text"
+					label="版本选择" v-model="query.version_id" />
 			</view>
 			<view class="uni-stat--x">
 				<uni-stat-tabs label="平台选择" type="boldLine" mode="platform" v-model="query.platform_id" />
@@ -51,7 +53,7 @@
 							</uni-td>
 							<uni-td v-else-if="mapper.field === 'count'" :key="mapper.title" align="center">
 								<text class="link-btn" @click="togglePopup(item)">
-								{{item[mapper.field] !== undefined ? item[mapper.field] : '-'}}
+									{{item[mapper.field] !== undefined ? item[mapper.field] : '-'}}
 								</text>
 							</uni-td>
 							<uni-td v-else :key="mapper.title" align="center">
@@ -79,12 +81,14 @@
 				<view class="modal-header">
 					错误设备信息
 				</view>
-				<view class="modal-content">
-					<view class="uni-form-item-tips">
-						注：仅展示最近10条
+				<scroll-view scroll-y="true">
+					<view class="modal-content">
+						<view class="uni-form-item-tips">
+							注：仅展示最近10条
+						</view>
+						<uni-stat-table :data="popupTableData" :filedsMap="popupFieldsMap" :loading="popupLoading" />
 					</view>
-					<uni-stat-table :data="popupTableData" :filedsMap="popupFieldsMap" :loading="popupLoading" />
-				</view>
+				</scroll-view>
 			</view>
 		</uni-popup>
 
@@ -214,7 +218,7 @@
 					pageCurrent
 				} = this.options
 				const db = uniCloud.database()
-				db.collection( 'uni-stat-error-result')
+				db.collection('uni-stat-error-result')
 					.where(query)
 					.groupBy('start_time')
 					.groupField('sum(count) as total_day_count')
@@ -307,7 +311,7 @@
 
 			getTotalCount(query) {
 				const db = uniCloud.database()
-				return db.collection( 'uni-stat-error-result')
+				return db.collection('uni-stat-error-result')
 					.where(query)
 					.groupBy('appid')
 					.groupField('sum(count) as total_count')
@@ -316,7 +320,7 @@
 
 			getTotalLaunch(query) {
 				const db = uniCloud.database()
-				return db.collection( 'uni-stat-result')
+				return db.collection('uni-stat-result')
 					.where(query)
 					.groupBy('appid')
 					.groupField('sum(app_launch_count) as total_app_launch_count')
@@ -325,7 +329,7 @@
 
 			getDayLaunch(query) {
 				const db = uniCloud.database()
-				return db.collection( 'uni-stat-result')
+				return db.collection('uni-stat-result')
 					.where(query)
 					.groupBy('start_time')
 					.groupField('sum(app_launch_count) as day_app_launch_count')
@@ -342,8 +346,8 @@
 				const filterAppid = stringifyQuery({
 					appid: this.query.appid
 				})
-				const mainTableTemp = db.collection( 'uni-stat-error-result').where(query).getTemp()
-				const versions = db.collection( 'uni-stat-app-versions')
+				const mainTableTemp = db.collection('uni-stat-error-result').where(query).getTemp()
+				const versions = db.collection('uni-stat-app-versions')
 					.where(filterAppid)
 					.orderBy('start_time ', 'desc ')
 					.getTemp()
@@ -414,7 +418,7 @@
 				this.popupLoading = true
 				console.log(`error_hash == "${hash}"`)
 				const db = uniCloud.database()
-				db.collection( 'uni-stat-error-logs')
+				db.collection('uni-stat-error-logs')
 					.where(`error_hash == "${hash}"`)
 					.orderBy('create_time', 'desc')
 					.limit(10)
