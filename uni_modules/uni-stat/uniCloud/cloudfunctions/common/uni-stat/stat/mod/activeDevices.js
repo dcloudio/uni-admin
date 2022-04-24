@@ -1,5 +1,5 @@
 /**
- * @class ActiveDevices 活跃设备模型 - 每日跑批合并仅添加本周/本月首次访问的设备。
+ * @class ActiveDevices 活跃设备模型 - 每日跑批合并，仅添加本周/本月首次访问的设备。
  */
 const BaseMod = require('./base')
 const Platform = require('./platform')

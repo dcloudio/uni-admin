@@ -1556,7 +1556,7 @@ module.exports = class StatResult extends BaseMod {
 			}
 
 			// 获取该时间段内的新增用户
-			const newUserRes = this.selectAll(statUser.tableName, {
+			const newUserRes = await this.selectAll(statUser.tableName, {
 				appid: resultLog.appid,
 				version: versionInfo.version,
 				platform: platformInfo.code,
@@ -1635,15 +1635,15 @@ module.exports = class StatResult extends BaseMod {
 				retentionData.active_user = {}
 			}
 			retentionData.active_user[dataKey] = {
-				device_count: activeUsers,
-				device_rate: activeUserRate
+				user_count: activeUsers,
+				user_rate: activeUserRate
 			}
 			if (!retentionData.new_user) {
 				retentionData.new_user = {}
 			}
 			retentionData.new_user[dataKey] = {
-				device_count: newUsers,
-				device_rate: newUserRate
+				user_count: newUsers,
+				user_rate: newUserRate
 			}
 
 			if (this.debug) {
@@ -1792,7 +1792,7 @@ module.exports = class StatResult extends BaseMod {
 			}
 
 			// 获取该批次的新增用户数
-			const newUserRes = this.selectAll(statUser.tableName, {
+			const newUserRes = await this.selectAll(statUser.tableName, {
 				appid: resultLog.appid,
 				version: versionInfo.version,
 				platform: platformInfo.code,
@@ -1846,15 +1846,15 @@ module.exports = class StatResult extends BaseMod {
 				retentionData.active_user = {}
 			}
 			retentionData.active_user[dataKey] = {
-				device_count: activeUsers,
-				device_rate: activeUserRate
+				user_count: activeUsers,
+				user_rate: activeUserRate
 			}
 			if (!retentionData.new_user) {
 				retentionData.new_user = {}
 			}
 			retentionData.new_user[dataKey] = {
-				device_count: newUsers,
-				device_rate: newUserRate
+				user_count: newUsers,
+				user_rate: newUserRate
 			}
 
 			if (this.debug) {
