@@ -121,7 +121,7 @@
 				tableData: [],
 				panelData: fieldsMap.filter(f => f.hasOwnProperty('value')),
 				chartData: {},
-				chartTab: 'new_user_count',
+				chartTab: 'new_device_count',
 				queryId: '',
 				updateValue: ''
 			}
@@ -339,7 +339,7 @@
 					.field(`${stringifyField(fieldsMap)},appid, channel_id`)
 					.groupBy('appid, channel_id')
 					.groupField(stringifyGroupField(fieldsMap))
-					.orderBy('new_user_count', 'desc')
+					.orderBy('new_device_count', 'desc')
 					.skip((pageCurrent - 1) * this.pageSize)
 					.limit(this.pageSize)
 					.get({
@@ -407,7 +407,7 @@
 					.get()
 					.then(res => {
 						const item = res.result.data[0]
-						item && (item.total_total_users = 0)
+						item && (item.total_total_devices = 0)
 						getCurrentTotalUser.call(this, query)
 						this.panelData = []
 						this.panelData = mapfields(fieldsMap, item)

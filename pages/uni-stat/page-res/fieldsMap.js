@@ -7,8 +7,8 @@ export default [{
 	field: 'title',
 	stat: -1
 }, {
-	title: '访问人数',
-	field: 'visit_users',
+	title: '访问设备数',
+	field: 'visit_devices',
 	tooltip: '访问过应用内任意页面的总用户数（去重）',
 	value: 0
 }, {
@@ -42,11 +42,11 @@ export default [{
 	value: 0,
 	stat: -1
 }, {
-	title: '人均停留时长',
+	title: '设备平均停留时长',
 	field: 'avg_user_time',
-	computed: 'duration/visit_users',
+	computed: 'duration/visit_devices',
 	formatter: ':',
-	tooltip: '平均每个用户停留在应用内的总时长，即应用停留总时长/访问人数',
+	tooltip: '平均每个用户停留在应用内的总时长，即应用停留总时长/访问设备数',
 	value: 0,
 	stat: -1
 }, {
