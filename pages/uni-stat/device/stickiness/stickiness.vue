@@ -299,13 +299,6 @@
 					}).finally(() => {
 						this.loading = false
 					})
-			},
-
-			navTo(id) {
-				const url = `/pages/uni-stat/overview/overview?id=${id}`
-				uni.navigateTo({
-					url
-				})
 			}
 		}
 
