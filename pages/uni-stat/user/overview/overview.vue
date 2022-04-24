@@ -29,7 +29,7 @@
 				</view>
 			</view>
 
-			<view class="dispaly-grid">
+			<!-- <view class="dispaly-grid">
 				<view class="uni-stat--x p-m">
 					<view class="uni-stat-card-header">
 						<view>受访页 TOP10</view>
@@ -46,7 +46,7 @@
 					</view>
 					<uni-stat-table :data="entTableData" :filedsMap="entFieldsMap" :loading="loading" tooltip />
 				</view>
-			</view>
+			</view> -->
 		</view>
 
 		<!-- #ifndef H5 -->
@@ -66,7 +66,7 @@
 		format,
 		formatDate,
 		parseDateTime,
-		getCurrentTotalUser,
+		getFieldTotal,
 		debounce
 	} from '@/js_sdk/uni-stat/util.js'
 	import {
@@ -217,8 +217,8 @@
 			getAllData(query) {
 				this.getPanelData()
 				this.getChartData(query)
-				this.getPageData(query, 'res')
-				this.getPageData(query, 'ent')
+				// this.getPageData(query, 'res')
+				// this.getPageData(query, 'ent')
 			},
 
 			getDays() {
@@ -260,7 +260,7 @@
 						this.panelData.map(item => {
 							mapfields(fieldsMap, yesterday, item, '', 'contrast')
 						})
-						getCurrentTotalUser.call(this, query)
+						getFieldTotal.call(this, query)
 					})
 			},
 

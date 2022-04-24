@@ -66,7 +66,7 @@
 		format,
 		formatDate,
 		parseDateTime,
-		getCurrentTotalUser,
+		getFieldTotal,
 		debounce
 	} from '@/js_sdk/uni-stat/util.js'
 	import {
@@ -259,7 +259,7 @@
 						this.panelData.map(item => {
 							mapfields(fieldsMap, yesterday, item, '', 'contrast')
 						})
-						getCurrentTotalUser.call(this, query)
+						getFieldTotal.call(this, query)
 					})
 			},
 

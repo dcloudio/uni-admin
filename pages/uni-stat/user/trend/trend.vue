@@ -69,7 +69,7 @@
 		division,
 		format,
 		formatDate,
-		getCurrentTotalUser,
+		getFieldTotal,
 		debounce
 	} from '@/js_sdk/uni-stat/util.js'
 	import fieldsMap from './fieldsMap.js'
@@ -337,7 +337,7 @@
 					.then(res => {
 						const item = res.result.data[0]
 						item && (item.total_users = 0)
-						getCurrentTotalUser.call(this, cloneQuery)
+						getFieldTotal.call(this, cloneQuery)
 						this.panelData = []
 						this.panelData = mapfields(fieldsMap, item)
 					})
