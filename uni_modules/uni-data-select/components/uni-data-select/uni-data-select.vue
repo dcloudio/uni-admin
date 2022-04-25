@@ -115,8 +115,8 @@
 		watch: {
 			localdata: {
 				immediate: true,
-				handler(val) {
-					if (Array.isArray(val)) {
+				handler(val, old) {
+					if (Array.isArray(val) && !old) {
 						this.mixinDatacomResData = val
 					}
 				}

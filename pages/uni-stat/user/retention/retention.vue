@@ -9,7 +9,7 @@
 		</view>
 		<view class="uni-container">
 			<view class="uni-stat--x flex">
-				<uni-data-select collection="opendb-app-list" field="appid as value, name as text" label="应用选择"
+				<uni-data-select collection="opendb-app-list" field="appid as value, name as text" orderby="text asc" :defItem="1"  label="应用选择"
 					v-model="query.appid" :clear="false" />
 			</view>
 			<view class="uni-stat--x">
