@@ -1,23 +1,30 @@
 export default [{
+	title: '创建时间',
+	field: 'create_time',
+	tooltip: '',
+	formatter: ''
+}, {
 	title: '事件ID',
 	field: 'event_key',
 	stat: -1
 }, {
-	title: '事件名称',
-	field: 'event_name',
-	stat: -1
-}, {
-	title: '触发用户数',
-	field: 'user_count',
-	tooltip: '访问人数',
-}, {
-	title: '触发次数',
-	field: 'event_count',
+	title: '事件参数',
+	field: 'param',
 	tooltip: '',
 }, {
-	title: '人均次数',
-	field: 'event_per_user',
-	computed: 'event_count/user_count',
+	title: '上报平台',
+	field: 'platform',
 	tooltip: '',
-	stat: -1
+}, {
+	title: '用户 ID',
+	field: 'uid',
+	tooltip: '',
+}, {
+	title: '设备标识',
+	field: 'device_id',
+	tooltip: '',
+}, {
+	title: '会话 ID',
+	field: 'session_id',
+	tooltip: '',
 }]
