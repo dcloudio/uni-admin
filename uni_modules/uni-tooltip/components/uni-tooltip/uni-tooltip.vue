@@ -1,11 +1,12 @@
 <template>
-	<view v-if="text" class="uni-icons-help uni-stat-tooltip">
+	<text v-if="text" class="uni-stat-tooltip">
 		<slot />
+		<uni-icons type="help" />
 		<view class="uni-stat-tooltip-popup" :style="style">
 			<!-- <pre>{{text}}</pre> -->
 			{{text}}
 		</view>
-	</view>
+	</text>
 </template>
 
 <script>
@@ -45,7 +46,6 @@
 <style>
 	.uni-stat-tooltip {
 		position: relative;
-		margin-left: 5px;
 		cursor: pointer;
 	}
 

@@ -36,7 +36,7 @@
 |:-:		|:-:	|:-:	|:-:				|
 |text		|String	|		|显示的内容		|
 |width		|Number	|		|Tooltip 宽度		|
-|placement	|String	|		|Tooltip 的出现位置	|
+|placement	|String	|left		|Tooltip 的出现位置, 目前只支持left	|
 
 
 ### Tooltip Slots
