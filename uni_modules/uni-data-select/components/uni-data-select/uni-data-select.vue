@@ -93,7 +93,8 @@
 				default: 0
 			}
 		},
-		mounted() {
+		created() {
+			this.last = `${this.collection}_last_selected_option_value`
 			if (this.collection && !this.localdata.length) {
 				this.mixinDatacomEasyGet()
 			}
@@ -146,25 +147,30 @@
 				if (this.defItem > 0 &&  this.defItem < this.mixinDatacomResData.length) {
 					defItem = this.mixinDatacomResData[this.defItem - 1].value
 				}
-				const defValue = this.value || this.modelValue || defItem
+				let strogeValue
+				if (this.collection) {
+					strogeValue = uni.getStorageSync(this.last)
+				}
+				const defValue = this.value || this.modelValue || strogeValue || defItem
 				const def = this.mixinDatacomResData.find(item => item.value === defValue)
-				const text = def ? def.text : ''
-				this.current = text ? (this.collection.indexOf('app-list') > 0  ? `${text} (${defValue})` : text) : ''
-				// this.emit(defValue)
+				this.current = def ? this.formatItemName(def) : ''
+				this.emit(defValue)
 			},
 
 			clearVal() {
 				this.emit('')
+				uni.removeStorageSync(this.last)
 			},
 			change(item) {
 				this.showSelector = false
-				this.current = this.collection.indexOf('app-list') > 0  ? `${item.text} (${item.value})` : item.text
+				this.current = this.formatItemName(item)
 				this.emit(item.value)
 			},
 			emit(val) {
 				this.$emit('change', val)
 				this.$emit('input', val)
 				this.$emit('update:modelValue', val)
+				uni.setStorageSync(this.last, val)
 			},
 
 			toggleSelector() {
