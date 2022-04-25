@@ -51,7 +51,8 @@
 		stringifyQuery,
 		getTimeOfSomeDayAgo,
 		division,
-		format
+		format,
+    debounce
 	} from '@/js_sdk/uni-stat/util.js'
 	import fieldsMap from './fieldsMap.js'
 	export default {
@@ -116,18 +117,21 @@
 				})
 			}
 		},
+		created() {
+		  this.debounceGet = debounce(() => this.getAllData(this.query))
+		},
 		watch: {
 			query: {
 				deep: true,
 				handler(val) {
-					this.getAllData(val)
+					this.debounceGet()
 				}
 			},
 			type() {
-				this.getAllData(this.query)
+				this.debounceGet()
 			},
 			field() {
-				this.getAllData(this.query)
+				this.debounceGet()
 			}
 		},
 		methods: {

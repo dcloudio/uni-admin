@@ -9,8 +9,8 @@
 		</view>
 		<view class="uni-container">
 			<view class="uni-stat--x flex">
-				<uni-data-select collection="opendb-app-list" field="appid as value, name as text" orderby="text asc" :defItem="1"  label="应用选择"
-					v-model="query.appid" :clear="false" />
+				<uni-data-select collection="opendb-app-list" field="appid as value, name as text" orderby="text asc"
+					:defItem="1" label="应用选择" v-model="query.appid" :clear="false" />
 				<uni-data-select collection="uni-stat-stat-app-versions" field="_id as value, version as text"
 					label="版本选择" v-model="query.version_id" />
 			</view>
@@ -106,7 +106,8 @@
 		division,
 		format,
 		formatDate,
-		parseDateTime
+		parseDateTime,
+    debounce
 	} from '@/js_sdk/uni-stat/util.js'
 	import {
 		fieldsMap,
@@ -130,7 +131,7 @@
 				popupFieldsMap,
 				query: {
 					dimension: "day",
-					appid: "__UNI__HelloUniApp",
+					appid: "",
 					platform_id: '',
 					version_id: '',
 					start_time: [],
@@ -171,12 +172,15 @@
 				return stringifyQuery(this.query)
 			}
 		},
+		created() {
+			this.debounceGet = debounce(() => this.getAllData(this.queryStr))
+		},
 		watch: {
 			query: {
 				deep: true,
 				handler(val) {
 					this.options.pageCurrent = 1 // 重置分页
-					this.getAllData(this.queryStr)
+					this.debounceGet()
 				}
 			},
 			chartTab(val) {

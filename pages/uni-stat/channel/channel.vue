@@ -95,7 +95,8 @@
 		division,
 		format,
 		formatDate,
-		getFieldTotal
+		getFieldTotal,
+		debounce
 	} from '@/js_sdk/uni-stat/util.js'
 	import fieldsMap from './fieldsMap.js'
 	export default {
@@ -183,12 +184,15 @@
 				})
 			}
 		},
+    created() {
+    		this.debounceGet = debounce(() => this.getAllData(this.queryStr))
+    },
 		watch: {
 			query: {
 				deep: true,
 				handler(val) {
 					this.options.pageCurrent = 1 // 重置分页
-					this.getAllData(this.queryStr)
+					this.debounceGet()
 				}
 			}
 		},

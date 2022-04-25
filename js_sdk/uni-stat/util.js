@@ -306,7 +306,7 @@ function getFieldTotal(query = this.query, field = "total_devices") {
 		})
 }
 
-function debounce(fn, time = 0) {
+function debounce(fn, time = 1500) {
 	let timer = null
 	return function(...args) {
 		if (timer) clearTimeout(timer)

@@ -38,7 +38,8 @@
 		stringifyQuery,
 		getTimeOfSomeDayAgo,
 		division,
-		format
+		format,
+    debounce
 	} from '@/js_sdk/uni-stat/util.js'
 	export default {
 		data() {
@@ -54,16 +55,21 @@
 				monChartsData: []
 			}
 		},
-		mounted() {
-			this.getChartData(this.query)
-			this.getRangeCountData(this.query, 'month')
-		},
+		// mounted() {
+		// 	this.getChartData(this.query)
+		// 	this.getRangeCountData(this.query, 'month')
+		// },
+    created() {
+    	this.debounceGet = debounce(() => {
+        this.getChartData(this.query)
+        this.getRangeCountData(this.query, 'month')
+      })
+    },
 		watch: {
 			query: {
 				deep: true,
 				handler(val) {
-					this.getChartData(val)
-					this.getRangeCountData(val, 'month')
+					this.debounceGet()
 				}
 			}
 		},

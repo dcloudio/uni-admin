@@ -6,7 +6,7 @@
 		<view class="uni-container">
 			<view class="uni-stat--x flex">
 				<uni-data-select collection="opendb-app-list" field="appid as value, name as text" orderby="text asc" :defItem="1" label="应用选择"
-					v-model="query.appid" :clear="false" @change="changeS" />
+					v-model="query.appid" :clear="false" />
 			</view>
 			<view class="uni-stat--x">
 				<uni-stat-tabs label="平台选择" type="boldLine" mode="platform" v-model="query.platform_id" />
@@ -169,6 +169,9 @@
 				return tabs
 			}
 		},
+    created() {
+    	this.debounceGet = debounce(() => this.getAllData(this.query))
+    },
 		watch: {
 			query: {
 				deep: true,
@@ -178,11 +181,7 @@
 				}
 			}
 		},
-		created() {
-			this.debounceGet = debounce(() => this.getAllData(this.query), 1000)
-		},
 		methods: {
-			changeS(e){console.log(1111111,e)},
 			useDatetimePicker() {
 				this.currentDateTab = null
 			},

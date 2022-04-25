@@ -10,7 +10,8 @@
 		</view>
 		<view class="uni-container">
 			<view class="uni-stat--x flex">
-				<uni-data-select collection="opendb-app-list" field="appid as value, name as text" orderby="text asc" :defItem="1" label="应用选择" v-model="query.appid" :clear="false" />
+				<uni-data-select collection="opendb-app-list" field="appid as value, name as text" orderby="text asc"
+					:defItem="1" label="应用选择" v-model="query.appid" :clear="false" />
 			</view>
 			<view class="uni-stat--x">
 				<uni-stat-tabs label="平台选择" type="boldLine" mode="platform-scene" v-model="query.platform_id" />
@@ -64,7 +65,8 @@
 		division,
 		format,
 		formatDate,
-		getFieldTotal
+		getFieldTotal,
+    debounce
 	} from '@/js_sdk/uni-stat/util.js'
 	import fieldsMap from './fieldsMap.js'
 	export default {
@@ -144,12 +146,15 @@
 				}
 			}
 		},
+		created() {
+			this.debounceGet = debounce(() => this.getAllData(this.queryStr))
+		},
 		watch: {
 			query: {
 				deep: true,
 				handler(val) {
 					this.options.pageCurrent = 1 // 重置分页
-					this.getAllData(this.queryStr)
+					this.debounceGet()
 				}
 			}
 		},
@@ -193,7 +198,7 @@
 					pageCurrent
 				} = this.options
 				const db = uniCloud.database()
-				db.collection( 'uni-stat-result')
+				db.collection('uni-stat-result')
 					.where(query)
 					.field(`${stringifyField(fieldsMap, field)},start_time,channel_id`)
 					.groupBy('channel_id,start_time')
@@ -285,7 +290,7 @@
 				} = this.options
 				this.loading = true
 				const db = uniCloud.database()
-				db.collection( 'uni-stat-result')
+				db.collection('uni-stat-result')
 					.where(query)
 					.field(`${stringifyField(fieldsMap)},appid, channel_id`)
 					.groupBy('appid, channel_id')
@@ -338,7 +343,7 @@
 					query = query + ' && ' + this.defQuery
 				}
 				const db = uniCloud.database()
-				const subTable = db.collection( 'uni-stat-result')
+				const subTable = db.collection('uni-stat-result')
 					.where(query)
 					.field(stringifyField(fieldsMap))
 					.groupBy('appid')

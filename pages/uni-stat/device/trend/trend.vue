@@ -102,9 +102,6 @@
 				chartTab: 'new_user_count'
 			}
 		},
-		created() {
-			this.debounceGetAllData = debounce(() => this.getAllData(this.query))
-		},
 		computed: {
 			pageSize() {
 				const {
@@ -174,11 +171,14 @@
 				})
 			}
 		},
+    created() {
+    	this.debounceGet = debounce(() => this.getAllData(this.query))
+    },
 		watch: {
 			query: {
 				deep: true,
 				handler(val) {
-					this.debounceGetAllData(val)
+					this.debounceGet()
 				}
 			}
 		},

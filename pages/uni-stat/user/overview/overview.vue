@@ -170,6 +170,9 @@
 				return tabs
 			}
 		},
+		created() {
+			this.debounceGet = debounce(() => this.getAllData(this.query))
+		},
 		watch: {
 			query: {
 				deep: true,
@@ -178,9 +181,6 @@
 					this.debounceGet()
 				}
 			}
-		},
-		created() {
-			this.debounceGet = debounce(() => this.getAllData(this.query), 1000)
 		},
 		methods: {
 			useDatetimePicker() {

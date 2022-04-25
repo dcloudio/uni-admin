@@ -53,7 +53,8 @@
 		stringifyGroupField,
 		getTimeOfSomeDayAgo,
 		division,
-		format
+		format,
+    debounce
 	} from '@/js_sdk/uni-stat/util.js'
 	import fieldsMap from './fieldsMap.js'
 	export default {
@@ -94,13 +95,16 @@
 				})
 			}
 		},
+		created() {
+		  const query = stringifyQuery(this.query)
+			this.debounceGet = debounce(() => this.getAllData(query))
+		},
 		watch: {
 			query: {
 				deep: true,
 				handler(val) {
 					this.options.pageCurrent = 1 // 重置分页
-					const query = stringifyQuery(val)
-					this.getAllData(query)
+					this.debounceGet()
 				}
 			}
 		},
