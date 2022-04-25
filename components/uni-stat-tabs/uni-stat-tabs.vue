@@ -12,7 +12,7 @@
 					item.disabled ? 'uni-stat--tab-item-disabled' : ''
 				]">
 				{{item.name}}
-				<uni-stat-tooltip v-if="tooltip" :text="item.tooltip" />
+				<uni-tooltip v-if="tooltip" :text="item.tooltip" />
 			</view>
 
 		</view>

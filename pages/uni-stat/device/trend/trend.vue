@@ -9,12 +9,14 @@
 		</view>
 		<view class="uni-container">
 			<view class="uni-stat--x flex">
-				<uni-data-select collection= "opendb-app-list" field="appid as value, name as text" label="应用选择" v-model="query.appid" :clear="false" />
+				<uni-data-select collection="opendb-app-list" field="appid as value, name as text" orderby="text asc" :defItem="1"  label="应用选择"
+					v-model="query.appid" :clear="false" />
 			</view>
 			<view class="uni-stat--x">
 				<uni-stat-tabs label="平台选择" type="boldLine" mode="platform" v-model="query.platform_id"
 					@change="changePlatform" />
-				<uni-data-select collection="uni-stat-app-channels" field="_id as value, channel_name as text, channel_code" label="渠道选择" v-model="query.channel_id" />
+				<uni-data-select collection="uni-stat-app-channels"
+					field="_id as value, channel_name as text, channel_code" label="渠道选择" v-model="query.channel_id" />
 			</view>
 			<view class="uni-stat--x flex">
 				<uni-stat-tabs label="日期选择" :current="currentDateTab" mode="date" @change="changeTimeRange" />
@@ -69,14 +71,14 @@
 		division,
 		format,
 		formatDate,
-		getCurrentTotalUser,
+		getFieldTotal,
 		debounce
 	} from '@/js_sdk/uni-stat/util.js'
 	import fieldsMap from './fieldsMap.js'
 	export default {
 		data() {
 			return {
-				tableName:  'uni-stat-result',
+				tableName: 'uni-stat-result',
 				fieldsMap,
 				query: {
 					dimension: "hour",
@@ -99,9 +101,6 @@
 				chartData: {},
 				chartTab: 'new_user_count'
 			}
-		},
-		created() {
-			this.debounceGetAllData = debounce(() => this.getAllData(this.query))
 		},
 		computed: {
 			pageSize() {
@@ -172,11 +171,14 @@
 				})
 			}
 		},
+    created() {
+    	this.debounceGet = debounce(() => this.getAllData(this.query))
+    },
 		watch: {
 			query: {
 				deep: true,
 				handler(val) {
-					this.debounceGetAllData(val)
+					this.debounceGet()
 				}
 			}
 		},
@@ -264,10 +266,8 @@
 							mapfields(mapper, item, item)
 							const x = formatDate(item.start_time, dimension)
 							let y = item[field]
-							if (y) {
-								options.series[0].data.push(y)
-								options.categories.push(x)
-							}
+							options.series[0].data.push(y)
+							options.categories.push(x)
 						}
 						this.chartData = options
 					}).catch((err) => {
@@ -338,7 +338,7 @@
 					.then(res => {
 						const item = res.result.data[0]
 						item && (item.total_users = 0)
-						getCurrentTotalUser.call(this, cloneQuery)
+						getFieldTotal.call(this, cloneQuery)
 						this.panelData = []
 						this.panelData = mapfields(fieldsMap, item)
 					})

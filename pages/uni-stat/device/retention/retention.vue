@@ -9,12 +9,14 @@
 		</view>
 		<view class="uni-container">
 			<view class="uni-stat--x flex">
-				<uni-data-select collection= "opendb-app-list" field="appid as value, name as text" label="应用选择" v-model="query.appid" :clear="false" />
+				<uni-data-select collection="opendb-app-list" field="appid as value, name as text" orderby="text asc"
+					:defItem="1" label="应用选择" v-model="query.appid" :clear="false" />
 			</view>
 			<view class="uni-stat--x">
 				<uni-stat-tabs label="平台选择" type="boldLine" mode="platform" v-model="query.platform_id"
 					@change="changePlatform" />
-				<uni-data-select collection="uni-stat-app-channels" field="_id as value, channel_name as text, channel_code" label="渠道选择" v-model="query.channel_id" />
+				<uni-data-select collection="uni-stat-app-channels"
+					field="_id as value, channel_name as text, channel_code" label="渠道选择" v-model="query.channel_id" />
 			</view>
 			<view class="uni-stat--x flex">
 				<uni-stat-tabs label="日期选择" :current="currentDateTab" mode="date" :yesterday="false"
@@ -82,6 +84,7 @@
 		division,
 		format,
 		formatDate,
+    debounce
 	} from '@/js_sdk/uni-stat/util.js'
 	import fieldsFactory from './fieldsMap.js'
 	export default {
@@ -166,19 +169,22 @@
 				})
 			}
 		},
+		created() {
+			this.debounceGet = debounce(() => this.getAllData(this.query))
+		},
 		watch: {
 			query: {
 				deep: true,
 				handler(val) {
 					this.options.pageCurrent = 1 // 重置分页
-					this.getAllData(val)
+					this.debounceGet()
 				}
 			},
 			key() {
-				this.getAllData(this.query)
+				this.debounceGet()
 			},
 			field() {
-				this.getAllData(this.query)
+				this.debounceGet()
 			}
 		},
 		methods: {
@@ -259,7 +265,7 @@
 				query = stringifyQuery(query)
 				const groupField = this.createStr("device_count", [key], [this.field])
 				const db = uniCloud.database()
-				db.collection( 'uni-stat-result')
+				db.collection('uni-stat-result')
 					.where(query)
 					.field(`${this.stringifyField(this.fieldsMap, `d_${key}`)}, start_time`)
 					.groupBy('start_time')
@@ -283,11 +289,8 @@
 						for (const item of data) {
 							const x = formatDate(item.start_time, 'day')
 							const y = item[`d_${key}`]
-							if (y) {
-								options.series[0].data.push(y)
-								options.categories.push(x)
-							}
-
+							options.series[0].data.push(y)
+							options.categories.push(x)
 						}
 						this.chartData = options
 					}).catch((err) => {
@@ -308,7 +311,7 @@
 				const groupField = this.createStr('user_rate', '', [this.field], tail)
 				this.loading = true
 				const db = uniCloud.database()
-				db.collection( 'uni-stat-result')
+				db.collection('uni-stat-result')
 					.where(query)
 					.field(this.stringifyField(this.fieldsMap))
 					.groupBy('start_time')

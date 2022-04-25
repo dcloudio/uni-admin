@@ -5,7 +5,8 @@
 		</view>
 		<view class="uni-container">
 			<view class="uni-stat--x flex">
-				<uni-data-select collection= "opendb-app-list" field="appid as value, name as text" label="应用选择" v-model="query.appid" :clear="false"  />
+				<uni-data-select collection="opendb-app-list" field="appid as value, name as text" orderby="text asc" :defItem="1" label="应用选择"
+					v-model="query.appid" :clear="false" />
 			</view>
 			<view class="uni-stat--x">
 				<uni-stat-tabs label="平台选择" type="boldLine" mode="platform" v-model="query.platform_id" />
@@ -66,7 +67,7 @@
 		format,
 		formatDate,
 		parseDateTime,
-		getCurrentTotalUser,
+		getFieldTotal,
 		debounce
 	} from '@/js_sdk/uni-stat/util.js'
 	import {
@@ -78,7 +79,7 @@
 	export default {
 		data() {
 			return {
-				tableName:  'uni-stat-result',
+				tableName: 'uni-stat-result',
 				fieldsMap,
 				resFieldsMap,
 				entFieldsMap,
@@ -168,6 +169,9 @@
 				return tabs
 			}
 		},
+    created() {
+    	this.debounceGet = debounce(() => this.getAllData(this.query))
+    },
 		watch: {
 			query: {
 				deep: true,
@@ -176,9 +180,6 @@
 					this.debounceGet()
 				}
 			}
-		},
-		created() {
-			this.debounceGet = debounce(() => this.getAllData(this.query), 1000)
 		},
 		methods: {
 			useDatetimePicker() {
@@ -259,11 +260,11 @@
 						this.panelData.map(item => {
 							mapfields(fieldsMap, yesterday, item, '', 'contrast')
 						})
-						getCurrentTotalUser.call(this, query)
+						getFieldTotal.call(this, query)
 					})
 			},
 
-			getChartData(query, field = this.chartTabs[0]._id, name=this.chartTabs[0].name) {
+			getChartData(query, field = this.chartTabs[0]._id, name = this.chartTabs[0].name) {
 				this.chartData = {}
 				const {
 					pageCurrent
@@ -281,7 +282,6 @@
 				}
 				query = stringifyQuery(query, true)
 				const db = uniCloud.database()
-				console.log(22222222, stringifyField(fieldsMap, field));
 				db.collection(this.tableName)
 					.where(query)
 					.field(`${stringifyField(fieldsMap, field)}, start_time`)
@@ -343,10 +343,8 @@
 								mapfields(mapper, item, item)
 								const x = formatDate(item.start_time, 'day')
 								let y = Number(item[field])
-								if (y) {
-									options.series[0].data.push(y)
-									options.categories.push(x)
-								}
+								options.series[0].data.push(y)
+								options.categories.push(x)
 							}
 						}
 						this.chartData = options
@@ -375,17 +373,16 @@
 				} = this.options
 				const mapping = this[`${type}FieldsMap`]
 				const field = mapping[1].field
-				console.log(111111, field);
 				this.loading = true
 				const db = uniCloud.database()
 				const filterAppid = stringifyQuery({
 					appid: this.query.appid
 				})
-				const mainTableTemp = db.collection( 'uni-stat-pages')
+				const mainTableTemp = db.collection('uni-stat-pages')
 					.where(filterAppid)
 					.field('_id, title, path')
 					.getTemp()
-				const subTableTemp = db.collection( 'uni-stat-page-result')
+				const subTableTemp = db.collection('uni-stat-page-result')
 					.where(query)
 					.getTemp()
 

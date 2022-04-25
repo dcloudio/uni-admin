@@ -14,7 +14,7 @@
 			<view class="uni-stat--x flex mb-m">
 				<uni-stat-tabs label="平台选择" type="boldLine" mode="platform" v-model="query.platform_id" />
 			</view>
-			<uni-stat-panel :items="panelData" :contrast="true" />
+			<!-- <uni-stat-panel :items="panelData" :contrast="true" /> -->
 			<uni-table :loading="loading" border stripe emptyText="暂无数据">
 				<uni-tr>
 					<template v-for="(mapper, index) in tableFieldsMap">
@@ -56,7 +56,7 @@
 		division,
 		format,
 		parseDateTime,
-		getCurrentTotalUser
+		getFieldTotal
 	} from '@/js_sdk/uni-stat/util.js'
 	import fieldsMap from './fieldsMap.js'
 	const panelOption = fieldsMap.filter(f => f.hasOwnProperty('value'))
@@ -104,7 +104,7 @@
 						if (mapper.hasOwnProperty('value')) {
 							const t = JSON.parse(JSON.stringify(mapper))
 							const y = JSON.parse(JSON.stringify(mapper))
-							if (mapper.field !== 'total_users') {
+							if (mapper.field !== 'total_users' && mapper.field !== 'total_devices') {
 								t.title = '今日' + mapper.title
 								t.field = mapper.field + '_value'
 								y.title = '昨日' + mapper.title
@@ -126,7 +126,6 @@
 		},
 		methods: {
 			getApps(query, type = "day") {
-				console.log('...........query:', query);
 				this.loading = true
 				const db = uniCloud.database()
 				const appList = db.collection('opendb-app-list').getTemp()
@@ -146,11 +145,9 @@
 						let {
 							data
 						} = res.result
-						console.log('............data', data);
 						this.tableData = []
 						this.panelData = JSON.parse(JSON.stringify(panelOption))
 						if (!data.length) return
-						const rowData = {}
 						const start = this.query.start_time[0]
 						data = data.filter(item => !(item.stat_date === parseDateTime(start, 'date', '') && item
 							.dimension === 'hour'))
@@ -164,12 +161,11 @@
 						}
 						const keys = this.fieldsMap.map(f => f.field).filter(Boolean)
 						// todo: mulit app
-
 						for (const a of data) {
 							a.used = true
 							for (const b of data) {
-								if (data.length === 1 || (!b.used && a.appid === b.appid && a.stat_date !== b
-										.stat_date)) {
+								const rowData = {}
+								if (data.length === 1 || (!b.used && a.appid === b.appid && a.stat_date !== b.stat_date)) {
 									let today, yesterday
 									if (data.length < 2) {
 										today = data[0]
@@ -178,14 +174,13 @@
 											today, yesterday
 										] = [b, a]
 									}
-									today && (today.total_users = 0) // total_users 不准确，置空后由 getCurrentTotalUser 处理
+									today && (today.total_users = 0) // total_users 不准确，置空后由 getFieldTotal 处理
 									for (const key of keys) {
 										if (key === 'appid' || key === 'name') {
 											rowData[key] = today[key]
 										} else {
-											rowData[key + '_value'] = format(today && today[key] ? today[key] : '')
-											rowData[key + '_contrast'] = format(yesterday && yesterday[key] ?
-												yesterday[key] : '')
+											rowData[key + '_value'] = format(today && today[key] ? today[key] : 0)
+											rowData[key + '_contrast'] = format(yesterday && yesterday[key] ? yesterday[key] : 0)
 											for (const panel of this.panelData) {
 												if (key === panel.field) {
 													panel.value += today && today[key] ? today[key] : 0
@@ -204,8 +199,8 @@
 						}
 						const query = JSON.parse(JSON.stringify(this.query))
 						query.start_time = [getTimeOfSomeDayAgo(0), new Date().getTime()]
-						getCurrentTotalUser.call(this, query).then(users => {
-							this.tableData[0] && (this.tableData[0].total_users_value = users)
+						getFieldTotal.call(this, query).then(users => {
+							this.tableData[0] && (this.tableData[0].total_devices_value = users)
 						})
 					}).catch((err) => {
 						console.error(err)

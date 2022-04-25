@@ -4,7 +4,7 @@
 			<template v-for="(mapper, index) in filedsMap">
 				<uni-th v-if="mapper.title" :key="index" align="center">
 					{{mapper.title}}
-					<uni-stat-tooltip v-if="tooltip" :text="mapper.tooltip" />
+					<uni-tooltip v-if="tooltip" :text="mapper.tooltip" />
 				</uni-th>
 			</template>
 		</uni-tr>

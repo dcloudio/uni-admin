@@ -38,11 +38,6 @@
 				}
 				return str
 			}
-		},
-		mounted() {
-			// uni.createIntersectionObserver(this).relativeTo('.scroll',{bottom: 100}).observe('.test', (res) => {
-			//   console.log(res);
-			// })
 		}
 	}
 </script>

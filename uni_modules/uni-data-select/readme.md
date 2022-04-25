@@ -4,8 +4,9 @@
 > **组件名：uni-data-select**
 > 代码块： `uDataSelect`
 
+当选项过多时，使用下拉菜单展示并选择内容
 
-本组件是基于uni-app基础组件select的封装。本组件要解决问题包括：
+本组件要解决问题包括：
 
 1. 数据绑定型组件：给本组件绑定一个data，会自动渲染一组候选内容。再以往，开发者需要编写不少代码实现类似功能
 2. 自动的表单校验：组件绑定了data，且符合[uni-forms](https://ext.dcloud.net.cn/plugin?id=2773)组件的表单校验规范，搭配使用会自动实现表单校验
@@ -67,7 +68,7 @@ export default {
 <template>
 	<view>
 		<!-- 云端数据 -->
-		<uni-data-select collection="opendb-app-list" field="appid as value, name as text" label="应用选择" v-model="appid" :clear="false"  />
+		<uni-data-select collection="opendb-app-list" field="appid as value, name as text" orderby="text asc" :defItem="1"  label="应用选择" v-model="appid" :clear="false"  />
 	</view>
 </template>
 

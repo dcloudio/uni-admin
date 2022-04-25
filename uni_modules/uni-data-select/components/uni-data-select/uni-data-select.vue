@@ -38,7 +38,6 @@
 	 * @property {Boolean} emptyText 没有数据时显示的文字 ，本地数据无效
 	 * @property {String} label 左侧标题
 	 * @property {String} placeholder 输入框的提示文字
-	 * @property {Object} map 字段映射， 默认 map={text:'text',value:'value'}
 	 * @event {Function} change  选中发生变化触发
 	 */
 
@@ -55,8 +54,14 @@
 			};
 		},
 		props: {
+			localdata: {
+				type: Array,
+				default(){
+					return []
+				}
+			},
 			value: {
-				type: String,
+				type: [String, Number],
 				default: ''
 			},
 			modelValue: {
@@ -88,14 +93,17 @@
 				default: 0
 			}
 		},
-		mounted() {
-			this.mixinDatacomEasyGet()
+		created() {
+			this.last = `${this.collection}_last_selected_option_value`
+			if (this.collection && !this.localdata.length) {
+				this.mixinDatacomEasyGet()
+			}
 		},
 		computed: {
 			typePlaceholder() {
 				const text = {
 					'opendb-stat-app-versions': '版本',
-					'uni-stat-app-channels': '渠道',
+					'opendb-app-channels': '渠道',
 					'opendb-app-list': '应用'
 				}
 				const common = '请选择'
@@ -106,12 +114,24 @@
 			}
 		},
 		watch: {
+			localdata: {
+				immediate: true,
+				handler(val, old) {
+					if (Array.isArray(val) && !old) {
+						this.mixinDatacomResData = val
+					}
+				}
+			},
+			// #ifndef VUE3
 			value() {
 				this.initDefVal()
 			},
+			// #endif
+			// #ifdef VUE3
 			modelValue() {
 				this.initDefVal()
 			},
+			// #endif
 			mixinDatacomResData: {
 				immediate: true,
 				handler(val) {
@@ -127,25 +147,30 @@
 				if (this.defItem > 0 &&  this.defItem < this.mixinDatacomResData.length) {
 					defItem = this.mixinDatacomResData[this.defItem - 1].value
 				}
-				const defValue = this.value || this.modelValue || defItem
+				let strogeValue
+				if (this.collection) {
+					strogeValue = uni.getStorageSync(this.last)
+				}
+				const defValue = this.value || this.modelValue || strogeValue || defItem
 				const def = this.mixinDatacomResData.find(item => item.value === defValue)
-				const text = def ? def.text : ''
-				this.current = text ? (this.collection.indexOf('app-list') > 0  ? `${text} (${defValue})` : text) : ''
+				this.current = def ? this.formatItemName(def) : ''
 				this.emit(defValue)
 			},
 
 			clearVal() {
 				this.emit('')
+				uni.removeStorageSync(this.last)
 			},
 			change(item) {
 				this.showSelector = false
-				this.current = this.collection.indexOf('app-list') > 0  ? `${item.text} (${item.value})` : item.text
+				this.current = this.formatItemName(item)
 				this.emit(item.value)
 			},
 			emit(val) {
 				this.$emit('change', val)
 				this.$emit('input', val)
 				this.$emit('update:modelValue', val)
+				uni.setStorageSync(this.last, val)
 			},
 
 			toggleSelector() {

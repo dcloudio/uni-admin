@@ -163,8 +163,9 @@ function format(num, type = ',', fix) {
 	if (type === '%') {
 		// 注意浮点数精度
 		// num = Number.parseFloat(num).toPrecision(4)
+		num = (num * 100)
 		if (String(num).indexOf('.') > -1) {
-			num = (num * 100).toFixed(2)
+			num = num.toFixed(2)
 		}
 		num = num ? num + type : num
 		return num
@@ -279,8 +280,8 @@ function maxDeltaDay(times, delta = 2) {
 	return max
 }
 
-function getCurrentTotalUser(query = this.query, field = "total_users") {
-	let currentTotalUser
+function getFieldTotal(query = this.query, field = "total_devices") {
+	let fieldTotal
 	if (typeof query === 'object') {
 		query = stringifyQuery(query)
 	}
@@ -294,18 +295,18 @@ function getCurrentTotalUser(query = this.query, field = "total_users") {
 		.get()
 		.then(cur => {
 			const data = cur.result.data
-			currentTotalUser = data.length && data[0].total_users
-			currentTotalUser = format(currentTotalUser)
+			fieldTotal = data.length && data[0].total_devices
+			fieldTotal = format(fieldTotal)
 			this.panelData.forEach(item => {
-				if (item.field === 'total_users') {
-					item.value = currentTotalUser
+				if (item.field === 'total_devices') {
+					item.value = fieldTotal
 				}
 			})
-			return Promise.resolve(currentTotalUser)
+			return Promise.resolve(fieldTotal)
 		})
 }
 
-function debounce(fn, time = 0) {
+function debounce(fn, time = 1500) {
 	let timer = null
 	return function(...args) {
 		if (timer) clearTimeout(timer)
@@ -328,5 +329,5 @@ export {
 	maxDeltaDay,
 	debounce,
 
-	getCurrentTotalUser
+	getFieldTotal
 }

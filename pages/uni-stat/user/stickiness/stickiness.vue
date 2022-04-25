@@ -9,7 +9,7 @@
 		</view>
 		<view class="uni-container">
 			<view class="uni-stat--x flex">
-				<uni-data-select collection= "opendb-app-list" field="appid as value, name as text" label="应用选择" v-model="query.appid" :clear="false" />
+				<uni-data-select collection="opendb-app-list" field="appid as value, name as text" orderby="text asc" :defItem="1" label="应用选择" v-model="query.appid" :clear="false" />
 			</view>
 			<view class="uni-stat--x">
 				<uni-stat-tabs label="平台选择" type="boldLine" mode="platform" v-model="query.platform_id"
@@ -51,7 +51,8 @@
 		stringifyQuery,
 		getTimeOfSomeDayAgo,
 		division,
-		format
+		format,
+    debounce
 	} from '@/js_sdk/uni-stat/util.js'
 	import fieldsMap from './fieldsMap.js'
 	export default {
@@ -116,18 +117,21 @@
 				})
 			}
 		},
+		created() {
+		  this.debounceGet = debounce(() => this.getAllData(this.query))
+		},
 		watch: {
 			query: {
 				deep: true,
 				handler(val) {
-					this.getAllData(val)
+					this.debounceGet()
 				}
 			},
 			type() {
-				this.getAllData(this.query)
+				this.debounceGet()
 			},
 			field() {
-				this.getAllData(this.query)
+				this.debounceGet()
 			}
 		},
 		methods: {
@@ -299,16 +303,8 @@
 					}).finally(() => {
 						this.loading = false
 					})
-			},
-
-			navTo(id) {
-				const url = `/pages/uni-stat/overview/overview?id=${id}`
-				uni.navigateTo({
-					url
-				})
 			}
 		}
-
 	}
 </script>
 

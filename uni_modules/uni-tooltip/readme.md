@@ -5,6 +5,8 @@
 
 常用于展示鼠标 hover 时的提示信息。
 
+> 遮挡不住原生组件
+
 ### 安装方式
 
 本组件符合[easycom](https://uniapp.dcloud.io/collocation/pages?id=easycom)规范，`HBuilderX 2.5.5`起，只需将本组件导入项目，在页面`template`中即可直接使用，无需在页面中`import`和注册`components`。
@@ -16,11 +18,11 @@
 在 ``template`` 中使用组件
 
 ```html
-<uni-stat-tooltip :text="tooltip显示的内容" />
+<uni-tooltip :text="tooltip显示的内容" />
 
-<uni-stat-tooltip :text="tooltip显示的内容" >
+<uni-tooltip :text="tooltip显示的内容" >
 	<button>被包裹的组件</button>
-</uni-stat-tooltip>
+</uni-tooltip>
 ```
 
 
