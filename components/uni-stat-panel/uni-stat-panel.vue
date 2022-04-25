@@ -3,7 +3,7 @@
 		<view v-for="(item, index) in items" :key="index" class="uni-stat--sum-item" :class="[item.value === '今天' ? 'uni-stat--sum-item-width' : '']">
 			<view class="uni-stat--sum-item-title">
 				{{item.title}}
-				<uni-stat-tooltip :text="item.tooltip" />
+				<uni-tooltip :text="item.tooltip" />
 			</view>
 			<view class="uni-stat--sum-item-value">{{item.value ? item.value : 0}}</view>
 			<view v-if="contrast" class="uni-stat--sum-item-contrast">{{item.contrast ? item.contrast : 0}}</view>

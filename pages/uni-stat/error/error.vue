@@ -35,21 +35,21 @@
 			</view>
 
 			<view class="uni-stat--x p-m">
-				<uni-table :loading="loading" border stripe :emptyText="$t('common.empty')">
+				<uni-table :loading="loading" border stripe :emptyText="$t('common.empty')" style="overflow: scroll;">
 					<uni-tr>
 						<template v-for="(mapper, index) in fieldsMap">
 							<uni-th v-if="mapper.title" :key="index" align="center">
 								{{mapper.title}}
-								<uni-stat-tooltip :text="mapper.tooltip" />
+								<uni-tooltip :text="mapper.tooltip" />
 							</uni-th>
 						</template>
 					</uni-tr>
 					<uni-tr v-for="(item ,i) in tableData" :key="i">
 						<template v-for="(mapper, index) in fieldsMap">
 							<uni-td v-if="mapper.field === 'msg'" :key="mapper.title" align="left">
-								<uni-stat-tooltip :text="item.msgTooltip" placement="left" :width="600">
+								<uni-tooltip :text="item.msgTooltip" placement="left" :width="600">
 									{{item[mapper.field] !== undefined ? item[mapper.field] : '-'}}
-								</uni-stat-tooltip>
+								</uni-tooltip>
 							</uni-td>
 							<uni-td v-else-if="mapper.field === 'count'" :key="mapper.title" align="center">
 								<text class="link-btn" @click="togglePopup(item)">
