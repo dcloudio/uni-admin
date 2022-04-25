@@ -15,11 +15,12 @@ function stringifyQuery(query, dimension = false) {
 			if (typeof val === 'string') {
 				val = `"${val}"`
 			}
-			if (key === 'start_time') {
-				if (Array.isArray(time) && time.length === 2) {
-					queryArr.push(`start_time >= ${time[0]} && start_time <= ${time[1]}`)
-				} else {
-					queryArr.push(`start_time == ${time}`)
+			if (Array.isArray(val)) {
+				if (val.length === 2) {
+					queryArr.push(`${key} >= ${val[0]} && ${key} <= ${val[1]}`)
+				}
+				if (val.length === 1) {
+					queryArr.push(`${key} == ${val[0]}`)
 				}
 			} else if (dimension && key === 'dimension') {
 				if (maxDeltaDay(time)) {
@@ -37,7 +38,7 @@ function stringifyQuery(query, dimension = false) {
 		}
 	})
 	const queryStr = queryArr.join(' && ')
-
+	console.log('............util querystr:', queryStr);
 	return queryStr || {}
 }
 
