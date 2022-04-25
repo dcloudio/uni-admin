@@ -126,7 +126,6 @@
 			query: {
 				deep: true,
 				handler(val) {
-					console.log('/..............debounceGet');
 					this.debounceGet()
 				}
 			},
@@ -184,7 +183,6 @@
 			},
 
 			getAllData(query) {
-				console.log('/..............getAllData');
 				this.getChartData(query, this.field, this.fieldName)
 				this.getTabelData(query)
 			},
@@ -192,7 +190,6 @@
 			getChartData(query, field = this.field, name = this.fields.find(f => f._id === this.field).name) {
 				this.chartData = {}
 				query = stringifyQuery(query)
-				console.log('-------------query', query);
 				const groupField = this.createStr([field], this.type)
 				const db = uniCloud.database()
 				db.collection('uni-stat-loyalty-result')
@@ -208,7 +205,6 @@
 							count,
 							data
 						} = res.result
-						console.log('........echart:', data);
 						data = data[0]
 						const options = {
 							series: [{
@@ -253,7 +249,6 @@
 							count,
 							data
 						} = res.result
-						console.log('........table:', data);
 						const type = this.type
 						const rows = []
 						let splitor = this.options[type].prefix
