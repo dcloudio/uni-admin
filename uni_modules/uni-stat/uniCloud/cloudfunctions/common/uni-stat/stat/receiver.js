@@ -11,7 +11,7 @@ const EventLog = require('./mod/eventLog')
 const ErrorLog = require('./mod/errorLog')
 class UniStatReportDataReceiver {
 	/**
-	 * @description 上报数据调度、处理函数
+	 * @description 上报数据调度处理函数
 	 * @param {Object} params 基础上报参数
 	 * @param {Object} context 请求附带的上下文信息
 	 */
@@ -28,7 +28,7 @@ class UniStatReportDataReceiver {
 			}
 		}
 
-		// 参数解析
+		// JSON参数解析
 		const requestParam = JSON.parse(params.requests)
 		if (!requestParam || requestParam.length === 0) {
 			return {
@@ -67,7 +67,6 @@ class UniStatReportDataReceiver {
 				}
 				// 页面日志
 				case 3:
-				case 4:
 				case 11: {
 					pageParams.push(urlParams)
 					break

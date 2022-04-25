@@ -68,11 +68,12 @@ module.exports = class BaseMod {
 
 	/**
 	 * 获取带前缀的数据表名称
-	 * @param {String} tab 无前缀表名
+	 * @param {String} tab 表名
+	 * @param {Boolean} useDBPre 是否使用数据表前缀
 	 */
-	getTableName(tab) {
+	getTableName(tab, useDBPre = true) {
 		tab = tab || this.tableName
-		const table = (this.tablePrefix && tab.indexOf(this.tablePrefix) !== 0) ? this.tablePrefix + this
+		const table = (useDBPre && this.tablePrefix && tab.indexOf(this.tablePrefix) !== 0) ? this.tablePrefix + this
 			.tableConnectors + tab : tab
 		return table
 	}
@@ -80,10 +81,10 @@ module.exports = class BaseMod {
 	/**
 	 * 获取数据集
 	 * @param {String} tab表名
-	 * @param {Boolean} useDbPre 是否使用数据表前缀
+	 * @param {Boolean} useDBPre 是否使用数据表前缀
 	 */
-	getCollection(tab, useDbPre = true) {
-		return useDbPre ? this.db.collection(this.getTableName(tab)) : this.db.collection(tab)
+	getCollection(tab, useDBPre = true) {
+		return this.db.collection(this.getTableName(tab, useDBPre))
 	}
 
 	/**
@@ -154,11 +155,12 @@ module.exports = class BaseMod {
 	 * 通过数据表主键（_id）获取数据
 	 * @param {String} tab 表名
 	 * @param {String} id 主键值
+	 * @param {Boolean} useDBPre 是否使用数据表前缀
 	 */
-	async getById(tab, id) {
+	async getById(tab, id, useDBPre = true) {
 		const condition = {}
 		condition[this.primaryKey] = id
-		const info = await this.getCollection(this.getTableName(tab)).where(condition).get()
+		const info = await this.getCollection(tab, useDBPre).where(condition).get()
 		return (info && info.data.length > 0) ? info.data[0] : []
 	}
 
@@ -166,10 +168,11 @@ module.exports = class BaseMod {
 	 * 插入数据到数据表
 	 * @param {String} tab 表名
 	 * @param {Object} params 字段参数
+	 * @param {Boolean} useDBPre 是否使用数据表前缀
 	 */
-	async insert(tab, params) {
+	async insert(tab, params, useDBPre = true) {
 		params = params || this.params
-		return await this.getCollection(this.getTableName(tab)).add(params)
+		return await this.getCollection(tab, useDBPre).add(params)
 	}
 
 	/**
@@ -177,30 +180,33 @@ module.exports = class BaseMod {
 	 * @param {String} tab 表名
 	 * @param {Object} params 字段参数
 	 * @param {Object} condition 条件
+	 * @param {Boolean} useDBPre 是否使用数据表前缀
 	 */
-	async update(tab, params, condition) {
+	async update(tab, params, condition, useDBPre = true) {
 		params = params || this.params
-		return await this.getCollection(this.getTableName(tab)).where(condition).update(params)
+		return await this.getCollection(tab).where(condition).update(params)
 	}
 
 	/**
 	 * 删除数据表数据
 	 * @param {String} tab 表名
 	 * @param {Object} condition 条件
+	 * @param {Boolean} useDBPre 是否使用数据表前缀
 	 */
-	async delete(tab, condition) {
+	async delete(tab, condition, useDBPre = true) {
 		if (!condition) {
 			return false
 		}
-		return await this.getCollection(this.getTableName(tab)).where(condition).remove()
+		return await this.getCollection(tab, useDBPre).where(condition).remove()
 	}
 
 	/**
 	 * 批量插入 - 云服务空间对单条mongo语句执行时间有限制，所以批量插入需限制每次执行条数
 	 * @param {String} tab 表名
 	 * @param {Object} data 数据集合
+	 * @param {Boolean} useDBPre 是否使用数据表前缀
 	 */
-	async batchInsert(tab, data) {
+	async batchInsert(tab, data, useDBPre = true) {
 		let batchInsertNum = this.getConfig('batchInsertNum') || 3000
 		batchInsertNum = Math.min(batchInsertNum, 5000)
 		const insertNum = Math.ceil(data.length / batchInsertNum)
@@ -223,7 +229,7 @@ module.exports = class BaseMod {
 				fillData.push(data[i])
 			}
 			if (fillData.length > 0) {
-				insertRes = await this.insert(tab, fillData)
+				insertRes = await this.insert(tab, fillData, useDBPre)
 				if (insertRes && insertRes.inserted) {
 					res.data.inserted += insertRes.inserted
 				}
@@ -236,8 +242,9 @@ module.exports = class BaseMod {
 	 * 批量删除 - 云服务空间对单条mongo语句执行时间有限制，所以批量删除需限制每次执行条数
 	 * @param {String} tab 表名
 	 * @param {Object} condition 条件
+	 * @param {Boolean} useDBPre 是否使用数据表前缀
 	 */
-	async batchDelete(tab, condition) {
+	async batchDelete(tab, condition, useDBPre = true) {
 		const batchDeletetNum = 5000;
 		let deleteIds;
 		let delRes;
@@ -262,7 +269,7 @@ module.exports = class BaseMod {
 					thisCondition[this.primaryKey] = {
 						$in: deleteIds
 					}
-					delRes = await this.delete(tab, thisCondition)
+					delRes = await this.delete(tab, thisCondition, useDBPre)
 					if (delRes && delRes.deleted) {
 						res.data.deleted += delRes.deleted
 					}
@@ -277,9 +284,10 @@ module.exports = class BaseMod {
 	/**
 	 * 基础查询
 	 * @param {String} tab 表名
-	 * @param {Object} params
+	 * @param {Object} params 查询参数 where：where条件，field：返回字段，skip：跳过的文档数，limit：返回的记录数，orderBy：排序，count：返回查询结果的数量
+	 * @param {Boolean} useDBPre 是否使用数据表前缀
 	 */
-	async select(tab, params) {
+	async select(tab, params, useDBPre = true) {
 		const {
 			where,
 			field,
@@ -288,8 +296,10 @@ module.exports = class BaseMod {
 			orderBy,
 			count
 		} = params
-		const query = this.getCollection(tab)
-
+		
+		const query = this.getCollection(tab, useDBPre)
+		
+		//拼接where条件
 		if (where) {
 			if (where.length > 0) {
 				where.forEach(key => {
@@ -299,29 +309,35 @@ module.exports = class BaseMod {
 				query.where(where)
 			}
 		}
-
+		
+		//排序
 		if (orderBy) {
 			Object.keys(orderBy).forEach(key => {
 				query.orderBy(key, orderBy[key])
 			})
 		}
-
+		
+		//指定跳过的文档数
 		if (skip) {
 			query.skip(skip)
 		}
-
+		
+		//指定返回的记录数
 		if (limit) {
 			query.limit(limit)
 		}
-
+		
+		//指定返回字段
 		if (field) {
 			query.field(field)
 		}
-
+		
+		//指定返回查询结果数量
 		if (count) {
 			return await query.count()
 		}
-
+		
+		//返回查询结果数据
 		return await query.get()
 	}
 
@@ -330,14 +346,15 @@ module.exports = class BaseMod {
 	 * @param {String} tab 表名
 	 * @param {Object} condition 条件
 	 * @param {Object} field 指定查询返回字段
+	 * @param {Boolean} useDBPre 是否使用数据表前缀
 	 */
-	async selectAll(tab, condition, field = {}) {
-		const countRes = await this.getCollection(tab).where(condition).count()
+	async selectAll(tab, condition, field = {}, useDBPre = true) {
+		const countRes = await this.getCollection(tab, useDBPre).where(condition).count()
 		if (countRes && countRes.total > 0) {
 			const pageCount = Math.ceil(countRes.total / this.selectMaxLimit)
 			let res, returnData
 			for (let p = 0; p < pageCount; p++) {
-				res = await this.getCollection(tab).where(condition).orderBy(this.primaryKey, 'asc').skip(p *
+				res = await this.getCollection(tab, useDBPre).where(condition).orderBy(this.primaryKey, 'asc').skip(p *
 					this.selectMaxLimit).limit(this.selectMaxLimit).field(field).get()
 				if (!returnData) {
 					returnData = res
@@ -359,10 +376,10 @@ module.exports = class BaseMod {
 	/**
 	 * 聚合查询
 	 * @param {String} tab 表名
-	 * @param {Object} params 参数
+	 * @param {Object} params 聚合参数
 	 */
 	async aggregate(tab, params) {
-		const {
+		let {
 			project,
 			match,
 			lookup,
@@ -370,10 +387,12 @@ module.exports = class BaseMod {
 			skip,
 			limit,
 			sort,
-			getAll
+			getAll,
+			useDBPre
 		} = params
-
-		const query = this.getCollection(tab).aggregate()
+		//useDBPre 是否使用数据表前缀
+		useDBPre = (useDBPre !== null && useDBPre !== undefined) ? useDBPre : true
+		const query = this.getCollection(tab, useDBPre).aggregate()
 		
 		//设置返回字段
 		if (project) {
@@ -428,13 +447,15 @@ module.exports = class BaseMod {
 				$sum: 1
 			}
 		}).end()
-
+		
 		if (resCount && resCount.data.length > 0 && resCount.data[0].aggregate_count > 0) {
+			//分页查询
 			const total = resCount.data[0].aggregate_count
 			const pageCount = Math.ceil(total / this.selectMaxLimit)
 			let res, returnData
 			params.limit = this.selectMaxLimit
 			params.getAll = false
+			//结果合并
 			for (let p = 0; p < pageCount; p++) {
 				params.skip = p * params.limit
 				res = await this.aggregate(tab, params)

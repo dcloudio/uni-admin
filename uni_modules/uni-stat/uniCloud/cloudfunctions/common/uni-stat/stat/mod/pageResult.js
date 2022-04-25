@@ -1,5 +1,5 @@
 /**
- * @class PageResult 页面结果统计
+ * @class PageResult 页面结果统计模型
  */
 const BaseMod = require('./base')
 const Platform = require('./platform')
@@ -131,6 +131,7 @@ module.exports = class PageResult extends BaseMod {
 		// 平台信息
 		let platformInfo = null
 		if (this.platforms && this.platforms[data._id.platform]) {
+			//暂存下数据，减少读库
 			platformInfo = this.platforms[data._id.platform]
 		} else {
 			const platform = new Platform()

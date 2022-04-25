@@ -125,6 +125,7 @@ module.exports = class EventResult extends BaseMod {
 		// 平台信息
 		let platformInfo = null
 		if (this.platforms && this.platforms[data._id.platform]) {
+			//暂存下数据，减少读库
 			platformInfo = this.platforms[data._id.platform]
 		} else {
 			const platform = new Platform()

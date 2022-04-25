@@ -10,7 +10,7 @@ const UserSessionLog = require('./userSessionLog')
 const ErrorLog = require('./errorLog')
 const ActiveDevices = require('./activeDevices')
 const ActiveUsers = require('./activeUsers')
-const Users = require('./users')
+const UniIDUsers = require('./uniIDUsers')
 const {
 	DateTime
 } = require('../lib')
@@ -345,20 +345,10 @@ module.exports = class StatResult extends BaseMod {
 		}
 
 		//总用户数
-		let totalUserCount = 0
-		const totalUserCountRes = await await this.getCollection(statUser.tableName).where({
-			appid: data._id.appid,
-			version: versionInfo.version,
-			platform: platformInfo.code,
-			channel: channelInfo.channel_code,
-			create_time: {
-				$lte: this.endTime
-			}
-		}).count()
-
-		if (totalUserCountRes && totalUserCountRes.total > 0) {
-			totalUserCount = totalUserCountRes.total
-		}
+		const uniIDUsers = new UniIDUsers()
+		let totalUserCount = await uniIDUsers.getUserCount(data._id.appid, platformInfo.code, channelInfo.channel_code, versionInfo.version, {
+			$lte: this.endTime
+		})
 
 		//人家停留时长
 		let avgUserTime = 0
@@ -409,6 +399,7 @@ module.exports = class StatResult extends BaseMod {
 		// 平台信息
 		let platformInfo = null
 		if (this.platforms && this.platforms[data._id.platform]) {
+			//暂存下数据，减少读库
 			platformInfo = this.platforms[data._id.platform]
 		} else {
 			const platform = new Platform()
@@ -575,29 +566,16 @@ module.exports = class StatResult extends BaseMod {
 		}
 
 		//新增用户数
-		let newUserCount = 0
-		const statUser = new Users()
-		const newUserCountRes = await await this.getCollection(statUser.tableName).where({
-			...matchCondition,
-			is_new: 1
-		}).count()
-
-		if (newUserCountRes && newUserCountRes.total > 0) {
-			newUserCount = newUserCountRes.total
-		}
-
-		//总用户数
-		let totalUserCount = 0
-		const totalUserCountRes = await await this.getCollection(statUser.tableName).where({
-			...matchCondition,
-			create_time: {
+		const uniIDUsers = new UniIDUsers()
+		let newUserCount = await uniIDUsers.getUserCount(matchCondition.appid, matchCondition.platform,
+			matchCondition.channel, matchCondition.version, {
+				$gte: this.startTime,
 				$lte: this.endTime
-			}
-		}).count()
+			})
 
-		if (totalUserCountRes && totalUserCountRes.total > 0) {
-			totalUserCount = totalUserCountRes.total
-		}
+		let totalUserCount = await uniIDUsers.getUserCount(matchCondition.appid, matchCondition.platform,
+			matchCondition.channel, matchCondition.version)
+
 
 		//用户停留总时长
 		let totalUserDuration = 0
@@ -1401,7 +1379,7 @@ module.exports = class StatResult extends BaseMod {
 		}
 
 		const userSessionLog = new UserSessionLog()
-		const statUser = new Users()
+		const uniIDUsers = new UniIDUsers()
 		const platform = new Platform()
 		const channel = new Channel()
 		const version = new Version()
@@ -1555,36 +1533,18 @@ module.exports = class StatResult extends BaseMod {
 				}
 			}
 
-			// 获取该时间段内的新增用户
-			const newUserRes = await this.selectAll(statUser.tableName, {
-				appid: resultLog.appid,
-				version: versionInfo.version,
-				platform: platformInfo.code,
-				channel: channelInfo.channel_code,
-				is_new: 1,
-				create_time: {
-					$gte: startTime,
-					$lte: endTime
-				}
-			}, {
-				uid: 1
-			})
+		
 
+			//新增用户编号
+			const thisDayNewUids = await uniIDUsers.getUserIds(resultLog.appid, platformInfo.code, channelInfo.channel_code, versionInfo.version, {
+					$gte: lastTimeInfo.startTime,
+					$lte: lastTimeInfo.endTime
+				})
 			//新增用户留存率
 			let newUserRate = 0
 			//新增用户留存数
 			let newUsers = 0
-			if (newUserRes && newUserRes.data.length > 0) {
-				const thisDayNewUsers = newUserRes.data.length
-				const thisDayNewUids = []
-				for (const tau in newUserRes.data) {
-					thisDayNewUids.push(newUserRes.data[tau].uid)
-				}
-
-				if (this.debug) {
-					console.log('thisDayNewUids', JSON.stringify(thisDayNewUids))
-				}
-
+			if (thisDayNewUids.length > 0) {
 				// 现在依然活跃的用户数
 				const retentionNewUserRes = await this.aggregate(userSessionLog.tableName, {
 					project: {
@@ -1624,7 +1584,7 @@ module.exports = class StatResult extends BaseMod {
 					// 新增用户留存数
 					newUsers = retentionNewUserRes.data[0].total_users
 					// 新增用户留存率
-					newUserRate = parseFloat((newUsers * 100 / thisDayNewUsers).toFixed(2))
+					newUserRate = parseFloat((newUsers * 100 / thisDayNewUids.length).toFixed(2))
 				}
 			}
 
@@ -1723,6 +1683,7 @@ module.exports = class StatResult extends BaseMod {
 		}
 
 		const activeUserObj = new ActiveUsers()
+		const uniIDUsers = new UniIDUsers()
 		let res = null
 		//活跃用户留存率
 		let activeUserRate
@@ -1791,30 +1752,18 @@ module.exports = class StatResult extends BaseMod {
 				}
 			}
 
-			// 获取该批次的新增用户数
-			const newUserRes = await this.selectAll(statUser.tableName, {
-				appid: resultLog.appid,
-				version: versionInfo.version,
-				platform: platformInfo.code,
-				channel: channelInfo.channel_code,
-				is_new: 1,
-				create_time: {
-					$gte: startTime,
-					$lte: endTime
-				}
-			}, {
-				uid: 1
+			
+			//新增用户编号
+			const thisDayNewUids = await uniIDUsers.getUserIds(resultLog.appid, platformInfo.code, channelInfo.channel_code, versionInfo.version, {
+				$gte: startTime,
+				$lte: endTime
 			})
-
+				
+			// 新增用户留存率
 			newUserRate = 0
+			// 新增用户留存数
 			newUsers = 0
-			if (newUserRes && newUserRes.data.length > 0) {
-				const thisDayNewUsers = newUserRes.data.length
-				const thisDayNewUids = []
-				for (const tau in newUserRes.data) {
-					thisDayNewUids.push(newUserRes.data[tau].uid)
-				}
-
+			if(thisDayNewUids && thisDayNewUids.length > 0) {
 				// 新增用户留存数
 				const retentionnewUserRes = await this.getCollection(activeUserObj.tableName).where({
 					appid: resultLog.appid,
@@ -1830,12 +1779,12 @@ module.exports = class StatResult extends BaseMod {
 						$lte: lastTimeInfo.endTime
 					}
 				}).count()
-
+			
 				if (retentionnewUserRes && retentionnewUserRes.total > 0) {
 					// 新增用户留存数
 					newUsers = retentionnewUserRes.total
 					// 新增用户留存率
-					newUserRate = parseFloat((newUsers * 100 / thisDayNewUsers).toFixed(2))
+					newUserRate = parseFloat((newUsers * 100 / thisDayNewUids.length).toFixed(2))
 				}
 			}
 

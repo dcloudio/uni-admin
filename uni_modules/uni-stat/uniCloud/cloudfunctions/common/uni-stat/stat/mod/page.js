@@ -45,7 +45,7 @@ module.exports = class Page extends BaseMod {
 	async getPageAndCreate(appid, url, title) {
 		//获取url信息
 		const urlInfo = parseUrl(url)
-		if(!urlInfo) {
+		if (!urlInfo) {
 			return false
 		}
 		const baseurl = urlInfo.path

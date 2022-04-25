@@ -68,12 +68,70 @@ module.exports = class Platform extends BaseMod {
 	 */
 	getPlatformCode(platform, os) {
 		let platformCode = platform
-		if (platform === 'n' || platform === 'app-plus') {
-			if (os === 'i' || os === 'ios') {
-				platformCode = 'ios'
-			} else {
-				platformCode = 'android'
-			}
+		
+		//兼容客户端上报参数
+		switch(platform) {
+			//微信小程序
+			case 'wx':
+				platformCode = 'mp-weixin'
+				break
+			//百度小程序
+			case 'bd':
+				platformCode = 'mp-baidu'
+				break
+			//支付宝小程序
+			case 'ali':
+				platformCode = 'mp-alipay'
+				break
+			//字节跳动小程序	
+			case 'tt':
+				platformCode = 'mp-toutiao'
+				break
+			//qq小程序
+			case 'qq':
+				platformCode = 'mp-qq'
+				break
+			//快应用联盟
+			case 'qn':
+				platformCode = 'quickapp-webview-union'
+				break
+			//快应用(webview)
+			case 'qw':
+				platformCode = 'quickapp-webview'
+				break
+			//快应用华为
+			case 'qi':
+				platformCode = 'quickapp-webview-huawei'
+				break
+			//360小程序
+			case '360':
+				platformCode = 'mp-360'
+				break
+			//京东小程序
+			case 'jd':
+				platformCode = 'mp-jd'
+				break
+			//钉钉小程序
+			case 'dt':
+				platformCode = 'mp-dingtalk'
+				break
+			//快手小程序
+			case 'ks':
+				platformCode = 'mp-kuaishou'
+				break
+			//飞书小程序
+			case 'lark':
+				platformCode = 'mp-lark'
+				break
+			//原生应用
+			case 'n':
+			case 'app-plus':
+				if (os === 'i' || os === 'ios') {
+					platformCode = 'ios'
+				} else {
+					platformCode = 'android'
+				}
+				break
 		}
 		return platformCode
 	}

@@ -51,7 +51,7 @@ module.exports = class DateTime {
 	getDate(dateFormat, time) {
 		return this.dateFormat(dateFormat, time)
 	}
-	
+
 
 	/**
 	 * 获取日期在不同时区下的时间戳
@@ -266,7 +266,7 @@ module.exports = class DateTime {
 	 * @param {String} type 时间类型 hour:小时 day:天 week:周 month：月
 	 * @param {Number} offset 时间的偏移量
 	 * @param {Date|Time} thistime 指定的日期或时间戳
-	* @param {Boolean} getAll 是否获取完整时间戳，为 false 时返回指定日期初始时间戳（当天00:00:00的时间戳） 
+	 * @param {Boolean} getAll 是否获取完整时间戳，为 false 时返回指定日期初始时间戳（当天00:00:00的时间戳） 
 	 */
 	getTimeDimensionByType(type, offset = 0, thistime, getAll = false) {
 		let startTime = 0

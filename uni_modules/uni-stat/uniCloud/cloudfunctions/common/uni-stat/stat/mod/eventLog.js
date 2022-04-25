@@ -35,7 +35,8 @@ module.exports = class EventLog extends BaseMod {
 		const channel = new Channel()
 		for (const rk in reportParams) {
 			params = reportParams[rk]
-
+			
+			//暂存下会话数据，减少读库
 			sessionKey = params.ak + params.did + params.p
 			if (!this.sessionLogInfo[sessionKey]) {
 				// 会话日志

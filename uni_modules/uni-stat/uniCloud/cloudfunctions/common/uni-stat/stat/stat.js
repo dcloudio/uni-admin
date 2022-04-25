@@ -9,6 +9,10 @@ const {
 } = require('./lib')
 
 const {
+	sleep
+} = require('../shared')
+
+const {
 	BaseMod,
 	SessionLog,
 	PageLog,
@@ -226,16 +230,17 @@ class UniStatDataStat {
 				}
 			}
 		} catch (e) {
-
-			//报错则重新尝试2次
 			const maxTryTimes = 2
 			if (!this.tryTimes) {
 				this.tryTimes = 1
 			} else {
 				this.tryTimes++
 			}
-
+			
+			//报错则重新尝试2次, 解决部分云服务器偶现连接超时问题
 			if (this.tryTimes <= maxTryTimes) {
+				//休眠1秒后重新调用
+				sleep(1000)
 				params.reset = true
 				res = await this.stat(params)
 			} else {

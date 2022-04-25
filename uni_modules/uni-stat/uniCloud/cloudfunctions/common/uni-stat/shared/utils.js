@@ -103,7 +103,10 @@ function parseUrlParams(str, context) {
 	return params
 }
 
-//解析url
+/**
+ * 解析url
+ * @param {String} url
+ */
 function parseUrl(url) {
 	if (typeof url !== "string" || !url) {
 		return false
@@ -115,13 +118,17 @@ function parseUrl(url) {
 	}
 }
 
-
+//加载配置中心-uni-config-center
 let createConfig
 try {
 	createConfig = require('uni-config-center')
 } catch (e) {}
 
-//获取配置文件信息
+/**
+ * 获取配置文件信息
+ * @param {String} file 配置文件名称
+ * @param {String} key 配置参数键值
+ */
 function getConfig(file, key) {
 	if (!file) {
 		return false
@@ -141,6 +148,13 @@ function getConfig(file, key) {
 	return key ? config[key] : config
 }
 
+/**
+ * 休眠
+ * @param {Object} ms 休眠时间（毫秒）
+ */
+function sleep(ms) {
+	return new Promise(resolve => setTimeout(() => resolve(), ms))
+}
 
 module.exports = {
 	hasOwn,
@@ -149,5 +163,6 @@ module.exports = {
 	deepClone,
 	parseUrlParams,
 	parseUrl,
-	getConfig
+	getConfig,
+	sleep
 }

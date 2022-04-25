@@ -4,7 +4,6 @@
 const BaseMod = require('./base')
 const Platform = require('./platform')
 const Channel = require('./channel')
-const Users = require('./users')
 const {
 	DateTime
 } = require('../lib')
@@ -72,9 +71,6 @@ module.exports = class UserSessionLog extends BaseMod {
 		const res = await this.insert(this.tableName, fillParams)
 
 		if (res && res.id) {
-			//用户同步
-			await new Users().syncUser(fillParams)
-
 			return {
 				code: 0,
 				msg: 'success'

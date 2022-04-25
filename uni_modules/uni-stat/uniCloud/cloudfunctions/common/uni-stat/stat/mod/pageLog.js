@@ -61,7 +61,7 @@ module.exports = class PageLog extends BaseMod {
 				pageData[pageKey] = pageInfo
 			}
 
-			// 会话日志
+			// 会话日志，暂存下会话数据，减少读库
 			sessionKey = params.ak + params.did + params.p
 			if (!this.sessionLogInfo[sessionKey]) {
 				sessionLogInfo = await sessionLog.getSession(params)
