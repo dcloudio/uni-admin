@@ -182,9 +182,16 @@
 			}
 
 		}, {
-			"path": "error/error",
+			"path": "error/js/js",
 			"style": {
-				"navigationBarTitleText": "错误分析",
+				"navigationBarTitleText": "js报错统计",
+				"enablePullDownRefresh": false
+			}
+
+		}, {
+			"path": "error/app/app",
+			"style": {
+				"navigationBarTitleText": "app原生报错统计",
 				"enablePullDownRefresh": false
 			}
 

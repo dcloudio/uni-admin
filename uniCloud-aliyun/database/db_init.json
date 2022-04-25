@@ -2160,7 +2160,7 @@
 			"permission": [],
 			"enable": true,
 			"menu_id": "uni-stat-error",
-			"name": "错误分析",
+			"name": "错误统计",
 			"icon": "",
 			"url": "",
 			"sort": 2170,
@@ -2169,11 +2169,21 @@
 			"parent_id": "uni-stat-error",
 			"permission": [],
 			"enable": true,
-			"menu_id": "uni-stat-error-error",
-			"name": "错误分析",
+			"menu_id": "uni-stat-error-js",
+			"name": "js报错",
 			"icon": "",
-			"url": "/pages/uni-stat/error/error",
+			"url": "/pages/uni-stat/error/js/js",
 			"sort": 2171,
+			"create_date": 1638356902516
+		}, {
+			"parent_id": "uni-stat-error",
+			"permission": [],
+			"enable": true,
+			"menu_id": "uni-stat-error-app",
+			"name": "app原生报错",
+			"icon": "",
+			"url": "/pages/uni-stat/error/app/app",
+			"sort": 2172,
 			"create_date": 1638356902516
 		}, {
 			"parent_id": "uni-stat",
