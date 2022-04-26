@@ -94,7 +94,25 @@
 		},
 		"retention": {
 			"bsonType": "object",
-			"description": "留存信息"
+			"description": "留存信息",
+			"properties": {
+				"active_user": {
+					"bsonType": "object",
+					"description": "活跃用户留存信息"
+				},
+				"new_user": {
+					"bsonType": "object",
+					"description": "新增用户留存信息"
+				},
+				"active_device": {
+					"bsonType": "object",
+					"description": "活跃设备留存信息"
+				},
+				"new_device": {
+					"bsonType": "object",
+					"description": "新增设备留存信息"
+				}
+			}
 		},
 		"dimension": {
 			"bsonType": "string",

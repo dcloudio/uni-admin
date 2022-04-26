@@ -33,11 +33,39 @@
 		},
 		"visit_depth_data": {
 			"bsonType": "object",
-			"description": "访问深度数据"
+			"description": "访问深度数据",
+			"properties":{
+				"visit_users": {
+					"bsonType": "object",
+					"description": "访问用户数"
+				},
+				"visit_devices": {
+					"bsonType": "object",
+					"description": "访问设备数"
+				},
+				"visit_times": {
+					"bsonType": "object",
+					"description": "访问次数"
+				}
+			}
 		},
 		"duration_data": {
 			"bsonType": "object",
-			"description": "访问时长数据"
+			"description": "访问时长数据",
+			"properties":{
+				"visit_users": {
+					"bsonType": "object",
+					"description": "访问用户数"
+				},
+				"visit_devices": {
+					"bsonType": "object",
+					"description": "访问设备数"
+				},
+				"visit_times": {
+					"bsonType": "object",
+					"description": "访问次数"
+				}
+			}
 		},
 		"stat_date": {
 			"bsonType": "int",
