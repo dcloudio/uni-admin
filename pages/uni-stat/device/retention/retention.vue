@@ -39,6 +39,10 @@
 				</view>
 			</view>
 			<view class="uni-stat--x p-m">
+				<view class="uni-tips mb-s flex">
+					<uni-icons type="info"></uni-icons>
+					表格中显示为空，表示留存为 0 或无数据
+				</view>
 				<uni-table :loading="loading" stripe :emptyText="$t('common.empty')">
 					<uni-tr style="background-color: #eee;">
 						<template v-for="(mapper, index) in fieldsMap">
