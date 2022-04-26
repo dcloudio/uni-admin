@@ -18,7 +18,7 @@
 				<uni-stat-tabs label="平台选择" type="boldLine" mode="platform-channel" v-model="query.platform_id"
 					@change="changePlatform" />
 				<!-- <uni-stat-select mode="version" label="版本选择" :query="versionQuery" v-model="query.version_id" /> -->
-				<uni-data-select collection="uni-stat-stat-app-versions" field="_id as value, version as text" :where="versionQuery" label="版本选择" v-model="query.version_id" />
+				<uni-data-select collection="uni-stat-app-versions" field="_id as value, version as text" :where="versionQuery" label="版本选择" v-model="query.version_id" />
 			</view>
 			<view class="uni-stat--x flex">
 				<uni-stat-tabs label="日期选择" :current="currentDateTab" mode="date" @change="changeTimeRange" />

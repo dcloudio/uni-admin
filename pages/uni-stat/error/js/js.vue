@@ -11,7 +11,7 @@
 			<view class="uni-stat--x flex">
 				<uni-data-select collection="opendb-app-list" field="appid as value, name as text" orderby="text asc"
 					:defItem="1" label="应用选择" v-model="query.appid" :clear="false" />
-				<uni-data-select collection="uni-stat-stat-app-versions" field="_id as value, version as text"
+				<uni-data-select collection="uni-stat-app-versions" field="_id as value, version as text"
 					label="版本选择" v-model="query.version_id" />
 			</view>
 			<view class="uni-stat--x">
