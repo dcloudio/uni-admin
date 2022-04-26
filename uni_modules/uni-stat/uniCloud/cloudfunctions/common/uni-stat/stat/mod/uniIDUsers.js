@@ -27,8 +27,8 @@ module.exports = class UniIDUsers extends BaseMod {
 		const condition = {
 			'register_env.appid': appid,//DCloud appid
 			'register_env.uniPlatform': platform,//平台
-			'register_env.channel': channel ? channel : undefined,//渠道/场景值
-			'register_env.appVersionCode': version ? version : undefined//app版本号
+			'register_env.channel': channel,//渠道/场景值
+			'register_env.appVersionCode': version//app版本号
 		}
 		
 		//注册时间
@@ -56,11 +56,12 @@ module.exports = class UniIDUsers extends BaseMod {
 		if(!appid || !platform) {
 			return false
 		}
+		
 		const condition = {
 			'register_env.appid': appid,//DCloud appid
 			'register_env.uniPlatform': platform,//平台
-			'register_env.channel': channel ? channel : undefined,//渠道/场景值
-			'register_env.appVersionCode': version ? version : undefined//app版本号
+			'register_env.channel': channel,//渠道/场景值
+			'register_env.appVersionCode': version//app版本号
 		}
 		
 		//注册时间
