@@ -253,7 +253,7 @@
 					.then(res => {
 						const data = res.result.data
 						const today = data[0]
-						today && (today.total_users = 0)
+						today && (today.total_devices = 0)
 						const yesterday = data.find(item => item.dimension === 'day')
 						this.panelData = []
 						this.panelData = mapfields(fieldsMap, today)
