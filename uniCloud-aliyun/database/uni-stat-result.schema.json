@@ -52,6 +52,10 @@
 			"bsonType": "int",
 			"description": "本时间段新增设备数"
 		},
+		"user_session_times": {
+			"bsonType": "int",
+			"description": "本时间段用户的会话次数"
+		},
 		"active_device_count": {
 			"bsonType": "int",
 			"description": "本时间段活跃设备数"
@@ -72,13 +76,17 @@
 			"bsonType": "int",
 			"description": "本次登录用户的会话总时长，单位为秒"
 		},
-		"avg_session_time": {
+		"avg_device_session_time": {
 			"bsonType": "int",
-			"description": "次均停留时长,单位秒"
+			"description": "设备的次均停留时长,单位秒"
 		},
 		"avg_device_time": {
 			"bsonType": "int",
 			"defaultValue": "设均停留时长(平均每台设备的停留时长),单位秒"
+		},
+		"avg_user_session_time": {
+			"bsonType": "int",
+			"description": "用户的次均停留时长,单位秒"
 		},
 		"avg_user_time": {
 			"bsonType": "int",

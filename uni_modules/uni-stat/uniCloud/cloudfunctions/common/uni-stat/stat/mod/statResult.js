@@ -489,7 +489,7 @@ module.exports = class StatResult extends BaseMod {
 			errorCount = statErrorRes.total
 		}
 
-		// 次均停留时长
+		// 设备的次均停留时长，设备访问总时长/设备会话次数
 		let avgSessionTime = 0
 		if (data.total_duration > 0 && data.session_times > 0) {
 			avgSessionTime = Math.round(data.total_duration / data.session_times)
@@ -577,8 +577,9 @@ module.exports = class StatResult extends BaseMod {
 			matchCondition.channel, matchCondition.version)
 
 
-		//用户停留总时长
+		//用户停留总时长及总访问次数
 		let totalUserDuration = 0
+		let totalUserVisitTimes = 0
 		const totalUserDurationRes = await this.aggregate(userSessionLog.tableName, {
 			project: {
 				appid: 1,
@@ -593,19 +594,25 @@ module.exports = class StatResult extends BaseMod {
 				_id: {},
 				total_duration: {
 					$sum: "$duration"
+				},
+				total_visit_times: {
+					$sum: 1
 				}
 			}]
 		})
 		if (totalUserDurationRes && totalUserDurationRes.data.length > 0) {
 			totalUserDuration = totalUserDurationRes.data[0].total_duration
+			totalUserVisitTimes = totalUserDurationRes.data[0].total_visit_times
 		}
 
 		//人均停留时长
 		let avgUserTime = 0
+		//用户次均访问时长
+		let avgUserVisitTime = 0
 		if (totalUserDuration > 0 && activeUserCount > 0) {
 			avgUserTime = Math.round(totalUserDuration / activeUserCount)
+			avgUserVisitTime = Math.round(totalUserDuration / totalUserVisitTimes)
 		}
-
 
 		//设置填充数据
 		const datetime = new DateTime()
@@ -620,12 +627,14 @@ module.exports = class StatResult extends BaseMod {
 			total_users: totalUserCount,
 			new_user_count: newUserCount,
 			active_user_count: activeUserCount,
+			user_visit_times: totalUserVisitTimes,
 			app_launch_count: launchCount,
 			page_visit_count: data.page_view_count,
 			error_count: errorCount,
 			duration: data.total_duration,
 			user_duration: totalUserDuration,
-			avg_session_time: avgSessionTime,
+			avg_device_session_time: avgSessionTime,
+			avg_user_session_time: avgUserVisitTime,
 			avg_device_time: avgDeviceTime,
 			avg_user_time: avgUserTime,
 			bounce_times: bounceTimes,
@@ -1533,7 +1542,7 @@ module.exports = class StatResult extends BaseMod {
 				}
 			}
 
-		
+
 
 			//新增用户编号
 			const thisDayNewUids = await uniIDUsers.getUserIds(resultLog.appid, platformInfo.code, channelInfo.channel_code, versionInfo.version, {
@@ -1752,13 +1761,13 @@ module.exports = class StatResult extends BaseMod {
 				}
 			}
 
-			
+
 			//新增用户编号
 			const thisDayNewUids = await uniIDUsers.getUserIds(resultLog.appid, platformInfo.code, channelInfo.channel_code, versionInfo.version, {
 				$gte: startTime,
 				$lte: endTime
 			})
-				
+
 			// 新增用户留存率
 			newUserRate = 0
 			// 新增用户留存数
@@ -1779,7 +1788,7 @@ module.exports = class StatResult extends BaseMod {
 						$lte: lastTimeInfo.endTime
 					}
 				}).count()
-			
+
 				if (retentionnewUserRes && retentionnewUserRes.total > 0) {
 					// 新增用户留存数
 					newUsers = retentionnewUserRes.total
