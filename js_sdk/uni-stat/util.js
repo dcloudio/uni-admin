@@ -296,10 +296,10 @@ function getFieldTotal(query = this.query, field = "total_devices") {
 		.get()
 		.then(cur => {
 			const data = cur.result.data
-			fieldTotal = data.length && data[0].total_devices
+			fieldTotal = data.length && data[0][field]
 			fieldTotal = format(fieldTotal)
 			this.panelData.forEach(item => {
-				if (item.field === 'total_devices') {
+				if (item.field === field) {
 					item.value = fieldTotal
 				}
 			})

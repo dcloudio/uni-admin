@@ -29,25 +29,6 @@
 					<qiun-data-charts type="area" :chartData="chartData" :eopts="eopts" echartsH5 echartsApp />
 				</view>
 			</view>
-
-			<!-- <view class="dispaly-grid">
-				<view class="uni-stat--x p-m">
-					<view class="uni-stat-card-header">
-						<view>受访页 TOP10</view>
-						<view class="uni-stat-card-header-link" @click="navTo('/pages/uni-stat/page-res/page-res')">查看更多
-						</view>
-					</view>
-					<uni-stat-table :data="resTableData" :filedsMap="resFieldsMap" :loading="loading" tooltip />
-				</view>
-				<view class="uni-stat--x uni-stat-card p-m">
-					<view class="uni-stat-card-header">
-						<view>入口页 TOP10</view>
-						<view class="uni-stat-card-header-link" @click="navTo('/pages/uni-stat/page-ent/page-ent')">查看更多
-						</view>
-					</view>
-					<uni-stat-table :data="entTableData" :filedsMap="entFieldsMap" :loading="loading" tooltip />
-				</view>
-			</view> -->
 		</view>
 
 		<!-- #ifndef H5 -->
@@ -218,8 +199,6 @@
 			getAllData(query) {
 				this.getPanelData()
 				this.getChartData(query)
-				// this.getPageData(query, 'res')
-				// this.getPageData(query, 'ent')
 			},
 
 			getDays() {
@@ -241,6 +220,7 @@
 					platform_id,
 					start_time: [getTimeOfSomeDayAgo(1), new Date().getTime()]
 				})
+				console.log(333333333333, stringifyField(fieldsMap))
 				const db = uniCloud.database()
 				const subTable = db.collection(this.tableName)
 					.where(query)
@@ -253,6 +233,7 @@
 					.get()
 					.then(res => {
 						const data = res.result.data
+						console.log(111111111, data);
 						const today = data[0]
 						today && (today.total_users = 0)
 						const yesterday = data.find(item => item.dimension === 'day')
@@ -261,7 +242,7 @@
 						this.panelData.map(item => {
 							mapfields(fieldsMap, yesterday, item, '', 'contrast')
 						})
-						getFieldTotal.call(this, query)
+						getFieldTotal.call(this, query, 'total_users')
 					})
 			},
 
@@ -363,77 +344,6 @@
 					.groupBy('appid')
 					.groupField(`sum(page_visit_count) as total_app_access`)
 					.get()
-			},
-
-			getPageData(query, type) {
-				query = JSON.parse(JSON.stringify(query))
-				query.dimension = 'day'
-				query = stringifyQuery(query)
-				const {
-					pageCurrent
-				} = this.options
-				const mapping = this[`${type}FieldsMap`]
-				const field = mapping[1].field
-				this.loading = true
-				const db = uniCloud.database()
-				const filterAppid = stringifyQuery({
-					appid: this.query.appid
-				})
-				const mainTableTemp = db.collection('uni-stat-pages')
-					.where(filterAppid)
-					.field('_id, title, path')
-					.getTemp()
-				const subTableTemp = db.collection('uni-stat-page-result')
-					.where(query)
-					.getTemp()
-
-				db.collection(subTableTemp, mainTableTemp)
-					.field(
-						`${stringifyField(mapping, field)}, stat_date, page_id`
-					)
-					.groupBy("page_id")
-					.groupField(stringifyGroupField(mapping, field))
-					.orderBy(field, 'desc')
-					.limit(10)
-					.get({
-						getCount: true
-					})
-					.then(res => {
-						const {
-							count,
-							data
-						} = res.result
-						let total_app_access
-						this.getAppAccessTimes(query).then(res => {
-							const data = res.result.data[0]
-							total_app_access = data && data.total_app_access
-						}).finally(() => {
-							this[`${type}TableData`] = []
-							for (const item of data) {
-								item.total_app_access = total_app_access
-								const lines = item.page_id
-								if (Array.isArray(lines)) {
-									delete(item.page_id)
-									const line = lines[0]
-									if (line && Object.keys(line).length) {
-										for (const key in line) {
-											if (key !== '_id') {
-												item[key] = line[key]
-											}
-										}
-
-									}
-								}
-								mapfields(mapping, item, item)
-								this[`${type}TableData`].push(item)
-							}
-							this.loading = false
-						})
-					}).catch((err) => {
-						console.error(err)
-						// err.message 错误信息
-						// err.code 错误码
-					}).finally(() => {})
 			},
 
 			navTo(url) {

@@ -1,6 +1,7 @@
 const fieldsMap = [{
 	value: '今天',
-	contrast: '昨天'
+	contrast: '昨天',
+	// stat: -1
 }, {
 	title: '新增用户',
 	field: 'new_user_count',
