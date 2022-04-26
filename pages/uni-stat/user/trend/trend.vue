@@ -337,9 +337,9 @@
 					.then(res => {
 						const item = res.result.data[0]
 						item && (item.total_users = 0)
-						getFieldTotal.call(this, cloneQuery)
 						this.panelData = []
 						this.panelData = mapfields(fieldsMap, item)
+						getFieldTotal.call(this, query, 'total_users')
 					})
 			},
 

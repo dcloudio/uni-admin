@@ -26,7 +26,7 @@
 					:class="{'uni-stat__actived': currentDateTab < 0 && !!query.start_time.length}"
 					@change="useDatetimePicker" />
 			</view>
-			<view class="uni-stat--x mb-l" style="padding-top: 0;">
+			<view class="uni-stat--x mb-m" style="padding-top: 0;">
 				<view class="mb-m line-bottom">
 					<uni-stat-tabs type="boldLine" :tabs="fields" v-model="field" tooltip
 						style="line-height: 40px; margin-bottom: -17px;" />
@@ -38,8 +38,12 @@
 					</view>
 				</view>
 			</view>
-			<view class="uni-stat--x">
-				<uni-table :loading="loading" :border="false" stripe :emptyText="$t('common.empty')">
+			<view class="uni-stat--x p-m">
+				<view class="uni-tips mb-s flex">
+					<uni-icons type="info"></uni-icons>
+					表格中显示为空，表示留存为 0 或无数据
+				</view>
+				<uni-table :loading="loading" stripe :emptyText="$t('common.empty')">
 					<uni-tr style="background-color: #eee;">
 						<template v-for="(mapper, index) in fieldsMap">
 							<uni-th v-if="mapper.title" :key="index" align="center">{{mapper.title}}</uni-th>

@@ -1,6 +1,7 @@
 const fieldsMap = [{
 	value: '今天',
-	contrast: '昨天'
+	contrast: '昨天',
+	// stat: -1
 }, {
 	title: '新增用户',
 	field: 'new_user_count',
@@ -15,7 +16,7 @@ const fieldsMap = [{
 	contrast: 0
 }, {
 	title: '次均停留时长',
-	field: 'avg_session_time',
+	field: 'avg_user_session_time',
 	formatter: ':',
 	tooltip: '平均每次打开应用停留在应用内的总时长，即应用停留总时长/启动次数',
 	value: 0,
