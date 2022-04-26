@@ -8,7 +8,7 @@
 			</view>
 		</view>
 		<view class="uni-container">
-			<uni-notice-bar v-if="showNotice" showGetMore showIcon class="mb-m"
+			<uni-notice-bar v-if="!tableData.length" showGetMore showIcon class="mb-m"
 				text="统计相关功能需开通 uni 统计后才能使用, 具体流程参见 https://uniapp.dcloud.io/uni-stat-v2.html (点击打开)"
 				@click="navTo('https://uniapp.dcloud.io/uni-stat-v2.html')" />
 			<view class="uni-stat--x flex mb-m">
@@ -78,7 +78,6 @@
 				total: 0,
 				loading: false,
 				fieldsMap,
-				showNotice: true
 			}
 		},
 
