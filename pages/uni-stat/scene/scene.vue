@@ -75,7 +75,7 @@
 				fieldsMap,
 				query: {
 					dimension: "hour",
-					appid: "__UNI__HelloUniApp",
+					appid: '',
 					platform_id: '',
 					start_time: [],
 				},

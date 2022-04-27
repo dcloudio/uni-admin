@@ -66,7 +66,7 @@
 				entFieldsMap,
 				query: {
 					dimension: 'hour',
-					appid: '__UNI__HelloUniApp',
+					appid: '',
 					// appid: '',
 					platform_id: '',
 					start_time: [],
