@@ -42,17 +42,17 @@ export default {
 		staticMenu: [{
 			menu_id: "demo",
 			text: '静态功能演示',
-			icon: 'uni-icons-list',
+			icon: 'admin-icons-kaifashili',
 			url: "",
 			children: [{
 				menu_id: "icons",
 				text: '图标',
-				icon: 'uni-icons-star',
+				icon: 'admin-icons-icon',
 				value: '/pages/demo/icons/icons',
 			}, {
 				menu_id: "table",
 				text: '表格',
-				icon: 'uni-icons-map',
+				icon: 'admin-icons-table',
 				value: '/pages/demo/table/table',
 			}]
 		}]

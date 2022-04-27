@@ -8,8 +8,8 @@
 			</view>
 		</view>
 		<view class="uni-container">
-			<uni-notice-bar v-if="!tableData.length" showGetMore showIcon class="mb-m"
-				text="统计相关功能需开通 uni 统计后才能使用, 具体流程参见 https://uniapp.dcloud.io/uni-stat-v2.html (点击打开)"
+			<uni-notice-bar v-if="tableData.length" showGetMore showIcon class="mb-m pointer"
+				text="统计相关功能需开通 uni 统计后才能使用, 点击查看具体流程"
 				@click="navTo('https://uniapp.dcloud.io/uni-stat-v2.html')" />
 			<view class="uni-stat--x flex mb-m">
 				<uni-stat-tabs label="平台选择" type="boldLine" mode="platform" v-model="query.platform_id" />
