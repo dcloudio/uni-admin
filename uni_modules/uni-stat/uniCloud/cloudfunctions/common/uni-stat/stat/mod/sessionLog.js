@@ -288,6 +288,7 @@ module.exports = class SessionLog extends BaseMod {
 
 		//更新用户会话
 		if (data.uid) {
+			data.nowTime = nowTime
 			await new UserSessionLog().updateUserSession(sid, data)
 		}
 

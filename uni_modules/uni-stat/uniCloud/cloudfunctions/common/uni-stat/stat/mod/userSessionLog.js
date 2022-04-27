@@ -169,7 +169,7 @@ module.exports = class UserSessionLog extends BaseMod {
 			}
 		}
 
-		const nowTime = new DateTime().getTime()
+		let nowTime = data.nowTime ? data.nowTime : new DateTime().getTime()
 		const accessTime = nowTime - data.createTime
 		const accessSenconds = accessTime > 1000 ? parseInt(accessTime / 1000) : 1
 

@@ -302,7 +302,7 @@ module.exports = class StatResult extends BaseMod {
 		}).count()
 		let activeUserCount = 0
 		if (statVisitUserRes && statVisitUserRes.total > 0) {
-			activeDeviceCount = statVisitUserRes.total
+			activeUserCount = statVisitUserRes.total
 		}
 
 		// 平台信息
@@ -350,7 +350,7 @@ module.exports = class StatResult extends BaseMod {
 			$lte: this.endTime
 		})
 
-		//人家停留时长
+		//人均停留时长
 		let avgUserTime = 0
 		if (data.total_user_duration > 0 && activeUserCount > 0) {
 			avgUserTime = Math.round(data.total_user_duration / activeUserCount)
