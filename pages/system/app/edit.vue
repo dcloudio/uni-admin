@@ -121,3 +121,9 @@
     }
   }
 </script>
+
+<style>
+	::v-deep .uni-forms-item__label {
+		width: 90px !important;
+	}
+</style>
