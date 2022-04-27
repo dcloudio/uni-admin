@@ -1693,6 +1693,9 @@ module.exports = class StatResult extends BaseMod {
 
 		const activeUserObj = new ActiveUsers()
 		const uniIDUsers = new UniIDUsers()
+		const platform = new Platform()
+		const channel = new Channel()
+		const version = new Version()
 		let res = null
 		//活跃用户留存率
 		let activeUserRate
@@ -1704,6 +1707,50 @@ module.exports = class StatResult extends BaseMod {
 		let newUsers
 		for (const resultIndex in resultLogRes.data) {
 			const resultLog = resultLogRes.data[resultIndex]
+
+			// 平台信息
+			let platformInfo = null
+			if (this.platforms && this.platforms[resultLog.platform_id]) {
+				platformInfo = this.platforms[resultLog.platform_id]
+			} else {
+				platformInfo = await this.getById(platform.tableName, resultLog.platform_id)
+				if (!platformInfo || platformInfo.length === 0) {
+					platformInfo.code = ''
+				}
+				this.platforms[resultLog.platform_id] = platformInfo
+				if (this.debug) {
+					console.log('platformInfo', JSON.stringify(platformInfo))
+				}
+			}
+			// 渠道信息
+			let channelInfo = null
+			if (this.channels && this.channels[resultLog.channel_id]) {
+				channelInfo = this.channels[resultLog.channel_id]
+			} else {
+				channelInfo = await this.getById(channel.tableName, resultLog.channel_id)
+				if (!channelInfo || channelInfo.length === 0) {
+					channelInfo.channel_code = ''
+				}
+				this.channels[resultLog.channel_id] = channelInfo
+				if (this.debug) {
+					console.log('channelInfo', JSON.stringify(channelInfo))
+				}
+			}
+			// 版本信息
+			let versionInfo = null
+			if (this.versions && this.versions[resultLog.version_id]) {
+				versionInfo = this.versions[resultLog.version_id]
+			} else {
+				versionInfo = await this.getById(version.tableName, resultLog.version_id)
+				if (!versionInfo || versionInfo.length === 0) {
+					versionInfo.version = ''
+				}
+				this.versions[resultLog.version_id] = versionInfo
+				if (this.debug) {
+					console.log('versionInfo', JSON.stringify(versionInfo))
+				}
+			}
+
 			// 获取该批次的活跃用户数
 			const activeUserRes = await this.selectAll(activeUserObj.tableName, {
 				appid: resultLog.appid,

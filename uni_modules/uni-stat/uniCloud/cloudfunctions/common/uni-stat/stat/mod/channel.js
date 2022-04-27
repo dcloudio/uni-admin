@@ -15,7 +15,7 @@ module.exports = class Channel extends BaseMod {
 
 	/**
 	 * 获取渠道信息
-	 * @param {String} appid 
+	 * @param {String} appid
 	 * @param {String} platformId 平台编号
 	 * @param {String} channel 渠道代码
 	 */
@@ -100,12 +100,12 @@ module.exports = class Channel extends BaseMod {
 		if (params.ut === 'h5') {
 			return ''
 		}
-		
+
 		//去掉原生应用场景值，只使用渠道
 		if(params.sc && (params.ut === 'n' || params.ut === 'app-plus')) {
 			params.sc = ''
 		}
-		
+
 		//未上报渠道则使用场景值
 		if (params.ch) {
 			return params.ch

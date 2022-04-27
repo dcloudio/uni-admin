@@ -23,9 +23,7 @@ module.exports = class UniIDUsers extends BaseMod {
 		if(!appid || !platform) {
 			return false
 		}
-
 		const condition = this.getCondition(appid, platform, channel, version, registerTime)
-
 		let userCount = 0
 		const userCountRes = await this.getCollection(this.tableName, this.tablePrefix).where(condition).count()
 		if(userCountRes && userCountRes.total > 0) {
@@ -47,11 +45,9 @@ module.exports = class UniIDUsers extends BaseMod {
 		if(!appid || !platform) {
 			return false
 		}
-
 		const condition = this.getCondition(appid, platform, channel, version, registerTime)
-
 		let uids = []
-		const uidsRes = await this.selectAll(this.tableName, conditon, {
+		const uidsRes = await this.selectAll(this.tableName, condition, {
 			_id: 1
 		}, this.tablePrefix)
 
@@ -62,7 +58,14 @@ module.exports = class UniIDUsers extends BaseMod {
 		return uids
 	}
 
-
+	/**
+	 * 获取查询条件
+	 * @param {String} appid DCloud-appid
+	 * @param {String} platform 平台
+	 * @param {String} channel 渠道
+	 * @param {String} version 版本
+	 * @param {Object} registerTime 注册时间范围 例：{$gte:开始日期时间戳, $lte:结束日期时间戳}
+	 */
 	getCondition(appid, platform, channel, version, registerTime) {
 
 		let condition = {
@@ -76,7 +79,7 @@ module.exports = class UniIDUsers extends BaseMod {
 		if(registerTime) {
 			condition.register_date = registerTime
 		}
-		console.log('uni-id condition', condition)
+
 		return condition
 	}
 
