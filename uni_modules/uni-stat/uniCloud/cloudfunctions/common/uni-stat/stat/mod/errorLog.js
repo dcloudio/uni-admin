@@ -58,7 +58,7 @@ module.exports = class ErrorLog extends BaseMod {
 					continue
 				}
 			}
-			
+
 			//获取云端信息
 			spaceId = null
 			spaceProvider = null
@@ -86,6 +86,7 @@ module.exports = class ErrorLog extends BaseMod {
 				uid: params.uid ? params.uid : '',
 				os: params.p ? params.p : '',
 				ua: params.ua ? params.ua : '',
+				page_url: params.url ? params.url : '',
 				space_id: spaceId ? spaceId : '',
 				space_provider: spaceProvider ? spaceProvider : '',
 				platform_version: params.mpv ? params.mpv : '',
