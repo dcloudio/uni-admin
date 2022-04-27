@@ -99,7 +99,7 @@ module.exports = class UserSessionLog extends BaseMod {
 			//用户已退出会话
 			if (params.last_visit_user_id) {
 				if (this.debug) {
-					console.log('user "' + params.last_visit_user_id + '" is exit session :', sid)
+					console.log('user "' + params.last_visit_user_id + '" is exit session :', params.sid)
 				}
 				await this.closeUserSession(params.sid)
 			}
@@ -112,7 +112,7 @@ module.exports = class UserSessionLog extends BaseMod {
 			else if (params.uid != params.last_visit_user_id) {
 				if (this.debug) {
 					console.log('user "' + params.last_visit_user_id + '" change to "' + params.uid +
-						'" in the session :', sid)
+						'" in the session :', params.sid)
 				}
 				//关闭原会话生成新用户对话
 				await this.closeUserSession(params.sid)
@@ -158,7 +158,7 @@ module.exports = class UserSessionLog extends BaseMod {
 		}).orderBy('create_time', 'desc').limit(1).get()
 
 		if (userSession.data.length === 0) {
-			console.error('Not found the user session', {
+			console.log('Not found the user session', {
 				session_id: sid,
 				uid: data.uid,
 				is_finish: 0
