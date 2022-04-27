@@ -37,7 +37,7 @@
 						</template>
 					</uni-tr>
 					<uni-tr v-for="(item ,i) in tableData" :key="i">
-						<template v-for="(mapper, index) in fieldsMap" :key="mapper.title">
+						<template v-for="(mapper, index) in fieldsMap">
 							<!-- <uni-td v-if="mapper.title && index === 1" :key="mapper.title" class="uni-stat-edit--x">
 								{{item[mapper.field] ? item[mapper.field] : '-'}}
 								<uni-icons type="compose" color="#2979ff" size="25" class="uni-stat-edit--btn"
