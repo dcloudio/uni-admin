@@ -1,5 +1,5 @@
 {
-	"debug": true,
+	"debug": false,
 	"redis": false,
 	"cachetime": 604800,
 	"sessionExpireTime": 1800,
