@@ -216,7 +216,6 @@ module.exports = class SessionLog extends BaseMod {
 			} else {
 				//如果当前会话切换了用户则生成新的用户会话
 				if (params.uid != sessionLogInfoData.last_visit_user_id) {
-					console.log('checkUserSession params', params.uid)
 					await userSessionLog.checkUserSession({
 						...params,
 						page_id: pageInfo._id,
