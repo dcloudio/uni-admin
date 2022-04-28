@@ -21,7 +21,7 @@ module.exports = class SessionLog extends BaseMod {
 	 * @param {Object} reportParams 上报参数
 	 */
 	async batchFill(reportParams) {
-		let params, pageInfo, nowTime, firstVistTime, lastVistTime;
+		let params
 		const fillParams = []
 
 		const page = new Page()
@@ -85,7 +85,7 @@ module.exports = class SessionLog extends BaseMod {
 		const channel = new Channel()
 		const nowTime = dateTime.getTime()
 		const firstVistTime = params.fvts ? dateTime.strToTime(params.fvts) : nowTime
-		const lastVistTime = params.lvts ? dateTime.strToTime(params.lvts) : 0
+		const lastVistTime = (params.lvts && params.lvts !== '0') ? dateTime.strToTime(params.lvts) : 0
 		const fillParams = {
 			appid: params.ak,
 			version: params.v ? params.v : '',
