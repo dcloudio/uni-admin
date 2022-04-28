@@ -10,7 +10,7 @@ export default {
 	},
 	navBar: { // 顶部导航
 		logo: '/static/logo.png', // 左侧 Logo
-		links: [{
+		langs: [{
 			text: '中文简体',
 			lang: 'zh-Hans'
 		}, {
@@ -19,12 +19,6 @@ export default {
 		}, {
 			text: 'English',
 			lang: 'en'
-		}, { // 右侧链接
-			text: 'topwindow.text.doc',
-			url: 'https://uniapp.dcloud.net.cn/uniCloud/admin'
-		}, {
-			text: 'topwindow.text.plugin',
-			url: 'https://ext.dcloud.net.cn/?cat1=7&cat2=74'
 		}],
 		debug: {
 			enable: process.env.NODE_ENV !== 'production', //是否显示错误信息
@@ -54,6 +48,22 @@ export default {
 				text: '表格',
 				icon: 'admin-icons-table',
 				value: '/pages/demo/table/table',
+			}]
+		}, {
+			menu_id: "admim-doc-pulgin",
+			text: '文档与插件',
+			icon: 'admin-icons-eco',
+			url: "",
+			children: [{
+				menu_id: "doc",
+				icon: 'admin-icons-doc',
+				text: 'uni-admin 框架文档',
+				value: 'https://uniapp.dcloud.net.cn/uniCloud/admin'
+			}, {
+				menu_id: "pulgin",
+				icon: 'admin-icons-pulgin',
+				text: 'uni-admin 插件',
+				value: 'https://ext.dcloud.net.cn/?cat1=7&cat2=74'
 			}]
 		}]
 	}

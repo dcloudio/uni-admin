@@ -173,3 +173,23 @@
 .admin-icons-table:before {
   content: "\e639";
 }
+
+.admin-icons-eco:before {
+  content: "\e698";
+}
+
+.admin-icons-doc:before {
+  content: "\e656";
+}
+
+.admin-icons-pulgin:before {
+  content: "\e648";
+}
+
+.admin-icons-lang:before {
+  content: "\e618";
+}
+
+.admin-icons-user:before {
+  content: "\e68d";
+}

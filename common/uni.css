@@ -555,6 +555,15 @@ button:after {
 		max-width: 350px;
 	}
 
+	::v-deep .uni-picker-container .uni-picker-custom {
+		width: 100px;
+		margin: 0 86px;
+	}
+
+	::v-deep .uni-picker-container .uni-picker-custom .uni-picker-select + div {
+		left: 50% !important;
+	}
+
 }
 
 /* #endif */
