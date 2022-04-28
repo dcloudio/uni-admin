@@ -38,7 +38,7 @@ function stringifyQuery(query, dimension = false) {
 		}
 	})
 	const queryStr = queryArr.join(' && ')
-	console.log('............util querystr:', queryStr);
+	// console.log('............util querystr:', queryStr);
 	return queryStr || {}
 }
 
@@ -67,14 +67,12 @@ function mapfields(map, data = {}, goal, prefix = '', prop = 'value') {
 					let [dividend, divisor] = computedFields
 					dividend = Number(origin[prefix + dividend])
 					divisor = Number(origin[prefix + divisor])
-					// if (dividend && divisor) {
 					const val = format(division(dividend, divisor), formatter, fix)
 					if (hasValue && field === goal.field) {
 						goal[prop] = val
 					} else {
 						goal[field] = val
 					}
-					// }
 				} else {
 					if (value) {
 						const val = format(value, formatter, fix)
@@ -163,7 +161,6 @@ function format(num, type = ',', fix) {
 	if (typeof num !== 'number') return num
 	if (type === '%') {
 		// 注意浮点数精度
-		// num = Number.parseFloat(num).toPrecision(4)
 		num = (num * 100)
 		if (String(num).indexOf('.') > -1) {
 			num = num.toFixed(2)
@@ -199,9 +196,6 @@ function format(num, type = ',', fix) {
 		const hms = [h, m, s].map(i => i < 10 ? '0' + i : i)
 		return hms.join(type)
 	} else if (type === ',') {
-		// if (String(num).indexOf('.') > -1) {
-		// 	num = num.toFixed(2)
-		// }
 		return num.toLocaleString()
 	} else {
 		if (String(num).indexOf('.') > -1) {
