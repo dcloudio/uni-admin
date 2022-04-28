@@ -22,8 +22,6 @@ module.exports = class SessionLog extends BaseMod {
 	 */
 	async batchFill(reportParams) {
 		let params
-		const fillParams = []
-
 		const page = new Page()
 		const platform = new Platform()
 		const dateTime = new DateTime()
