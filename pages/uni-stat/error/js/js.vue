@@ -11,8 +11,8 @@
 			<view class="uni-stat--x flex">
 				<uni-data-select collection="opendb-app-list" field="appid as value, name as text" orderby="text asc"
 					:defItem="1" label="应用选择" v-model="query.appid" :clear="false" />
-				<uni-data-select collection="uni-stat-app-versions" field="_id as value, version as text"
-					label="版本选择" v-model="query.version_id" />
+				<uni-data-select collection="uni-stat-app-versions" field="_id as value, version as text" label="版本选择"
+					v-model="query.version_id" />
 			</view>
 			<view class="uni-stat--x">
 				<uni-stat-tabs label="平台选择" type="boldLine" mode="platform" v-model="query.platform_id" />
@@ -35,7 +35,7 @@
 			</view>
 
 			<view class="uni-stat--x p-m">
-				<uni-table :loading="loading" border stripe :emptyText="$t('common.empty')" style="overflow: scroll;">
+				<uni-table :loading="loading" border stripe :emptyText="$t('common.empty')" style="overflow-y: scroll;">
 					<uni-tr>
 						<template v-for="(mapper, index) in fieldsMap">
 							<uni-th v-if="mapper.title" :key="index" align="center">
@@ -52,7 +52,7 @@
 								</uni-tooltip>
 							</uni-td>
 							<uni-td v-else-if="mapper.field === 'count'" :key="mapper.title" align="center">
-								<text class="link-btn" @click="togglePopup(item)">
+								<text class="link-btn" @click="navTo('detail', item.hash)">
 									{{item[mapper.field] !== undefined ? item[mapper.field] : '-'}}
 								</text>
 							</uni-td>
@@ -107,7 +107,7 @@
 		format,
 		formatDate,
 		parseDateTime,
-    debounce
+		debounce
 	} from '@/js_sdk/uni-stat/util.js'
 	import {
 		fieldsMap,
@@ -440,11 +440,18 @@
 					})
 			},
 
-			togglePopup(item) {
-				this.getPopupTableData(item.hash)
-				this.$refs.popupTable.open()
+			navTo(url, id) {
+				if (url.indexOf('http') > -1) {
+					window.open(url)
+				} else {
+					if (id) {
+						url = `${url}?hash=${id}`
+					}
+					uni.navigateTo({
+						url
+					})
+				}
 			},
-
 			createStr(maps, fn, prefix = 'total_') {
 				const strArr = []
 				maps.forEach(mapper => {

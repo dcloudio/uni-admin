@@ -189,6 +189,14 @@
 			}
 
 		}, {
+			"path": "error/js/detail",
+			"style": {
+				"navigationBarTitleText": "错误信息",
+				"navigationStyle": "default",
+				"enablePullDownRefresh": false
+			}
+
+		}, {
 			"path": "error/app/app",
 			"style": {
 				"navigationBarTitleText": "app原生报错统计",

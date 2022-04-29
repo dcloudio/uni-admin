@@ -156,8 +156,8 @@
 				let def = ''
 				if (!this.query.platform_id) {
 					const nativePlatform = [
-						"6221e59b428244000187a11d",
-						"6221e59b428244000187a11e"
+						"62626b2b8d55d00001289e0b",
+						"62626b2b8d55d00001289e0c"
 					]
 					def = nativePlatform.map(p => `platform_id == "${p}"`).join(' || ')
 					def = `(${def})`

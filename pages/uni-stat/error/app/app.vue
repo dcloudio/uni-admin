@@ -11,11 +11,11 @@
 			<view class="uni-stat--x flex">
 				<uni-data-select collection="opendb-app-list" field="appid as value, name as text" orderby="text asc"
 					:defItem="1" label="应用选择" v-model="query.appid" :clear="false" />
-				<uni-data-select collection="uni-stat-app-versions" field="_id as value, version as text"
-					label="版本选择" v-model="query.version_id" />
+				<uni-data-select collection="uni-stat-app-versions" field="_id as value, version as text" label="版本选择"
+					v-model="query.version_id" />
 			</view>
 			<view class="uni-stat--x">
-				<uni-stat-tabs label="平台选择" type="boldLine" mode="platform-channel" v-model="query.platform_id" />
+				<uni-stat-tabs label="平台选择" type="boldLine" mode="platform-channel" v-model="query.platform" />
 			</view>
 			<view class="uni-stat--x flex">
 				<uni-stat-tabs label="日期选择" :current="currentDateTab" :yesterday="false" mode="date"
@@ -26,7 +26,7 @@
 					@change="useDatetimePicker" />
 			</view>
 			<view class="uni-stat--x p-m">
-				<uni-table :loading="loading" border stripe :emptyText="$t('common.empty')" style="overflow: scroll;">
+				<uni-table :loading="loading" border stripe :emptyText="$t('common.empty')" style="overflow-y: scroll;">
 					<uni-tr>
 						<template v-for="(mapper, index) in fieldsMap">
 							<uni-th v-if="mapper.title" :key="index" align="center">
@@ -67,22 +67,6 @@
 			</view>
 		</view>
 
-		<uni-popup ref="popupTable" type="center" :maskClick="true">
-			<view class="modal">
-				<view class="modal-header">
-					错误设备信息
-				</view>
-				<scroll-view scroll-y="true">
-					<view class="modal-content">
-						<view class="uni-form-item-tips">
-							注：仅展示最近10条
-						</view>
-						<uni-stat-table :data="popupTableData" :filedsMap="popupFieldsMap" :loading="popupLoading" />
-					</view>
-				</scroll-view>
-			</view>
-		</uni-popup>
-
 		<!-- #ifndef H5 -->
 		<fix-window />
 		<!-- #endif -->
@@ -122,8 +106,8 @@
 				popupFieldsMap,
 				query: {
 					appid: "",
-					platform_id: '',
-					version_id: '',
+					platform: '',
+					version: '',
 					create_time: [],
 				},
 				options: {
@@ -135,19 +119,21 @@
 				loading: false,
 				popupLoading: false,
 				currentDateTab: 0,
-				// currentChartTab: ,
 				tableData: [],
-				popupTableData: [],
-				panelData: JSON.parse(JSON.stringify(panelOption)),
-				chartData: {},
-				chartTab: 'errorCount',
-				chartTabs: [{
-					_id: 'errorCount',
-					name: '错误次数'
-				}, {
-					_id: 'errorRate',
-					name: '错误率'
-				}],
+				networks: [
+					"状态未知",
+					"未连接",
+					"有线",
+					"WIFI",
+					"2G",
+					"3G",
+					"4G",
+					"5G"
+				],
+				nativePlatform: {
+					"62626b2b8d55d00001289e0b": "android",
+					"62626b2b8d55d00001289e0c": "ios"
+				}
 			}
 		},
 		computed: {
@@ -160,18 +146,18 @@
 			},
 			defQuery() {
 				let def = ''
-				if (!this.query.platform_id) {
-					const nativePlatform = [
-						"6221e59b428244000187a11d",
-						"6221e59b428244000187a11e"
-					]
-					def = nativePlatform.map(p => `platform_id == "${p}"`).join(' || ')
+				if (!this.query.platform) {
+					def = Object.keys(this.nativePlatform).map(k => `platform == "${this.nativePlatform[k]}"`).join(' || ')
 					def = `(${def})`
 				}
 				return def
 			},
 			queryStr() {
-				const query = stringifyQuery(this.query)
+				let query =  JSON.parse(JSON.stringify(this.query))
+				if (query.platform) {
+					query.platform = this.nativePlatform[query.platform]
+				}
+				query = stringifyQuery(query)
 				return this.defQuery ?
 					query + ' && ' + this.defQuery :
 					query
@@ -196,7 +182,8 @@
 			changeTimeRange(id, index) {
 				this.currentDateTab = index
 				const start = getTimeOfSomeDayAgo(id),
-					end = getTimeOfSomeDayAgo(0) - 1
+					// end = getTimeOfSomeDayAgo(0) - 1
+					end = new Date().getTime()
 				this.query.create_time = [start, end]
 			},
 			changePageCurrent(e) {
@@ -223,7 +210,6 @@
 				} = this.options
 				this.loading = true
 				const db = uniCloud.database()
-				console.log(1111111111, query);
 				db.collection('uni-stat-app-crash-logs')
 					.where(query)
 					.orderBy('create_time', 'desc')
@@ -240,6 +226,8 @@
 						const tempData = []
 						for (const item of data) {
 							item.create_time = parseDateTime(item.create_time, 'dateTime')
+							item.device_net = this.networks[Number(item.device_net)]
+							item.use_memery_size = this.$formatBytes(item.use_memery_size)
 							item.msgTooltip = item.error_msg
 							item.error_msg = item.error_msg.substring(0, 100) + '...'
 							tempData.push(item)

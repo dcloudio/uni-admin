@@ -4,15 +4,6 @@ const fieldsMap = [{
 	tooltip: '',
 	formatter: '',
 }, {
-	title: '平台',
-	field: 'platform',
-	formatter: '',
-}, {
-	title: '平台版本号',
-	field: 'version',
-	tooltip: '原生平台为客户端 SDK 版本号；小程序平台为微信、支付宝、百度等应用的版本号',
-	formatter: '',
-}, {
 	title: '错误次数',
 	field: 'count',
 	tooltip: '相同错误在某时间段内发生的次数',
@@ -22,6 +13,15 @@ const fieldsMap = [{
 	field: 'count/total_count',
 	formatter: '%',
 	tooltip: '某个错误发生的次数/总错误数',
+}, {
+	title: '平台',
+	field: 'platform',
+	formatter: '',
+}, {
+	title: '平台版本号',
+	field: 'version',
+	tooltip: '原生平台为客户端 SDK 版本号；小程序平台为微信、支付宝、百度等应用的版本号',
+	formatter: '',
 }, {
 	title: '错误信息',
 	field: 'msg',
@@ -33,10 +33,16 @@ const popupFieldsMap = [{
 	field: 'create_time',
 	formatter: '',
 }, {
-	title: '设备标识',
-	field: 'device_id',
+	title: '页面信息',
+	field: 'page_url',
 	formatter: '',
-}, {
+},
+// {
+// 	title: '设备标识',
+// 	field: 'device_id',
+// 	formatter: '',
+// },
+{
 	title: '客户端操作系统',
 	field: 'os',
 	formatter: '',

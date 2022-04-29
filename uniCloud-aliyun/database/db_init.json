@@ -397,7 +397,7 @@
 			"permission": [],
 			"enable": true,
 			"menu_id": "uni-stat-error-app",
-			"name": "app原生报错",
+			"name": "app崩溃",
 			"icon": "admin-icons-error-app",
 			"url": "/pages/uni-stat/error/app/app",
 			"sort": 2172,
