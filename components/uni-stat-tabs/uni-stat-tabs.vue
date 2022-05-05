@@ -168,17 +168,15 @@
 						if (this.mode === 'platform-scene') {
 							platforms = platforms.filter(item => !/^android|ios|h5|qn|qw$/.test(item.code))
 						}
-						platforms.unshift({
-							name: '全部',
-							code: 'all'
-						})
+						if (this.mode !== 'platform-channel') {
+							platforms.unshift({
+								name: '全部',
+								code: 'all'
+							})
+						}
 						this.renderTabs = platforms
 					})
-			},
-
-			// list(items, goal){
-			// 	items.map( item => goal.code.indexOf("android") === -1)
-			// }
+			}
 		}
 	}
 </script>
@@ -192,6 +190,7 @@
 		margin-bottom: 17px;
 		margin-right: 5px;
 	}
+
 	.uni-stat--tab-x {
 		display: flex;
 		margin: 0 15px;
@@ -287,10 +286,11 @@
 			flex-wrap: unset;
 			overflow-x: auto !important;
 		}
+
 		::-webkit-scrollbar {
-		    display: none;
+			display: none;
 		}
 	}
-	/* #endif */
 
+	/* #endif */
 </style>
