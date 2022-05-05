@@ -77,7 +77,7 @@
 				type: 'visit_depth_data',
 				types: [{
 					_id: 'visit_depth_data',
-					name: '访问深度'
+					name: '访问页数'
 				}, {
 					_id: 'duration_data',
 					name: '访问时长'
@@ -234,6 +234,7 @@
 			getTabelData(query) {
 				query = stringifyQuery(query)
 				const groupField = this.createStr(['visit_devices', 'visit_times'], this.type)
+				this.fieldsMap[0].title = this.types.find(t => t._id === this.type).name
 				this.loading = true
 				const db = uniCloud.database()
 				db.collection('uni-stat-loyalty-result')
