@@ -12,7 +12,7 @@ export default [{
 	field: 'param',
 	tooltip: '',
 }, {
-	title: '上报平台',
+	title: '平台',
 	field: 'platform',
 	tooltip: '',
 }, {
@@ -22,9 +22,5 @@ export default [{
 }, {
 	title: '设备标识',
 	field: 'device_id',
-	tooltip: '',
-}, {
-	title: '会话 ID',
-	field: 'session_id',
-	tooltip: '',
+	tooltip: ''
 }]

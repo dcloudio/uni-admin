@@ -168,7 +168,7 @@
 			"enable": true,
 			"menu_id": "uni-stat-device-overview",
 			"name": "今日概况",
-			"icon": "admin-icons-overview",
+			"icon": "",
 			"url": "/pages/uni-stat/device/overview/overview",
 			"sort": 2121,
 			"create_date": 1638356902516
@@ -178,7 +178,7 @@
 			"enable": true,
 			"menu_id": "uni-stat-device-activity",
 			"name": "活跃度",
-			"icon": "admin-icons-activity",
+			"icon": "",
 			"url": "/pages/uni-stat/device/activity/activity",
 			"sort": 2122,
 			"create_date": 1638356902516
@@ -198,7 +198,7 @@
 			"enable": true,
 			"menu_id": "uni-stat-device-retention",
 			"name": "留存",
-			"icon": "admin-icons-retention",
+			"icon": "",
 			"url": "/pages/uni-stat/device/retention/retention",
 			"sort": 2124,
 			"create_date": 1638356902516
@@ -208,7 +208,7 @@
 			"enable": true,
 			"menu_id": "uni-stat-device-comparison",
 			"name": "平台对比",
-			"icon": "admin-icons-comparison",
+			"icon": "",
 			"url": "/pages/uni-stat/device/comparison/comparison",
 			"sort": 2125,
 			"create_date": 1638356902516
@@ -218,7 +218,7 @@
 			"enable": true,
 			"menu_id": "uni-stat-device-stickiness",
 			"name": "粘性",
-			"icon": "admin-icons-stickiness",
+			"icon": "",
 			"url": "/pages/uni-stat/device/stickiness/stickiness",
 			"sort": 2126,
 			"create_date": 1638356902516
@@ -238,7 +238,7 @@
 			"enable": true,
 			"menu_id": "uni-stat-user-overview",
 			"name": "今日概况",
-			"icon": "admin-icons-overview",
+			"icon": "",
 			"url": "/pages/uni-stat/user/overview/overview",
 			"sort": 2121,
 			"create_date": 1638356902516
@@ -248,7 +248,7 @@
 			"enable": true,
 			"menu_id": "uni-stat-user-activity",
 			"name": "活跃度",
-			"icon": "admin-icons-activity",
+			"icon": "",
 			"url": "/pages/uni-stat/user/activity/activity",
 			"sort": 2122,
 			"create_date": 1638356902516
@@ -256,9 +256,9 @@
 			"parent_id": "uni-stat-user",
 			"permission": [],
 			"enable": true,
+			"icon": "",
 			"menu_id": "uni-stat-user-trend",
 			"name": "趋势分析",
-			"icon": "admin-icons-trend",
 			"url": "/pages/uni-stat/user/trend/trend",
 			"sort": 2123,
 			"create_date": 1638356902516
@@ -268,7 +268,7 @@
 			"enable": true,
 			"menu_id": "uni-stat-user-retention",
 			"name": "留存",
-			"icon": "admin-icons-retention",
+			"icon": "",
 			"url": "/pages/uni-stat/user/retention/retention",
 			"sort": 2124,
 			"create_date": 1638356902516
@@ -278,7 +278,7 @@
 			"enable": true,
 			"menu_id": "uni-stat-user-comparison",
 			"name": "平台对比",
-			"icon": "admin-icons-comparison",
+			"icon": "",
 			"url": "/pages/uni-stat/user/comparison/comparison",
 			"sort": 2125,
 			"create_date": 1638356902516
@@ -288,7 +288,7 @@
 			"enable": true,
 			"menu_id": "uni-stat-user-stickiness",
 			"name": "粘性",
-			"icon": "admin-icons-stickiness",
+			"icon": "",
 			"url": "/pages/uni-stat/user/stickiness/stickiness",
 			"sort": 2126,
 			"create_date": 1638356902516
@@ -298,7 +298,7 @@
 			"enable": true,
 			"menu_id": "uni-stat-page-analysis",
 			"name": "页面统计",
-			"icon": "admin-icons-yemiantongji",
+			"icon": "admin-icons-page-ent",
 			"url": "",
 			"sort": 2123,
 			"create_date": 1638356902516
@@ -308,7 +308,7 @@
 			"enable": true,
 			"menu_id": "uni-stat-page-res",
 			"name": "受访页",
-			"icon": "admin-icons-page-res",
+			"icon": "",
 			"url": "/pages/uni-stat/page-res/page-res",
 			"sort": 2131,
 			"create_date": 1638356902516
@@ -318,7 +318,7 @@
 			"enable": true,
 			"menu_id": "uni-stat-page-ent",
 			"name": "入口页",
-			"icon": "admin-icons-page-ent",
+			"icon": "",
 			"url": "/pages/uni-stat/page-ent/page-ent",
 			"sort": 2132,
 			"create_date": 1638356902516
@@ -338,7 +338,7 @@
 			"enable": true,
 			"menu_id": "uni-stat-senceChannel-scene",
 			"name": "场景值（小程序）",
-			"icon": "admin-icons-scene",
+			"icon": "",
 			"url": "/pages/uni-stat/scene/scene",
 			"sort": 2151,
 			"create_date": 1638356902516
@@ -348,7 +348,7 @@
 			"enable": true,
 			"menu_id": "uni-stat-senceChannel-channel",
 			"name": "渠道（app）",
-			"icon": "admin-icons-channel",
+			"icon": "",
 			"url": "/pages/uni-stat/channel/channel",
 			"sort": 2152,
 			"create_date": 1638356902516
@@ -356,21 +356,11 @@
 			"parent_id": "uni-stat",
 			"permission": [],
 			"enable": true,
-			"menu_id": "uni-stat-event",
-			"name": "事件和转化",
-			"icon": "admin-icons-shijianfenxi",
-			"url": "",
-			"sort": 2160,
-			"create_date": 1638356902516
-		}, {
-			"parent_id": "uni-stat-event",
-			"permission": [],
-			"enable": true,
 			"menu_id": "uni-stat-event-event",
-			"name": "事件分析管理",
+			"name": "自定义事件",
 			"icon": "admin-icons-shijianfenxi",
 			"url": "/pages/uni-stat/event/event",
-			"sort": 2161,
+			"sort": 2160,
 			"create_date": 1638356902516
 		}, {
 			"parent_id": "uni-stat",
@@ -388,7 +378,7 @@
 			"enable": true,
 			"menu_id": "uni-stat-error-js",
 			"name": "js报错",
-			"icon": "admin-icons-error-js",
+			"icon": "",
 			"url": "/pages/uni-stat/error/js/js",
 			"sort": 2171,
 			"create_date": 1638356902516
@@ -398,7 +388,7 @@
 			"enable": true,
 			"menu_id": "uni-stat-error-app",
 			"name": "app崩溃",
-			"icon": "admin-icons-error-app",
+			"icon": "",
 			"url": "/pages/uni-stat/error/app/app",
 			"sort": 2172,
 			"create_date": 1638356902516
@@ -416,9 +406,9 @@
 			"parent_id": "uni-stat-link-help",
 			"permission": [],
 			"enable": true,
-			"menu_id": "uni-stat-link-help-article-4",
+			"menu_id": "uni-stat-link-help-article1",
 			"name": "小程序域名配置说明",
-			"icon": "admin-icons-help",
+			"icon": "",
 			"url": "https://uniapp.dcloud.net.cn/uni-stat.html",
 			"sort": 2194,
 			"create_date": 1638356902516
