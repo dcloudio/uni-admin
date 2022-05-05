@@ -12,7 +12,7 @@ const fieldsMap = [{
 	field: 'platform',
 	formatter: '',
 }, {
-	title: '设备系统版本',
+	title: '系统版本',
 	field: 'device_os_version',
 	formatter: ''
 }, {
@@ -25,7 +25,7 @@ const fieldsMap = [{
 	field: 'device_vendor',
 	formatter: ''
 }, {
-	title: '使用的内存量',
+	title: '使用内存量',
 	field: 'use_memery_size',
 }, {
 	title: '运行应用的个数',
