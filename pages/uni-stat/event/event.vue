@@ -184,7 +184,7 @@
 				// 	.where(query)
 				// 	.getTemp()
 
-				db.collection('uni-stat-event-logs')
+				db.collection('uni-stat-event-logs', 'uni-stat-app-platforms')
 					.where(query)
 					.orderBy('create_time', 'desc')
 					.skip((pageCurrent - 1) * this.pageSize)
@@ -197,10 +197,12 @@
 							count,
 							data
 						} = res.result
+						console.log('.........', res);
 						this.tableData = []
 						this.options.total = count
 						for (const item of data) {
 							item.create_time = parseDateTime(item.create_time, 'dateTime')
+							item.platform = item.platform && item.platform[0].name
 							mapfields(fieldsMap, item, item)
 							this.tableData.push(item)
 						}

@@ -22,6 +22,7 @@
 		},
 		"platform": {
 			"bsonType": "string",
+			"foreignKey": "uni-stat-app-platforms.code",
 			"description": "客户端上报的平台code"
 		},
 		"channel": {

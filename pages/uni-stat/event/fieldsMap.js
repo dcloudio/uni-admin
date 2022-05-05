@@ -16,10 +16,6 @@ export default [{
 	field: 'platform',
 	tooltip: '',
 }, {
-	title: '用户 ID',
-	field: 'uid',
-	tooltip: '',
-}, {
 	title: '设备标识',
 	field: 'device_id',
 	tooltip: ''
