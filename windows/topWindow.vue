@@ -124,7 +124,8 @@
 			// #ifdef H5
 			uni.setLocale('en')
 			this.$nextTick(() => {
-				this.changeLanguage('zh-Hans')
+				// 设置简体中文
+				this.changeLanguage(0)
 			})
 			// #endif
 		},
@@ -174,9 +175,8 @@
 				!this.matchLeftWindow ? this.toPasswordPage() : this.showPasswordPopup()
 			},
 			changeLanguage(e) {
-				if (typeof e !== 'object') return
-				const index = e.detail.value
-				const lang = this.langs[index].lang
+				const index = typeof e === 'object' ? e.detail.value : e
+				const lang = this.langs[index].lang || 'zh-Hans'
 				const platform = uni.getSystemInfoSync().platform
 				if (platform === 'android') {
 					uni.showToast({
@@ -186,13 +186,8 @@
 					})
 					return
 				}
-				if (lang) {
-					this.$i18n.locale = lang
-					uni.setLocale(lang)
-				} else {
-					this.$i18n.locale = 'en'
-					uni.setLocale('en')
-				}
+				this.$i18n.locale = lang
+				uni.setLocale(lang)
 			},
 			linkTo() {
 				uni.reLaunch({
@@ -453,6 +448,7 @@
 		margin-top: 5px;
 		margin-right: 30px;
 	}
+
 	.user-icon {
 		font-size: 20px;
 	}
