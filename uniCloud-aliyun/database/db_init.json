@@ -188,7 +188,7 @@
 			"enable": true,
 			"menu_id": "uni-stat-device-trend",
 			"name": "趋势分析",
-			"icon": "admin-icons-trend",
+			"icon": "",
 			"url": "/pages/uni-stat/device/trend/trend",
 			"sort": 2123,
 			"create_date": 1638356902516
