@@ -160,6 +160,7 @@ module.exports = class StatResult extends BaseMod {
 				new_device_count: 1,
 				new_user_count: 1,
 				page_visit_count: 1,
+				user_visit_times: 1,
 				app_launch_count: 1,
 				error_count: 1,
 				bounce_times: 1,
@@ -199,6 +200,9 @@ module.exports = class StatResult extends BaseMod {
 				},
 				total_user_duration: {
 					$sum: '$user_duration'
+				},
+				total_user_session_times: {
+					$sum: '$user_session_times'
 				},
 				session_times: {
 					$sum: '$app_launch_count'
@@ -263,7 +267,7 @@ module.exports = class StatResult extends BaseMod {
 			activeDeviceCount = statVisitDeviceRes.total
 		}
 
-		// 次均停留时长
+		// 设备次均停留时长
 		let avgSessionTime = 0
 		if (data.total_duration > 0 && data.session_times > 0) {
 			avgSessionTime = Math.round(data.total_duration / data.session_times)
@@ -356,23 +360,43 @@ module.exports = class StatResult extends BaseMod {
 			avgUserTime = Math.round(data.total_user_duration / activeUserCount)
 		}
 
+		//用户次均访问时长
+		let avgUserSessionTime = 0
+		if (data.total_user_duration > 0 && data.total_user_session_times > 0) {
+			avgUserSessionTime = Math.round(data.total_user_duration / data.total_user_session_times)
+		}
+
 		const insertParam = {
 			appid: data._id.appid,
 			platform_id: data._id.platform_id,
 			channel_id: data._id.channel_id,
 			version_id: data._id.version_id,
+			//总设备数
 			total_devices: totalDevices,
+			//本时间段新增设备数
 			new_device_count: data.new_device_count,
+			//登录用户会话次数
+			user_session_times: data.total_user_session_times,
+			//活跃设备数
 			active_device_count: activeDeviceCount,
+			//总用户数
 			total_users: totalUserCount,
+			//新增用户数
 			new_user_count: data.new_user_count,
+			//活跃用户数
 			active_user_count: activeUserCount,
+			//应用启动次数 = 设备会话次数
 			app_launch_count: data.session_times,
+			//页面访问次数
 			page_visit_count: data.page_view_count,
+			//错误次数
 			error_count: data.error_count,
+			//会话总访问时长
 			duration: data.total_duration,
+			//用户会话总访问时长
 			user_duration: data.total_user_duration,
-			avg_session_time: avgSessionTime,
+			avg_device_session_time: avgSessionTime,
+			avg_user_session_time: avgUserSessionTime,
 			avg_device_time: avgDeviceTime,
 			avg_user_time: avgUserTime,
 			bounce_times: data.total_bounce_times,
@@ -572,14 +596,17 @@ module.exports = class StatResult extends BaseMod {
 				$gte: this.startTime,
 				$lte: this.endTime
 			})
-
+		
+		//总用户数
 		let totalUserCount = await uniIDUsers.getUserCount(matchCondition.appid, matchCondition.platform,
-			matchCondition.channel, matchCondition.version)
+			matchCondition.channel, matchCondition.version, {
+				$lte: this.endTime
+			})
 
 
-		//用户停留总时长及总访问次数
+		//用户停留总时长及总会话次数
 		let totalUserDuration = 0
-		let totalUserVisitTimes = 0
+		let totalUserSessionTimes = 0
 		const totalUserDurationRes = await this.aggregate(userSessionLog.tableName, {
 			project: {
 				appid: 1,
@@ -595,23 +622,23 @@ module.exports = class StatResult extends BaseMod {
 				total_duration: {
 					$sum: "$duration"
 				},
-				total_visit_times: {
+				total_session_times: {
 					$sum: 1
 				}
 			}]
 		})
 		if (totalUserDurationRes && totalUserDurationRes.data.length > 0) {
 			totalUserDuration = totalUserDurationRes.data[0].total_duration
-			totalUserVisitTimes = totalUserDurationRes.data[0].total_visit_times
+			totalUserSessionTimes = totalUserDurationRes.data[0].total_session_times
 		}
 
 		//人均停留时长
 		let avgUserTime = 0
 		//用户次均访问时长
-		let avgUserVisitTime = 0
+		let avgUserSessionTime = 0
 		if (totalUserDuration > 0 && activeUserCount > 0) {
 			avgUserTime = Math.round(totalUserDuration / activeUserCount)
-			avgUserVisitTime = Math.round(totalUserDuration / totalUserVisitTimes)
+			avgUserSessionTime = Math.round(totalUserDuration / totalUserSessionTimes)
 		}
 
 		//设置填充数据
@@ -627,14 +654,14 @@ module.exports = class StatResult extends BaseMod {
 			total_users: totalUserCount,
 			new_user_count: newUserCount,
 			active_user_count: activeUserCount,
-			user_visit_times: totalUserVisitTimes,
+			user_session_times: totalUserSessionTimes,
 			app_launch_count: launchCount,
 			page_visit_count: data.page_view_count,
 			error_count: errorCount,
 			duration: data.total_duration,
 			user_duration: totalUserDuration,
 			avg_device_session_time: avgSessionTime,
-			avg_user_session_time: avgUserVisitTime,
+			avg_user_session_time: avgUserSessionTime,
 			avg_device_time: avgDeviceTime,
 			avg_user_time: avgUserTime,
 			bounce_times: bounceTimes,
@@ -708,12 +735,14 @@ module.exports = class StatResult extends BaseMod {
 					total_users: preStatData.data[pi].total_users,
 					new_user_count: 0,
 					active_user_count: 0,
+					user_session_times: 0,
 					app_launch_count: 0,
 					page_visit_count: 0,
 					error_count: 0,
 					duration: 0,
 					user_duration: 0,
-					avg_session_time: 0,
+					avg_device_session_time: 0,
+					avg_user_session_time: 0,
 					avg_device_time: 0,
 					avg_user_time: 0,
 					bounce_times: 0,

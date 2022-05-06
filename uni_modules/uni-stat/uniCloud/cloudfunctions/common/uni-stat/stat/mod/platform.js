@@ -68,7 +68,7 @@ module.exports = class Platform extends BaseMod {
 	 */
 	getPlatformCode(platform, os) {
 		let platformCode = platform
-		
+
 		//兼容客户端上报参数
 		switch(platform) {
 			//微信小程序
@@ -83,7 +83,7 @@ module.exports = class Platform extends BaseMod {
 			case 'ali':
 				platformCode = 'mp-alipay'
 				break
-			//字节跳动小程序	
+			//字节跳动小程序
 			case 'tt':
 				platformCode = 'mp-toutiao'
 				break
@@ -126,7 +126,8 @@ module.exports = class Platform extends BaseMod {
 			//原生应用
 			case 'n':
 			case 'app-plus':
-				if (os === 'i' || os === 'ios') {
+				os = this.getOsName(os)
+				if (os === 'ios') {
 					platformCode = 'ios'
 				} else {
 					platformCode = 'android'
@@ -134,5 +135,21 @@ module.exports = class Platform extends BaseMod {
 				break
 		}
 		return platformCode
+	}
+
+	/**
+	 * 获取系统名称
+	 * @param {Object} os系统标识
+	 */
+	getOsName(os) {
+		if(!os) {
+			return ''
+		}
+		//兼容老版上报参数
+		const osSetting = {
+			i: 'ios',
+			a: 'android'
+		}
+		return osSetting[os] ? osSetting[os] : os
 	}
 }

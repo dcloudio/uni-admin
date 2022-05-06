@@ -21,7 +21,9 @@ module.exports = class SessionLog extends BaseMod {
 	 * @param {Object} reportParams 上报参数
 	 */
 	async batchFill(reportParams) {
-		let params
+		let params, pageInfo, nowTime, firstVistTime, lastVistTime;
+		const fillParams = []
+
 		const page = new Page()
 		const platform = new Platform()
 		const dateTime = new DateTime()
@@ -56,7 +58,7 @@ module.exports = class SessionLog extends BaseMod {
 				code: 200,
 				msg: 'Parameter "ut" not found'
 			}
-		}
+		}                                                                                                                                                                                                              
 
 		// 设备信息
 		if (!params.did) {
@@ -84,6 +86,7 @@ module.exports = class SessionLog extends BaseMod {
 		const nowTime = dateTime.getTime()
 		const firstVistTime = params.fvts ? dateTime.strToTime(params.fvts) : nowTime
 		const lastVistTime = (params.lvts && params.lvts !== '0') ? dateTime.strToTime(params.lvts) : 0
+
 		const fillParams = {
 			appid: params.ak,
 			version: params.v ? params.v : '',
@@ -91,7 +94,8 @@ module.exports = class SessionLog extends BaseMod {
 			channel: channel.getChannelCode(params),
 			// 访问设备
 			device_id: params.did,
-			is_first_visit: (!lastVistTime || firstVistTime === lastVistTime) ? 1 : 0,
+			//是否为首次访问，判断标准：最后一次访问时间为0
+			is_first_visit: (params.lt === '1' && !lastVistTime) ? 1 : 0,
 			first_visit_time: firstVistTime,
 			last_visit_time: nowTime,
 			visit_count: params.tvc ? parseInt(params.tvc) : 1,
@@ -107,7 +111,7 @@ module.exports = class SessionLog extends BaseMod {
 			sdk_version: params.mpsdk ? params.mpsdk : '',
 			platform_version: params.mpv ? params.mpv : '',
 			// 设备相关
-			device_os_name: (params.p && params.p === 'i') ? 'ios' : 'android',
+			device_os_name: platform.getOsName(params.p),
 			device_os_version: params.sv ? params.sv : '',
 			device_vendor: params.brand ? params.brand : '',
 			device_model: params.md ? params.md : '',

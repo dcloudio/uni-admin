@@ -96,20 +96,10 @@ module.exports = class Channel extends BaseMod {
 	 * @param {Object} params 上报参数
 	 */
 	getChannelCode(params) {
-		// web默认无渠道
-		if (params.ut === 'h5') {
-			return ''
-		}
-
-		//去掉原生应用场景值，只使用渠道
-		if(params.sc && (params.ut === 'n' || params.ut === 'app-plus')) {
-			params.sc = ''
-		}
-
-		//未上报渠道则使用场景值
+		//小程序未上报渠道则使用场景值
 		if (params.ch) {
 			return params.ch
-		} else if (params.sc) {
+		} else if (params.sc && params.ut.indexOf('mp-') === 0) {
 			return params.sc
 		}
 		return ''

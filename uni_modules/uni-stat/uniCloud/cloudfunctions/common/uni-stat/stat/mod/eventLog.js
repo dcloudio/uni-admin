@@ -35,7 +35,7 @@ module.exports = class EventLog extends BaseMod {
 		const channel = new Channel()
 		for (const rk in reportParams) {
 			params = reportParams[rk]
-			
+
 			//暂存下会话数据，减少读库
 			sessionKey = params.ak + params.did + params.p
 			if (!this.sessionLogInfo[sessionKey]) {
@@ -81,6 +81,20 @@ module.exports = class EventLog extends BaseMod {
 				page_id: sessionLogInfo.data.pageId,
 				event_key: eventInfo.event_key,
 				param: params.e_v ? params.e_v : '',
+				// 版本
+				sdk_version: params.mpsdk ? params.mpsdk : '',
+				platform_version: params.mpv ? params.mpv : '',
+				// 设备相关
+				device_os_name: platform.getOsName(params.p),
+				device_os_version: params.sv ? params.sv : '',
+				device_vendor: params.brand ? params.brand : '',
+				device_model: params.md ? params.md : '',
+				device_language: params.lang ? params.lang : '',
+				device_pixel_ratio: params.pr ? params.pr : '',
+				device_window_width: params.ww ? params.ww : '',
+				device_window_height: params.wh ? params.wh : '',
+				device_screen_width: params.sw ? params.sw : '',
+				device_screen_height: params.sh ? params.sh : '',
 				create_time: dateTime.getTime()
 			})
 			// 分享数据
@@ -103,7 +117,6 @@ module.exports = class EventLog extends BaseMod {
 
 		const res = await this.insert(this.tableName, fillParams)
 		if (res && res.inserted) {
-			const nowTime = dateTime.getTime()
 			for (const sid in sessionData) {
 				await sessionLog.updateSession(sid, sessionData[sid])
 			}

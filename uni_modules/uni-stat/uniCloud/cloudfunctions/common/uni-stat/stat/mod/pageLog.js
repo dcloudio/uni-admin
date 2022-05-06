@@ -25,13 +25,14 @@ module.exports = class PageLog extends BaseMod {
 	 */
 	async fill(reportParams) {
 		let params;
-		let sessionKey, sessionLogKey;
-		let sessionLogInfo;
-		const sessionData = [];
-		const pageData = [];
-		let pageKey;
-		let pageInfo;
-		let referPageInfo;
+		let sessionKey
+		let sessionLogKey
+		let sessionLogInfo
+		let pageKey
+		let pageInfo
+		let referPageInfo
+		const sessionData = []
+		const pageData = []
 		const fillParams = []
 		const sessionLog = new SessionLog()
 		const page = new Page()
@@ -53,10 +54,6 @@ module.exports = class PageLog extends BaseMod {
 				if (!pageInfo || pageInfo.length === 0) {
 					console.log('Not found this page by param:', JSON.stringify(params))
 					continue
-					// return {
-					//   code: 300,
-					//   msg: 'Not found this entry page'
-					// }
 				}
 				pageData[pageKey] = pageInfo
 			}
@@ -109,11 +106,11 @@ module.exports = class PageLog extends BaseMod {
 			} else {
 				referPageInfo = await page.getPageAndCreate(params.ak, params.urlref, params.ttpj)
 				if (!referPageInfo || referPageInfo.length === 0) {
-					referPageInfo._id = ''
+					referPageInfo = {_id:''}
 				}
 				pageData[pageKey] = referPageInfo
 			}
-			
+
 			//当前页面url信息
 			const urlInfo = parseUrl(params.url)
 
@@ -143,12 +140,11 @@ module.exports = class PageLog extends BaseMod {
 				msg: 'Invild param'
 			}
 		}
-		
+
 		//日志数据入库
 		const res = await this.insert(this.tableName, fillParams)
 		if (res && res.inserted) {
 			// 更新会话数据
-			const nowTime = dateTime.getTime()
 			for (const sid in sessionData) {
 				await sessionLog.updateSession(sid, sessionData[sid])
 			}

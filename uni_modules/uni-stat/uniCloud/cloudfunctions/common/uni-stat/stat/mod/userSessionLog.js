@@ -170,7 +170,7 @@ module.exports = class UserSessionLog extends BaseMod {
 		}
 
 		let nowTime = data.nowTime ? data.nowTime : new DateTime().getTime()
-		const accessTime = nowTime - data.createTime
+		const accessTime = nowTime - userSession.data[0].createTime
 		const accessSenconds = accessTime > 1000 ? parseInt(accessTime / 1000) : 1
 
 		const updateData = {
