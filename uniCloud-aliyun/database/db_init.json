@@ -230,7 +230,7 @@
 			"name": "用户统计",
 			"icon": "admin-icons-yonghutongji",
 			"url": "",
-			"sort": 2125,
+			"sort": 2122,
 			"create_date": 1638356902516
 		}, {
 			"parent_id": "uni-stat-user",

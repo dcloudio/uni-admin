@@ -11,19 +11,19 @@
 			<view class="uni-stat--x flex">
 				<uni-data-select collection="opendb-app-list" field="appid as value, name as text" orderby="text asc"
 					:defItem="1" label="应用选择" v-model="query.appid" :clear="false" />
-				<uni-data-select collection="uni-stat-app-versions" field="_id as value, version as text" label="版本选择"
-					v-model="query.version_id" />
+				<!-- <uni-data-select collection="uni-stat-app-versions" field="_id as value, version as text" label="版本选择"
+					v-model="query.version_id" /> -->
+				<view class="flex">
+					<uni-stat-tabs label="日期选择" :current="currentDateTab" :yesterday="false" mode="date"
+						@change="changeTimeRange" />
+					<uni-datetime-picker type="daterange" :end="new Date().getTime()" v-model="query.create_time"
+						returnType="timestamp" :clearIcon="false" class="uni-stat-datetime-picker"
+						:class="{'uni-stat__actived': currentDateTab < 0 && !!query.create_time.length}"
+						@change="useDatetimePicker" />
+				</view>
 			</view>
 			<view class="uni-stat--x">
 				<uni-stat-tabs label="平台选择" type="boldLine" mode="platform-channel" v-model="query.platform" />
-			</view>
-			<view class="uni-stat--x flex">
-				<uni-stat-tabs label="日期选择" :current="currentDateTab" :yesterday="false" mode="date"
-					@change="changeTimeRange" />
-				<uni-datetime-picker type="daterange" :end="new Date().getTime()" v-model="query.create_time"
-					returnType="timestamp" :clearIcon="false" class="uni-stat-datetime-picker"
-					:class="{'uni-stat__actived': currentDateTab < 0 && !!query.create_time.length}"
-					@change="useDatetimePicker" />
 			</view>
 			<view class="uni-stat--x p-m">
 				<uni-table :loading="loading" border stripe :emptyText="$t('common.empty')" style="overflow-y: scroll;">
