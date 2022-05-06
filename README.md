@@ -4,7 +4,7 @@ uni-admin 框架，是基于 uni-app 和 uniCloud 的应用后台管理的开源
 
 对于uniCloud的开发者而言，其后台管理系统应该使用本框架。
 
-演示地址：[https://unicloudadmindemo.dcloud.net.cn](https://unicloudadmindemo.dcloud.net.cn)
+演示地址：[https://hellouniadmin.dcloud.net.cn](https://hellouniadmin.dcloud.net.cn)
 
 下载地址：[https://ext.dcloud.net.cn/plugin?id=3268](https://ext.dcloud.net.cn/plugin?id=3268)
 
