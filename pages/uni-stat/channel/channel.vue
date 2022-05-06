@@ -117,7 +117,7 @@
 					pageSizeRange: [10, 20, 50, 100],
 				},
 				loading: false,
-				currentDateTab: 0,
+				currentDateTab: 1,
 				days: 0,
 				tableData: [],
 				panelData: fieldsMap.filter(f => f.hasOwnProperty('value')),

@@ -78,7 +78,7 @@
 					pageSizeRange: [10, 20, 50, 100],
 				},
 				loading: false,
-				currentDateTab: 0,
+				currentDateTab: 1,
 				tableData: [],
 				panelData: fieldsMap.filter(f => f.hasOwnProperty('value'))
 			}
@@ -99,8 +99,7 @@
 			}
 		},
 		created() {
-			const query = stringifyQuery(this.query)
-			this.debounceGet = debounce(() => this.getAllData(query))
+			this.debounceGet = debounce(() => this.getAllData())
 		},
 		watch: {
 			query: {
@@ -138,9 +137,9 @@
 				this.getTableData()
 			},
 
-			getAllData(query) {
-				this.getPanelData(query)
-				this.getTableData(query)
+			getAllData() {
+				this.getPanelData()
+				this.getTableData()
 			},
 
 			getTableData(query) {
