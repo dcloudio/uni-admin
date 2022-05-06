@@ -71,6 +71,10 @@ module.exports = class Platform extends BaseMod {
 
 		//兼容客户端上报参数
 		switch(platform) {
+			//h5|web
+			case 'h5':
+				platformCode = 'web'
+				break
 			//微信小程序
 			case 'wx':
 				platformCode = 'mp-weixin'

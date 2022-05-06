@@ -145,6 +145,7 @@ module.exports = class PageLog extends BaseMod {
 		const res = await this.insert(this.tableName, fillParams)
 		if (res && res.inserted) {
 			// 更新会话数据
+			const nowTime = dateTime.getTime()
 			for (const sid in sessionData) {
 				await sessionLog.updateSession(sid, sessionData[sid])
 			}
