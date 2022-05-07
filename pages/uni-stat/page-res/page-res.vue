@@ -11,19 +11,19 @@
 			<view class="uni-stat--x flex">
 				<uni-data-select collection="opendb-app-list" field="appid as value, name as text" orderby="text asc"
 					:defItem="1" label="应用选择" v-model="query.appid" :clear="false" />
+				<view class="flex">
+					<uni-stat-tabs label="日期选择" :current="currentDateTab" mode="date" @change="changeTimeRange" />
+					<uni-datetime-picker type="daterange" :end="new Date().getTime()" v-model="query.start_time"
+						returnType="timestamp" :clearIcon="false" class="uni-stat-datetime-picker"
+						:class="{'uni-stat__actived': currentDateTab < 0 && !!query.start_time.length}"
+						@change="useDatetimePicker" />
+				</view>
 			</view>
 			<view class="uni-stat--x">
 				<uni-stat-tabs label="平台选择" type="boldLine" mode="platform" v-model="query.platform_id"
 					@change="changePlatform" />
 				<uni-data-select collection="uni-stat-app-channels"
 					field="_id as value, channel_name as text, channel_code" label="渠道选择" v-model="query.channel_id" />
-			</view>
-			<view class="uni-stat--x flex">
-				<uni-stat-tabs label="日期选择" :current="currentDateTab" mode="date" @change="changeTimeRange" />
-				<uni-datetime-picker type="daterange" :end="new Date().getTime()" v-model="query.start_time"
-					returnType="timestamp" :clearIcon="false" class="uni-stat-datetime-picker"
-					:class="{'uni-stat__actived': currentDateTab < 0 && !!query.start_time.length}"
-					@change="useDatetimePicker" />
 			</view>
 			<uni-stat-panel :items="panelData" />
 			<view class="uni-stat--x p-m">
@@ -102,7 +102,7 @@
 					pageSizeRange: [10, 20, 50, 100],
 				},
 				loading: false,
-				currentDateTab: 0,
+				currentDateTab: 1,
 				tableData: [],
 				panelData: fieldsMap.filter(f => f.hasOwnProperty('value')),
 				queryId: '',
@@ -125,8 +125,7 @@
 			}
 		},
 		created() {
-			const query = stringifyQuery(this.query)
-			this.debounceGet = debounce(() => this.getAllData(query))
+			this.debounceGet = debounce(() => this.getAllData())
 		},
 		watch: {
 			query: {
@@ -164,9 +163,9 @@
 				this.getTableData()
 			},
 
-			getAllData(query) {
-				this.getPanelData(query)
-				this.getTableData(query)
+			getAllData() {
+				this.getPanelData()
+				this.getTableData()
 			},
 
 			getTableData(query) {

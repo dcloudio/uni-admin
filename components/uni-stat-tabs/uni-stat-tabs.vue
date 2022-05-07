@@ -189,6 +189,9 @@
 		margin-top: 17px;
 		margin-bottom: 17px;
 		margin-right: 5px;
+		display: flex;
+		align-items: center;
+		justify-content: center;
 	}
 
 	.uni-stat--tab-x {
@@ -259,7 +262,7 @@
 				&-box {
 					padding: 5px 15px;
 					border: 1px solid #dcdfe6;
-					margin: 0;
+					// margin: 0;
 
 					&:not(:last-child) {
 						border-right-color: transparent;

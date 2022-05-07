@@ -404,7 +404,7 @@ button:after {
 
 /* stat style start */
 .m-m {
-	margin: 15px;
+	margin: 15px !important;
 }
 
 .mb-s {
@@ -532,7 +532,7 @@ button:after {
 	}
 
 	.uni-stat-datetime-picker {
-		flex: 1;
+		/* flex: 1; */
 	}
 }
 
