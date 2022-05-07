@@ -71,8 +71,12 @@ module.exports = class UniIDUsers extends BaseMod {
 		let condition = {
 			'register_env.appId': appid,//DCloud appid
 			'register_env.uniPlatform': platform,//平台
-			'register_env.appVersionCode': version,//app版本号
 			'register_env.channel': channel ? channel : '1001' //h默认渠道要单独处理一下与uni-id相对应
+		}
+		
+		//原生应用区分版本
+		if(['android', 'ios'].includes(platform)) {
+			condition['register_env.appVersion'] = version //app版本
 		}
 
 		//注册时间

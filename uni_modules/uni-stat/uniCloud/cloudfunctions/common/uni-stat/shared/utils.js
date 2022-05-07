@@ -53,26 +53,8 @@ function parseUrlParams(str, context) {
 	}, {})
 	//原以下数据要从客户端上报，现调整为如果以下参数客户端未上报，则通过请求附带的context参数中获取
 	let convertParams = {}
-	if (context.hasOwnProperty('APPID')) {
-		convertParams = {
-			//appid
-			ak: 'APPID',
-			//当前登录用户编号
-			uid: 'uid',
-			//设备编号
-			did: 'DEVICEID',
-			//系统
-			p: 'OS',
-			//客户端ip
-			ip: 'CLIENTIP',
-			//客户端的UA
-			ua: 'CLIENTUA',
-			//当前服务空间信息 {spaceId:'xxx',provider:'tencent'}
-			spi: 'SPACEINFO',
-			//云函数调用来源
-			fs: 'SOURCE'
-		}
-	} else if (context.hasOwnProperty('appId')) {
+	
+	if (context.hasOwnProperty('appId')) {
 		convertParams = {
 			//appid
 			ak: 'appId',
@@ -90,6 +72,25 @@ function parseUrlParams(str, context) {
 			spid: 'spaceId',
 			//当前服务空间提供商
 			sppd: 'provider'
+		}
+	} else if (context.hasOwnProperty('APPID')) {
+		convertParams = {
+			//appid
+			ak: 'APPID',
+			//当前登录用户编号
+			uid: 'uid',
+			//设备编号
+			did: 'DEVICEID',
+			//系统
+			p: 'OS',
+			//客户端ip
+			ip: 'CLIENTIP',
+			//客户端的UA
+			ua: 'CLIENTUA',
+			//当前服务空间信息 {spaceId:'xxx',provider:'tencent'}
+			spi: 'SPACEINFO',
+			//云函数调用来源
+			fs: 'SOURCE'
 		}
 	}
 	context = context ? context : {}
