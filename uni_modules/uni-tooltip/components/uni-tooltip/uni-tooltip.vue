@@ -1,67 +1,57 @@
 <template>
-	<view v-if="text" class="uni-stat-tooltip">
-		<slot />
-		<uni-icons type="help" color="#666" />
-		<view class="uni-stat-tooltip-popup" :style="style">
-			<!-- <pre>{{text}}</pre> -->
-			{{text}}
+	<view class="uni-tooltip">
+		<slot></slot>
+		<view v-if="content || $slots.content" class="uni-tooltip-popup">
+			<slot name="content">
+				{{content}}
+			</slot>
 		</view>
 	</view>
 </template>
 
+
 <script>
+	/**
+	 * Tooltip 提示文字
+	 * @description 常用于展示鼠标 hover 时的提示信息。
+	 * @tutorial https://uniapp.dcloud.io/component/uniui/uni-tooltip
+	 * @property {String} content   弹出层显示的内容
+	 * @property {String}  placement出现位置, 目前只支持 left
+	 */
+
+
 	export default {
-		name: "uni-stat-tooltip",
+		name: "uni-tooltip",
 		data() {
 			return {
 
 			};
 		},
 		props: {
-			text: {
+			content: {
 				type: String,
 				default: ''
 			},
-			width: {
-				type: Number,
-				default: 160
-			},
+
 			placement: {
 				type: String,
 				default: 'bottom'
 			},
-		},
-		computed: {
-			style() {
-				let str = `width: ${this.width}px`
-				if (this.placement === 'left') {
-					str = str + ';left: 0;'
-				}
-				return str
-			}
 		}
 	}
 </script>
 
 <style>
-	.uni-stat-tooltip {
-		/* #ifndef APP-NVUE */
-		display: inline-flex;
-		/* #endif */
-		justify-content: center;
-		align-items: center;
+	.uni-tooltip {
 		position: relative;
 		cursor: pointer;
 	}
 
-	.uni-stat-tooltip-popup {
+	.uni-tooltip-popup {
 		z-index: 1;
 		display: none;
 		position: absolute;
 		left: 0;
-		top: 20px;
-		width: 160px;
-		white-space: normal;
 		background-color: #333;
 		border-radius: 8px;
 		color: #fff;
@@ -72,7 +62,7 @@
 	}
 
 
-	.uni-stat-tooltip:hover .uni-stat-tooltip-popup {
+	.uni-tooltip:hover .uni-tooltip-popup {
 		display: block;
 	}
 </style>
