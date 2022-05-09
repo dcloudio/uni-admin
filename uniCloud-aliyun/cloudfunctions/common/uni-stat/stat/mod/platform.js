@@ -130,6 +130,7 @@ module.exports = class Platform extends BaseMod {
 			//原生应用
 			case 'n':
 			case 'app-plus':
+			case 'app':
 				os = this.getOsName(os)
 				if (os === 'ios') {
 					platformCode = 'ios'
