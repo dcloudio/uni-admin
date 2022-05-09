@@ -1,6 +1,7 @@
 // 应用渠道表
 {
 	"bsonType": "object",
+	"description": "提供渠道和场景值数据",
 	"required": [],
 	"permission": {
 		"read": false,

@@ -1,6 +1,7 @@
 // 事件统计结果表
 {
 	"bsonType": "object",
+	"description": "存储汇总的事件日志的数据",
 	"required": [],
 	"permission": {
 		"read": false,

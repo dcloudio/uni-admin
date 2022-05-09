@@ -1,6 +1,7 @@
 // 用户忠诚度统计表
 {
 	"bsonType": "object",
+	"description": "存储汇总的设备/用户的粘性数据",
 	"required": [],
 	"permission": {
 		"read": false,

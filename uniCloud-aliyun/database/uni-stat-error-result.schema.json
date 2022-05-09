@@ -1,6 +1,7 @@
 // 错误数据统计结果表
 {
 	"bsonType": "object",
+	"description": "存储汇总的错误日志的数据",
 	"required": [],
 	"permission": {
 		"read": false,

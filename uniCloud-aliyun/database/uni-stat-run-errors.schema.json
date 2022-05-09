@@ -1,6 +1,7 @@
 // 运行错误日志表
 {
 	"bsonType": "object",
+	"description": "记录数据统计时运行出错的日志",
 	"required": [],
 	"permission": {
 		"read": false,

@@ -1,6 +1,7 @@
 // 应用版本表
 {
 	"bsonType": "object",
+	"description": "提供应用的版本号字典",
 	"required": [],
 	"permission": {
 		"read": false,

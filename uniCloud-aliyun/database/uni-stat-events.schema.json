@@ -1,6 +1,7 @@
 // 应用事件表
 {
 	"bsonType": "object",
+	"description": "提供应用的事件字典",
 	"required": [],
 	"permission": {
 		"read": false,

@@ -1,6 +1,7 @@
 // 应用会话日志表
 {
 	"bsonType": "object",
+	"description": "记录设备访问时产生的会话日志",
 	"required": [],
 	"permission": {
 		"read": false,

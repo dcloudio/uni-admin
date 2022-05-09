@@ -1,6 +1,7 @@
-// 统计-应用页面表
+// 应用页面表
 {
 	"bsonType": "object",
+	"description": "提供应用的页面字典",
 	"required": [],
 	"permission": {
 		"read": false,

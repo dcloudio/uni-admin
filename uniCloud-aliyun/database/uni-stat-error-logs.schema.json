@@ -1,6 +1,7 @@
 // 应用错误日志表
 {
 	"bsonType": "object",
+	"description": "记录上报的应用运行错误日志",
 	"required": [],
 	"permission": {
 		"read": false,

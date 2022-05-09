@@ -1,6 +1,7 @@
 // 应用平台表
 {
 	"bsonType": "object",
+	"description": "提供应用的平台字典",
 	"required": [],
 	"permission": {
 		"read": false,

@@ -1,6 +1,7 @@
 // 活跃用户表
 {
 	"bsonType": "object",
+	"description": "给周月维度的用户基础统计和留存统计提供数据，每日跑批合并，仅添加本周/本月首次访问的用户。",
 	"required": [],
 	"permission": {
 		"read": false,
