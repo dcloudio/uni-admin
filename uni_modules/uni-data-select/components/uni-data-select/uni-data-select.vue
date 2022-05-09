@@ -16,8 +16,8 @@
 						<view class="uni-select__selector-empty" v-if="mixinDatacomResData.length === 0">
 							<text>{{emptyTips}}</text>
 						</view>
-						<view v-else class="uni-select__selector-item" v-for="(item,index) in mixinDatacomResData" :key="index"
-							@click="change(item)">
+						<view v-else class="uni-select__selector-item" v-for="(item,index) in mixinDatacomResData"
+							:key="index" @click="change(item)">
 							<text>{{formatItemName(item)}}</text>
 						</view>
 					</scroll-view>
@@ -31,7 +31,7 @@
 	/**
 	 * DataChecklist 数据选择器
 	 * @description 通过数据渲染的下拉框组件
-	 * @tutorial https://ext.dcloud.net.cn/plugin?id=xxx
+	 * @tutorial https://uniapp.dcloud.io/component/uniui/uni-data-select
 	 * @property {String} value 默认值
 	 * @property {Array} localdata 本地数据 ，格式 [{text:'',value:''}]
 	 * @property {Boolean} clear 是否可以清空已选项
@@ -56,7 +56,7 @@
 		props: {
 			localdata: {
 				type: Array,
-				default(){
+				default () {
 					return []
 				}
 			},
@@ -65,11 +65,7 @@
 				default: ''
 			},
 			modelValue: {
-				type: String,
-				default: ''
-			},
-			mode: {
-				type: String,
+				type: [String, Number],
 				default: ''
 			},
 			label: {
@@ -108,9 +104,9 @@
 				}
 				const common = '请选择'
 				const placeholder = text[this.collection]
-				return placeholder
-						? common + placeholder
-						: common
+				return placeholder ?
+					common + placeholder :
+					common
 			}
 		},
 		watch: {
@@ -143,23 +139,36 @@
 		},
 		methods: {
 			initDefVal() {
-				let defItem = ''
-				if (this.defItem > 0 &&  this.defItem < this.mixinDatacomResData.length) {
-					defItem = this.mixinDatacomResData[this.defItem - 1].value
+				let defValue = ''
+				if (this.value ||this.value === 0) {
+					defValue =  this.value
+				} else if(this.modelValue || this.modelValue === 0 ) {
+					defValue = this.modelValue
+				} else {
+					let strogeValue
+					if (this.collection) {
+						strogeValue = uni.getStorageSync(this.last)
+					}
+					if (strogeValue || strogeValue === 0) {
+						defValue = strogeValue
+					} else {
+						let defItem = ''
+						if (this.defItem > 0 && this.defItem < this.mixinDatacomResData.length) {
+							defItem = this.mixinDatacomResData[this.defItem - 1].value
+						}
+						defValue = defItem
+					}
+					this.emit(defValue)
 				}
-				let strogeValue
-				if (this.collection) {
-					strogeValue = uni.getStorageSync(this.last)
-				}
-				const defValue = this.value || this.modelValue || strogeValue || defItem
 				const def = this.mixinDatacomResData.find(item => item.value === defValue)
 				this.current = def ? this.formatItemName(def) : ''
-				this.emit(defValue)
 			},
 
 			clearVal() {
 				this.emit('')
-				uni.removeStorageSync(this.last)
+				if (this.collection) {
+					uni.removeStorageSync(this.last)
+				}
 			},
 			change(item) {
 				this.showSelector = false
@@ -170,7 +179,9 @@
 				this.$emit('change', val)
 				this.$emit('input', val)
 				this.$emit('update:modelValue', val)
-				uni.setStorageSync(this.last, val)
+				if (this.collection) {
+					uni.setStorageSync(this.last, val)
+				}
 			},
 
 			toggleSelector() {
