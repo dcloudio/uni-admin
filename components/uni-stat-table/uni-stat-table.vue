@@ -5,8 +5,8 @@
 				<uni-th v-if="mapper.title" :key="index" align="center">
 					<uni-tooltip>
 						{{mapper.title}}
-						<uni-icons v-if="mapper.tooltip" type="help" color="#666" />
-						<template v-slot:content>
+						<uni-icons v-if="tooltip && mapper.tooltip" type="help" color="#666" />
+						<template v-if="tooltip && mapper.tooltip" v-slot:content>
 							<view class="uni-stat-tooltip-s">
 								{{mapper.tooltip}}
 							</view>
