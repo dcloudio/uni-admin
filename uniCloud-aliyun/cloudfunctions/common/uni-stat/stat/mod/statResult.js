@@ -1575,9 +1575,9 @@ module.exports = class StatResult extends BaseMod {
 
 			//新增用户编号
 			const thisDayNewUids = await uniIDUsers.getUserIds(resultLog.appid, platformInfo.code, channelInfo.channel_code, versionInfo.version, {
-					$gte: lastTimeInfo.startTime,
-					$lte: lastTimeInfo.endTime
-				})
+				$gte: startTime,
+				$lte: endTime
+			})
 			//新增用户留存率
 			let newUserRate = 0
 			//新增用户留存数
