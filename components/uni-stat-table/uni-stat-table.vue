@@ -3,8 +3,15 @@
 		<uni-tr>
 			<template v-for="(mapper, index) in filedsMap">
 				<uni-th v-if="mapper.title" :key="index" align="center">
-					{{mapper.title}}
-					<uni-tooltip v-if="tooltip" :text="mapper.tooltip" />
+					<uni-tooltip>
+						{{mapper.title}}
+						<uni-icons v-if="mapper.tooltip" type="help" color="#666" />
+						<template v-slot:content>
+							<view class="uni-stat-tooltip-s">
+								{{mapper.tooltip}}
+							</view>
+						</template>
+					</uni-tooltip>
 				</uni-th>
 			</template>
 		</uni-tr>
@@ -52,5 +59,8 @@
 </script>
 
 <style>
-
+	.uni-stat-tooltip-s {
+		width: 160px;
+		white-space: normal;
+	}
 </style>

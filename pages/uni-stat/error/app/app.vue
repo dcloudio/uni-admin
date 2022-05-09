@@ -30,16 +30,29 @@
 					<uni-tr>
 						<template v-for="(mapper, index) in fieldsMap">
 							<uni-th v-if="mapper.title" :key="index" align="center">
-								{{mapper.title}}
-								<uni-tooltip :text="mapper.tooltip" />
+								<uni-tooltip>
+									{{mapper.title}}
+									<uni-icons v-if="mapper.tooltip" type="help" color="#666" />
+									<template v-if="mapper.tooltip" v-slot:content>
+										<view class="uni-stat-tooltip-s">
+											{{mapper.tooltip}}
+										</view>
+									</template>
+								</uni-tooltip>
 							</uni-th>
 						</template>
 					</uni-tr>
 					<uni-tr v-for="(item ,i) in tableData" :key="i">
 						<template v-for="(mapper, index) in fieldsMap">
 							<uni-td v-if="mapper.field === 'error_msg'" :key="mapper.title" align="left">
-								<uni-tooltip :text="item.msgTooltip" placement="left" :width="600">
+								<uni-tooltip>
 									{{item[mapper.field] !== undefined ? item[mapper.field] : '-'}}
+									<uni-icons v-if="item.msgTooltip" type="help" color="#666" />
+									<template v-if="item.msgTooltip" v-slot:content>
+										<view class="uni-stat-tooltip-l">
+											{{item.msgTooltip}}
+										</view>
+									</template>
 								</uni-tooltip>
 							</uni-td>
 							<uni-td v-else-if="mapper.field === 'count'" :key="mapper.title" align="center">
@@ -153,7 +166,7 @@
 				return def
 			},
 			queryStr() {
-				let query =  JSON.parse(JSON.stringify(this.query))
+				let query = JSON.parse(JSON.stringify(this.query))
 				if (query.platform) {
 					query.platform = this.nativePlatform[query.platform]
 				}
@@ -296,5 +309,15 @@
 		border-bottom: 1px solid #eee;
 		padding: 0;
 		margin: 0 15px;
+	}
+
+	.uni-stat-tooltip-s {
+		width: 160px;
+		white-space: normal;
+	}
+
+	.uni-stat-tooltip-l {
+		width: 600px;
+		white-space: normal;
 	}
 </style>

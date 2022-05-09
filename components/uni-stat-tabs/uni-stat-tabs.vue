@@ -11,8 +11,15 @@
 					index === currentTab ? `uni-stat--tab-item-${type}-active` : '' , `uni-stat--tab-item-${type}`,
 					item.disabled ? 'uni-stat--tab-item-disabled' : ''
 				]">
-				{{item.name}}
-				<uni-tooltip v-if="tooltip" :text="item.tooltip" />
+				<uni-tooltip>
+					{{item.name}}
+					<uni-icons v-if="item.tooltip" type="help" color="#666" />
+					<template v-if="item.tooltip" v-slot:content>
+						<view class="uni-stat-tooltip-s">
+							{{item.tooltip}}
+						</view>
+					</template>
+				</uni-tooltip>
 			</view>
 
 		</view>
@@ -182,6 +189,11 @@
 </script>
 
 <style lang="scss">
+	.uni-stat-tooltip-s {
+		width: 160px;
+		white-space: normal;
+	}
+
 	.uni-label-text {
 		font-size: 14px;
 		font-weight: bold;

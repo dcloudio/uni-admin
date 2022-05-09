@@ -1,10 +1,18 @@
 <template>
 	<view class="uni-stat--sum-x mb-m">
-		<view v-for="(item, index) in items" :key="index" class="uni-stat--sum-item" :class="[item.value === '今天' ? 'uni-stat--sum-item-width' : '']">
-			<view class="uni-stat--sum-item-title">
-				{{item.title}}
-				<uni-tooltip :text="item.tooltip" />
-			</view>
+		<view v-for="(item, index) in items" :key="index" class="uni-stat--sum-item"
+			:class="[item.value === '今天' ? 'uni-stat--sum-item-width' : '']">
+			<uni-tooltip>
+				<view class="uni-stat--sum-item-title">
+					{{item.title}}
+					<uni-icons v-if="item.title" class="ml-s" type="help" color="#666" />
+				</view>
+				<template v-if="item.tooltip" v-slot:content>
+					<view class="uni-stat-tooltip-s">
+						{{item.tooltip}}
+					</view>
+				</template>
+			</uni-tooltip>
 			<view class="uni-stat--sum-item-value">{{item.value ? item.value : 0}}</view>
 			<view v-if="contrast" class="uni-stat--sum-item-contrast">{{item.contrast ? item.contrast : 0}}</view>
 		</view>
@@ -36,6 +44,11 @@
 </script>
 
 <style lang="scss">
+	.uni-stat-tooltip-s {
+		width: 160px;
+		white-space: normal;
+	}
+
 	.uni-stat--sum {
 		&-x {
 			display: flex;
@@ -57,6 +70,9 @@
 		}
 
 		&-item-title {
+			display: flex;
+			align-items: center;
+			justify-content: center;
 			min-height: 17px;
 			font-size: 12px;
 			color: #666;
@@ -83,9 +99,11 @@
 			flex-wrap: unset;
 			overflow-x: auto !important;
 		}
+
 		::-webkit-scrollbar {
-		    display: none;
+			display: none;
 		}
 	}
+
 	/* #endif */
 </style>
