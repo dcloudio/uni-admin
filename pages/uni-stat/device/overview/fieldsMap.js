@@ -10,7 +10,7 @@ const fieldsMap = [{
 }, {
 	title: '活跃设备',
 	field: 'active_device_count',
-	tooltip: '访问过应用内任意页面的总设备数（去重）',
+	tooltip: '访问过应用内任意页面的总设备数，今日数据为每小时活跃设备累加（未虑重），昨日数据为全天活跃设备虑重后结果',
 	value: 0,
 	contrast: 0
 }, {

@@ -5,13 +5,13 @@ const fieldsMap = [{
 }, {
 	title: '新增用户',
 	field: 'new_user_count',
-	tooltip: '首次访问应用的用户数（以设备为判断标准，去重）',
+	tooltip: '首次访问应用的用户数（以用户为判断标准，去重）',
 	value: 0,
 	contrast: 0
 }, {
 	title: '活跃用户',
 	field: 'active_user_count',
-	tooltip: '访问过应用内任意页面的总用户数（去重）',
+	tooltip: '访问过应用内任意页面的总用户数，今日数据为每小时活跃用户累加（未虑重），昨日数据为全天活跃用户虑重后结果。',
 	value: 0,
 	contrast: 0
 }, {
