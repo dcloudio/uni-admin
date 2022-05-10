@@ -11,7 +11,7 @@ function stringifyQuery(query, dimension = false) {
 		if (key === 'time_range') return
 		let val = query[key]
 		if (val) {
-			if (val.indexOf(key) > -1) {
+			if (typeof val === 'string' && val.indexOf(key) > -1) {
 				queryArr.push(val)
 			} else {
 				if (typeof val === 'string') {
