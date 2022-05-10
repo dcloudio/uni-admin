@@ -92,11 +92,7 @@
 				currentDateTab: 0,
 				currentChartTab: 'day',
 				tableData: [],
-				chartData: {},
-				defaultChart: {
-					field: 'new_user_count',
-					name: '新增用户'
-				},
+				chartData: {}
 			}
 		},
 		computed: {
