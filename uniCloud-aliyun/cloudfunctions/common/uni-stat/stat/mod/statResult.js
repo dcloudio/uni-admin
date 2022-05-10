@@ -1565,7 +1565,7 @@ module.exports = class StatResult extends BaseMod {
 				}
 				if (retentionActiveUserRes && retentionActiveUserRes.data.length > 0) {
 					// 活跃用户留存数
-					activeUsers = retentionActiveUserRes.data[0].total_devices
+					activeUsers = retentionActiveUserRes.data[0].total_users
 					// 活跃用户留存率
 					activeUserRate = parseFloat((activeUsers * 100 / thisDayActiveUsers).toFixed(2))
 				}
