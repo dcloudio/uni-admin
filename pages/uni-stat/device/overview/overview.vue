@@ -215,6 +215,7 @@
 				this.getChartData(this.query, id, name)
 			},
 			getAllData(query) {
+				console.log('....................query:', query);
 				this.getPanelData()
 				this.getChartData(query)
 				this.getPageData(query, 'res')
@@ -265,6 +266,7 @@
 			},
 
 			getChartData(query, field = this.chartTabs[0]._id, name = this.chartTabs[0].name) {
+				console.log('.........chart:', query);
 				this.chartData = {}
 				const {
 					pageCurrent

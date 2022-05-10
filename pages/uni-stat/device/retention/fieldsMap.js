@@ -1,5 +1,5 @@
 function fieldsFactory(maps = [{
-	title: '新增用户',
+	title: '新增设备',
 	field: 'new_device_count',
 	stat: 0
 }]) {

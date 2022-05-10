@@ -73,6 +73,10 @@
 				type: Boolean,
 				default: false
 			},
+			all: {
+				type: Boolean,
+				default: true
+			},
 			label: {
 				type: String,
 				default: ''
@@ -87,6 +91,9 @@
 					return []
 				}
 			}
+		},
+		created() {
+			this.last = `${this.mode.replace('-', '_')}_last_data`
 		},
 		mounted() {
 			this.init()
@@ -105,11 +112,22 @@
 				handler(val) {
 					this.init()
 				}
+			},
+
+			renderTabs(val) {
+				const index = this.current
+				if (this.mode && val.length && index >= 0) {
+					this.$nextTick(function() {
+						const item = this.renderTabs[index]
+						this.change(item, index)
+					})
+				}
 			}
 		},
 		methods: {
 			init() {
 				if (this.mode.indexOf('platform') > -1) {
+					this.renderTabs = uni.getStorageSync(this.last)
 					this.getPlatform()
 				} else if (this.mode === 'date') {
 					const dates = [{
@@ -138,17 +156,6 @@
 				} else {
 					this.renderTabs = this.tabs
 				}
-
-				const index = this.current
-				// const index = 0
-				this.currentTab = index
-				if (this.mode === 'date' && index >= 0) {
-					this.$nextTick(function() {
-						const id = this.renderTabs[index]._id
-						const name = this.renderTabs[index].name
-						this.emit(id, index, name)
-					})
-				}
 			},
 			change(item, index) {
 				if (item.disabled) return
@@ -171,18 +178,26 @@
 						let platforms = res.result.data
 						if (this.mode === 'platform-channel') {
 							platforms = platforms.filter(item => /^android|ios$/.test(item.code))
-						}
-						if (this.mode === 'platform-scene') {
+							let _id = platforms.map(p => `platform_id == "${p._id}"`).join(' || ')
+							_id = `(${_id})`
+							this.setAllItem(platforms, _id)
+						} else if (this.mode === 'platform-scene') {
 							platforms = platforms.filter(item => !/^android|ios|h5|qn|qw$/.test(item.code))
+							let _id = platforms.map(p => `platform_id == "${p._id}"`).join(' || ')
+							_id = `(${_id})`
+							this.setAllItem(platforms, _id)
+						} else {
+							this.setAllItem(platforms)
 						}
-						if (this.mode !== 'platform-channel') {
-							platforms.unshift({
-								name: '全部',
-								code: 'all'
-							})
-						}
+						uni.setStorageSync(this.last, platforms)
 						this.renderTabs = platforms
 					})
+			},
+			setAllItem(platforms, _id = '', name = '全部') {
+				this.all && platforms.unshift({
+					name,
+					_id
+				})
 			}
 		}
 	}
@@ -201,9 +216,9 @@
 		margin-top: 17px;
 		margin-bottom: 17px;
 		margin-right: 5px;
-		display: flex;
-		align-items: center;
-		justify-content: center;
+		// display: flex;
+		// align-items: center;
+		// justify-content: center;
 	}
 
 	.uni-stat--tab-x {

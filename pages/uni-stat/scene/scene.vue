@@ -118,25 +118,9 @@
 				})
 				return tabs
 			},
-			defQuery() {
-				let def = ''
-				if (!this.query.platform_id) {
-					const notMiniProgramPlatform = [
-						"6221e59b428244000187a11d",
-						"6221e59b428244000187a11e",
-						"6221e59b428244000187a11f",
-						"6221e59b428244000187a125",
-						"6221e59b428244000187a126"
-					]
-					def = notMiniProgramPlatform.map(p => `platform_id != "${p}"`).join(' && ')
-				}
-				return def
-			},
+			
 			queryStr() {
-				const query = stringifyQuery(this.query, true)
-				return this.defQuery ?
-					query + ' && ' + this.defQuery :
-					query
+				return stringifyQuery(this.query, true)
 			},
 			dimension() {
 				if (maxDeltaDay(this.query.start_time, 1)) {
@@ -187,6 +171,7 @@
 			},
 
 			getAllData(query) {
+				console.log('..............query', query);
 				this.getPanelData(query)
 				this.getChartData(query)
 				this.getTabelData(query)
@@ -339,9 +324,6 @@
 				let cloneQuery = JSON.parse(JSON.stringify(this.query))
 				cloneQuery.dimension = 'day'
 				let query = stringifyQuery(cloneQuery)
-				if (this.defQuery) {
-					query = query + ' && ' + this.defQuery
-				}
 				const db = uniCloud.database()
 				const subTable = db.collection('uni-stat-result')
 					.where(query)

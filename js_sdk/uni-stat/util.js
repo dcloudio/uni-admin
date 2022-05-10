@@ -2,7 +2,6 @@
  *  以下为 uni-stat 的工具方法
  */
 
-
 // 将查询条件拼接为字符串
 function stringifyQuery(query, dimension = false) {
 	const queryArr = []
@@ -12,33 +11,37 @@ function stringifyQuery(query, dimension = false) {
 		if (key === 'time_range') return
 		let val = query[key]
 		if (val) {
-			if (typeof val === 'string') {
-				val = `"${val}"`
-			}
-			if (Array.isArray(val)) {
-				if (val.length === 2) {
-					queryArr.push(`${key} >= ${val[0]} && ${key} <= ${val[1]}`)
-				}
-				if (val.length === 1) {
-					queryArr.push(`${key} == ${val[0]}`)
-				}
-			} else if (dimension && key === 'dimension') {
-				if (maxDeltaDay(time)) {
-					queryArr.push(`dimension == "hour"`)
-				} else {
-					if (val && val !== `"hour"`) {
-						queryArr.push(`${key} == ${val}`)
-					} else {
-						queryArr.push(`dimension == "day"`)
-					}
-				}
+			if (val.indexOf(key) > -1) {
+				queryArr.push(val)
 			} else {
-				queryArr.push(`${key} == ${val}`)
+				if (typeof val === 'string') {
+					val = `"${val}"`
+				}
+				if (Array.isArray(val)) {
+					if (val.length === 2) {
+						queryArr.push(`${key} >= ${val[0]} && ${key} <= ${val[1]}`)
+					}
+					if (val.length === 1) {
+						queryArr.push(`${key} == ${val[0]}`)
+					}
+				} else if (dimension && key === 'dimension') {
+					if (maxDeltaDay(time)) {
+						queryArr.push(`dimension == "hour"`)
+					} else {
+						if (val && val !== `"hour"`) {
+							queryArr.push(`${key} == ${val}`)
+						} else {
+							queryArr.push(`dimension == "day"`)
+						}
+					}
+				} else {
+					queryArr.push(`${key} == ${val}`)
+				}
 			}
 		}
 	})
 	const queryStr = queryArr.join(' && ')
-	// console.log('............util querystr:', queryStr);
+	// console.log('............util:', queryStr);
 	return queryStr || {}
 }
 

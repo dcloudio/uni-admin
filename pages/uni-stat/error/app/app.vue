@@ -11,8 +11,6 @@
 			<view class="uni-stat--x flex">
 				<uni-data-select collection="opendb-app-list" field="appid as value, name as text" orderby="text asc"
 					:defItem="1" label="应用选择" v-model="query.appid" :clear="false" />
-				<!-- <uni-data-select collection="uni-stat-app-versions" field="_id as value, version as text" label="版本选择"
-					v-model="query.version_id" /> -->
 				<view class="flex">
 					<uni-stat-tabs label="日期选择" :current="currentDateTab" :yesterday="false" mode="date"
 						@change="changeTimeRange" />
@@ -23,7 +21,7 @@
 				</view>
 			</view>
 			<view class="uni-stat--x">
-				<uni-stat-tabs label="平台选择" type="boldLine" mode="platform-channel" v-model="query.platform" />
+				<uni-stat-tabs label="平台选择" type="boldLine" :all="false" mode="platform-channel" v-model="query.platform" />
 			</view>
 			<view class="uni-stat--x p-m">
 				<uni-table :loading="loading" border stripe :emptyText="$t('common.empty')" style="overflow-y: scroll;">
@@ -143,10 +141,7 @@
 					"4G",
 					"5G"
 				],
-				nativePlatform: {
-					"62626b2b8d55d00001289e0b": "android",
-					"62626b2b8d55d00001289e0c": "ios"
-				}
+
 			}
 		},
 		computed: {
@@ -157,23 +152,12 @@
 				} = this.options
 				return pageSizeRange[pageSizeIndex]
 			},
-			defQuery() {
-				let def = ''
-				if (!this.query.platform) {
-					def = Object.keys(this.nativePlatform).map(k => `platform == "${this.nativePlatform[k]}"`).join(' || ')
-					def = `(${def})`
-				}
-				return def
-			},
 			queryStr() {
 				let query = JSON.parse(JSON.stringify(this.query))
-				if (query.platform) {
-					query.platform = this.nativePlatform[query.platform]
-				}
-				query = stringifyQuery(query)
-				return this.defQuery ?
-					query + ' && ' + this.defQuery :
-					query
+				let platform = query.platform
+				const nativePlatform = uni.getStorageSync('platform_channel_last_data')
+				platform && ( query.platform = nativePlatform.find(p => p._id === platform).code)
+				return stringifyQuery(query)
 			},
 		},
 		created() {
@@ -217,7 +201,7 @@
 				this.getTableData(query)
 			},
 
-			getTableData(query = stringifyQuery(this.query)) {
+			getTableData(query = this.queryStr) {
 				const {
 					pageCurrent
 				} = this.options
@@ -263,7 +247,6 @@
 			getPopupTableData(hash) {
 				this.popupTableData = []
 				this.popupLoading = true
-				console.log(`error_hash == "${hash}"`)
 				const db = uniCloud.database()
 				db.collection('uni-stat-error-logs')
 					.where(`error_hash == "${hash}"`)
