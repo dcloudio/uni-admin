@@ -26,6 +26,18 @@
 			"description": "序号，前端页面排序使用",
 			"defaultValue": 0
 		},
+		"enable": {
+			"bsonType": "bool",
+			"description": "是否启动",
+			"defaultValue": true,
+			"enum": [{
+				"text": "否",
+				"value": false
+			}, {
+				"text": "是",
+				"value": true
+			}]
+		},
 		"create_time": {
 			"bsonType": "timestamp",
 			"description": "创建时间"
