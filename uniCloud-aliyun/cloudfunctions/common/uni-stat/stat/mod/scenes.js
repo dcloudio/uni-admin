@@ -64,27 +64,17 @@ module.exports = class Scenes extends BaseMod {
 		}
 		return scenesData.scene_name
 	}
+	
 	/**
 	 * 通过平台编号获取场景值名称
 	 * @param {String} platformId 平台编号
 	 * @param {String} code 场景值代码
 	 */
 	async getScenesNameByPlatformId(platformId, code) {
-		const platform = new Platform()
-		let platformInfo = await this.getCollection(platform.tableName).where({
-			_id: platformId
-		}).limit(1).get()
-		let scenesData
-		if (platformInfo.data.length > 0) {
-			platformInfo = platformInfo.data[0]
-			scenesData = await this.getScenes(platformInfo.code, code)
-			if(!scenesData.length) {
-				return code === this.defualtCode ? '默认' : ''
-			} else {
-				return scenesData.scene_name
-			}
-		} else {
-			return ''
+		const scenesData = await this.getScenesByPlatformId(platformId, code)
+		if (scenesData.length === 0) {
+			return code === this.defualtCode ? '默认' : ''
 		}
+		return scenesData.scene_name
 	}
 }
