@@ -220,7 +220,6 @@
 					platform_id,
 					start_time: [getTimeOfSomeDayAgo(1), new Date().getTime()]
 				})
-				console.log(333333333333, stringifyField(fieldsMap))
 				const db = uniCloud.database()
 				const subTable = db.collection(this.tableName)
 					.where(query)
@@ -233,10 +232,9 @@
 					.get()
 					.then(res => {
 						const data = res.result.data
-						console.log(111111111, data);
-						const today = data[0]
-						today && (today.total_users = 0)
-						const yesterday = data.find(item => item.dimension === 'day')
+						const today = data.find(item => item.stat_date === parseDateTime(getTimeOfSomeDayAgo(0), '', '')) || {}
+						today.total_devices = 0
+						const yesterday = data.find(item => item.dimension === 'day' && item.stat_date === parseDateTime(getTimeOfSomeDayAgo(1), '', ''))
 						this.panelData = []
 						this.panelData = mapfields(fieldsMap, today)
 						this.panelData.map(item => {
