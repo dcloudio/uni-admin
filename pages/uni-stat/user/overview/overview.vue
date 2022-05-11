@@ -233,7 +233,7 @@
 					.then(res => {
 						const data = res.result.data
 						const today = data.find(item => item.stat_date === parseDateTime(getTimeOfSomeDayAgo(0), '', '')) || {}
-						today.total_devices = 0
+						today.total_users = 0
 						const yesterday = data.find(item => item.dimension === 'day' && item.stat_date === parseDateTime(getTimeOfSomeDayAgo(1), '', ''))
 						this.panelData = []
 						this.panelData = mapfields(fieldsMap, today)
