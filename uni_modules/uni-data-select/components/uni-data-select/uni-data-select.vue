@@ -90,8 +90,10 @@
 			}
 		},
 		created() {
-			this.last = `${this.collection}_last_selected_option_value`
+			this.last_data = `${this.collection}_last_data`
+			this.last_selected = `${this.collection}_last_selected_option_value`
 			if (this.collection && !this.localdata.length) {
+				this.mixinDatacomResData = uni.getStorageSync(this.last_data) 
 				this.mixinDatacomEasyGet()
 			}
 		},
@@ -133,6 +135,9 @@
 				handler(val) {
 					if (val.length) {
 						this.initDefVal()
+						if (this.collection) {
+							uni.setStorageSync(this.last_data, val)
+						}
 					}
 				}
 			}
@@ -147,7 +152,7 @@
 				} else {
 					let strogeValue
 					if (this.collection) {
-						strogeValue = uni.getStorageSync(this.last)
+						strogeValue = uni.getStorageSync(this.last_selected)
 					}
 					if (strogeValue || strogeValue === 0) {
 						defValue = strogeValue
@@ -167,7 +172,7 @@
 			clearVal() {
 				this.emit('')
 				if (this.collection) {
-					uni.removeStorageSync(this.last)
+					uni.removeStorageSync(this.last_selected)
 				}
 			},
 			change(item) {
@@ -180,7 +185,7 @@
 				this.$emit('input', val)
 				this.$emit('update:modelValue', val)
 				if (this.collection) {
-					uni.setStorageSync(this.last, val)
+					uni.setStorageSync(this.last_selected, val)
 				}
 			},
 

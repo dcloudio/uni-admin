@@ -41,7 +41,6 @@ function stringifyQuery(query, dimension = false) {
 		}
 	})
 	const queryStr = queryArr.join(' && ')
-	// console.log('............util:', queryStr);
 	return queryStr || {}
 }
 
@@ -304,7 +303,7 @@ function getFieldTotal(query = this.query, field = "total_devices") {
 		})
 }
 
-function debounce(fn, time = 1500) {
+function debounce(fn, time = 100) {
 	let timer = null
 	return function(...args) {
 		if (timer) clearTimeout(timer)
