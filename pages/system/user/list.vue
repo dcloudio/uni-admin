@@ -23,7 +23,7 @@
 		</view>
 		<view class="uni-container">
 			<unicloud-db ref="udb" collection="uni-id-users,uni-id-roles"
-				field="username,mobile,status,email,role{role_name},dcloud_appid,tags,register_date" :where="where"
+				field="username,mobile,status,email,role{role_name},dcloud_appid,tags,last_login_date" :where="where"
 				page-data="replace" :orderby="orderby" :getcount="true" :page-size="options.pageSize"
 				:page-current="options.pageCurrent" v-slot:default="{data,pagination,loading,error,options}"
 				:options="options" loadtime="manual" @load="onqueryload">
@@ -43,8 +43,8 @@
 							@filter-change="filterChange($event, 'tags')">用户标签</uni-th>
 						<uni-th align="center">可登录应用</uni-th>
 						<uni-th align="center" filter-type="timestamp"
-							@filter-change="filterChange($event, 'register_date')" sortable
-							@sort-change="sortChange($event, 'register_date')">注册时间</uni-th>
+							@filter-change="filterChange($event, 'last_login_date')" sortable
+							@sort-change="sortChange($event, 'last_login_date')">最后登录时间</uni-th>
 						<uni-th align="center">操作</uni-th>
 					</uni-tr>
 					<uni-tr v-for="(item,index) in data" :key="index">
@@ -68,7 +68,7 @@
 							{{item.dcloud_appid}}
 						</uni-td>
 						<uni-td align="center">
-							<uni-dateformat :threshold="[0, 0]" :date="item.register_date"></uni-dateformat>
+							<uni-dateformat :threshold="[0, 0]" :date="item.last_login_date"></uni-dateformat>
 						</uni-td>
 						<uni-td align="center">
 							<view class="uni-group">
@@ -121,7 +121,7 @@
 
 	const db = uniCloud.database()
 	// 表查询配置
-	const dbOrderBy = 'register_date desc' // 排序字段
+	const dbOrderBy = 'last_login_date desc' // 排序字段
 	const dbSearchFields = ['username', 'role.role_name', 'mobile', 'email'] // 支持模糊搜索的字段列表
 	// 分页配置
 	const pageSize = 20
@@ -183,7 +183,7 @@
 						"用户状态": "status",
 						"邮箱": "email",
 						"角色": "role",
-						"register_date": "register_date"
+						"last_login_date": "last_login_date"
 					}
 				},
 				exportExcelData: [],
@@ -247,7 +247,7 @@
 					if (Array.isArray(item.dcloud_appid)) {
 						item.dcloud_appid = item.dcloud_appid.join('、')
 					}
-					item.register_date = this.$formatDate(item.register_date)
+					item.last_login_date = this.$formatDate(item.last_login_date)
 				}
 				this.exportExcelData = data
 			},
