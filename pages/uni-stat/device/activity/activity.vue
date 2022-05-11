@@ -226,6 +226,7 @@
 						})
 				} else {
 					this.getRangeCountData(query, type).then(res => {
+						if(type === 'week') type = 'isoWeek'
 						const {
 							count,
 							data
@@ -308,6 +309,7 @@
 			},
 
 			getRangeCountData(query, type, field = 'active_device_count') {
+				if(type === 'week') type = 'isoWeek'
 				const {
 					pageCurrent
 				} = this.options
@@ -333,8 +335,8 @@
 					const month = date.getMonth() + 1
 					const week = this.getWeekNumber(date)
 					for (const w of weeks) {
-						if (w.week === week && w.year === year) {
-							item[`week_${field}`] = w[`week_${field}`]
+						if (w.isoWeek === week && w.year === year) {
+							item[`week_${field}`] = w[`isoWeek_${field}`]
 						}
 					}
 					for (const m of months) {
@@ -343,7 +345,6 @@
 						}
 					}
 				}
-
 				return data
 			},
 
