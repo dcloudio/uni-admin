@@ -193,3 +193,7 @@
 .admin-icons-user:before {
   content: "\e68d";
 }
+
+.admin-icons-safety:before {
+  content: "\e769";
+}

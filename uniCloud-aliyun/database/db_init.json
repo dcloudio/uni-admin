@@ -135,6 +135,26 @@
 		}, {
 			"permission": [],
 			"enable": true,
+			"menu_id": "safety_statistics",
+			"name": "安全审计",
+			"icon": "admin-icons-safety",
+			"url": "",
+			"sort": 1100,
+			"parent_id": "system_management",
+			"create_date": 1638356430871
+		}, {
+			"permission": [],
+			"enable": true,
+			"menu_id": "safety_statistics_user_log",
+			"name": "用户日志",
+			"icon": "",
+			"url": "/pages/system/safety/list",
+			"sort": 1101,
+			"parent_id": "safety_statistics",
+			"create_date": 1638356430871
+		}, {
+			"permission": [],
+			"enable": true,
 			"menu_id": "uni-stat",
 			"name": "uni 统计",
 			"icon": "admin-icons-tongji",
