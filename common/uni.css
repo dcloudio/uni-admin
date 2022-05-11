@@ -496,7 +496,14 @@ button:after {
 	height: 500px;
 	box-sizing: border-box;
 }
+
 /* uni-popup modal end */
+
+
+.uni-stat-tooltip-s {
+	width: 160px;
+	white-space: normal;
+}
 
 /* #ifndef APP-NVUE */
 @media screen and (max-width: 500px) {
@@ -560,7 +567,7 @@ button:after {
 		margin: 0 86px;
 	}
 
-	::v-deep .uni-picker-container .uni-picker-custom .uni-picker-select + div {
+	::v-deep .uni-picker-container .uni-picker-custom .uni-picker-select+div {
 		left: 50% !important;
 	}
 

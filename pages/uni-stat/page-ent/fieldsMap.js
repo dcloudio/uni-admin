@@ -4,12 +4,14 @@ export default [{
 }, {
 	title: '页面名称',
 	field: 'title',
-}, {
-	title: '访问设备数',
-	field: 'visit_devices',
-	tooltip: '访问过应用内任意页面的总设备数（去重）',
-	value: 0
-}, {
+}, 
+// {
+// 	title: '访问设备数',
+// 	field: 'visit_devices',
+// 	tooltip: '访问过应用内任意页面的总设备数（去重）',
+// 	value: 0
+// }, 
+{
 	title: '访问次数',
 	field: 'visit_times',
 	tooltip: '访问过应用内任意页面总次数，多个页面之间跳转、同一页面的重复访问计为多次访问',

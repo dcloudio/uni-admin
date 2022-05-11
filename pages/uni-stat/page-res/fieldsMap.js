@@ -6,12 +6,14 @@ export default [{
 	title: '页面名称',
 	field: 'title',
 	stat: -1
-}, {
-	title: '访问设备数',
-	field: 'visit_devices',
-	tooltip: '访问过应用内任意页面的总用户数（去重）',
-	value: 0
-}, {
+},
+// {
+// 	title: '访问设备数',
+// 	field: 'visit_devices',
+// 	tooltip: '访问过应用内任意页面的总设备数（去重）',
+// 	value: 0
+// },
+{
 	title: '访问次数',
 	field: 'visit_times',
 	tooltip: '访问过应用内任意页面总次数，多个页面之间跳转、同一页面的重复访问计为多次访问；',
@@ -27,7 +29,7 @@ export default [{
 	computed: 'exit_times/visit_times',
 	formatter: '%',
 	tooltip: '在此页面，选择离开应用占此页面访问次数的比例',
-	value: 0,
+	// value: 0,
 	stat: -1
 }, {
 	title: '访问总时长',
@@ -46,7 +48,7 @@ export default [{
 	field: 'avg_user_time',
 	computed: 'duration/visit_devices',
 	formatter: ':',
-	tooltip: '平均每个用户停留在应用内的总时长，即应用停留总时长/访问设备数',
+	tooltip: '平均每个设备停留在应用内的总时长，即应用停留总时长/访问设备数',
 	value: 0,
 	stat: -1
 }, {

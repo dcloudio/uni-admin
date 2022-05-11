@@ -37,7 +37,30 @@
 						<view class="uni-stat-card-header-link" @click="navTo('/pages/uni-stat/page-res/page-res')">查看更多
 						</view>
 					</view>
-					<uni-stat-table :data="resTableData" :filedsMap="resFieldsMap" :loading="loading" tooltip />
+					<uni-table :loading="loading" border stripe emptyText="暂无数据">
+						<uni-tr>
+							<template v-for="(mapper, index) in resFieldsMap">
+								<uni-th v-if="mapper.title" :key="index" align="center">
+									<uni-tooltip>
+										{{mapper.title}}
+										<uni-icons v-if=" mapper.tooltip" type="help" color="#666" />
+										<template v-if="mapper.tooltip" v-slot:content>
+											<view class="uni-stat-tooltip-s">
+												{{mapper.tooltip}}
+											</view>
+										</template>
+									</uni-tooltip>
+								</uni-th>
+							</template>
+						</uni-tr>
+						<uni-tr v-for="(item ,i) in resTableData" :key="i">
+							<template v-for="(mapper, index) in resFieldsMap">
+								<uni-td v-if="mapper.title" :key="index" :align="index === 0 ? 'left' : 'center'">
+									{{item[mapper.field] !== undefined ? item[mapper.field] : '-'}}
+								</uni-td>
+							</template>
+						</uni-tr>
+					</uni-table>
 				</view>
 				<view class="uni-stat--x uni-stat-card p-m">
 					<view class="uni-stat-card-header">
@@ -45,7 +68,30 @@
 						<view class="uni-stat-card-header-link" @click="navTo('/pages/uni-stat/page-ent/page-ent')">查看更多
 						</view>
 					</view>
-					<uni-stat-table :data="entTableData" :filedsMap="entFieldsMap" :loading="loading" tooltip />
+					<uni-table :loading="loading" border stripe emptyText="暂无数据">
+						<uni-tr>
+							<template v-for="(mapper, index) in entFieldsMap">
+								<uni-th v-if="mapper.title" :key="index" align="center">
+									<uni-tooltip>
+										{{mapper.title}}
+										<uni-icons v-if=" mapper.tooltip" type="help" color="#666" />
+										<template v-if="mapper.tooltip" v-slot:content>
+											<view class="uni-stat-tooltip-s">
+												{{mapper.tooltip}}
+											</view>
+										</template>
+									</uni-tooltip>
+								</uni-th>
+							</template>
+						</uni-tr>
+						<uni-tr v-for="(item ,i) in entTableData" :key="i">
+							<template v-for="(mapper, index) in entFieldsMap">
+								<uni-td v-if="mapper.title" :key="index" :align="index === 0 ? 'left' : 'center'">
+									{{item[mapper.field] !== undefined ? item[mapper.field] : '-'}}
+								</uni-td>
+							</template>
+						</uni-tr>
+					</uni-table>
 				</view>
 			</view>
 		</view>
@@ -253,9 +299,11 @@
 					.get()
 					.then(res => {
 						const data = res.result.data
-						const today = data.find(item => item.stat_date === parseDateTime(getTimeOfSomeDayAgo(0), '', '')) || {}
+						const today = data.find(item => item.stat_date === parseDateTime(getTimeOfSomeDayAgo(0), '',
+							'')) || {}
 						today.total_devices = 0
-						const yesterday = data.find(item => item.dimension === 'day' && item.stat_date === parseDateTime(getTimeOfSomeDayAgo(1), '', ''))
+						const yesterday = data.find(item => item.dimension === 'day' && item.stat_date ===
+							parseDateTime(getTimeOfSomeDayAgo(1), '', ''))
 						this.panelData = []
 						this.panelData = mapfields(fieldsMap, today)
 						this.panelData.map(item => {

@@ -37,12 +37,12 @@
 					</uni-tr>
 					<uni-tr v-for="(item ,i) in tableData" :key="i">
 						<template v-for="(mapper, index) in fieldsMap">
-							<uni-td v-if="mapper.title && index === 1" :key="mapper.title" class="uni-stat-edit--x">
+							<uni-td v-if="index === 1" :key="mapper.title" class="uni-stat-edit--x">
 								{{item[mapper.field] !== undefined ? item[mapper.field] : '-'}}
 								<uni-icons type="compose" color="#2979ff" size="25" class="uni-stat-edit--btn"
 									@click="inputDialogToggle(item.path, item.title)" />
 							</uni-td>
-							<uni-td v-else :key="mapper.title" align="center">
+							<uni-td v-else :key="mapper.title" :align="index === 0 ? 'left' : 'center'">
 								{{item[mapper.field] !== undefined ? item[mapper.field] : '-'}}
 							</uni-td>
 						</template>
@@ -232,6 +232,7 @@
 			},
 
 			getPanelData(query = stringifyQuery(this.query)) {
+				console.log('。。。。。。。。', query);
 				const db = uniCloud.database()
 				const subTable = db.collection('uni-stat-page-result')
 					.where(query)

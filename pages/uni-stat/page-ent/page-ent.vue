@@ -27,7 +27,22 @@
 			</view>
 			<uni-stat-panel :items="panelData" />
 			<view class="uni-stat--x p-m">
-				<uni-stat-table :data="tableData" :filedsMap="fieldsMap" :loading="loading" />
+				<uni-table :loading="loading" border stripe :emptyText="$t('common.empty')">
+					<uni-tr>
+						<template v-for="(mapper, index) in fieldsMap">
+							<uni-th v-if="mapper.title" :key="index" align="center">
+								{{mapper.title}}
+							</uni-th>
+						</template>
+					</uni-tr>
+					<uni-tr v-for="(item ,i) in tableData" :key="i">
+						<template v-for="(mapper, index) in fieldsMap">
+							<uni-td :align="index === 0 ? 'left' : 'center'">
+								{{item[mapper.field] !== undefined ? item[mapper.field] : '-'}}
+							</uni-td>
+						</template>
+					</uni-tr>
+				</uni-table>
 				<view class="uni-pagination-box">
 					<picker class="select-picker" mode="selector" :value="options.pageSizeIndex"
 						:range="options.pageSizeRange" @change="changePageSize">
@@ -233,5 +248,8 @@
 </script>
 
 <style>
-
+	.uni-stat-edit--x {
+		display: flex;
+		justify-content: space-between;
+	}
 </style>
