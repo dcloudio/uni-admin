@@ -70,12 +70,8 @@ module.exports = class UniIDUsers extends BaseMod {
 
 		let condition = {
 			'register_env.appid': appid,//DCloud appid
-			'register_env.uni_platform': platform//平台
-		}
-		
-		//web应用不区分渠道和场景值
-		if(platform !== 'web') {
-			condition['register_env.channel'] = channel ? channel : '1001' //渠道或场景值
+			'register_env.uni_platform': platform,//平台
+			'register_env.channel': channel ? channel : '1001' //渠道或场景值
 		}
 		
 		//原生应用区分版本

@@ -132,17 +132,18 @@ module.exports = class StatResult extends BaseMod {
 		if (this.debug) {
 			console.log('statRes', JSON.stringify(statRes))
 		}
+		
+		this.fillData = []
+		this.composes = []
 		if (statRes.data.length > 0) {
-			this.fillData = []
-			this.composes = []
 			for (const i in statRes.data) {
 				await this.fill(statRes.data[i])
 			}
-			//补充数据
-			await this.replenishStat()
-			if (this.fillData.length > 0) {
-				res = await this.batchInsert(this.tableName, this.fillData)
-			}
+		}
+		//补充数据
+		await this.replenishStat()
+		if (this.fillData.length > 0) {
+			res = await this.batchInsert(this.tableName, this.fillData)
 		}
 		return res
 	}
@@ -226,18 +227,20 @@ module.exports = class StatResult extends BaseMod {
 		if (this.debug) {
 			console.log('statRes', JSON.stringify(statRes))
 		}
+		
+		this.activeDevices = new ActiveDevices()
+		this.activeUsers = new ActiveUsers()
+		this.fillData = []
+		this.composes = []
 		if (statRes.data.length > 0) {
-			this.activeDevices = new ActiveDevices()
-			this.activeUsers = new ActiveUsers()
-			this.fillData = []
-			this.composes = []
 			for (const i in statRes.data) {
 				await this.getWeekOrMonthData(statRes.data[i])
 			}
-			await this.replenishStat()
-			if (this.fillData.length > 0) {
-				res = await this.batchInsert(this.tableName, this.fillData)
-			}
+		}
+		//补充数据
+		await this.replenishStat()
+		if (this.fillData.length > 0) {
+			res = await this.batchInsert(this.tableName, this.fillData)
 		}
 		return res
 	}
@@ -689,13 +692,31 @@ module.exports = class StatResult extends BaseMod {
 		}
 
 		const datetime = new DateTime()
-		const {
-			startTime
-		} = datetime.getTimeDimensionByType(this.fillType, -1, this.startTime)
+		// const {
+		// 	startTime
+		// } = datetime.getTimeDimensionByType(this.fillType, -1, this.startTime)
+		
+		//上一次统计时间
+		let preStatRes = await this.getCollection(this.tableName).where({
+			start_time: {$lt: this.startTime},
+			dimension: this.fillType
+		}).orderBy('start_time', 'desc').limit(1).get()
+		let preStartTime = 0
+		if(preStatRes && preStatRes.data.length > 0) {
+			preStartTime = preStatRes.data[0].start_time
+		}
+		
+		if (this.debug) {
+			console.log('replenishStat-preStartTime', preStartTime)
+		}
+		
+		if(!preStartTime) {
+			return false
+		}
 
 		// 上一阶段数据
 		const preStatData = await this.selectAll(this.tableName, {
-			start_time: startTime,
+			start_time: preStartTime,
 			dimension: this.fillType
 		}, {
 			appid: 1,

@@ -38,19 +38,33 @@ function deepClone(obj) {
 
 /**
  * 解析客户端上报的参数
- * @param {String} str 字符串参数
+ * @param {String} primitiveParams 原始参数
  * @param {Object} context 附带的上下文
  */
-function parseUrlParams(str, context) {
-	if (!str || typeof str !== 'string') {
-		return str
+function parseUrlParams(primitiveParams, context) {
+	if (!primitiveParams) {
+		return primitiveParams
 	}
-	const params = str.split('&').reduce((res, cur) => {
-		const arr = cur.split('=')
-		return Object.assign({
-			[arr[0]]: arr[1]
-		}, res)
-	}, {})
+	
+	let params = {}
+	if(typeof primitiveParams === 'string') {
+		params = primitiveParams.split('&').reduce((res, cur) => {
+			const arr = cur.split('=')
+			return Object.assign({
+				[arr[0]]: arr[1]
+			}, res)
+		}, {})
+	} else {
+		//转换参数类型--兼容性
+		for(let key in primitiveParams) {
+			if(typeof primitiveParams[key] === 'number') {
+				params[key] = primitiveParams[key] + ''
+			} else {
+				params[key] = primitiveParams[key]
+			}
+		}
+	}
+	
 	//原以下数据要从客户端上报，现调整为如果以下参数客户端未上报，则通过请求附带的context参数中获取
 	let convertParams = {}
 	
@@ -94,7 +108,6 @@ function parseUrlParams(str, context) {
 		}
 	}
 	context = context ? context : {}
-	//console.log('context', context)
 	for (let key in convertParams) {
 		if (!params[key] && context[convertParams[key]]) {
 			params[key] = context[convertParams[key]]
@@ -113,8 +126,14 @@ function parseUrl(url) {
 		return false
 	}
 	const urlInfo = url.split('?')
+	
+	baseurl = urlInfo[0]
+	if (baseurl !== '/' && baseurl.indexOf('/') === 0) {
+	  baseurl = baseurl.substr(1)
+	}
+	
 	return {
-		path: urlInfo[0],
+		path: baseurl,
 		query: urlInfo[1] ? decodeURI(urlInfo[1]) : ''
 	}
 }

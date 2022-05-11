@@ -7,6 +7,7 @@ module.exports = class Scenes extends BaseMod {
 	constructor() {
 		super()
 		this.tableName = 'mp-scenes'
+		this.defualtCode = '1001'
 	}
 
 	/**
@@ -69,10 +70,21 @@ module.exports = class Scenes extends BaseMod {
 	 * @param {String} code 场景值代码
 	 */
 	async getScenesNameByPlatformId(platformId, code) {
-		const scenesData = await this.getScenesByPlatformId(platformId, code)
-		if (scenesData.length === 0) {
+		const platform = new Platform()
+		let platformInfo = await this.getCollection(platform.tableName).where({
+			_id: platformId
+		}).limit(1).get()
+		let scenesData
+		if (platformInfo.data.length > 0) {
+			platformInfo = platformInfo.data[0]
+			scenesData = await this.getScenes(platformInfo.code, code)
+			if(!scenesData.length) {
+				return code === this.defualtCode ? '默认' : ''
+			} else {
+				return scenesData.scene_name
+			}
+		} else {
 			return ''
 		}
-		return scenesData.scene_name
 	}
 }

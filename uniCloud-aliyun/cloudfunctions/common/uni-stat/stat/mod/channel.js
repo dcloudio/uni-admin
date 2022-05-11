@@ -102,6 +102,6 @@ module.exports = class Channel extends BaseMod {
 		} else if (params.sc && params.ut.indexOf('mp-') === 0) {
 			return params.sc
 		}
-		return ''
+		return this.scenes.defualtCode
 	}
 }
