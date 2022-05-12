@@ -23,7 +23,7 @@
 			<view class="uni-stat--x">
 				<uni-stat-tabs label="平台选择" type="boldLine" mode="platform" v-model="query.platform_id"
 					@change="changePlatform" />
-				<uni-data-select :localdata="channelData" label="渠道选择" v-model="query.channel_id"></uni-data-select>
+				<uni-data-select  v-if="query.platform_id && query.platform_id.indexOf('==') === -1" :localdata="channelData" label="渠道选择" v-model="query.channel_id"></uni-data-select>
 			</view>
 			<view class="uni-stat--x p-m">
 				<view class="label-text mb-l">
