@@ -10,7 +10,7 @@
 		<view class="uni-container">
 			<view class="uni-stat--x flex">
 				<uni-data-select collection="opendb-app-list" field="appid as value, name as text" orderby="text asc"
-					:defItem="1" label="应用选择" v-model="query.appid" :clear="false" />
+					:defItem="1" label="应用选择" @change="changeAppid" v-model="query.appid" :clear="false" />
 				<view class="flex">
 					<uni-stat-tabs label="日期选择" :current="currentDateTab" mode="date" @change="changeTimeRange" />
 					<uni-datetime-picker type="daterange" :end="new Date().getTime()" v-model="query.start_time"
@@ -22,8 +22,7 @@
 			<view class="uni-stat--x">
 				<uni-stat-tabs label="平台选择" type="boldLine" mode="platform" v-model="query.platform_id"
 					@change="changePlatform" />
-				<uni-data-select collection="uni-stat-app-channels"
-					field="_id as value, channel_name as text, channel_code" label="渠道选择" v-model="query.channel_id" />
+				<uni-data-select :localdata="channelData" label="渠道选择" v-model="query.channel_id"></uni-data-select>
 			</view>
 			<view class="uni-stat--x mb-l" style="padding-top: 0;">
 				<view class="mb-m line-bottom">
@@ -100,7 +99,8 @@
 						title: '秒',
 						value: [0, 3, 6, 11, 21, 31, 51, 100]
 					}
-				}
+				},
+				channelData: []
 			}
 		},
 		computed: {
@@ -120,6 +120,7 @@
 		},
 		created() {
 			this.debounceGet = debounce(() => this.getAllData(this.query))
+			this.getChannelData()
 		},
 		watch: {
 			query: {
@@ -139,8 +140,11 @@
 			useDatetimePicker() {
 				this.currentDateTab = -1
 			},
-			changePlatform() {
-				this.query.channel_id = ''
+			changeAppid(id) {
+				this.getChannelData(id, false)
+			},
+			changePlatform(id) {
+				this.getChannelData(null, id)
 			},
 			changeTimeRange(id, index) {
 				this.currentDateTab = index
@@ -305,6 +309,60 @@
 					}).finally(() => {
 						this.loading = false
 					})
+			},
+			//获取渠道信息
+			getChannelData(appid, platform_id) {
+				this.query.channel_id = ''
+				const db = uniCloud.database()
+				const condition = {}
+				//对应应用
+				appid = appid ? appid : this.query.appid
+				if(appid) {
+					condition.appid = appid
+				}
+				//对应平台
+				platform_id = platform_id ? platform_id : this.query.platform_id
+				if(platform_id) {
+					condition.platform_id = platform_id
+				}
+			
+				let platformTemp = db.collection('uni-stat-app-platforms')
+				.field('_id, name')
+				.getTemp()
+			
+				let channelTemp = db.collection('uni-stat-app-channels')
+				.where(condition)
+				.field('_id, channel_name, create_time, platform_id')
+				.getTemp()
+			
+				db.collection(channelTemp, platformTemp)
+				.orderBy('platform_id', 'asc')
+				.get()
+				.then(res => {
+					let data = res.result.data
+					let channels = []
+					if(data.length > 0) {
+						let channelName
+						for(let i in data) {
+							channelName = data[i].channel_name  ? data[i].channel_name : '默认'
+							if(data[i].platform_id.length > 0) {
+								channelName = data[i].platform_id[0].name + '-' + channelName
+							}
+							channels.push({
+								value: data[i]._id,
+								text: channelName
+							})
+						}
+					}
+					this.channelData = channels
+				})
+				.catch((err) => {
+					console.error(err)
+					// err.message 错误信息
+					// err.code 错误码
+				}).finally(() => {
+				})
+			
 			}
 		}
 

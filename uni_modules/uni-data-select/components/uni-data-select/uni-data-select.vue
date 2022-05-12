@@ -113,7 +113,7 @@
 			localdata: {
 				immediate: true,
 				handler(val, old) {
-					if (Array.isArray(val) && !old) {
+					if (Array.isArray(val)) {
 						this.mixinDatacomResData = val
 					}
 				}
@@ -193,6 +193,7 @@
 					value,
 					channel_code
 				} = item
+				console.log('item', item)
 				channel_code = channel_code ? `(${channel_code})` : ''
 				return this.collection.indexOf('app-list') > 0 ?
 					`${text}(${value})` :
