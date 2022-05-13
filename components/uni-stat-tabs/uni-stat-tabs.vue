@@ -182,7 +182,7 @@
 							_id = `(${_id})`
 							this.setAllItem(platforms, _id)
 						} else if (this.mode === 'platform-scene') {
-							platforms = platforms.filter(item => !/^android|ios|h5|qn|qw$/.test(item.code))
+							platforms = platforms.filter(item => !/^android|ios|h5|web|qn|qw$/.test(item.code))
 							let _id = platforms.map(p => `platform_id == "${p._id}"`).join(' || ')
 							_id = `(${_id})`
 							this.setAllItem(platforms, _id)

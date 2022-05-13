@@ -1,5 +1,5 @@
 export default [{
-	title: '受访页',
+	title: '入口页',
 	field: 'path',
 }, {
 	title: '页面名称',
