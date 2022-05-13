@@ -41,16 +41,14 @@ export default [{
 	computed: 'duration/visit_times',
 	formatter: ':',
 	tooltip: '平均每次打开应用停留在应用内的总时长，即应用停留总时长/启动次数',
-	value: 0,
-	stat: -1
+	value: 0
 }, {
 	title: '设备平均停留时长',
 	field: 'avg_user_time',
 	computed: 'duration/visit_devices',
 	formatter: ':',
 	tooltip: '平均每个设备停留在应用内的总时长，即应用停留总时长/访问设备数',
-	value: 0,
-	stat: -1
+	value: 0
 }, {
 	title: '分享次数',
 	field: 'share_count',
