@@ -1,3 +1,32 @@
+## 3.3.18（2022-05-12）
+- 调整绑定、解绑邮箱手机号接口，只要传递code参数就进行验证码校验即使传递的值为undefined
+## 3.3.17（2022-05-09）
+- register_env内增加os_name字段用于区分注册时的客户端系统类型
+## 3.3.16（2022-05-09）
+- 修复 addUser接口添加的用户无法使用密码登录的Bug [详情](https://ask.dcloud.net.cn/question/144670)
+## 3.3.15（2022-05-08）
+- 修复config文件语法错误时报`this.t is not a function`的Bug 感谢@寒暄
+## 3.3.14（2022-05-08）
+- 新增 getWeixinUserInfo接口 用于获取app平台微信登录用户的用户信息 [详情](https://uniapp.dcloud.net.cn/uniCloud/uni-id.html#get-weixin-user-info)
+- 新增 addUser接口 用于手动添加用户 [详情](https://uniapp.dcloud.net.cn/uniCloud/uni-id.html#add-user)
+- 新增 resetPwdBySms接口 用于使用短信验证码重置密码 [详情](https://uniapp.dcloud.net.cn/uniCloud/uni-id.html#reset-pwd-by-sms)
+- 新增 refreshToken接口 用于主动刷新用户token [详情](https://uniapp.dcloud.net.cn/uniCloud/uni-id.html#refresh-token)
+- 调整 用户注册时记录用户注册环境到 register_env 字段 [详情](https://uniapp.dcloud.net.cn/uniCloud/uni-id.html#user-table)
+- 调整 用户注册时将注册 ip 移至 register_env 内
+
+## 3.3.13（2022-03-04）
+- createInstance方法支持传递clientInfo [详情](https://uniapp.dcloud.net.cn/uniCloud/uni-id.html#create-instance)
+- 修复`this.t is not a function`报错
+## 3.3.12（2022-01-15）
+- 新增 preferedAppPlatform 配置用于解决uni-app vue2版本vue3版本获取platform不一致的问题 [详情](https://uniapp.dcloud.net.cn/uniCloud/uni-id?id=prefered-app-platform)
+- 修复 checkToken 未返回自定义token内容的Bug
+## 3.3.11（2022-01-11）
+- 修复用户名密码登录时多个应用出现重复用户名登录报错的Bug
+## 3.3.10（2022-01-07）
+- 新增 自定义国际化语言支持 [详情](https://uniapp.dcloud.net.cn/uniCloud/uni-id?id=custom-i8n)
+- 修复 一键登录时未校验重复手机号是否已验证的Bug
+- 修复 Apple登录时用户邮箱为空时报错的Bug
+- 修复 登录接口未传username时错误提示不正确的Bug
 ## 3.3.9（2021-11-09）
 - 去除重复的context.xxx未找到的提示语
 ## 3.3.8（2021-10-28）
