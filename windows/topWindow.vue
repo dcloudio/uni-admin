@@ -11,51 +11,48 @@
 		</svg>
 		<!-- #endif -->
 		<view class="navbar" :class="{'navbar-mini':!matchLeftWindow,'popup-menu':popupMenuOpened}">
-			<view class="navbar-left pointer">
-				<navigator class="logo" open-type="reLaunch" url="/">
+			<view class="navbar-left">
+				<view class="logo pointer" @click="linkTo">
 					<image :src="logo" mode="heightFix"></image>
 					<text>{{appName}}</text>
-				</navigator>
+				</view>
 				<uni-icons @click="toggleSidebar" type="bars" class="menu-icon" size="30" color="#999"></uni-icons>
 			</view>
 			<view class="navbar-middle">
 				<text class="title-text">{{navigationBarTitleText}}</text>
 			</view>
 			<view class="navbar-right pointer">
-				<view v-show="userInfo.username" @click="togglePopupMenu" class="navbar-user">
-					<view class="username"><text>{{userInfo.username}}</text></view>
-					<uni-icons class="arrowdown" type="arrowdown" color="#666" size="13"></uni-icons>
+				<!-- #ifdef H5 -->
+				<view v-if="logs.length" @click="showErrorLogs" class="menu-item debug pointer">
+					<svg class="svg-icon">
+						<use xlink:href="#icon-bug"></use>
+					</svg>
+					<uni-badge class="debug-badge" :text="logs.length" type="error"></uni-badge>
 				</view>
-				<view class="uni-mask" @click="togglePopupMenu"></view>
-				<view class="navbar-menu">
-					<!-- #ifdef H5 -->
-					<view v-if="logs.length" @click="showErrorLogs" class="menu-item debug pointer">
-						<svg class="svg-icon">
-							<use xlink:href="#icon-bug"></use>
-						</svg>
-						<uni-badge class="debug-badge" :text="logs.length" type="error"></uni-badge>
+				<!-- #endif -->
+
+				<picker mode="selector" :range="langs" range-key="text" @change="changeLanguage">
+					<view class="admin-icons-lang flex lang-icon" />
+				</picker>
+
+				<view class="" style="position: relative;">
+					<view v-show="userInfo.username" class="navbar-user" @click="togglePopupMenu">
+						<view class="admin-icons-user user-icon" />
+						<view class="username ml-s"><text>{{userInfo.username}}</text></view>
+						<uni-icons class="arrowdown" type="arrowdown" color="#666" size="13"></uni-icons>
 					</view>
-					<!-- #endif -->
-					<view v-for="item in links" :key="item.text" class="menu-item">
-						<view v-if="!item.url && item.lang" class="hover-highlight dlanguage-item"
-							@click="changeLanguage(item.lang)">{{item.text}}</view>
-						<uni-link v-else :href="item.url" :text="$t(item.text)" color="#666" fontSize="13"
-							style="font-size:12px;" />
+					<view class="uni-mask" @click="togglePopupMenu" />
+					<view class="navbar-menu">
+						<template v-if="userInfo.username">
+							<view class="menu-item hover-highlight" @click="changePassword">
+								<text>{{ $t("topwindow.text.changePwd") }}</text>
+							</view>
+							<view class="menu-item hover-highlight">
+								<text class="logout pointer" @click="logout">{{ $t("topwindow.text.signOut") }}</text>
+							</view>
+						</template>
+						<view class="popup-menu__arrow"></view>
 					</view>
-					<template v-if="userInfo.username">
-						<view class="menu-item username">
-							<uni-icons class="person" type="person" color="#666" size="13"></uni-icons>
-							<text>{{userInfo.username}}</text>
-						</view>
-						<view class="menu-item" @click="changePassword">
-							<text>{{ $t("topwindow.text.changePwd") }}</text>
-						</view>
-						<view class="menu-item ">
-							<text class="logout pointer hover-highlight"
-								@click="logout">{{ $t("topwindow.text.signOut") }}</text>
-						</view>
-					</template>
-					<view class="popup-menu__arrow"></view>
 				</view>
 			</view>
 		</view>
@@ -113,6 +110,7 @@
 		},
 		computed: {
 			...mapState('app', ['appName']),
+			...mapState('app', ['routes']),
 			...mapState('user', ['userInfo']),
 			...mapState('error', ['logs'])
 		},
@@ -126,7 +124,8 @@
 			// #ifdef H5
 			uni.setLocale('en')
 			this.$nextTick(() => {
-				this.changeLanguage('zh-Hans')
+				// 设置简体中文
+				this.changeLanguage(0)
 			})
 			// #endif
 		},
@@ -175,7 +174,9 @@
 			changePassword() {
 				!this.matchLeftWindow ? this.toPasswordPage() : this.showPasswordPopup()
 			},
-			changeLanguage(lang) {
+			changeLanguage(e) {
+				const index = typeof e === 'object' ? e.detail.value : e
+				const lang = this.langs[index].lang || 'zh-Hans'
 				const platform = uni.getSystemInfoSync().platform
 				if (platform === 'android') {
 					uni.showToast({
@@ -185,13 +186,13 @@
 					})
 					return
 				}
-				if (lang) {
-					this.$i18n.locale = lang
-					uni.setLocale(lang)
-				} else {
-					this.$i18n.locale = 'en'
-					uni.setLocale('en')
-				}
+				this.$i18n.locale = lang
+				uni.setLocale(lang)
+			},
+			linkTo() {
+				uni.reLaunch({
+					url: '/'
+				})
 			}
 		}
 	}
@@ -218,7 +219,7 @@
 	}
 
 	.logo {
-
+		min-width: 223px;
 		display: flex;
 		align-items: center;
 
@@ -243,6 +244,10 @@
 		/* #ifdef MP */
 		margin-right: 97px;
 		/* #endif */
+	}
+
+	.navbar-left {
+		display: flex;
 	}
 
 	// 在平板以下，保持navbar-middle
@@ -283,12 +288,13 @@
 
 	.menu-item {
 		padding: 8px;
-		font-size: 13px;
-		color: #666;
+		font-size: 16px;
+		color: #555;
 		line-height: 1;
 	}
 
 	.debug {
+		margin: 0 30px;
 		display: inline-block;
 		position: relative;
 	}
@@ -313,6 +319,7 @@
 	.navbar-right {
 		display: flex;
 		justify-content: flex-end;
+		align-items: center;
 	}
 
 	.navbar-right .uni-mask {
@@ -333,7 +340,7 @@
 		margin-right: 3px;
 		border-top-width: 0;
 		border-bottom-color: #ebeef5;
-		filter: drop-shadow(0 2px 12px rgba(0, 0, 0, .03));
+		filter: drop-shadow(0 6px 12px rgba(0, 0, 0, .3));
 	}
 
 	.popup-menu__arrow::after {
@@ -344,9 +351,9 @@
 		height: 0;
 		border-color: transparent;
 		border-style: solid;
-		border-width: 6px;
+		border-width: 10px;
 		top: 1px;
-		margin-left: -6px;
+		margin-left: -10px;
 		border-top-width: 0;
 		border-bottom-color: #fff;
 	}
@@ -354,60 +361,62 @@
 	/* 大屏时，隐藏的内容 */
 	.menu-icon,
 	.navbar-middle,
-	.navbar-user,
+	// .navbar-user,
 	.popup-menu__arrow,
 	.navbar-right .uni-mask {
 		display: none;
 	}
 
 	/* 小屏，显示的内容 */
-	.navbar-mini .menu-icon,
-	.navbar-mini .navbar-middle {
+	.navbar-mini .menu-icon {
 		display: block;
 	}
 
-	.navbar-mini .navbar-user {
+	.navbar-user {
 		display: flex;
+		justify-content: center;
+		align-items: center;
 	}
 
 	/* 小屏时，隐藏的内容 */
 	.navbar-mini .logo,
 	.navbar-mini .debug,
-	.navbar-mini .navbar-menu,
-	.navbar-mini .navbar-menu .username {
+	.navbar-menu,
+	// .navbar-mini .navbar-menu .username
+		{
 		display: none;
 	}
 
-	.navbar-mini .navbar-menu {
+	.navbar-menu {
+		width: 100px;
 		flex-direction: column;
 		align-items: center;
 		justify-content: center;
-		position: fixed;
-		right: 20px;
+		position: absolute;
+		right: 0;
 		/* #ifdef MP */
-		right: 97px;
+		// right: 97px;
 		/* #endif */
-		top: var(--window-top);
+		top: 27px;
 		/* #ifndef H5 */
-		top: 85px;
+		// top: 85pxs: ;
 		/* #endif */
 		background-color: #fff;
 		z-index: 999;
-		padding: 5px 15px;
-		margin: 5px 0;
+		padding: 10px 0;
 		background-color: #fff;
 		border: 1px solid #ebeef5;
 		border-radius: 4px;
-		box-shadow: 0 2px 12px 0 rgba(0, 0, 0, .1);
+		box-shadow: 0 6px 12px 0 rgba(0, 0, 0, .5);
 	}
 
 	/* 小屏时，弹出下拉菜单 */
-	.navbar-mini.popup-menu .navbar-menu {
+	.popup-menu .navbar-menu {
 		display: flex;
 	}
 
-	.navbar-mini.popup-menu .popup-menu__arrow,
-	.navbar-mini.popup-menu .navbar-right .uni-mask {
+	.popup-menu .popup-menu__arrow,
+	.popup-menu .navbar-right .uni-mask {
 		display: block;
 	}
 
@@ -423,19 +432,6 @@
 		overflow: hidden;
 	}
 
-	.modal {
-		width: 100%;
-		max-width: 980px;
-		margin: 0 auto;
-		background-color: #FFFFFF;
-	}
-
-	.modal-content {
-		padding: 15px;
-		height: 500px;
-		box-sizing: border-box;
-	}
-
 	.password-popup {
 		padding: 30px;
 	}
@@ -445,5 +441,15 @@
 		font-stretch: 12px;
 		vertical-align: baseline;
 		text-decoration: underline;
+	}
+
+	.lang-icon {
+		font-size: 18px;
+		margin-top: 5px;
+		margin-right: 30px;
+	}
+
+	.user-icon {
+		font-size: 20px;
 	}
 </style>

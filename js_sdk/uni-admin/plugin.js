@@ -8,6 +8,9 @@ import {
     initRequest
 } from './request.js'
 import {
+    initFetch
+} from './fetchMock.js'
+import {
     initPermission
 } from './permission.js'
 import {
@@ -18,6 +21,7 @@ export default {
         initUtil(Vue)
         initError(Vue)
         initRequest(Vue)
+		initFetch(Vue)
         initPermission(Vue)
         initInterceptor()
     }

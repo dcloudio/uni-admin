@@ -1,0 +1,94 @@
+{
+	"debug": false,
+	"redis": false,
+	"cachetime": 604800,
+	"sessionExpireTime": 1800,
+	"realtimeStat": true,
+	"cronMin": false,
+	"cron": [
+		{
+			"type": "stat",
+			"time": "* * * 0"
+		},
+		{
+			"type": "stat",
+			"time": "* * 1 10"
+		},
+		{
+			"type": "stat",
+			"time": "1 * 1 20"
+		},
+		{
+			"type": "stat",
+			"time": "* 1 3 30"
+		},
+		{
+			"type": "active-device",
+			"time": "* * 0 10"
+		},
+		{
+			"type": "active-user",
+			"time": "* * 0 20"
+		},
+		{
+			"type": "page",
+			"time": "* * 3 20"
+		},
+		{
+			"type": "event",
+			"time": "* * 4 20"
+		},
+		{
+			"type": "error",
+			"time": "* * 5 20"
+		},
+		{
+			"type": "loyalty",
+			"time": "* * 6 20"
+		},
+		{
+			"type": "clean",
+			"time": "* * 5 30"
+		},
+		{
+			"type": "retention-device",
+			"time": "* * 2 20"
+		},
+		{
+			"type": "retention-device",
+			"time": "* 1 4 30"
+		},
+		{
+			"type": "retention-device",
+			"time": "1 * 2 30"
+		},
+		{
+			"type": "retention-user",
+			"time": "* * 3 40"
+		},
+		{
+			"type": "retention-user",
+			"time": "* 1 5 40"
+		},
+		{
+			"type": "retention-user",
+			"time": "1 * 6 30"
+		}
+	],
+	"batchInsertNum": 5000,
+	"errorCheck": {
+		"needCheck": true,
+		"checkTime": 5
+	},
+	"cleanLog": {
+		"open": true,
+		"reserveDays": {
+			"sessionLog": 31,
+			"userSessionLog": 31,
+			"pageLog": 7,
+			"eventLog": 7,
+			"shareLog": 7,
+			"errorLog": 7
+		}
+	}
+}

@@ -54,4 +54,5 @@
 <style>
 	@import '@/common/uni.css';
 	@import '@/common/uni-icons.css';
+	@import '@/common/admin-icons.css';
 </style>

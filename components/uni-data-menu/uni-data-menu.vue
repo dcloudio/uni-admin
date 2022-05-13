@@ -14,7 +14,8 @@
 		data() {
 			return {
 				menus: [],
-				userMenu:[]
+				userMenu:[],
+				famliy:[]
 			};
 		},
 		mixins: [uniCloud.mixinDatacom],
@@ -60,6 +61,15 @@
 		// 		return this.getUserMenu(this.menus)
 		// 	}
 		// },
+		watch: {
+			menus: {
+				immediate: true,
+				handler() {
+					const item = this.menus.find(m => m.value === this.$route.path)
+					item && this.onSelect(item)
+				}
+			}
+		},
 		methods: {
 			getUserMenu(menuList) {
 				const {
@@ -89,7 +99,9 @@
 				return buildMenus(menuList)
 			},
 			onSelect(menu) {
-				this.$emit('select', menu)
+				this.famliy = []
+				this.getMenuAncestor(menu.menu_id, this.menus)
+				this.$emit('select', menu, this.famliy)
 				this.$emit('input', menu.value)
 			},
 			hasLocalData(value) {
@@ -113,6 +125,27 @@
 					this.mixinDatacomLoading = false
 					this.mixinDatacomErrorMessage = err
 				})
+			},
+			getMenuAncestor(menuId, menus) {
+				menus.forEach(item => {
+					if (item.menu_id === menuId ) {
+						const route = {
+							name: item.text
+						}
+						const path = item.value
+						if (path) {
+							route.to = {
+								path
+							}
+						}
+						this.famliy.unshift(route)
+						const parent_id = item.parent_id
+						if (parent_id) {
+							this.getMenuAncestor(parent_id, menus)
+						}
+					}
+				})
+				// return famliy
 			}
 		},
 	}
