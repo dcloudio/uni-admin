@@ -433,7 +433,7 @@
 					.field('_id, title, path')
 					.getTemp()
 				const subTableTemp = db.collection('uni-stat-page-result')
-					.where(query)
+					.where(`${query} && ${field} > 0`)
 					.getTemp()
 
 				db.collection(subTableTemp, mainTableTemp)
@@ -470,7 +470,6 @@
 												item[key] = line[key]
 											}
 										}
-
 									}
 								}
 								mapfields(mapping, item, item)

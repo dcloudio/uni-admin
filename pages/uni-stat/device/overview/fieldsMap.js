@@ -73,7 +73,7 @@ const resFieldsMap = [{
 	title: '占比',
 	field: 'rate',
 	computed: 'visit_times/total_app_access',
-	tooltip: '某个页面的访问次数占所有页面访问次数的比例',
+	tooltip: '页面的访问次数占所有页面访问次数的比例',
 	formatter: '%',
 }]
 
@@ -83,15 +83,15 @@ const entFieldsMap = [{
 	tooltip: '设备进入应用访问的第一个页面，例如设备从页面1进入应用，跳转到页面2，1为入口页，而2不是',
 	formatter: ''
 }, {
-	title: '访问次数',
+	title: '入口页次数',
 	field: 'entry_count',
-	tooltip: '访问该页面的总次数',
+	tooltip: '访问该入口页的总次数',
 	value: 0
 }, {
 	title: '占比',
 	field: 'rate',
 	computed: 'entry_count/total_app_access',
-	tooltip: '某个页面的访问次数占所有页面访问次数的比例',
+	tooltip: '页面的入口页次数占所有页面访问次数的比例',
 	formatter: '%'
 }]
 
