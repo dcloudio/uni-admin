@@ -3,36 +3,6 @@
 // 编写完毕后对本文件点右键，可按配置规则创建表和添加数据
 
 {
-	"uni-stat-app-versions": {
-		"data": []
-	},
-	"uni-stat-app-platforms": {
-		"data": []
-	},
-	"uni-stat-app-channels": {
-		"data": []
-	},
-	"uni-stat-loyalty-result": {
-		"data": []
-	},
-	"uni-stat-result": {
-		"data": []
-	},
-	"uni-stat-pages": {
-		"data": []
-	},
-	"uni-stat-page-result": {
-		"data": []
-	},
-	"uni-stat-events": {
-		"data": []
-	},
-	"uni-stat-event-result": {
-		"data": []
-	},
-	"uni-stat-error-result": {
-		"data": []
-	},
 	"uni-id-users": {
 		"data": []
 	},
@@ -433,5 +403,26 @@
 			"sort": 2194,
 			"create_date": 1638356902516
 		}]
-	}
+	},
+	"uni-stat-active-devices": {},
+	"uni-stat-active-users": {},
+	"uni-stat-app-channels": {},
+	"uni-stat-app-crash-logs": {},
+	"uni-stat-app-platforms": {},
+	"uni-stat-app-versions": {},
+	"uni-stat-error-logs": {},
+	"uni-stat-error-result": {},
+	"uni-stat-event-logs": {},
+	"uni-stat-event-result": {},
+	"uni-stat-events": {},
+	"uni-stat-loyalty-result": {},
+	"uni-stat-mp-scenes": {},
+	"uni-stat-page-logs": {},
+	"uni-stat-page-result": {},
+	"uni-stat-pages": {},
+	"uni-stat-result": {},
+	"uni-stat-run-errors": {},
+	"uni-stat-session-logs": {},
+	"uni-stat-share-logs": {},
+	"uni-stat-user-session-logs": {}
 }
