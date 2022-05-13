@@ -503,7 +503,7 @@ module.exports = class PageResult extends BaseMod {
 			visit_devices: pageVisitDevices,
 			visit_users: pageVisitUsers,
 			exit_times: existTimes,
-			duration: totalDuration,
+			duration: totalDuration > 0 ? totalDuration : 1,
 			share_count: shareCount,
 			entry_users: entryUsers,
 			entry_devices: entryDevices,
