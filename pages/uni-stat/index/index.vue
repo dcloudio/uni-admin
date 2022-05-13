@@ -3,15 +3,14 @@
 		<view class="uni-header">
 			<uni-stat-breadcrumb class="uni-stat-breadcrumb-on-phone" />
 			<view class="uni-group">
-				<!-- <view class="uni-title">统计首页</view> -->
-				<view class="uni-sub-title  hide-on-phone"></view>
+				<view class="uni-sub-title hide-on-phone"></view>
 			</view>
 		</view>
 		<view class="uni-container">
 			<uni-notice-bar v-if="!tableData.length && !query.platform_id" showGetMore showIcon class="mb-m pointer"
-				text="统计相关功能需开通 uni 统计后才能使用, 点击查看具体流程"
+				text="暂无数据, 统计相关功能需开通 uni 统计后才能使用, 如未开通, 点击查看具体流程"
 				@click="navTo('https://uniapp.dcloud.io/uni-stat-v2.html')" />
-			<view class="uni-stat--x flex mb-m">
+			<view class="uni-stat--x mb-m">
 				<uni-stat-tabs label="平台选择" type="boldLine" mode="platform" v-model="query.platform_id" />
 			</view>
 			<!-- <uni-stat-panel :items="panelData" :contrast="true" /> -->
