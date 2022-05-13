@@ -172,7 +172,7 @@
 					.getTemp()
 
 				const subTableTemp = db.collection('uni-stat-page-result')
-					.where(query)
+					.where(query + ' && ' + 'entry_count > 0')
 					.getTemp()
 
 				db.collection(subTableTemp, mainTableTemp)
@@ -181,7 +181,7 @@
 					)
 					.groupBy("page_id")
 					.groupField(stringifyGroupField(fieldsMap))
-					.orderBy('visit_users', 'desc')
+					.orderBy('entry_count', 'desc')
 					.skip((pageCurrent - 1) * this.pageSize)
 					.limit(this.pageSize)
 					.get({
