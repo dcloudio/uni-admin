@@ -30,7 +30,8 @@
 						</uni-td>
 					</template>
 					<uni-td align="center">
-						<button class="uni-button" size="mini" type="primary" @click="navTo('/pages/uni-stat/device/overview/overview', item.appid)">查看</button>
+						<button class="uni-button" size="mini" type="primary"
+							@click="navTo('/pages/uni-stat/device/overview/overview', item.appid)">查看</button>
 					</uni-td>
 				</uni-tr>
 			</uni-table>
@@ -127,7 +128,7 @@
 				this.loading = true
 				const db = uniCloud.database()
 				const appList = db.collection('opendb-app-list').getTemp()
-				const appDaily = db.collection( 'uni-stat-result')
+				const appDaily = db.collection('uni-stat-result')
 					.where(query)
 					.getTemp()
 
@@ -163,28 +164,56 @@
 							a.used = true
 							for (const b of data) {
 								const rowData = {}
-								if (data.length === 1 || (!b.used && a.appid === b.appid && a.stat_date !== b.stat_date)) {
-									let today, yesterday
-									if (data.length < 2) {
-										today = data[0]
-									} else {
-										Number(a.stat_date) > Number(b.stat_date) ? [today, yesterday] = [a, b] : [
-											today, yesterday
-										] = [b, a]
+								if (data.length === 1 || (!b.used && a.appid === b.appid && a.stat_date !== b
+										.stat_date)) {
+									let today = {},
+										yesterday = {},
+										isToday = parseDateTime(getTimeOfSomeDayAgo(0), '', ''),
+										isYesterday = parseDateTime(getTimeOfSomeDayAgo(1), '', '')
+
+									if (a.stat_date === isToday) {
+										today = a
 									}
-									today && (today.total_users = 0) // total_users 不准确，置空后由 getFieldTotal 处理
+
+									if (a.dimension === 'day' && a.stat_date === isYesterday) {
+										yesterday = a
+									}
+
+									if (b.stat_date === isToday) {
+										today = b
+									}
+
+									if (b.dimension === 'day' && b.stat_date === isYesterday) {
+										yesterday = b
+									}
+
+									const appid = a.appid || b.appid
+									if (appid) {
+										// total_users 不准确，置空后由 getFieldTotal 处理, appid 不存在时暂不处理
+										today.total_devices = 0
+										const query = JSON.parse(JSON.stringify(this.query))
+										query.start_time = [getTimeOfSomeDayAgo(0), new Date().getTime()]
+										query.appid = appid
+										getFieldTotal.call(this, query).then(users => {
+											this.tableData.find(item => item.appid === appid)
+												.total_devices_value = users
+										})
+									}
 									for (const key of keys) {
 										if (key === 'appid' || key === 'name') {
 											rowData[key] = today[key]
 										} else {
-											rowData[key + '_value'] = format(today && today[key] ? today[key] : 0)
-											rowData[key + '_contrast'] = format(yesterday && yesterday[key] ? yesterday[key] : 0)
-											for (const panel of this.panelData) {
-												if (key === panel.field) {
-													panel.value += today && today[key] ? today[key] : 0
-													panel.contrast += yesterday && yesterday[key] ? yesterday[key] : 0
-												}
-											}
+											const value = today && today[key] ? today[key] : 0
+											const contrast = yesterday && yesterday[key] ? yesterday[key] : 0
+											rowData[key + '_value'] = format(value)
+											rowData[key + '_contrast'] = format(contrast)
+											// panel 数据处理
+											// for (const panel of this.panelData) {
+											// 	if (key === panel.field) {
+											// 		panel.value += value
+											// 		panel.contrast += contrast
+											// 	}
+											// }
 										}
 									}
 									this.tableData.push(rowData)
@@ -195,11 +224,6 @@
 							panel.value = format(panel.value)
 							panel.contrast = format(panel.contrast)
 						}
-						const query = JSON.parse(JSON.stringify(this.query))
-						query.start_time = [getTimeOfSomeDayAgo(0), new Date().getTime()]
-						getFieldTotal.call(this, query).then(users => {
-							this.tableData[0] && (this.tableData[0].total_devices_value = users)
-						})
 					}).catch((err) => {
 						console.error(err)
 						// err.message 错误信息
