@@ -220,7 +220,6 @@
 			},
 
 			getAllData(query) {
-				console.log('.............channel: ', query);
 				this.getPanelData(query)
 				this.getChartData(query)
 				this.getTableData(query)

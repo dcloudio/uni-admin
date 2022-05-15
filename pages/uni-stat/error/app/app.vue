@@ -264,7 +264,6 @@
 					.limit(10)
 					.get()
 					.then(res => {
-						// console.log('..........', res);
 						const data = res.result.data
 						for (const item of data) {
 							item.create_time = parseDateTime(item.create_time, 'dateTime')

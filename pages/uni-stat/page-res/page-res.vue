@@ -237,7 +237,6 @@
 			},
 
 			getPanelData(query = stringifyQuery(this.query)) {
-				console.log('。。。。。。。。', query);
 				const db = uniCloud.database()
 				const subTable = db.collection('uni-stat-page-result')
 					.where(query)

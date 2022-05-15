@@ -201,7 +201,6 @@
 							count,
 							data
 						} = res.result
-						console.log('.........', res);
 						this.tableData = []
 						this.options.total = count
 						for (const item of data) {
