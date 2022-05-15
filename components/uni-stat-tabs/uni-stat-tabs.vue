@@ -230,6 +230,7 @@
 		display: flex;
 		margin: 0 15px;
 		white-space: nowrap;
+		overflow-x: hidden;
 	}
 
 	.uni-stat--tab {
