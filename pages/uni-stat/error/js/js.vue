@@ -39,6 +39,10 @@
 					<uni-tr>
 						<template v-for="(mapper, index) in fieldsMap">
 							<uni-th v-if="mapper.title" :key="index" align="center">
+								<!-- #ifdef MP -->
+								{{mapper.title}}
+								<!-- #endif -->
+								<!-- #ifndef MP -->
 								<uni-tooltip>
 									{{mapper.title}}
 									<uni-icons v-if="mapper.tooltip" type="help" color="#666" />
@@ -48,12 +52,17 @@
 										</view>
 									</template>
 								</uni-tooltip>
+								<!-- #endif -->
 							</uni-th>
 						</template>
 					</uni-tr>
 					<uni-tr v-for="(item ,i) in tableData" :key="i">
 						<template v-for="(mapper, index) in fieldsMap">
 							<uni-td v-if="mapper.field === 'msg'" :key="mapper.title" align="left">
+								<!-- #ifdef MP -->
+								{{item[mapper.field] !== undefined ? item[mapper.field] : '-'}}
+								<!-- #endif -->
+								<!-- #ifndef MP -->
 								<uni-tooltip>
 									{{item[mapper.field] !== undefined ? item[mapper.field] : '-'}}
 									<uni-icons v-if="item.msgTooltip" type="help" color="#666" />
@@ -63,6 +72,7 @@
 										</view>
 									</template>
 								</uni-tooltip>
+								<!-- #endif -->
 							</uni-td>
 							<uni-td v-else-if="mapper.field === 'count'" :key="mapper.title" align="center">
 								<text class="link-btn" @click="navTo('detail', item.hash)">

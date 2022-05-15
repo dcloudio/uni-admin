@@ -11,6 +11,10 @@
 					index === currentTab ? `uni-stat--tab-item-${type}-active` : '' , `uni-stat--tab-item-${type}`,
 					item.disabled ? 'uni-stat--tab-item-disabled' : ''
 				]">
+				<!-- #ifdef MP -->
+				{{item.name}}
+				<!-- #endif -->
+				<!-- #ifndef MP -->
 				<uni-tooltip>
 					{{item.name}}
 					<uni-icons v-if="item.tooltip" type="help" color="#666" />
@@ -20,6 +24,7 @@
 						</view>
 					</template>
 				</uni-tooltip>
+				<!-- #endif -->
 			</view>
 
 		</view>
