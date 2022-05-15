@@ -12,8 +12,8 @@
 				<uni-data-select collection="opendb-app-list" field="appid as value, name as text" orderby="text asc"
 					:defItem="1" label="应用选择" v-model="query.appid" :clear="false" />
 				<view class="flex">
-					<uni-stat-tabs label="日期选择" :current="currentDateTab" :yesterday="false" mode="date"
-						@change="changeTimeRange" />
+<!-- 					<uni-stat-tabs label="日期选择" :current="currentDateTab" :yesterday="false" mode="date"
+						@change="changeTimeRange" /> -->
 					<uni-datetime-picker type="daterange" :end="new Date().getTime()" v-model="query.create_time"
 						returnType="timestamp" :clearIcon="false" class="uni-stat-datetime-picker"
 						:class="{'uni-stat__actived': currentDateTab < 0 && !!query.create_time.length}"
@@ -21,13 +21,17 @@
 				</view>
 			</view>
 			<view class="uni-stat--x">
-				<uni-stat-tabs label="平台选择" type="boldLine" :all="false" mode="platform-channel" v-model="query.platform" />
+				<!-- <uni-stat-tabs label="平台选择" type="boldLine" :all="false" mode="platform-channel" v-model="query.platform" /> -->
 			</view>
 			<view class="uni-stat--x p-m">
 				<uni-table :loading="loading" border stripe :emptyText="$t('common.empty')" style="overflow-y: scroll;">
 					<uni-tr>
 						<template v-for="(mapper, index) in fieldsMap">
 							<uni-th v-if="mapper.title" :key="index" align="center">
+								<!-- #ifdef MP -->
+								{{mapper.title}}
+								<!-- #endif -->
+								<!-- #ifndef MP -->
 								<uni-tooltip>
 									{{mapper.title}}
 									<uni-icons v-if="mapper.tooltip" type="help" color="#666" />
@@ -37,12 +41,17 @@
 										</view>
 									</template>
 								</uni-tooltip>
+								<!-- #endif -->
 							</uni-th>
 						</template>
 					</uni-tr>
 					<uni-tr v-for="(item ,i) in tableData" :key="i">
 						<template v-for="(mapper, index) in fieldsMap">
 							<uni-td v-if="mapper.field === 'error_msg'" :key="mapper.title" align="left">
+								<!-- #ifdef MP -->
+								{{item[mapper.field] !== undefined ? item[mapper.field] : '-'}}
+								<!-- #endif -->
+								<!-- #ifndef MP -->
 								<uni-tooltip>
 									{{item[mapper.field] !== undefined ? item[mapper.field] : '-'}}
 									<uni-icons v-if="item.msgTooltip" type="help" color="#666" />
@@ -52,6 +61,7 @@
 										</view>
 									</template>
 								</uni-tooltip>
+								<!-- #endif -->
 							</uni-td>
 							<uni-td v-else-if="mapper.field === 'count'" :key="mapper.title" align="center">
 								<text class="link-btn" @click="togglePopup(item)">

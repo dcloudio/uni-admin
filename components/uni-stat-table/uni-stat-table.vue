@@ -3,6 +3,10 @@
 		<uni-tr>
 			<template v-for="(mapper, index) in filedsMap">
 				<uni-th v-if="mapper.title" :key="index" align="center">
+					<!-- #ifdef MP -->
+					{{mapper.title}}
+					<!-- #endif -->
+					<!-- #ifndef MP -->
 					<uni-tooltip>
 						{{mapper.title}}
 						<uni-icons v-if="tooltip && mapper.tooltip" type="help" color="#666" />
@@ -12,6 +16,7 @@
 							</view>
 						</template>
 					</uni-tooltip>
+					<!-- #endif -->
 				</uni-th>
 			</template>
 		</uni-tr>

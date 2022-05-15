@@ -2,9 +2,15 @@
 	<view class="uni-stat--sum-x mb-m">
 		<view v-for="(item, index) in items" :key="index" class="uni-stat--sum-item"
 			:class="[item.value === '今天' ? 'uni-stat--sum-item-width' : '']">
+			<!-- #ifdef MP -->
+			<view class="uni-stat--sum-item-title">
+				{{item.title ? item.title : ''}}
+			</view>
+			<!-- #endif -->
+			<!-- #ifndef MP -->
 			<uni-tooltip>
 				<view class="uni-stat--sum-item-title">
-					{{item.title}}
+					{{item.title ? item.title : ''}}
 					<uni-icons v-if="item.title" class="ml-s" type="help" color="#666" />
 				</view>
 				<template v-if="item.tooltip" v-slot:content>
@@ -13,6 +19,7 @@
 					</view>
 				</template>
 			</uni-tooltip>
+			<!-- #endif -->
 			<view class="uni-stat--sum-item-value">{{item.value ? item.value : 0}}</view>
 			<view v-if="contrast" class="uni-stat--sum-item-contrast">{{item.contrast ? item.contrast : 0}}</view>
 		</view>
@@ -62,7 +69,7 @@
 		&-item {
 			white-space: nowrap;
 			text-align: center;
-			margin: 10px 30px;
+			margin: 10px 18px;
 
 			&-width {
 				width: 100px
