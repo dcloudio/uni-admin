@@ -89,7 +89,6 @@
 				} else {
 					query = stringifyQuery(query)
 				}
-				console.log('...........query', query);
 				const db = uniCloud.database()
 				db.collection( 'uni-stat-result')
 					.where(query)

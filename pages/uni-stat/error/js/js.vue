@@ -443,7 +443,6 @@
 			getPopupTableData(hash) {
 				this.popupTableData = []
 				this.popupLoading = true
-				console.log(`error_hash == "${hash}"`)
 				const db = uniCloud.database()
 				db.collection('uni-stat-error-logs')
 					.where(`error_hash == "${hash}"`)
@@ -451,7 +450,6 @@
 					.limit(10)
 					.get()
 					.then(res => {
-						// console.log('..........', res);
 						const data = res.result.data
 						for (const item of data) {
 							item.create_time = parseDateTime(item.create_time, 'dateTime')
