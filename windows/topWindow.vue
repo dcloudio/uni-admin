@@ -224,6 +224,8 @@
 		align-items: center;
 
 		image {
+			// logo宽高开发者可根据情况自行调节
+			width: 30px;
 			height: 30px;
 		}
 
@@ -340,7 +342,7 @@
 		margin-right: 3px;
 		border-top-width: 0;
 		border-bottom-color: #ebeef5;
-		filter: drop-shadow(0 6px 12px rgba(0, 0, 0, .3));
+		filter: drop-shadow(0 6px 12px rgba(0, 0, 0, .1));
 	}
 
 	.popup-menu__arrow::after {
