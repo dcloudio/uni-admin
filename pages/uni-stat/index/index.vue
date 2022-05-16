@@ -127,7 +127,6 @@
 		},
 		methods: {
 			getApps(query) {
-				console.log('...........query:', query);
 				this.loading = true
 				const db = uniCloud.database()
 				const appList = db.collection('opendb-app-list').getTemp()
@@ -151,8 +150,11 @@
 						this.panelData = JSON.parse(JSON.stringify(panelOption))
 						if (!data.length) return
 						const start = this.query.start_time[0]
+						const end = this.query.start_time[1]
 						data = data.filter(item => !(item.stat_date === parseDateTime(start, 'date', '') && item
 							.dimension === 'hour'))
+						data = data.filter(item => !(item.stat_date === parseDateTime(end, 'date', '') && item
+							.dimension === 'day'))
 						for (const item of data) {
 							const {
 								appid,
