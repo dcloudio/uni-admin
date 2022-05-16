@@ -109,8 +109,8 @@
 			"name": "安全审计",
 			"icon": "admin-icons-safety",
 			"url": "",
-			"sort": 1100,
-			"parent_id": "system_management",
+			"sort": 3100,
+			"parent_id": "",
 			"create_date": 1638356430871
 		}, {
 			"permission": [],
@@ -119,7 +119,7 @@
 			"name": "用户日志",
 			"icon": "",
 			"url": "/pages/system/safety/list",
-			"sort": 1101,
+			"sort": 3101,
 			"parent_id": "safety_statistics",
 			"create_date": 1638356430871
 		}, {
