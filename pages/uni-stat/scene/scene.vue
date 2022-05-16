@@ -171,7 +171,6 @@
 			},
 
 			getAllData(query) {
-				console.log('..............query', query);
 				this.getPanelData(query)
 				this.getChartData(query)
 				this.getTabelData(query)

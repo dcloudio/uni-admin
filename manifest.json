@@ -1,6 +1,6 @@
 {
     "name" : "uni-admin",
-    "appid" : "__UNI__0609BAF",
+    "appid" : "",
     "description" : "",
     "versionName" : "1.0.0",
     "versionCode" : "100",
@@ -75,7 +75,7 @@
             "base" : "/admin/"
         }
     },
-    "vueVersion" : "3",
+    "vueVersion" : "2",
     "networkTimeout" : {
         "uploadFile" : 1200000 //ms， 如果不配置，上传大文件可能会超时
     }

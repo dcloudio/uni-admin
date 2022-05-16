@@ -177,17 +177,18 @@
 			getPlatform() {
 				const db = uniCloud.database()
 				const appList = db.collection('uni-stat-app-platforms')
-					.field('name, code')
 					.get()
 					.then(res => {
 						let platforms = res.result.data
+						platforms = platforms.filter(p => p.hasOwnProperty('enable') ? p.enable : true)
+						platforms.sort((a, b) => a.order - b.order)
 						if (this.mode === 'platform-channel') {
 							platforms = platforms.filter(item => /^android|ios$/.test(item.code))
 							let _id = platforms.map(p => `platform_id == "${p._id}"`).join(' || ')
 							_id = `(${_id})`
 							this.setAllItem(platforms, _id)
 						} else if (this.mode === 'platform-scene') {
-							platforms = platforms.filter(item => !/^android|ios|h5|web|qn|qw$/.test(item.code))
+							platforms = platforms.filter(item => /mp-/.test(item.code))
 							let _id = platforms.map(p => `platform_id == "${p._id}"`).join(' || ')
 							_id = `(${_id})`
 							this.setAllItem(platforms, _id)
