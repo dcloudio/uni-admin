@@ -83,7 +83,7 @@
 	},
 	"menu": {
 		"text": {
-			"menuManager": "菜单管理",
+			"menuManager": "菜单列表",
 			"additiveMenu": "待添加菜单"
 		},
 		"button": {

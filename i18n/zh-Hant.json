@@ -82,7 +82,7 @@
 	},
 	"menu": {
 		"text": {
-			"menuManager": "菜單管理",
+			"menuManager": "菜單列表",
 			"additiveMenu": "待添加菜單"
 		},
 		"button": {
