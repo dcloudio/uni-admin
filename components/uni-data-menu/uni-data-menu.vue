@@ -68,6 +68,14 @@
 					const item = this.menus.find(m => m.value === this.$route.path)
 					item && this.onSelect(item)
 				}
+			},
+			$route: {
+				immediate: false,
+				handler(val) {
+					const menu = this.menus.find(m => m.url === val.path)
+					const menu_id = menu && menu.menu_id
+					this.getMenuAncestor(menu_id, this.menus)
+				}
 			}
 		},
 		methods: {
