@@ -35,7 +35,6 @@
 					</uni-td>
 				</uni-tr>
 			</uni-table>
-			<!-- <uni-stat-table :data="tableData" :filedsMap="tableFieldsMap" :loading="loading" /> -->
 			<view class="uni-pagination-box">
 				<uni-pagination show-icon :page-size="pageSize" :current="pageCurrent" :total="tableData.length" />
 			</view>
@@ -64,7 +63,6 @@
 		data() {
 			return {
 				query: {
-					// dimension: "hour",
 					platform_id: '',
 					start_time: [getTimeOfSomeDayAgo(1), new Date().getTime()]
 				},
@@ -80,19 +78,23 @@
 				fieldsMap,
 			}
 		},
-
 		onReady() {
-			this.getApps(stringifyQuery(this.query))
+			this.getApps(this.queryStr)
 		},
 		watch: {
 			query: {
 				deep: true,
 				handler(newVal) {
-					this.getApps(stringifyQuery(newVal))
+					this.getApps(this.queryStr)
 				}
 			}
 		},
 		computed: {
+			queryStr() {
+				const defQuery = `(dimension == "hour" || dimension == "day")`
+				return stringifyQuery(this.query) + ' && ' + defQuery
+			},
+
 			tableFieldsMap() {
 				let tableFields = []
 				const today = []
@@ -124,7 +126,8 @@
 			}
 		},
 		methods: {
-			getApps(query, type = "day") {
+			getApps(query) {
+				console.log('...........query:', query);
 				this.loading = true
 				const db = uniCloud.database()
 				const appList = db.collection('opendb-app-list').getTemp()
@@ -170,23 +173,18 @@
 										yesterday = {},
 										isToday = parseDateTime(getTimeOfSomeDayAgo(0), '', ''),
 										isYesterday = parseDateTime(getTimeOfSomeDayAgo(1), '', '')
-
-									if (a.stat_date === isToday) {
+									if (a.dimension === 'hour' && a.stat_date === isToday) {
 										today = a
 									}
-
 									if (a.dimension === 'day' && a.stat_date === isYesterday) {
 										yesterday = a
 									}
-
-									if (b.stat_date === isToday) {
+									if (b.dimension === 'hour' && b.stat_date === isToday) {
 										today = b
 									}
-
 									if (b.dimension === 'day' && b.stat_date === isYesterday) {
 										yesterday = b
 									}
-
 									const appid = a.appid || b.appid
 									if (appid) {
 										// total_users 不准确，置空后由 getFieldTotal 处理, appid 不存在时暂不处理
