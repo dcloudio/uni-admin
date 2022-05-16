@@ -3,4 +3,5 @@ unpackage/
 dev-script/
 uni-admin.param.json
 .hbuilderx/
-/mock
+mock/
+db_query.jql

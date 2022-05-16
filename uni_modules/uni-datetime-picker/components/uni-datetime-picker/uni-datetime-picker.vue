@@ -19,8 +19,7 @@
 						<input class="uni-date__x-input t-c" type="text" v-model="range.endDate"
 							:placeholder="endPlaceholderText" :disabled="true" />
 					</view>
-					<view v-show="clearIcon && !disabled && (singleVal || (range.startDate && range.endDate))"
-						class="uni-date__icon-clear" @click.stop="clear">
+					<view v-if="showClearIcon" class="uni-date__icon-clear" @click.stop="clear">
 						<uni-icons type="clear" color="#e1e1e1" size="18"></uni-icons>
 					</view>
 				</view>
@@ -40,9 +39,9 @@
 							:disabled="!tempSingleDate" />
 					</time-picker>
 				</view>
-				<calendar ref="pcSingle" :showMonth="false"
-					:start-date="caleRange.startDate" :end-date="caleRange.endDate" :date="defSingleDate"
-					@change="singleChange" style="padding: 0 8px;" />
+				<calendar ref="pcSingle" :showMonth="false" :start-date="caleRange.startDate"
+					:end-date="caleRange.endDate" :date="defSingleDate" @change="singleChange"
+					style="padding: 0 8px;" />
 				<view v-if="hasTime" class="popup-x-footer">
 					<!-- <text class="">此刻</text> -->
 					<text class="confirm" @click="confirmSingleChange">{{okText}}</text>
@@ -75,13 +74,12 @@
 					</view>
 				</view>
 				<view class="popup-x-body">
-					<calendar ref="left" :showMonth="false"
-						:start-date="caleRange.startDate" :end-date="caleRange.endDate" :range="true"
-						@change="leftChange" :pleStatus="endMultipleStatus" @firstEnterCale="updateRightCale"
-						@monthSwitch="leftMonthSwitch" style="padding: 0 8px;" />
-					<calendar ref="right" :showMonth="false"
-						:start-date="caleRange.startDate" :end-date="caleRange.endDate" :range="true"
-						@change="rightChange" :pleStatus="startMultipleStatus" @firstEnterCale="updateLeftCale"
+					<calendar ref="left" :showMonth="false" :start-date="caleRange.startDate"
+						:end-date="caleRange.endDate" :range="true" @change="leftChange" :pleStatus="endMultipleStatus"
+						@firstEnterCale="updateRightCale" @monthSwitch="leftMonthSwitch" style="padding: 0 8px;" />
+					<calendar ref="right" :showMonth="false" :start-date="caleRange.startDate"
+						:end-date="caleRange.endDate" :range="true" @change="rightChange"
+						:pleStatus="startMultipleStatus" @firstEnterCale="updateLeftCale"
 						@monthSwitch="rightMonthSwitch" style="padding: 0 8px;border-left: 1px solid #F1F1F1;" />
 				</view>
 				<view v-if="hasTime" class="popup-x-footer">
@@ -257,6 +255,7 @@
 					}
 				}
 			},
+			// #ifndef VUE3
 			value: {
 				immediate: true,
 				handler(newVal, oldVal) {
@@ -267,7 +266,19 @@
 					this.initPicker(newVal)
 				}
 			},
-
+			// #endif
+			// #ifdef VUE3
+			modelValue: {
+				immediate: true,
+				handler(newVal, oldVal) {
+					if (this.isEmitValue) {
+						this.isEmitValue = false
+						return
+					}
+					this.initPicker(newVal)
+				}
+			},
+			// #endif
 			start: {
 				immediate: true,
 				handler(newVal, oldVal) {
@@ -282,7 +293,6 @@
 					}
 				}
 			},
-
 			end: {
 				immediate: true,
 				handler(newVal, oldVal) {
@@ -363,6 +373,16 @@
 			},
 			clearText() {
 				return t("uni-datetime-picker.clear")
+			},
+			showClearIcon() {
+				const {
+					clearIcon,
+					disabled,
+					singleVal,
+					range
+				} = this
+				const bool = clearIcon && !disabled && (singleVal || (range.startDate && range.endDate))
+				return bool
 			}
 		},
 		created() {
@@ -795,9 +815,9 @@
 
 	.uni-date__x-input {
 		padding: 0 8px;
-		height: 40px;
+		height: 36px;
 		width: 100%;
-		line-height: 40px;
+		line-height: 36px;
 		font-size: 14px;
 	}
 

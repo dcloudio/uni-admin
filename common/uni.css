@@ -99,6 +99,7 @@ uni-page-head .uni-btn-icon {
 	align-items: center;
 	justify-content: space-between;
 	border-bottom: 1px #f5f5f5 solid;
+	flex-wrap: wrap;
 }
 
 .uni-title {
@@ -147,7 +148,11 @@ uni-page-head .uni-btn-icon {
 }
 
 .uni-group .uni-button {
-	margin: 5px;
+	margin: 10px;
+}
+
+.uni-group .uni-search {
+	margin: 10px;
 }
 
 .uni-group>.uni-button:first-child {
@@ -169,6 +174,7 @@ uni-page-head .uni-btn-icon {
 
 /* 搜索框样式 */
 .uni-search {
+	width: 268px;
 	height: 28px;
 	line-height: 28px;
 	font-size: 12px;
@@ -290,21 +296,6 @@ uni-page-head .uni-btn-icon {
 	line-height: 36px;
 }
 
-/* #ifndef APP-NVUE */
-@media screen and (max-width: 500px) {
-	.hide-on-phone {
-		display: none;
-	}
-}
-/* #endif */
-
-/* #ifndef H5 */
-.fix-top-window {
-	margin-top: 85px;
-}
-
-/* #endif */
-
 ::v-deep .uni-forms-item__label .label-text {
 	color: #606266 !important;
 }
@@ -318,7 +309,7 @@ uni-page-head .uni-btn-icon {
 .link-btn {
 	line-height: 26px;
 	margin-top: 5px;
-	color: #007AFF;
+	color: #007AFF !important;
 	text-decoration: underline;
 	cursor: pointer;
 }
@@ -385,38 +376,6 @@ button:after {
 	color: #999;
 }
 
-/* #ifdef H5 */
-@media screen and (min-width: 500px) and (min-height: 500px) {
-
-	/* #ifndef VUE3 */
-	::v-deep .uni-picker-container .uni-picker-custom {
-		width: 100px;
-		margin-left: 100px;
-	}
-
-	/* #endif */
-
-	/* #ifdef VUE3 */
-	:deep(.uni-picker-container .uni-picker-custom) {
-		width: 100px;
-		margin-left: 100px;
-	}
-
-	/* #endif */
-}
-
-/* fix 弹出层被遮盖 */
-::v-deep .uni-table-scroll {
-	min-height: calc(100vh - 237px);
-	box-sizing: border-box;
-}
-::v-deep .uni-table .tr-table--border {
-	border-left: 1px #ebeef5 solid;
-}
-::v-deep .table--border {
-	border-left: none !important;
-}
-/* #endif */
 
 .uni-pagination-box {
 	display: flex;
@@ -440,4 +399,191 @@ button:after {
 
 .select-picker-icon {
 	margin-left: 8px;
+}
+
+
+/* stat style start */
+.m-m {
+	margin: 15px !important;
+}
+
+.mb-s {
+	margin-bottom: 5px;
+}
+
+.mb-m {
+	margin-bottom: 15px !important;
+}
+
+.mb-l {
+	margin-bottom: 30px !important;
+}
+
+.ml-s {
+	margin-left: 5px;
+}
+
+.ml-m {
+	margin-left: 15px !important;
+}
+
+.ml-l {
+	margin-left: 30px !important;
+}
+
+.p-m {
+	padding: 15px;
+}
+
+.uni-charts-box {
+	width: 100%;
+	height: 350px;
+}
+
+.uni-stat--x {
+	border-radius: 4px;
+	box-shadow: -1px -1px 5px 0 rgba(0, 0, 0, 0.1);
+	margin-bottom: 15px;
+}
+
+.uni-stat__actived {
+	outline: 1px solid #2979ff;
+}
+
+.flex {
+	width: 100%;
+	/* 必要的 */
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+}
+
+.label-text {
+	font-size: 14px;
+	font-weight: bold;
+	color: #555;
+	margin: auto 0;
+	margin-right: 5px;
+}
+
+.uni-stat-edit--x {
+	display: flex;
+	justify-content: space-between;
+}
+
+.uni-stat-edit--btn {
+	cursor: pointer;
+}
+
+.uni-stat-datetime-picker {
+	margin: 15px
+}
+
+/* uni-popup modal start */
+.modal {
+	width: 100%;
+	max-width: 980px;
+	margin: 0 auto;
+	background-color: #FFFFFF;
+}
+
+.modal-header {
+	padding: 20px 0;
+	text-align: center;
+	border-bottom: 1px solid #eee;
+}
+
+.modal-content {
+	padding: 15px;
+	height: 500px;
+	box-sizing: border-box;
+}
+
+/* uni-popup modal end */
+
+
+.uni-stat-tooltip-s {
+	width: 160px;
+	white-space: normal;
+}
+
+/* #ifndef APP-NVUE */
+@media screen and (max-width: 500px) {
+	.hide-on-phone {
+		display: none !important;
+	}
+
+	.uni-charts-box {
+		width: 100%;
+		height: 220px;
+	}
+
+	.uni-group .uni-search {
+		height: 32px;
+		line-height: 32px;
+		width: 100%;
+		margin: 20px 20px 10px 20px;
+	}
+
+	.uni-header {
+		padding-left: 0px;
+		padding-right: 0px;
+		border: unset;
+	}
+
+	.uni-group {
+		width: 100%;
+	}
+
+	.uni-stat-breadcrumb-on-phone {
+		padding: 0 20px !important;
+		border-bottom: 1px #f5f5f5 solid;
+	}
+
+	.uni-stat-datetime-picker {
+		/* flex: 1; */
+	}
+}
+
+@media screen and (min-width: 500px) {
+	.dispaly-grid {
+		display: grid;
+		/* grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); */
+		grid-template-columns: 1fr 1fr;
+		/* grid-template-rows: 1fr 1fr; */
+		column-gap: 15px;
+	}
+
+	.pc-flex-wrap {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+	}
+
+	.uni-stat-datetime-picker {
+		max-width: 350px;
+	}
+
+	::v-deep .uni-picker-container .uni-picker-custom {
+		width: 100px;
+		margin: 0 86px;
+	}
+
+	::v-deep .uni-picker-container .uni-picker-custom .uni-picker-select+div {
+		left: 50% !important;
+	}
+
+}
+
+/* #endif */
+
+/* #ifndef H5 */
+.fix-top-window {
+	margin-top: 85px;
+}
+
+/* #endif */
+
+::v-deep .uni-forms-item__label {
+	width: 90px !important;
 }

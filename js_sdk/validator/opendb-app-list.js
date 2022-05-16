@@ -27,9 +27,6 @@ const validator = {
   "description": {
     "rules": [
       {
-        "required": true
-      },
-      {
         "format": "string"
       }
     ],

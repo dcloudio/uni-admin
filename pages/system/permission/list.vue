@@ -1,14 +1,14 @@
 <template>
 	<view class="fix-top-window">
 		<view class="uni-header">
-			<view class="uni-group hide-on-phone">
-				<view class="uni-title">{{$t('permission.text.permissionManager')}}</view>
-				<view class="uni-sub-title"></view>
-			</view>
+			<uni-stat-breadcrumb class="uni-stat-breadcrumb-on-phone" />
 			<view class="uni-group">
-				<input class="uni-search" type="text" v-model="query" @confirm="search" :placeholder="$t('common.placeholder.query')" />
-				<button class="uni-button" type="default" size="mini" @click="search">{{$t('common.button.search')}}</button>
-				<button class="uni-button" type="primary" size="mini" @click="navigateTo('./add')">{{$t('common.button.add')}}</button>
+				<input class="uni-search" type="text" v-model="query" @confirm="search"
+					:placeholder="$t('common.placeholder.query')" />
+				<button class="uni-button hide-on-phone" type="default" size="mini"
+					@click="search">{{$t('common.button.search')}}</button>
+				<button class="uni-button" type="primary" size="mini"
+					@click="navigateTo('./add')">{{$t('common.button.add')}}</button>
 				<button class="uni-button" type="warn" size="mini" :disabled="!selectedIndexs.length"
 					@click="delTable">{{$t('common.button.batchDelete')}}</button>
 				<!-- #ifdef H5 -->

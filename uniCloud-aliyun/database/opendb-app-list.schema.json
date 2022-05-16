@@ -1,6 +1,6 @@
 {
 	"bsonType": "object",
-	"required": ["appid", "name", "description"],
+	"required": ["appid", "name"],
 	"permission": {
 		"read": false,
 		"create": false,

@@ -1,3 +1,11 @@
+## 2.2.4（2022-03-31）
+- 修复 Vue3 下动态赋值,单选类型未响应的 bug
+## 2.2.3（2022-03-28）
+- 修复 Vue3 下动态赋值未响应的 bug
+## 2.2.2（2021-12-10）
+- 修复 clear-icon 属性在小程序平台不生效的 bug
+## 2.2.1（2021-12-10）
+- 修复 日期范围选在小程序平台，必须多点击一次才能取消选中状态的 bug
 ## 2.2.0（2021-11-19）
 - 优化 组件UI，并提供设计资源，详见:[https://uniapp.dcloud.io/component/uniui/resource](https://uniapp.dcloud.io/component/uniui/resource)
 - 文档迁移，详见:[https://uniapp.dcloud.io/component/uniui/uni-datetime-picker](https://uniapp.dcloud.io/component/uniui/uni-datetime-picker)

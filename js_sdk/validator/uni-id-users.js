@@ -81,7 +81,7 @@ const validator = {
 		}],
 		"label": "角色"
 	},
-	"register_date": {
+	"last_login_date": {
 		"rules": [{
 			"format": "timestamp"
 		}]

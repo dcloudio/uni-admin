@@ -1,5 +1,8 @@
 <template>
 	<view>
+		<view class="uni-header">
+			<uni-stat-breadcrumb class="uni-stat-breadcrumb-on-phone" />
+		</view>
 		<view class="uni-tabs__header">
 			<view class="uni-tabs__nav-wrap">
 				<view class="uni-tabs__nav-scroll">
@@ -49,16 +52,16 @@
 							<uni-td align="center" :class="{'menu-disable':!item.enable}">{{item.enable?'已启用':'未启用'}}
 							</uni-td>
 							<uni-td align="center">
-								<view class="uni-group">
-									<button v-if="!item.url" @click="navigateTo('./add?parent_id='+item.menu_id, false)"
-										class="uni-button" size="mini"
-										type="primary">{{$t('menu.button.addChildMenu')}}</button>
+								<view class="uni-group" style="justify-content: left;">
 									<button @click="navigateTo('./edit?id='+item._id, false)" class="uni-button"
 										size="mini" type="primary">{{$t('common.button.edit')}}</button>
 									<button
 										v-if="item.menu_id !== 'system_menu' && item.menu_id !== 'system_management'"
 										@click="confirmDelete(item)" class="uni-button" size="mini"
 										type="warn">{{$t('common.button.delete')}}</button>
+									<button v-if="!item.url" @click="navigateTo('./add?parent_id='+item.menu_id, false)"
+										class="uni-button" size="mini"
+										type="primary">{{$t('menu.button.addChildMenu')}}</button>
 								</view>
 							</uni-td>
 						</uni-tr>
@@ -140,27 +143,6 @@
 				pluginMenuJsons.push(item)
 			})
 		})
-	}
-	// #endif
-
-	// #ifdef VUE3
-	if (process.env.NODE_ENV === 'development') {
-		const rootModules = import.meta.globEager("../../../*-menu.json")
-		for (const key in rootModules) {
-			const json = key.split('/')[3]
-			rootModules[key].default.forEach(item => {
-				item.json = json
-				pluginMenuJsons.push(item)
-			})
-		}
-		const pluginModules = import.meta.globEager("../../../uni_modules/*/menu.json")
-		for (const key in pluginModules) {
-			const json = key.substr(key.indexOf('uni_modules'))
-			pluginModules[key].default.forEach(item => {
-				item.json = json
-				pluginMenuJsons.push(item)
-			})
-		}
 	}
 	// #endif
 

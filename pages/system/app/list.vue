@@ -1,13 +1,10 @@
 <template>
 	<view class="fix-top-window">
 		<view class="uni-header">
-			<view class="uni-group hide-on-phone">
-				<view class="uni-title"></view>
-				<view class="uni-sub-title">{{$t('app.text.describle')}}</view>
-			</view>
+			<uni-stat-breadcrumb class="uni-stat-breadcrumb-on-phone" />
 			<view class="uni-group">
 				<input class="uni-search" type="text" v-model="query" @confirm="search" :placeholder="$t('common.placeholder.query')" />
-				<button class="uni-button" type="default" size="mini" @click="search">{{$t('common.button.search')}}</button>
+				<button class="uni-button hide-on-phone" type="default" size="mini" @click="search">{{$t('common.button.search')}}</button>
 				<button class="uni-button" type="primary" size="mini" @click="navigateTo('./add')">{{$t('common.button.add')}}</button>
 				<button class="uni-button" type="warn" size="mini" :disabled="!selectedIndexs.length"
 					@click="delTable">{{$t('common.button.batchDelete')}}</button>
@@ -33,7 +30,7 @@
 							sortable @sort-change="sortChange($event, 'appid')">AppID</uni-th>
 						<uni-th align="center" filter-type="search" @filter-change="filterChange($event, 'name')"
 							sortable @sort-change="sortChange($event, 'name')">应用名称</uni-th>
-						<uni-th align="center" filter-type="search" @filter-change="filterChange($event, 'description')"
+						<uni-th align="center" width="600" filter-type="search" @filter-change="filterChange($event, 'description')"
 							sortable @sort-change="sortChange($event, 'description')">应用描述</uni-th>
 						<uni-th align="center" filter-type="timestamp"
 							@filter-change="filterChange($event, 'create_date')" sortable

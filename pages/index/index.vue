@@ -11,7 +11,7 @@
 <script>
 	import {
 		version
-	} from '../../package.json'
+	} from '@/package.json'
 
 	export default {
 		data() {
