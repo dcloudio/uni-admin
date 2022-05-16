@@ -187,4 +187,8 @@
 			width: 600px;
 		}
 	}
+
+	::v-deep .uni-forms-item__label {
+		width: 90px !important;
+	}
 </style>
