@@ -451,7 +451,8 @@ button:after {
 }
 
 .flex {
-	width: 100%; /* 必要的 */
+	width: 100%;
+	/* 必要的 */
 	display: flex;
 	flex-wrap: wrap;
 	align-items: center;
@@ -582,3 +583,7 @@ button:after {
 }
 
 /* #endif */
+
+::v-deep .uni-forms-item__label {
+	width: 90px !important;
+}
