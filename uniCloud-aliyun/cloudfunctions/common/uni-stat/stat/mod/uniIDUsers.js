@@ -73,12 +73,17 @@ module.exports = class UniIDUsers extends BaseMod {
 			'register_env.uni_platform': platform,//平台
 			'register_env.channel': channel ? channel : '1001' //渠道或场景值
 		}
-		
+
 		//原生应用区分版本
 		if(['android', 'ios'].includes(platform)) {
 			condition['register_env.uni_platform'] = 'app'//systemInfo中uniPlatform字段android和ios都用app表示，所以此处查询需要用osName区分一下
 			condition['register_env.os_name'] = platform //系统
 			condition['register_env.app_version'] = version //app版本
+		}
+
+		//兼容vue2
+		if(channel === '1001') {
+			condition['register_env.channel'] = {$in:['', '1001']}
 		}
 
 		//注册时间
