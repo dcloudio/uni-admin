@@ -136,16 +136,6 @@
 			"parent_id": "uni-stat",
 			"permission": [],
 			"enable": true,
-			"menu_id": "uni-stat-index",
-			"name": "统计首页",
-			"icon": "admin-icons-tongjishouye",
-			"url": "/pages/uni-stat/index/index",
-			"sort": 2110,
-			"create_date": 1638356902516
-		}, {
-			"parent_id": "uni-stat",
-			"permission": [],
-			"enable": true,
 			"menu_id": "uni-stat-device",
 			"name": "设备统计",
 			"icon": "admin-icons-shebeitongji",
