@@ -9,13 +9,16 @@
 </template>
 
 <script>
-	import { buildMenus } from './util.js'
+	import {
+		buildMenus
+	} from './util.js'
 	export default {
 		data() {
 			return {
 				menus: [],
-				userMenu:[],
-				famliy:[]
+				userMenu: [],
+				famliy: [],
+
 			};
 		},
 		mixins: [uniCloud.mixinDatacom],
@@ -37,7 +40,7 @@
 			},
 			staticMenu: {
 				type: Array,
-				default() {
+				default () {
 					return []
 				}
 			}
@@ -71,10 +74,14 @@
 			},
 			$route: {
 				immediate: false,
-				handler(val) {
-					const menu = this.menus.find(m => m.url === val.path)
-					const menu_id = menu && menu.menu_id
-					this.getMenuAncestor(menu_id, this.menus)
+				handler(val, old) {
+					if (val.path !== old.path) {
+						this.famliy = []
+						const menu = this.menus.find(m => m.value === val.path)
+						const menu_id = menu && menu.menu_id
+						this.getMenuAncestor(menu_id, this.menus)
+						menu && this.emit(menu)
+					}
 				}
 			}
 		},
@@ -107,8 +114,12 @@
 				return buildMenus(menuList)
 			},
 			onSelect(menu) {
+
 				this.famliy = []
 				this.getMenuAncestor(menu.menu_id, this.menus)
+				this.emit(menu)
+			},
+			emit(menu) {
 				this.$emit('select', menu, this.famliy)
 				this.$emit('input', menu.value)
 			},
@@ -136,7 +147,7 @@
 			},
 			getMenuAncestor(menuId, menus) {
 				menus.forEach(item => {
-					if (item.menu_id === menuId ) {
+					if (item.menu_id === menuId) {
 						const route = {
 							name: item.text
 						}
