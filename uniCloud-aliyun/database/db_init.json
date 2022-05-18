@@ -382,26 +382,6 @@
 			"url": "/pages/uni-stat/error/app/app",
 			"sort": 2172,
 			"create_date": 1638356902516
-		}, {
-			"parent_id": "uni-stat",
-			"permission": [],
-			"enable": true,
-			"menu_id": "uni-stat-link-help",
-			"name": "帮助",
-			"icon": "admin-icons-help",
-			"url": "",
-			"sort": 2190,
-			"create_date": 1638356902516
-		}, {
-			"parent_id": "uni-stat-link-help",
-			"permission": [],
-			"enable": true,
-			"menu_id": "uni-stat-link-help-article1",
-			"name": "小程序域名配置说明",
-			"icon": "",
-			"url": "https://uniapp.dcloud.net.cn/uni-stat.html",
-			"sort": 2194,
-			"create_date": 1638356902516
 		}]
 	},
 	"uni-stat-active-devices": {},

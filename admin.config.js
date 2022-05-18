@@ -55,12 +55,17 @@ export default {
 			icon: 'admin-icons-eco',
 			url: "",
 			children: [{
-				menu_id: "doc",
+				menu_id: "admin-doc",
 				icon: 'admin-icons-doc',
 				text: 'uni-admin 框架文档',
 				value: 'https://uniapp.dcloud.net.cn/uniCloud/admin'
 			}, {
-				menu_id: "pulgin",
+				menu_id: "stat-doc",
+				icon: 'admin-icons-help',
+				text: 'uni 统计教程',
+				value: 'https://uniapp.dcloud.net.cn/uni-stat-v2.html'
+			}, {
+				menu_id: "admin-pulgin",
 				icon: 'admin-icons-pulgin',
 				text: 'uni-admin 插件',
 				value: 'https://ext.dcloud.net.cn/?cat1=7&cat2=74'
