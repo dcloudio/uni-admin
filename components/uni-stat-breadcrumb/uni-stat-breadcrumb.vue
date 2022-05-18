@@ -1,7 +1,7 @@
 <template>
 	<view class="uni-breadcrumb-x">
 		<uni-breadcrumb separator="/">
-			<uni-breadcrumb-item v-for="route in routes" :to="route.to">{{route.name}}</uni-breadcrumb-item>
+			<uni-breadcrumb-item v-for="(route, index) in routes" :key="index" :to="route.to">{{route.name}}</uni-breadcrumb-item>
 		</uni-breadcrumb>
 	</view>
 </template>

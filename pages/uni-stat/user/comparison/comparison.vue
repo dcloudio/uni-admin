@@ -18,7 +18,7 @@
 				</view>
 			</view>
 			<view class="dispaly-grid">
-				<view v-for="(item,index) in chartsData" class="uni-stat--x uni-charts-box1">
+				<view v-for="(item,index) in chartsData" :key="index" class="uni-stat--x uni-charts-box1">
 					<view class="label-text" style="margin: 5px 0 20px 0;">{{chartsData[index].title}}</view>
 					<qiun-data-charts type="ring" :chartData="chartsData[index]" echartsH5 echartsApp />
 				</view>
