@@ -153,13 +153,6 @@
     }, {
         "root": "pages/uni-stat",
         "pages": [{
-            "path": "index/index",
-            "style": {
-                "navigationBarTitleText": "统计首页",
-                "enablePullDownRefresh": false
-            }
-
-        }, {
             "path": "page-res/page-res",
             "style": {
                 "navigationBarTitleText": "受访页",
