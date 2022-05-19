@@ -31,7 +31,20 @@
 					<uni-tr>
 						<template v-for="(mapper, index) in fieldsMap">
 							<uni-th v-if="mapper.title" :key="index" align="center">
+								<!-- #ifdef MP -->
 								{{mapper.title}}
+								<!-- #endif -->
+								<!-- #ifndef MP -->
+								<uni-tooltip>
+									{{mapper.title}}
+									<uni-icons v-if="index === 0 && mapper.tooltip" type="help" color="#666" />
+									<template v-if="index === 0 && mapper.tooltip" v-slot:content>
+										<view class="uni-stat-tooltip-s">
+											{{mapper.tooltip}}
+										</view>
+									</template>
+								</uni-tooltip>
+								<!-- #endif -->
 							</uni-th>
 						</template>
 					</uni-tr>

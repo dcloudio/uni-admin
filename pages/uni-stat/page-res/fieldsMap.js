@@ -1,6 +1,7 @@
 export default [{
 	title: '受访页',
 	field: 'path',
+	tooltip: '设备进入应用访问的所有页面，例如设备从页面1进入应用，跳转到页面2，1,2均为受访页',
 	stat: -1
 }, {
 	title: '页面名称',

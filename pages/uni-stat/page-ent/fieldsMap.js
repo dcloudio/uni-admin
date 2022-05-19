@@ -1,6 +1,7 @@
 export default [{
 	title: '入口页',
 	field: 'path',
+	tooltip: '设备进入应用访问的第一个页面，例如设备从页面1进入应用，跳转到页面2，1为入口页，而2不是',
 }, {
 	title: '页面名称',
 	field: 'title',

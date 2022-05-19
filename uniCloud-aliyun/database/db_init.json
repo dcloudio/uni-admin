@@ -207,7 +207,7 @@
 			"permission": [],
 			"enable": true,
 			"menu_id": "uni-stat-user",
-			"name": "用户统计",
+			"name": "注册用户统计",
 			"icon": "admin-icons-yonghutongji",
 			"url": "",
 			"sort": 2122,
