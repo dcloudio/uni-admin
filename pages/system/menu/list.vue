@@ -111,10 +111,6 @@
 	// 分页配置
 	const pageSize = 20000
 	const pageCurrent = 1
-
-	import {
-		mapActions
-	} from 'vuex'
 	// 查找插件注册的菜单列表（目前仅在开发模式启用，仅限 admin 角色）
 	const pluginMenuJsons = []
 	// #ifndef VUE3
@@ -214,9 +210,6 @@
 			}
 		},
 		methods: {
-			...mapActions({
-				init: 'app/init'
-			}),
 			getSortMenu(menuList) {
 				// 标记叶子节点
 				menuList.map(item => {

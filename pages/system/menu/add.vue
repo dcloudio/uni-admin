@@ -50,9 +50,6 @@
 <script>
 	import validator from '@/js_sdk/validator/opendb-admin-menus.js';
 	import Icons from '@/pages/demo/icons/icons.vue'
-	import {
-		mapActions
-	} from 'vuex'
 
 	const db = uniCloud.database();
 	const dbCmd = db.command;
@@ -95,9 +92,6 @@
 			}
 		},
 		methods: {
-			...mapActions({
-				init: 'app/init'
-			}),
 			/**
 			 * 触发表单提交
 			 */
