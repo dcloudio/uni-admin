@@ -30,7 +30,7 @@
 							sortable @sort-change="sortChange($event, 'appid')">AppID</uni-th>
 						<uni-th align="center" filter-type="search" @filter-change="filterChange($event, 'name')"
 							sortable @sort-change="sortChange($event, 'name')">应用名称</uni-th>
-						<uni-th align="center" width="600" filter-type="search" @filter-change="filterChange($event, 'description')"
+						<uni-th align="center" width="380" filter-type="search" @filter-change="filterChange($event, 'description')"
 							sortable @sort-change="sortChange($event, 'description')">应用描述</uni-th>
 						<uni-th align="center" filter-type="timestamp"
 							@filter-change="filterChange($event, 'create_date')" sortable

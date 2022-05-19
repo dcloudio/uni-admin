@@ -10,6 +10,9 @@
 
 <script>
 	import {
+		mapActions
+	} from 'vuex'
+	import {
 		buildMenus
 	} from './util.js'
 	export default {
@@ -75,17 +78,20 @@
 			$route: {
 				immediate: false,
 				handler(val, old) {
-					if (val.path !== old.path) {
+					if (val.fullPath !== old.fullPath) {
 						this.famliy = []
 						const menu = this.menus.find(m => m.value === val.path)
 						const menu_id = menu && menu.menu_id
 						this.getMenuAncestor(menu_id, this.menus)
-						menu && this.emit(menu)
+						this.setRoutes && this.setRoutes(this.famliy)
 					}
 				}
 			}
 		},
 		methods: {
+			...mapActions({
+				setRoutes: 'app/setRoutes'
+			}),
 			getUserMenu(menuList) {
 				const {
 					permission,

@@ -27,8 +27,14 @@
 					</uni-tr>
 					<uni-tr v-for="(item ,i) in deviceTableData" :key="i">
 						<template v-for="(mapper, index) in deviceTableFields">
-							<uni-td v-if="mapper.field === 'appid'" align="center" @click="navTo('/pages/uni-stat/device/overview/overview', item.appid)" class="link-btn-color">
-								{{item[mapper.field] !== undefined ? item[mapper.field] : '-'}}
+							<uni-td v-if="mapper.field === 'appid'" align="center">
+								<view v-if="item.appid" @click="navTo('/pages/uni-stat/device/overview/overview', item.appid)"
+									class="link-btn-color">
+									{{item[mapper.field] !== undefined ? item[mapper.field] : '-'}}
+								</view>
+								<view v-else @click="navTo('/pages/system/app/add')" class="link-btn-color">
+									需添加此应用的 appid
+								</view>
 							</uni-td>
 							<uni-td v-else :key="index" align="center">
 								{{item[mapper.field] !== undefined ? item[mapper.field] : '-'}}
@@ -49,8 +55,14 @@
 					</uni-tr>
 					<uni-tr v-for="(item ,i) in userTableData" :key="i">
 						<template v-for="(mapper, index) in userTableFields">
-							<uni-td v-if="mapper.field === 'appid'" align="center" @click="navTo('/pages/uni-stat/user/overview/overview', item.appid)" class="link-btn-color">
-								{{item[mapper.field] !== undefined ? item[mapper.field] : '-'}}
+							<uni-td v-if="mapper.field === 'appid'" align="center">
+								<view v-if="item.appid" @click="navTo('/pages/uni-stat/user/overview/overview', item.appid)"
+									class="link-btn-color">
+									{{item[mapper.field] !== undefined ? item[mapper.field] : '-'}}
+								</view>
+								<view v-else @click="navTo('/pages/system/app/add')" class="link-btn-color">
+									需添加此应用的 appid
+								</view>
 							</uni-td>
 							<uni-td v-else :key="index" align="center">
 								{{item[mapper.field] !== undefined ? item[mapper.field] : '-'}}
@@ -186,68 +198,56 @@
 						} = res.result
 						this[`${type}TableData`] = []
 						if (!data.length) return
-						const start = this.query.start_time[0]
-						const end = this.query.start_time[1]
-						data = data.filter(item => !(item.stat_date === parseDateTime(start, 'date', '') && item
-							.dimension === 'hour'))
-						data = data.filter(item => !(item.stat_date === parseDateTime(end, 'date', '') && item
-							.dimension === 'day'))
+						let appids = [],
+							todays = [],
+							yesterdays = [],
+							isToday = parseDateTime(getTimeOfSomeDayAgo(0), '', ''),
+							isYesterday = parseDateTime(getTimeOfSomeDayAgo(1), '', '')
 						for (const item of data) {
 							const {
 								appid,
 								name
-							} = item.appid[0] || {}
+							} = item.appid && item.appid[0] || {}
 							item.appid = appid
 							item.name = name
+
+							if (appids.indexOf(item.appid) < 0) {
+								appids.push(item.appid)
+							}
+							if (item.dimension === 'hour' && item.stat_date === isToday) {
+								todays.push(item)
+							}
+							if (item.dimension === 'day' && item.stat_date === isYesterday) {
+								yesterdays.push(item)
+							}
 						}
 						const keys = fieldsMap.map(f => f.field).filter(Boolean)
-						// todo: mulit app
-						for (const a of data) {
-							for (const b of data) {
-								const rowData = {}
-								if (data.length === 1 || (!b.used && a.appid === b.appid)) {
-									let today = {},
-										yesterday = {},
-										isToday = parseDateTime(getTimeOfSomeDayAgo(0), '', ''),
-										isYesterday = parseDateTime(getTimeOfSomeDayAgo(1), '', '')
-									if (a.dimension === 'hour' && a.stat_date === isToday) {
-										today = a
-									}
-									if (a.dimension === 'day' && a.stat_date === isYesterday) {
-										yesterday = a
-									}
-									if (b.dimension === 'hour' && b.stat_date === isToday) {
-										today = b
-									}
-									if (b.dimension === 'day' && b.stat_date === isYesterday) {
-										yesterday = b
-									}
-									b.used = true
-									const appid = a.appid || b.appid
-									if (appid) {
-										// total_users 不准确，置空后由 getFieldTotal 处理, appid 不存在时暂不处理
-										today[`total_${type}s`] = 0
-										const query = JSON.parse(JSON.stringify(this.query))
-										query.start_time = [getTimeOfSomeDayAgo(0), new Date().getTime()]
-										query.appid = appid
-										getFieldTotal.call(this, query, `total_${type}s`).then(total => {
-											// this[`${type}TableData`].find(item => item.appid === appid) &&
-											this[`${type}TableData`].find(item => item.appid === appid)[
-												`total_${type}s_value`] = total
-										})
-									}
-									for (const key of keys) {
-										if (key === 'appid' || key === 'name') {
-											rowData[key] = today[key]
-										} else {
-											const value = today && today[key] ? today[key] : 0
-											const contrast = yesterday && yesterday[key] ? yesterday[key] : 0
-											rowData[key + '_value'] = format(value)
-											rowData[key + '_contrast'] = format(contrast)
-										}
-									}
-									this[`${type}TableData`].push(rowData)
+						for (const appid of appids) {
+							const rowData = {}
+							const t = todays.find(item => item.appid === appid)
+							const y = yesterdays.find(item => item.appid === appid)
+							for (const key of keys) {
+								if (key === 'appid' || key === 'name') {
+									rowData[key] = t[key]
+								} else {
+									const value = t && t[key]
+									const contrast = y && y[key]
+									rowData[key + '_value'] = format(value)
+									rowData[key + '_contrast'] = format(contrast)
 								}
+							}
+							this[`${type}TableData`].push(rowData)
+
+							if (appid) {
+								// total_users 不准确，置空后由 getFieldTotal 处理, appid 不存在时暂不处理
+								t[`total_${type}s`] = 0
+								const query = JSON.parse(JSON.stringify(this.query))
+								query.start_time = [getTimeOfSomeDayAgo(0), new Date().getTime()]
+								query.appid = appid
+								getFieldTotal.call(this, query, `total_${type}s`).then(total => {
+									this[`${type}TableData`].find(item => item.appid === appid)[
+										`total_${type}s_value`] = total
+								})
 							}
 						}
 					}).catch((err) => {
