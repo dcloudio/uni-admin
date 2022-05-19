@@ -149,6 +149,7 @@
 			},
 			logout() {
 				this.removeToken()
+				this.popupMenuOpened = false
 				uni.reLaunch({
 					url: config.login.url
 				})
