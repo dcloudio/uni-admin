@@ -25,7 +25,7 @@
 		"data": [{
 			"menu_id": "index",
 			"name": "首页",
-			"icon": "admin-icons-dashboard",
+			"icon": "uni-icons-home",
 			"url": "/",
 			"sort": 100,
 			"parent_id": "",
