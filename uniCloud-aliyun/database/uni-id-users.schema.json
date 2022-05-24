@@ -1,6 +1,12 @@
 {
 	"bsonType": "object",
 	"required": ["username", "password"],
+	"permission": {
+		"read": "'READ_UNI_ID_USERS' in auth.permission",
+		"create": "'CREATE_UNI_ID_USERS' in auth.permission",
+		"update": "'UPDATE_UNI_ID_USERS' in auth.permission",
+		"delete": "'DELETE_UNI_ID_USERS' in auth.permission"
+	},
 	"properties": {
 		"_id": {
 			"description": "存储文档 ID（用户 ID），系统自动生成"

@@ -1,6 +1,9 @@
 {
 	"bsonType": "object",
 	"required": ["user_id"],
+	"permission": {
+		"read": "'READ_UNI_ID_LOG' in auth.permission"
+	},
 	"properties": {
 		"_id": {
 			"description": "ID，系统自动生成"

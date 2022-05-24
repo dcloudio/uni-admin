@@ -2,10 +2,10 @@
 	"bsonType": "object",
 	"required": ["tagid", "name"],
 	"permission": {
-		"read": false,
-		"create": false,
-		"update": false,
-		"delete": false
+		"read": "'READ_UNI_ID_TAG' in auth.permission",
+		"create": "'CREATE_UNI_ID_TAG' in auth.permission",
+		"update": "'UPDATE_UNI_ID_TAG' in auth.permission",
+		"delete": "'DELETE_UNI_ID_TAG' in auth.permission"
 	},
 	"properties": {
 		"_id": {
