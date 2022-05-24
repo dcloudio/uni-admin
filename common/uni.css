@@ -59,7 +59,7 @@ uni-page-head .uni-btn-icon {
 
 .uni-app--showleftwindow .uni-container .uni-forms {
 	padding: 15px;
-	max-width: 600px;
+	max-width: 650px;
 }
 
 /* #endif */
@@ -284,9 +284,9 @@ uni-page-head .uni-btn-icon {
 .uni-form-item-tips {
 	color: #999;
 	font-size: 12px;
-	margin-top: 3px;
-	position: absolute;
-	top: 40px;
+	margin-top: 10px;
+	/* position: absolute; */
+	/* top: 40px; */
 
 }
 
