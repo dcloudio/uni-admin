@@ -90,10 +90,10 @@ export default {
 			if (this.theadChildren) {
 				rowspan = this.theadChildren.rowspan
 			}
-
+			
 			// this.trChildren.length - rowspan
 			this.noData = false
-			// this.noData = newVal.length === 0
+			// this.noData = newVal.length === 0 
 		}
 	},
 	created() {
@@ -247,9 +247,9 @@ export default {
 			if (!this.theadChildren) {
 				theadChildren = this.trChildren[0]
 			}
-
-
-
+			
+			
+			
 			let childDomIndex = this.trChildren.findIndex((item, index) => child === item)
 			if(childDomIndex < 0){
 				childDomIndex = this.data.findIndex(v=>v[this.rowKey] === keyValue) + 1
@@ -307,7 +307,6 @@ $border-color: #ebeef5;
 	width: 100%;
 	/* #ifndef APP-NVUE */
 	overflow-x: auto;
-	// overscroll-behavior: contain;
 	/* #endif */
 }
 

@@ -84,7 +84,6 @@ export default {
 			descending: false
 		}
 	},
-
 	computed: {
 		contentAlign() {
 			let align = 'left'

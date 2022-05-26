@@ -815,9 +815,9 @@
 
 	.uni-date__x-input {
 		padding: 0 8px;
-		height: 36px;
+		height: 40px;
 		width: 100%;
-		line-height: 36px;
+		line-height: 40px;
 		font-size: 14px;
 	}
 
