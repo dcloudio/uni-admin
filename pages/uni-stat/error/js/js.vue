@@ -153,6 +153,7 @@
 				fieldsMap,
 				popupFieldsMap,
 				query: {
+					type: "js",
 					dimension: "day",
 					appid: "",
 					platform_id: '',

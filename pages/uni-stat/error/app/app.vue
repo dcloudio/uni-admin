@@ -13,7 +13,7 @@
 					:defItem="1" label="应用选择" v-model="query.appid" :clear="false" />
 				<!-- <uni-data-select collection="uni-stat-app-versions" field="_id as value, version as text" label="版本选择"
 					v-model="query.version_id" /> -->
-<!-- 				<uni-stat-tabs label="平台选择" type="boldLine" :all="false" mode="platform-channel"
+				<!-- 				<uni-stat-tabs label="平台选择" type="boldLine" :all="false" mode="platform-channel"
 					v-model="query.platform_id" /> -->
 				<view class="flex">
 					<uni-stat-tabs label="日期选择" :current="currentDateTab" :yesterday="false" mode="date"
@@ -37,9 +37,10 @@
 				<view class="flex-between">
 					<view class="uni-stat-card-header">信息列表</view>
 					<view class="uni-group">
-					  <download-excel class="hide-on-phone" :fields="exportExcel.fields" :data="exportExcelData" :type="exportExcel.type" :name="exportExcel.filename">
-					    <button class="uni-button" type="primary" size="mini">导出 Excel</button>
-					  </download-excel>
+						<download-excel class="hide-on-phone" :fields="exportExcel.fields" :data="exportExcelData"
+							:type="exportExcel.type" :name="exportExcel.filename">
+							<button class="uni-button" type="primary" size="mini">导出 Excel</button>
+						</download-excel>
 					</view>
 				</view>
 
@@ -224,10 +225,15 @@
 
 	const panelOption = [{
 		title: '崩溃总数',
+		field: 'count',
 		value: 0,
+		formatter: ',',
 		tooltip: '指原生应用在某个时间段内出现崩溃的总数'
 	}, {
 		title: '崩溃率',
+		field: 'count/app_launch_count',
+		computed: 'count/app_launch_count',
+		formatter: '%',
 		value: 0,
 		tooltip: '时间范围内的总崩溃数/原生应用启动次数，如果小于0.01%，默认显示为0'
 	}]
@@ -256,6 +262,7 @@
 				fieldsMap,
 				popupFieldsMap,
 				query: {
+					type: "crash",
 					dimension: "day",
 					appid: "",
 					platform_id: '',
@@ -345,8 +352,8 @@
 			// 	return pageSizeRange[pageSizeIndex]
 			// },
 			queryStr() {
-				// return stringifyQuery(this.query)
-				return 'appid == "__UNI__0609BAF"'
+				return stringifyQuery(this.query)
+				// return 'appid == "__UNI__0609BAF"'
 			}
 		},
 		created() {
@@ -358,7 +365,16 @@
 				handler(val) {
 					this.options.pageCurrent = 1 // 重置分页
 					this.debounceGet()
-					this.where = this.queryStr
+					const {
+						appid,
+						start_time
+					} = this.query
+					const tableQuery = stringifyQuery({
+						appid,
+						create_time: start_time
+					})
+					console.log('..........tableQuery', tableQuery);
+					this.where = tableQuery
 				}
 			},
 			chartTab(val) {
@@ -416,7 +432,10 @@
 				if (Object.keys(newWhere).length) {
 					this.where = newWhere
 				} else {
-					this.where = this.queryStr
+					this.where = stringifyQuery({
+						appid,
+						create_time: start_time
+					})
 				}
 				this.$nextTick(() => {
 					this.$refs.udb.loadData()
@@ -446,8 +465,30 @@
 			// },
 
 			getAllData(query) {
+				this.getPanelData(query)
 				this.getChartData(query)
 				// this.getTableData(query)
+			},
+
+			getPanelData(query) {
+				const db = uniCloud.database()
+				db.collection('uni-stat-error-result')
+					.where(query)
+					.field('count as temp_count, app_launch_count as temp_app_launch_count, appid')
+					.groupBy('appid')
+					.groupField('sum(temp_count) as count, sum(temp_app_launch_count) as app_launch_count')
+					.get({
+						getCount: true
+					})
+					.then(res => {
+						const {
+							count,
+							data
+						} = res.result
+						const item = res.result.data[0]
+						this.panelData = []
+						this.panelData = mapfields(panelOption, item)
+					})
 			},
 
 			getChartData(query, field = 'day_count') {
@@ -458,8 +499,9 @@
 				const db = uniCloud.database()
 				db.collection('uni-stat-error-result')
 					.where(query)
+					.field('count as temp_count, app_launch_count as temp_app_launch_count, start_time')
 					.groupBy('start_time')
-					.groupField('sum(count) as total_day_count')
+					.groupField('sum(temp_count) as count, sum(temp_app_launch_count) as app_launch_count')
 					.orderBy('start_time', 'asc')
 					.get({
 						getCount: true
@@ -485,95 +527,53 @@
 							for (const item of data) {
 								let date = item.start_time
 								const x = formatDate(date, 'day')
-								const countY = item[`total_${field}`]
+								const countY = item.count
 								xAxis.push(x)
 								countLine.data.push(countY)
 							}
 							this.chartData = options
 						} else {
-							let dayAppLaunchs = []
-							this.getDayLaunch(query).then(res => {
-								dayAppLaunchs = res.result.data
-							}).finally(() => {
-								const rateLine = options.series[0] = {
-									name: '崩溃率',
-									data: [],
-									lineStyle: {
-										color: '#EE6666',
-										width: 1,
-									},
-									itemStyle: {
-										borderWidth: 1,
-										borderColor: '#EE6666',
-										color: '#EE6666'
-									},
-									areaStyle: {
-										color: {
-											colorStops: [{
-												offset: 0,
-												color: '#EE6666', // 0% 处的颜色
-											}, {
-												offset: 1,
-												color: '#FFFFFF' // 100% 处的颜色
-											}]
-										}
+							const rateLine = options.series[0] = {
+								name: '崩溃率',
+								data: [],
+								lineStyle: {
+									color: '#EE6666',
+									width: 1,
+								},
+								itemStyle: {
+									borderWidth: 1,
+									borderColor: '#EE6666',
+									color: '#EE6666'
+								},
+								areaStyle: {
+									color: {
+										colorStops: [{
+											offset: 0,
+											color: '#EE6666', // 0% 处的颜色
+										}, {
+											offset: 1,
+											color: '#FFFFFF' // 100% 处的颜色
+										}]
 									}
 								}
-								const xAxis = options.categories
-								for (const item of data) {
-									let date = item.start_time
-									const x = formatDate(date, 'day')
-									const countY = item[`total_${field}`]
-									xAxis.push(x)
-									if (dayAppLaunchs.length) {
-										dayAppLaunchs.forEach(day => {
-											if (day.start_time === item.start_time) {
-												let rateY = countY / day.day_app_launch_count
-												rateY = rateY.toFixed(2)
-												const index = xAxis.indexOf(x)
-												rateLine.data[index] = rateY
-											}
-										})
-									}
-								}
-								this.chartData = options
-							})
+							}
+							const xAxis = options.categories
+							for (const item of data) {
+								const {
+									count,
+									app_launch_count
+								} = item
+								let date = item.start_time
+								const x = formatDate(date, 'day')
+								xAxis.push(x)
+								let y = count / app_launch_count
+								y = y.toFixed(2)
+								rateLine.data.push(y)
+							}
+							this.chartData = options
 						}
-
-					}).catch((err) => {
-						console.error(err)
-						// err.message 错误信息
-						// err.code 错误码
 					}).finally(() => {})
-			},
-
-			getTotalCount(query) {
-				const db = uniCloud.database()
-				return db.collection('uni-stat-error-result')
-					.where(query)
-					.groupBy('appid')
-					.groupField('sum(count) as total_count')
-					.get()
-			},
-
-			getTotalLaunch(query) {
-				const db = uniCloud.database()
-				return db.collection('uni-stat-result')
-					.where(query)
-					.groupBy('appid')
-					.groupField('sum(app_launch_count) as total_app_launch_count')
-					.get()
-			},
-
-			getDayLaunch(query) {
-				const db = uniCloud.database()
-				return db.collection('uni-stat-result')
-					.where(query)
-					.groupBy('start_time')
-					.groupField('sum(app_launch_count) as day_app_launch_count')
-					.orderBy('start_time', 'asc')
-					.get()
-			},
+			}
 		}
 
 	}
@@ -585,6 +585,7 @@
 		justify-content: space-between;
 		align-items: center;
 	}
+
 	.uni-stat-panel {
 		box-shadow: unset;
 		border-bottom: 1px solid #eee;
