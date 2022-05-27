@@ -12,10 +12,10 @@
 			<view class="uni-select__selector" v-if="showSelector">
 				<view class="uni-popper__arrow"></view>
 				<scroll-view scroll-y="true" class="uni-select__selector-scroll">
-					<view class="uni-select__selector-empty" v-if="mixinDatacomResData.length === 0">
+					<view class="uni-select__selector-empty" v-if="renderData.length === 0">
 						<text>{{emptyTips}}</text>
 					</view>
-					<view v-else class="uni-select__selector-item" v-for="(item,index) in mixinDatacomResData"
+					<view v-else class="uni-select__selector-item" v-for="(item,index) in renderData"
 						:key="index" @click="change(item)">
 						<text>{{formatItemName(item)}}</text>
 					</view>
@@ -59,11 +59,11 @@
 				}
 			},
 			value: {
-				type: [String, Number],
+				type: [String, Number, Array],
 				default: ''
 			},
 			modelValue: {
-				type: [String, Number],
+				type: [String, Number, Array],
 				default: ''
 			},
 			label: {
@@ -107,6 +107,20 @@
 				return placeholder ?
 					common + placeholder :
 					common
+			},
+			renderData() {
+				const data = []
+				const versionNames = new Set()
+				this.mixinDatacomResData.map(v => versionNames.add(v.text))
+				versionNames.forEach(text => {
+					let value = this.mixinDatacomResData.map(v => v.text === text && v.value).filter(Boolean)
+					value = value.length < 2 ? value[0] : value
+					data.push({
+						text,
+						value
+					})
+				})
+				return data
 			}
 		},
 		watch: {
@@ -138,11 +152,15 @@
 						}
 					}
 				}
+			},
+			where(val) {
+				this.mixinDatacomEasyGet()
 			}
 		},
 		methods: {
 			initDefVal() {
 				let defValue = ''
+				// todo: 
 				if (this.value || this.value === 0) {
 					defValue = this.value
 				} else if (this.modelValue || this.modelValue === 0) {
@@ -163,7 +181,7 @@
 					}
 					this.emit(defValue)
 				}
-				const def = this.mixinDatacomResData.find(item => item.value === defValue)
+				const def = this.renderData.find(item => JSON.stringify(item.value) === JSON.stringify(defValue))
 				this.current = def ? this.formatItemName(def) : ''
 			},
 

@@ -9,7 +9,10 @@
 		</view>
 		<view class="uni-container">
 			<view class="uni-stat--x flex mb-m">
-				<uni-data-select collection="opendb-app-list" field="appid as value, name as text" orderby="text asc" :defItem="1" label="应用选择" v-model="query.appid" :clear="false" />
+				<uni-data-select collection="opendb-app-list" field="appid as value, name as text" orderby="text asc"
+					:defItem="1" label="应用选择" v-model="query.appid" :clear="false" />
+				<uni-data-select collection="uni-stat-app-versions" field="_id as value, version as text"
+					orderby="text asc" label="版本选择" v-model="query.version_id" />
 				<view class="flex">
 					<view class="ml-m label-text hide-on-phone">日期选择:</view>
 					<uni-datetime-picker type="date" v-model="query.start_time" returnType="timestamp"
@@ -39,7 +42,7 @@
 		getTimeOfSomeDayAgo,
 		division,
 		format,
-    debounce
+		debounce
 	} from '@/js_sdk/uni-stat/util.js'
 	export default {
 		data() {
@@ -47,6 +50,7 @@
 				query: {
 					dimension: "day",
 					appid: '',
+					version_id: '',
 					// start_time: new Date().getTime(),
 					start_time: getTimeOfSomeDayAgo(0),
 				},
@@ -59,12 +63,12 @@
 		// 	this.getChartData(this.query)
 		// 	this.getRangeCountData(this.query, 'month')
 		// },
-    created() {
-    	this.debounceGet = debounce(() => {
-        this.getChartData(this.query)
-        this.getRangeCountData(this.query, 'month')
-      })
-    },
+		created() {
+			this.debounceGet = debounce(() => {
+				this.getChartData(this.query)
+				this.getRangeCountData(this.query, 'month')
+			})
+		},
 		watch: {
 			query: {
 				deep: true,
@@ -90,7 +94,7 @@
 					query = stringifyQuery(query)
 				}
 				const db = uniCloud.database()
-				db.collection( 'uni-stat-result')
+				db.collection('uni-stat-result')
 					.where(query)
 					.field(
 						`active_device_count,new_device_count,total_devices,platform_id`
@@ -108,7 +112,7 @@
 			getRangeCountData(query, type) {
 				query = stringifyQuery(query)
 				const db = uniCloud.database()
-				const sub = db.collection( 'uni-stat-result')
+				const sub = db.collection('uni-stat-result')
 					.where(query)
 					.field(
 						`active_device_count, new_device_count, platform_id, ${type}(add(new Date(0),start_time), "Asia/Shanghai") as ${type},year(add(new Date(0),start_time), "Asia/Shanghai") as year`

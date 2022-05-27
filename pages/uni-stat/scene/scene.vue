@@ -12,6 +12,8 @@
 			<view class="uni-stat--x flex">
 				<uni-data-select collection="opendb-app-list" field="appid as value, name as text" orderby="text asc"
 					:defItem="1" label="应用选择" v-model="query.appid" :clear="false" />
+				<uni-data-select collection="uni-stat-app-versions" :where="versionQuery"
+					field="_id as value, version as text" orderby="text asc" label="版本选择" v-model="query.version_id" />
 				<view class="flex">
 					<uni-stat-tabs label="日期选择" :current="currentDateTab" mode="date" @change="changeTimeRange" />
 					<uni-datetime-picker type="daterange" :end="new Date().getTime()" v-model="query.start_time"
@@ -21,7 +23,8 @@
 				</view>
 			</view>
 			<view class="uni-stat--x">
-				<uni-stat-tabs label="平台选择" type="boldLine" mode="platform-scene" v-model="query.platform_id" />
+				<uni-stat-tabs label="平台选择" type="boldLine" mode="platform-scene" v-model="query.platform_id"
+					@change="changePlatform" />
 			</view>
 			<view class="uni-stat--x" style="padding: 15px 0;">
 				<uni-stat-panel :items="panelData" class="uni-stat-panel" />
@@ -66,7 +69,7 @@
 		format,
 		formatDate,
 		getFieldTotal,
-    debounce
+		debounce
 	} from '@/js_sdk/uni-stat/util.js'
 	import fieldsMap from './fieldsMap.js'
 	export default {
@@ -77,6 +80,7 @@
 					dimension: "hour",
 					appid: '',
 					platform_id: '',
+					version_id: '',
 					start_time: [],
 				},
 				options: {
@@ -118,7 +122,7 @@
 				})
 				return tabs
 			},
-			
+
 			queryStr() {
 				return stringifyQuery(this.query, true)
 			},
@@ -128,6 +132,25 @@
 				} else {
 					return 'day'
 				}
+			},
+			versionQuery() {
+				const {
+					appid,
+					platform_id
+				} = this.query
+				let query
+				if (platform_id.indexOf('==') > -1) {
+					query = stringifyQuery({
+						appid
+					}) + ' && ' + platform_id
+				} else {
+					query = stringifyQuery({
+						appid,
+						platform_id
+					})
+				}
+				console.log('...........query:', query);
+				return query
 			}
 		},
 		created() {
@@ -145,6 +168,9 @@
 		methods: {
 			useDatetimePicker() {
 				this.currentDateTab = -1
+			},
+			changePlatform() {
+				this.query.version_id = 0
 			},
 			changeTimeRange(id, index) {
 				this.currentDateTab = index

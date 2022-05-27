@@ -7,6 +7,8 @@
 			<view class="uni-stat--x flex">
 				<uni-data-select collection="opendb-app-list" field="appid as value, name as text" orderby="text asc"
 					:defItem="1" label="应用选择" v-model="query.appid" :clear="false" />
+				<uni-data-select collection="uni-stat-app-versions" :where="versionQuery"
+					field="_id as value, version as text" orderby="text asc" label="版本选择" v-model="query.version_id" />
 				<view class="flex">
 					<uni-stat-tabs label="日期选择" :current="currentDateTab" mode="date" :today="true"
 						@change="changeTimeRange" />
@@ -17,7 +19,8 @@
 				</view>
 			</view>
 			<view class="uni-stat--x">
-				<uni-stat-tabs label="平台选择" type="boldLine" mode="platform" v-model="query.platform_id" />
+				<uni-stat-tabs label="平台选择" type="boldLine" mode="platform" v-model="query.platform_id"
+					@change="changePlatform" />
 			</view>
 			<uni-stat-panel :items="panelData" :contrast="true" />
 			<view class="uni-stat--x p-m">
@@ -67,8 +70,8 @@
 				query: {
 					dimension: 'hour',
 					appid: '',
-					// appid: '',
 					platform_id: '',
+					version_id: '',
 					start_time: [],
 				},
 				options: {
@@ -149,6 +152,17 @@
 					}
 				})
 				return tabs
+			},
+			versionQuery() {
+				const {
+					appid,
+					platform_id
+				} = this.query
+				const query = stringifyQuery({
+					appid,
+					platform_id
+				})
+				return query
 			}
 		},
 		created() {
@@ -166,6 +180,9 @@
 		methods: {
 			useDatetimePicker() {
 				this.currentDateTab = null
+			},
+			changePlatform() {
+				this.query.version_id = 0
 			},
 			changeTimeRange(id, index) {
 				this.currentDateTab = index
@@ -232,9 +249,11 @@
 					.get()
 					.then(res => {
 						const data = res.result.data
-						const today = data.find(item => item.stat_date === parseDateTime(getTimeOfSomeDayAgo(0), '', '')) || {}
+						const today = data.find(item => item.stat_date === parseDateTime(getTimeOfSomeDayAgo(0), '',
+							'')) || {}
 						today.total_users = 0
-						const yesterday = data.find(item => item.dimension === 'day' && item.stat_date === parseDateTime(getTimeOfSomeDayAgo(1), '', ''))
+						const yesterday = data.find(item => item.dimension === 'day' && item.stat_date ===
+							parseDateTime(getTimeOfSomeDayAgo(1), '', ''))
 						this.panelData = []
 						this.panelData = mapfields(fieldsMap, today)
 						this.panelData.map(item => {

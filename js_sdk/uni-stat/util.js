@@ -18,11 +18,11 @@ function stringifyQuery(query, dimension = false) {
 					val = `"${val}"`
 				}
 				if (Array.isArray(val)) {
-					if (val.length === 2) {
+					if (val.length === 2 && key.indexOf('time')> -1) {
 						queryArr.push(`${key} >= ${val[0]} && ${key} <= ${val[1]}`)
-					}
-					if (val.length === 1) {
-						queryArr.push(`${key} == ${val[0]}`)
+					} else {
+						val = val.map(item => `${key} == "${item}"`).join(' || ')
+						val && queryArr.push(`(${val})`)
 					}
 				} else if (dimension && key === 'dimension') {
 					if (maxDeltaDay(time)) {

@@ -13,6 +13,8 @@
 		<view class="uni-container">
 			<view class="uni-stat--x flex">
 				<uni-data-select collection="opendb-app-list" field="appid as value, name as text" orderby="text asc" :defItem="1" label="应用选择" v-model="query.appid" :clear="false" />
+				<uni-data-select collection="uni-stat-app-versions" :where="versionQuery" field="_id as value, version as text" orderby="text asc" label="版本选择" v-model="query.version_id" />
+        <uni-stat-tabs label="平台选择" type="boldLine" mode="platform-channel" v-model="query.platform_id" @change="changePlatform" />
 				<view class="flex">
 					<uni-stat-tabs label="日期选择" :current="currentDateTab" mode="date" @change="changeTimeRange" />
 					<uni-datetime-picker type="daterange" :end="new Date().getTime()" v-model="query.start_time"
@@ -20,12 +22,6 @@
 						:class="{'uni-stat__actived': currentDateTab < 0 && !!query.start_time.length}"
 						@change="useDatetimePicker" />
 				</view>
-			</view>
-			<view class="uni-stat--x">
-				<uni-stat-tabs label="平台选择" type="boldLine" mode="platform-channel" v-model="query.platform_id"
-					@change="changePlatform" />
-				<!-- <uni-stat-select mode="version" label="版本选择" :query="versionQuery" v-model="query.version_id" /> -->
-				<uni-data-select collection="uni-stat-app-versions" field="_id as value, version as text" :where="versionQuery" label="版本选择" v-model="query.version_id" />
 			</view>
 			<view class="uni-stat--x" style="padding: 15px 0;">
 				<uni-stat-panel :items="panelData" class="uni-stat-panel" />
@@ -162,12 +158,14 @@
 					return 'day'
 				}
 			},
-			versionQuery() {
-				const platform_id = this.query.platform_id
-				return stringifyQuery({
-					platform_id
-				})
-			}
+      versionQuery() {
+      	const { appid, platform_id } = this.query
+      	const query = stringifyQuery({
+      		appid,
+      		platform_id
+      	})
+      	return query
+      }
 		},
     created() {
     		this.debounceGet = debounce(() => this.getAllData(this.queryStr))
@@ -186,7 +184,7 @@
 				this.currentDateTab = -1
 			},
 			changePlatform() {
-				this.query.version_id = ''
+				this.query.version_id = 0
 			},
 			changeTimeRange(id, index) {
 				this.currentDateTab = index

@@ -11,10 +11,10 @@
 			<view class="uni-stat--x flex">
 				<uni-data-select collection="opendb-app-list" field="appid as value, name as text" orderby="text asc"
 					:defItem="1" label="应用选择" v-model="query.appid" :clear="false" />
-				<!-- <uni-data-select collection="uni-stat-app-versions" field="_id as value, version as text" label="版本选择"
-					v-model="query.version_id" /> -->
-				<!-- 				<uni-stat-tabs label="平台选择" type="boldLine" :all="false" mode="platform-channel"
-					v-model="query.platform_id" /> -->
+				<uni-data-select collection="uni-stat-app-versions" :where="versionQuery"
+					field="_id as value, version as text" orderby="text asc" label="版本选择" v-model="query.version_id" />
+				<uni-stat-tabs label="平台选择" type="boldLine" :all="false" mode="platform-channel"
+					v-model="query.platform_id" @change="changePlatform" />
 				<view class="flex">
 					<uni-stat-tabs label="日期选择" :current="currentDateTab" :yesterday="false" mode="date"
 						@change="changeTimeRange" />
@@ -354,6 +354,17 @@
 			queryStr() {
 				return stringifyQuery(this.query)
 				// return 'appid == "__UNI__0609BAF"'
+			},
+			versionQuery() {
+				const {
+					appid,
+					platform_id
+				} = this.query
+				const query = stringifyQuery({
+					appid,
+					platform_id
+				})
+				return query
 			}
 		},
 		created() {
@@ -443,6 +454,9 @@
 			},
 			useDatetimePicker() {
 				this.currentDateTab = -1
+			},
+			changePlatform() {
+				this.query.version_id = 0
 			},
 			changeTimeRange(id, index) {
 				this.currentDateTab = index

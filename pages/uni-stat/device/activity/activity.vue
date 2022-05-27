@@ -10,6 +10,8 @@
 			<view class="uni-stat--x flex">
 				<uni-data-select collection="opendb-app-list" field="appid as value, name as text" orderby="text asc"
 					:defItem="1" label="应用选择" @change="changeAppid" v-model="query.appid" :clear="false" />
+				<uni-data-select collection="uni-stat-app-versions" :where="versionQuery"
+					field="_id as value, version as text" orderby="text asc" label="版本选择" v-model="query.version_id" />
 				<view class="flex">
 					<uni-stat-tabs label="日期选择" :current="currentDateTab" mode="date" :yesterday="false"
 						@change="changeTimeRange" />
@@ -79,6 +81,7 @@
 					dimension: "day",
 					appid: '',
 					platform_id: '',
+					version_id: '',
 					channel_id: '',
 					start_time: [],
 				},
@@ -132,6 +135,17 @@
 					platform_id
 				})
 			},
+			versionQuery() {
+				const {
+					appid,
+					platform_id
+				} = this.query
+				const query = stringifyQuery({
+					appid,
+					platform_id
+				})
+				return query
+			}
 		},
 		created() {
 			this.debounceGet = debounce(() => this.getAllData(this.query))
@@ -155,6 +169,7 @@
 			},
 			changePlatform(id) {
 				this.getChannelData(null, id)
+				this.query.version_id = 0
 			},
 			changeTimeRange(id, index) {
 				this.currentDateTab = index
