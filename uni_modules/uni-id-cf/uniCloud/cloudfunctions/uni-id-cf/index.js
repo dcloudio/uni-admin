@@ -493,11 +493,7 @@ exports.main = async (event, context) => {
 			res = await uniID.getInvitedUser(params)
 			break;
 		case 'updatePwd':
-			// res = await uniID.updatePwd(params)
-			res = {
-				code: 403,
-				message: '体验账号不支持修改密码',
-			}
+			res = await uniID.updatePwd(params)
 			break;
 		case 'createCaptcha':
 			res = await uniCaptcha.create(params)
