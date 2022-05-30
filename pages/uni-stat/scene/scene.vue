@@ -253,8 +253,10 @@
 									name: c && c.channel_code || '未知',
 									data: []
 								}
-								for (let i = 0; i < 24; ++i) {
-									line.data[i] = 0
+								if (this.dimension === 'hour') {
+									for (let i = 0; i < 24; ++i) {
+										line.data[i] = 0
+									}
 								}
 								let mapper = fieldsMap.filter(f => f.field === field)
 								mapper = JSON.parse(JSON.stringify(mapper))

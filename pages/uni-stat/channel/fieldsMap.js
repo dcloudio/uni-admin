@@ -50,9 +50,6 @@ export default [{
 	contrast: 0,
 	fix: 2
 }, {
-	field: 'bounce_times',
-	disable: true
-}, {
 	title: '总设备数',
 	field: 'total_devices',
 	tooltip: '从添加统计到当前选择时间的总设备数（去重）',
