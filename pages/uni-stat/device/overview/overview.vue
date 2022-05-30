@@ -301,12 +301,14 @@
 			getPanelData() {
 				const {
 					appid,
-					platform_id
+					platform_id,
+					version_id
 				} = this.query
-				const query = stringifyQuery({
+				let query = stringifyQuery({
 					// dimension: "hour",
 					appid,
 					platform_id,
+					version_id,
 					start_time: [getTimeOfSomeDayAgo(1), new Date().getTime()]
 				})
 				const db = uniCloud.database()
