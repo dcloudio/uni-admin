@@ -361,7 +361,7 @@
 					.get()
 					.then(res => {
 						const item = res.result.data[0]
-						item && (item.total_total_devices = 0)
+						item && (item.total_devices = 0)
 						getFieldTotal.call(this, query)
 						this.panelData = []
 						this.panelData = mapfields(fieldsMap, item)
