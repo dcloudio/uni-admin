@@ -249,7 +249,7 @@
 							hasChannels.forEach((channel, index) => {
 								const c = allChannels.find(item => item._id === channel)
 								const line = options.series[index] = {
-									name: c && c.channel_code || '未知',
+									name: c && c.channel_name || '未知',
 									data: []
 								}
 								if (this.dimension === 'hour') {
