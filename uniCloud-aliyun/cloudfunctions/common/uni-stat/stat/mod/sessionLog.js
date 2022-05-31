@@ -58,7 +58,7 @@ module.exports = class SessionLog extends BaseMod {
 				code: 200,
 				msg: 'Parameter "ut" not found'
 			}
-		}                                                                                                                                                                                                              
+		}
 
 		// 设备信息
 		if (!params.did) {
@@ -92,6 +92,7 @@ module.exports = class SessionLog extends BaseMod {
 			version: params.v ? params.v : '',
 			platform: platform.getPlatformCode(params.ut, params.p),
 			channel: channel.getChannelCode(params),
+			type: params.cst ? parseInt(params.cst) : 0,
 			// 访问设备
 			device_id: params.did,
 			//是否为首次访问，判断标准：最后一次访问时间为0
