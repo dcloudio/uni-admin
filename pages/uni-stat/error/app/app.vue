@@ -353,12 +353,12 @@
 			// },
 			queryStr() {
 				return stringifyQuery(this.query)
-				// return 'appid == "__UNI__0609BAF"'
 			},
 			versionQuery() {
 				const {
 					appid,
 					platform_id
+					
 				} = this.query
 				const query = stringifyQuery({
 					appid,
@@ -376,20 +376,25 @@
 				handler(val) {
 					this.options.pageCurrent = 1 // 重置分页
 					this.debounceGet()
-					const {
-						appid,
-						start_time
-					} = this.query
-					const tableQuery = stringifyQuery({
-						appid,
-						create_time: start_time
-					})
-					console.log('..........tableQuery', tableQuery);
-					this.where = tableQuery
+					this.where = this.tableQuery
 				}
 			},
 			chartTab(val) {
 				this.getChartData(this.queryStr)
+			},
+			tableQuery() {
+				const {
+					appid,
+					platform_id,
+					version_id,
+					start_time
+				} = this.query
+				const query = stringifyQuery({
+					appid,
+					create_time: start_time
+				})
+				console.log('..........query', query);
+				return query
 			}
 		},
 		onLoad() {
@@ -443,10 +448,11 @@
 				if (Object.keys(newWhere).length) {
 					this.where = newWhere
 				} else {
-					this.where = stringifyQuery({
+					const {
 						appid,
-						create_time: start_time
-					})
+						start_time
+					} = this.query
+					this.where = this.tableQuery
 				}
 				this.$nextTick(() => {
 					this.$refs.udb.loadData()

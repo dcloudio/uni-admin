@@ -154,7 +154,7 @@
 				fieldsMap,
 				popupFieldsMap,
 				query: {
-					type: "js",
+					// type: "js",
 					dimension: "day",
 					appid: "",
 					platform_id: '',
@@ -194,7 +194,6 @@
 				return pageSizeRange[pageSizeIndex]
 			},
 			queryStr() {
-        console.log('...........stringifyQuery(this.query)', stringifyQuery(this.query));
 				return stringifyQuery(this.query)
 			},
 			versionQuery() {

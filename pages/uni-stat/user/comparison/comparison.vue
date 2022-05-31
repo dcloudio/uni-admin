@@ -11,7 +11,7 @@
 			<view class="uni-stat--x flex mb-m">
 				<uni-data-select collection="opendb-app-list" field="appid as value, name as text" orderby="text asc"
 					:defItem="1" label="应用选择" v-model="query.appid" :clear="false" />
-				<uni-data-select collection="uni-stat-app-versions" field="_id as value, version as text"
+				<uni-data-select collection="uni-stat-app-versions" :where="versionQuery" field="_id as value, version as text"
 					orderby="text asc" label="版本选择" v-model="query.version_id" />
 				<view class="flex">
 					<view class="ml-m label-text hide-on-phone">日期选择:</view>
@@ -76,6 +76,15 @@
 		computed: {
 			chartsData() {
 				return [...this.dayChartsData, ...this.monChartsData]
+			},
+			versionQuery() {
+				const {
+					appid
+				} = this.query
+				const query = stringifyQuery({
+					appid
+				})
+				return query
 			}
 		},
 		methods: {

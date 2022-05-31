@@ -82,17 +82,22 @@
 				type: Boolean,
 				default: true
 			},
+			storage: {
+				type: Boolean,
+				default: true
+			},
 			defItem: {
 				type: Number,
 				default: 0
 			}
 		},
 		created() {
+			this.getData = this.debounce(() => this.mixinDatacomEasyGet())
 			this.last_data = `${this.collection}_last_data`
 			this.last_selected = `${this.collection}_last_selected_option_value`
 			if (this.collection && !this.localdata.length) {
-				this.mixinDatacomResData = uni.getStorageSync(this.last_data)
-				this.mixinDatacomEasyGet()
+				this.storage && (this.mixinDatacomResData = uni.getStorageSync(this.last_data))
+				this.getData()
 			}
 		},
 		computed: {
@@ -154,20 +159,29 @@
 				}
 			},
 			where(val) {
-				this.mixinDatacomEasyGet()
+				this.getData()
 			}
 		},
 		methods: {
+			debounce(fn, time = 100) {
+				let timer = null
+				return function(...args) {
+					if (timer) clearTimeout(timer)
+					timer = setTimeout(() => {
+						fn.apply(this, args)
+					}, time)
+				}
+			},
 			initDefVal() {
 				let defValue = ''
-				// todo: 
+				// todo:
 				if (this.value || this.value === 0) {
 					defValue = this.value
 				} else if (this.modelValue || this.modelValue === 0) {
 					defValue = this.modelValue
 				} else {
 					let strogeValue
-					if (this.collection) {
+					if (this.collection && this.storage) {
 						strogeValue = uni.getStorageSync(this.last_selected)
 					}
 					if (strogeValue || strogeValue === 0) {
