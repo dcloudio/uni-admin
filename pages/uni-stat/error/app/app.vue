@@ -47,134 +47,61 @@
 				<unicloud-db ref="udb" :collection="collectionList"
 					field="appid,version,platform,channel,sdk_version,device_id,device_net,device_os,device_os_version,device_vendor,device_model,device_is_root,device_os_name,device_batt_level,device_batt_temp,device_memory_use_size,device_memory_total_size,device_disk_use_size,device_disk_total_size,device_abis,app_count,app_use_memory_size,app_webview_count,app_use_duration,app_run_fore,package_name,package_version,page_url,error_msg,create_time"
 					:where="where" page-data="replace" :orderby="orderby" :getcount="true" :page-size="options.pageSize"
-					:page-current="options.pageCurrent" v-slot:default="{data,pagination,loading,error,options}"
-					:options="options" loadtime="manual" @load="onqueryload">
-					<uni-table ref="table" :loading="loading" :emptyText="error.message || '没有更多数据'" border stripe>
+					:page-current="options.pageCurrent" loadtime="manual"
+					v-slot:default="{data,pagination,loading,error,options}" :options="options" @load="onqueryload">
+					<uni-table ref="table" :loading="loading" border stripe :emptyText="$t('common.empty')"
+						style="overflow-y: scroll;">
 						<uni-tr>
-							<uni-th align="center" filter-type="search" @filter-change="filterChange($event, 'appid')"
-								sortable @sort-change="sortChange($event, 'appid')">appid</uni-th>
-							<uni-th align="center" filter-type="search" @filter-change="filterChange($event, 'version')"
-								sortable @sort-change="sortChange($event, 'version')">version</uni-th>
-							<uni-th align="center" filter-type="search"
-								@filter-change="filterChange($event, 'platform')" sortable
-								@sort-change="sortChange($event, 'platform')">platform</uni-th>
-							<uni-th align="center" filter-type="search" @filter-change="filterChange($event, 'channel')"
-								sortable @sort-change="sortChange($event, 'channel')">channel</uni-th>
-							<uni-th align="center" filter-type="search"
-								@filter-change="filterChange($event, 'sdk_version')" sortable
-								@sort-change="sortChange($event, 'sdk_version')">sdk_version</uni-th>
-							<uni-th align="center" filter-type="search"
-								@filter-change="filterChange($event, 'device_id')" sortable
-								@sort-change="sortChange($event, 'device_id')">device_id</uni-th>
-							<uni-th align="center" filter-type="search"
-								@filter-change="filterChange($event, 'device_net')" sortable
-								@sort-change="sortChange($event, 'device_net')">device_net</uni-th>
-							<uni-th align="center" filter-type="search"
-								@filter-change="filterChange($event, 'device_os')" sortable
-								@sort-change="sortChange($event, 'device_os')">device_os</uni-th>
-							<uni-th align="center" filter-type="search"
-								@filter-change="filterChange($event, 'device_os_version')" sortable
-								@sort-change="sortChange($event, 'device_os_version')">device_os_version</uni-th>
-							<uni-th align="center" filter-type="search"
-								@filter-change="filterChange($event, 'device_vendor')" sortable
-								@sort-change="sortChange($event, 'device_vendor')">device_vendor</uni-th>
-							<uni-th align="center" filter-type="search"
-								@filter-change="filterChange($event, 'device_model')" sortable
-								@sort-change="sortChange($event, 'device_model')">device_model</uni-th>
-							<uni-th align="center" filter-type="range"
-								@filter-change="filterChange($event, 'device_is_root')" sortable
-								@sort-change="sortChange($event, 'device_is_root')">device_is_root</uni-th>
-							<uni-th align="center" filter-type="search"
-								@filter-change="filterChange($event, 'device_os_name')" sortable
-								@sort-change="sortChange($event, 'device_os_name')">device_os_name</uni-th>
-							<uni-th align="center" filter-type="range"
-								@filter-change="filterChange($event, 'device_batt_level')" sortable
-								@sort-change="sortChange($event, 'device_batt_level')">device_batt_level</uni-th>
-							<uni-th align="center" filter-type="search"
-								@filter-change="filterChange($event, 'device_batt_temp')" sortable
-								@sort-change="sortChange($event, 'device_batt_temp')">device_batt_temp</uni-th>
-							<uni-th align="center" filter-type="range"
-								@filter-change="filterChange($event, 'device_memory_use_size')" sortable
-								@sort-change="sortChange($event, 'device_memory_use_size')">device_memory_use_size
-							</uni-th>
-							<uni-th align="center" filter-type="range"
-								@filter-change="filterChange($event, 'device_memory_total_size')" sortable
-								@sort-change="sortChange($event, 'device_memory_total_size')">device_memory_total_size
-							</uni-th>
-							<uni-th align="center" filter-type="range"
-								@filter-change="filterChange($event, 'device_disk_use_size')" sortable
-								@sort-change="sortChange($event, 'device_disk_use_size')">device_disk_use_size</uni-th>
-							<uni-th align="center" filter-type="range"
-								@filter-change="filterChange($event, 'device_disk_total_size')" sortable
-								@sort-change="sortChange($event, 'device_disk_total_size')">device_disk_total_size
-							</uni-th>
-							<uni-th align="center" filter-type="search"
-								@filter-change="filterChange($event, 'device_abis')" sortable
-								@sort-change="sortChange($event, 'device_abis')">device_abis</uni-th>
-							<uni-th align="center" filter-type="range"
-								@filter-change="filterChange($event, 'app_count')" sortable
-								@sort-change="sortChange($event, 'app_count')">app_count</uni-th>
-							<uni-th align="center" filter-type="range"
-								@filter-change="filterChange($event, 'app_use_memory_size')" sortable
-								@sort-change="sortChange($event, 'app_use_memory_size')">app_use_memory_size</uni-th>
-							<uni-th align="center" filter-type="range"
-								@filter-change="filterChange($event, 'app_webview_count')" sortable
-								@sort-change="sortChange($event, 'app_webview_count')">app_webview_count</uni-th>
-							<uni-th align="center" filter-type="range"
-								@filter-change="filterChange($event, 'app_use_duration')" sortable
-								@sort-change="sortChange($event, 'app_use_duration')">app_use_duration</uni-th>
-							<uni-th align="center" filter-type="range"
-								@filter-change="filterChange($event, 'app_run_fore')" sortable
-								@sort-change="sortChange($event, 'app_run_fore')">app_run_fore</uni-th>
-							<uni-th align="center" filter-type="search"
-								@filter-change="filterChange($event, 'package_name')" sortable
-								@sort-change="sortChange($event, 'package_name')">package_name</uni-th>
-							<uni-th align="center" filter-type="search"
-								@filter-change="filterChange($event, 'package_version')" sortable
-								@sort-change="sortChange($event, 'package_version')">package_version</uni-th>
-							<uni-th align="center" filter-type="search"
-								@filter-change="filterChange($event, 'page_url')" sortable
-								@sort-change="sortChange($event, 'page_url')">page_url</uni-th>
-							<uni-th align="center" filter-type="search"
-								@filter-change="filterChange($event, 'error_msg')" sortable
-								@sort-change="sortChange($event, 'error_msg')">error_msg</uni-th>
-							<uni-th align="center" filter-type="timestamp"
-								@filter-change="filterChange($event, 'create_time')" sortable
-								@sort-change="sortChange($event, 'create_time')">create_time</uni-th>
+							<template v-for="(mapper, index) in fieldsMap">
+								<!-- todo: schema table -->
+								<!-- <uni-th v-if="mapper.title" :key="index" :filter-type="mapper.filter"
+									@filter-change="filterChange($event, mapper.field)" sortable
+									@sort-change="sortChange($event, mapper.field)" align="center"
+									:style="`min-width: ${mapper.title.length * 15 + 80}px;`"> -->
+								<uni-th v-if="mapper.title" :key="index" align="center" :style="`min-width: ${mapper.title.length * 15 + 80}px;`">
+									<!-- #ifdef MP -->
+									{{mapper.title}}
+									<!-- #endif -->
+									<!-- #ifndef MP -->
+									<uni-tooltip>
+										{{mapper.title}}
+										<uni-icons v-if="mapper.tooltip" type="help" color="#666" />
+										<template v-if="mapper.tooltip" v-slot:content>
+											<view class="uni-stat-tooltip-s">
+												{{mapper.tooltip}}
+											</view>
+										</template>
+									</uni-tooltip>
+									<!-- #endif -->
+								</uni-th>
+							</template>
 						</uni-tr>
-						<uni-tr v-for="(item,index) in data" :key="index">
-							<uni-td align="center">{{item.appid}}</uni-td>
-							<uni-td align="center">{{item.version}}</uni-td>
-							<uni-td align="center">{{item.platform}}</uni-td>
-							<uni-td align="center">{{item.channel}}</uni-td>
-							<uni-td align="center">{{item.sdk_version}}</uni-td>
-							<uni-td align="center">{{item.device_id}}</uni-td>
-							<uni-td align="center">{{item.device_net}}</uni-td>
-							<uni-td align="center">{{item.device_os}}</uni-td>
-							<uni-td align="center">{{item.device_os_version}}</uni-td>
-							<uni-td align="center">{{item.device_vendor}}</uni-td>
-							<uni-td align="center">{{item.device_model}}</uni-td>
-							<uni-td align="center">{{item.device_is_root}}</uni-td>
-							<uni-td align="center">{{item.device_os_name}}</uni-td>
-							<uni-td align="center">{{item.device_batt_level}}</uni-td>
-							<uni-td align="center">{{item.device_batt_temp}}</uni-td>
-							<uni-td align="center">{{item.device_memory_use_size}}</uni-td>
-							<uni-td align="center">{{item.device_memory_total_size}}</uni-td>
-							<uni-td align="center">{{item.device_disk_use_size}}</uni-td>
-							<uni-td align="center">{{item.device_disk_total_size}}</uni-td>
-							<uni-td align="center">{{item.device_abis}}</uni-td>
-							<uni-td align="center">{{item.app_count}}</uni-td>
-							<uni-td align="center">{{item.app_use_memory_size}}</uni-td>
-							<uni-td align="center">{{item.app_webview_count}}</uni-td>
-							<uni-td align="center">{{item.app_use_duration}}</uni-td>
-							<uni-td align="center">{{item.app_run_fore}}</uni-td>
-							<uni-td align="center">{{item.package_name}}</uni-td>
-							<uni-td align="center">{{item.package_version}}</uni-td>
-							<uni-td align="center">{{item.page_url}}</uni-td>
-							<uni-td align="center">{{item.error_msg}}</uni-td>
-							<uni-td align="center">
-								<uni-dateformat :threshold="[0, 0]" :date="item.create_time"></uni-dateformat>
-							</uni-td>
+						<uni-tr v-for="(item ,i) in tableData" :key="i">
+							<template v-for="(mapper, index) in fieldsMap">
+								<uni-td v-if="mapper.field === 'error_msg'" :key="mapper.title" align="left"
+									style="min-width: 500px;">
+									<!-- #ifdef MP -->
+									{{item.error_msg ? item.error_msg.substring(0, 100) + '...' : '-'}}
+									<!-- #endif -->
+									<!-- #ifndef MP -->
+									<uni-tooltip>
+										{{item.error_msg ? item.error_msg.substring(0, 100) + '...' : ''}}
+										<uni-icons v-if="item.error_msg" type="help" color="#666" />
+										<template v-if="item.error_msg" v-slot:content>
+											<view class="uni-stat-tooltip-l">
+												{{item.error_msg}}
+											</view>
+										</template>
+									</uni-tooltip>
+									<!-- #endif -->
+								</uni-td>
+								<uni-td v-else-if="mapper.field === 'create_time'" :key="mapper.title" align="center">
+									<uni-dateformat :threshold="[0, 0]" :date="item.create_time"></uni-dateformat>
+								</uni-td>
+								<uni-td v-else :key="mapper.title" align="center">
+									{{item[mapper.field] !== undefined ? item[mapper.field] : '-'}}
+								</uni-td>
+							</template>
 						</uni-tr>
 					</uni-table>
 					<view class="uni-pagination-box">
@@ -184,22 +111,6 @@
 				</unicloud-db>
 			</view>
 		</view>
-
-		<uni-popup ref="popupTable" type="center" :maskClick="true">
-			<view class="modal">
-				<view class="modal-header">
-					崩溃设备信息
-				</view>
-				<scroll-view scroll-y="true">
-					<view class="modal-content">
-						<view class="uni-form-item-tips">
-							注：仅展示最近10条
-						</view>
-						<uni-stat-table :data="popupTableData" :filedsMap="popupFieldsMap" :loading="popupLoading" />
-					</view>
-				</scroll-view>
-			</view>
-		</uni-popup>
 
 		<!-- #ifndef H5 -->
 		<fix-window />
@@ -220,7 +131,6 @@
 	} from '@/js_sdk/uni-stat/util.js'
 	import {
 		fieldsMap,
-		popupFieldsMap
 	} from './fieldsMap.js'
 
 	const panelOption = [{
@@ -260,7 +170,6 @@
 		data() {
 			return {
 				fieldsMap,
-				popupFieldsMap,
 				query: {
 					type: "crash",
 					dimension: "day",
@@ -354,11 +263,31 @@
 			queryStr() {
 				return stringifyQuery(this.query)
 			},
+			tableQuery() {
+				const {
+					appid,
+					platform_id,
+					version_id,
+					start_time
+				} = this.query
+				const platforms = uni.getStorageSync('platform_last_data')
+				const versions = uni.getStorageSync('uni-stat-app-versions_last_data')
+				const p = Array.isArray(platforms) && platforms.find(p => p._id === platform_id)
+				const v = Array.isArray(versions) && versions.find(v => v._id === version_id)
+				const query = stringifyQuery({
+					appid,
+					create_time: start_time,
+					platform: p && p.code || '',
+					version: v && v.text || ''
+				})
+				console.log('..........query', query);
+				return query
+			},
 			versionQuery() {
 				const {
 					appid,
 					platform_id
-					
+
 				} = this.query
 				const query = stringifyQuery({
 					appid,
@@ -381,20 +310,6 @@
 			},
 			chartTab(val) {
 				this.getChartData(this.queryStr)
-			},
-			tableQuery() {
-				const {
-					appid,
-					platform_id,
-					version_id,
-					start_time
-				} = this.query
-				const query = stringifyQuery({
-					appid,
-					create_time: start_time
-				})
-				console.log('..........query', query);
-				return query
 			}
 		},
 		onLoad() {
@@ -406,6 +321,7 @@
 		methods: {
 			onqueryload(data) {
 				this.exportExcelData = data
+				this.tableData = data
 			},
 			getWhere() {
 				const query = this.schemaQuery.trim()
@@ -448,11 +364,8 @@
 				if (Object.keys(newWhere).length) {
 					this.where = newWhere
 				} else {
-					const {
-						appid,
-						start_time
-					} = this.query
-					this.where = this.tableQuery
+					this.where = ''
+					// this.where = this.tableQuery
 				}
 				this.$nextTick(() => {
 					this.$refs.udb.loadData()
@@ -488,6 +401,7 @@
 				this.getPanelData(query)
 				this.getChartData(query)
 				// this.getTableData(query)
+				this.$refs.udb && this.$refs.udb.loadData()
 			},
 
 			getPanelData(query) {
