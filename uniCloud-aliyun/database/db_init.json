@@ -12,248 +12,11 @@
 	"opendb-app-list": {
 		"data": []
 	},
-	"uni-id-tag": {
-		"data": [{
-			"tagid": "ballFans",
-			"name": "球迷",
-			"description": "",
-			"create_date": 1653274754520
-		}, {
-			"tagid": "gravida",
-			"name": "孕妇",
-			"description": "",
-			"create_date": 1653274820718
-		}]
-	},
 	"uni-id-roles": {
-		"data": [{
-			"role_id": "admin",
-			"role_name": "超级管理员",
-			"permission": [],
-			"comment": "超级管理员拥有所有权限",
-			"create_date": 0
-		}, {
-			"role_id": "operator",
-			"role_name": "运营管理员",
-			"permission": [
-				"READ_UNI_ID_USERS",
-				"READ_UNI_ID_ROLES",
-				"READ_UNI_ID_PERMISSIONS",
-				"READ_UNI_ID_TAG",
-				"CREATE_UNI_ID_TAG",
-				"UPDATE_UNI_ID_TAG",
-				"DELETE_UNI_ID_TAG",
-				"READ_OPENDB_APP_LIST",
-				"CREATE_OPENDB_APP_LIST",
-				"UPDATE_OPENDB_APP_LIST",
-				"DELETE_OPENDB_APP_LIST",
-				"READ_OPENDB_ADMIN_MENUS",
-				"READ_UNI_STAT_RESULT",
-				"READ_UNI_STAT_APP_CHANNELS",
-				"READ_UNI_STAT_APP_CRASH_LOGS",
-				"READ_UNI_STAT_APP_PLATFORMS",
-				"READ_UNI_STAT_APP_VERSIONS",
-				"READ_UNI_STAT_ERROR_LOGS",
-				"READ_UNI_STAT_ERROR_RESULT",
-				"READ_UNI_STAT_EVENT_LOGS",
-				"READ_UNI_STAT_EVENT_RESULT",
-				"READ_UNI_STAT_EVENTS",
-				"READ_UNI_STAT_LOYALTY_RESULT",
-				"READ_UNI_STAT_PAGE_LOGS",
-				"READ_UNI_STAT_PAGE_RESULT",
-				"READ_UNI_STAT_PAGES",
-				"READ_UNI_ID_LOG"
-			],
-			"create_date": 1653049331202,
-			"comment": "拥有指定的权限"
-		}, {
-			"role_id": "user",
-			"role_name": "普通用户",
-			"permission": [
-				"READ_UNI_ID_USERS",
-				"READ_UNI_ID_ROLES",
-				"READ_UNI_ID_PERMISSIONS",
-				"READ_UNI_ID_TAG",
-				"READ_OPENDB_APP_LIST",
-				"READ_OPENDB_ADMIN_MENUS",
-				"READ_UNI_STAT_RESULT",
-				"READ_UNI_STAT_APP_CHANNELS",
-				"READ_UNI_STAT_APP_CRASH_LOGS",
-				"READ_UNI_STAT_APP_PLATFORMS",
-				"READ_UNI_STAT_APP_VERSIONS",
-				"READ_UNI_STAT_ERROR_LOGS",
-				"READ_UNI_STAT_ERROR_RESULT",
-				"READ_UNI_STAT_EVENT_LOGS",
-				"READ_UNI_STAT_EVENT_RESULT",
-				"READ_UNI_STAT_EVENTS",
-				"READ_UNI_STAT_LOYALTY_RESULT",
-				"READ_UNI_STAT_PAGE_LOGS",
-				"READ_UNI_STAT_PAGE_RESULT",
-				"READ_UNI_STAT_PAGES",
-				"READ_UNI_ID_LOG"
-			],
-			"create_date": 1653049409962,
-			"comment": "仅可查看页面（有读权限，无写权限）"
-		}]
+		"data": []
 	},
 	"uni-id-permissions": {
-		"data": [{
-			"permission_id": "READ_UNI_ID_USERS",
-			"permission_name": "用户表 read",
-			"comment": "用户表（uni-id-users）记录的读取权限"
-		}, {
-			"permission_id": "CREATE_UNI_ID_USERS",
-			"permission_name": "用户表 create",
-			"comment": "用户表（uni-id-users）记录的创建权限"
-		}, {
-			"permission_id": "UPDATE_UNI_ID_USERS",
-			"permission_name": "用户表 update",
-			"comment": "用户表（uni-id-users）记录的更新权限"
-		}, {
-			"permission_id": "DELETE_UNI_ID_USERS",
-			"permission_name": "用户表 delete",
-			"comment": "用户表（uni-id-roles）记录的删除权限"
-		}, {
-			"permission_id": "READ_UNI_ID_ROLES",
-			"permission_name": "角色表 read",
-			"comment": "角色表（uni-id-roles）记录的读取权限"
-		}, {
-			"permission_id": "CREATE_UNI_ID_ROLES",
-			"permission_name": "角色表 create",
-			"comment": "角色表（uni-id-roles）记录的创建权限"
-		}, {
-			"permission_id": "UPDATE_UNI_ID_ROLES",
-			"permission_name": "角色表 update",
-			"comment": "角色表（uni-id-roles）记录的更新权限"
-		}, {
-			"permission_id": "DELETE_UNI_ID_ROLES",
-			"permission_name": "角色表 delete",
-			"comment": "角色表（uni-id-roles）记录的删除权限"
-		}, {
-			"permission_id": "READ_UNI_ID_PERMISSIONS",
-			"permission_name": "权限表 read",
-			"comment": "权限表（uni-id-permissions）记录的读取权限"
-		}, {
-			"permission_id": "CREATE_UNI_ID_PERMISSIONS",
-			"permission_name": "权限表 create",
-			"comment": "权限表（uni-id-permissions）记录的创建权限"
-		}, {
-			"permission_id": "UPDATE_UNI_ID_PERMISSIONS",
-			"permission_name": "权限表 update",
-			"comment": "权限表（uni-id-permissions）记录的更新权限"
-		}, {
-			"permission_id": "DELETE_UNI_ID_PERMISSIONS",
-			"permission_name": "权限表 delete",
-			"comment": "权限表（uni-id-permissions）记录的删除权限"
-		}, {
-			"permission_id": "READ_UNI_ID_TAG",
-			"permission_name": "标签表 read",
-			"comment": "标签表（uni-id-tag）记录的读取权限"
-		}, {
-			"permission_id": "CREATE_UNI_ID_TAG",
-			"permission_name": "标签表 create",
-			"comment": "标签表（uni-id-tag）记录的创建权限"
-		}, {
-			"permission_id": "UPDATE_UNI_ID_TAG",
-			"permission_name": "标签表 update",
-			"comment": "标签表（uni-id-tag）记录的更新权限"
-		}, {
-			"permission_id": "DELETE_UNI_ID_TAG",
-			"permission_name": "标签表 delete",
-			"comment": "标签表（uni-id-tag）记录的删除权限"
-		}, {
-			"permission_id": "READ_UNI_ID_LOG",
-			"permission_name": "uni-日志表 read",
-			"comment": "统计uniid日志表（uni-id-log）记录的读取权限"
-		}, {
-			"permission_id": "READ_OPENDB_APP_LIST",
-			"permission_name": "应用表 read",
-			"comment": "应用表（opendb-app-list）记录的读取权限"
-		}, {
-			"permission_id": "CREATE_OPENDB_APP_LIST",
-			"permission_name": "应用表 create",
-			"comment": "应用表（opendb-app-list）记录的创建权限"
-		}, {
-			"permission_id": "UPDATE_OPENDB_APP_LIST",
-			"permission_name": "应用表 update",
-			"comment": "应用表（opendb-app-list）记录的更新权限"
-		}, {
-			"permission_id": "DELETE_OPENDB_APP_LIST",
-			"permission_name": "应用表 delete",
-			"comment": "应用表（opendb-app-list）记录的删除权限"
-		}, {
-			"permission_id": "READ_OPENDB_ADMIN_MENUS",
-			"permission_name": "菜单表 read",
-			"comment": "菜单表（opendb-admin-menus）记录的读取权限"
-		}, {
-			"permission_id": "CREATE_OPENDB_ADMIN_MENUS",
-			"permission_name": "菜单表 create",
-			"comment": "菜单表（opendb-admin-menus）记录的创建权限"
-		}, {
-			"permission_id": "UPDATE_OPENDB_ADMIN_MENUS",
-			"permission_name": "菜单表 update",
-			"comment": "菜单表（opendb-admin-menus）记录的更新权限"
-		}, {
-			"permission_id": "DELETE_OPENDB_ADMIN_MENUS",
-			"permission_name": "菜单表 delete",
-			"comment": "菜单表（opendb-admin-menus）记录的删除权限"
-		}, {
-			"permission_id": "READ_UNI_STAT_RESULT",
-			"permission_name": "统计-结果表 read",
-			"comment": "统计结果表（uni-stat-result）记录的读取权限"
-		}, {
-			"permission_id": "READ_UNI_STAT_APP_CHANNELS",
-			"permission_name": "统计-渠道表 read",
-			"comment": "统计渠道表（uni-stat-app-channels）记录的读取权限"
-		}, {
-			"permission_id": "READ_UNI_STAT_APP_CRASH_LOGS",
-			"permission_name": "统计-原生app报错表 read",
-			"comment": "统计原生app报错表（uni-stat-app-crash-logs）记录的读取权限"
-		}, {
-			"permission_id": "READ_UNI_STAT_APP_PLATFORMS",
-			"permission_name": "统计-平台表 read",
-			"comment": "统计平台表（uni-stat-app-platforms）记录的读取权限"
-		}, {
-			"permission_id": "READ_UNI_STAT_APP_VERSIONS",
-			"permission_name": "统计-版本表 read",
-			"comment": "统计版本表（uni-stat-app-versions）记录的读取权限"
-		}, {
-			"permission_id": "READ_UNI_STAT_ERROR_LOGS",
-			"permission_name": "统计-错误日志表 read",
-			"comment": "统计错误日志表（uni-stat-error-logs）记录的读取权限"
-		}, {
-			"permission_id": "READ_UNI_STAT_ERROR_RESULT",
-			"permission_name": "统计-错误结果表 read",
-			"comment": "统计错误结果表（uni-stat-error-result）记录的读取权限"
-		}, {
-			"permission_id": "READ_UNI_STAT_EVENT_LOGS",
-			"permission_name": "统计-事件日志表 read",
-			"comment": "统计事件日志表（uni-stat-event-logs）记录的读取权限"
-		}, {
-			"permission_id": "READ_UNI_STAT_EVENT_RESULT",
-			"permission_name": "统计-事件结果表 read",
-			"comment": "统计事件结果表（uni-stat-event-result）记录的读取权限"
-		}, {
-			"permission_id": "READ_UNI_STAT_EVENTS",
-			"permission_name": "统计-事件表 read",
-			"comment": "统计事件表（uni-stat-events）记录的读取权限"
-		}, {
-			"permission_id": "READ_UNI_STAT_LOYALTY_RESULT",
-			"permission_name": "统计-忠诚度结果表 read",
-			"comment": "统计忠诚度结果表（uni-stat-loyalty-result）记录的读取权限"
-		}, {
-			"permission_id": "READ_UNI_STAT_PAGE_LOGS",
-			"permission_name": "统计-页面日志表 read",
-			"comment": "统计页面日志表（uni-stat-page-logs）记录的读取权限"
-		}, {
-			"permission_id": "READ_UNI_STAT_PAGE_RESULT",
-			"permission_name": "统计-页面结果表 read",
-			"comment": "统计页面结果表（uni-stat-page-result）记录的读取权限"
-		}, {
-			"permission_id": "READ_UNI_STAT_PAGES",
-			"permission_name": "统计-页面表 read",
-			"comment": "统计页面表（uni-stat-pages）记录的读取权限"
-		}]
+		"data": []
 	},
 	"uni-id-log": {
 		"data": []
@@ -266,7 +29,7 @@
 			"url": "/",
 			"sort": 100,
 			"parent_id": "",
-			"permission": ["READ_UNI_STAT_RESULT"],
+			"permission": [],
 			"enable": true,
 			"create_date": 1602662469396
 		}, {
@@ -286,7 +49,7 @@
 			"url": "/pages/system/user/list",
 			"sort": 1010,
 			"parent_id": "system_management",
-			"permission": ["READ_UNI_ID_USERS"],
+			"permission": [],
 			"enable": true,
 			"create_date": 1602662469398
 		}, {
@@ -296,7 +59,7 @@
 			"url": "/pages/system/role/list",
 			"sort": 1020,
 			"parent_id": "system_management",
-			"permission": ["READ_UNI_ID_ROLES"],
+			"permission": [],
 			"enable": true,
 			"create_date": 1602662469397
 		}, {
@@ -306,7 +69,7 @@
 			"url": "/pages/system/permission/list",
 			"sort": 1030,
 			"parent_id": "system_management",
-			"permission": ["READ_UNI_ID_PERMISSIONS"],
+			"permission": [],
 			"enable": true,
 			"create_date": 1602662469396
 		}, {
@@ -316,7 +79,7 @@
 			"url": "/pages/system/menu/list",
 			"sort": 1040,
 			"parent_id": "system_management",
-			"permission": ["READ_OPENDB_ADMIN_MENUS"],
+			"permission": [],
 			"enable": true,
 			"create_date": 1602662469396
 		}, {
@@ -326,7 +89,7 @@
 			"url": "/pages/system/app/list",
 			"sort": 1035,
 			"parent_id": "system_management",
-			"permission": ["READ_OPENDB_APP_LIST"],
+			"permission": [],
 			"enable": true,
 			"create_date": 1602662469399
 		}, {
@@ -336,7 +99,7 @@
 			"url": "/pages/system/tag/list",
 			"sort": 1037,
 			"parent_id": "system_management",
-			"permission": ["READ_UNI_ID_TAG"],
+			"permission": [],
 			"enable": true,
 			"create_date": 1602662479389
 		}, {
@@ -381,7 +144,7 @@
 			"create_date": 1638356902516
 		}, {
 			"parent_id": "uni-stat-device",
-			"permission": ["READ_UNI_STAT_RESULT"],
+			"permission": [],
 			"enable": true,
 			"menu_id": "uni-stat-device-overview",
 			"name": "概况",
@@ -391,7 +154,7 @@
 			"create_date": 1638356902516
 		}, {
 			"parent_id": "uni-stat-device",
-			"permission": ["READ_UNI_STAT_RESULT"],
+			"permission": [],
 			"enable": true,
 			"menu_id": "uni-stat-device-activity",
 			"name": "活跃度",
@@ -401,7 +164,7 @@
 			"create_date": 1638356902516
 		}, {
 			"parent_id": "uni-stat-device",
-			"permission": ["READ_UNI_STAT_RESULT"],
+			"permission": [],
 			"enable": true,
 			"menu_id": "uni-stat-device-trend",
 			"name": "趋势分析",
@@ -411,7 +174,7 @@
 			"create_date": 1638356902516
 		}, {
 			"parent_id": "uni-stat-device",
-			"permission": ["READ_UNI_STAT_RESULT"],
+			"permission": [],
 			"enable": true,
 			"menu_id": "uni-stat-device-retention",
 			"name": "留存",
@@ -421,7 +184,7 @@
 			"create_date": 1638356902516
 		}, {
 			"parent_id": "uni-stat-device",
-			"permission": ["READ_UNI_STAT_RESULT"],
+			"permission": [],
 			"enable": true,
 			"menu_id": "uni-stat-device-comparison",
 			"name": "平台对比",
@@ -431,7 +194,7 @@
 			"create_date": 1638356902516
 		}, {
 			"parent_id": "uni-stat-device",
-			"permission": ["READ_UNI_STAT_RESULT"],
+			"permission": [],
 			"enable": true,
 			"menu_id": "uni-stat-device-stickiness",
 			"name": "粘性",
@@ -451,7 +214,7 @@
 			"create_date": 1638356902516
 		}, {
 			"parent_id": "uni-stat-user",
-			"permission": ["READ_UNI_STAT_RESULT"],
+			"permission": [],
 			"enable": true,
 			"menu_id": "uni-stat-user-overview",
 			"name": "概况",
@@ -461,7 +224,7 @@
 			"create_date": 1638356902516
 		}, {
 			"parent_id": "uni-stat-user",
-			"permission": ["READ_UNI_STAT_RESULT"],
+			"permission": [],
 			"enable": true,
 			"menu_id": "uni-stat-user-activity",
 			"name": "活跃度",
@@ -471,7 +234,7 @@
 			"create_date": 1638356902516
 		}, {
 			"parent_id": "uni-stat-user",
-			"permission": ["READ_UNI_STAT_RESULT"],
+			"permission": [],
 			"enable": true,
 			"icon": "",
 			"menu_id": "uni-stat-user-trend",
@@ -481,7 +244,7 @@
 			"create_date": 1638356902516
 		}, {
 			"parent_id": "uni-stat-user",
-			"permission": ["READ_UNI_STAT_RESULT"],
+			"permission": [],
 			"enable": true,
 			"menu_id": "uni-stat-user-retention",
 			"name": "留存",
@@ -491,7 +254,7 @@
 			"create_date": 1638356902516
 		}, {
 			"parent_id": "uni-stat-user",
-			"permission": ["READ_UNI_STAT_RESULT"],
+			"permission": [],
 			"enable": true,
 			"menu_id": "uni-stat-user-comparison",
 			"name": "平台对比",
@@ -501,7 +264,7 @@
 			"create_date": 1638356902516
 		}, {
 			"parent_id": "uni-stat-user",
-			"permission": ["READ_UNI_STAT_RESULT"],
+			"permission": [],
 			"enable": true,
 			"menu_id": "uni-stat-user-stickiness",
 			"name": "粘性",
@@ -521,7 +284,7 @@
 			"create_date": 1638356902516
 		}, {
 			"parent_id": "uni-stat-page-analysis",
-			"permission": ["READ_UNI_STAT_PAGE_RESULT"],
+			"permission": [],
 			"enable": true,
 			"menu_id": "uni-stat-page-res",
 			"name": "受访页",
@@ -531,7 +294,7 @@
 			"create_date": 1638356902516
 		}, {
 			"parent_id": "uni-stat-page-analysis",
-			"permission": ["READ_UNI_STAT_PAGE_RESULT"],
+			"permission": [],
 			"enable": true,
 			"menu_id": "uni-stat-page-ent",
 			"name": "入口页",
@@ -541,7 +304,7 @@
 			"create_date": 1638356902516
 		}, {
 			"parent_id": "uni-stat",
-			"permission": ["READ_UNI_STAT_RESULT"],
+			"permission": [],
 			"enable": true,
 			"menu_id": "uni-stat-senceChannel",
 			"name": "渠道/场景值分析",
@@ -551,7 +314,7 @@
 			"create_date": 1638356902516
 		}, {
 			"parent_id": "uni-stat-senceChannel",
-			"permission": ["READ_UNI_STAT_RESULT"],
+			"permission": [],
 			"enable": true,
 			"menu_id": "uni-stat-senceChannel-scene",
 			"name": "场景值（小程序）",
@@ -561,7 +324,7 @@
 			"create_date": 1638356902516
 		}, {
 			"parent_id": "uni-stat-senceChannel",
-			"permission": ["READ_UNI_STAT_RESULT"],
+			"permission": [],
 			"enable": true,
 			"menu_id": "uni-stat-senceChannel-channel",
 			"name": "渠道（app）",
@@ -571,7 +334,7 @@
 			"create_date": 1638356902516
 		}, {
 			"parent_id": "uni-stat",
-			"permission": ["READ_UNI_STAT_EVENT_LOGS"],
+			"permission": [],
 			"enable": true,
 			"menu_id": "uni-stat-event-event",
 			"name": "自定义事件",
@@ -591,7 +354,7 @@
 			"create_date": 1638356902516
 		}, {
 			"parent_id": "uni-stat-error",
-			"permission": ["READ_UNI_STAT_ERROR_RESULT"],
+			"permission": [],
 			"enable": true,
 			"menu_id": "uni-stat-error-js",
 			"name": "js报错",
@@ -601,7 +364,7 @@
 			"create_date": 1638356902516
 		}, {
 			"parent_id": "uni-stat-error",
-			"permission": ["READ_UNI_STAT_APP_CRASH_LOGS"],
+			"permission": [],
 			"enable": true,
 			"menu_id": "uni-stat-error-app",
 			"name": "app崩溃",
@@ -614,199 +377,11 @@
 	"uni-stat-active-devices": {},
 	"uni-stat-active-users": {},
 	"uni-stat-app-channels": {},
-	"uni-stat-app-crash-logs": {
-		"data": [{
-			"appid": "__UNI__0609BAF",
-			"version": "1.0.0",
-			"platform": "android",
-			"package_name": "uni-admin",
-			"package_version": "",
-			"channel": "",
-			"sdk_version": "",
-			"device_id": "",
-			"device_net": "",
-			"device_os": "小米 os",
-			"device_os_version": "",
-			"device_vendor": "",
-			"device_model": "",
-			"device_is_root": "",
-			"device_os_name": "",
-			"device_batt_level": "",
-			"device_batt_temp": "",
-			"device_memory_use_size": "",
-			"device_memory_total_size": "",
-			"device_disk_use_size": "",
-			"device_disk_total_size": "",
-			"device_abis": "",
-			"app_count": "",
-			"app_use_memory_size": "",
-			"app_webview_count": "",
-			"app_use_duration": "",
-			"app_run_fore": "",
-			"page_url": "",
-			"error_msg": "",
-			"create_time": 1653407419914
-		}, {
-			"appid": "__UNI__0609BAF",
-			"version": "1.0.2",
-			"platform": "android",
-			"package_name": "uni-admin",
-			"package_version": "",
-			"channel": "",
-			"sdk_version": "",
-			"device_id": "",
-			"device_net": "",
-			"device_os": "华为 os",
-			"device_os_version": "",
-			"device_vendor": "",
-			"device_model": "",
-			"device_is_root": "",
-			"device_os_name": "",
-			"device_batt_level": "",
-			"device_batt_temp": "",
-			"device_memory_use_size": "",
-			"device_memory_total_size": "",
-			"device_disk_use_size": "",
-			"device_disk_total_size": "",
-			"device_abis": "",
-			"app_count": "",
-			"app_use_memory_size": "",
-			"app_webview_count": "",
-			"app_use_duration": "",
-			"app_run_fore": "",
-			"page_url": "",
-			"error_msg": "",
-			"create_time": 1653407429914
-		}, {
-			"appid": "__UNI__hellouniapp",
-			"version": "1.0.0",
-			"platform": "ios",
-			"package_name": "hello-uniapp",
-			"package_version": "",
-			"channel": "",
-			"sdk_version": "",
-			"device_id": "",
-			"device_net": "",
-			"device_os": "iphone os",
-			"device_os_version": "",
-			"device_vendor": "",
-			"device_model": "",
-			"device_is_root": "",
-			"device_os_name": "",
-			"device_batt_level": "",
-			"device_batt_temp": "",
-			"device_memory_use_size": "",
-			"device_memory_total_size": "",
-			"device_disk_use_size": "",
-			"device_disk_total_size": "",
-			"device_abis": "",
-			"app_count": "",
-			"app_use_memory_size": "",
-			"app_webview_count": "",
-			"app_use_duration": "",
-			"app_run_fore": "",
-			"page_url": "",
-			"error_msg": "",
-			"create_time": 1653407439914
-		}, {
-			"appid": "__UNI__0609BAF",
-			"version": "1.0.2",
-			"platform": "android",
-			"package_name": "uni-admin",
-			"package_version": "",
-			"channel": "",
-			"sdk_version": "",
-			"device_id": "",
-			"device_net": "",
-			"device_os": "华为 os",
-			"device_os_version": "",
-			"device_vendor": "",
-			"device_model": "",
-			"device_is_root": "",
-			"device_os_name": "",
-			"device_batt_level": "",
-			"device_batt_temp": "",
-			"device_memory_use_size": "",
-			"device_memory_total_size": "",
-			"device_disk_use_size": "",
-			"device_disk_total_size": "",
-			"device_abis": "",
-			"app_count": "",
-			"app_use_memory_size": "",
-			"app_webview_count": "",
-			"app_use_duration": "",
-			"app_run_fore": "",
-			"page_url": "",
-			"error_msg": "",
-			"create_time": 1653407449914
-		}]
-	},
+	"uni-stat-app-crash-logs": {},
 	"uni-stat-app-platforms": {},
 	"uni-stat-app-versions": {},
 	"uni-stat-error-logs": {},
-	"uni-stat-error-result": {
-		"data": [{
-			"type": "js",
-			"appid": "__UNI__0609BAF",
-			"platform_id": "6284747b9d20700001c38518",
-			"channel_id": "62847d7f996ab2000184a05f",
-			"version_id": "",
-			"hash": "21adeaa0c07dffd8cb6f8d63de52b153",
-			"msg": "TypeError: Cannot read properties of undefined (reading 'getContext')\n    at a.start (https://hellouniapp.dcloud.net.cn/static/js/pages-component-canvas-canvas.10d01e12.js:1:1078)\n    at a.<anonymous> (https://hellouniapp.dcloud.net.cn/static/js/chunk-vendors.a7893703.js:13:51408)\n    at a.t.$watch (https://hellouniapp.dcloud.net.cn/static/js/chunk-vendors.a7893703.js:13:35034)\n    at https://hellouniapp.dcloud.net.cn/static/js/chunk-vendors.a7893703.js:13:51380\n    at Array.forEach (<anonymous>)\n    at Array.qi (https://hellouniapp.dcloud.net.cn/static/js/chunk-vendors.a7893703.js:13:51280)\n    at w (https://hellouniapp.dcloud.net.cn/static/js/chunk-vendors.a7893703.js:13:45986)\n    at v (https://hellouniapp.dcloud.net.cn/static/js/chunk-vendors.a7893703.js:13:45349)\n    at p (https://hellouniapp.dcloud.net.cn/static/js/chunk-vendors.a7893703.js:13:45166)\n    at h (https://hellouniapp.dcloud.net.cn/static/js/chunk-vendors.a7893703.js:13:44757)",
-			"count": 112,
-			"last_time": 1653493605615,
-			"dimension": "day",
-			"stat_date": "20220525",
-			"start_time": 1653408000000,
-			"end_time": 1653494399999,
-			"app_launch_count": 1000
-		}, {
-			"type": "js",
-			"appid": "__UNI__0609BAF",
-			"platform_id": "6284747b9d20700001c38518",
-			"channel_id": "62847d7f996ab2000184a05f",
-			"version_id": "",
-			"hash": "6114610ea25ae44e81d1f8a60fdce829",
-			"msg": "TypeError: Cannot read property 'getContext' of undefined\n    at a.start (https://hellouniapp.dcloud.net.cn/static/js/pages-component-canvas-canvas.10d01e12.js:1:1078)\n    at a.<anonymous> (https://hellouniapp.dcloud.net.cn/static/js/chunk-vendors.a7893703.js:13:51408)\n    at a.t.$watch (https://hellouniapp.dcloud.net.cn/static/js/chunk-vendors.a7893703.js:13:35034)\n    at https://hellouniapp.dcloud.net.cn/static/js/chunk-vendors.a7893703.js:13:51380\n    at Array.forEach (<anonymous>)\n    at Array.qi (https://hellouniapp.dcloud.net.cn/static/js/chunk-vendors.a7893703.js:13:51280)\n    at w (https://hellouniapp.dcloud.net.cn/static/js/chunk-vendors.a7893703.js:13:45986)\n    at v (https://hellouniapp.dcloud.net.cn/static/js/chunk-vendors.a7893703.js:13:45349)\n    at p (https://hellouniapp.dcloud.net.cn/static/js/chunk-vendors.a7893703.js:13:45166)\n    at h (https://hellouniapp.dcloud.net.cn/static/js/chunk-vendors.a7893703.js:13:44757)",
-			"count": 50,
-			"last_time": 1653407905611,
-			"dimension": "day",
-			"stat_date": "20220524",
-			"start_time": 1653321600000,
-			"end_time": 1653407999999,
-			"app_launch_count": 1000
-		}, {
-			"type": "crash",
-			"appid": "__UNI__0609BAF",
-			"platform_id": "6284747b9d20700001c38518",
-			"channel_id": "62847d7f996ab2000184a05f",
-			"version_id": "",
-			"hash": "6114610ea25ae44e81d1f8a60fdce829",
-			"msg": "TypeError: Cannot read property 'getContext' of undefined\n    at a.start (https://hellouniapp.dcloud.net.cn/static/js/pages-component-canvas-canvas.10d01e12.js:1:1078)\n    at a.<anonymous> (https://hellouniapp.dcloud.net.cn/static/js/chunk-vendors.a7893703.js:13:51408)\n    at a.t.$watch (https://hellouniapp.dcloud.net.cn/static/js/chunk-vendors.a7893703.js:13:35034)\n    at https://hellouniapp.dcloud.net.cn/static/js/chunk-vendors.a7893703.js:13:51380\n    at Array.forEach (<anonymous>)\n    at Array.qi (https://hellouniapp.dcloud.net.cn/static/js/chunk-vendors.a7893703.js:13:51280)\n    at w (https://hellouniapp.dcloud.net.cn/static/js/chunk-vendors.a7893703.js:13:45986)\n    at v (https://hellouniapp.dcloud.net.cn/static/js/chunk-vendors.a7893703.js:13:45349)\n    at p (https://hellouniapp.dcloud.net.cn/static/js/chunk-vendors.a7893703.js:13:45166)\n    at h (https://hellouniapp.dcloud.net.cn/static/js/chunk-vendors.a7893703.js:13:44757)",
-			"count": 50,
-			"last_time": 1653407905611,
-			"dimension": "day",
-			"stat_date": "20220524",
-			"start_time": 1653321600000,
-			"end_time": 1653407999999,
-			"app_launch_count": 1000
-		}, {
-			"type": "crash",
-			"appid": "__UNI__0609BAF",
-			"platform_id": "6284747b9d20700001c38518",
-			"channel_id": "62847d7f996ab2000184a05f",
-			"version_id": "",
-			"hash": "21adeaa0c07dffd8cb6f8d63de52b153",
-			"msg": "TypeError: Cannot read properties of undefined (reading 'getContext')\n    at a.start (https://hellouniapp.dcloud.net.cn/static/js/pages-component-canvas-canvas.10d01e12.js:1:1078)\n    at a.<anonymous> (https://hellouniapp.dcloud.net.cn/static/js/chunk-vendors.a7893703.js:13:51408)\n    at a.t.$watch (https://hellouniapp.dcloud.net.cn/static/js/chunk-vendors.a7893703.js:13:35034)\n    at https://hellouniapp.dcloud.net.cn/static/js/chunk-vendors.a7893703.js:13:51380\n    at Array.forEach (<anonymous>)\n    at Array.qi (https://hellouniapp.dcloud.net.cn/static/js/chunk-vendors.a7893703.js:13:51280)\n    at w (https://hellouniapp.dcloud.net.cn/static/js/chunk-vendors.a7893703.js:13:45986)\n    at v (https://hellouniapp.dcloud.net.cn/static/js/chunk-vendors.a7893703.js:13:45349)\n    at p (https://hellouniapp.dcloud.net.cn/static/js/chunk-vendors.a7893703.js:13:45166)\n    at h (https://hellouniapp.dcloud.net.cn/static/js/chunk-vendors.a7893703.js:13:44757)",
-			"count": 20,
-			"last_time": 1653493605615,
-			"dimension": "day",
-			"stat_date": "20220525",
-			"start_time": 1653408000000,
-			"end_time": 1653494399999,
-			"app_launch_count": 1000
-		}]
-	},
+	"uni-stat-error-result": {},
 	"uni-stat-event-logs": {},
 	"uni-stat-event-result": {},
 	"uni-stat-events": {},
