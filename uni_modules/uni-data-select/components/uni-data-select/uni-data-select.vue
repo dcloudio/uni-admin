@@ -15,8 +15,8 @@
 					<view class="uni-select__selector-empty" v-if="renderData.length === 0">
 						<text>{{emptyTips}}</text>
 					</view>
-					<view v-else class="uni-select__selector-item" v-for="(item,index) in renderData"
-						:key="index" @click="change(item)">
+					<view v-else class="uni-select__selector-item" v-for="(item,index) in renderData" :key="index"
+						@click="change(item)">
 						<text>{{formatItemName(item)}}</text>
 					</view>
 				</scroll-view>
@@ -115,16 +115,18 @@
 			},
 			renderData() {
 				const data = []
-				const versionNames = new Set()
-				this.mixinDatacomResData.map(v => versionNames.add(v.text))
-				versionNames.forEach(text => {
-					let value = this.mixinDatacomResData.map(v => v.text === text && v.value).filter(Boolean)
-					value = value.length < 2 ? value[0] : value
-					data.push({
-						text,
-						value
+				if (this.mixinDatacomResData) {
+					const uniqueNames = new Set()
+					this.mixinDatacomResData.map(v => uniqueNames.add(v.text))
+					uniqueNames.forEach(text => {
+						let value = this.mixinDatacomResData.map(v => v.text === text && v.value).filter(Boolean)
+						value = value.length < 2 ? value[0] : value
+						data.push({
+							text,
+							value
+						})
 					})
-				})
+				}
 				return data
 			}
 		},
