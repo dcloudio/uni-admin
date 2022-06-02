@@ -7,7 +7,7 @@
 			<view class="uni-title">{{$t('login.text.title')}}</view>
 		</view>
 		<view class="uni-container">
-			<uni-forms ref="form" v-model="formData" :rules="rules" @submit="submit">
+			<uni-forms ref="form" v-model="formData" :rules="rules">
 				<uni-forms-item left-icon="person-filled" name="username" labelWidth="35">
 					<input ref="usernameInput" @confirm="submitForm" class="uni-input-border" type="text"
 						:placeholder="$t('login.field.username')" v-model="formData.username" />
@@ -139,18 +139,13 @@
 						this.formData.captcha = ''
 						this.createCaptcha()
 						this.needCaptcha = true
+					} else {
+						this.needCaptcha = false
 					}
 				})
 			},
-			submit(event) {
+			submit(value = this.formData) {
 				if (this.loading) {
-					return
-				}
-				const {
-					errors,
-					value
-				} = event.detail
-				if (errors) {
 					return
 				}
 				// #ifdef H5
@@ -189,6 +184,8 @@
 						this.formData.captcha = ''
 						this.createCaptcha()
 						this.needCaptcha = true
+					} else {
+						this.needCaptcha = false
 					}
 					const that = this
 					uni.showModal({
@@ -229,12 +226,9 @@
 				})
 			},
 
-			confirmForm(name, value) {
-				// this.binddata(name, value)
-				this.submitForm()
-			},
 			submitForm() {
-				this.$refs.form.submit()
+				// todo: name can`t be submit
+				this.submit()
 			},
 			initAdmin() {
 				uni.redirectTo({
