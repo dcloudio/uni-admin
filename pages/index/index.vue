@@ -228,7 +228,7 @@
 							const y = yesterdays.find(item => item.appid === appid)
 							for (const key of keys) {
 								if (key === 'appid' || key === 'name') {
-									rowData[key] = t[key]
+									rowData[key] = t && t[key]
 								} else {
 									const value = t && t[key]
 									const contrast = y && y[key]
