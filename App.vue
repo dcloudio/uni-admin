@@ -8,6 +8,9 @@
 		version
 	} from './package.json'
 	export default {
+		created() {
+			this.clear = undefined
+		},
 		computed: {
 			...mapGetters({
 				isTokenValid: 'user/isTokenValid'
@@ -16,7 +19,11 @@
 		methods: {
 			...mapActions({
 				init: 'app/init'
-			})
+			}),
+			clearPlatform() {
+				const keysOfPlatform = uni.getStorageInfoSync().keys.filter(key => key.indexOf('platform') > -1)
+				keysOfPlatform.length && keysOfPlatform.forEach(key => uni.removeStorageSync(key))
+			}
 		},
 		onPageNotFound(msg) {
 			uni.redirectTo({
@@ -44,9 +51,11 @@
 		},
 		onShow: function() {
 			console.log('App Show')
+			this.clear = setInterval(() => this.clearPlatform(), 15*60*1000)
 		},
 		onHide: function() {
 			console.log('App Hide')
+			this.clear && clearInterval(this.clear)
 		}
 	}
 </script>
