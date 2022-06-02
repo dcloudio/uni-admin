@@ -58,6 +58,11 @@
 				}
 				this.clickMenuItem(url)
 				this.setRoutes(routes)
+				// #ifdef H5
+				// #ifdef VUE3
+				uni.hideLeftWindow()
+				// #endif
+				// #endif
 			},
 			clickMenuItem(url) {
 				// #ifdef H5
