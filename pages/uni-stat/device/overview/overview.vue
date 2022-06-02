@@ -354,7 +354,6 @@
 					// query.dimension = 'hour'
 				}
 				query = stringifyQuery(query, true)
-				console.log('..............query', query);
 				const db = uniCloud.database()
 				db.collection(this.tableName)
 					.where(query)
