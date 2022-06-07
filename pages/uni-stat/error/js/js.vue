@@ -62,24 +62,8 @@
 					</uni-tr>
 					<uni-tr v-for="(item ,i) in tableData" :key="i">
 						<template v-for="(mapper, index) in fieldsMap">
-							<uni-td v-if="mapper.field === 'msg'" :key="mapper.title" align="left">
-								<!-- #ifdef MP -->
-								{{item[mapper.field] !== undefined ? item[mapper.field] : '-'}}
-								<!-- #endif -->
-								<!-- #ifndef MP -->
-								<uni-tooltip>
-									{{item[mapper.field] !== undefined ? item[mapper.field] : '-'}}
-									<uni-icons v-if="item.msgTooltip" type="help" color="#666" />
-									<template v-if="item.msgTooltip" v-slot:content>
-										<view class="uni-stat-tooltip-l">
-											{{item.msgTooltip}}
-										</view>
-									</template>
-								</uni-tooltip>
-								<!-- #endif -->
-							</uni-td>
-							<uni-td v-else-if="mapper.field === 'count'" :key="mapper.title" align="center">
-								<text class="link-btn" @click="navTo('detail', item.hash)">
+							<uni-td v-if="mapper.field === 'count'" :key="mapper.title" align="center">
+								<text class="link-btn" @click="navTo('detail', item)">
 									{{item[mapper.field] !== undefined ? item[mapper.field] : '-'}}
 								</text>
 							</uni-td>
@@ -107,16 +91,18 @@
 			</view>
 		</view>
 
-		<uni-popup ref="errMsg" type="center" :animation="false" :maskClick="true" @change="parseError">
-			<view class="modal" style="width: 800px;">
+		<uni-popup ref="errMsg" type="center" :animation="false" :maskClick="true">
+			<view class="modal black-theme">
 				<view class="modal-header">
 					错误详情
 				</view>
-				<scroll-view scroll-y="true">
+				<scroll-view scroll-x="true" scroll-y="true">
 					<view class="modal-content" style="padding: 20px 30px;">
-						<uni-load-more v-if="msgLoading" iconType="circle" status="loading"
-							style="margin: auto;height: 100%;" />
-						{{errMsg}}
+						<view v-if="msgLoading" style="margin: 150px 0;height: 90%;text-align: center;font-size: 14px;">
+							<uni-load-more  class="mb-m" :showText="false" status="loading" />
+							<view>正在解析，请稍等...</view>
+						</view>
+						<pre>{{errMsg}}</pre>
 					</view>
 				</scroll-view>
 			</view>
@@ -194,8 +180,7 @@
 					_id: 'errorRate',
 					name: '错误率'
 				}],
-				err: '',
-				errMsg: 'errMsg',
+				errMsg: '',
 				msgLoading: false
 			}
 		},
@@ -223,6 +208,7 @@
 			}
 		},
 		created() {
+			this.parsedErrors = {}
 			this.debounceGet = debounce(() => this.getAllData(this.queryStr))
 		},
 		watch: {
@@ -470,33 +456,12 @@
 					})
 			},
 
-			getPopupTableData(hash) {
-				this.popupTableData = []
-				this.popupLoading = true
-				const db = uniCloud.database()
-				db.collection('uni-stat-error-logs')
-					.where(`error_hash == "${hash}"`)
-					.orderBy('create_time', 'desc')
-					.limit(10)
-					.get()
-					.then(res => {
-						const data = res.result.data
-						for (const item of data) {
-							item.create_time = parseDateTime(item.create_time, 'dateTime')
-						}
-						this.popupTableData = data
-					})
-					.finally(() => {
-						this.popupLoading = false
-					})
-			},
-
-			navTo(url, id) {
+			navTo(url, item) {
 				if (url.indexOf('http') > -1) {
 					window.open(url)
 				} else {
-					if (id) {
-						url = `${url}?hash=${id}`
+					if (item) {
+						url = `${url}?error_hash=${item.hash}&create_time=${item.start_time}`
 					}
 					uni.navigateTo({
 						url
@@ -515,25 +480,29 @@
 			},
 			openErrPopup(err) {
 				if (this.msgLoading) return
-				this.err = err
 				this.$refs.errMsg.open()
-				this.msgLoading = true
-				this.errMsg = ''
-			},
-			parseError(popup) {
-				if (!popup.show) return
-				if (!this.err) {
-					this.errMsg = '无错误数据'
-					this.msgLoading = false
+				if (!err) {
+					this.errMsg = '暂无错误数据'
 				}
+				this.errMsg = ''
+				const oldMsg = this.parsedErrors[err]
+				if (!oldMsg || oldMsg === err) {
+					this.msgLoading = true
+					this.parseError(err)
+				} else {
+					this.errMsg = oldMsg
+				}
+			},
+			parseError(err) {
 				const preset = uniStracktraceyPreset({
 					base: 'https://7463-tcb-uzyfn59tqxjxtnbab2e2c-5ba40b-1303909289.tcb.qcloud.la/__UNI__/uni-stat/sourcemap/__UNI_APPID__/h5/3.3.8',
 				});
 				setTimeout(() => {
-					stacktracey(this.err, {
+					stacktracey(err, {
 						preset,
 					}).then(res => {
 						this.errMsg = res
+						this.parsedErrors[err] = res
 					}).finally(() => {
 						this.msgLoading = false
 					});
@@ -555,5 +524,8 @@
 	.uni-stat-tooltip-s {
 		width: 160px;
 		white-space: normal;
+ 	}
+	.black-theme {
+		background-color: #333;color: #fff;
 	}
 </style>
