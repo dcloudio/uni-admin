@@ -481,8 +481,9 @@ button:after {
 
 /* uni-popup modal start */
 .modal {
-	width: 100%;
-	max-width: 980px;
+	/* width: 100%; */
+	max-width: calc(100vw - 200px);
+	min-width: 800px;
 	margin: 0 auto;
 	background-color: #FFFFFF;
 }
@@ -495,7 +496,7 @@ button:after {
 
 .modal-content {
 	padding: 15px;
-	height: 500px;
+	height: 600px;
 	box-sizing: border-box;
 }
 

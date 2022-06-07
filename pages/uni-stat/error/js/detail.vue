@@ -56,18 +56,24 @@
 					pageSizeIndex: 0, // 与 pageSizeRange 一起计算得出 pageSize
 					pageSizeRange: [10, 20, 50, 100],
 				},
-				hash: '',
+				query: {
+					error_hash: '',
+					create_time: []
+				},
 				loading: false,
 				tableData: []
 			}
 		},
 		onLoad(option) {
-			const {
-				hash
+			let {
+				error_hash,
+				create_time
 			} = option
-			if (hash) {
-				this.hash =hash
-				this.getTableData(hash)
+			if (error_hash) {
+				create_time = Number(create_time)
+				this.query.error_hash = error_hash
+				this.query.create_time = [create_time, create_time + 24*60*60*1000]
+				this.getTableData(stringifyQuery(this.query))
 			}
 		},
 		computed: {
@@ -84,7 +90,7 @@
 
 			changePageCurrent(e) {
 				this.options.pageCurrent = e.current
-				this.getTableData(this.hash)
+				this.getTableData(stringifyQuery(this.query))
 			},
 
 			changePageSize(e) {
@@ -93,18 +99,19 @@
 				} = e.detail
 				this.options.pageCurrent = 1 // 重置分页
 				this.options.pageSizeIndex = value
-				this.getTableData(this.hash)
+				this.getTableData(stringifyQuery(this.query))
 			},
 
 
-			getTableData(hash) {
+			getTableData(query) {
+				console.log('.........11111', query);
 				const {
 					pageCurrent
 				} = this.options
 				this.loading = true
 				const db = uniCloud.database()
 				db.collection('uni-stat-error-logs')
-					.where(`error_hash == "${hash}"`)
+					.where(query)
 					.orderBy('create_time', 'desc')
 					.skip((pageCurrent - 1) * this.pageSize)
 					.limit(this.pageSize)

@@ -33,11 +33,11 @@ const popupFieldsMap = [{
 	field: 'create_time',
 	formatter: '',
 },
-{
-	title: '错误类型',
-	field: 'error_type',
-	formatter: '',
-},
+// {
+// 	title: '错误类型',
+// 	field: 'error_type',
+// 	formatter: '',
+// },
 {
 	title: '客户端操作系统',
 	field: 'os',
@@ -46,11 +46,12 @@ const popupFieldsMap = [{
 	title: '客户端 user-agent 信息',
 	field: 'ua',
 	formatter: '',
-}, {
-	title: '页面信息',
-	field: 'page_url',
-	formatter: '',
 }
+// , {
+// 	title: '页面信息',
+// 	field: 'page_url',
+// 	formatter: '',
+// }
 // , {
 // 	title: '服务空间编号',
 // 	field: 'space_id',
