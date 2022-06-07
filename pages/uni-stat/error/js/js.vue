@@ -56,6 +56,9 @@
 								<!-- #endif -->
 							</uni-th>
 						</template>
+						<uni-th align="center">
+							操作
+						</uni-th>
 					</uni-tr>
 					<uni-tr v-for="(item ,i) in tableData" :key="i">
 						<template v-for="(mapper, index) in fieldsMap">
@@ -84,6 +87,10 @@
 								{{item[mapper.field] !== undefined ? item[mapper.field] : '-'}}
 							</uni-td>
 						</template>
+						<uni-td>
+							<button size="mini" type="primary" style="white-space: nowrap;"
+								@click="openErrPopup(item.msgTooltip)">详 情</button>
+						</uni-td>
 					</uni-tr>
 				</uni-table>
 				<view class="uni-pagination-box">
@@ -100,17 +107,16 @@
 			</view>
 		</view>
 
-		<uni-popup ref="popupTable" type="center" :maskClick="true">
-			<view class="modal">
+		<uni-popup ref="errMsg" type="center" :animation="false" :maskClick="true" @change="parseError">
+			<view class="modal" style="width: 800px;">
 				<view class="modal-header">
-					错误设备信息
+					错误详情
 				</view>
 				<scroll-view scroll-y="true">
-					<view class="modal-content">
-						<view class="uni-form-item-tips">
-							注：仅展示最近10条
-						</view>
-						<uni-stat-table :data="popupTableData" :filedsMap="popupFieldsMap" :loading="popupLoading" />
+					<view class="modal-content" style="padding: 20px 30px;">
+						<uni-load-more v-if="msgLoading" iconType="circle" status="loading"
+							style="margin: auto;height: 100%;" />
+						{{errMsg}}
 					</view>
 				</scroll-view>
 			</view>
@@ -123,6 +129,11 @@
 </template>
 
 <script>
+	import {
+		stacktracey,
+		uniStracktraceyPreset
+	} from '@dcloudio/uni-stacktracey';
+
 	import {
 		mapfields,
 		stringifyQuery,
@@ -183,6 +194,9 @@
 					_id: 'errorRate',
 					name: '错误率'
 				}],
+				err: '',
+				errMsg: 'errMsg',
+				msgLoading: false
 			}
 		},
 		computed: {
@@ -399,7 +413,7 @@
 					.getTemp()
 
 				db.collection(mainTableTemp, versions, platforms)
-					.orderBy('count', 'desc')
+					.orderBy('last_time', 'desc')
 					.skip((pageCurrent - 1) * this.pageSize)
 					.limit(this.pageSize)
 					.get({
@@ -498,6 +512,32 @@
 					}
 				})
 				return strArr.join()
+			},
+			openErrPopup(err) {
+				if (this.msgLoading) return
+				this.err = err
+				this.$refs.errMsg.open()
+				this.msgLoading = true
+				this.errMsg = ''
+			},
+			parseError(popup) {
+				if (!popup.show) return
+				if (!this.err) {
+					this.errMsg = '无错误数据'
+					this.msgLoading = false
+				}
+				const preset = uniStracktraceyPreset({
+					base: 'https://7463-tcb-uzyfn59tqxjxtnbab2e2c-5ba40b-1303909289.tcb.qcloud.la/__UNI__/uni-stat/sourcemap/__UNI_APPID__/h5/3.3.8',
+				});
+				setTimeout(() => {
+					stacktracey(this.err, {
+						preset,
+					}).then(res => {
+						this.errMsg = res
+					}).finally(() => {
+						this.msgLoading = false
+					});
+				},100)
 			}
 		}
 
