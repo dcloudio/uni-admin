@@ -1,3 +1,13 @@
+## 3.3.23（2022-06-13）
+- 修复上版本引出的部分依赖未找到的Bug
+## 3.3.22（2022-06-13）
+- 新增 preferedWebPlatform 配置用于解决HBuilderX 3.4.9版本起web端platform不一致的问题 [详情](https://uniapp.dcloud.net.cn/uniCloud/uni-id?id=prefered-web-platform)
+## 3.3.21（2022-05-24）
+- 修复createInstance传入clientInfo无效的Bug
+## 3.3.20（2022-05-19）
+- 调整以下错误码（账号已注册[uni-id-account-exists]、账号不存在[uni-id-account-not-exists]、账号已绑定[uni-id-account-bound]）
+## 3.3.19（2022-05-19）
+- 修复 addUser 部分情况下会创建出重复账号的Bug
 ## 3.3.18（2022-05-12）
 - 调整绑定、解绑邮箱手机号接口，只要传递code参数就进行验证码校验即使传递的值为undefined
 ## 3.3.17（2022-05-09）

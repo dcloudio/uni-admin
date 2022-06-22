@@ -54,7 +54,10 @@
 			"batchDelete": "Batch Delete",
 			"exportExcel": "Export Excel",
 			"submit": "Submit",
-			"back": "Back"
+			"back": "Back",
+			"tagManager": "Tag Manager",
+			"publish": "publish",
+			"version": "version"
 		},
 		"empty": "No more data",
 		"piecePerPage": "piece/page"

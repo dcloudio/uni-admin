@@ -15,7 +15,7 @@
 		</view>
 		<view class="uni-dialog-button-group">
 			<view class="uni-dialog-button" @click="closeDialog">
-				<text class="uni-dialog-button-text">{{cancelText}}</text>
+				<text class="uni-dialog-button-text">{{closeText}}</text>
 			</view>
 			<view class="uni-dialog-button uni-border-left" @click="onOk">
 				<text class="uni-dialog-button-text uni-button-color">{{okText}}</text>
@@ -31,7 +31,7 @@
 	initVueI18n
 	} from '@dcloudio/uni-i18n'
 	import messages from '../uni-popup/i18n/index.js'
-	const {	t	} = initVueI18n(messages)
+	const {	t } = initVueI18n(messages)
 	/**
 	 * PopUp 弹出层-对话框样式
 	 * @description 弹出层-对话框样式
@@ -84,6 +84,14 @@
 			beforeClose: {
 				type: Boolean,
 				default: false
+			},
+			cancelText:{
+				type: String,
+				default: ''
+			},
+			confirmText:{
+				type: String,
+				default: ''
 			}
 		},
 		data() {
@@ -95,10 +103,10 @@
 		},
 		computed: {
 			okText() {
-				return t("uni-popup.ok")
+				return this.confirmText || t("uni-popup.ok")
 			},
-			cancelText() {
-				return t("uni-popup.cancel")
+			closeText() {
+				return this.cancelText || t("uni-popup.cancel")
 			},
 			placeholderText() {
 				return this.placeholder || t("uni-popup.placeholder")
@@ -162,10 +170,10 @@
 	}
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss" >
 	.uni-popup-dialog {
 		width: 300px;
-		border-radius: 15px;
+		border-radius: 11px;
 		background-color: #fff;
 	}
 
@@ -175,8 +183,7 @@
 		/* #endif */
 		flex-direction: row;
 		justify-content: center;
-		padding-top: 15px;
-		padding-bottom: 5px;
+		padding-top: 25px;
 	}
 
 	.uni-dialog-title-text {
@@ -191,12 +198,12 @@
 		flex-direction: row;
 		justify-content: center;
 		align-items: center;
-		padding: 5px 15px 15px 15px;
+		padding: 20px;
 	}
 
 	.uni-dialog-content-text {
 		font-size: 14px;
-		color: #6e6e6e;
+		color: #6C6C6C;
 	}
 
 	.uni-dialog-button-group {
@@ -228,7 +235,8 @@
 	}
 
 	.uni-dialog-button-text {
-		font-size: 14px;
+		font-size: 16px;
+		color: #333;
 	}
 
 	.uni-button-color {

@@ -12,12 +12,12 @@
 			<view class="uni-select__selector" v-if="showSelector">
 				<view class="uni-popper__arrow"></view>
 				<scroll-view scroll-y="true" class="uni-select__selector-scroll">
-					<view class="uni-select__selector-empty" v-if="renderData.length === 0">
+					<view class="uni-select__selector-empty" v-if="mixinDatacomResData.length === 0">
 						<text>{{emptyTips}}</text>
 					</view>
-					<view v-else class="uni-select__selector-item" v-for="(item,index) in renderData" :key="index"
-						@click="change(item)">
-						<text>{{formatItemName(item)}}</text>
+					<view v-else class="uni-select__selector-item" v-for="(item,index) in mixinDatacomResData"
+						:key="index" @click="change(item)">
+						<text :class="{'uni-select__selector__disabled': item.disable}">{{formatItemName(item)}}</text>
 					</view>
 				</scroll-view>
 			</view>
@@ -59,11 +59,11 @@
 				}
 			},
 			value: {
-				type: [String, Number, Array],
+				type: [String, Number],
 				default: ''
 			},
 			modelValue: {
-				type: [String, Number, Array],
+				type: [String, Number],
 				default: ''
 			},
 			label: {
@@ -82,22 +82,15 @@
 				type: Boolean,
 				default: true
 			},
-			storage: {
-				type: Boolean,
-				default: true
-			},
 			defItem: {
 				type: Number,
 				default: 0
 			}
 		},
 		created() {
-			this.getData = this.debounce(() => this.mixinDatacomEasyGet())
-			this.last_data = `${this.collection}_last_data`
-			this.last_selected = `${this.collection}_last_selected_option_value`
+			this.last = `${this.collection}_last_selected_option_value`
 			if (this.collection && !this.localdata.length) {
-				this.storage && (this.mixinDatacomResData = uni.getStorageSync(this.last_data))
-				this.getData()
+				this.mixinDatacomEasyGet()
 			}
 		},
 		computed: {
@@ -112,22 +105,6 @@
 				return placeholder ?
 					common + placeholder :
 					common
-			},
-			renderData() {
-				const data = []
-				if (this.mixinDatacomResData) {
-					const uniqueNames = new Set()
-					this.mixinDatacomResData.map(v => uniqueNames.add(v.text))
-					uniqueNames.forEach(text => {
-						let value = this.mixinDatacomResData.map(v => v.text === text && v.value).filter(Boolean)
-						value = value.length < 2 ? value[0] : value
-						data.push({
-							text,
-							value
-						})
-					})
-				}
-				return data
 			}
 		},
 		watch: {
@@ -154,37 +131,21 @@
 				handler(val) {
 					if (val.length) {
 						this.initDefVal()
-						if (this.collection) {
-							uni.setStorageSync(this.last_data, val)
-						}
 					}
 				}
-			},
-			where(val) {
-				this.getData()
 			}
 		},
 		methods: {
-			debounce(fn, time = 100) {
-				let timer = null
-				return function(...args) {
-					if (timer) clearTimeout(timer)
-					timer = setTimeout(() => {
-						fn.apply(this, args)
-					}, time)
-				}
-			},
 			initDefVal() {
 				let defValue = ''
-				// todo:
-				if (this.value || this.value === 0) {
+				if ((this.value || this.value === 0) && !this.isDisabled(this.value)) {
 					defValue = this.value
-				} else if (this.modelValue || this.modelValue === 0) {
+				} else if ((this.modelValue || this.modelValue === 0) && !this.isDisabled(this.modelValue)) {
 					defValue = this.modelValue
 				} else {
 					let strogeValue
-					if (this.collection && this.storage) {
-						strogeValue = uni.getStorageSync(this.last_selected)
+					if (this.collection) {
+						strogeValue = uni.getStorageSync(this.last)
 					}
 					if (strogeValue || strogeValue === 0) {
 						defValue = strogeValue
@@ -197,27 +158,45 @@
 					}
 					this.emit(defValue)
 				}
-				const def = this.renderData.find(item => JSON.stringify(item.value) === JSON.stringify(defValue))
+				const def = this.mixinDatacomResData.find(item => item.value === defValue)
 				this.current = def ? this.formatItemName(def) : ''
+			},
+
+			/**
+			 * @param {[String, Number]} value
+			 * 判断用户给的 value 是否同时为禁用状态
+			 */
+			isDisabled(value) {
+				let isDisabled = false;
+
+				this.mixinDatacomResData.forEach(item => {
+					if (item.value === value) {
+						isDisabled = item.disable
+					}
+				})
+
+				return isDisabled;
 			},
 
 			clearVal() {
 				this.emit('')
 				if (this.collection) {
-					uni.removeStorageSync(this.last_selected)
+					uni.removeStorageSync(this.last)
 				}
 			},
 			change(item) {
-				this.showSelector = false
-				this.current = this.formatItemName(item)
-				this.emit(item.value)
+				if (!item.disable) {
+					this.showSelector = false
+					this.current = this.formatItemName(item)
+					this.emit(item.value)
+				}
 			},
 			emit(val) {
 				this.$emit('change', val)
 				this.$emit('input', val)
 				this.$emit('update:modelValue', val)
 				if (this.collection) {
-					uni.setStorageSync(this.last_selected, val)
+					uni.setStorageSync(this.last, val)
 				}
 			},
 
@@ -243,7 +222,13 @@
 	}
 </script>
 
-<style>
+<style lang="scss">
+	$uni-base-color: #6a6a6a !default;
+	$uni-main-color: #3a3a3a !default;
+	$uni-secondary-color: #909399 !default;
+	$uni-border-3: #DCDCDC;
+
+
 	/* #ifndef APP-NVUE */
 	@media screen and (max-width: 500px) {
 		.hide-on-phone {
@@ -259,21 +244,17 @@
 		cursor: pointer;
 	}
 
-	.uni-stat__actived {
-		outline: 1px solid #2979ff;
-	}
-
 	.uni-label-text {
 		font-size: 14px;
 		font-weight: bold;
-		color: #555;
+		color: $uni-base-color;
 		margin: auto 0;
 		margin-right: 5px;
 	}
 
 	.uni-select {
 		font-size: 14px;
-		border: 1px solid #DCDFE6;
+		border: 1px solid $uni-border-3;
 		box-sizing: border-box;
 		border-radius: 4px;
 		padding: 0 5px;
@@ -284,14 +265,14 @@
 		/* #endif */
 		flex-direction: row;
 		align-items: center;
-		border-bottom: solid 1px #DDDDDD;
+		border-bottom: solid 1px $uni-border-3;
 	}
 
 	.uni-select__label {
 		font-size: 16px;
 		line-height: 22px;
 		padding-right: 10px;
-		color: #999999;
+		color: $uni-secondary-color;
 	}
 
 	.uni-select__input-box {
@@ -314,7 +295,7 @@
 
 	.uni-select__input-plac {
 		font-size: 14px;
-		color: #999;
+		color: $uni-secondary-color;
 	}
 
 	.uni-select__selector {
@@ -349,7 +330,7 @@
 		line-height: 36px;
 		font-size: 14px;
 		text-align: center;
-		/* border-bottom: solid 1px #DDDDDD; */
+		/* border-bottom: solid 1px $uni-border-3; */
 		padding: 0px 10px;
 	}
 
@@ -362,6 +343,11 @@
 		/* #ifndef APP-NVUE */
 		border-bottom: none;
 		/* #endif */
+	}
+
+	.uni-select__selector__disabled {
+		opacity: 0.4;
+		cursor: default;
 	}
 
 	/* picker 弹出层通用的指示小三角 */
@@ -395,7 +381,7 @@
 
 	.uni-select__input-text {
 		width: 280px;
-		color: #333;
+		color: $uni-main-color;
 		white-space: nowrap;
 		text-overflow: ellipsis;
 		-o-text-overflow: ellipsis;
@@ -403,7 +389,7 @@
 	}
 
 	.uni-select__input-placeholder {
-		color: #666;
+		color: $uni-base-color;
 	}
 
 	.uni-select--mask {

@@ -175,7 +175,13 @@
 			init(formRules) {
 				// 判断是否有规则
 				if (Object.keys(formRules).length === 0) {
-					this.formData = this.dataValue
+					try{
+						// TODO 不影响原始数据
+						this.formData = JSON.parse(JSON.stringify(this.dataValue))
+					}catch(e){
+						//TODO handle the exception
+						this.formData = {}
+					}
 					return
 				};
 				this.formRules = formRules;
@@ -194,7 +200,10 @@
 					let watch = this.$watch(
 						'dataValue.' + key,
 						value => {
-							if (!value) return
+							if (!value){
+								this.formData[key] = this._getValue(key,value);
+								return
+							  }
 							// 如果是对象 ，则平铺内容
 							if (value.toString() === '[object Object]') {
 								for (let i in value) {

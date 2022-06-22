@@ -35,6 +35,10 @@
 			mode: {
 				type: String,
 				default: 'default'
+			},
+			stat:{
+				type: Boolean,
+				default: false
 			}
 		},
 		data() {
@@ -45,7 +49,7 @@
 		},
 		watch: {
 			title(newVal) {
-				if (uni.report && newVal !== '') {
+				if (uni.report && this.stat && newVal !== '') {
 					uni.report('title', newVal)
 				}
 			}
@@ -77,7 +81,7 @@
 		}
 	}
 </script>
-<style lang="scss" scoped>
+<style lang="scss" >
 	.uni-group {
 		background: #fff;
 		margin-top: 10px;
@@ -96,9 +100,9 @@
 		align-items: center;
 		padding-left: 15px;
 		height: 40px;
-		background-color: $uni-bg-color-grey;
+		background-color: #eee;
 		font-weight: normal;
-		color: $uni-text-color;
+		color: #666;
 	}
 
 	.uni-group__content {
@@ -112,8 +116,8 @@
 	}
 
 	.uni-group__title-text {
-		font-size: $uni-font-size-base;
-		color: $uni-text-color;
+		font-size: 14px;
+		color: #666;
 	}
 
 	.distraction {

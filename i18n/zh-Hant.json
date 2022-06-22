@@ -51,10 +51,13 @@
 			"add": "新增",
 			"edit": "修改",
 			"delete": "刪除",
-			"batchDelete": "批量删除",
+			"batchDelete": "批量刪除",
 			"exportExcel": "導出 Excel",
 			"submit": "提交",
-			"back": "返回"
+			"back": "返回",
+			"tagManager": "標簽管理",
+			"publish": "發布",
+			"version": "版本"
 		},
 		"empty": "沒有更多數據",
 		"piecePerPage": "條/頁"
@@ -76,7 +79,7 @@
 	},
 	"app": {
 		"text": {
-			"appManager": "应用管理",
+			"appManager": "應用管理",
 			"describle": "管理用戶可登錄的應用"
 		}
 	},
