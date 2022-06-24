@@ -56,8 +56,8 @@
 			"submit": "Submit",
 			"back": "Back",
 			"tagManager": "Tag Manager",
-			"publish": "publish",
-			"version": "version"
+			"publish": "download publish page",
+			"version": "version manager"
 		},
 		"empty": "No more data",
 		"piecePerPage": "piece/page"

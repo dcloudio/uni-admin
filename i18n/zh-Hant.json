@@ -56,8 +56,8 @@
 			"submit": "提交",
 			"back": "返回",
 			"tagManager": "標簽管理",
-			"publish": "發布",
-			"version": "版本"
+			"publish": "下載發布頁",
+			"version": "版本管理"
 		},
 		"empty": "沒有更多數據",
 		"piecePerPage": "條/頁"
