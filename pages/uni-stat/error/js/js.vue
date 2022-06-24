@@ -56,9 +56,6 @@
 								<!-- #endif -->
 							</uni-th>
 						</template>
-						<uni-th align="center">
-							操作
-						</uni-th>
 					</uni-tr>
 					<uni-tr v-for="(item ,i) in tableData" :key="i">
 						<template v-for="(mapper, index) in fieldsMap">
@@ -71,10 +68,6 @@
 								{{item[mapper.field] !== undefined ? item[mapper.field] : '-'}}
 							</uni-td>
 						</template>
-						<uni-td>
-							<button size="mini" type="primary" style="white-space: nowrap;"
-								@click="openErrPopup(item.msgTooltip)">详 情</button>
-						</uni-td>
 					</uni-tr>
 				</uni-table>
 				<view class="uni-pagination-box">
@@ -115,10 +108,6 @@
 </template>
 
 <script>
-	import {
-		stacktracey,
-		uniStracktraceyPreset
-	} from '@dcloudio/uni-stacktracey';
 
 	import {
 		mapfields,
@@ -492,21 +481,6 @@
 				} else {
 					this.errMsg = oldMsg
 				}
-			},
-			parseError(err) {
-				const preset = uniStracktraceyPreset({
-					base: 'https://7463-tcb-uzyfn59tqxjxtnbab2e2c-5ba40b-1303909289.tcb.qcloud.la/__UNI__/uni-stat/sourcemap/__UNI_APPID__/h5/3.3.8',
-				});
-				setTimeout(() => {
-					stacktracey(err, {
-						preset,
-					}).then(res => {
-						this.errMsg = res
-						this.parsedErrors[err] = res
-					}).finally(() => {
-						this.msgLoading = false
-					});
-				},100)
 			}
 		}
 
