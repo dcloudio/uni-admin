@@ -20,6 +20,21 @@
                 "navigationBarTitleText": "修改密码"
             }
 
+        },{
+            "path": "uni_modules/uni-upgrade-center/pages/version/list",
+            "style": {
+                "navigationBarTitleText": "版本列表"
+            }
+        }, {
+            "path": "uni_modules/uni-upgrade-center/pages/version/add",
+            "style": {
+                "navigationBarTitleText": "新版发布"
+            }
+        }, {
+            "path": "uni_modules/uni-upgrade-center/pages/version/detail",
+            "style": {
+                "navigationBarTitleText": "版本信息查看"
+            }
         }
     ],
     "subPackages": [{
@@ -99,17 +114,18 @@
                 "navigationStyle": "default"
             }
         }, {
-            "path": "app/edit",
-            "style": {
-                "navigationBarTitleText": "修改应用",
-                "navigationStyle": "default"
-            }
-        }, {
             "path": "app/list",
             "style": {
                 "navigationBarTitleText": "应用管理"
             }
         }, {
+			"path": "app/publish_page_display/publish_page_display",
+			"style": {
+				"navigationBarTitleText": "发布页管理",
+                "navigationStyle": "default"
+			}
+
+		},{
             "path": "tag/add",
             "style": {
                 "navigationBarTitleText": "新增标签"
