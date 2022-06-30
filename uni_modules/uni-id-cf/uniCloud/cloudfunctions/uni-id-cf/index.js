@@ -9,7 +9,7 @@ const db = uniCloud.database()
 const dbCmd = db.command
 const usersDB = db.collection('uni-id-users')
 const deviceDB = db.collection('uni-id-device')
-const appManager = require('./appManager')
+
 exports.main = async (event, context) => {
 	console.log({
 		context
@@ -686,10 +686,7 @@ exports.main = async (event, context) => {
 			}
 			break;
 		}
-		case 'appManager':
-			return await appManager.main(params)
-			break;
-			// =========================== admin api end =========================
+		// =========================== admin api end =========================
 		default:
 			res = {
 				code: 403,
