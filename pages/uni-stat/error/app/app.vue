@@ -78,7 +78,7 @@
 						</uni-tr>
 						<uni-tr v-for="(item ,i) in tableData" :key="i">
 							<template v-for="(mapper, index) in fieldsMap">
-								<uni-td v-if="mapper.field === 'error_msg'" :key="mapper.title" align="left"
+								<uni-td v-if="mapper.field === 'error_msg'" :key="'key1'+i+index" align="left"
 									style="min-width: 500px;">
 									<!-- #ifdef MP -->
 									{{item.error_msg ? item.error_msg.substring(0, 100) + '...' : '-'}}
@@ -95,10 +95,10 @@
 									</uni-tooltip>
 									<!-- #endif -->
 								</uni-td>
-								<uni-td v-else-if="mapper.field === 'create_time'" :key="mapper.title" align="center">
+								<uni-td v-else-if="mapper.field === 'create_time'" :key="'key2'+i+index" align="center">
 									<uni-dateformat :threshold="[0, 0]" :date="item.create_time"></uni-dateformat>
 								</uni-td>
-								<uni-td v-else :key="mapper.title" align="center">
+								<uni-td v-else :key="'key3'+i+index" align="center">
 									{{item[mapper.field] !== undefined ? item[mapper.field] : '-'}}
 								</uni-td>
 							</template>
@@ -406,6 +406,7 @@
 
 			getPanelData(query) {
 				const db = uniCloud.database()
+				console.log(query);
 				db.collection('uni-stat-error-result')
 					.where(query)
 					.field('count as temp_count, app_launch_count as temp_app_launch_count, appid')
@@ -421,10 +422,25 @@
 						} = res.result
 						const item = res.result.data[0]
 						this.panelData = []
-						this.panelData = mapfields(panelOption, item)
+						let queryTemp = Object.assign({},this.query)
+						delete queryTemp.type
+						this.getTotalLaunch(stringifyQuery(queryTemp)).then(res=>{
+							const total = res.result.data[0]
+							let launch_count = total && total.total_app_launch_count
+							console.log('result total',total);
+							item.app_launch_count = launch_count
+							this.panelData = mapfields(panelOption, item)
+						})
 					})
 			},
-
+			getTotalLaunch(query) {
+				const db = uniCloud.database()
+				return db.collection('uni-stat-result')
+					.where(query)
+					.groupBy('appid')
+					.groupField('sum(app_launch_count) as total_app_launch_count')
+					.get()
+			},
 			getChartData(query, field = 'day_count') {
 				this.chartData = {}
 				const {
