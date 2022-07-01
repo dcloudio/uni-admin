@@ -27,8 +27,7 @@
 			<text style="font-size: 14px;">
 				uni-portal 可根据当前应用管理所填写信息一键生成发布：
 			</text>
-			<button class="custom-button" size="mini" type="primary" @click="publish"
-				style="margin: 0 0 0 20rpx;">下载发布页</button>
+			<button class="custom-button" size="mini" type="primary" @click="publish" style="margin: 0;">下载发布页</button>
 		</view>
 
 		<h3 class="text-separated" style="padding: 40rpx 0 20rpx 0;">三、上传部署发布页</h3>
