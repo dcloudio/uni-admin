@@ -298,7 +298,7 @@
 			},
 			publish(id) {
 				uni.navigateTo({
-					url: '/pages/system/app/publish_page_display/publish_page_display?id=' + id
+					url: '/pages/system/app/uni-portal/uni-portal?id=' + id
 				})
 			}
 		}
