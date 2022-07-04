@@ -119,7 +119,7 @@
                 "navigationBarTitleText": "应用管理"
             }
         }, {
-			"path": "app/publish_page_display/publish_page_display",
+			"path": "app/uni-portal/uni-portal",
 			"style": {
 				"navigationBarTitleText": "发布页管理",
                 "navigationStyle": "default"
