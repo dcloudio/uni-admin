@@ -3,12 +3,12 @@
  */
 
 // 将查询条件拼接为字符串
-function stringifyQuery(query, dimension = false) {
+function stringifyQuery(query, dimension = false, delArrs = []) {
 	const queryArr = []
 	const keys = Object.keys(query)
 	const time = query.start_time
 	keys.forEach(key => {
-		if (key === 'time_range') return
+		if (key === 'time_range' || delArrs.indexOf(key) !== -1) return
 		let val = query[key]
 		if (val) {
 			if (typeof val === 'string' && val.indexOf(key) > -1) {
@@ -18,7 +18,7 @@ function stringifyQuery(query, dimension = false) {
 					val = `"${val}"`
 				}
 				if (Array.isArray(val)) {
-					if (val.length === 2 && key.indexOf('time')> -1) {
+					if (val.length === 2 && key.indexOf('time') > -1) {
 						queryArr.push(`${key} >= ${val[0]} && ${key} <= ${val[1]}`)
 					} else {
 						val = val.map(item => `${key} == "${item}"`).join(' || ')
@@ -218,7 +218,7 @@ function formatDate(date, type) {
 		h = h < 10 ? '0' + h : h
 		return `${h}:00 ~ ${h}:59`
 	} else if (type === 'week') {
-		const first = d.getDate() - d.getDay() +1; // First day is the day of the month - the day of the week
+		const first = d.getDate() - d.getDay() + 1; // First day is the day of the month - the day of the week
 		const last = first + 6; // last day is the first day + 6
 		let firstday = new Date(d.setDate(first));
 		firstday = parseDateTime(firstday)
@@ -277,10 +277,12 @@ function maxDeltaDay(times, delta = 2) {
 	return max
 }
 
+
+
 function getFieldTotal(query = this.query, field = "total_devices") {
 	let fieldTotal
 	if (typeof query === 'object') {
-		query = stringifyQuery(query)
+		query = stringifyQuery(query, false, ['uni_platform'])
 	}
 	const db = uniCloud.database()
 	return db.collection('uni-stat-result')
@@ -313,6 +315,37 @@ function debounce(fn, time = 100) {
 	}
 }
 
+
+/**
+ * 获取两个时间戳之间的所有时间
+ * let start = new Date(1642694400000) // 2022-01-21 00:00:00
+ * let end = new Date(1643644800000) // 2022-02-01 00:00:00
+ * dateList = getAllDateCN(date1, date2)
+ * @param {*} startTime
+ * @param {*} endTime
+ */
+function getAllDateCN(startTime, endTime) {
+	let date_all = [];
+	let i = 0;
+	while (endTime.getTime() - startTime.getTime() >= 0) {
+		// 获取日期和时间
+		// let year = startTime.getFullYear()
+		// let month = startTime.getMonth() + 1
+		// let day = startTime.getDate()
+		// let time = startTime.toLocaleTimeString()
+		date_all[i] = startTime.getTime()
+
+		// 获取每天00:00:00的时间戳
+		// date_all[i] = new Date(startTime.toLocaleDateString()).getTime() / 1000;
+
+		// 天数+1
+		startTime.setDate(startTime.getDate() + 1);
+		i += 1;
+	}
+	return date_all;
+}
+
+
 export {
 	stringifyQuery,
 	stringifyField,
@@ -326,5 +359,6 @@ export {
 	maxDeltaDay,
 	debounce,
 
-	getFieldTotal
+	getFieldTotal,
+	getAllDateCN
 }

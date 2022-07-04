@@ -7,7 +7,8 @@
 			<view class="uni-stat--x flex">
 				<uni-data-select collection="opendb-app-list" field="appid as value, name as text" orderby="text asc"
 					:defItem="1" label="应用选择" v-model="query.appid" :clear="false" />
-				<uni-data-select collection="uni-stat-app-versions" :where="versionQuery" field="_id as value, version as text" orderby="text asc" label="版本选择" v-model="query.version_id" />
+				<uni-data-select collection="opendb-app-versions" :where="versionQuery"
+					field="_id as value, version as text" orderby="text asc" label="版本选择" v-model="query.version_id" />
 				<view class="flex">
 					<uni-stat-tabs label="日期选择" :current="currentDateTab" mode="date" :today="true"
 						@change="changeTimeRange" />
@@ -18,7 +19,8 @@
 				</view>
 			</view>
 			<view class="uni-stat--x">
-				<uni-stat-tabs label="平台选择" type="boldLine" mode="platform" v-model="query.platform_id" @change="changePlatform" />
+				<uni-stat-tabs label="平台选择" type="boldLine" mode="platform" v-model="query.platform_id"
+					@change="changePlatform" />
 			</view>
 			<uni-stat-panel :items="panelData" :contrast="true" />
 			<view class="uni-stat--x p-m">
@@ -27,7 +29,7 @@
 				</view>
 				<uni-stat-tabs type="box" v-model="chartTab" :tabs="chartTabs" class="mb-l" @change="changeChartTab" />
 				<view class="uni-charts-box">
-					<qiun-data-charts type="area" :chartData="chartData" :eopts="eopts" echartsH5 echartsApp />
+					<qiun-data-charts type="area" :chartData="chartData" :eopts="eopts" echartsH5 echartsApp tooltipFormat="tooltipCustom"/>
 				</view>
 			</view>
 
@@ -145,6 +147,7 @@
 					appid: '',
 					version_id: '',
 					platform_id: '',
+					uni_platform:'',
 					start_time: [],
 				},
 				options: {
@@ -193,7 +196,9 @@
 						},
 						areaStyle: null
 					}]
-				}
+				},
+				tabIndex: 0,
+				tabName: '新增设备',
 			}
 		},
 		onLoad(option) {
@@ -227,10 +232,13 @@
 				return tabs
 			},
 			versionQuery() {
-				const { appid, platform_id } = this.query
+				const {
+					appid,
+					uni_platform
+				} = this.query
 				const query = stringifyQuery({
 					appid,
-					platform_id
+					uni_platform,
 				})
 				return query
 			}
@@ -251,8 +259,10 @@
 			useDatetimePicker() {
 				this.currentDateTab = null
 			},
-			changePlatform() {
+			changePlatform(id, index, name, item) {
 				this.query.version_id = 0
+				console.log('item.code',item.code);
+				this.query.uni_platform = item.code
 			},
 			changeTimeRange(id, index) {
 				this.currentDateTab = index
@@ -281,6 +291,8 @@
 			},
 
 			changeChartTab(id, index, name) {
+				this.tabIndex = index
+				this.tabName = name
 				this.getChartData(this.query, id, name)
 			},
 			getAllData(query) {
@@ -337,8 +349,8 @@
 					})
 			},
 
-			getChartData(query, field = this.chartTabs[0]._id, name = this.chartTabs[0].name) {
-				this.chartData = {}
+			getChartData(query, field = this.chartTabs[this.tabIndex]._id, name = this.chartTabs[this.tabIndex].name) {
+				// this.chartData = {}
 				const {
 					pageCurrent
 				} = this.options
@@ -353,7 +365,7 @@
 					start_time = query.start_time = [start, end]
 					// query.dimension = 'hour'
 				}
-				query = stringifyQuery(query, true)
+				query = stringifyQuery(query, true, ['uni_platform'])
 				const db = uniCloud.database()
 				db.collection(this.tableName)
 					.where(query)
@@ -440,7 +452,8 @@
 			getPageData(query, type) {
 				query = JSON.parse(JSON.stringify(query))
 				query.dimension = 'day'
-				query = stringifyQuery(query)
+				query = stringifyQuery(query,false,['uni_platform'])
+				console.log('page data ',query);
 				const {
 					pageCurrent
 				} = this.options

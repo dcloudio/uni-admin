@@ -96,7 +96,7 @@
 		computed: {
 			typePlaceholder() {
 				const text = {
-					'opendb-stat-app-versions': '版本',
+					'opendb-app-versions': '版本',
 					'opendb-app-channels': '渠道',
 					'opendb-app-list': '应用'
 				}
@@ -108,6 +108,9 @@
 			}
 		},
 		watch: {
+			where(newval){
+				this.mixinDatacomEasyGet()
+			},
 			localdata: {
 				immediate: true,
 				handler(val, old) {

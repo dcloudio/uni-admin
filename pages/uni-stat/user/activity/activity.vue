@@ -11,7 +11,7 @@
 			<view class="uni-stat--x flex">
 				<uni-data-select collection="opendb-app-list" field="appid as value, name as text" orderby="text asc"
 					:defItem="1" label="应用选择" @change="changeAppid" v-model="query.appid" :clear="false" />
-				<uni-data-select collection="uni-stat-app-versions" :where="versionQuery"
+				<uni-data-select collection="opendb-app-versions" :where="versionQuery"
 					field="_id as value, version as text" orderby="text asc" label="版本选择" v-model="query.version_id" />
 				<view class="flex">
 					<uni-stat-tabs label="日期选择" :current="currentDateTab" mode="date" :yesterday="false"
@@ -82,6 +82,7 @@
 					dimension: "day",
 					appid: '',
 					platform_id: '',
+					uni_platform: '',
 					version_id: '',
 					channel_id: '',
 					start_time: [],
@@ -143,11 +144,11 @@
 			versionQuery() {
 				const {
 					appid,
-					platform_id
+					uni_platform
 				} = this.query
 				const query = stringifyQuery({
 					appid,
-					platform_id
+					uni_platform
 				})
 				return query
 			}
@@ -172,9 +173,10 @@
 			changeAppid(id) {
 				this.getChannelData(id, false)
 			},
-			changePlatform(id) {
+			changePlatform(id, index, name, item) {
 				this.getChannelData(null, id)
 				this.query.version_id = 0
+				this.query.uni_platform = item.code
 			},
 			changeTimeRange(id, index) {
 				this.currentDateTab = index
@@ -213,7 +215,7 @@
 			},
 
 			getChartData(query, type, name = '日活', field = 'active_user_count') {
-				this.chartData = {}
+				// this.chartData = {}
 				const options = {
 					categories: [],
 					series: [{
@@ -221,7 +223,7 @@
 						data: []
 					}]
 				}
-				query = stringifyQuery(query)
+				query = stringifyQuery(query, null, ['uni_platform'])
 				const db = uniCloud.database()
 				if (type === 'day') {
 					db.collection(this.tableName)
@@ -277,7 +279,7 @@
 				const {
 					pageCurrent
 				} = this.options
-				query = stringifyQuery(query)
+				query = stringifyQuery(query, null, ['uni_platform'])
 				this.loading = true
 				const db = uniCloud.database()
 				db.collection(this.tableName)
@@ -337,6 +339,7 @@
 			},
 
 			getRangeCountData(query, type, field = 'active_user_count') {
+				console.log('getRangeCountData',query);
 				if (type === 'week') type = 'isoWeek'
 				const {
 					pageCurrent

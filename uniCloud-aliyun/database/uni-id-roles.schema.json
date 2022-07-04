@@ -29,8 +29,8 @@
 			"foreignKey": "uni-id-permissions.permission_id",
 			"description": "角色拥有的权限列表",
 			"enum": {
-				"collection":"uni-id-permissions",
-				"field":"permission_name as text, permission_id as value"
+				"collection": "uni-id-permissions",
+				"field": "permission_name as text, permission_id as value"
 			}
 		},
 		"comment": {

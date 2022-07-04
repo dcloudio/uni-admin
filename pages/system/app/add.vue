@@ -1,6 +1,6 @@
 <template>
   <view class="uni-container">
-    <uni-forms ref="form" :value="formData" validateTrigger="bind">
+    <uni-forms ref="form" :value="formData" :rules="rules"  validateTrigger="bind" labelWidth="90">
       <uni-forms-item name="appid" label="AppID" required>
         <uni-easyinput placeholder="应用AppID" v-model="formData.appid"></uni-easyinput>
       </uni-forms-item>

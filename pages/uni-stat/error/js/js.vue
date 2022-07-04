@@ -11,7 +11,7 @@
 			<view class="uni-stat--x flex">
 				<uni-data-select collection="opendb-app-list" field="appid as value, name as text" orderby="text asc"
 					:defItem="1" label="应用选择" v-model="query.appid" :clear="false" />
-				<uni-data-select collection="uni-stat-app-versions" :where="versionQuery"
+				<uni-data-select collection="opendb-app-versions" :where="versionQuery"
 					field="_id as value, version as text" orderby="text asc" label="版本选择" v-model="query.version_id" />
 				<view class="flex">
 					<uni-stat-tabs label="日期选择" :current="currentDateTab" :yesterday="false" mode="date"
@@ -30,8 +30,8 @@
 				<uni-stat-panel :items="panelData" class="uni-stat-panel" />
 				<uni-stat-tabs type="box" v-model="chartTab" :tabs="chartTabs" class="mb-l" />
 				<view class="uni-charts-box">
-					<qiun-data-charts type="area" :chartData="chartData" :eopts="{notMerge:true}" echartsH5
-						echartsApp />
+					<qiun-data-charts type="area" :chartData="chartData" :eopts="{notMerge:true}" echartsH5 echartsApp
+						tooltipFormat="tooltipCustom" />
 				</view>
 			</view>
 
@@ -59,12 +59,12 @@
 					</uni-tr>
 					<uni-tr v-for="(item ,i) in tableData" :key="i">
 						<template v-for="(mapper, index) in fieldsMap">
-							<uni-td v-if="mapper.field === 'count'" :key="mapper.title" align="center">
+							<uni-td v-if="mapper.field === 'count'" :key="'key1'+i+index" align="center">
 								<text class="link-btn" @click="navTo('detail', item)">
 									{{item[mapper.field] !== undefined ? item[mapper.field] : '-'}}
 								</text>
 							</uni-td>
-							<uni-td v-else :key="mapper.title" align="center">
+							<uni-td v-else :key="'key2'+i+index" align="center">
 								{{item[mapper.field] !== undefined ? item[mapper.field] : '-'}}
 							</uni-td>
 						</template>
@@ -92,7 +92,7 @@
 				<scroll-view scroll-x="true" scroll-y="true">
 					<view class="modal-content" style="padding: 20px 30px;">
 						<view v-if="msgLoading" style="margin: 150px 0;height: 90%;text-align: center;font-size: 14px;">
-							<uni-load-more  class="mb-m" :showText="false" status="loading" />
+							<uni-load-more class="mb-m" :showText="false" status="loading" />
 							<view>正在解析，请稍等...</view>
 						</view>
 						<pre>{{errMsg}}</pre>
@@ -108,7 +108,6 @@
 </template>
 
 <script>
-
 	import {
 		mapfields,
 		stringifyQuery,
@@ -117,7 +116,8 @@
 		format,
 		formatDate,
 		parseDateTime,
-		debounce
+		debounce,
+		getAllDateCN
 	} from '@/js_sdk/uni-stat/util.js'
 	import {
 		fieldsMap,
@@ -144,6 +144,7 @@
 					dimension: "day",
 					appid: "",
 					platform_id: '',
+					uni_platform: '',
 					version_id: '',
 					start_time: [],
 				},
@@ -187,11 +188,12 @@
 			versionQuery() {
 				const {
 					appid,
-					platform_id
+					uni_platform
 				} = this.query
 				const query = stringifyQuery({
 					appid,
-					platform_id
+					uni_platform,
+					type: 'native_app'
 				})
 				return query
 			}
@@ -216,8 +218,9 @@
 			useDatetimePicker() {
 				this.currentDateTab = -1
 			},
-			changePlatform() {
+			changePlatform(id, index, name, item) {
 				this.query.version_id = 0
+				this.query.uni_platform = item.code
 			},
 			changeTimeRange(id, index) {
 				this.currentDateTab = index
@@ -245,24 +248,43 @@
 			},
 
 			getChartData(query, field = 'day_count') {
+				let querystr = stringifyQuery(this.query, false, ['uni_platform'])
 				this.chartData = {}
 				const {
 					pageCurrent
 				} = this.options
 				const db = uniCloud.database()
+				const [start_time, end_tiem] = this.query.start_time
+				const timeAll = getAllDateCN(new Date(start_time), new Date(end_tiem))
 				db.collection('uni-stat-error-result')
-					.where(query)
+					.where(querystr)
 					.groupBy('start_time')
 					.groupField('sum(count) as total_day_count')
 					.orderBy('start_time', 'asc')
 					.get({
 						getCount: true
 					})
-					.then(res => {
-						const {
-							count,
-							data
-						} = res.result
+					.then(async res => {
+						const count = res.result.count
+						const resData = res.result.data
+						let data = []
+
+						console.log(timeAll);
+						console.log(resData);
+						timeAll.forEach(v => {
+							let item = resData.find(item => item.start_time === v)
+							console.log(item);
+							if (item) {
+								data.push(item)
+							} else {
+								data.push({
+									start_time: v,
+									total_day_count: 0
+								})
+							}
+						})
+
+						console.log('----data', data);
 						const options = {
 							categories: [],
 							series: [{
@@ -285,53 +307,51 @@
 							}
 							this.chartData = options
 						} else {
-							let dayAppLaunchs = []
-							this.getDayLaunch(query).then(res => {
-								dayAppLaunchs = res.result.data
-							}).finally(() => {
-								const rateLine = options.series[0] = {
-									name: '错误率',
-									data: [],
-									lineStyle: {
-										color: '#EE6666',
-										width: 1,
-									},
-									itemStyle: {
-										borderWidth: 1,
-										borderColor: '#EE6666',
-										color: '#EE6666'
-									},
-									areaStyle: {
-										color: {
-											colorStops: [{
-												offset: 0,
-												color: '#EE6666', // 0% 处的颜色
-											}, {
-												offset: 1,
-												color: '#FFFFFF' // 100% 处的颜色
-											}]
-										}
+							let dayAppLaunchs = await this.getDayLaunch(querystr)
+							console.log('++++', dayAppLaunchs);
+							const rateLine = options.series[0] = {
+								name: '错误率(%)',
+								data: [],
+								lineStyle: {
+									color: '#EE6666',
+									width: 1,
+								},
+								itemStyle: {
+									borderWidth: 1,
+									borderColor: '#EE6666',
+									color: '#EE6666'
+								},
+								areaStyle: {
+									color: {
+										colorStops: [{
+											offset: 0,
+											color: '#EE6666', // 0% 处的颜色
+										}, {
+											offset: 1,
+											color: '#FFFFFF' // 100% 处的颜色
+										}]
 									}
 								}
-								const xAxis = options.categories
-								for (const item of data) {
-									let date = item.start_time
-									const x = formatDate(date, 'day')
-									const countY = item[`total_${field}`]
-									xAxis.push(x)
-									if (dayAppLaunchs.length) {
-										dayAppLaunchs.forEach(day => {
-											if (day.start_time === item.start_time) {
-												let rateY = countY / day.day_app_launch_count
-												rateY = rateY.toFixed(2)
-												const index = xAxis.indexOf(x)
-												rateLine.data[index] = rateY
-											}
-										})
+							}
+							const xAxis = options.categories
+							for (const item of data) {
+								let date = item.start_time
+								const x = formatDate(date, 'day')
+								const countY = item[`total_${field}`]
+								xAxis.push(x)
+								if (dayAppLaunchs.length) {
+									const day = dayAppLaunchs.find(day => day.start_time === item.start_time)
+									const index = xAxis.indexOf(x)
+									if (day) {
+										let rateY = (countY * 100) / day.day_app_launch_count
+										rateY = rateY.toFixed(2)
+										rateLine.data[index] = rateY
+									} else {
+										rateLine.data[index] = 0
 									}
 								}
-								this.chartData = options
-							})
+							}
+							this.chartData = options
 						}
 
 					}).catch((err) => {
@@ -359,17 +379,25 @@
 					.get()
 			},
 
-			getDayLaunch(query) {
+			/**
+			 * 从结果表里获取范围时间内的启动次数
+			 * @param {Object} query
+			 */
+			async getDayLaunch(query) {
+				console.log(query);
 				const db = uniCloud.database()
-				return db.collection('uni-stat-result')
+				const res = await db.collection('uni-stat-result')
 					.where(query)
 					.groupBy('start_time')
 					.groupField('sum(app_launch_count) as day_app_launch_count')
 					.orderBy('start_time', 'asc')
 					.get()
+				return res.result.data || []
 			},
 
 			getTableData(query = stringifyQuery(this.query)) {
+
+				let querystr = stringifyQuery(this.query, false, ['uni_platform'])
 				const {
 					pageCurrent
 				} = this.options
@@ -378,8 +406,8 @@
 				const filterAppid = stringifyQuery({
 					appid: this.query.appid
 				})
-				const mainTableTemp = db.collection('uni-stat-error-result').where(query).getTemp()
-				const versions = db.collection('uni-stat-app-versions')
+				const mainTableTemp = db.collection('uni-stat-error-result').where(querystr).getTemp()
+				const versions = db.collection('opendb-app-versions')
 					.where(filterAppid)
 					.orderBy('start_time ', 'desc ')
 					.getTemp()
@@ -411,7 +439,7 @@
 							item.platform = p && p.name
 							tempData.push(item)
 						}
-						this.getTotalCount(query).then(res => {
+						this.getTotalCount(querystr).then(res => {
 							const total = res.result.data[0]
 							const total_count = total && total.total_count
 							if (total_count) {
@@ -419,7 +447,7 @@
 								this.panelData[0].value = total_count
 							}
 							let launch_count = ''
-							this.getTotalLaunch(query).then(res => {
+							this.getTotalLaunch(querystr).then(res => {
 								const total = res.result.data[0]
 								launch_count = total && total.total_app_launch_count
 								if (total_count && launch_count) {
@@ -498,8 +526,10 @@
 	.uni-stat-tooltip-s {
 		width: 160px;
 		white-space: normal;
- 	}
+	}
+
 	.black-theme {
-		background-color: #333;color: #fff;
+		background-color: #333;
+		color: #fff;
 	}
 </style>

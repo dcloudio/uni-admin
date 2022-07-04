@@ -1,7 +1,7 @@
 <template>
 	<scroll-view class="sidebar" scroll-y="true">
-		<uni-data-menu ref="menu" :value="currentMenu" :staticMenu="staticMenu" collection="opendb-admin-menus" :page-size="500"
-			:field="field" orderby="sort asc" active-text-color="#409eff" @select="select">
+		<uni-data-menu ref="menu" :value="currentMenu" :staticMenu="staticMenu" collection="opendb-admin-menus"
+			:page-size="500" :field="field" orderby="sort asc" active-text-color="#409eff" @select="select">
 		</uni-data-menu>
 	</scroll-view>
 </template>
@@ -36,10 +36,11 @@
 				}
 			},
 			userInfo: {
-				immediate: true,
+				// immediate: true,
 				handler(newVal, oldVal) {
 					if (newVal) {
-						this.$nextTick(function(){
+						// 当用户信息发生变化后，重新加载左侧menu
+						this.$nextTick(function() {
 							this.$refs.menu.load()
 						})
 					}
@@ -57,6 +58,7 @@
 					url = this.active
 				}
 				this.clickMenuItem(url)
+				console.log('select', routes);
 				this.setRoutes(routes)
 				// #ifdef H5
 				// #ifdef VUE3
@@ -75,6 +77,7 @@
 				if (url[0] !== '/' && url.indexOf('http') !== 0) {
 					url = '/' + url
 				}
+				console.log('跳转页面');
 				// TODO 后续要调整
 				uni.redirectTo({
 					url: url,

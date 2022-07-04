@@ -10,7 +10,7 @@
 			<view class="uni-stat--x flex">
 				<uni-data-select collection="opendb-app-list" field="appid as value, name as text" orderby="text asc"
 					:defItem="1" label="应用选择" @change="changeAppid" v-model="query.appid" :clear="false" />
-				<uni-data-select collection="uni-stat-app-versions" :where="versionQuery"
+				<uni-data-select collection="opendb-app-versions" :where="versionQuery"
 					field="_id as value, version as text" orderby="text asc" label="版本选择" v-model="query.version_id" />
 				<view class="flex">
 					<uni-stat-tabs label="日期选择" :current="currentDateTab" mode="date" :yesterday="false"
@@ -25,7 +25,7 @@
 				<uni-stat-tabs label="平台选择" type="boldLine" mode="platform" v-model="query.platform_id"
 					@change="changePlatform" />
 				<uni-data-select v-if="query.platform_id && query.platform_id.indexOf('==') === -1"
-					:localdata="channelData" label="渠道选择" v-model="query.channel_id"></uni-data-select>
+					:localdata="channelData" label="渠道/场景值选择" v-model="query.channel_id"></uni-data-select>
 			</view>
 			<view class="uni-stat--x p-m">
 				<view class="label-text mb-l">
@@ -81,6 +81,7 @@
 					dimension: "day",
 					appid: '',
 					platform_id: '',
+					uni_platform: '',
 					version_id: '',
 					channel_id: '',
 					start_time: [],
@@ -96,7 +97,8 @@
 				currentChartTab: 'day',
 				tableData: [],
 				chartData: {},
-				channelData: []
+				channelData: [],
+				tabName: '日活'
 			}
 		},
 		computed: {
@@ -138,11 +140,11 @@
 			versionQuery() {
 				const {
 					appid,
-					platform_id
+					uni_platform
 				} = this.query
 				const query = stringifyQuery({
 					appid,
-					platform_id
+					uni_platform,
 				})
 				return query
 			}
@@ -167,9 +169,11 @@
 			changeAppid(id) {
 				this.getChannelData(id, false)
 			},
-			changePlatform(id) {
+			changePlatform(id, index, name, item) {
 				this.getChannelData(null, id)
 				this.query.version_id = 0
+				this.query.uni_platform = item.code
+				console.log('this.query.uni_platform = item.code',item.code);
 			},
 			changeTimeRange(id, index) {
 				this.currentDateTab = index
@@ -199,11 +203,12 @@
 
 			changeChartTab(type, index, name) {
 				this.currentChartTab = type
+				this.tabName = name
 				this.getChartData(this.query, type, name)
 			},
 
 			getAllData(query) {
-				this.getChartData(query, this.currentChartTab)
+				this.getChartData(query, this.currentChartTab,this.tabName)
 				this.getTabelData(query)
 			},
 
@@ -216,7 +221,7 @@
 						data: []
 					}]
 				}
-				query = stringifyQuery(query)
+				query = stringifyQuery(query,false,['uni_platform'])
 				const db = uniCloud.database()
 				if (type === 'day') {
 					db.collection(this.tableName)

@@ -44,6 +44,15 @@ const cfe = {
 	"option": {},
 	//下面是自定义format配置，因除H5端外的其他端无法通过props传递函数，只能通过此属性对应下标的方式来替换
 	"formatter": {
+		'tooltipCustom': function(item, category, index, opts) {
+			// console.log(item, category, index, opts);
+			const item0 = item[0]
+			let val = ''
+			item.forEach(data=>{
+				val += `\n${data.seriesName} : ${data.data}`
+			})
+			return `${item0.name}${val}`
+		},
 		"tooltipDemo1": function(res) {
 			let result = ''
 			for (let i in res) {
