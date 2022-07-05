@@ -155,7 +155,7 @@
 			"menu_id": "system_update",
 			"name": "App升级中心",
 			"icon": "uni-icons-cloud-upload",
-			"url": "uni_modules/uni-upgrade-center/pages/version/list",
+			"url": "/uni_modules/uni-upgrade-center/pages/version/list",
 			"sort": 1036,
 			"parent_id": "system_management",
 			"permission": [],

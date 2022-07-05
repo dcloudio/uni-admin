@@ -62,7 +62,7 @@
 </template>
 
 <script>
-	const localFilePathKey = '__localFilePath__'
+	const localFilePathKey = 'UNI_ADMIN_UPGRADE_CENTER_LOCAL_FILE_PATH'
 	const platform_iOS = 'iOS';
 	let downloadTask = null;
 	let openSchemePromise

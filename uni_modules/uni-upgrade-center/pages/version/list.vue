@@ -91,7 +91,7 @@
 <script>
 	import {
 		enumConverter
-	} from '@/uni_modules/uni-upgrade-center/js_sdk/validator/opendb-app-versions.js';
+	} from '@/js_sdk/validator/opendb-app-versions.js';
 	import {
 		appListDbName,
 		appVersionListDbName,

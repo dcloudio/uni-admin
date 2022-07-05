@@ -1,7 +1,7 @@
 import {
 	validator,
 	enumConverter
-} from '@/uni_modules/uni-upgrade-center/js_sdk/validator/opendb-app-versions.js';
+} from '@/js_sdk/validator/opendb-app-versions.js';
 
 const platform_iOS = 'iOS';
 const platform_Android = 'Android';
@@ -22,7 +22,7 @@ export const fields =
 export default {
 	data() {
 		return {
-			labelWidth: '65',
+			labelWidth: '80',
 			enableiOSWgt: true, // 是否开启iOS的wgt更新
 			silentlyContent: '静默更新：App升级时会在后台下载wgt包并自行安装。新功能在下次启动App时生效',
 			mandatoryContent: '强制更新：App升级弹出框不可取消',
@@ -30,6 +30,7 @@ export default {
 			stablePublishContent2: '使用本包替换当前线上发行版',
 			uploadFileContent: '可下载安装包地址。上传文件到云存储自动填写，也可以手动填写',
 			minUniVersionContent: '上次使用新Api或打包新模块的App版本',
+			priorityContent: '检查更新时，按照优先级从大到小依次尝试跳转商店。如果都跳转失败，则会打开浏览器使用下载链接下载apk安装包',
 			latestStableData: [], // 库中最新已上线版
 			appFileList: null, // 上传包
 			type_valuetotext: enumConverter.type_valuetotext,

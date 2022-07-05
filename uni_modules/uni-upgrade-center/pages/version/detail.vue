@@ -37,7 +37,7 @@
 				<uni-easyinput :disabled="detailsState" placeholder="原生App最低版本" v-model="formData.min_uni_version" />
 				<show-info :content="minUniVersionContent"></show-info>
 			</uni-forms-item>
-			<uni-forms-item v-if="!isiOS && !detailsState" label="上传包">
+			<uni-forms-item v-if="!isiOS && !detailsState" label="上传apk包">
 				<uni-file-picker v-model="appFileList" :file-extname="fileExtname" :disabled="hasPackage"
 					returnType="object" file-mediatype="all" limit="1" @success="packageUploadSuccess"
 					@delete="packageDelete">
@@ -46,39 +46,43 @@
 				<text v-if="hasPackage"
 					style="padding-left: 20px;color: #a8a8a8;">{{Number(appFileList.size / 1024 / 1024).toFixed(2)}}M</text>
 			</uni-forms-item>
-			<uni-forms-item name="url" :label="isiOS ? 'AppStore' : '包地址'" required>
-				<uni-easyinput :disabled="detailsState" placeholder="可下载安装包地址" v-model="formData.url" :maxlength="-1" />
-				<show-info :top="-80" :content="uploadFileContent"></show-info>
+			<uni-forms-item name="url" :label="isiOS ? 'AppStore' : '下载链接'" required>
+				<uni-easyinput :disabled="detailsState" placeholder="下载链接" v-model="formData.url" :maxlength="-1" />
+				<!-- <show-info :top="-80" :content="uploadFileContent"></show-info> -->
 			</uni-forms-item>
 
-			<uni-forms-item v-if="formData.store_list" name="store_list" style="height: 0px;"></uni-forms-item>
-			<template v-if="formData.store_list">
-				<view v-for="(item,index) in formData.store_list" :key="item._create_date">
-					<uni-card title="" :style="{margin: '0 20px 15px '+labelWidth + 'px'}">
-						<view style="display: flex;">
-							<checkbox-group style="user-select: none;"
-								@change="({detail:{value}}) => {item.enable = !!value.length}">
-								<label class="title_padding">
-									<checkbox :disabled="detailsState" value="scheme" :checked="item.enable" />
-									<text>是否启用</text>
-								</label>
-							</checkbox-group>
+
+
+			<uni-forms-item v-if="formData.store_list" label="Android应用市场" name="store_list" labelWidth="120">
+				<view style="flex: 1;">
+					<template v-for="(item,index) in formData.store_list">
+						<view :key="item._create_date">
+							<uni-card style="margin: 0px 0px 20px 0px;">
+								<view style="display: flex;">
+									<checkbox-group style="user-select: none;"
+										@change="({detail:{value}}) => {item.enable = !!value.length}">
+										<label class="title_padding">
+											<checkbox :disabled="detailsState" value="scheme" :checked="item.enable" />
+											<text>是否启用</text>
+										</label>
+									</checkbox-group>
+								</view>
+								<uni-forms-item label="商店名称">
+									<uni-easyinput disabled v-model="item.name" trim="both"></uni-easyinput>
+								</uni-forms-item>
+								<uni-forms-item label="Scheme">
+									<uni-easyinput disabled v-model="item.scheme" trim="both"></uni-easyinput>
+								</uni-forms-item>
+								<uni-forms-item label="优先级">
+									<uni-easyinput :disabled="detailsState" v-model="item.priority" type="number">
+									</uni-easyinput>
+									<show-info :top="-100" :left="-180" :content="priorityContent"></show-info>
+								</uni-forms-item>
+							</uni-card>
 						</view>
-						<uni-forms-item label="商店名称">
-							<uni-easyinput disabled v-model="item.name" trim="both"></uni-easyinput>
-						</uni-forms-item>
-						<uni-forms-item label="Scheme">
-							<uni-easyinput disabled v-model="item.scheme" trim="both"></uni-easyinput>
-						</uni-forms-item>
-						<uni-forms-item label="优先级">
-							<uni-easyinput :disabled="detailsState" v-model="item.priority" type="number">
-							</uni-easyinput>
-							<show-info :top="-80" :left="-180" content="检查顺序按照优先级从大到小依次排序">
-							</show-info>
-						</uni-forms-item>
-					</uni-card>
+					</template>
 				</view>
-			</template>
+			</uni-forms-item>
 
 			<uni-forms-item v-if="isWGT" name="is_silently" label="静默更新">
 				<switch :disabled="detailsState"
@@ -90,13 +94,13 @@
 				<switch :disabled="detailsState"
 					@change="binddata('is_mandatory', $event.detail.value),formData.is_mandatory=$event.detail.value"
 					:checked="formData.is_mandatory" />
-				<show-info :content="mandatoryContent"></show-info>
+				<show-info width="230" :top="-30" :content="mandatoryContent"></show-info>
 			</uni-forms-item>
 			<uni-forms-item name="stable_publish" label="上线发行">
 				<switch :disabled="detailsState || isStable"
 					@change="binddata('stable_publish', $event.detail.value),formData.stable_publish=$event.detail.value"
 					:checked="formData.stable_publish" />
-				<show-info v-if="isStable" :top="-100" :content="stablePublishContent"></show-info>
+				<show-info v-if="isStable" :top="-50" width="350" :content="stablePublishContent"></show-info>
 				<show-info v-else :top="-40" :content="stablePublishContent2"></show-info>
 			</uni-forms-item>
 			<uni-forms-item name="create_date" label="上传时间">
@@ -124,8 +128,7 @@
 	import {
 		validator,
 		enumConverter
-	} from '@/uni_modules/uni-upgrade-center/js_sdk/validator/opendb-app-versions.js';
-	import showInfo from '../components/show-info.vue'
+	} from '@/js_sdk/validator/opendb-app-versions.js';
 	import addAndDetail, {
 		fields
 	} from '../mixin/version_add_detail_mixin.js'
@@ -152,9 +155,6 @@
 	}
 
 	export default {
-		components: {
-			showInfo
-		},
 		mixins: [addAndDetail],
 		data() {
 			return {

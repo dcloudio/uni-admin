@@ -66,7 +66,8 @@ export default {
 		}
 		const mpKeys = Object.keys(mpPlatform);
 		[].concat(mpKeys, ['icon_url', 'quickapp']).forEach(key => data.middleware_img[key] = {});
-		[].concat(mpKeys, data.appPlatformKeys).forEach(key => data.middleware_checkbox[key] = false)
+		data.platFormKeys = Object.freeze([].concat(mpKeys, data.appPlatformKeys))
+		data.platFormKeys.forEach(key => data.middleware_checkbox[key] = false)
 		return data
 	},
 	methods: {
@@ -128,6 +129,38 @@ export default {
 				}
 			}
 			return tempObj
+		},
+		formatFormData() {
+			this.setFormData('screenshot', this.screenshotList.map(item => item.fileID || item.url))
+
+			for (let i = 0; i < this.formData.store_list.length; i++) {
+				const item = this.formData.store_list[i]
+
+				if (item.scheme.trim().length === 0) {
+					this.formData.store_list.splice(i, 1)
+					i--
+					continue;
+				}
+
+				const index = schemes.indexOf((item.scheme.match(/(.*):\/\//) || [])[1])
+				if (index !== -1) {
+					if (item.id !== schemeBrand[index]) {
+						this.deletedStore.push(item.id)
+					}
+					item.id = schemeBrand[index]
+				}
+				item.priority = parseFloat(item.priority)
+			}
+
+			this.keepItems = this.platFormKeys
+				.filter(key =>
+					this.getPlatformChcekbox(key) &&
+					(this.formData[key].url || this.formData[key].qrcode_url)
+				)
+				.concat(['icon_url', 'screenshot', 'create_date', 'store_list'])
+
+			if (this.formData.h5 && this.formData.h5.url)
+				this.keepItems.push('h5');
 		},
 		// 根据 appid 自动填充
 		autoFill() {
@@ -215,42 +248,6 @@ export default {
 				this.$refs.form.clearValidate(key)
 			}
 		},
-		formatFormData() {
-			this.setFormData('screenshot', this.screenshotList.map(item => item.fileID || item.url))
-
-
-			for (let i = 0; i < this.formData.store_list.length; i++) {
-				const item = this.formData.store_list[i]
-
-				if (item.scheme.trim().length === 0) {
-					this.formData.store_list.splice(i, 1)
-					i--
-					continue;
-				}
-
-				const index = schemes.indexOf((item.scheme.match(/(.*):\/\//) || [])[1])
-				if (index !== -1) {
-					if (item.id !== schemeBrand[index]) {
-						this.deletedStore.push(item.id)
-					}
-					item.id = schemeBrand[index]
-				}
-				item.priority = parseFloat(item.priority)
-			}
-
-			this.keepItems = this.platFormKeys
-				.filter(key =>
-					this.getPlatformChcekbox(key) &&
-					(this.formData[key].url || this.formData[key].qrcode_url)
-				)
-				.concat(['icon_url', 'screenshot', 'create_date', 'store_list'])
-
-			if (this.formData.h5 && this.formData.h5.url)
-				this.keepItems.push('h5');
-
-			if (this.formData.quickapp && this.formData.quickapp.qrcode_url)
-				this.keepItems.push('quickapp');
-		},
 		getPlatformChcekbox(mp_name) {
 			return this.middleware_checkbox[mp_name]
 		},
@@ -268,14 +265,6 @@ export default {
 		}
 	},
 	computed: {
-		platFormKeys() {
-			return Object.keys(this.formData).filter(key => {
-				const value = this.formData[key]
-				const appKey = key.indexOf('app_') !== -1
-				const mpKey = key.indexOf('mp') !== -1
-				return appKey || mpKey
-			})
-		},
 		hasPackage() {
 			return this.appPackageInfo && !!Object.keys(this.appPackageInfo).length
 		},

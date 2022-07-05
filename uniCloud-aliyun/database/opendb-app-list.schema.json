@@ -197,6 +197,21 @@
 				}
 			}
 		},
+		"mp_kuaishou": {
+			"bsonType": "object",
+			"description": "快手小程序相关信息",
+			"label": "快手小程序",
+			"properties": {
+				"name": {
+					"bsonType": "string",
+					"description": "小程序名字"
+				},
+				"qrcode_url": {
+					"bsonType": "string",
+					"description": "二维码url"
+				}
+			}
+		},
 		"mp_lark": {
 			"bsonType": "object",
 			"description": "飞书小程序相关信息",
@@ -212,10 +227,25 @@
 				}
 			}
 		},
-		"mp_kuaishou": {
+		"mp_jd": {
 			"bsonType": "object",
-			"description": "快手小程序相关信息",
-			"label": "快手小程序",
+			"description": "京东小程序相关信息",
+			"label": "京东小程序",
+			"properties": {
+				"name": {
+					"bsonType": "string",
+					"description": "小程序名字"
+				},
+				"qrcode_url": {
+					"bsonType": "string",
+					"description": "二维码url"
+				}
+			}
+		},
+		"mp_dingtalk": {
+			"bsonType": "object",
+			"description": "钉钉小程序相关信息",
+			"label": "钉钉小程序",
 			"properties": {
 				"name": {
 					"bsonType": "string",

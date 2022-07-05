@@ -40,7 +40,7 @@
 			<uni-card class="app_platform" title="App 信息">
 				<view v-if="isEdit" class="extra-button">
 					<button type="primary" plain size="mini" @click="autoFillApp">自动填充</button>
-					<show-info :left="40" :top="-35" content="填写 appid 从数据库（opendb-app-version）查询填充数据" />
+					<show-info :left="-10" :top="-35" width="230" content="从App升级中心同步应用安装包信息" />
 				</view>
 				<view v-for="item in appPlatformKeys" :key="item">
 					<checkbox-group @change="({detail:{value}}) => {setPlatformChcekbox(item,!!value.length)}">
@@ -61,12 +61,14 @@
 								<view class="flex">
 									<button type="primary" size="mini" @click="selectFile"
 										style="margin: 0;">选择文件</button>
-									<text
-										style="padding: 10px;font-size: 12px;color: #666;">上传apk到当前服务空间的云存储中，上传成功后，会自动使用云存储地址填充下载链接</text>
+									<text style="padding: 10px;font-size: 12px;color: #666;">
+										上传apk到当前服务空间的云存储中，上传成功后，会自动使用云存储地址填充下载链接
+									</text>
 								</view>
 							</uni-file-picker>
-							<text v-if="hasPackage"
-								style="padding-left: 20px;color: #a8a8a8;">{{appPackageInfo.size && Number(appPackageInfo.size / 1024 / 1024).toFixed(2) + 'M'}}</text>
+							<text v-if="hasPackage" style="padding-left: 20px;color: #a8a8a8;">
+								{{appPackageInfo.size && Number(appPackageInfo.size / 1024 / 1024).toFixed(2) + 'M'}}
+							</text>
 						</uni-forms-item>
 						<uni-forms-item label="下载链接">
 							<uni-easyinput :maxlength="-1" v-model="formData[item].url" trim="both"></uni-easyinput>
@@ -90,45 +92,34 @@
 						</text>
 					</view>
 				</uni-popup>
+				<!-- TODO scheme 跳转文章：介绍 scheme 概念，汇总常见 scheme，可以带截图提示在哪儿查看 -->
+				<uni-forms-item name="store_schemes" label="Android应用市场" labelWidth="120">
+					<view style="height: 100%;">
+						<view class="flex" style="justify-content: end;">
+							<text class="pointer"
+								style="text-decoration: underline;color: #666;font-size: 12px;padding-left: 10rpx;"
+								@click="$refs.scheme.open('center')">常见应用商店schema汇总</text>
+							<button type="primary" size="mini" @click="addStoreScheme"
+								style="margin: 0 0 0 10px;">新增</button>
+						</view>
 
-				<uni-forms-item name="store_schemes" label="Android应用市场">
-					<view class="flex">
-						<button type="primary" size="mini" @click="addStoreScheme" style="margin: 0;">新增</button>
-						<text class="pointer"
-							style="text-decoration: underline;color: #666;font-size: 12px;padding-left: 10rpx;"
-							@click="$refs.scheme.open('center')">常见应用商店schema汇总</text>
+						<view v-for="(item,index) in formData.store_list" :key="item.id">
+							<uni-card title="" style="margin: 20px 0px 0px 0px;">
+								<view style="display: flex;">
+									<view style="padding-left: 10px;">
+										<button type="warn" size="mini" @click="deleteStore(index, item)">删除</button>
+									</view>
+								</view>
+								<uni-forms-item label="商店名称">
+									<uni-easyinput v-model="item.name" trim="both"></uni-easyinput>
+								</uni-forms-item>
+								<uni-forms-item label="Scheme">
+									<uni-easyinput :maxlength="-1" v-model="item.scheme" trim="both"></uni-easyinput>
+								</uni-forms-item>
+							</uni-card>
+						</view>
 					</view>
 				</uni-forms-item>
-
-				<view v-for="(item,index) in formData.store_list" :key="item.id">
-					<uni-card title="" :style="{margin: '0 20px 15px '+labelWidth + 'px'}">
-						<view style="display: flex;">
-							<!-- <checkbox-group style="user-select: none;"
-								@change="({detail:{value}}) => {item.enable = !!value.length}">
-								<label class="title_padding">
-									<checkbox value="scheme" :checked="item.enable" />
-									<text>是否启用</text>
-								</label>
-							</checkbox-group> -->
-							<view style="padding-left: 10px;">
-								<button type="warn" size="mini" @click="deleteStore(index, item)">删除</button>
-							</view>
-						</view>
-						<uni-forms-item label="商店名称">
-							<uni-easyinput v-model="item.name" trim="both"></uni-easyinput>
-						</uni-forms-item>
-						<uni-forms-item label="Scheme">
-							<uni-easyinput :maxlength="-1" v-model="item.scheme" trim="both"></uni-easyinput>
-						</uni-forms-item>
-						<!-- <uni-forms-item label="优先级">
-							<view style="display: flex;align-items: center;">
-								<uni-easyinput v-model="item.priority" type="number"></uni-easyinput>
-								<show-info :top="-70" :left="-180" content="检查顺序按照优先级从大到小依次排序">
-								</show-info>
-							</view>
-						</uni-forms-item> -->
-					</uni-card>
-				</view>
 			</uni-card>
 
 			<uni-card class="mp_platform" title="小程序/快应用信息">
@@ -167,7 +158,7 @@
 				</uni-forms-item>
 			</uni-card>
 
-			<uni-card :isShadow="false">
+			<uni-card :isShadow="false" v-if="isEdit">
 				<text><text style="font-weight: bold;">提示：</text>保存后需重新生成发布页</text>
 			</uni-card>
 
@@ -218,6 +209,13 @@
 				// this.formDataId = e.id
 				this.setFormData('appid', e.id)
 				this.getDetail(e.id)
+			} else {
+				// 填写应用名称后，给各平台设置相同的名称
+				this.$watch('formData.name', (name) => {
+					this.platFormKeys.forEach(key => {
+						this.setFormData(`${key}.name`, name)
+					})
+				})
 			}
 		},
 		onReady() {

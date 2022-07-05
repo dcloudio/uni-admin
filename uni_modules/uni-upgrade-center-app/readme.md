@@ -6,23 +6,21 @@
 
 > uni升级中心分为业务插件和后台管理插件。本插件为业务插件，包括uni升级中心客户端检查更新的前后端逻辑。后台管理系统另见 [uni-upgrade-center - Admin](https://ext.dcloud.net.cn/plugin?id=4470)
 
+> 现 uni-admin 以内置 `uni-upgrade-center - Admin`
+
 ### uni升级中心 - 客户端检查更新插件
   - 一键式检查更新，同时支持整包升级与wgt资源包更新
   - 好看、实用、可自定义的客户端提示框
 
 ## 安装指引
 
-1. 依赖数据库`opendb-app-versions`，如果没有此库，请在云服务空间中创建。
+1. 使用`HBuilderX 3.1.0+`，因为要使用到`uni_modules`
 
-2. 使用`HBuilderX 3.1.0+`，因为要使用到`uni_modules`
+2. 在插件市场打开本插件页面，在右侧点击`使用 HBuilderX 导入插件`，选择要导入的项目点击确定
 
-3. 在插件市场打开本插件页面，在右侧点击`使用 HBuilderX 导入插件`，选择要导入的项目点击确定
+3. 绑定一个服务空间（服务空间请于 [uni-upgrade-center - Admin](https://ext.dcloud.net.cn/plugin?id=4470) 一致）
 
-4. 绑定一个服务空间
-
-5. 找到`/uni_modules/uni-upgrade-center-app/uniCloud/cloudfunctions/check-version`，右键上传部署
-
-6. 在`pages.json`中添加页面路径。**注：请不要设置为pages.json中第一项**
+4. 在`pages.json`中添加页面路径。**注：请不要设置为pages.json中第一项**
 ```json
 "pages": [
 		// ……其他页面配置
@@ -45,12 +43,12 @@
 ]
 ```
 
-7. 将`@/uni_modules/uni-upgrade-center-app/utils/check-update`import到需要用到的地方，调用一下即可
+5. 将`@/uni_modules/uni-upgrade-center-app/utils/check-update`import到需要用到的地方，调用一下即可
 	1. 默认使用当前绑定的服务空间，如果要请求其他服务空间，可以使用其他服务空间的 `callFunction`。[详情](https://uniapp.dcloud.io/uniCloud/cf-functions.html#call-by-function-cross-space)
 
-8. 升级弹框可自行编写，也可以使用`uni.showModal`，或使用现有的升级弹框样式，如果不满足UI需求请自行替换资源文件。在`utils/check-update.js`中都有实例。
+6. 升级弹框可自行编写，也可以使用`uni.showModal`，或使用现有的升级弹框样式，如果不满足UI需求请自行替换资源文件。在`utils/check-update.js`中都有实例。
 
-9. wgt更新时，打包前请务必将manifest.json中的版本修改为更高版本。
+7. wgt更新时，打包前请务必将manifest.json中的版本修改为更高版本。
 
 ### 更新下载安装`check-update.js`
 
@@ -64,7 +62,7 @@
 
 ### 检查更新函数`check-version`
 
-*该函数在uniCloud/cloudfunctions目录下*
+*该函数在uni-admin 项目/uniCloud/cloudfunctions/uni-upgrade-center/checkVersion目录下*
 
 1. 使用检查更新需要传递三个参数 `appid`、`appVersion`、`wgtVersion`
 
@@ -75,7 +73,6 @@
 4. `wgtVersion` 使用 plus.runtime.getProperty(plus.runtime.appid,(wgtInfo) => { wgtInfo.version }) 获取
 
 5. `check-version`云函数内部会自动获取 App 平台
-
 
 **Tips**
 
@@ -97,6 +94,7 @@
 		- 如果是 原生安装包，则直接跳出去覆盖安装
 	- 下载过程中，如果退出会提示是否取消下载。如果是强制更新，则只会提示正在下载请稍后，此时不可退出
 	- 如果是下载完成了没有安装就退出，则会将下载完成的包保存在本地。将包的本地路径和包version保存在localStorage中
+	- Android 应用如果在 admin 端添加了 `Android应用市场`，则会按照优先级依次尝试跳转应用市场，如果都跳转失败。则会跳转浏览器使用 `下载链接` 下载 `apk安装包`
 
 ### 工具类 utils
 - `call-check-version`

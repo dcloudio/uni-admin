@@ -1,13 +1,9 @@
-const {
-	checkVersion
-} = uniCloud.importObject('checkVersion')
-
 export default function() {
 	// #ifdef APP-PLUS
 	return new Promise((resolve, reject) => {
 		plus.runtime.getProperty(plus.runtime.appid, function(widgetInfo) {
 			uniCloud.callFunction({
-				name: 'uni-app-manager',
+				name: 'uni-upgrade-center',
 				data: {
 					action: 'checkVersion',
 					appid: plus.runtime.appid,
