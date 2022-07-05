@@ -18,10 +18,10 @@
 			"description": "统计应用ID，对应opendb-app-list.appid",
 			"foreignKey": "opendb-app-list.appid"
 		},
-		"platform": {
+		"platform_id": {
 			"bsonType": "string",
-			"description": "应用平台，对应uni-stat-app-platforms.code",
-			"foreignKey": "uni-stat-app-platforms.code"
+			"description": "应用平台，对应uni-stat-app-platforms._id",
+			"foreignKey": "uni-stat-app-platforms._id"
 		},
 		"channel_code": {
 			"bsonType": "int",
@@ -41,3 +41,4 @@
 		}
 	}
 }
+
