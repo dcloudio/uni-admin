@@ -426,7 +426,7 @@
 							count,
 							data
 						} = res.result
-						const item = res.result.data[0]
+						const item = res.result.data[0] || {}
 						// this.panelData = []
 						let queryTemp = Object.assign({}, this.query)
 						delete queryTemp.type
