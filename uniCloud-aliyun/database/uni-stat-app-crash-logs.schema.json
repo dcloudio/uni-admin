@@ -1,3 +1,4 @@
+// 原生应用崩溃日志表
 {
 	"bsonType": "object",
 	"description": "记录原生应用的崩溃日志",

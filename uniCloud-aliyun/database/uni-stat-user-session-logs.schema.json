@@ -1,3 +1,4 @@
+// 用户会话日志表
 {
 	"bsonType": "object",
 	"description": "记录登录用户的会话日志",

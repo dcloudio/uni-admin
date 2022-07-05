@@ -1,3 +1,4 @@
+// 应用渠道表
 {
 	"bsonType": "object",
 	"description": "提供渠道和场景值数据",
@@ -17,10 +18,10 @@
 			"description": "统计应用ID，对应opendb-app-list.appid",
 			"foreignKey": "opendb-app-list.appid"
 		},
-		"platform_id": {
+		"platform": {
 			"bsonType": "string",
-			"description": "应用平台，对应uni-stat-app-platforms._id",
-			"foreignKey": "uni-stat-app-platforms._id"
+			"description": "应用平台，对应uni-stat-app-platforms.code",
+			"foreignKey": "uni-stat-app-platforms.code"
 		},
 		"channel_code": {
 			"bsonType": "int",

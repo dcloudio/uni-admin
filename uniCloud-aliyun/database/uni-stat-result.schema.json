@@ -1,3 +1,4 @@
+// 应用统计结果表
 {
 	"bsonType": "object",
 	"description": "存储统计汇总的会话数据包括不限于设备\/用户的数量、访问量、活跃度（日活、周活、月活）、留存率（日留存、周留存、月留存）、跳出率、访问时长等数据",
@@ -29,8 +30,8 @@
 		},
 		"version_id": {
 			"bsonType": "string",
-			"description": "应用版本ID，对应uni-stat-app-versions._id",
-			"foreignKey": "uni-stat-app-versions._id"
+			"description": "应用版本ID，对应opendb-app-versions._id",
+			"foreignKey": "opendb-app-versions._id"
 		},
 		"total_users": {
 			"bsonType": "int",

@@ -1,3 +1,4 @@
+// 应用分享日志表
 {
 	"bsonType": "object",
 	"description": "记录触发分享事件的日志",
