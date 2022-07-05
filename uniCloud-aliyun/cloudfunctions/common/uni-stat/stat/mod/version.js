@@ -8,7 +8,9 @@ const {
 module.exports = class Version extends BaseMod {
 	constructor() {
 		super()
-		this.tableName = 'app-versions'
+		this.tableName = 'opendb-app-versions'
+		this.tablePrefix = false
+		this.cacheKeyPre = 'uni-stat-app-version-'
 	}
 
 	/**
@@ -17,13 +19,14 @@ module.exports = class Version extends BaseMod {
 	 * @param {String} platformId 平台编号
 	 * @param {String} appVersion 平台版本号
 	 */
-	async getVersion(appid, platformId, appVersion) {
-		const cacheKey = 'uni-stat-version-' + appid + '-' + platformId + '-' + appVersion
+	async getVersion(appid, platform, appVersion) {
+		const cacheKey = this.cacheKeyPre + appid + '-' + platform + '-' + appVersion
 		let versionData = await this.getCache(cacheKey)
 		if (!versionData) {
 			const versionInfo = await this.getCollection(this.tableName).where({
 				appid: appid,
-				platform_id: platformId,
+				uni_platform: platform,
+				type: 'native_app',
 				version: appVersion
 			}).limit(1).get()
 			versionData = []
@@ -35,23 +38,27 @@ module.exports = class Version extends BaseMod {
 		return versionData
 	}
 
+
 	/**
 	 * 获取版本信息没有则进行创建
 	 * @param {String} appid DCloud-appid
-	 * @param {String} platformId 平台编号
+	 * @param {String} platform 平台代码
 	 * @param {String} appVersion 平台版本号
 	 */
-	async getVersionAndCreate(appid, platformId, appVersion) {
-		const versionInfo = await this.getVersion(appid, platformId, appVersion)
+	async getVersionAndCreate(appid, platform, appVersion) {
+		const versionInfo = await this.getVersion(appid, platform, appVersion)
 		if (versionInfo.length === 0) {
 			if (appVersion.length > 0 && !appVersion.includes('}')) {
 				const thisTime = new DateTime().getTime()
 				const insertParam = {
 					appid: appid,
-					platform_id: platformId,
+					platform: [],
+					uni_platform: platform,
+					type: 'native_app',
 					version: appVersion,
-					create_time: thisTime,
-					update_time: thisTime
+					stable_publish: false,
+					create_env: 'uni-stat',
+					create_date: thisTime
 				}
 				const res = await this.insert(this.tableName, insertParam)
 				if (res && res.id) {

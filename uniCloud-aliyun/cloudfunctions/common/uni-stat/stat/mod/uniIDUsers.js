@@ -25,7 +25,7 @@ module.exports = class UniIDUsers extends BaseMod {
 		}
 		const condition = this.getCondition(appid, platform, channel, version, registerTime)
 		let userCount = 0
-		const userCountRes = await this.getCollection(this.tableName, this.tablePrefix).where(condition).count()
+		const userCountRes = await this.getCollection(this.tableName).where(condition).count()
 		if(userCountRes && userCountRes.total > 0) {
 			userCount = userCountRes.total
 		}
@@ -49,7 +49,7 @@ module.exports = class UniIDUsers extends BaseMod {
 		let uids = []
 		const uidsRes = await this.selectAll(this.tableName, condition, {
 			_id: 1
-		}, this.tablePrefix)
+		})
 
 		for (const u in uidsRes.data) {
 			uids.push(uidsRes.data[u]._id)
@@ -71,14 +71,14 @@ module.exports = class UniIDUsers extends BaseMod {
 		let condition = {
 			'register_env.appid': appid,//DCloud appid
 			'register_env.uni_platform': platform,//平台
-			'register_env.channel': channel ? channel : '1001' //渠道或场景值
+			'register_env.channel': channel ? channel : '1001', //渠道或场景值
+			'register_env.app_version' : version //应用版本区分
 		}
 
-		//原生应用区分版本
+		//原生应用平台
 		if(['android', 'ios'].includes(platform)) {
 			condition['register_env.uni_platform'] = 'app'//systemInfo中uniPlatform字段android和ios都用app表示，所以此处查询需要用osName区分一下
 			condition['register_env.os_name'] = platform //系统
-			condition['register_env.app_version'] = version //app版本
 		}
 
 		//兼容vue2

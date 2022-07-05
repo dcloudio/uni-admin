@@ -459,12 +459,12 @@ module.exports = class StatResult extends BaseMod {
 
 		// 版本信息
 		let versionInfo = null
-		const versionKey = data._id.appid + '_' + platformInfo._id + '_' + data._id.version
+		const versionKey = data._id.appid + '_' + data._id.platform + '_' + data._id.version
 		if (this.versions && this.versions[versionKey]) {
 			versionInfo = this.versions[versionKey]
 		} else {
 			const version = new Version()
-			versionInfo = await version.getVersionAndCreate(data._id.appid, platformInfo._id, data._id.version)
+			versionInfo = await version.getVersionAndCreate(data._id.appid, data._id.platform, data._id.version)
 			if (!versionInfo || versionInfo.length === 0) {
 				versionInfo._id = ''
 			}

@@ -169,12 +169,12 @@ module.exports = class ActiveUsers extends BaseMod {
 
 		// 版本信息
 		let versionInfo = null
-		const versionKey = data.appid + '_' + platformInfo._id + '_' + data.version
+		const versionKey = data.appid + '_' + data.platform + '_' + data.version
 		if (this.versions && this.versions[versionKey]) {
 			versionInfo = this.versions[versionKey]
 		} else {
 			const version = new Version()
-			versionInfo = await version.getVersionAndCreate(data.appid, platformInfo._id, data.version)
+			versionInfo = await version.getVersionAndCreate(data.appid, data.platform, data.version)
 			if (!versionInfo || versionInfo.length === 0) {
 				versionInfo._id = ''
 			}
