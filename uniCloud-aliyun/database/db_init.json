@@ -10,7 +10,66 @@
 		"data": []
 	},
 	"opendb-app-list": {
-		"data": []
+		"data": [],
+		"index": [{
+			"IndexName": "appid",
+			"MgoKeySchema": {
+				"MgoIndexKeys": [{
+					"Name": "appid",
+					"Direction": "1"
+				}],
+				"MgoIsUnique": true
+			}
+		}, {
+			"IndexName": "name",
+			"MgoKeySchema": {
+				"MgoIndexKeys": [{
+					"Name": "name",
+					"Direction": "1"
+				}],
+				"MgoIsUnique": false
+			}
+		}]
+	},
+	"opendb-app-versions": {
+		"data": [],
+		"index": [{
+			"IndexName": "appid",
+			"MgoKeySchema": {
+				"MgoIndexKeys": [{
+					"Name": "appid",
+					"Direction": "1"
+				},{
+					"Name": "uni_platform",
+					"Direction": "1"
+				},{
+					"Name": "create_env",
+					"Direction": "1"
+				}],
+				"MgoIsUnique": false
+			}
+		}, {
+			"IndexName": "查找上线发行应用",
+			"MgoKeySchema": {
+				"MgoIndexKeys": [{
+					"Name": "appid",
+					"Direction": "1"
+				}, {
+					"Name": "platform",
+					"Direction": "1"
+				}, {
+					"Name": "stable_publish",
+					"Direction": "1"
+				},{
+					"Name": "uni_platform",
+					"Direction": "1"
+				},{
+					"Name": "create_env",
+					"Direction": "1"
+				}],
+				"MgoIsUnique": false
+			}
+		}]
 	},
 	"uni-id-roles": {
 		"data": []
@@ -379,7 +438,6 @@
 	"uni-stat-app-channels": {},
 	"uni-stat-app-crash-logs": {},
 	"uni-stat-app-platforms": {},
-	"opendb-app-versions": {},
 	"uni-stat-error-logs": {},
 	"uni-stat-error-result": {},
 	"uni-stat-event-logs": {},
