@@ -123,9 +123,9 @@ module.exports = class SessionLog extends BaseMod {
 			device_screen_width: params.sw ? params.sw : '',
 			device_screen_height: params.sh ? params.sh : '',
 			// 地区相关
-			location_ip: '',
-			location_latitude: params.lat ? parseFloat(params.lat) : 0,
-			location_longitude: params.lng ? parseFloat(params.lng) : 0,
+			location_ip: params.ip ? params.ip : '',
+			location_latitude: params.lat ? parseFloat(params.lat) : -1,
+			location_longitude: params.lng ? parseFloat(params.lng) : -1,
 			location_country: params.cn ? params.cn : '',
 			location_province: params.pn ? params.pn : '',
 			location_city: params.ct ? params.ct : '',

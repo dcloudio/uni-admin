@@ -1,3 +1,4 @@
+// 页面统计结果表
 {
 	"bsonType": "object",
 	"description": "存储汇总的页面访问日志的数据",
@@ -28,8 +29,8 @@
 		},
 		"version_id": {
 			"bsonType": "string",
-			"description": "应用版本ID，对应uni-stat-app-versions._id",
-			"foreignKey": "uni-stat-app-versions._id"
+			"description": "应用版本ID，对应opendb-app-versions._id",
+			"foreignKey": "opendb-app-versions._id"
 		},
 		"page_id": {
 			"bsonType": "string",

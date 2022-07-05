@@ -1,3 +1,4 @@
+// 应用错误日志表
 {
 	"bsonType": "object",
 	"description": "记录上报的应用运行错误日志",
@@ -27,6 +28,27 @@
 		"channel": {
 			"bsonType": "string",
 			"description": "用户端上报的渠道code\/场景值"
+		},
+		"error_type": {
+			"bsonType": "int",
+			"description": "错误类型",
+			"defaultValue": 0,
+			"enum": [{
+				"text": "未知",
+				"value": 0
+			}, {
+				"text": "表示webview页面js异常（uni-app项目对应vue页面）",
+				"value": 2
+			}, {
+				"text": "表示uni框架js异常（仅uni-app项目）",
+				"value": 4
+			}, {
+				"text": "表示控制页js异常（仅uni-app项目）",
+				"value": 5
+			}, {
+				"text": "表示nvue页面js异常（仅uni-app项目）",
+				"value": 6
+			}]
 		},
 		"device_id": {
 			"bsonType": "string",

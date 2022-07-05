@@ -167,10 +167,10 @@
 				const id = item._id
 				const name = item.name
 				this.currentTab = index
-				this.emit(id, index, name)
+				this.emit(id, index, name, item)
 			},
-			emit(id, index, name) {
-				this.$emit('change', id, index, name)
+			emit(id, index, name, item) {
+				this.$emit('change', id, index, name, item)
 				this.$emit('input', id, index, name)
 				this.$emit('update:modelValue', id, index, name)
 			},

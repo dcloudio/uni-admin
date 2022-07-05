@@ -11,7 +11,7 @@
 			<view class="uni-stat--x flex">
 				<uni-data-select collection="opendb-app-list" @change="changeAppid" field="appid as value, name as text"
 					orderby="text asc" :defItem="1" label="应用选择" v-model="query.appid" :clear="false" />
-				<uni-data-select collection="uni-stat-app-versions" :where="versionQuery"
+				<uni-data-select collection="opendb-app-versions" :where="versionQuery"
 					field="_id as value, version as text" orderby="text asc" label="版本选择" v-model="query.version_id" />
 				<view class="flex">
 					<uni-stat-tabs label="日期选择" :current="currentDateTab" mode="date" @change="changeTimeRange" />
@@ -27,7 +27,7 @@
 				<uni-stat-tabs label="平台选择" type="boldLine" mode="platform" v-model="query.platform_id"
 					@change="changePlatform" />
 				<uni-data-select v-if="query.platform_id && query.platform_id.indexOf('==') === -1"
-					:localdata="channelData" label="渠道选择" v-model="query.channel_id"></uni-data-select>
+					:localdata="channelData" label="渠道/场景值选择" v-model="query.channel_id"></uni-data-select>
 			</view>
 			<uni-stat-panel :items="panelData" />
 
@@ -37,7 +37,7 @@
 				</view>
 				<uni-stat-tabs type="box" v-model="chartTab" :tabs="chartTabs" class="mb-l" @change="changeChartTab" />
 				<view class="uni-charts-box">
-					<qiun-data-charts type="area" :chartData="chartData" echartsH5 echartsApp />
+					<qiun-data-charts type="area" :chartData="chartData" echartsH5 echartsApp tooltipFormat="tooltipCustom"/>
 				</view>
 			</view>
 
@@ -85,7 +85,9 @@
 				query: {
 					dimension: "hour",
 					appid: '',
-					platform_id: '', 					version_id: '',
+					platform_id: '',
+					uni_platform: '',
+					version_id: '',
 					channel_id: '',
 					start_time: [],
 				},
@@ -102,7 +104,8 @@
 				panelData: fieldsMap.filter(f => f.hasOwnProperty('value')),
 				chartData: {},
 				chartTab: 'new_user_count',
-				channelData: []
+				channelData: [],
+				tabIndex: 0
 			}
 		},
 		computed: {
@@ -173,12 +176,17 @@
 					platform_id
 				})
 			},
-			versionQuery() {  				const {
+			versionQuery() {
+				const {
 					appid,
-					platform_id
-				} = this.query 				const query = stringifyQuery({  					appid,  					platform_id
+					uni_platform
+				} = this.query
+				const query = stringifyQuery({
+					appid,
+					uni_platform,
 				})
-				return query  			}
+				return query
+			}
 		},
 		created() {
 			this.debounceGet = debounce(() => this.getAllData(this.query))
@@ -206,9 +214,10 @@
 			changeAppid(id) {
 				this.getChannelData(id, false)
 			},
-			changePlatform(id) {
+			changePlatform(id, index, name, item) {
 				this.getChannelData(null, id)
 				this.query.version_id = 0
+				this.query.uni_platform = item.code
 			},
 			changeTimeRange(id, index) {
 				this.currentDateTab = index
@@ -237,6 +246,7 @@
 			},
 
 			changeChartTab(id, index, name) {
+				this.tabIndex = index
 				this.getChartData(this.query, id, name)
 			},
 
@@ -246,9 +256,9 @@
 				this.getTabelData(query)
 			},
 
-			getChartData(query, field = this.chartTabs[0]._id, name = this.chartTabs[0].name) {
-				this.chartData = {}
-				query = stringifyQuery(query, true)
+			getChartData(query, field = this.chartTabs[this.tabIndex]._id, name = this.chartTabs[this.tabIndex].name) {
+				// this.chartData = {}
+				query = stringifyQuery(query, true,['uni_platform'])
 				const dimension = this.query.dimension
 				const db = uniCloud.database()
 				db.collection(this.tableName)
@@ -297,7 +307,7 @@
 				const {
 					pageCurrent
 				} = this.options
-				query = stringifyQuery(query, true)
+				query = stringifyQuery(query, true,['uni_platform'])
 				this.options.pageCurrent = 1 // 重置分页
 				this.loading = true
 				const db = uniCloud.database()
@@ -340,7 +350,7 @@
 			getPanelData() {
 				let cloneQuery = JSON.parse(JSON.stringify(this.query))
 				cloneQuery.dimension = 'day'
-				let query = stringifyQuery(cloneQuery)
+				let query = stringifyQuery(cloneQuery,false,['uni_platform'])
 				const db = uniCloud.database()
 				const subTable = db.collection(this.tableName)
 					.where(query)

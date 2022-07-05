@@ -1,3 +1,4 @@
+// 小程序场景值对照表
 {
 	"bsonType": "object",
 	"description": "提供应用渠道和小程序场景值的数据字典",

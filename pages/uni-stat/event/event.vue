@@ -13,8 +13,9 @@
 			<view class="uni-stat--x flex">
 				<uni-data-select collection="opendb-app-list" field="appid as value, name as text" orderby="text asc"
 					:defItem="1" label="应用选择" v-model="query.appid" :clear="false" />
-								<uni-data-select collection="uni-stat-app-versions" :where="versionQuery" field="_id as value, version as text" orderby="text asc" label="版本选择" v-model="query.version_id" />
-        <view class="flex">
+				<uni-data-select collection="opendb-app-versions" :where="versionQuery"
+					field="_id as value, version as text" orderby="text asc" label="版本选择" v-model="query.version_id" />
+				<view class="flex">
 					<uni-stat-tabs label="日期选择" :current="currentDateTab" mode="date" @change="changeTimeRange" />
 					<uni-datetime-picker type="daterange" :end="new Date().getTime()" v-model="query.create_time"
 						returnType="timestamp" :clearIcon="false" class="uni-stat-datetime-picker"
@@ -94,6 +95,7 @@
 				query: {
 					appid: '',
 					platform_id: '',
+					uni_platform: '',
 					channel_id: '',
 					version_id: '',
 					create_time: [],
@@ -127,14 +129,17 @@
 					platform_id
 				})
 			},
-      versionQuery() {
-      				const { appid, platform_id } = this.query
-      				const query = stringifyQuery({
-      					appid,
-      					platform_id
-      				})
-      				return query
-      			}
+			versionQuery() {
+				const {
+					appid,
+					uni_platform
+				} = this.query
+				const query = stringifyQuery({
+					appid,
+					uni_platform
+				})
+				return query
+			}
 		},
 		created() {
 			this.debounceGet = debounce(() => this.getAllData())
@@ -156,9 +161,10 @@
 			changeAppid(id) {
 				this.getChannelData(id, false)
 			},
-			changePlatform(id) {
+			changePlatform(id, index, name, item) {
 				this.getChannelData(null, id)
-        this.query.version_id = 0
+				this.query.version_id = 0
+				this.query.uni_platform = item.code
 			},
 			changeTimeRange(id, index) {
 				this.currentDateTab = index
@@ -184,7 +190,7 @@
 				this.getTableData(query)
 			},
 
-			getTableData(query = stringifyQuery(this.query)) {
+			getTableData(query = stringifyQuery(this.query, null, ['uni_platform'])) {
 				const {
 					pageCurrent
 				} = this.options

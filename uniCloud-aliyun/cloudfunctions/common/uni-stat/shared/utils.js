@@ -12,7 +12,7 @@ function hasOwn(obj, key) {
 
 /**
  * 参数是否为JavaScript的简单对象
- * @param {Object} obj 
+ * @param {Object} obj
  * @returns {Boolean} true|false
  */
 function isPlainObject(obj) {
@@ -45,7 +45,7 @@ function parseUrlParams(primitiveParams, context) {
 	if (!primitiveParams) {
 		return primitiveParams
 	}
-	
+
 	let params = {}
 	if(typeof primitiveParams === 'string') {
 		params = primitiveParams.split('&').reduce((res, cur) => {
@@ -64,10 +64,10 @@ function parseUrlParams(primitiveParams, context) {
 			}
 		}
 	}
-	
+
 	//原以下数据要从客户端上报，现调整为如果以下参数客户端未上报，则通过请求附带的context参数中获取
 	let convertParams = {}
-	
+
 	if (context.hasOwnProperty('appId')) {
 		convertParams = {
 			//appid
@@ -76,8 +76,8 @@ function parseUrlParams(primitiveParams, context) {
 			uid: 'uid',
 			//设备编号
 			did: 'deviceId',
-			//系统
-			p: 'os',
+			//操作系统名称
+			p: 'osName',
 			//客户端ip
 			ip: 'clientIP',
 			//客户端的UA
@@ -85,7 +85,35 @@ function parseUrlParams(primitiveParams, context) {
 			//当前服务空间编号
 			spid: 'spaceId',
 			//当前服务空间提供商
-			sppd: 'provider'
+			sppd: 'provider',
+			//应用版本号
+			v: 'appVersion',
+			//rom 名称
+			rn: 'romName',
+			//rom 版本
+			rv: 'romVersion',
+			//操作系统版本
+			sv: 'osVersion',
+			//操作系统语言
+			lang: 'osLanguage',
+			//操作系统主题
+			ot: 'osTheme',
+			//设备类型
+			dtp: 'deviceType',
+			//设备品牌
+			brand: 'deviceBrand',
+			//设备型号
+			md: 'deviceModel',
+			//设备像素比
+			pr: 'devicePixelRatio',
+			//可使用窗口宽度
+			ww: 'windowWidth',
+			//可使用窗口高度
+			wh: 'windowHeight',
+			//屏幕宽度
+			sw: 'screenWidth',
+			//屏幕高度
+			sh: 'screenHeight',
 		}
 	} else if (context.hasOwnProperty('APPID')) {
 		convertParams = {
@@ -126,12 +154,12 @@ function parseUrl(url) {
 		return false
 	}
 	const urlInfo = url.split('?')
-	
+
 	baseurl = urlInfo[0]
 	if (baseurl !== '/' && baseurl.indexOf('/') === 0) {
 	  baseurl = baseurl.substr(1)
 	}
-	
+
 	return {
 		path: baseurl,
 		query: urlInfo[1] ? decodeURI(urlInfo[1]) : ''

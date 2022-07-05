@@ -12,7 +12,7 @@
 			<view class="uni-stat--x flex">
 				<uni-data-select collection="opendb-app-list" field="appid as value, name as text" orderby="text asc"
 					:defItem="1" label="应用选择" v-model="query.appid" :clear="false" />
-				<uni-data-select collection="uni-stat-app-versions" :storage="false" :where="versionQuery"
+				<uni-data-select collection="opendb-app-versions" :storage="false" :where="versionQuery"
 					field="_id as value, version as text" orderby="text asc" label="版本选择" v-model="query.version_id" />
 				<view class="flex">
 					<uni-stat-tabs label="日期选择" :current="currentDateTab" mode="date" @change="changeTimeRange" />
@@ -23,14 +23,15 @@
 				</view>
 			</view>
 			<view class="uni-stat--x">
-				<uni-stat-tabs label="平台选择" type="boldLine" mode="platform-scene" :all="false" v-model="query.platform_id"
-					@change="changePlatform" />
+				<uni-stat-tabs label="平台选择" type="boldLine" mode="platform-scene" :all="false"
+					v-model="query.platform_id" @change="changePlatform" />
 			</view>
 			<view class="uni-stat--x" style="padding: 15px 0;">
 				<uni-stat-panel :items="panelData" class="uni-stat-panel" />
 				<uni-stat-tabs type="box" v-model="chartTab" :tabs="chartTabs" class="mb-l" @change="changeChartTab" />
 				<view class="uni-charts-box" style="height: 400px;">
-					<qiun-data-charts type="area" :chartData="chartData" echartsH5 echartsApp />
+					<qiun-data-charts type="area" :chartData="chartData" echartsH5 echartsApp
+						tooltipFormat="tooltipCustom" />
 				</view>
 			</view>
 
@@ -80,6 +81,7 @@
 					dimension: "hour",
 					appid: '',
 					platform_id: '',
+					uni_platform: '',
 					version_id: '',
 					start_time: [],
 				},
@@ -136,24 +138,18 @@
 			versionQuery() {
 				const {
 					appid,
-					platform_id
+					uni_platform
 				} = this.query
-				let query
-				if (platform_id.indexOf('==') > -1) {
-					query = stringifyQuery({
-						appid
-					}) + ' && ' + platform_id
-				} else {
-					query = stringifyQuery({
-						appid,
-						platform_id
-					})
-				}
+				const query = stringifyQuery({
+					appid,
+					uni_platform,
+					// type: 'native_app'
+				})
 				return query
 			}
 		},
 		created() {
-			this.debounceGet = debounce(() => this.getAllData(this.queryStr))
+			this.debounceGet = debounce(() => this.getAllData())
 		},
 		watch: {
 			query: {
@@ -168,8 +164,9 @@
 			useDatetimePicker() {
 				this.currentDateTab = -1
 			},
-			changePlatform() {
+			changePlatform(id, index, name, item) {
 				this.query.version_id = 0
+				this.query.uni_platform = item.code
 			},
 			changeTimeRange(id, index) {
 				this.currentDateTab = index
@@ -202,13 +199,17 @@
 			},
 
 			getChartData(query, field = this.chartTab) {
-				this.chartData = {}
+				// this.chartData = {}
 				const {
 					pageCurrent
 				} = this.options
+				query = JSON.parse(JSON.stringify(this.query))
+				query.dimension = 'day'
+				let querystr = stringifyQuery(query, false, ['uni_platform'])
+				console.log('querystr', querystr);
 				const db = uniCloud.database()
 				db.collection('uni-stat-result')
-					.where(query)
+					.where(querystr)
 					.field(`${stringifyField(fieldsMap, field)},start_time,channel_id`)
 					.groupBy('channel_id,start_time')
 					.groupField(stringifyGroupField(fieldsMap, field))
@@ -300,9 +301,10 @@
 					pageCurrent
 				} = this.options
 				this.loading = true
+				let querystr = stringifyQuery(this.query, false, ['uni_platform'])
 				const db = uniCloud.database()
 				db.collection('uni-stat-result')
-					.where(query)
+					.where(querystr)
 					.field(`${stringifyField(fieldsMap)},appid, channel_id`)
 					.groupBy('appid, channel_id')
 					.groupField(stringifyGroupField(fieldsMap))
@@ -347,12 +349,16 @@
 			},
 
 			getPanelData() {
-				let cloneQuery = JSON.parse(JSON.stringify(this.query))
-				cloneQuery.dimension = 'day'
-				let query = stringifyQuery(cloneQuery)
+				// let cloneQuery = JSON.parse(JSON.stringify(this.query))
+				// cloneQuery.dimension = 'day'
+				// let query = stringifyQuery(cloneQuery)
+				let query = JSON.parse(JSON.stringify(this.query))
+				query.dimension = 'day'
+				let querystr = stringifyQuery(query, false, ['uni_platform'])
+				console.log('---- getPanelData', querystr);
 				const db = uniCloud.database()
 				const subTable = db.collection('uni-stat-result')
-					.where(query)
+					.where(querystr)
 					.field(stringifyField(fieldsMap))
 					.groupBy('appid')
 					.groupField(stringifyGroupField(fieldsMap))

@@ -1,3 +1,4 @@
+// 应用会话日志表
 {
 	"bsonType": "object",
 	"description": "记录设备访问时产生的会话日志",
@@ -27,6 +28,21 @@
 		"channel": {
 			"bsonType": "string",
 			"description": "客户端上报的渠道code\/场景值"
+		},
+		"type": {
+			"bsonType": "string",
+			"description": "会话类型",
+			"defaultValue": 1,
+			"enum": [{
+				"text": "正常进入上报",
+				"value": 1
+			}, {
+				"text": "后台进前台超时上报",
+				"value": 2
+			}, {
+				"text": "页面停留超时上报",
+				"value": 3
+			}]
 		},
 		"device_id": {
 			"bsonType": "string",

@@ -56,23 +56,17 @@
 					}
 				},
 				immediate: true
-			}
-		},
-		created() {
-			if (this.hasLocalData(this.localdata)) return
-			this.load()
-		},
-		// computed:{
-		// 	userMenu() {
-		// 		return this.getUserMenu(this.menus)
-		// 	}
-		// },
-		watch: {
+			},
+			// TODO 暂时无需监听，需要看后面会出现什么问题
 			menus: {
 				immediate: true,
-				handler() {
+				handler(newVal,oldVal) {
 					const item = this.menus.find(m => m.value === this.$route.path)
-					item && this.onSelect(item)
+					// 设置面包屑
+					if(item){
+						this.getMenuAncestor(item.menu_id, newVal)
+						item && this.setRoutes && this.setRoutes(this.famliy)
+					}
 				}
 			},
 			$route: {
@@ -88,6 +82,15 @@
 				}
 			}
 		},
+		created() {
+			if (this.hasLocalData(this.localdata)) return
+			// this.load()
+		},
+		// computed:{
+		// 	userMenu() {
+		// 		return this.getUserMenu(this.menus)
+		// 	}
+		// },
 		methods: {
 			...mapActions({
 				setRoutes: 'app/setRoutes'
@@ -97,7 +100,6 @@
 					permission,
 					role
 				} = uniCloud.getCurrentUserInfo()
-				// console.log(1111, uniCloud.getCurrentUserInfo())
 				// 标记叶子节点
 				menuList.map(item => {
 					if (!menuList.some(subMenuItem => subMenuItem.parent_id === item.menu_id)) {
@@ -137,7 +139,6 @@
 					return
 				}
 				this.mixinDatacomLoading = true
-
 				this.mixinDatacomGet().then((res) => {
 					this.mixinDatacomLoading = false
 					const {

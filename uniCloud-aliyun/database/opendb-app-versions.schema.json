@@ -1,7 +1,13 @@
 // 文档教程: https://uniapp.dcloud.net.cn/uniCloud/schema
 {
 	"bsonType": "object",
-	"required": ["appid", "uni_platform", "version", "type", "create_env"],
+	"required": [
+		"appid",
+		"uni_platform",
+		"version",
+		"type",
+		"create_env"
+	],
 	"permission": {
 		"read": "'READ_OPENDB_APP_LIST' in auth.permission",
 		"create": "'CREATE_OPENDB_APP_LIST' in auth.permission",
@@ -57,25 +63,31 @@
 		},
 		"platform": {
 			"bsonType": "array",
-			"enum": [{
-				"value": "Android",
-				"text": "安卓"
-			}, {
-				"value": "iOS",
-				"text": "苹果"
-			}],
+			"enum": [
+				{
+					"value": "Android",
+					"text": "安卓"
+				},
+				{
+					"value": "iOS",
+					"text": "苹果"
+				}
+			],
 			"description": "更新平台，Android || iOS || [Android, iOS]",
 			"label": "平台"
 		},
 		"type": {
 			"bsonType": "string",
-			"enum": [{
-				"value": "native_app",
-				"text": "原生App安装包"
-			}, {
-				"value": "wgt",
-				"text": "Wgt资源包"
-			}],
+			"enum": [
+				{
+					"value": "native_app",
+					"text": "原生App安装包"
+				},
+				{
+					"value": "wgt",
+					"text": "Wgt资源包"
+				}
+			],
 			"description": "安装包类型，native_app || wgt",
 			"label": "安装包类型"
 		},
@@ -161,5 +173,6 @@
 				}
 			}
 		}
-	}
+	},
+	"version": "0.0.1"
 }

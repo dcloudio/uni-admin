@@ -11,7 +11,7 @@
 			<view class="uni-stat--x flex">
 				<uni-data-select collection="opendb-app-list" field="appid as value, name as text" orderby="text asc"
 					:defItem="1" label="应用选择" v-model="query.appid" :clear="false" />
-				<uni-data-select collection="uni-stat-app-versions" :where="versionQuery"
+				<uni-data-select collection="opendb-app-versions" :where="versionQuery"
 					field="_id as value, version as text" orderby="text asc" label="版本选择" v-model="query.version_id" />
 				<uni-stat-tabs label="平台选择" type="boldLine" :all="false" mode="platform-channel"
 					v-model="query.platform_id" @change="changePlatform" />
@@ -28,8 +28,8 @@
 				<uni-stat-panel :items="panelData" class="uni-stat-panel" />
 				<uni-stat-tabs type="box" v-model="chartTab" :tabs="chartTabs" class="mb-l" />
 				<view class="uni-charts-box">
-					<qiun-data-charts type="area" :chartData="chartData" :eopts="{notMerge:true}" echartsH5
-						echartsApp />
+					<qiun-data-charts type="area" :chartData="chartData" :eopts="{notMerge:true}" echartsH5 echartsApp
+						tooltipFormat="tooltipCustom" />
 				</view>
 			</view>
 
@@ -58,7 +58,8 @@
 									@filter-change="filterChange($event, mapper.field)" sortable
 									@sort-change="sortChange($event, mapper.field)" align="center"
 									:style="`min-width: ${mapper.title.length * 15 + 80}px;`"> -->
-								<uni-th v-if="mapper.title" :key="index" align="center" :style="`min-width: ${mapper.title.length * 15 + 80}px;`">
+								<uni-th v-if="mapper.title" :key="index" align="center"
+									:style="`min-width: ${mapper.title.length * 15 + 80}px;`">
 									<!-- #ifdef MP -->
 									{{mapper.title}}
 									<!-- #endif -->
@@ -78,7 +79,7 @@
 						</uni-tr>
 						<uni-tr v-for="(item ,i) in tableData" :key="i">
 							<template v-for="(mapper, index) in fieldsMap">
-								<uni-td v-if="mapper.field === 'error_msg'" :key="mapper.title" align="left"
+								<uni-td v-if="mapper.field === 'error_msg'" :key="'key1'+i+index" align="left"
 									style="min-width: 500px;">
 									<!-- #ifdef MP -->
 									{{item.error_msg ? item.error_msg.substring(0, 100) + '...' : '-'}}
@@ -95,10 +96,10 @@
 									</uni-tooltip>
 									<!-- #endif -->
 								</uni-td>
-								<uni-td v-else-if="mapper.field === 'create_time'" :key="mapper.title" align="center">
+								<uni-td v-else-if="mapper.field === 'create_time'" :key="'key2'+i+index" align="center">
 									<uni-dateformat :threshold="[0, 0]" :date="item.create_time"></uni-dateformat>
 								</uni-td>
-								<uni-td v-else :key="mapper.title" align="center">
+								<uni-td v-else :key="'key3'+i+index" align="center">
 									{{item[mapper.field] !== undefined ? item[mapper.field] : '-'}}
 								</uni-td>
 							</template>
@@ -127,7 +128,8 @@
 		format,
 		formatDate,
 		parseDateTime,
-		debounce
+		debounce,
+		getAllDateCN
 	} from '@/js_sdk/uni-stat/util.js'
 	import {
 		fieldsMap,
@@ -175,6 +177,7 @@
 					dimension: "day",
 					appid: "",
 					platform_id: '',
+					uni_platform: '',
 					version_id: '',
 					start_time: [],
 				},
@@ -286,12 +289,12 @@
 			versionQuery() {
 				const {
 					appid,
-					platform_id
-
+					uni_platform
 				} = this.query
 				const query = stringifyQuery({
 					appid,
-					platform_id
+					uni_platform,
+					type: 'native_app'
 				})
 				return query
 			}
@@ -374,8 +377,9 @@
 			useDatetimePicker() {
 				this.currentDateTab = -1
 			},
-			changePlatform() {
+			changePlatform(id, index, name, item) {
 				this.query.version_id = 0
+				this.query.uni_platform = item.code
 			},
 			changeTimeRange(id, index) {
 				this.currentDateTab = index
@@ -405,9 +409,12 @@
 			},
 
 			getPanelData(query) {
+				// console.log(query);
+				let querystr = stringifyQuery(this.query, false, ['uni_platform'])
 				const db = uniCloud.database()
+				console.log('queryStr', querystr);
 				db.collection('uni-stat-error-result')
-					.where(query)
+					.where(querystr)
 					.field('count as temp_count, app_launch_count as temp_app_launch_count, appid')
 					.groupBy('appid')
 					.groupField('sum(temp_count) as count, sum(temp_app_launch_count) as app_launch_count')
@@ -420,19 +427,40 @@
 							data
 						} = res.result
 						const item = res.result.data[0]
-						this.panelData = []
-						this.panelData = mapfields(panelOption, item)
+						// this.panelData = []
+						let queryTemp = Object.assign({}, this.query)
+						delete queryTemp.type
+						console.log('---- query ', queryTemp);
+						this.getTotalLaunch(stringifyQuery(queryTemp, false, ['uni_platform'])).then(res => {
+							const total = res.result.data[0]
+							console.log('result total---', total);
+							let launch_count = total && total.total_app_launch_count
+							item.app_launch_count = launch_count
+							this.panelData = mapfields(panelOption, item)
+						})
 					})
 			},
-
+			getTotalLaunch(query) {
+				const db = uniCloud.database()
+				return db.collection('uni-stat-result')
+					.where(query)
+					.groupBy('appid')
+					.groupField('sum(app_launch_count) as total_app_launch_count')
+					.get()
+			},
 			getChartData(query, field = 'day_count') {
+				let querystr = stringifyQuery(this.query, false, ['uni_platform'])
 				this.chartData = {}
 				const {
 					pageCurrent
 				} = this.options
 				const db = uniCloud.database()
+				const [start_time, end_tiem] = this.query.start_time
+				// 时间补全
+				const timeAll = getAllDateCN(new Date(start_time), new Date(end_tiem))
+
 				db.collection('uni-stat-error-result')
-					.where(query)
+					.where(querystr)
 					.field('count as temp_count, app_launch_count as temp_app_launch_count, start_time')
 					.groupBy('start_time')
 					.groupField('sum(temp_count) as count, sum(temp_app_launch_count) as app_launch_count')
@@ -445,6 +473,22 @@
 							count,
 							data
 						} = res.result
+						let dataAll = []
+						timeAll.forEach(v => {
+							let item = data.find(item => item.start_time === v)
+							console.log(item);
+							if (item) {
+								dataAll.push(item)
+							} else {
+								dataAll.push({
+									app_launch_count: 0,
+									count: 0,
+									start_time: v
+								})
+							}
+						})
+
+
 						const options = {
 							categories: [],
 							series: [{
@@ -458,7 +502,7 @@
 								data: []
 							}
 							const xAxis = options.categories
-							for (const item of data) {
+							for (const item of dataAll) {
 								let date = item.start_time
 								const x = formatDate(date, 'day')
 								const countY = item.count
@@ -468,7 +512,7 @@
 							this.chartData = options
 						} else {
 							const rateLine = options.series[0] = {
-								name: '崩溃率',
+								name: '崩溃率(%)',
 								data: [],
 								lineStyle: {
 									color: '#EE6666',
@@ -492,16 +536,17 @@
 								}
 							}
 							const xAxis = options.categories
-							for (const item of data) {
+							for (const item of dataAll) {
 								const {
 									count,
 									app_launch_count
 								} = item
 								let date = item.start_time
 								const x = formatDate(date, 'day')
+								console.log('---', x);
 								xAxis.push(x)
 								let y = count / app_launch_count
-								y = y.toFixed(2)
+								y = !y ? 0 : y.toFixed(2)
 								rateLine.data.push(y)
 							}
 							this.chartData = options

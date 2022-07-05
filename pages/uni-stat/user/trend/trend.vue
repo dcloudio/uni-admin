@@ -11,7 +11,7 @@
 			<view class="uni-stat--x flex">
 				<uni-data-select collection="opendb-app-list" field="appid as value, name as text" orderby="text asc"
 					:defItem="1" label="应用选择" @change="changeAppid" v-model="query.appid" :clear="false" />
-				<uni-data-select collection="uni-stat-app-versions" :where="versionQuery"
+				<uni-data-select collection="opendb-app-versions" :where="versionQuery"
 					field="_id as value, version as text" orderby="text asc" label="版本选择" v-model="query.version_id" />
 				<view class="flex">
 					<uni-stat-tabs label="日期选择" :current="currentDateTab" mode="date" @change="changeTimeRange" />
@@ -85,6 +85,7 @@
 					dimension: "hour",
 					appid: '',
 					platform_id: '',
+					uni_platform: '',
 					version_id: '',
 					channel_id: '',
 					start_time: [],
@@ -102,7 +103,8 @@
 				panelData: fieldsMap.filter(f => f.hasOwnProperty('value')),
 				chartData: {},
 				chartTab: 'new_user_count',
-				channelData: []
+				channelData: [],
+				tabName: '新增用户'
 			}
 		},
 		computed: {
@@ -176,11 +178,11 @@
 			versionQuery() {
 				const {
 					appid,
-					platform_id
+					uni_platform
 				} = this.query
 				const query = stringifyQuery({
 					appid,
-					platform_id
+					uni_platform
 				})
 				return query
 			}
@@ -211,9 +213,11 @@
 			changeAppid(id) {
 				this.getChannelData(id, false)
 			},
-			changePlatform(id) {
+			changePlatform(id, index, name, item) {
 				this.getChannelData(null, id)
 				this.query.version_id = 0
+				console.log('-- item.code',item.code);
+				this.query.uni_platform = item.code
 			},
 			changeTimeRange(id, index) {
 				this.currentDateTab = index
@@ -242,18 +246,21 @@
 			},
 
 			changeChartTab(id, index, name) {
+				this.tabName = name
 				this.getChartData(this.query, id, name)
+
 			},
 
 			getAllData(query) {
 				this.getPanelData()
-				this.getChartData(query)
+				this.getChartData(query, this.chartTab, this.tabName)
 				this.getTabelData(query)
 			},
 
 			getChartData(query, field = this.chartTab, name = '新增用户') {
-				this.chartData = {}
-				query = stringifyQuery(query, true)
+				console.log('---', field, name);
+				// this.chartData = {}
+				query = stringifyQuery(query, true, ['uni_platform'])
 				const dimension = this.query.dimension
 				const db = uniCloud.database()
 				db.collection('uni-stat-result')
@@ -302,7 +309,7 @@
 				const {
 					pageCurrent
 				} = this.options
-				query = stringifyQuery(query, true)
+				query = stringifyQuery(query, true, ['uni_platform'])
 				this.options.pageCurrent = 1 // 重置分页
 				this.loading = true
 				const db = uniCloud.database()
@@ -345,7 +352,7 @@
 			getPanelData() {
 				let cloneQuery = JSON.parse(JSON.stringify(this.query))
 				cloneQuery.dimension = 'day'
-				let query = stringifyQuery(cloneQuery)
+				let query = stringifyQuery(cloneQuery, null, ['uni_platform'])
 				const db = uniCloud.database()
 				const subTable = db.collection('uni-stat-result')
 					.where(query)

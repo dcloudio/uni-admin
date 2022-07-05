@@ -11,7 +11,7 @@
 			<view class="uni-stat--x flex">
 				<uni-data-select collection="opendb-app-list" field="appid as value, name as text" orderby="text asc"
 					:defItem="1" label="应用选择" @change="changeAppid" v-model="query.appid" :clear="false" />
-				<uni-data-select collection="uni-stat-app-versions" :where="versionQuery"
+				<uni-data-select collection="opendb-app-versions" :where="versionQuery"
 					field="_id as value, version as text" orderby="text asc" label="版本选择" v-model="query.version_id" />
 				<view class="flex">
 					<uni-stat-tabs label="日期选择" :current="currentDateTab" mode="date" @change="changeTimeRange" />
@@ -67,6 +67,7 @@
 					// dimension: "hour",
 					appid: '',
 					platform_id: '',
+					uni_platform: '',
 					version_id: '',
 					channel_id: '',
 					start_time: [],
@@ -124,11 +125,11 @@
 			versionQuery() {
 				const {
 					appid,
-					platform_id
+					uni_platform
 				} = this.query
 				const query = stringifyQuery({
 					appid,
-					platform_id
+					uni_platform
 				})
 				return query
 			}
@@ -158,9 +159,10 @@
 			changeAppid(id) {
 				this.getChannelData(id, false)
 			},
-			changePlatform(id) {
+			changePlatform(id, index, name, item) {
 				this.getChannelData(null, id)
 				this.query.version_id = 0
+				this.query.uni_platform = item.code
 			},
 			changeTimeRange(id, index) {
 				this.currentDateTab = index
@@ -207,8 +209,8 @@
 			},
 
 			getChartData(query, field = this.field, name = this.fields.find(f => f._id === this.field).name) {
-				this.chartData = {}
-				query = stringifyQuery(query)
+				// this.chartData = {}
+				query = stringifyQuery(query, null, ['uni_platform'])
 				const groupField = this.createStr([field], this.type)
 				const db = uniCloud.database()
 				db.collection('uni-stat-loyalty-result')
@@ -251,7 +253,7 @@
 			},
 
 			getTabelData(query) {
-				query = stringifyQuery(query)
+				query = stringifyQuery(query, null, ['uni_platform'])
 				const groupField = this.createStr(['visit_users', 'visit_times'], this.type)
 				this.fieldsMap[0].title = this.types.find(t => t._id === this.type).name
 				this.loading = true

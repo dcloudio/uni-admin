@@ -14,7 +14,7 @@
 			<view class="uni-stat--x flex">
 				<uni-data-select collection="opendb-app-list" field="appid as value, name as text" orderby="text asc"
 					:defItem="1" label="应用选择" v-model="query.appid" :clear="false" />
-				<uni-data-select collection="uni-stat-app-versions" :storage="false" :where="versionQuery"
+				<uni-data-select collection="opendb-app-versions" :storage="false" :where="versionQuery"
 					field="_id as value, version as text" orderby="text asc" label="版本选择" v-model="query.version_id" />
 				<uni-stat-tabs label="平台选择" type="boldLine" mode="platform-channel" :all="false"
 					v-model="query.platform_id" @change="changePlatform" />
@@ -30,7 +30,7 @@
 				<uni-stat-panel :items="panelData" class="uni-stat-panel" />
 				<uni-stat-tabs type="box" v-model="chartTab" :tabs="chartTabs" class="mb-l" @change="changeChartTab" />
 				<view class="uni-charts-box">
-					<qiun-data-charts type="area" :chartData="chartData" echartsH5 echartsApp />
+					<qiun-data-charts type="area" :chartData="chartData" echartsH5 echartsApp tooltipFormat="tooltipCustom" />
 				</view>
 			</view>
 
@@ -48,27 +48,27 @@
 					</uni-tr>
 					<uni-tr v-for="(item ,i) in tableData" :key="i">
 						<template v-for="(mapper, index) in fieldsMap.slice(0, fieldsMap.length-1)">
-							<uni-td v-if="mapper.title && index === 1" :key="mapper.title" class="uni-stat-edit--x">
+							<uni-td v-if="mapper.title && index === 1" :key="i+index" class="uni-stat-edit--x">
 								{{item[mapper.field] ? item[mapper.field] : '-'}}
 								<uni-icons type="compose" color="#2979ff" size="25" class="uni-stat-edit--btn"
 									@click="inputDialogToggle(item.channel_code, item.channel_name)" />
 							</uni-td>
-							<uni-td v-else="mapper.title" :key="mapper.title" align="center">
+							<uni-td v-else="mapper.title" :key="i+index" align="center">
 								{{item[mapper.field] !== undefined ? item[mapper.field] : '-'}}
 							</uni-td>
 						</template>
 					</uni-tr>
 				</uni-table>
 				<view class="uni-pagination-box">
-					<picker class="select-picker" mode="selector" :value="options.pageSizeIndex"
-						:range="options.pageSizeRange" @change="changePageSize">
+					<picker class="select-picker" mode="selector" :value="paginationOptions.pageSizeIndex"
+						:range="paginationOptions.pageSizeRange" @change="changePageSize">
 						<button type="default" size="mini" :plain="true">
 							<text>{{pageSize}} 条/页</text>
 							<uni-icons class="select-picker-icon" type="arrowdown" size="12" color="#999"></uni-icons>
 						</button>
 					</picker>
-					<uni-pagination show-icon :page-size="pageSize" :current="options.pageCurrent"
-						:total="options.total" @change="changePageCurrent" />
+					<uni-pagination show-icon :page-size="pageSize" :current="paginationOptions.pageCurrent"
+						:total="paginationOptions.total" @change="changePageCurrent" />
 				</view>
 			</view>
 		</view>
@@ -101,23 +101,36 @@
 	export default {
 		data() {
 			return {
+				// 字段映射表
 				fieldsMap,
+				// 查询参数
 				query: {
+					// 统计范围 day:按天统计，hour:按小时统计
 					dimension: "day",
+					// 应用id
 					appid: '',
+					// 平台
+					uni_platform: 'android',
+					// 平台id
 					platform_id: '',
+					// 版本号
 					version_id: '',
+					// 开始时间
 					start_time: [],
 				},
-				options: {
+				// 分页数据
+				paginationOptions: {
 					pageCurrent: 1, // 当前页
 					total: 0, // 数据总量
 					pageSizeIndex: 0, // 与 pageSizeRange 一起计算得出 pageSize
 					pageSizeRange: [10, 20, 50, 100],
 				},
+				// 加载状态
 				loading: false,
+				// 日期选择索引
 				currentDateTab: 1,
 				days: 0,
+				// 表格数据
 				tableData: [],
 				panelData: fieldsMap.filter(f => f.hasOwnProperty('value')),
 				chartData: {},
@@ -131,7 +144,7 @@
 				const {
 					pageSizeRange,
 					pageSizeIndex
-				} = this.options
+				} = this.paginationOptions
 				return pageSizeRange[pageSizeIndex]
 			},
 			chartTabs() {
@@ -164,23 +177,24 @@
 			versionQuery() {
 				const {
 					appid,
-					platform_id
+					uni_platform
 				} = this.query
 				const query = stringifyQuery({
 					appid,
-					platform_id
+					uni_platform,
+					type: 'native_app'
 				})
 				return query
 			}
 		},
 		created() {
-			this.debounceGet = debounce(() => this.getAllData(this.queryStr))
+			this.debounceGet = debounce(() => this.getAllData())
 		},
 		watch: {
 			query: {
 				deep: true,
 				handler(val) {
-					this.options.pageCurrent = 1 // 重置分页
+					this.paginationOptions.pageCurrent = 1 // 重置分页
 					this.debounceGet()
 				}
 			}
@@ -189,8 +203,10 @@
 			useDatetimePicker() {
 				this.currentDateTab = -1
 			},
-			changePlatform() {
+			changePlatform(id, index, name, item) {
 				this.query.version_id = 0
+				console.log(item.code);
+				this.query.uni_platform = item.code
 			},
 			changeTimeRange(id, index) {
 				this.currentDateTab = index
@@ -206,37 +222,38 @@
 			},
 
 			changePageCurrent(e) {
-				this.options.pageCurrent = e.current
-				this.getTableData(this.queryStr)
+				this.paginationOptions.pageCurrent = e.current
+				this.getTableData()
 			},
 
 			changePageSize(e) {
 				const {
 					value
 				} = e.detail
-				this.options.pageCurrent = 1 // 重置分页
-				this.options.pageSizeIndex = value
-				this.getTableData(this.queryStr)
+				this.paginationOptions.pageCurrent = 1 // 重置分页
+				this.paginationOptions.pageSizeIndex = value
+				this.getTableData()
 			},
 
 			changeChartTab(id, index, name) {
-				this.getChartData(this.queryStr, id, name)
+				this.getChartData(id, name)
 			},
 
 			getAllData(query) {
-				this.getPanelData(query)
-				this.getChartData(query)
-				this.getTableData(query)
+				this.getPanelData()
+				this.getChartData()
+				this.getTableData()
 			},
 
-			getChartData(query, field = this.chartTab) {
-				this.chartData = {}
+			getChartData(field = this.chartTab) {
+				// this.chartData = {}
+				let querystr = stringifyQuery(this.query, false, ['uni_platform'])
 				const {
 					pageCurrent
-				} = this.options
+				} = this.paginationOptions
 				const db = uniCloud.database()
 				db.collection('uni-stat-result')
-					.where(query)
+					.where(querystr)
 					.field(`${stringifyField(fieldsMap, field)}, start_time, channel_id`)
 					.groupBy('channel_id,start_time')
 					.groupField(stringifyGroupField(fieldsMap, field))
@@ -265,6 +282,7 @@
 							}
 						}
 						const hasChannels = []
+						console.log('data----',data);
 						data.forEach(item => {
 							if (hasChannels.indexOf(item.channel_id) < 0) {
 								hasChannels.push(item.channel_id)
@@ -275,6 +293,8 @@
 							allChannels = res.result.data
 						}).finally(() => {
 							hasChannels.forEach((channel, index) => {
+								// TODO 需要做个排序，暂时排序还是有问题的
+								// allChannels = allChannels.sort((a,b)=>{ return a.channel_code.localeCompare(b.channel_code)})
 								const c = allChannels.find(item => item._id === channel)
 								const line = options.series[index] = {
 									name: c && c.channel_name || '未知',
@@ -306,6 +326,9 @@
 
 								}
 							})
+
+							console.log(options);
+							options.series = options.series.sort((a,b)=>{ return a.name.localeCompare(b.name)})
 							this.chartData = options
 						})
 					}).catch((err) => {
@@ -317,14 +340,18 @@
 
 			getChannels() {
 				const db = uniCloud.database()
-				return db.collection('uni-stat-app-channels')
-					.get()
+				console.log(this.query);
+				return db.collection('uni-stat-app-channels').where(stringifyQuery({
+					appid:this.query.appid,
+					platform_id:this.query.platform_id
+				})).get()
 			},
 
-			getTableData(query) {
+			getTableData() {
+				const query = stringifyQuery(this.query, false, ['uni_platform'])
 				const {
 					pageCurrent
-				} = this.options
+				} = this.paginationOptions
 				this.loading = true
 				const db = uniCloud.database()
 				db.collection('uni-stat-result')
@@ -359,15 +386,15 @@
 								mapfields(fieldsMap, item, item, 'total_')
 							}
 							this.tableData = []
-							this.options.total = count
+							this.paginationOptions.total = count
 							this.tableData = data
+							this.loading = false
 						})
 
 					}).catch((err) => {
 						console.error(err)
 						// err.message 错误信息
 						// err.code 错误码
-					}).finally(() => {
 						this.loading = false
 					})
 			},
@@ -384,12 +411,14 @@
 			},
 
 			getPanelData() {
-				let cloneQuery = JSON.parse(JSON.stringify(this.query))
-				cloneQuery.dimension = 'day'
-				let query = stringifyQuery(cloneQuery)
+				let query = JSON.parse(JSON.stringify(this.query))
+				query.dimension = 'day'
+				// let query = stringifyQuery(cloneQuery)
+				let querystr = stringifyQuery(query, false, ['uni_platform'])
+				console.log('channel --:',querystr);
 				const db = uniCloud.database()
 				const subTable = db.collection('uni-stat-result')
-					.where(query)
+					.where(querystr)
 					.field(stringifyField(fieldsMap))
 					.groupBy('appid')
 					.groupField(stringifyGroupField(fieldsMap))
@@ -424,7 +453,7 @@
 						uni.showToast({
 							title: '修改成功'
 						})
-						this.getTableData(this.queryStr)
+						this.getTableData()
 					}).catch((err) => {
 						uni.showModal({
 							content: err.message || '请求服务失败',

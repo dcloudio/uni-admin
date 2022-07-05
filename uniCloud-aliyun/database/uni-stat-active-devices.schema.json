@@ -1,6 +1,7 @@
+// 活跃设备表
 {
 	"bsonType": "object",
-	"description": "给周月维度的设备基础统计和留存统计提供数据，每日跑批合并，仅添加本周\/本月首次访问的设备",
+	"description": "给周月维度的设备基础统计和留存统计提供数据，每日跑批合并，仅添加本周/本月首次访问的设备",
 	"required": [],
 	"permission": {
 		"read": false,
@@ -28,8 +29,8 @@
 		},
 		"version_id": {
 			"bsonType": "string",
-			"description": "应用版本ID，对应uni-stat-app-versions._id",
-			"foreignKey": "uni-stat-app-versions._id"
+			"description": "应用版本ID，对应opendb-app-versions._id",
+			"foreignKey": "opendb-app-versions._id"
 		},
 		"device_id": {
 			"bsonType": "string",

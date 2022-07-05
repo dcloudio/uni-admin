@@ -18,7 +18,7 @@ module.exports = class ActiveDevices extends BaseMod {
 		this.channels = []
 		this.versions = []
 	}
-	
+
 	/**
 	 * @desc 活跃设备统计 - 为周统计/月统计提供周活/月活数据
 	 * @param {date|time} date
@@ -143,7 +143,7 @@ module.exports = class ActiveDevices extends BaseMod {
 		}
 		return res
 	}
-	
+
 	/**
 	 * 获取填充数据
 	 * @param {Object} data
@@ -184,12 +184,12 @@ module.exports = class ActiveDevices extends BaseMod {
 
 		// 版本信息
 		let versionInfo = null
-		const versionKey = data.appid + '_' + platformInfo._id + '_' + data.version
+		const versionKey = data.appid + '_' + data.platform + '_' + data.version
 		if (this.versions && this.versions[versionKey]) {
 			versionInfo = this.versions[versionKey]
 		} else {
 			const version = new Version()
-			versionInfo = await version.getVersionAndCreate(data.appid, platformInfo._id, data.version)
+			versionInfo = await version.getVersionAndCreate(data.appid, data.platform, data.version)
 			if (!versionInfo || versionInfo.length === 0) {
 				versionInfo._id = ''
 			}
@@ -257,7 +257,7 @@ module.exports = class ActiveDevices extends BaseMod {
 		if (this.debug) {
 			console.log('monthHaveDeviceList', JSON.stringify(monthHaveDeviceList))
 		}
-		
+
 		//数据填充
 		for (const ui in data.device_ids) {
 			//周活跃数据填充
@@ -290,7 +290,7 @@ module.exports = class ActiveDevices extends BaseMod {
 
 		return true
 	}
-	
+
 	/**
 	 * 日志清理，此处日志为临时数据并不需要自定义清理，默认为固定值即可
 	 */
