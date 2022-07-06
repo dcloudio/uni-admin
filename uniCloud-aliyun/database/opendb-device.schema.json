@@ -11,6 +11,10 @@
 		"_id": {
 			"description": "ID，系统自动生成"
 		},
+		"appid": {
+		  "bsonType": "string",
+		  "description": "DCloud appid"
+		},
 		"device_id": {
 		  "bsonType": "string",
 		  "description": "设备唯一标识"
@@ -73,7 +77,7 @@
 		},
 		"network_model": {
 			"bsonType": "string",
-			"description": "设备网络型号wifi/3G/4G/"
+			"description": "设备网络型号wifi\/3G\/4G\/"
 		},
 		"window_width": {
 			"bsonType": "string",
