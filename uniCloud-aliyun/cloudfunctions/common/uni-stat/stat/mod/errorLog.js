@@ -84,7 +84,7 @@ module.exports = class ErrorLog extends BaseMod {
 				channel: channel.getChannelCode(params),
 				device_id: params.did,
 				uid: params.uid ? params.uid : '',
-				os: platform.getOsName(params.p),
+				os: params.on ? params.on : platform.getOsName(params.p),
 				ua: params.ua ? params.ua : '',
 				page_url: params.url ? params.url : '',
 				space_id: spaceId ? spaceId : '',
