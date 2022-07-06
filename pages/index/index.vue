@@ -286,7 +286,9 @@
 		padding: 10px 0;
 		margin-bottom: 15px;
 	}
-
+	.uni-table-scroll {
+		min-height: auto;
+	}
 	.link-btn-color {
 		color: #007AFF;
 		cursor: pointer;
