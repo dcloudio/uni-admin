@@ -6,7 +6,7 @@
 
 		<view class="text-separated">
 			<text class="strong">uni-portal </text>
-			<text>是 uni-app 提供的一套开箱即用的“统一发布页”，它可以帮你实现：</text>
+			<text>是 uni-app 提供的一套开箱即用的“统一发布页”。</text>
 		</view>
 
 		<view class="text-separated">
