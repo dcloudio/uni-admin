@@ -45,8 +45,8 @@
 		},
 		"page_id": {
 			"bsonType": "string",
-			"description": "页面ID，对应uni-stat-pagesd",
-			"foreignKey": "uni-stat-pagesd"
+			"description": "页面ID，对应uni-stat-pages._id",
+			"foreignKey": "uni-stat-pages._id"
 		},
 		"event_key": {
 			"bsonType": "string",
