@@ -64,6 +64,7 @@ module.exports = class Device extends BaseMod {
 		const platform = new Platform()
 		const fillParams = {
 			device_id: params.did,
+			appid: params.ak,
 			vendor: params.brand ? params.brand : '',
 			push_clientid: params.cid ? params.cid : '',
 			imei: params.imei ? params.imei : '',
@@ -113,6 +114,7 @@ module.exports = class Device extends BaseMod {
 		const platform = new Platform()
 		console.log('device params', params)
 		const newDeviceParams = {
+			appid: params.ak,
 			push_clientid: params.cid ? params.cid : '',
 			imei: params.imei ? params.imei : '',
 			oaid: params.oaid ? params.oaid : '',
@@ -131,8 +133,8 @@ module.exports = class Device extends BaseMod {
 			rom_name: params.rn ? params.rn : '',
 			rom_version: params.rv ? params.rv : '',
 			location_ip: params.ip ? params.ip : '',
-			location_latitude: params.lat ? parseFloat(params.lat) : -1,
-			location_longitude: params.lng ? parseFloat(params.lng) : -1,
+			location_latitude: params.lat ? parseFloat(params.lat) : '',
+			location_longitude: params.lng ? parseFloat(params.lng) : '',
 			location_country: params.cn ? params.cn : '',
 			location_province: params.pn ? params.pn : '',
 			location_city: params.ct ? params.ct : '',
@@ -172,6 +174,6 @@ module.exports = class Device extends BaseMod {
 				msg: 'Parameter "cid" not found'
 			}
 		}
-		return await this.setDevice(param)
+		return await this.setDevice(params)
 	}
 }

@@ -43,6 +43,7 @@ class UniStatReportDataReceiver {
 		const pageParams = []
 		const eventParams = []
 		const errorParams = []
+		const device = new Device()
 		for (const ri in requestParam) {
 			//参数解析
 			const urlParams = parseUrlParams(requestParam[ri], context)
@@ -84,7 +85,7 @@ class UniStatReportDataReceiver {
 				}
 				//unipush信息绑定
 				case 101: {
-					res = await device.bindPush(params)
+					res = await device.bindPush(urlParams)
 					break
 				}
 				default: {
