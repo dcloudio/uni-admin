@@ -71,15 +71,9 @@
 					</uni-tr>
 				</uni-table>
 				<view class="uni-pagination-box">
-					<picker class="select-picker" mode="selector" :value="options.pageSizeIndex"
-						:range="options.pageSizeRange" @change="changePageSize">
-						<button type="default" size="mini" :plain="true">
-							<text>{{pageSize}} 条/页</text>
-							<uni-icons class="select-picker-icon" type="arrowdown" size="12" color="#999"></uni-icons>
-						</button>
-					</picker>
-					<uni-pagination show-icon :page-size="pageSize" :current="options.pageCurrent"
-						:total="options.total" @change="changePageCurrent" />
+					<uni-pagination show-icon show-page-size :page-size="options.pageSize"
+						:current="options.pageCurrent" :total="options.total" @change="changePageCurrent"
+						@pageSizeChange="changePageSize" />
 				</view>
 			</view>
 		</view>
@@ -149,10 +143,9 @@
 					start_time: [],
 				},
 				options: {
+					pageSize: 20,
 					pageCurrent: 1, // 当前页
 					total: 0, // 数据总量
-					pageSizeIndex: 0, // 与 pageSizeRange 一起计算得出 pageSize
-					pageSizeRange: [10, 20, 50, 100],
 				},
 				loading: false,
 				popupLoading: false,
@@ -175,13 +168,6 @@
 			}
 		},
 		computed: {
-			pageSize() {
-				const {
-					pageSizeRange,
-					pageSizeIndex
-				} = this.options
-				return pageSizeRange[pageSizeIndex]
-			},
 			queryStr() {
 				return stringifyQuery(this.query)
 			},
@@ -233,12 +219,9 @@
 				this.getTableData(this.queryStr)
 			},
 
-			changePageSize(e) {
-				const {
-					value
-				} = e.detail
+			changePageSize(pageSize) {
+				this.options.pageSize = pageSize
 				this.options.pageCurrent = 1 // 重置分页
-				this.options.pageSizeIndex = value
 				this.getTableData(this.queryStr)
 			},
 
@@ -417,8 +400,8 @@
 
 				db.collection(mainTableTemp, versions, platforms)
 					.orderBy('last_time', 'desc')
-					.skip((pageCurrent - 1) * this.pageSize)
-					.limit(this.pageSize)
+					.skip((pageCurrent - 1) * this.options.pageSize)
+					.limit(this.options.pageSize)
 					.get({
 						getCount: true
 					})

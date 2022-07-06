@@ -70,17 +70,7 @@
 				</uni-table>
 
 				<view class="uni-pagination-box">
-					<!-- #ifndef MP -->
-					<picker class="select-picker" mode="selector" :value="pageSizeIndex" :range="pageSizeOption"
-						@change="changeSize">
-						<button type="default" size="mini" :plain="true">
-							<text>{{pageSizeOption[pageSizeIndex]}} {{$t('common.piecePerPage')}}</text>
-							<uni-icons class="select-picker-icon" type="arrowdown" size="12" color="#999"></uni-icons>
-						</button>
-					</picker>
-					<!-- #endif -->
-					<uni-pagination show-icon :page-size="pagination.size" v-model="pagination.current"
-						:total="pagination.count" @change="onPageChanged" />
+						:total="pagination.count" @change="onPageChanged" @pageSizeChange="pageSizeChange" />
 				</view>
 			</unicloud-db>
 		</view>
@@ -91,10 +81,6 @@
 	</view>
 </template>
 
-<script>
-	import {
-		enumConverter,
-		filterToWhere
 	} from '../../../js_sdk/validator/opendb-app-list.js';
 	import {
 		mapState
@@ -121,8 +107,6 @@
 				orderby: dbOrderBy,
 				orderByFieldName: "",
 				selectedIndexs: [],
-				pageSizeIndex: 0,
-				pageSizeOption: [20, 50, 100, 500],
 				options: {
 					pageSize,
 					pageCurrent,
@@ -158,19 +142,14 @@
 		computed: {
 			...mapState('app', ['appName', 'appid'])
 		},
-		watch: {
-			pageSizeIndex: {
-				immediate: true,
-				handler(val, old) {
-					this.options.pageSize = this.pageSizeOption[val]
-					this.options.pageCurrent = 1
-					this.$nextTick(() => {
-						this.loadData()
-					})
-				}
-			}
-		},
 		methods: {
+			pageSizeChange(pageSize) {
+				this.options.pageSize = pageSize
+				this.options.pageCurrent = 1
+				this.$nextTick(() => {
+					this.loadData()
+				})
+			},
 			onqueryload(data) {
 				if (!data.find(item => item.appid === this.appid)) {
 					this.addCurrentAppid({
@@ -246,9 +225,7 @@
 			},
 			// 批量删除
 			delTable() {
-				console.warn(
-					"删除应用，只能删除应用表 opendb-app-list 中的应用数据记录，不能删除与应用关联的其他数据，例如：使用升级中心 uni-upgrade-center 等插件产生的数据（应用版本数据等）"
-				)
+				console.warn("删除应用，只能删除应用表 opendb-app-list 中的应用数据记录，不能删除与应用关联的其他数据，例如：使用升级中心 uni-upgrade-center 等插件产生的数据（应用版本数据等）")
 				this.$refs.udb.remove(this.selectedItems(), {
 					success: (res) => {
 						this.$refs.table.clearSelection()
@@ -260,9 +237,7 @@
 				this.selectedIndexs = e.detail.index
 			},
 			confirmDelete(id) {
-				console.warn(
-					"删除应用，只能删除应用表 opendb-app-list 中的应用数据记录，不能删除与应用关联的其他数据，例如：使用升级中心 uni-upgrade-center 等插件产生的数据（应用版本数据等）"
-				)
+				console.warn("删除应用，只能删除应用表 opendb-app-list 中的应用数据记录，不能删除与应用关联的其他数据，例如：使用升级中心 uni-upgrade-center 等插件产生的数据（应用版本数据等）")
 				this.$refs.udb.remove(id, {
 					success: (res) => {
 						this.$refs.table.clearSelection()

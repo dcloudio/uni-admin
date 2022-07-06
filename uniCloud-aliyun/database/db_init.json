@@ -462,5 +462,6 @@
 	"uni-stat-run-errors": {},
 	"uni-stat-session-logs": {},
 	"uni-stat-share-logs": {},
-	"uni-stat-user-session-logs": {}
+	"uni-stat-user-session-logs": {},
+	"opendb-device": {}
 }

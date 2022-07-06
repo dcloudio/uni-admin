@@ -6,6 +6,7 @@ const Page = require('./page')
 const Platform = require('./platform')
 const Channel = require('./channel')
 const UserSessionLog = require('./userSessionLog')
+const Device = require('./device')
 const {
 	DateTime
 } = require('../lib')
@@ -28,12 +29,16 @@ module.exports = class SessionLog extends BaseMod {
 		const platform = new Platform()
 		const dateTime = new DateTime()
 		const channel = new Channel()
+		const device = new Device()
 		let res
 		for (const pk in reportParams) {
 			params = reportParams[pk]
 			res = await this.fill(params)
 			if (res.code) {
 				console.error(res.msg)
+			} else {
+				//添加设备信息
+				await device.setDevice(params)
 			}
 		}
 		return res
@@ -112,7 +117,7 @@ module.exports = class SessionLog extends BaseMod {
 			sdk_version: params.mpsdk ? params.mpsdk : '',
 			platform_version: params.mpv ? params.mpv : '',
 			// 设备相关
-			device_os_name: platform.getOsName(params.p),
+			device_os_name: params.on ? params.on : platform.getOsName(params.p),
 			device_os_version: params.sv ? params.sv : '',
 			device_vendor: params.brand ? params.brand : '',
 			device_model: params.md ? params.md : '',

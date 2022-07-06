@@ -9,6 +9,7 @@ const SessionLog = require('./mod/sessionLog')
 const PageLog = require('./mod/pageLog')
 const EventLog = require('./mod/eventLog')
 const ErrorLog = require('./mod/errorLog')
+const Device = require('./mod/device')
 class UniStatReportDataReceiver {
 	/**
 	 * @description 上报数据调度处理函数
@@ -42,6 +43,7 @@ class UniStatReportDataReceiver {
 		const pageParams = []
 		const eventParams = []
 		const errorParams = []
+		const device = new Device()
 		for (const ri in requestParam) {
 			//参数解析
 			const urlParams = parseUrlParams(requestParam[ri], context)
@@ -79,6 +81,11 @@ class UniStatReportDataReceiver {
 				// 错误日志
 				case 31: {
 					errorParams.push(urlParams)
+					break
+				}
+				//unipush信息绑定
+				case 101: {
+					res = await device.bindPush(urlParams)
 					break
 				}
 				default: {
