@@ -7,7 +7,7 @@
 					<view class="uni-title app-list">
 						<picker @change="(e) => showAppIndex = e.detail.value" :value="showAppIndex"
 							:range="appNameList">
-							<view class="uni-input">
+							<view class="uni-input" style="font-size: 14px;">
 								{{appNameList[showAppIndex]}}
 								<uni-icons type="bottom"></uni-icons>
 							</view>
