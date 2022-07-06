@@ -81,17 +81,8 @@
 					</uni-tr>
 				</uni-table>
 				<view class="uni-pagination-box">
-					<!-- #ifndef MP -->
-					<picker class="select-picker" mode="selector" :value="pageSizeIndex" :range="pageSizeOption"
-						@change="changeSize">
-						<button type="default" size="mini" :plain="true">
-							<text>{{pageSizeOption[pageSizeIndex]}} {{$t('common.piecePerPage')}}</text>
-							<uni-icons class="select-picker-icon" type="arrowdown" size="12" color="#999"></uni-icons>
-						</button>
-					</picker>
-					<!-- #endif -->
-					<uni-pagination show-icon :page-size="pagination.size" v-model="pagination.current"
-						:total="pagination.count" @change="onPageChanged" />
+					<uni-pagination show-iconn show-page-size :page-size="pagination.size" v-model="pagination.current"
+						:total="pagination.count" @change="onPageChanged" @pageSizeChange="changeSize" />
 				</view>
 			</unicloud-db>
 		</view>
@@ -208,18 +199,6 @@
 				this.$refs.udb.loadData()
 			}
 		},
-		watch: {
-			pageSizeIndex: {
-				immediate: true,
-				handler(val, old) {
-					this.options.pageSize = this.pageSizeOption[val]
-					this.options.pageCurrent = 1
-					this.$nextTick(() => {
-						this.loadData()
-					})
-				}
-			}
-		},
 		computed: {
 			tagsData() {
 				const dynamic_data = []
@@ -251,8 +230,12 @@
 				}
 				this.exportExcelData = data
 			},
-			changeSize(e) {
-				this.pageSizeIndex = e.detail.value
+			changeSize(pageSize) {
+				this.options.pageSize = pageSize
+				this.options.pageCurrent = 1
+				this.$nextTick(() => {
+					this.loadData()
+				})
 			},
 			openTagsPopup() {
 				this.$refs.tagsPopup.open()
