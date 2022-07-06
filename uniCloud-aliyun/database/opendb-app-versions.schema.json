@@ -8,7 +8,7 @@
 		"create_env"
 	],
 	"permission": {
-		"read": false,
+		"read": "'READ_OPENDB_APP_VERSIONS' in auth.permission",
 		"create": false,
 		"update": false,
 		"delete": false

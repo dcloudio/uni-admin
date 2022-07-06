@@ -33,7 +33,9 @@
 				</view>
 			</uni-forms>
 			<view class="uni-tips">
-				<text class="uni-tips-text" @click="initAdmin">{{$t('login.text.prompt')}}...</text>
+				<!-- <text class="uni-tips-text" @click="initAdmin">{{$t('login.text.prompt')}}...</text> -->
+				<text>账号：visitor</text>
+				<text style="margin-left: 50px;">密码：123456 </text>
 			</view>
 		</view>
 	</view>
