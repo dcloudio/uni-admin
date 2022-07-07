@@ -6,3 +6,4 @@ uni-admin.param.json
 mock/
 db_query.jql
 pages/system/.DS_Store
+manifest.json
