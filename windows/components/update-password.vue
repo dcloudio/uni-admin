@@ -128,7 +128,7 @@
 					if (res.code === 0) {
 						uni.showModal({
 							title: '提示',
-							content: res.message,
+							content: res.message || '修改成功，请重新登录',
 							showCancel: false,
 							success: (res) => {
 								if (res.confirm) {
