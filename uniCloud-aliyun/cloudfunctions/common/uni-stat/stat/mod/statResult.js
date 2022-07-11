@@ -132,7 +132,7 @@ module.exports = class StatResult extends BaseMod {
 		if (this.debug) {
 			console.log('statRes', JSON.stringify(statRes))
 		}
-		
+
 		this.fillData = []
 		this.composes = []
 		if (statRes.data.length > 0) {
@@ -227,7 +227,7 @@ module.exports = class StatResult extends BaseMod {
 		if (this.debug) {
 			console.log('statRes', JSON.stringify(statRes))
 		}
-		
+
 		this.activeDevices = new ActiveDevices()
 		this.activeUsers = new ActiveUsers()
 		this.fillData = []
@@ -344,7 +344,7 @@ module.exports = class StatResult extends BaseMod {
 			versionInfo = this.versions[data._id.version_id]
 		} else {
 			const version = new Version()
-			versionInfo = await this.getById(version.tableName, data._id.version_id)
+			versionInfo = await this.getById(version.tableName, data._id.version_id, false)
 			if (!versionInfo || versionInfo.length === 0) {
 				versionInfo.version = ''
 			}
@@ -599,7 +599,7 @@ module.exports = class StatResult extends BaseMod {
 				$gte: this.startTime,
 				$lte: this.endTime
 			})
-		
+
 		//总用户数
 		let totalUserCount = await uniIDUsers.getUserCount(matchCondition.appid, matchCondition.platform,
 			matchCondition.channel, matchCondition.version, {
@@ -695,7 +695,7 @@ module.exports = class StatResult extends BaseMod {
 		// const {
 		// 	startTime
 		// } = datetime.getTimeDimensionByType(this.fillType, -1, this.startTime)
-		
+
 		//上一次统计时间
 		let preStatRes = await this.getCollection(this.tableName).where({
 			start_time: {$lt: this.startTime},
@@ -705,11 +705,11 @@ module.exports = class StatResult extends BaseMod {
 		if(preStatRes && preStatRes.data.length > 0) {
 			preStartTime = preStatRes.data[0].start_time
 		}
-		
+
 		if (this.debug) {
 			console.log('replenishStat-preStartTime', preStartTime)
 		}
-		
+
 		if(!preStartTime) {
 			return false
 		}
@@ -930,7 +930,7 @@ module.exports = class StatResult extends BaseMod {
 			if (this.versions && this.versions[resultLog.version_id]) {
 				versionInfo = this.versions[resultLog.version_id]
 			} else {
-				versionInfo = await this.getById(version.tableName, resultLog.version_id)
+				versionInfo = await this.getById(version.tableName, resultLog.version_id, false)
 				if (!versionInfo || versionInfo.length === 0) {
 					versionInfo.version = ''
 				}
@@ -1165,7 +1165,7 @@ module.exports = class StatResult extends BaseMod {
 			})
 		}
 
-		if (res && res.id) {
+		if (res && res.updated) {
 			return {
 				code: 0,
 				msg: 'success'
@@ -1373,7 +1373,7 @@ module.exports = class StatResult extends BaseMod {
 			})
 		}
 
-		if (res && res.id) {
+		if (res && res.updated) {
 			return {
 				code: 0,
 				msg: 'success'
@@ -1478,7 +1478,7 @@ module.exports = class StatResult extends BaseMod {
 			if (this.versions && this.versions[resultLog.version_id]) {
 				versionInfo = this.versions[resultLog.version_id]
 			} else {
-				versionInfo = await this.getById(version.tableName, resultLog.version_id)
+				versionInfo = await this.getById(version.tableName, resultLog.version_id, false)
 				if (!versionInfo || versionInfo.length === 0) {
 					versionInfo.version = ''
 				}
@@ -1676,7 +1676,7 @@ module.exports = class StatResult extends BaseMod {
 			})
 		}
 
-		if (res && res.id) {
+		if (res && res.updated) {
 			return {
 				code: 0,
 				msg: 'success'
@@ -1791,7 +1791,7 @@ module.exports = class StatResult extends BaseMod {
 			if (this.versions && this.versions[resultLog.version_id]) {
 				versionInfo = this.versions[resultLog.version_id]
 			} else {
-				versionInfo = await this.getById(version.tableName, resultLog.version_id)
+				versionInfo = await this.getById(version.tableName, resultLog.version_id, false)
 				if (!versionInfo || versionInfo.length === 0) {
 					versionInfo.version = ''
 				}
@@ -1923,7 +1923,7 @@ module.exports = class StatResult extends BaseMod {
 			})
 		}
 
-		if (res && res.id) {
+		if (res && res.updated) {
 			return {
 				code: 0,
 				msg: 'success'
