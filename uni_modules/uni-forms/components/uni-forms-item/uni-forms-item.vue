@@ -1,13 +1,13 @@
 <template>
 	<view class="uni-forms-item"
 		:class="['is-direction-' + localLabelPos ,border?'uni-forms-item--border':'' ,border && isFirstBorder?'is-first-border':'']">
-		<!-- <slot name="label"> -->
-		<view class="uni-forms-item__label" :class="{'no-label':!label && !isRequired}"
-			:style="{width:localLabelWidth,justifyContent: localLabelAlign}">
-			<text v-if="isRequired" class="is-required">*</text>
-			<text>{{label}}</text>
-		</view>
-		<!-- </slot> -->
+		<slot name="label">
+			<view class="uni-forms-item__label" :class="{'no-label':!label && !isRequired}"
+				:style="{width:localLabelWidth,justifyContent: localLabelAlign}">
+				<text v-if="isRequired" class="is-required">*</text>
+				<text>{{label}}</text>
+			</view>
+		</slot>
 		<!-- #ifndef APP-NVUE -->
 		<view class="uni-forms-item__content">
 			<slot></slot>
@@ -163,7 +163,6 @@
 			}
 		},
 		created() {
-			console.log(this.name);
 			this.init(true)
 			if (this.name && this.form) {
 				// TODO 处理头条vue3 watch不生效的问题
@@ -182,8 +181,9 @@
 					(value, oldVal) => {
 						const isEqual = this.form._isEqual(value, oldVal)
 						// 简单判断前后值的变化，只有发生变化才会发生校验
-						// TODO 如果 oldVal = undefined ，那么大概率是源数据里没有值导致 ，这个情况不哦校验 ,可能不严谨 ，需要在做观察
-						if (!isEqual && oldVal !== undefined) {
+						// TODO  如果 oldVal = undefined ，那么大概率是源数据里没有值导致 ，这个情况不哦校验 ,可能不严谨 ，需要在做观察
+						// fix by mehaotian 暂时取消 && oldVal !== undefined ，如果formData 中不存在，可能会不校验
+						if (!isEqual) {
 							const val = this.itemSetValue(value)
 							this.onFieldChange(val, false)
 						}
@@ -216,7 +216,10 @@
 				this.userRules = rules
 				this.init(false)
 			},
-
+			// 兼容老版本表单组件
+			setValue() {
+				// console.log('setValue 方法已经弃用，请使用最新版本的 uni-forms 表单组件以及其他关联组件。');
+			},
 			/**
 			 * 外部调用方法
 			 * 校验数据
@@ -477,6 +480,7 @@
 			padding: 0 12px 0 0;
 			/* #ifndef APP-NVUE */
 			vertical-align: middle;
+			flex-shrink: 0;
 			/* #endif */
 
 			/* #ifndef APP-NVUE */
@@ -490,8 +494,8 @@
 
 		&__content {
 			/* #ifndef MP-TOUTIAO */
-			display: flex;
-			align-items: center;
+			// display: flex;
+			// align-items: center;
 			/* #endif */
 			position: relative;
 			font-size: 14px;
@@ -503,7 +507,8 @@
 
 			/* #ifndef APP || H5 || MP-WEIXIN || APP-NVUE */
 			// TODO 因为小程序平台会多一层标签节点 ，所以需要在多余节点继承当前样式
-			&>uni-easyinput {
+			&>uni-easyinput,
+			&>uni-data-picker {
 				width: 100%;
 			}
 

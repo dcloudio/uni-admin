@@ -197,7 +197,7 @@
 			return {
 				mpExtra: ' ',
 				mpAccordionStatus: 1,
-				labelWidth: '75'
+				labelWidth: '75px'
 			}
 		},
 		onLoad(e) {

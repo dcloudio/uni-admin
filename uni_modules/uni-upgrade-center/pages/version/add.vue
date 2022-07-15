@@ -51,7 +51,7 @@
 
 			<uni-forms-item v-if="formData.store_list" name="store_list" style="height: 0px;"></uni-forms-item>
 
-			<uni-forms-item label="Android应用市场" labelWidth="120" v-if="!isiOS && !isWGT">
+			<uni-forms-item label="Android应用市场" labelWidth="125px" v-if="!isiOS && !isWGT && formData.store_list.length">
 				<view style="flex: 1;">
 					<template v-for="(item,index) in formData.store_list">
 						<view :key="item._create_date">
