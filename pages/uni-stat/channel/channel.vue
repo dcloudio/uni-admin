@@ -30,7 +30,8 @@
 				<uni-stat-panel :items="panelData" class="uni-stat-panel" />
 				<uni-stat-tabs type="box" v-model="chartTab" :tabs="chartTabs" class="mb-l" @change="changeChartTab" />
 				<view class="uni-charts-box">
-					<qiun-data-charts type="area" :chartData="chartData" echartsH5 echartsApp tooltipFormat="tooltipCustom" />
+					<qiun-data-charts type="area" :chartData="chartData" echartsH5 echartsApp
+						tooltipFormat="tooltipCustom" />
 				</view>
 			</view>
 
@@ -60,15 +61,9 @@
 					</uni-tr>
 				</uni-table>
 				<view class="uni-pagination-box">
-					<picker class="select-picker" mode="selector" :value="paginationOptions.pageSizeIndex"
-						:range="paginationOptions.pageSizeRange" @change="changePageSize">
-						<button type="default" size="mini" :plain="true">
-							<text>{{pageSize}} 条/页</text>
-							<uni-icons class="select-picker-icon" type="arrowdown" size="12" color="#999"></uni-icons>
-						</button>
-					</picker>
-					<uni-pagination show-icon :page-size="pageSize" :current="paginationOptions.pageCurrent"
-						:total="paginationOptions.total" @change="changePageCurrent" />
+					<uni-pagination show-icon show-page-size :page-size="paginationOptions.pageSize"
+						:current="paginationOptions.pageCurrent" :total="paginationOptions.total"
+						@change="changePageCurrent" @pageSizeChange="changePageSize" />
 				</view>
 			</view>
 		</view>
@@ -120,10 +115,9 @@
 				},
 				// 分页数据
 				paginationOptions: {
+					pageSize: 20,
 					pageCurrent: 1, // 当前页
 					total: 0, // 数据总量
-					pageSizeIndex: 0, // 与 pageSizeRange 一起计算得出 pageSize
-					pageSizeRange: [10, 20, 50, 100],
 				},
 				// 加载状态
 				loading: false,
@@ -140,13 +134,6 @@
 			}
 		},
 		computed: {
-			pageSize() {
-				const {
-					pageSizeRange,
-					pageSizeIndex
-				} = this.paginationOptions
-				return pageSizeRange[pageSizeIndex]
-			},
 			chartTabs() {
 				const tabs = []
 				fieldsMap.forEach(item => {
@@ -226,12 +213,9 @@
 				this.getTableData()
 			},
 
-			changePageSize(e) {
-				const {
-					value
-				} = e.detail
+			changePageSize(pageSize) {
+				this.paginationOptions.pageSize = pageSize
 				this.paginationOptions.pageCurrent = 1 // 重置分页
-				this.paginationOptions.pageSizeIndex = value
 				this.getTableData()
 			},
 
@@ -282,7 +266,7 @@
 							}
 						}
 						const hasChannels = []
-						console.log('data----',data);
+						console.log('data----', data);
 						data.forEach(item => {
 							if (hasChannels.indexOf(item.channel_id) < 0) {
 								hasChannels.push(item.channel_id)
@@ -328,7 +312,9 @@
 							})
 
 							console.log(options);
-							options.series = options.series.sort((a,b)=>{ return a.name.localeCompare(b.name)})
+							options.series = options.series.sort((a, b) => {
+								return a.name.localeCompare(b.name)
+							})
 							this.chartData = options
 						})
 					}).catch((err) => {
@@ -342,8 +328,8 @@
 				const db = uniCloud.database()
 				console.log(this.query);
 				return db.collection('uni-stat-app-channels').where(stringifyQuery({
-					appid:this.query.appid,
-					platform_id:this.query.platform_id
+					appid: this.query.appid,
+					platform_id: this.query.platform_id
 				})).get()
 			},
 
@@ -360,8 +346,8 @@
 					.groupBy('appid, channel_id')
 					.groupField(stringifyGroupField(fieldsMap))
 					.orderBy('new_device_count', 'desc')
-					.skip((pageCurrent - 1) * this.pageSize)
-					.limit(this.pageSize)
+					.skip((pageCurrent - 1) * this.paginationOptions.pageSize)
+					.limit(this.paginationOptions.pageSize)
 					.get({
 						getCount: true
 					})
@@ -415,7 +401,7 @@
 				query.dimension = 'day'
 				// let query = stringifyQuery(cloneQuery)
 				let querystr = stringifyQuery(query, false, ['uni_platform'])
-				console.log('channel --:',querystr);
+				console.log('channel --:', querystr);
 				const db = uniCloud.database()
 				const subTable = db.collection('uni-stat-result')
 					.where(querystr)

@@ -5,3 +5,5 @@ uni-admin.param.json
 .hbuilderx/
 mock/
 db_query.jql
+pages/system/.DS_Store
+manifest.json

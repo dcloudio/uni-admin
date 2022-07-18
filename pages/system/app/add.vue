@@ -1,99 +1,483 @@
 <template>
-  <view class="uni-container">
-    <uni-forms ref="form" :value="formData" :rules="rules"  validateTrigger="bind" labelWidth="90">
-      <uni-forms-item name="appid" label="AppID" required>
-        <uni-easyinput placeholder="应用AppID" v-model="formData.appid"></uni-easyinput>
-      </uni-forms-item>
-      <uni-forms-item name="name" label="应用名称" required>
-        <uni-easyinput placeholder="应用名称" v-model="formData.name"></uni-easyinput>
-      </uni-forms-item>
-      <uni-forms-item name="description" label="应用描述">
-        <textarea placeholder="应用描述" @input="binddata('description', $event.detail.value)" class="uni-textarea-border" v-model="formData.description"></textarea>
-      </uni-forms-item>
-      <view class="uni-button-group">
-        <button type="primary" class="uni-button" style="width: 100px;" @click="submit">{{$t('common.button.submit')}}</button>
-        <navigator open-type="navigateBack" style="margin-left: 15px;">
-            <button class="uni-button" style="width: 100px;">{{$t('common.button.back')}}</button>
-        </navigator>
-      </view>
-    </uni-forms>
-  </view>
+	<view class="uni-container">
+		<uni-notice-bar style="margin: 0;" showIcon text="本页面信息，在应用发布、app升级模块中，都会关联使用，请认真填写" />
+		<uni-forms ref="form" v-model="formData" validateTrigger="bind" style="max-width: 792px;"
+			:labelWidth="labelWidth" :rules="rules">
+			<uni-card title="基础信息">
+				<uni-forms-item class="forn-item__flex" name="appid" label="AppID" required>
+					<uni-easyinput :disabled="isEdit" placeholder="应用的AppID" v-model="formData.appid" trim="both">
+					</uni-easyinput>
+				</uni-forms-item>
+				<uni-forms-item name="name" label="应用名称" required>
+					<uni-easyinput :disabled="isEdit" placeholder="应用名称" v-model="formData.name" trim="both">
+					</uni-easyinput>
+				</uni-forms-item>
+				<uni-forms-item name="introduction" label="应用简介">
+					<uni-easyinput placeholder="应用简介" v-model="formData.introduction" trim="both"></uni-easyinput>
+				</uni-forms-item>
+				<uni-forms-item name="description" label="应用描述">
+					<textarea :maxlength="-1" auto-height placeholder="应用描述"
+						@input="binddata('description', $event.detail.value)" class="uni-textarea-border"
+						v-model="formData.description"></textarea>
+				</uni-forms-item>
+			</uni-card>
+
+			<uni-card title="图标素材">
+				<uni-forms-item label="应用图标">
+					<uni-file-picker v-model="middleware_img.icon_url" :image-styles="{'width' : '200rpx'}"
+						return-type="object" file-mediatype="image" limit="1" mode="grid"
+						@success="(res) => iconUrlSuccess(res,'icon_url')"
+						@delete="(res) => iconUrlDelete(res,'icon_url')">
+					</uni-file-picker>
+				</uni-forms-item>
+				<uni-forms-item label="应用截图">
+					<uni-file-picker v-model="screenshotList" file-mediatype="image" mode="grid"
+						:image-styles="{'height': '500rpx','width' : '300rpx'}" @delete="iconUrlDelete">
+					</uni-file-picker>
+				</uni-forms-item>
+			</uni-card>
+
+			<uni-card class="app_platform" title="App 信息">
+				<view v-if="isEdit" class="extra-button">
+					<button type="primary" plain size="mini" @click="autoFillApp">自动填充</button>
+					<show-info :left="-10" :top="-35" width="230" content="从App升级中心同步应用安装包信息" />
+				</view>
+				<view v-for="item in appPlatformKeys" :key="item">
+					<checkbox-group @change="({detail:{value}}) => {setPlatformChcekbox(item,!!value.length)}">
+						<label class="title_padding" :class="{'font_bold':getPlatformChcekbox(item)}">
+							<checkbox :value="item" :checked="middleware_checkbox[item]" />
+							<text>{{appPlatformValues[item]}}</text>
+						</label>
+					</checkbox-group>
+					<template v-if="getPlatformChcekbox(item)">
+						<uni-forms-item label="名称">
+							<uni-easyinput v-model="formData[item].name" trim="both"></uni-easyinput>
+						</uni-forms-item>
+						<uni-forms-item class="forn-item__flex" v-if="item === 'app_android'" label="上传apk包">
+							<uni-file-picker v-model="appPackageInfo" file-extname="apk" :disabled="hasPackage"
+								returnType="object" file-mediatype="all" limit="1"
+								@success="(res) => iconUrlSuccess(res, `${item}.url`)"
+								@delete="(res) => iconUrlDelete(res,`${item}.url`)" style="flex:1;">
+								<view class="flex">
+									<button type="primary" size="mini" @click="selectFile"
+										style="margin: 0;">选择文件</button>
+									<text style="padding: 10px;font-size: 12px;color: #666;">
+										上传apk到当前服务空间的云存储中，上传成功后，会自动使用云存储地址填充下载链接
+									</text>
+								</view>
+							</uni-file-picker>
+							<text v-if="hasPackage" style="padding-left: 20px;color: #a8a8a8;">
+								{{appPackageInfo.size && Number(appPackageInfo.size / 1024 / 1024).toFixed(2) + 'M'}}
+							</text>
+						</uni-forms-item>
+						<uni-forms-item label="下载链接">
+							<uni-easyinput :maxlength="-1" v-model="formData[item].url" trim="both"></uni-easyinput>
+						</uni-forms-item>
+					</template>
+				</view>
+
+				<uni-popup ref="scheme" background-color="#fff">
+					<view class="popup-content">
+						<text style="font-size: 15px;font-weight: bold;">
+							常见的应用商店 scheme 地址
+						</text>
+						<view></view>
+						<text>
+							应用宝：tmast://appdetails?r=XXX&pname=xxx；
+							小米：mimarket://details?id=com.xx.xx；
+							三星：samsungapps://ProductDetail/com.xx.xx；
+							华为：appmarket://details?id=com.xx.xx；
+							oppo：oppomarket://details?packagename=com.xx.xx；
+							vivo：vivomarket://details?id=com.xx.xx；
+						</text>
+					</view>
+				</uni-popup>
+				<!-- TODO scheme 跳转文章：介绍 scheme 概念，汇总常见 scheme，可以带截图提示在哪儿查看 -->
+				<uni-forms-item name="store_schemes" label="Android应用市场" labelWidth="120">
+					<view style="height: 100%;">
+						<view class="flex" style="justify-content: end;">
+							<text class="pointer"
+								style="text-decoration: underline;color: #666;font-size: 12px;padding-left: 10rpx;"
+								@click="$refs.scheme.open('center')">常见应用商店schema汇总</text>
+							<button type="primary" size="mini" @click="addStoreScheme"
+								style="margin: 0 0 0 10px;">新增</button>
+						</view>
+
+						<view v-for="(item,index) in formData.store_list" :key="item.id">
+							<uni-card title="" style="margin: 20px 0px 0px 0px;">
+								<view style="display: flex;">
+									<view style="padding-left: 10px;">
+										<button type="warn" size="mini" @click="deleteStore(index, item)">删除</button>
+									</view>
+								</view>
+								<uni-forms-item label="商店名称">
+									<uni-easyinput v-model="item.name" trim="both"></uni-easyinput>
+								</uni-forms-item>
+								<uni-forms-item label="Scheme">
+									<uni-easyinput :maxlength="-1" v-model="item.scheme" trim="both"></uni-easyinput>
+								</uni-forms-item>
+							</uni-card>
+						</view>
+					</view>
+				</uni-forms-item>
+			</uni-card>
+
+			<uni-card class="mp_platform" title="小程序/快应用信息">
+				<!-- <view class="extra-button">
+					<button type="primary" plain size="mini" @click="mpAccordion">{{mpExtra}}</button>
+					<show-info :left="40" :top="-20" content="折叠状态下，即使勾选也不会显示详情" />
+				</view> -->
+				<view v-for="item in Object.keys(mpPlatform)" :key="item">
+					<checkbox-group @change="({detail:{value}}) => {setPlatformChcekbox(item,!!value.length)}">
+						<label class="title_padding" :class="{'font_bold':getPlatformChcekbox(item)}">
+							<checkbox :value="item" :checked="middleware_checkbox[item]" />
+							<text>{{mpPlatform[item]}}</text>
+						</label>
+					</checkbox-group>
+					<template v-if="mpAccordionStatus && getPlatformChcekbox(item)">
+						<uni-forms-item label="名称">
+							<uni-easyinput v-model="formData[item].name" trim="both"></uni-easyinput>
+						</uni-forms-item>
+						<uni-forms-item :label="mpPlatform[item].slice(-3) + '码'">
+							<uni-file-picker v-model="middleware_img[item]" :image-styles="{'width' : '200rpx'}"
+								return-type="object" file-mediatype="image" limit="1" mode="grid"
+								@success="(res) => iconUrlSuccess(res, `${item}.qrcode_url`)"
+								@delete="(res) => iconUrlDelete(res, `${item}.qrcode_url`)">
+							</uni-file-picker>
+						</uni-forms-item>
+					</template>
+				</view>
+			</uni-card>
+
+			<uni-card title="web信息">
+				<uni-forms-item label="链接地址">
+					<uni-easyinput :maxlength="-1" v-model="formData.h5.url" trim="both"></uni-easyinput>
+					<span style="font-size: 13px; color: #999;">如需免费的前端网页托管，请开通 <a style="color: inherit;"
+							href="https://unicloud.dcloud.net.cn">uniCloud</a> ，创建服务空间，并在 “前端网页托管”
+						里上传你的网页</span>
+				</uni-forms-item>
+			</uni-card>
+
+			<uni-card :isShadow="false" v-if="isEdit">
+				<text><text style="font-weight: bold;">提示：</text>保存后需重新生成发布页</text>
+			</uni-card>
+
+			<view class="uni-button-group">
+				<button type="primary" class="uni-button" style="width: 100px;" @click="submit">保存</button>
+				<navigator open-type="navigateBack" style="margin-left: 15px;">
+					<button class="uni-button" style="width: 100px;">返回</button>
+				</navigator>
+			</view>
+		</uni-forms>
+	</view>
 </template>
 
 <script>
-  import { validator } from '../../../js_sdk/validator/opendb-app-list.js';
+	import mixin from './mixin/publish_add_detail_mixin.js';
 
-  const db = uniCloud.database();
-  const dbCmd = db.command;
-  const dbCollectionName = 'opendb-app-list';
+	const db = uniCloud.database();
+	const dbCmd = db.command;
+	const dbCollectionName = 'opendb-app-list';
 
-  function getValidator(fields) {
-    let result = {}
-    for (let key in validator) {
-      if (fields.includes(key)) {
-        result[key] = validator[key]
-      }
-    }
-    return result
-  }
+	function randomString(len) {
+		//设定要生成的字符串包含的字符
+		var array = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T',
+			'U', 'V', 'W', 'X', 'Y', 'Z'
+		];
+		var result = '';
+		for (var i = 0; i < len; i++) {
+			result += array[Math.floor(Math.random() * 26)];
+		}
+		return result;
+	}
 
-  export default {
-    data() {
-      let formData = {
-        "appid": "",
-        "name": "",
-        "description": "",
-        "create_date": null
-      }
-      return {
-        formData,
-        formOptions: {},
-        rules: {
-          ...getValidator(Object.keys(formData))
-        }
-      }
-    },
-    onReady() {
-      this.$refs.form.setRules(this.rules)
-    },
-    methods: {
-      /**
-       * 触发表单提交
-       */
-      submit() {
-        uni.showLoading({
-          mask: true
-        })
-        this.$refs.form.validate().then((res) => {
-          this.submitForm(res)
-        }).catch(() => {
-          uni.hideLoading()
-        })
-      },
+	export default {
+		mixins: [mixin],
+		data() {
+			return {
+				mpExtra: ' ',
+				mpAccordionStatus: 1,
+				labelWidth: '75px'
+			}
+		},
+		onLoad(e) {
+			if (e.id) {
+				this.isEdit = true
+				// #ifdef H5
+				document.title = this.$parent.$parent.navigationBar.titleText = '修改应用'
+				// #endif
+				// this.formDataId = e.id
+				this.setFormData('appid', e.id)
+				this.getDetail(e.id)
+			} else {
+				// 填写应用名称后，给各平台设置相同的名称
+				this.$watch('formData.name', (name) => {
+					this.platFormKeys.forEach(key => {
+						this.setFormData(`${key}.name`, name)
+					})
+				})
+			}
+		},
+		onReady() {
+			this.mpExtra = '折叠'
+		},
+		methods: {
+			// 更新线上版本的 store 记录
+			resolvestableVersionStoreList() {
+				const modifiedMap = {}
+				const modifiedKeys = []
+				this.formData.store_list.forEach((item, index) => {
+					modifiedKeys.push(item.id)
+					modifiedMap[item.id] = index
+				})
 
-      submitForm(value) {
-        // 使用 clientDB 提交数据
-        db.collection(dbCollectionName).add(value).then((res) => {
-          uni.showToast({
-            title: '新增成功'
-          })
-          this.getOpenerEventChannel().emit('refreshData')
-          setTimeout(() => uni.navigateBack(), 500)
-        }).catch((err) => {
-          uni.showModal({
-            content: err.message || '请求服务失败',
-            showCancel: false
-          })
-        }).finally(() => {
-          uni.hideLoading()
-        })
-      }
-    }
-  }
+				return this.fetchAppInfo(this.getFormData('appid'), 'Android')
+					.then(res => {
+						if (!res.success) return
+						if (res.store_list) {
+							const originalMap = {}
+							const originalKeys = []
+							res.store_list.forEach((item, index) => {
+								originalKeys.push(item.id)
+								originalMap[item.id] = index
+							})
+
+							modifiedKeys.forEach((key, index) => {
+								const afterItem = this.formData.store_list[modifiedMap[key]]
+								// 新增
+								if (originalKeys.indexOf(key) === -1) {
+									res.store_list.push(afterItem)
+								} else {
+									// 修改
+									res.store_list[originalMap[key]].name = afterItem.name
+									res.store_list[originalMap[key]].scheme = afterItem.scheme
+								}
+							})
+
+							// 删除
+							for (let i = 0; i < res.store_list.length; i++) {
+								let id = res.store_list[i].id
+								if (this.deletedStore.indexOf(id) !== -1 && modifiedKeys.indexOf(id) === -1) {
+									res.store_list.splice(i, 1)
+									i--
+								}
+							}
+						} else {
+							res.store_list = this.formData.store_list
+						}
+
+						return this.updateAppVersion(res._id, {
+							store_list: res.store_list
+						})
+					})
+			},
+			updateAppVersion(id, value) {
+				return db.collection('opendb-app-versions').doc(id).update(value)
+			},
+			/**
+			 * 验证表单并提交
+			 */
+			submit() {
+				uni.showLoading({
+					mask: true
+				})
+
+				this.formatFormData()
+
+				this.$refs.form.validate(this.keepItems).then((res) => {
+					return this.submitForm(res)
+				}).catch((err) => {
+					console.error(err)
+				}).finally(() => {
+					uni.hideLoading()
+				})
+			},
+			/**
+			 * 提交表单
+			 */
+			submitForm(value) {
+				// 使用 clientDB 提交数据
+				(
+					this.isEdit ?
+					this.requestCloudFunction('setNewAppData', {
+						id: this.formDataId,
+						value
+					}) :
+					db.collection(dbCollectionName).add(value)
+				)
+				.then((res) => {
+						if (this.isEdit) return this.resolvestableVersionStoreList()
+					})
+					.then(() => {
+						uni.showToast({
+							title: `${this.isEdit ? '更新' : '新增'}成功`
+						})
+						this.getOpenerEventChannel().emit('refreshData')
+						setTimeout(() => uni.navigateBack(), 500)
+					})
+					.catch((err) => {
+						uni.showModal({
+							content: err.message || '请求服务失败',
+							showCancel: false
+						})
+					})
+			},
+			/**
+			 * 获取表单数据
+			 * @param {Object} id
+			 */
+			getDetail(id) {
+				uni.showLoading({
+					mask: true
+				})
+				db.collection(dbCollectionName).where({
+					appid: id
+				}).get().then((res) => {
+					const data = res.result.data[0]
+					if (data) {
+						this.formDataId = data._id
+						this.initFormData(data)
+					} else {
+						this.autoFill()
+						this.autoFillApp()
+					}
+				}).catch((err) => {
+					uni.showModal({
+						content: err.message || '请求服务失败',
+						showCancel: false
+					})
+				}).finally(() => {
+					uni.hideLoading()
+				})
+			},
+			mpAccordion() {
+				if (this.mpAccordionStatus) {
+					this.mpExtra = '展开'
+					this.mpAccordionStatus = 0
+				} else {
+					this.mpExtra = '折叠'
+					this.mpAccordionStatus = 1
+				}
+			},
+			addStoreScheme() {
+				this.formData.store_list.push({
+					enable: false,
+					priority: 0,
+					id: randomString(5) + '_' + Date.now()
+				})
+			},
+			deleteStore(index, item) {
+				if (item.scheme && item.scheme.trim().length && this.isEdit) {
+					uni.showModal({
+						content: '是否同步删除线上版本此条商店记录？',
+						success: (res) => {
+							const storeItem = this.formData.store_list.splice(index, 1)[0]
+							if (storeItem && res.confirm) {
+								this.deletedStore.push(storeItem.id)
+							}
+						}
+					})
+				} else {
+					this.formData.store_list.splice(index, 1)[0]
+				}
+			}
+		}
+	}
 </script>
 
-<style>
-::v-deep .uni-forms-item__label {
-	width: 90px !important;
-}
+<style lang="scss">
+	.title_padding {
+		padding-bottom: 15px;
+		display: block;
+	}
+
+	.font_bold {
+		font-weight: bold;
+	}
+
+	.uni-button-group {
+		& button {
+			margin-left: 15px;
+		}
+
+		& button:first-child {
+			margin-left: 0px;
+		}
+	}
+
+	::v-deep {
+		.forn-item__flex {
+			.uni-forms-item__content {
+				display: flex;
+				align-items: center;
+
+				.custom-button {
+					height: 100%;
+					margin-left: 10rpx;
+					line-height: 36px;
+				}
+			}
+		}
+
+		.uni-card {
+			padding: 0 !important;
+			cursor: auto;
+		}
+
+		.uni-card__header {
+			background-color: #eee;
+		}
+
+		.uni-card__header-title-text {
+			font-weight: bold;
+		}
+	}
+
+	.extra-button {
+		display: flex;
+		align-items: center;
+		margin-bottom: 15px;
+
+		button {
+			margin: 0;
+		}
+	}
+
+	.flex-center-r {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+	}
+
+	.tip {
+		display: flex;
+		flex-direction: column;
+		align-items: flex-start;
+		background-color: #f3f5f7;
+		color: #2c3e50;
+		padding: 10px;
+		font-size: 32rpx;
+
+		border: {
+			color: #e96900;
+			left-width: 8px;
+			left-style: solid;
+		}
+
+		text {
+			margin-right: 15px;
+		}
+
+		.custom-button {
+			margin-left: 0px;
+		}
+	}
+
+	.popup-content {
+		padding: 30rpx;
+	}
+
+	::v-deep .uni-file-picker__files {
+		max-width: 100%;
+	}
 </style>

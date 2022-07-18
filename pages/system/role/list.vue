@@ -56,17 +56,8 @@
 					</uni-tr>
 				</uni-table>
 				<view class="uni-pagination-box">
-					<!-- #ifndef MP -->
-					<picker class="select-picker" mode="selector" :value="pageSizeIndex" :range="pageSizeOption"
-						@change="changeSize">
-						<button type="default" size="mini" :plain="true">
-							<text>{{pageSizeOption[pageSizeIndex]}} {{$t('common.piecePerPage')}}</text>
-							<uni-icons class="select-picker-icon" type="arrowdown" size="12" color="#999"></uni-icons>
-						</button>
-					</picker>
-					<!-- #endif -->
-					<uni-pagination show-icon :page-size="pagination.size" v-model="pagination.current"
-						:total="pagination.count" @change="onPageChanged" />
+					<uni-pagination show-icon show-page-size :page-size="pagination.size" v-model="pagination.current"
+						:total="pagination.count" @change="onPageChanged" @pageSizeChange="changeSize"/>
 				</view>
 			</unicloud-db>
 		</view>
@@ -102,8 +93,6 @@
 				orderby: dbOrderBy,
 				orderByFieldName: "",
 				selectedIndexs: [],
-				pageSizeIndex: 0,
-				pageSizeOption: [20, 50, 100, 500],
 				options: {
 					pageSize,
 					pageCurrent,
@@ -134,15 +123,6 @@
 		onReady() {
 			this.$refs.udb.loadData()
 		},
-		watch: {
-			pageSizeIndex: {
-				immediate: true,
-				handler(val, old) {
-					this.options.pageSize = this.pageSizeOption[val]
-					this.options.pageCurrent = 1
-				}
-			}
-		},
 		methods: {
 			onqueryload(data) {
 				for (var i = 0; i < data.length; i++) {
@@ -152,8 +132,9 @@
 				}
 				this.exportExcelData = data
 			},
-			changeSize(e) {
-				this.pageSizeIndex = e.detail.value
+			changeSize(pageSize) {
+				this.options.pageSize = pageSize
+				this.options.pageCurrent = 1
 				this.$nextTick(() => {
 					this.loadData()
 				})
