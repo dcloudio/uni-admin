@@ -99,7 +99,7 @@ const validator = {
 		}, {
 			"format": "string"
 		}],
-		"label": "包地址"
+		"label": "链接"
 	},
 	"stable_publish": {
 		"rules": [{

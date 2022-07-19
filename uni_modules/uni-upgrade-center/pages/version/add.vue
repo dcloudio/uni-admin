@@ -44,8 +44,8 @@
 				<text v-if="hasPackage"
 					style="padding-left: 20px;color: #a8a8a8;">{{Number(appFileList.size / 1024 / 1024).toFixed(2)}}M</text>
 			</uni-forms-item>
-			<uni-forms-item name="url" :label="isiOS ? 'AppStore' : '下载链接'" required>
-				<uni-easyinput placeholder="下载链接" v-model="formData.url" :maxlength="-1" />
+			<uni-forms-item key="url" name="url" :label="isiOS ? 'AppStore' : '下载链接'" required>
+				<uni-easyinput placeholder="链接" v-model="formData.url" :maxlength="-1" />
 				<!-- <show-info :top="-80" :content="uploadFileContent"></show-info> -->
 			</uni-forms-item>
 

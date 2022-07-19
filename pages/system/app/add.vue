@@ -70,7 +70,7 @@
 								{{appPackageInfo.size && Number(appPackageInfo.size / 1024 / 1024).toFixed(2) + 'M'}}
 							</text>
 						</uni-forms-item>
-						<uni-forms-item label="下载链接">
+						<uni-forms-item :label="item === 'app_ios' ? 'AppStore' : '下载链接'">
 							<uni-easyinput :maxlength="-1" v-model="formData[item].url" trim="both"></uni-easyinput>
 						</uni-forms-item>
 					</template>
@@ -92,13 +92,12 @@
 						</text>
 					</view>
 				</uni-popup>
-				<!-- TODO scheme 跳转文章：介绍 scheme 概念，汇总常见 scheme，可以带截图提示在哪儿查看 -->
 				<uni-forms-item name="store_schemes" label="Android应用市场" labelWidth="120">
 					<view style="height: 100%;">
 						<view class="flex" style="justify-content: end;">
 							<text class="pointer"
 								style="text-decoration: underline;color: #666;font-size: 12px;padding-left: 10rpx;"
-								@click="$refs.scheme.open('center')">常见应用商店schema汇总</text>
+								@click="schemeDemo">常见应用商店schema汇总</text>
 							<button type="primary" size="mini" @click="addStoreScheme"
 								style="margin: 0 0 0 10px;">新增</button>
 						</view>
@@ -197,7 +196,7 @@
 			return {
 				mpExtra: ' ',
 				mpAccordionStatus: 1,
-				labelWidth: '75px'
+				labelWidth: '80px'
 			}
 		},
 		onLoad(e) {
@@ -380,6 +379,14 @@
 				} else {
 					this.formData.store_list.splice(index, 1)[0]
 				}
+			},
+			schemeDemo() {
+				// #ifndef H5
+				$refs.scheme.open('center')
+				// #endif
+				// #ifdef H5
+				window.open("https://ask.dcloud.net.cn/article/39960", '_blank')
+				// #endif
 			}
 		}
 	}

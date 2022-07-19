@@ -103,8 +103,8 @@
 		},
 		"url": {
 			"bsonType": "string",
-			"description": "可下载安装包地址",
-			"label": "包地址"
+			"description": "可下载或跳转的链接",
+			"label": "链接"
 		},
 		"stable_publish": {
 			"bsonType": "bool",

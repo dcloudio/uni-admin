@@ -42,7 +42,7 @@
 							@sort-change="sortChange($event, 'create_date')">创建时间</uni-th>
 						<uni-th align="center" :width="buttonThWidth">操作</uni-th>
 					</uni-tr>
-					<uni-tr v-for="(item,index) in data" :key="index">
+					<uni-tr v-for="(item,index) in data" :key="index" :disabled="item.appid === appid">
 						<uni-td align="center">{{item.appid}}</uni-td>
 						<uni-td align="center">{{item.name}}</uni-td>
 						<uni-td align="left">{{item.description}}</uni-td>
@@ -92,7 +92,7 @@
 
 	const db = uniCloud.database()
 	// 表查询配置
-	const dbOrderBy = '' // 排序字段
+	const dbOrderBy = 'create_date' // 排序字段
 	const dbSearchFields = [] // 模糊搜索字段，支持模糊搜索的字段列表
 	// 分页配置
 	const pageSize = 20

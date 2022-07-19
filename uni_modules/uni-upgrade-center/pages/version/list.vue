@@ -154,7 +154,10 @@
 			appid
 		}) {
 			await this.getAppList()
-			if (!this.appList.length) return
+			if (!this.appList.length) {
+				this.showModalToAppManager()
+				return
+			}
 			this.loaded = true
 
 			this.appList.forEach((item, index) => {

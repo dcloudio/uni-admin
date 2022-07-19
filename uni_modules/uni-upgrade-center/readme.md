@@ -1,3 +1,11 @@
+## 升级中心插件与 `uni-admin` 版本关系
+
+uni-admin 1.9.3+ 已内置，此插件不再维护
+
+### `uni-admin < 1.9.0`：请前往 [Gitee](https://gitee.com/dcloud/uni-upgrade-center/releases) 下载 `tag v0.4.2` 版本使用
+### `1.9.0 <= uni-admin < 1.9.2` ：请前往 [Gitee](https://gitee.com/dcloud/uni-upgrade-center/releases) 下载 `tag v0.5.1` 版本使用
+### `uni-admin >= 1.9.3` ：uni-admin 已内置 升级中心，直接使用即可 [详情](https://uniapp.dcloud.io/uniCloud/admin.html#app-manager)。并且云函数 `upgrade-center` 废弃，使用 `uni-upgrade-center` 云函数。
+
 # uni-upgrade-center - Admin
 
 ### 概述
@@ -5,8 +13,6 @@
 > 统一管理App及App在`Android`、`iOS`平台上`App安装包`和`wgt资源包`的发布升级
 
 > 本插件为uni升级中心后台管理系统，客户端检查更新插件请点击查看 [uni-upgrade-center-app](https://ext.dcloud.net.cn/plugin?id=4542)
-
-> 现该插件已内置 `uni-admin` 中
 
 ### 基于uniCloud的App升级中心，本插件具有如下特征：
   - 云端基于uniCloud云函数实现
@@ -37,41 +43,41 @@
 
 2. 使用已有`uniCloud-admin`项目或新建项目：`打开HBuilderX` -> `文件` -> `新建` -> `项目` -> `uni-app` 选择 `uniCloud admin`模板，键入一个名字，确定
 
-3. 鼠标右键 `uniCloud` 目录选择`关联云服务空间`和`运行云服务空间初始化向导`
+3. 鼠标右键选择`关联云服务空间`和`运行云服务空间初始化向导`
 
 3. 在插件市场打开本插件页面，在右侧点击`使用 HBuilderX 导入插件`，选择 `uniCloud admin` 项目点击确定
 
 4. 等待下载安装完毕。由于本插件依赖一些uni-ui插件，下载完成后会显示合并插件页面，自行选择即可
 
-5. 找到`/uniCloud/cloudfunctions/uni-upgrade-center`，右键上传部署
+5. 找到`/uni_modules/uni-upgrade-center/uniCloud/cloudfunctions/upgrade-center`，右键上传部署
 
-6. 找到`/uniCloud/database/db_init.json`，右键初始化数据库
-
-7. ~~在`pages.json`中添加页面路径。（现已内置）~~
+7. 在`pages.json`中添加页面路径
 ```json
 //此结构与uniCloud admin中的pages.json结构一致
-"pages": [
-			// ……其他页面配置
-			{
-				"path": "uni_modules/uni-upgrade-center/pages/version/list",
-				"style": {
-					"navigationBarTitleText": "版本列表"
+{
+	"pages": [
+				// ……其他页面配置
+				{
+					"path": "uni_modules/uni-upgrade-center/pages/version/list",
+					"style": {
+						"navigationBarTitleText": "版本列表"
+					}
+				}, {
+					"path": "uni_modules/uni-upgrade-center/pages/version/add",
+					"style": {
+						"navigationBarTitleText": "新版发布"
+					}
+				}, {
+					"path": "uni_modules/uni-upgrade-center/pages/version/detail",
+					"style": {
+						"navigationBarTitleText": "版本信息查看"
+					}
 				}
-			}, {
-				"path": "uni_modules/uni-upgrade-center/pages/version/add",
-				"style": {
-					"navigationBarTitleText": "新版发布"
-				}
-			}, {
-				"path": "uni_modules/uni-upgrade-center/pages/version/detail",
-				"style": {
-					"navigationBarTitleText": "版本信息查看"
-				}
-			}
-]
+	]
+}
 ```
 
-8. ~~在`manifest.json -> 源码视图`中添加以下配置：（现已内置）~~
+8. 在`manifest.json -> 源码视图`中添加以下配置：
 	```js
 	"networkTimeout":{
 		"uploadFile":1200000	//ms， 如果不配置，上传大文件可能会超时
@@ -80,18 +86,20 @@
 
 9. 运行项目到`Chrome`
 
-10. ~~运行起来uniCloud admin（现已内置）~~
-	- `vue2` 下。菜单管理模块会自动读取`/uni_modules/uni-upgrade-center/menu.json`文件中的菜单配置，生成【待添加菜单】，选中升级中心，点击`添加选中的菜单`即可
+10. 添加菜单
+	- `vue2`
+
+		运行起来uniCloud admin，菜单管理模块会自动读取`/uni_modules/uni-upgrade-center/menu.json`文件中的菜单配置，生成【待添加菜单】，选中升级中心，点击`添加选中的菜单`即可
+		<div align="center">
+		<img src="https://vkceyugu.cdn.bspapp.com/VKCEYUGU-a90b5f95-90ba-4d30-a6a7-cd4d057327db/16dc338e-7d5b-4290-98a9-adb7f0c23754.png" width="800"></img>
+		</div>
+	- `vue3`
+
+		可将 `/uni_modules/uni-upgrade-center/menu.json` 拷贝至 `uniCloud/database/db_init.json` 中的 `opendb-admin-menus` 节点下，并右键初始化数据库即可。
+11. 添加成功后，就可以在左侧的菜单栏中找到`升级中心`菜单
+
 	<div align="center">
-	<img src="https://vkceyugu.cdn.bspapp.com/VKCEYUGU-a90b5f95-90ba-4d30-a6a7-cd4d057327db/16dc338e-7d5b-4290-98a9-adb7f0c23754.png" width="800"></img>
-	</div>
-
-	- `vue3` 下。请按照路径`/uni_modules/uni-upgrade-center/menu.json`找到文件，将数组中的内容拷贝到 `uniCloud/database/db_init.json` 中的 `opendb-admin-menus` 项中，并重新初始化数据库覆盖 `opendb-admin-menus` 表，上传完成后刷新页面即可。
-
-11. 可以在左侧的菜单栏中找到`App升级中心`菜单
-
-	<div align="center">
-	<img src="https://vkceyugu.cdn.bspapp.com/VKCEYUGU-f184e7c3-1912-41b2-b81f-435d1b37c7b4/0a9fd514-b35d-4e78-99be-ba2dc2c5dba9.png" width="300"></img>
+	<img src="https://vkceyugu.cdn.bspapp.com/VKCEYUGU-a90b5f95-90ba-4d30-a6a7-cd4d057327db/fcf04804-0c4c-4342-9a8b-dfc273dfc83c.png" width="300"></img>
 	</div>
 
 12. 在进入`升级中心`之前：
@@ -108,6 +116,21 @@
 
 ## 使用指南
 
+### 升级中心
+
+#### 应用列表
+
+1. 点击菜单 `应用管理`，这里展示你所添加的 App，点击右上角 `新增` 可以新增一个 App
+
+<div align="center">
+<img src="https://vkceyugu.cdn.bspapp.com/VKCEYUGU-a90b5f95-90ba-4d30-a6a7-cd4d057327db/7f85aa6a-eff3-4cc6-bb32-9feaaeaf97d0.png" width="400"></img>
+</div>
+
+2. 将App的信息都填写完善后，你可以在列表的操作列进行`修改`应用信息或者`删除`该应用。
+
+**Tips**
+- 删除应用会把该应用的所有版本记录同时删除
+
 #### 版本管理
 1. 在版本管理list的右上角点击`发布新版`，可以发布`原生App安装包`和`wgt资源包`。在左上角点击`下拉列表`，可以切换展示应用。
 
@@ -121,41 +144,31 @@
 	<div align="center" >
 	<img src="https://vkceyugu.cdn.bspapp.com/VKCEYUGU-a90b5f95-90ba-4d30-a6a7-cd4d057327db/67932ae3-1a7a-4f21-9849-ba3bcc500c36.png" width="400"></img>
 	</div>
-	
-	2. `版本号`：**请填写以`.`分隔字符串，例如：`0.0.1`**
 
-	3. `下载链接`
+	2. `包地址`
 		- 可以选择手动上传一个文件到 `云存储`，会自动将地址填入该项
 		
 		- 也可以手动填写一个地址，就可以不用再上传文件
 		
-		- 如果是发布`苹果`版本，下载链接则为 应用在`AppStore的链接`
+		- 如果是发布`苹果`版本，包地址则为 应用在`AppStore的链接`
 		
-	4. `强制更新`
+	3. `强制更新`
 		- 如果使用强制更新，App端接收到该字段后，App升级弹出框不可取消
 		
-	5. `上线发行`
+	4. `上线发行`
 		- 可设置当前包是否上线发行，只有已上线才会进行更新检测
 		
 		- 同时只可有一个线上发行版，线上发行不可更设为下线。未上线可以设为上线发行并自动替换当前线上发行版
 		
 		- 修改当前包为上线发行，自动替换当前线上发行版
 
-	6. `Android应用市场`
-		- 如果发布的是 `安卓` 平台，且在应用管理中给该应用添加了 `Android应用市场`，则会有以下字段
-		<div align="center" >
-		<img src="https://vkceyugu.cdn.bspapp.com/VKCEYUGU-f184e7c3-1912-41b2-b81f-435d1b37c7b4/74411d85-eef4-4d0f-b5d1-3c00f50a187c.png" width="400"></img>
-		</div>
-		- 检查更新时，按照优先级从大到小依次尝试跳转商店。如果都跳转失败，则会打开浏览器使用下载链接下载apk安装包
-
+	**注：版本号请填写以`.`分隔字符串，例如：`0.0.1`**
 - #### 发布wgt资源包
 	1. 大部分配置与发布 `原生App安装包` 一致
 
 	<div align="center">
 	<img src="https://vkceyugu.cdn.bspapp.com/VKCEYUGU-a90b5f95-90ba-4d30-a6a7-cd4d057327db/ec916cde-0d0e-4bf3-a735-643ea2a45b74.png" width="400"></img>
 	</div>
-	
-	2. `版本号`：**请填写以`.`分隔字符串，例如：`0.0.1`**
 
 	2. `原生App最低版本`
 		- 上次使用新Api或打包新模块的App版本
@@ -168,6 +181,8 @@
 		- App升级时会在后台下载wgt包并自行安装。新功能在下次启动App时生效
 		- **静默更新后不重启应用，可能会导致正在访问的应用的页面数据错乱，请谨慎使用！**
 
+	**注：版本号请填写以`.`分隔字符串，例如：`0.0.1`**
+
 - #### 发布完成页面
 
 	<div align="center">
@@ -176,7 +191,7 @@
 
 **Tips**
 
-1. `pages/version/add.vue`中有版本对比函数（compare）。
+1. `pages/system/upgradecenter/version/add.vue`中有版本对比函数（compare）。
 	- 使用多段式版本格式（如："3.0.0.0.0.1.0.1", "3.0.0.0.0.1"）。如果不满足对比规则，请自行修改。
 
 ## 项目代码说明
@@ -187,7 +202,7 @@
 
 本项目用到了 2 个表：
 
-- opendb-app-list：app管理列表。记录应用的 appid、name、description 等用于展示。[详见](https://gitee.com/dcloud/opendb/tree/master/collection/opendb-app-list)
+- opendb-app-list：app管理列表。记录应用的 appid、name、description 用于展示。[详见](https://gitee.com/dcloud/opendb/tree/master/collection/opendb-app-list)
 - opendb-app-versions：应用版本管理表。记录管理应用的版本信息。[详见](https://gitee.com/dcloud/opendb/tree/master/collection/opendb-app-versions)
 
 ### 前端页面
@@ -209,7 +224,7 @@
 	> 
 	> 将 `data` 中的 `enableiOSWgt: false` 中 改为 `enableiOSWgt: true`
 
-**常见问题 & 解决方案**
+**常见问题**
 - 以下问题可以通过升级插件版本解决：
 	- createdate不与默认值匹配 
 	- ["create_date"]在数据库中并不存在
