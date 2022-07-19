@@ -1,3 +1,8 @@
+## 1.9.3（2022-07-19）
+- 优化 uni-admin 应用管理模块可管理App下载地址、小程序二维码等更多应用信息 [详情](https://uniapp.dcloud.io/uniCloud/admin.html#app-manager)
+- 调整 uni-admin 内置 统一发布页（uni-portal）插件 [详情](https://uniapp.dcloud.io/uniCloud/admin.html#uni-portal)
+- 调整 uni-admin 内置 App升级中心（uni-upgrade-center）插件，并支持多应用商店更新 [详情](https://uniapp.dcloud.io/uniCloud/admin.html#uni-upgrade-center)
+- 升级前最好将旧版 uni-portal、uni-upgrade-center 插件备份并移出 uni_modules 目录
 ## 1.9.2（2022-07-11）
 - 修复 留存统计跑批任务获取不到版本号的Bug
 ## 1.9.1（2022-07-06）
