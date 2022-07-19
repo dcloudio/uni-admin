@@ -49,9 +49,8 @@
 				<!-- <show-info :top="-80" :content="uploadFileContent"></show-info> -->
 			</uni-forms-item>
 
-			<uni-forms-item v-if="formData.store_list" name="store_list" style="height: 0px;"></uni-forms-item>
-
-			<uni-forms-item label="Android应用市场" labelWidth="125px" v-if="!isiOS && !isWGT && formData.store_list.length">
+			<uni-forms-item label="Android应用市场" labelWidth="125px"
+				v-if="!isiOS && !isWGT && formData.store_list.length">
 				<view style="flex: 1;">
 					<template v-for="(item,index) in formData.store_list">
 						<view :key="item._create_date">
@@ -84,7 +83,6 @@
 					</template>
 				</view>
 			</uni-forms-item>
-
 			<uni-forms-item v-if="isWGT" name="is_silently" label="静默更新">
 				<switch @change="binddata('is_silently', $event.detail.value)" :checked="formData.is_silently" />
 				<show-info :top="-80" :content="silentlyContent"></show-info>
@@ -277,7 +275,7 @@
 				uni.showLoading({
 					mask: true
 				})
-				this.$refs.form.validate().then((res) => {
+				this.$refs.form.validate(['store_list']).then((res) => {
 					if (compare(this.latestVersion, res.version) >= 0) {
 						uni.showModal({
 							content: `版本号必须大于当前已上线版本（${this.latestVersion}）`,

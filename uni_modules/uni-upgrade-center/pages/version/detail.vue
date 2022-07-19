@@ -51,8 +51,6 @@
 				<!-- <show-info :top="-80" :content="uploadFileContent"></show-info> -->
 			</uni-forms-item>
 
-
-
 			<uni-forms-item v-if="formData.store_list" label="Android应用市场" name="store_list" labelWidth="120">
 				<view style="flex: 1;">
 					<template v-for="(item,index) in formData.store_list">
@@ -184,8 +182,7 @@
 				uni.showLoading({
 					mask: true
 				})
-				this.$refs.form.validate().then((res) => {
-					res.store_list = this.formData.store_list
+				this.$refs.form.validate(['store_list']).then((res) => {
 					if (res.store_list) {
 						res.store_list.forEach(item => {
 							item.priority = parseFloat(item.priority)
