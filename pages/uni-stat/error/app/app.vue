@@ -1,4 +1,5 @@
 <template>
+		<!-- 对应页面： app崩溃 -->
 	<view class="fix-top-window">
 		<view class="uni-header">
 			<uni-stat-breadcrumb class="uni-stat-breadcrumb-on-phone" />
@@ -37,10 +38,12 @@
 				<view class="flex-between">
 					<view class="uni-stat-card-header">信息列表</view>
 					<view class="uni-group">
+						<!-- #ifdef H5 -->
 						<download-excel class="hide-on-phone" :fields="exportExcel.fields" :data="exportExcelData"
 							:type="exportExcel.type" :name="exportExcel.filename">
 							<button class="uni-button" type="primary" size="mini">导出 Excel</button>
 						</download-excel>
+						<!-- #endif -->
 					</view>
 				</view>
 
@@ -157,7 +160,7 @@
 
 	const db = uniCloud.database()
 	// 表查询配置
-	const dbOrderBy = '' // 排序字段
+	const dbOrderBy = 'create_time desc' // 排序字段
 	const dbSearchFields = [] // 模糊搜索字段，支持模糊搜索的字段列表。联表查询格式: 主表字段名.副表字段名，例如用户表关联角色表 role.role_name
 	// 分页配置
 	const pageSize = 20
@@ -172,6 +175,7 @@
 		data() {
 			return {
 				fieldsMap,
+				//todo：要与schema 生成页面一起工作，stringifyQuery 需要与 schema 查询逻辑相容
 				query: {
 					type: "crash",
 					dimension: "day",
@@ -206,7 +210,7 @@
 
 				collectionList: "uni-stat-app-crash-logs",
 				schemaQuery: '',
-				where: '',
+				where: this.tableData,
 				orderby: dbOrderBy,
 				orderByFieldName: "",
 				selectedIndexs: [],
@@ -256,13 +260,6 @@
 			}
 		},
 		computed: {
-			// pageSize() {
-			// 	const {
-			// 		pageSizeRange,
-			// 		pageSizeIndex
-			// 	} = this.options
-			// 	return pageSizeRange[pageSizeIndex]
-			// },
 			queryStr() {
 				return stringifyQuery(this.query)
 			},
@@ -273,7 +270,8 @@
 					version_id,
 					start_time
 				} = this.query
-				const platforms = uni.getStorageSync('platform_last_data')
+				// 从本地存储中取到数据做过滤
+				const platforms = uni.getStorageSync('platform_channel_last_data')
 				const versions = uni.getStorageSync('uni-stat-app-versions_last_data')
 				const p = Array.isArray(platforms) && platforms.find(p => p._id === platform_id)
 				const v = Array.isArray(versions) && versions.find(v => v._id === version_id)
@@ -283,7 +281,6 @@
 					platform: p && p.code || '',
 					version: v && v.text || ''
 				})
-				console.log('..........query', query);
 				return query
 			},
 			versionQuery() {
@@ -300,7 +297,13 @@
 			}
 		},
 		created() {
-			this.debounceGet = debounce(() => this.getAllData(this.queryStr))
+			this.debounceGet = debounce(() => {
+				this.getAllData(this.queryStr)
+				this.where = this.tableQuery
+				this.$nextTick(() => {
+					this.$refs.udb && this.$refs.udb.loadData()
+				}, 200)
+			})
 		},
 		watch: {
 			query: {
@@ -308,7 +311,6 @@
 				handler(val) {
 					this.options.pageCurrent = 1 // 重置分页
 					this.debounceGet()
-					this.where = this.tableQuery
 				}
 			},
 			chartTab(val) {
@@ -317,9 +319,6 @@
 		},
 		onLoad() {
 			this._filter = {}
-		},
-		onReady() {
-			this.$refs.udb.loadData()
 		},
 		methods: {
 			onqueryload(data) {
@@ -387,25 +386,10 @@
 					end = getTimeOfSomeDayAgo(0) - 1
 				this.query.start_time = [start, end]
 			},
-			// changePageCurrent(e) {
-			// 	this.options.pageCurrent = e.current
-			// 	this.getTableData(this.queryStr)
-			// },
-
-			// changePageSize(e) {
-			// 	const {
-			// 		value
-			// 	} = e.detail
-			// 	this.options.pageCurrent = 1 // 重置分页
-			// 	this.options.pageSizeIndex = value
-			// 	this.getTableData(this.queryStr)
-			// },
 
 			getAllData(query) {
 				this.getPanelData(query)
 				this.getChartData(query)
-				// this.getTableData(query)
-				this.$refs.udb && this.$refs.udb.loadData()
 			},
 
 			getPanelData(query) {
@@ -560,6 +544,7 @@
 
 <style>
 	.flex-between {
+		margin-bottom: 10px;
 		display: flex;
 		justify-content: space-between;
 		align-items: center;

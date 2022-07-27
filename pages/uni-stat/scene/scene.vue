@@ -1,9 +1,9 @@
 <template>
+	<!-- 对应页面：场景值（小程序）  -->
 	<view class="fix-top-window">
 		<view class="uni-header">
 			<uni-stat-breadcrumb class="uni-stat-breadcrumb-on-phone" />
 			<view class="uni-group">
-				<!-- <view class="uni-title">场景值（小程序）</view> -->
 				<view class="uni-sub-title hide-on-phone">
 					小程序平台有效。用户打开小程序时的场景，如通过扫描二维码打开小程序，场景为二维码。注意：部分平台可能获取不到场景值，如支付宝小程序</view>
 			</view>
@@ -220,12 +220,14 @@
 								xAxis.push(x)
 							}
 						}
+						// 将数据中渠道 id 去重
 						const hasChannels = []
 						data.forEach(item => {
 							if (hasChannels.indexOf(item.channel_id) < 0) {
 								hasChannels.push(item.channel_id)
 							}
 						})
+						// 请求所有渠道数据，与 hasChannels 匹配得出 channel_name
 						let allChannels = []
 						this.getChannels().then(res => {
 							allChannels = res.result.data
@@ -246,6 +248,7 @@
 								delete mapper[0].value
 								mapper[0].formatter = ''
 								for (const item of data) {
+									// 将 item 根据 mapper 计算、格式化
 									mapfields(mapper, item, item)
 									let date = item.start_time
 									const x = formatDate(date, this.dimension)

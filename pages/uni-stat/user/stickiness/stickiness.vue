@@ -1,9 +1,9 @@
 <template>
+	<!-- 对应页面：注册用户统计-粘性  -->
 	<view class="fix-top-window">
 		<view class="uni-header">
 			<uni-stat-breadcrumb class="uni-stat-breadcrumb-on-phone" />
 			<view class="uni-group">
-				<!-- <view class="uni-title">用户忠诚度</view> -->
 				<view class="uni-sub-title hide-on-phone">用户忠诚度用户对您应用的访问深度及访问频次情况。助您了解用户对应用的粘度，尤其在对内容改进后，效果是否有所提升</view>
 			</view>
 		</view>
@@ -171,6 +171,7 @@
 				this.query.start_time = [start, end]
 			},
 
+			// 此处 util 中的 groupField 不满足需求，特殊处理 groupField
 			createStr(fields, type = "visit_depth_data") {
 				const l = fields.length
 				const p = this.options[type].prefix
@@ -287,9 +288,9 @@
 							}
 						}
 						const tableData = []
-						const reducer = (previousValue, currentValue) => previousValue + currentValue;
 						const total = {}
-
+						// 归并得出访问人数 users、访问次数 times 的总和，用于计算占比
+						const reducer = (previousValue, currentValue) => previousValue + currentValue;
 						let users = rows.filter(row => row.visit_users)
 							.map(row => row.visit_users)
 						users = users.length ? users.reduce(reducer) : 0

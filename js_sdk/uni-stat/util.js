@@ -44,7 +44,7 @@ function stringifyQuery(query, dimension = false, delArrs = []) {
 	return queryStr || {}
 }
 
-// 根据 fieldsMap 和数据计算、格式化字段
+// 根据页面字段配置 fieldsMap 数据计算、格式化字段
 function mapfields(map, data = {}, goal, prefix = '', prop = 'value') {
 	const goals = [],
 		argsGoal = goal
@@ -96,6 +96,7 @@ function mapfields(map, data = {}, goal, prefix = '', prop = 'value') {
 	return goals
 }
 
+// 将查询条件对象拼接为字符串，给 client db 的 field 属性消费
 function stringifyField(mapping, goal, prop) {
 	if (goal) {
 		mapping = mapping.filter(f => f.field === goal)
@@ -122,6 +123,7 @@ function stringifyField(mapping, goal, prop) {
 	return fieldString.join()
 }
 
+// 将查询条件对象拼接为字符串，给 client db 的 groupField 属性消费
 function stringifyGroupField(mapping, goal, prop) {
 	if (goal) {
 		mapping = mapping.filter(f => f.field === goal)
@@ -150,6 +152,7 @@ function stringifyGroupField(mapping, goal, prop) {
 	return groupField
 }
 
+// 除法函数
 function division(dividend, divisor) {
 	if (divisor) {
 		return dividend / divisor
@@ -158,6 +161,7 @@ function division(dividend, divisor) {
 	}
 }
 
+// 对数字进行格式化，格式 type 配置在页面 fieldMap.js 中
 function format(num, type = ',', fix) {
 	// if (!type) return num
 	if (typeof num !== 'number') return num
@@ -211,6 +215,7 @@ function format(num, type = ',', fix) {
 	}
 }
 
+// 格式化日期，返回其所在的范围
 function formatDate(date, type) {
 	let d = new Date(date)
 	if (type === 'hour') {
@@ -236,6 +241,7 @@ function formatDate(date, type) {
 	}
 }
 
+// 格式化日期，返回其 yyyy-mm-dd 格式
 function parseDateTime(datetime, type, splitor = '-') {
 	let d = datetime
 	if (typeof d !== 'object') {
@@ -269,6 +275,7 @@ function getTimeOfSomeDayAgo(days = 0, date = Date.now()) {
 	return someDaysAgoTime
 }
 
+// 判断时间差值 delta，单位为天
 function maxDeltaDay(times, delta = 2) {
 	if (!times.length) return true
 	const wunDay = 24 * 60 * 60 * 1000
@@ -277,8 +284,7 @@ function maxDeltaDay(times, delta = 2) {
 	return max
 }
 
-
-
+// 查询 总设备数、总用户数， 通过 field 配置
 function getFieldTotal(query = this.query, field = "total_devices") {
 	let fieldTotal
 	if (typeof query === 'object') {
@@ -305,6 +311,7 @@ function getFieldTotal(query = this.query, field = "total_devices") {
 		})
 }
 
+// 防抖函数
 function debounce(fn, time = 100) {
 	let timer = null
 	return function(...args) {
@@ -316,6 +323,21 @@ function debounce(fn, time = 100) {
 }
 
 
+const files = {}
+
+function fileToUrl(file) {
+	for (const key in files) {
+		if (files.hasOwnProperty(key)) {
+			const oldFile = files[key]
+			if (oldFile === file) {
+				return key
+			}
+		}
+	}
+	var url = (window.URL || window.webkitURL).createObjectURL(file)
+	files[url] = file
+	return url
+}
 /**
  * 获取两个时间戳之间的所有时间
  * let start = new Date(1642694400000) // 2022-01-21 00:00:00
@@ -345,6 +367,13 @@ function getAllDateCN(startTime, endTime) {
 	return date_all;
 }
 
+function createUniStatQuery(object) {
+	return Object.assign({}, object, {
+		type: "native_app",
+		create_env: "uni-stat"
+	})
+}
+
 
 export {
 	stringifyQuery,
@@ -358,7 +387,8 @@ export {
 	parseDateTime,
 	maxDeltaDay,
 	debounce,
-
+	fileToUrl,
 	getFieldTotal,
-	getAllDateCN
+	getAllDateCN,
+	createUniStatQuery
 }

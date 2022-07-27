@@ -1,4 +1,5 @@
 <template>
+	<!-- 对应页面：设备统计-趋势分析  -->
 	<view class="fix-top-window">
 		<view class="uni-header">
 			<uni-stat-breadcrumb class="uni-stat-breadcrumb-on-phone" />

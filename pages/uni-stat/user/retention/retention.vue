@@ -1,9 +1,9 @@
 <template>
+	<!-- 对应页面：注册用户统计-留存  -->
 	<view class="fix-top-window">
 		<view class="uni-header">
 			<uni-stat-breadcrumb class="uni-stat-breadcrumb-on-phone" />
 			<view class="uni-group">
-				<!-- <view class="uni-title">用户留存</view> -->
 				<view class="uni-sub-title hide-on-phone">用户留存趋势分析</view>
 			</view>
 		</view>
@@ -224,7 +224,7 @@
 				this.getTabelData(this.query)
 			},
 
-
+			// 此处 util 中的 stringifyField 不满足需求，特殊处理 stringifyField
 			stringifyField(mapping, goal, prop) {
 				if (goal) {
 					mapping = mapping.filter(f => f.field === goal)
@@ -243,7 +243,8 @@
 				}).join()
 				return fields
 			},
-
+			
+			// 此处 util 中的 groupField 不满足需求，特殊处理 groupField
 			createStr(type = "user_count", vals, fields, tail) {
 				const value = vals || [1, 2, 3, 4, 5, 6, 7, 14, 30]
 				const p = 'd'

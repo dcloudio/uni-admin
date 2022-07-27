@@ -1,4 +1,5 @@
 <template>
+	<!-- 对应页面：设备统计-活跃度  -->
 	<view class="fix-top-window">
 		<view class="uni-header">
 			<uni-stat-breadcrumb class="uni-stat-breadcrumb-on-phone" />
@@ -233,6 +234,7 @@
 							console.error(err)
 						})
 				} else {
+					// 周、月范围的处理
 					this.getRangeCountData(query, type).then(res => {
 						const oldType = type
 						if (type === 'week') type = 'isoWeek'
@@ -283,7 +285,7 @@
 							daysCount = count,
 							weeks = [],
 							months = []
-
+						// 获取周活、月活
 						this.getRangeCountData(query, 'week').then(res => {
 							const {
 								count,
@@ -336,7 +338,7 @@
 					})
 			},
 
-
+			// 匹配数据日期所在的周活、月活
 			mapWithWeekAndMonth(data, weeks, months, field = 'active_device_count') {
 				for (const item of data) {
 					const date = new Date(item.start_time)
@@ -357,6 +359,7 @@
 				return data
 			},
 
+			//日期所在的周（一年中的第几周）
 			getWeekNumber(d) {
 				// Copy date so don't modify original
 				d = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));

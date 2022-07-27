@@ -1,4 +1,5 @@
-Î<template>
+<template>
+		<!-- 对应页面：事件分析  -->
 	<view class="fix-top-window">
 		<view class="uni-header">
 			<uni-stat-breadcrumb class="uni-stat-breadcrumb-on-phone" />
@@ -40,11 +41,6 @@
 					</uni-tr>
 					<uni-tr v-for="(item ,i) in tableData" :key="i">
 						<template v-for="(mapper, index) in fieldsMap">
-							<!-- <uni-td v-if="mapper.title && index === 1" :key="mapper.title" class="uni-stat-edit--x">
-								{{item[mapper.field] ? item[mapper.field] : '-'}}
-								<uni-icons type="compose" color="#2979ff" size="25" class="uni-stat-edit--btn"
-									@click="inputDialogToggle(item.event_key, item.event_name)" />
-							</uni-td> -->
 							<uni-td align="center">
 								{{item[mapper.field] !== undefined ? item[mapper.field] : '-'}}
 							</uni-td>
@@ -179,14 +175,6 @@
 				} = this.options
 				this.loading = true
 				const db = uniCloud.database()
-				// const filterAppid = stringifyQuery({
-				// 	appid: this.query.appid
-				// })
-				// const mainTableTemp = db.collection('uni-stat-events').where(filterAppid).getTemp()
-				// const subTableTemp = db.collection('uni-stat-event-result')
-				// 	.where(query)
-				// 	.getTemp()
-
 				db.collection('uni-stat-event-logs', 'uni-stat-app-platforms')
 					.where(query)
 					.orderBy('create_time', 'desc')
@@ -268,39 +256,7 @@
 						// err.code 错误码
 					}).finally(() => {})
 
-			},
-
-			// inputDialogToggle(queryId, updateValue) {
-			// 	this.queryId = queryId
-			// 	this.updateValue = updateValue
-			// 	this.$refs.inputDialog.open()
-			// },
-
-			// editName(value) {
-			// 	// 使用 clientDB 提交数据
-			// 	const db = uniCloud.database()
-			// 	db.collection('uni-stat-events')
-			// 		.where({
-			// 			event_key: this.queryId
-			// 		})
-			// 		.update({
-			// 			event_name: value
-			// 		})
-			// 		.then((res) => {
-			// 			uni.showToast({
-			// 				title: '修改成功'
-			// 			})
-			// 			this.getTableData()
-			// 		}).catch((err) => {
-			// 			uni.showModal({
-			// 				content: err.message || '请求服务失败',
-			// 				showCancel: false
-			// 			})
-			// 		}).finally(() => {
-			// 			uni.hideLoading()
-			// 		})
-			// }
-
+			}
 		}
 
 	}

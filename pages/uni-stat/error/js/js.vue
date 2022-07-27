@@ -1,4 +1,5 @@
 <template>
+	<!-- 对应页面： js报错 -->
 	<view class="fix-top-window">
 		<view class="uni-header">
 			<uni-stat-breadcrumb class="uni-stat-breadcrumb-on-phone" />
@@ -12,7 +13,7 @@
 				<uni-data-select collection="opendb-app-list" field="appid as value, name as text" orderby="text asc"
 					:defItem="1" label="应用选择" v-model="query.appid" :clear="false" />
 				<uni-data-select collection="opendb-app-versions" :where="versionQuery"
-					field="_id as value, version as text" orderby="text asc" label="版本选择" v-model="query.version_id" />
+					field="_id as value, version as text" orderby="text desc" label="版本选择" v-model="query.version_id" />
 				<view class="flex">
 					<uni-stat-tabs label="日期选择" :current="currentDateTab" :yesterday="false" mode="date"
 						@change="changeTimeRange" />
@@ -36,7 +37,16 @@
 			</view>
 
 			<view class="uni-stat--x p-m">
-				<uni-table :loading="loading" border stripe :emptyText="$t('common.empty')" style="overflow-y: scroll;">
+				<view class="flex-between">
+					<view class="uni-stat-card-header">信息列表</view>
+					<view class="uni-group">
+						<!-- #ifdef H5 -->
+						<button class="uni-button" type="primary" size="mini" @click="openUploadPopup">上传
+							sourceMap</button>
+						<!-- #endif -->
+					</view>
+				</view>
+				<uni-table :loading="loading" border stripe :emptyText="$t('common.empty')">
 					<uni-tr>
 						<template v-for="(mapper, index) in fieldsMap">
 							<uni-th v-if="mapper.title" :key="index" align="center">
@@ -56,6 +66,9 @@
 								<!-- #endif -->
 							</uni-th>
 						</template>
+						<uni-th align="center">
+							操作
+						</uni-th>
 					</uni-tr>
 					<uni-tr v-for="(item ,i) in tableData" :key="i">
 						<template v-for="(mapper, index) in fieldsMap">
@@ -68,6 +81,10 @@
 								{{item[mapper.field] !== undefined ? item[mapper.field] : '-'}}
 							</uni-td>
 						</template>
+						<uni-td>
+							<button size="mini" type="primary" style="white-space: nowrap;"
+								@click="openErrPopup(item)">详 情</button>
+						</uni-td>
 					</uni-tr>
 				</uni-table>
 				<view class="uni-pagination-box">
@@ -78,22 +95,75 @@
 			</view>
 		</view>
 
-		<uni-popup ref="errMsg" type="center" :animation="false" :maskClick="true">
+		<uni-popup ref="errMsg" type="center" :animation="false" :maskClick="true" @change="errMsgPopupChange">
 			<view class="modal black-theme">
 				<view class="modal-header">
 					错误详情
 				</view>
 				<scroll-view scroll-x="true" scroll-y="true">
 					<view class="modal-content" style="padding: 20px 30px;">
-						<view v-if="msgLoading" style="margin: 150px 0;height: 90%;text-align: center;font-size: 14px;">
+						<view v-if="msgLoading" style="margin: 150px 0;text-align: center;font-size: 14px;">
 							<uni-load-more class="mb-m" :showText="false" status="loading" />
 							<view>正在解析，请稍等...</view>
 						</view>
-						<pre>{{errMsg}}</pre>
+						<!-- <pre>{{errMsg}}</pre> -->
+						<text>{{errMsg}}</text>
 					</view>
 				</scroll-view>
+				<view class="dialog-close" @click="closeErrPopup">
+					<view class="dialog-close-plus" data-id="close"></view>
+					<view class="dialog-close-plus dialog-close-rotate" data-id="close"></view>
+				</view>
 			</view>
 		</uni-popup>
+
+		<!-- #ifdef H5 -->
+		<uni-drawer class="sourcemap-drawser" ref="upload" mode="right" :mask-click="true" :width="340">
+			<view class="modal" style="max-width: none; min-width: auto;">
+				<view class="modal-header">
+					上传 sourceMap
+				</view>
+				<view class="modal-content" style="height: 300px;padding: 0;">
+					<uni-data-select collection="opendb-app-list" field="appid as value, name as text"
+						orderby="text asc" label="应用" v-model="uploadOptions.appid" />
+					<uni-data-select collection="uni-stat-app-platforms" field="code as value, name as text"
+						orderby="text asc" label="平台" v-model="uploadOptions.uni_platform" />
+					<uni-data-select collection="opendb-app-versions" :where="uploadVersionQuery"
+						field="version as value, version as text" orderby="text desc" label="版本"
+						v-model="uploadOptions.version" />
+					<view class="flex m-m">
+						<view class="label-text">选择文件:</view>
+						<button class="uni-button ml-m" type="primary" @click="choosefile">选择文件并上传</button>
+					</view>
+					<view v-if="!vaildate" class="upload-msg-warning">
+						{{uploadMsg}}
+					</view>
+				</view>
+				<view class="dialog-close" @click="closeUploadPopup">
+					<view class="dialog-close-plus" style="background-color: #333;" data-id="close"></view>
+					<view class="dialog-close-plus dialog-close-rotate" style="background-color: #333;" data-id="close">
+					</view>
+				</view>
+			</view>
+			<view class="upload-task-header">
+				<text>上传任务：{{uploadSuccessTasks.length}}/{{uploadFile.tempFileTasks.length}}</text>
+			</view>
+			<scroll-view v-if="uploadFile.tempFileTasks.length" style="height: calc(100vh - 362px);" scroll-y="true">
+				<view v-if="uploadFile.tempFileTasks.length > uploadSuccessTasks.length">
+					<view class="upload-task-header">
+						<text>正在上传</text>
+					</view>
+					<uploadTask :uploadTasks="sortUploadFileTempFileTasks"></uploadTask>
+				</view>
+				<view v-if="uploadSuccessTasks.length">
+					<view class="upload-task-header">
+						<text style="color:#42b983;">上传成功</text>
+					</view>
+					<uploadTask :uploadTasks="uploadSuccessTasks" :showProgress="false"></uploadTask>
+				</view>
+			</scroll-view>
+		</uni-drawer>
+		<!-- #endif -->
 
 		<!-- #ifndef H5 -->
 		<fix-window />
@@ -110,13 +180,33 @@
 		format,
 		formatDate,
 		parseDateTime,
+		fileToUrl,
 		debounce,
-		getAllDateCN
+		getAllDateCN,
+		createUniStatQuery
 	} from '@/js_sdk/uni-stat/util.js'
 	import {
 		fieldsMap,
 		popupFieldsMap
 	} from './fieldsMap.js'
+	import uploadTask from './uploadTask.vue'
+	import {
+		stacktracey,
+		uniStracktraceyPreset
+	} from '@dcloudio/uni-stacktracey';
+
+	// 要上传到的腾讯云服务空间 SpaceID
+	const cloudSpaceId = ''
+	// 要上传到的腾讯云云存储访问地址
+	const sourcemapBaseUrl = ''
+
+	// 不上传到当前空间，需初始化上传的目标云空间
+	const uploadSourcemapCloud = uniCloud.init({
+		provider: 'tencent',
+		spaceId: cloudSpaceId
+	})
+
+	const appPlatforms = ['ios', 'android', 'app']
 
 	const panelOption = [{
 		title: '错误总数',
@@ -140,8 +230,13 @@
 					platform_id: '',
 					uni_platform: '',
 					version_id: '',
-					start_time: [],
+					start_time: []
 				},
+				uploadOptions: createUniStatQuery({
+					appid: "",
+					uni_platform: '',
+				}),
+				uploadMsg: '',
 				options: {
 					pageSize: 20,
 					pageCurrent: 1, // 当前页
@@ -164,8 +259,20 @@
 					name: '错误率'
 				}],
 				errMsg: '',
-				msgLoading: false
+				msgLoading: false,
+				uploadFile: {
+					tempFileTasks: [],
+					tempFiles: [],
+					clear() {
+						this.tempFileTasks.length = this.tempFiles.length = 0
+					}
+				},
+				uploadSuccessTaskNames: [],
+				errorItem: ''
 			}
+		},
+		components: {
+			uploadTask
 		},
 		computed: {
 			queryStr() {
@@ -176,22 +283,45 @@
 					appid,
 					uni_platform
 				} = this.query
-				const query = stringifyQuery({
+				const query = stringifyQuery(createUniStatQuery({
 					appid,
-					uni_platform,
-					type: 'native_app'
-				})
+					uni_platform
+				}))
 				return query
+			},
+			uploadVersionQuery() {
+				const {
+					appid,
+					uni_platform
+				} = this.uploadOptions
+				const query = stringifyQuery(createUniStatQuery({
+					appid,
+					uni_platform
+				}))
+				return query
+			},
+			vaildate() {
+				// 检验 this.uploadOptions 所有项都有值
+				const allItemHasVaule = Object.keys(this.uploadOptions).every(k => this.uploadOptions[k])
+				if (allItemHasVaule && this.uploadMsg) {
+					this.uploadMsg = ''
+				}
+				return allItemHasVaule
+			},
+			uploadSuccessTasks() {
+				return this.uploadFile.tempFileTasks.filter(task => task.state === 1)
+			},
+			sortUploadFileTempFileTasks() {
+				return this.uploadFile.tempFileTasks.filter(task => task.state !== 1).sort((a, b) => a.state - b.state)
 			}
 		},
 		created() {
 			this.parsedErrors = {}
-			this.debounceGet = debounce(() => this.getAllData(this.queryStr))
 		},
 		watch: {
 			query: {
 				deep: true,
-				handler(val) {
+				handler(val, old) {
 					this.options.pageCurrent = 1 // 重置分页
 					this.debounceGet()
 				}
@@ -201,11 +331,15 @@
 			}
 		},
 		methods: {
-			useDatetimePicker() {
+			debounceGet: debounce(function() {
+				this.getAllData(this.queryStr)
+			}),
+			useDatetimePicker(res) {
 				this.currentDateTab = -1
 			},
 			changePlatform(id, index, name, item) {
 				this.query.version_id = 0
+				this.uploadOptions.uni_platform = item.code
 				this.query.uni_platform = item.code
 			},
 			changeTimeRange(id, index) {
@@ -243,7 +377,7 @@
 					.where(querystr)
 					.groupBy('start_time')
 					.groupField('sum(count) as total_day_count')
-					.orderBy('start_time', 'asc')
+					.orderBy('start_time', 'desc')
 					.get({
 						getCount: true
 					})
@@ -252,8 +386,9 @@
 						const resData = res.result.data
 						let data = []
 
-						console.log(timeAll);
-						console.log(resData);
+						console.log("timeAll: ", timeAll);
+						console.log("resData: ", resData);
+
 						timeAll.forEach(v => {
 							let item = resData.find(item => item.start_time === v)
 							console.log(item);
@@ -386,20 +521,19 @@
 				} = this.options
 				this.loading = true
 				const db = uniCloud.database()
-				const filterAppid = stringifyQuery({
+				const filterAppid = stringifyQuery(createUniStatQuery({
 					appid: this.query.appid
-				})
+				}))
 				const mainTableTemp = db.collection('uni-stat-error-result').where(querystr).getTemp()
 				const versions = db.collection('opendb-app-versions')
 					.where(filterAppid)
-					.orderBy('start_time ', 'desc ')
 					.getTemp()
 
 				const platforms = db.collection('uni-stat-app-platforms')
 					.getTemp()
 
 				db.collection(mainTableTemp, versions, platforms)
-					.orderBy('last_time', 'desc')
+					.orderBy('count', 'desc')
 					.skip((pageCurrent - 1) * this.options.pageSize)
 					.limit(this.options.pageSize)
 					.get({
@@ -415,11 +549,12 @@
 						for (const item of data) {
 							item.last_time = parseDateTime(item.last_time, 'dateTime')
 							item.msgTooltip = item.msg
-							item.msg = item.msg.substring(0, 100) + '...'
+							item.msg = !item.msg ? '' : item.msg.substring(0, 100) + '...'
 							const v = item.version_id[0]
 							const p = item.platform_id[0]
 							item.version = v && v.version
 							item.platform = p && p.name
+							item.platform_code = p && p.code
 							tempData.push(item)
 						}
 						this.getTotalCount(querystr).then(res => {
@@ -468,6 +603,195 @@
 					})
 				}
 			},
+
+			getPlatform(platform_id) {
+				const platforms = uni.getStorageSync('platform_last_data')
+				let platform = Array.isArray(platforms) && platforms.find(p => p._id === platform_id).code
+
+				// if (appPlatforms.indexOf(platform) !== -1) platform = 'app'
+
+				return platform
+			},
+
+			getVersion(version_id) {
+				const versions = uni.getStorageSync('uni-stat-app-versions_last_data')
+				const version = Array.isArray(versions) && versions.find(v => v._id === version_id).text
+				return version
+			},
+			closeErrPopup() {
+				this.$refs.errMsg.close()
+			},
+			errMsgPopupChange(res) {
+				if (res.show) {
+					const err = this.errorItem.msgTooltip
+					if (this.msgLoading) {
+						this.closeErrPopup()
+						return;
+					}
+					if (!err) {
+						this.errMsg = '暂无错误数据'
+					}
+					this.errMsg = ''
+					const oldMsg = this.parsedErrors[err]
+					//  || oldMsg === err
+					this.msgLoading = true
+					this.parseError(this.errorItem)
+					return
+					if (!oldMsg) {
+						this.msgLoading = true
+						this.parseError(this.errorItem)
+					} else {
+						this.errMsg = oldMsg
+					}
+				} else {
+					this.msgLoading = false
+				}
+			},
+			parseError(item) {
+				let {
+					msgTooltip: err,
+					appid,
+					platform_code,
+					version
+				} = item
+
+				let base = sourcemapBaseUrl + `/${appid}/${platform_code}/${version}/`
+
+				try {
+					err = JSON.parse(err)
+				} catch (e) {}
+
+				console.log("originalErrMsg: ", err);
+
+				stacktracey(err, {
+					preset: uniStracktraceyPreset({
+						base,
+						uniPlatform: platform_code,
+						splitThirdParty: true
+					})
+				}).then(res => {
+					const {
+						userError,
+						thirdParty
+					} = res
+					const separate = userError.length && thirdParty.length ?
+						`\n\n------------${platform_code.indexOf('mp-') !== -1 ? platform_code : 'uni-app'} runtime error------------\n\n` :
+						''
+					this.errMsg = `${userError}${separate}${thirdParty}`
+					this.parsedErrors[err] = this.errMsg
+				}).finally(() => {
+					this.msgLoading = false
+				});
+			},
+			openUploadPopup() {
+				const {
+					appid,
+					uni_platform
+				} = this.query
+
+				this.uploadOptions = {
+					appid,
+					uni_platform
+				}
+				this.$refs.upload.open()
+			},
+			closeUploadPopup() {
+				this.$refs.upload.close()
+			},
+			createUploadFileTask(prefix, fileDiskPath, filePath, onUploadProgress) {
+				const cloudPath = prefix + fileDiskPath
+				return uploadSourcemapCloud.uploadFile({
+					filePath,
+					cloudPath,
+					onUploadProgress
+				})
+			},
+			choosefile() {
+				if (!this.vaildate) {
+					this.uploadMsg = '请先将应用、平台、版本填写完整'
+					return
+				}
+				const {
+					appid,
+					uni_platform,
+					version
+				} = this.uploadOptions
+
+				const prefix = `__UNI__/uni-stat/sourcemap/${appid}/${uni_platform}/${version}/`
+				console.log('...........prefix', prefix);
+
+				// 原生 input 上传逻辑
+				const inputEl = document.createElement('input')
+				inputEl.type = 'file'
+				inputEl.directory = true
+				inputEl.webkitdirectory = true
+				inputEl.click()
+				inputEl.addEventListener('change', () => {
+					this.uploadFile.clear()
+
+					const fileList = inputEl.files; /* now you can work with the file list */
+					if (!fileList.length) return
+
+					Array.prototype.forEach.call(fileList, (file) => {
+						const path = fileToUrl(file)
+						this.uploadFile.tempFileTasks.push({
+							fileDiskPath: file.webkitRelativePath.split('/').slice(1).join('/'),
+							path,
+							size: `${(file.size / 1024).toFixed(2)}kb`,
+							name: file.name,
+							state: 0,
+							progress: 0
+						})
+						Object.defineProperty(file, 'path', {
+							get() {
+								return path
+							},
+						})
+						this.uploadFile.tempFiles.push(file)
+					})
+
+					this.uploadFile.tempFileTasks.reduce((_uploadFilePromise, cur, curIndex) => {
+						return _uploadFilePromise
+							.then((msg) => {
+								return new Promise((resolve, reject) => {
+									// 已上传的文件
+									if (this.uploadSuccessTaskNames.indexOf(cur.name) !== -1) {
+										cur.progress = 1
+										setTimeout(() => {
+											cur.state = 1
+											resolve()
+										}, 200)
+									} else {
+										this.createUploadFileTask(
+											prefix,
+											cur.fileDiskPath,
+											cur.path,
+											(OnUploadProgressRes) => {
+												const {
+													loaded,
+													total
+												} = OnUploadProgressRes
+
+												cur.progress = loaded / total
+											}
+										).then(() => {
+											setTimeout(() => {
+												this.uploadSuccessTaskNames
+													.push(cur.name)
+												cur.state = 1
+												resolve()
+											}, 500)
+										}).catch((err) => {
+											cur.state = -1
+											reject(`${cur.name} 上传失败：` + JSON
+												.stringify(err))
+										})
+									}
+								})
+							})
+					}, Promise.resolve())
+				})
+			},
 			createStr(maps, fn, prefix = 'total_') {
 				const strArr = []
 				maps.forEach(mapper => {
@@ -478,27 +802,22 @@
 				})
 				return strArr.join()
 			},
-			openErrPopup(err) {
-				if (this.msgLoading) return
+			openErrPopup(item) {
+				this.errorItem = item
 				this.$refs.errMsg.open()
-				if (!err) {
-					this.errMsg = '暂无错误数据'
-				}
-				this.errMsg = ''
-				const oldMsg = this.parsedErrors[err]
-				if (!oldMsg || oldMsg === err) {
-					this.msgLoading = true
-					this.parseError(err)
-				} else {
-					this.errMsg = oldMsg
-				}
 			}
 		}
-
 	}
 </script>
 
 <style>
+	.flex-between {
+		margin-bottom: 10px;
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+	}
+
 	.uni-stat-panel {
 		box-shadow: unset;
 		border-bottom: 1px solid #eee;
@@ -514,5 +833,54 @@
 	.black-theme {
 		background-color: #333;
 		color: #fff;
+	}
+
+	.dialog-close {
+		cursor: pointer;
+		position: absolute;
+		top: 0;
+		right: 0;
+		/* #ifndef APP-NVUE */
+		display: flex;
+		/* #endif */
+		flex-direction: row;
+		align-items: center;
+		padding: 20px;
+		margin-top: 10px;
+	}
+
+	.dialog-close-plus {
+		width: 20px;
+		height: 2px;
+		background-color: #fff;
+		border-radius: 2px;
+		transform: rotate(45deg);
+	}
+
+	.dialog-close-rotate {
+		position: absolute;
+		transform: rotate(-45deg);
+	}
+
+	.upload-msg-warning {
+		padding: 0px 15px;
+		color: red;
+		font-size: 14px;
+	}
+
+	::v-deep .sourcemap-drawser .uni-select {
+		flex: 1;
+	}
+
+	::v-deep .sourcemap-drawser .uni-select .uni-select__input-text {
+		width: 100%;
+	}
+
+	.upload-task-header {
+		font-size: 14px;
+		color: #666;
+		padding: 15rpx 25rpx;
+		border-top: 1px solid #eee;
+		border-bottom: 1px solid #eee;
 	}
 </style>
