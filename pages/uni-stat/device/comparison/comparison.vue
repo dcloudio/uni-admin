@@ -1,4 +1,5 @@
 <template>
+	<!-- 对应页面：设备统计-平台对比  -->
 	<view class="fix-top-window">
 		<view class="uni-header">
 			<uni-stat-breadcrumb class="uni-stat-breadcrumb-on-phone" />
@@ -51,7 +52,6 @@
 					dimension: "day",
 					appid: '',
 					version_id: '',
-					// start_time: new Date().getTime(),
 					start_time: getTimeOfSomeDayAgo(0),
 				},
 				platforms: [],
@@ -59,10 +59,6 @@
 				monChartsData: []
 			}
 		},
-		// mounted() {
-		// 	this.getChartData(this.query)
-		// 	this.getRangeCountData(this.query, 'month')
-		// },
 		created() {
 			this.debounceGet = debounce(() => {
 				this.getChartData(this.query)
@@ -92,6 +88,7 @@
 			}
 		},
 		methods: {
+			// 获取天的数据
 			getChartData(query, type = 'day') {
 				query = JSON.parse(JSON.stringify(query))
 				const today = getTimeOfSomeDayAgo(0)
@@ -118,6 +115,8 @@
 						this.initChartOption(data, 'dayChartsData')
 					})
 			},
+
+			// 获取月的数据
 			getRangeCountData(query, type) {
 				query = stringifyQuery(query)
 				const db = uniCloud.database()

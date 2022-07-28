@@ -1,4 +1,5 @@
 <template>
+	<!-- 对应页面：设备统计-概况  -->
 	<view class="fix-top-window">
 		<view class="uni-header">
 			<uni-stat-breadcrumb class="uni-stat-breadcrumb-on-phone" />
@@ -317,7 +318,6 @@
 					version_id
 				} = this.query
 				let query = stringifyQuery({
-					// dimension: "hour",
 					appid,
 					platform_id,
 					version_id,
@@ -358,6 +358,7 @@
 				const date = getTimeOfSomeDayAgo(days)
 				const day = 24 * 60 * 60 * 1000
 				let start_time
+				// 范围小于一天的日期（今日、昨日）做增大一天处理，目的是对比当前日期和前一天（今日和昨日、昨日和上前日）
 				if (!this.getDays()) {
 					const start = date - day
 					const end = date + day - 1

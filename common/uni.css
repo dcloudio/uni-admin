@@ -442,12 +442,10 @@ button:after {
 }
 
 .uni-stat__actived {
-	outline: 1px solid #2979ff;
+	/* outline: 1px solid #2979ff; */
 }
 
 .flex {
-	width: 100%;
-	/* 必要的 */
 	display: flex;
 	flex-wrap: wrap;
 	align-items: center;
@@ -478,7 +476,7 @@ button:after {
 .modal {
 	/* width: 100%; */
 	max-width: calc(100vw - 200px);
-	min-width: 800px;
+	min-width: 600px;
 	margin: 0 auto;
 	background-color: #ffffff;
 }
@@ -543,8 +541,11 @@ button:after {
 		border-bottom: 1px #f5f5f5 solid;
 	}
 
-	.uni-stat-datetime-picker {
-		/* flex: 1; */
+	.flex {
+		width: 100%;
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
 	}
 }
 
@@ -577,6 +578,17 @@ button:after {
 	}
 }
 
+/* #endif */
+
+/* #ifdef H5 */
+/* fix 弹出层被遮盖 */
+::v-deep .uni-table-scroll {
+	min-height: calc(100vh - 237px);
+	box-sizing: border-box;
+}
+::v-deep .uni-table .tr-table--border {
+	border-left: 1px #ebeef5 solid;
+}
 /* #endif */
 
 /* #ifdef H5 */

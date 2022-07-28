@@ -1,9 +1,9 @@
 <template>
+	<!-- 对应页面：注册用户统计-活跃度  -->
 	<view class="fix-top-window">
 		<view class="uni-header">
 			<uni-stat-breadcrumb class="uni-stat-breadcrumb-on-phone" />
 			<view class="uni-group">
-				<!-- <view class="uni-title">用户活跃度</view> -->
 				<view class="uni-sub-title hide-on-phone">用户活跃度分析</view>
 			</view>
 		</view>
@@ -235,6 +235,7 @@
 							console.error(err)
 						})
 				} else {
+					// 获取周活、月活
 					this.getRangeCountData(query, type).then(res => {
 						const oldType = type
 						if (type === 'week') type = 'isoWeek'
@@ -341,7 +342,7 @@
 					})
 			},
 
-
+			// 周、月范围的处理
 			mapWithWeekAndMonth(data, weeks, months, field = 'active_user_count') {
 				for (const item of data) {
 					const date = new Date(item.start_time)
@@ -363,6 +364,7 @@
 				return data
 			},
 
+			//日期所在的周（一年中的第几周）
 			getWeekNumber(d) {
 				// Copy date so don't modify original
 				d = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));

@@ -1,4 +1,5 @@
 <template>
+	<!-- 对应页面：设备统计-留存  -->
 	<view class="fix-top-window">
 		<view class="uni-header">
 			<uni-stat-breadcrumb class="uni-stat-breadcrumb-on-phone" />
@@ -225,7 +226,7 @@
 				this.getTabelData(this.query)
 			},
 
-
+			// 此处 util 中的 stringifyField 不满足需求，特殊处理 stringifyField
 			stringifyField(mapping, goal, prop) {
 				if (goal) {
 					mapping = mapping.filter(f => f.field === goal)
@@ -244,7 +245,8 @@
 				}).join()
 				return fields
 			},
-
+			
+			// 此处 util 中的 groupField 不满足需求，特殊处理 groupField
 			createStr(type = "device_count", vals, fields, tail) {
 				const value = vals || [1, 2, 3, 4, 5, 6, 7, 14, 30]
 				const p = 'd'
