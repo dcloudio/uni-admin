@@ -1,9 +1,18 @@
+## 1.9.3（2022-07-19）
+- 优化 uni-admin 应用管理模块可管理App下载地址、小程序二维码等更多应用信息 [详情](https://uniapp.dcloud.io/uniCloud/admin.html#app-manager)
+- 调整 uni-admin 内置 统一发布页（uni-portal）插件 [详情](https://uniapp.dcloud.io/uniCloud/admin.html#uni-portal)
+- 调整 uni-admin 内置 App升级中心（uni-upgrade-center）插件，并支持多应用商店更新 [详情](https://uniapp.dcloud.io/uniCloud/admin.html#uni-upgrade-center)
+- 升级前最好将旧版 uni-portal、uni-upgrade-center 插件备份并移出 uni_modules 目录
+## 1.9.2（2022-07-11）
+- 修复 留存统计跑批任务获取不到版本号的Bug
+## 1.9.1（2022-07-06）
+- 新增 opendb-device表，开通 uni-push2.0 与 uni统计2.0 自动上报 push_clientid 到 opendb-device表
 ## 1.9.0（2022-07-05）
 - 【重要】uni-admin 优化 uni统计 版本记录复用uni升级中心的opendb-app-versions表，废弃uni-stat-app-versions表 [详情](https://uniapp.dcloud.net.cn/uni-stat-v2.html#upgrade)
-- uni-admin 新增 uni统计 app崩溃页面，补充崩溃率统计
-- uni-admin 修复 uni统计 js报错页面，错误率计算不准确的Bug
-- uni-admin 修复 uni统计 切换版本或者修改时间等操作后，趋势图状态显示不正确的Bug
-- uni-admin 修复 uni统计 部分页面首次进入时界面闪烁的问题
+- 新增 uni统计 app崩溃页面，补充崩溃率统计
+- 修复 uni统计 js报错页面，错误率计算不准确的Bug
+- 修复 uni统计 切换版本或者修改时间等操作后，趋势图状态显示不正确的Bug
+- 修复 uni统计 部分页面首次进入时界面闪烁的问题
 ## 1.8.5（2022-06-29）
 - 新增 支持 ios 安全区
 ## 1.8.4（2022-06-01）

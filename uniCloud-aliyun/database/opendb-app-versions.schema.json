@@ -1,3 +1,4 @@
+// 文档教程: https://uniapp.dcloud.net.cn/uniCloud/schema
 {
 	"bsonType": "object",
 	"required": [
@@ -8,10 +9,10 @@
 		"create_env"
 	],
 	"permission": {
-		"read": "'READ_OPENDB_APP_VERSIONS' in auth.permission",
-		"create": false,
-		"update": false,
-		"delete": false
+		"read": "'READ_OPENDB_APP_LIST' in auth.permission",
+		"create": "'CREATE_OPENDB_APP_LIST' in auth.permission",
+		"update": "'UPDATE_OPENDB_APP_LIST' in auth.permission",
+		"delete": "'DELETE_OPENDB_APP_LIST' in auth.permission"
 	},
 	"properties": {
 		"_id": {
@@ -90,11 +91,6 @@
 			"description": "安装包类型，native_app || wgt",
 			"label": "安装包类型"
 		},
-		"uni_platform": {
-			"bsonType": "string",
-			"description": "uni平台信息，如：mp-weixin\/web\/app",
-			"label": "平台"
-		},
 		"version": {
 			"bsonType": "string",
 			"description": "当前包版本号，必须大于当前线上发行版本号",
@@ -107,8 +103,8 @@
 		},
 		"url": {
 			"bsonType": "string",
-			"description": "可下载安装包地址",
-			"label": "包地址"
+			"description": "可下载或跳转的链接",
+			"label": "链接"
 		},
 		"stable_publish": {
 			"bsonType": "bool",
@@ -137,9 +133,45 @@
 				"name": "uni-dateformat"
 			}
 		},
+		"uni_platform": {
+			"bsonType": "string",
+			"description": "uni平台信息，如：mp-weixin/web/ios/android",
+			"label": "uni 平台"
+		},
 		"create_env": {
 			"bsonType": "string",
 			"description": "创建来源，uni-stat：uni统计自动创建，upgrade-center：升级中心管理员创建"
+		},
+		"store_list": {
+			"bsonType": "array",
+			"description": "发布的应用市场",
+			"label": "应用市场",
+			"properties": {
+				"id": {
+					"bsonType": "string",
+					"description": "应用id，自动生成",
+					"label": "id"
+				},
+				"name": {
+					"bsonType": "string",
+					"description": "应用名称",
+					"label": "应用名称"
+				},
+				"scheme": {
+					"bsonType": "string",
+					"description": "应用 scheme",
+					"label": "应用 scheme"
+				},
+				"enable": {
+					"bsonType": "bool",
+					"description": "是否启用"
+				},
+				"priority": {
+					"bsonType": "int",
+					"description": "按照从大到小排序",
+					"label": "优先级"
+				}
+			}
 		}
 	},
 	"version": "0.0.1"

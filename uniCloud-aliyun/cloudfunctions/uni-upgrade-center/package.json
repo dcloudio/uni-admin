@@ -1,0 +1,7 @@
+{
+  "name": "uni-app-manager",
+  "dependencies": {},
+  "extensions": {
+    "uni-cloud-jql": {}
+  }
+}

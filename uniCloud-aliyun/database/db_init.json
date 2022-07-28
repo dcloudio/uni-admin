@@ -152,6 +152,16 @@
 			"enable": true,
 			"create_date": 1602662469399
 		}, {
+			"menu_id": "system_update",
+			"name": "App升级中心",
+			"icon": "uni-icons-cloud-upload",
+			"url": "/uni_modules/uni-upgrade-center/pages/version/list",
+			"sort": 1036,
+			"parent_id": "system_management",
+			"permission": [],
+			"enable": true,
+			"create_date": 1656491532434
+		}, {
 			"menu_id": "system_tag",
 			"name": "标签管理",
 			"icon": "admin-icons-manager-tag",
@@ -452,5 +462,6 @@
 	"uni-stat-run-errors": {},
 	"uni-stat-session-logs": {},
 	"uni-stat-share-logs": {},
-	"uni-stat-user-session-logs": {}
+	"uni-stat-user-session-logs": {},
+	"opendb-device": {}
 }

@@ -66,74 +66,55 @@ function parseUrlParams(primitiveParams, context) {
 	}
 
 	//原以下数据要从客户端上报，现调整为如果以下参数客户端未上报，则通过请求附带的context参数中获取
-	let convertParams = {}
-
-	if (context.hasOwnProperty('appId')) {
-		convertParams = {
-			//appid
-			ak: 'appId',
-			//当前登录用户编号
-			uid: 'uid',
-			//设备编号
-			did: 'deviceId',
-			//操作系统名称
-			p: 'osName',
-			//客户端ip
-			ip: 'clientIP',
-			//客户端的UA
-			ua: 'userAgent',
-			//当前服务空间编号
-			spid: 'spaceId',
-			//当前服务空间提供商
-			sppd: 'provider',
-			//应用版本号
-			v: 'appVersion',
-			//rom 名称
-			rn: 'romName',
-			//rom 版本
-			rv: 'romVersion',
-			//操作系统版本
-			sv: 'osVersion',
-			//操作系统语言
-			lang: 'osLanguage',
-			//操作系统主题
-			ot: 'osTheme',
-			//设备类型
-			dtp: 'deviceType',
-			//设备品牌
-			brand: 'deviceBrand',
-			//设备型号
-			md: 'deviceModel',
-			//设备像素比
-			pr: 'devicePixelRatio',
-			//可使用窗口宽度
-			ww: 'windowWidth',
-			//可使用窗口高度
-			wh: 'windowHeight',
-			//屏幕宽度
-			sw: 'screenWidth',
-			//屏幕高度
-			sh: 'screenHeight',
-		}
-	} else if (context.hasOwnProperty('APPID')) {
-		convertParams = {
-			//appid
-			ak: 'APPID',
-			//当前登录用户编号
-			uid: 'uid',
-			//设备编号
-			did: 'DEVICEID',
-			//系统
-			p: 'OS',
-			//客户端ip
-			ip: 'CLIENTIP',
-			//客户端的UA
-			ua: 'CLIENTUA',
-			//当前服务空间信息 {spaceId:'xxx',provider:'tencent'}
-			spi: 'SPACEINFO',
-			//云函数调用来源
-			fs: 'SOURCE'
-		}
+	const convertParams = {
+		//appid
+		ak: 'appId',
+		//当前登录用户编号
+		uid: 'uid',
+		//设备编号
+		did: 'deviceId',
+		//uni-app 运行平台，与条件编译平台相同。
+		up: 'uniPlatform',
+		//操作系统名称
+		p: 'osName',
+		//因为p参数可能会被前端覆盖掉，所以这里单独拿出来一个osName
+		on: 'osName',
+		//客户端ip
+		ip: 'clientIP',
+		//客户端的UA
+		ua: 'userAgent',
+		//当前服务空间编号
+		spid: 'spaceId',
+		//当前服务空间提供商
+		sppd: 'provider',
+		//应用版本号
+		v: 'appVersion',
+		//rom 名称
+		rn: 'romName',
+		//rom 版本
+		rv: 'romVersion',
+		//操作系统版本
+		sv: 'osVersion',
+		//操作系统语言
+		lang: 'osLanguage',
+		//操作系统主题
+		ot: 'osTheme',
+		//设备类型
+		dtp: 'deviceType',
+		//设备品牌
+		brand: 'deviceBrand',
+		//设备型号
+		md: 'deviceModel',
+		//设备像素比
+		pr: 'devicePixelRatio',
+		//可使用窗口宽度
+		ww: 'windowWidth',
+		//可使用窗口高度
+		wh: 'windowHeight',
+		//屏幕宽度
+		sw: 'screenWidth',
+		//屏幕高度
+		sh: 'screenHeight',
 	}
 	context = context ? context : {}
 	for (let key in convertParams) {

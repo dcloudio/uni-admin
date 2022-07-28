@@ -53,6 +53,7 @@
 				handler(newval) {
 					if (this.hasLocalData(newval)) {
 						this.userMenu = newval
+						console.log('this.userMenu',this.userMenu);
 					}
 				},
 				immediate: true
@@ -147,6 +148,7 @@
 					} = res.result
 					this.menus = data
 					this.userMenu = this.getUserMenu(this.menus)
+					console.log('this.userMenu',this.userMenu);
 				}).catch((err) => {
 					this.mixinDatacomLoading = false
 					this.mixinDatacomErrorMessage = err

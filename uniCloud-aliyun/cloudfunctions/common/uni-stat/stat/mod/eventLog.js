@@ -85,7 +85,7 @@ module.exports = class EventLog extends BaseMod {
 				sdk_version: params.mpsdk ? params.mpsdk : '',
 				platform_version: params.mpv ? params.mpv : '',
 				// 设备相关
-				device_os_name: platform.getOsName(params.p),
+				device_os_name: params.on ? params.on : platform.getOsName(params.p),
 				device_os_version: params.sv ? params.sv : '',
 				device_vendor: params.brand ? params.brand : '',
 				device_model: params.md ? params.md : '',
