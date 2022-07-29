@@ -2,7 +2,7 @@
 	"name": "uni-admin 基础框架（原名 uniCloud admin）",
 	"id": "uni-template-admin",
 	"displayName": "uni-admin 基础框架",
-	"version": "1.9.4",
+	"version": "1.9.5",
 	"description": "基于uni-app & uniCloud的后台管理项目模板（管理后台开发必备神器）",
 	"main": "main.js",
 	"scripts": {
@@ -17,7 +17,7 @@
         "uni-admin"
     ],
 	"engines": {
-		"HBuilderX": "^3.1.1"
+		"HBuilderX": "^3.5.3"
 	},
 	"author": "",
 	"license": "MIT",
@@ -25,12 +25,8 @@
 		"url": "https://github.com/dcloudio/uni-admin/issues"
 	},
 	"homepage": "https://github.com/dcloudio/uni-admin#readme",
-	"dcloudext": {
-		"category": [
-			"uniCloud",
-			"云端一体项目模板"
-		],
-		"sale": {
+    "dcloudext": {
+        "sale": {
 			"regular": {
 				"price": "0.00"
 			},
@@ -46,7 +42,8 @@
 			"data": "无",
 			"permissions": "无"
 		},
-		"npmurl": ""
+        "npmurl": "",
+        "type": "unicloud-template-project"
 	},
 	"uni_modules": {
 		"dependencies": [],

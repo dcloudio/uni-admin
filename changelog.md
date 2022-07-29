@@ -1,3 +1,5 @@
+## 1.9.5（2022-07-29）
+- 修复 运行到微信小程序控制台报错的Bug
 ## 1.9.4（2022-07-28）
 - 新增 uni-admin uni统计支持上传 sourceMap，报错可准确回溯源码 [详情](https://uniapp.dcloud.io/uni-stat-v2.html#sourcemap-parse-error)
 ## 1.9.3（2022-07-19）

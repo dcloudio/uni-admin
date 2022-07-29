@@ -72,12 +72,12 @@
 					</uni-tr>
 					<uni-tr v-for="(item ,i) in tableData" :key="i">
 						<template v-for="(mapper, index) in fieldsMap">
-							<uni-td v-if="mapper.field === 'count'" :key="'key1'+i+index" align="center">
+							<uni-td v-if="mapper.field === 'count'" :key="mapper.field" align="center">
 								<text class="link-btn" @click="navTo('detail', item)">
 									{{item[mapper.field] !== undefined ? item[mapper.field] : '-'}}
 								</text>
 							</uni-td>
-							<uni-td v-else :key="'key2'+i+index" align="center">
+							<uni-td v-else :key="mapper.field" align="center">
 								{{item[mapper.field] !== undefined ? item[mapper.field] : '-'}}
 							</uni-td>
 						</template>

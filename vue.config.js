@@ -1,4 +1,4 @@
-const ignored = ['**/uni_modules/**/*.md', '**/uni_modules/**/package.json', '**/uni_modules/*/uniCloud/**/*']
+const ignored = ['**/uni_modules/**/*.md', '**/uni_modules/**/package.json', '**/uni_modules/*/uniCloud/**/*', '**/.git']
 module.exports = {
 	chainWebpack: (config) => {
 		// 发行或运行时启用了压缩时会生效

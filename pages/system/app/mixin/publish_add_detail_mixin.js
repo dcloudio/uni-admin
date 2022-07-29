@@ -65,6 +65,7 @@ export default {
 			deletedStore: []
 		}
 		const mpKeys = Object.keys(mpPlatform);
+		data.mpPlatformKeys = Object.freeze(mpKeys);
 		[].concat(mpKeys, ['icon_url', 'quickapp']).forEach(key => data.middleware_img[key] = {});
 		data.platFormKeys = Object.freeze([].concat(mpKeys, data.appPlatformKeys))
 		data.platFormKeys.forEach(key => data.middleware_checkbox[key] = false)
