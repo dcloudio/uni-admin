@@ -53,8 +53,8 @@
 			<uni-forms-item v-if="!isiOS && !isWGT && formData.store_list.length" label="Android应用市场" labelWidth="125px"
 				key="store_list" name="store_list">
 				<view style="flex: 1;">
-					<template v-for="(item,index) in formData.store_list">
-						<view :key="item._create_date">
+					<template v-for="(item,index) in formData.store_list" :key="item.id">
+						<view>
 							<uni-card style="margin: 0px 0px 20px 0px;">
 								<view style="display: flex;">
 									<checkbox-group style="user-select: none;"
