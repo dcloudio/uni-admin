@@ -32,7 +32,7 @@ uni-page-head .uni-btn-icon {
 	uni-page-head[uni-page-head-type="default"]
 	~ uni-page-wrapper {
 	height: auto;
-	padding-top: 59px;
+	padding-top: 44px;
 }
 
 .uni-app--showleftwindow uni-page-head ~ uni-page-wrapper uni-page-body {
@@ -78,7 +78,7 @@ uni-page-head .uni-btn-icon {
 }
 
 .uni-top-window {
-	z-index: 998;
+	z-index: 999;
 	overflow: visible;
 }
 

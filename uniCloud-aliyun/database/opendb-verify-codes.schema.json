@@ -36,6 +36,10 @@
 		"expired_at": {
 			"bsonType": "timestamp",
 			"description": "过期时间"
+		},
+		"scene": {
+			"bsonType": "string",
+			"description": "使用验证码的场景，如：login, bind, unbind, pay"
 		}
 	}
 }
