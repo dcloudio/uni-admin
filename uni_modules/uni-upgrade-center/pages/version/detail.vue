@@ -52,35 +52,33 @@
 				<!-- <show-info :top="-80" :content="uploadFileContent"></show-info> -->
 			</uni-forms-item>
 
-			<uni-forms-item v-if="!isiOS && !isWGT && formData.store_list.length" label="Android应用市场" key="store_list" name="store_list"
-				labelWidth="120">
+			<uni-forms-item v-if="!isiOS && !isWGT && formData.store_list.length" label="Android应用市场" key="store_list"
+				name="store_list" labelWidth="120">
 				<view style="flex: 1;">
-					<template v-for="(item,index) in formData.store_list" :key="item.id">
-						<view>
-							<uni-card style="margin: 0px 0px 20px 0px;">
-								<view style="display: flex;">
-									<checkbox-group style="user-select: none;"
-										@change="({detail:{value}}) => {item.enable = !!value.length}">
-										<label class="title_padding">
-											<checkbox :disabled="detailsState" value="scheme" :checked="item.enable" />
-											<text>是否启用</text>
-										</label>
-									</checkbox-group>
-								</view>
-								<uni-forms-item label="商店名称">
-									<uni-easyinput disabled v-model="item.name" trim="both"></uni-easyinput>
-								</uni-forms-item>
-								<uni-forms-item label="Scheme">
-									<uni-easyinput disabled v-model="item.scheme" trim="both"></uni-easyinput>
-								</uni-forms-item>
-								<uni-forms-item label="优先级">
-									<uni-easyinput :disabled="detailsState" v-model="item.priority" type="number">
-									</uni-easyinput>
-									<show-info :top="-100" :left="-180" :content="priorityContent"></show-info>
-								</uni-forms-item>
-							</uni-card>
-						</view>
-					</template>
+					<view v-for="(item,index) in formData.store_list" :key="item.id">
+						<uni-card style="margin: 0px 0px 20px 0px;">
+							<view style="display: flex;">
+								<checkbox-group style="user-select: none;"
+									@change="({detail:{value}}) => {item.enable = !!value.length}">
+									<label class="title_padding">
+										<checkbox :disabled="detailsState" value="scheme" :checked="item.enable" />
+										<text>是否启用</text>
+									</label>
+								</checkbox-group>
+							</view>
+							<uni-forms-item label="商店名称">
+								<uni-easyinput disabled v-model="item.name" trim="both"></uni-easyinput>
+							</uni-forms-item>
+							<uni-forms-item label="Scheme">
+								<uni-easyinput disabled v-model="item.scheme" trim="both"></uni-easyinput>
+							</uni-forms-item>
+							<uni-forms-item label="优先级">
+								<uni-easyinput :disabled="detailsState" v-model="item.priority" type="number">
+								</uni-easyinput>
+								<show-info :top="-100" :left="-180" :content="priorityContent"></show-info>
+							</uni-forms-item>
+						</uni-card>
+					</view>
 				</view>
 			</uni-forms-item>
 
