@@ -41,7 +41,8 @@
 					<view class="uni-stat-card-header">信息列表</view>
 					<view class="uni-group">
 						<!-- #ifdef H5 -->
-						<button class="uni-button" type="primary" size="mini" @click="openUploadPopup">上传
+						<button v-if="sourceMapEnabled" class="uni-button" type="primary" size="mini"
+							@click="openUploadPopup">上传
 							sourceMap</button>
 						<!-- #endif -->
 					</view>
@@ -66,7 +67,7 @@
 								<!-- #endif -->
 							</uni-th>
 						</template>
-						<uni-th align="center">
+						<uni-th align="center" v-if="sourceMapEnabled">
 							操作
 						</uni-th>
 					</uni-tr>
@@ -81,7 +82,7 @@
 								{{item[mapper.field] !== undefined ? item[mapper.field] : '-'}}
 							</uni-td>
 						</template>
-						<uni-td>
+						<uni-td v-if="sourceMapEnabled">
 							<button size="mini" type="primary" style="white-space: nowrap;"
 								@click="openErrPopup(item)">详 情</button>
 						</uni-td>
@@ -194,17 +195,7 @@
 		stacktracey,
 		uniStracktraceyPreset
 	} from '@dcloudio/uni-stacktracey';
-
-	// 要上传到的腾讯云服务空间 SpaceID
-	const cloudSpaceId = ''
-	// 要上传到的腾讯云云存储访问地址
-	const sourcemapBaseUrl = ''
-
-	// 不上传到当前空间，需初始化上传的目标云空间
-	const uploadSourcemapCloud = uniCloud.init({
-		provider: 'tencent',
-		spaceId: cloudSpaceId
-	})
+	import adminConfig from '@/admin.config.js'
 
 	const appPlatforms = ['ios', 'android', 'app']
 
@@ -221,6 +212,7 @@
 	export default {
 		data() {
 			return {
+				uniStat: adminConfig.uniStat,
 				fieldsMap,
 				popupFieldsMap,
 				query: {
@@ -313,10 +305,21 @@
 			},
 			sortUploadFileTempFileTasks() {
 				return this.uploadFile.tempFileTasks.filter(task => task.state !== 1).sort((a, b) => a.state - b.state)
+			},
+			sourceMapEnabled() {
+				return !!this.uniStat.uploadSourceMapCloudSpaceId
 			}
 		},
 		created() {
 			this.parsedErrors = {}
+
+			if (this.sourceMapEnabled) {
+				// sourceMap 功能需初始化上传的目标云空间
+				this.uploadSourcemapCloud = uniCloud.init({
+					provider: 'tencent',
+					spaceId: this.uniStat.uploadSourceMapCloudSpaceId
+				})
+			}
 		},
 		watch: {
 			query: {
@@ -655,7 +658,7 @@
 					version
 				} = item
 
-				let base = sourcemapBaseUrl + `/${appid}/${platform_code}/${version}/`
+				let base = this.uniStat.cloudSourceMapUrl + `/${appid}/${platform_code}/${version}/`
 
 				try {
 					err = JSON.parse(err)
@@ -700,7 +703,8 @@
 			},
 			createUploadFileTask(prefix, fileDiskPath, filePath, onUploadProgress) {
 				const cloudPath = prefix + fileDiskPath
-				return uploadSourcemapCloud.uploadFile({
+
+				return this.uploadSourcemapCloud.uploadFile({
 					filePath,
 					cloudPath,
 					onUploadProgress
