@@ -1,3 +1,5 @@
+## 1.9.8（2022-08-15）
+- 修复 应用管理修改页面报错
 ## 1.9.7（2022-08-08）
 - 改进 sourceMap 回溯源码功能使用方法，需要在 admin.config.js 中配置相关信息。[详情](https://uniapp.dcloud.net.cn/uni-stat-v2.html#upload-sourcemap)
 - 修复 js报错统计报错的Bug

@@ -418,9 +418,11 @@
 						this.getTotalLaunch(stringifyQuery(queryTemp, false, ['uni_platform'])).then(res => {
 							const total = res.result.data[0]
 							console.log('result total---', total);
-							let launch_count = total && total.total_app_launch_count
-							item.app_launch_count = launch_count
-							this.panelData = mapfields(panelOption, item)
+							if (item) {
+								let launch_count = total && total.total_app_launch_count
+								item.app_launch_count = launch_count
+								this.panelData = mapfields(panelOption, item)
+							}
 						})
 					})
 			},

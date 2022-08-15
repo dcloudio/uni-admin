@@ -202,9 +202,9 @@
 		onLoad(e) {
 			if (e.id) {
 				this.isEdit = true
-				// #ifdef H5
-				document.title = this.$parent.$parent.navigationBar.titleText = '修改应用'
-				// #endif
+				uni.setNavigationBarTitle({
+					title: '修改应用'
+				})
 				// this.formDataId = e.id
 				this.setFormData('appid', e.id)
 				this.getDetail(e.id)
