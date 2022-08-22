@@ -27,7 +27,8 @@
 			<uni-forms-item name="version" label="版本号" required>
 				<uni-easyinput v-model="formData.version" placeholder="当前包版本号，必须大于当前线上发行版本号" />
 			</uni-forms-item>
-			<uni-forms-item v-if="isWGT" name="min_uni_version" label="原生App最低版本" :required="isWGT">
+			<uni-forms-item v-if="isWGT" key="min_uni_version" name="min_uni_version" label="原生App最低版本"
+				:required="isWGT">
 				<uni-easyinput placeholder="原生App最低版本" v-model="formData.min_uni_version" />
 				<show-info :content="minUniVersionContent"></show-info>
 			</uni-forms-item>
@@ -49,45 +50,43 @@
 				<!-- <show-info :top="-80" :content="uploadFileContent"></show-info> -->
 			</uni-forms-item>
 
-			<uni-forms-item label="Android应用市场" labelWidth="125px"
-				v-if="!isiOS && !isWGT && formData.store_list.length">
+			<uni-forms-item v-if="!isiOS && !isWGT && formData.store_list.length" label="Android应用市场" labelWidth="125px"
+				key="store_list" name="store_list">
 				<view style="flex: 1;">
-					<template v-for="(item,index) in formData.store_list">
-						<view :key="item._create_date">
-							<uni-card style="margin: 0px 0px 20px 0px;">
-								<view style="display: flex;">
-									<checkbox-group style="user-select: none;"
-										@change="({detail:{value}}) => {item.enable = !!value.length}">
-										<label class="title_padding">
-											<checkbox value="scheme" :checked="item.enable" />
-											<text>是否启用</text>
-										</label>
-									</checkbox-group>
-									<!-- <view style="padding-left: 10px;">
+					<view v-for="(item,index) in formData.store_list" :key="item.id">
+						<uni-card style="margin: 0px 0px 20px 0px;">
+							<view style="display: flex;">
+								<checkbox-group style="user-select: none;"
+									@change="({detail:{value}}) => {item.enable = !!value.length}">
+									<label class="title_padding">
+										<checkbox value="scheme" :checked="item.enable" />
+										<text>是否启用</text>
+									</label>
+								</checkbox-group>
+								<!-- <view style="padding-left: 10px;">
 									<button type="warn" size="mini"
 										@click="formData.store_list.splice(index,1)">删除</button>
 								</view> -->
-								</view>
-								<uni-forms-item label="商店名称">
-									<uni-easyinput disabled v-model="item.name" trim="both"></uni-easyinput>
-								</uni-forms-item>
-								<uni-forms-item label="Scheme">
-									<uni-easyinput disabled v-model="item.scheme" trim="both"></uni-easyinput>
-								</uni-forms-item>
-								<uni-forms-item label="优先级">
-									<uni-easyinput v-model="item.priority" type="number"></uni-easyinput>
-									<show-info :top="-100" :left="-180" :content="priorityContent"></show-info>
-								</uni-forms-item>
-							</uni-card>
-						</view>
-					</template>
+							</view>
+							<uni-forms-item label="商店名称">
+								<uni-easyinput disabled v-model="item.name" trim="both"></uni-easyinput>
+							</uni-forms-item>
+							<uni-forms-item label="Scheme">
+								<uni-easyinput disabled v-model="item.scheme" trim="both"></uni-easyinput>
+							</uni-forms-item>
+							<uni-forms-item label="优先级">
+								<uni-easyinput v-model="item.priority" type="number"></uni-easyinput>
+								<show-info :top="-100" :left="-180" :content="priorityContent"></show-info>
+							</uni-forms-item>
+						</uni-card>
+					</view>
 				</view>
 			</uni-forms-item>
-			<uni-forms-item v-if="isWGT" name="is_silently" label="静默更新">
+			<uni-forms-item v-if="isWGT" key="is_silently" name="is_silently" label="静默更新">
 				<switch @change="binddata('is_silently', $event.detail.value)" :checked="formData.is_silently" />
 				<show-info :top="-80" :content="silentlyContent"></show-info>
 			</uni-forms-item>
-			<uni-forms-item v-if="!isiOS" name="is_mandatory" label="强制更新">
+			<uni-forms-item v-if="!isiOS" key="is_mandatory" name="is_mandatory" label="强制更新">
 				<switch @change="binddata('is_mandatory', $event.detail.value)" :checked="formData.is_mandatory" />
 				<show-info :content="mandatoryContent"></show-info>
 			</uni-forms-item>

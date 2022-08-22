@@ -1,3 +1,14 @@
+## 1.9.8（2022-08-15）
+- 修复 应用管理修改页面报错
+## 1.9.7（2022-08-08）
+- 改进 sourceMap 回溯源码功能使用方法，需要在 admin.config.js 中配置相关信息。[详情](https://uniapp.dcloud.net.cn/uni-stat-v2.html#upload-sourcemap)
+- 修复 js报错统计报错的Bug
+## 1.9.6（2022-08-02）
+- 修复 vue3 打包报错的Bug
+- 修复 升级中心发布 wgt 时原生 App 最低版本没有必填的Bug
+- 修复 升级中心发布 wgt 时显示Android应用市场的Bug
+## 1.9.5（2022-07-29）
+- 修复 运行到微信小程序控制台报错的Bug
 ## 1.9.4（2022-07-28）
 - 新增 uni-admin uni统计支持上传 sourceMap，报错可准确回溯源码 [详情](https://uniapp.dcloud.io/uni-stat-v2.html#sourcemap-parse-error)
 ## 1.9.3（2022-07-19）

@@ -126,7 +126,7 @@
 					<button type="primary" plain size="mini" @click="mpAccordion">{{mpExtra}}</button>
 					<show-info :left="40" :top="-20" content="折叠状态下，即使勾选也不会显示详情" />
 				</view> -->
-				<view v-for="item in Object.keys(mpPlatform)" :key="item">
+				<view v-for="item in mpPlatformKeys" :key="item">
 					<checkbox-group @change="({detail:{value}}) => {setPlatformChcekbox(item,!!value.length)}">
 						<label class="title_padding" :class="{'font_bold':getPlatformChcekbox(item)}">
 							<checkbox :value="item" :checked="middleware_checkbox[item]" />
@@ -202,9 +202,9 @@
 		onLoad(e) {
 			if (e.id) {
 				this.isEdit = true
-				// #ifdef H5
-				document.title = this.$parent.$parent.navigationBar.titleText = '修改应用'
-				// #endif
+				uni.setNavigationBarTitle({
+					title: '修改应用'
+				})
 				// this.formDataId = e.id
 				this.setFormData('appid', e.id)
 				this.getDetail(e.id)

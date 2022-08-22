@@ -1,5 +1,5 @@
 <template>
-		<!-- 对应页面： app崩溃 -->
+	<!-- 对应页面： app崩溃 -->
 	<view class="fix-top-window">
 		<view class="uni-header">
 			<uni-stat-breadcrumb class="uni-stat-breadcrumb-on-phone" />
@@ -62,7 +62,7 @@
 									@sort-change="sortChange($event, mapper.field)" align="center"
 									:style="`min-width: ${mapper.title.length * 15 + 80}px;`"> -->
 								<uni-th v-if="mapper.title" :key="index" align="center"
-									:style="`min-width: ${mapper.title.length * 15 + 80}px;`">
+									:style="{'minWidth':`${mapper.title.length * 15 + 80}px`}">
 									<!-- #ifdef MP -->
 									{{mapper.title}}
 									<!-- #endif -->
@@ -82,7 +82,7 @@
 						</uni-tr>
 						<uni-tr v-for="(item ,i) in tableData" :key="i">
 							<template v-for="(mapper, index) in fieldsMap">
-								<uni-td v-if="mapper.field === 'error_msg'" :key="'key1'+i+index" align="left"
+								<uni-td v-if="mapper.field === 'error_msg'" :key="mapper.field" align="left"
 									style="min-width: 500px;">
 									<!-- #ifdef MP -->
 									{{item.error_msg ? item.error_msg.substring(0, 100) + '...' : '-'}}
@@ -99,10 +99,10 @@
 									</uni-tooltip>
 									<!-- #endif -->
 								</uni-td>
-								<uni-td v-else-if="mapper.field === 'create_time'" :key="'key2'+i+index" align="center">
+								<uni-td v-else-if="mapper.field === 'create_time'" :key="mapper.field" align="center">
 									<uni-dateformat :threshold="[0, 0]" :date="item.create_time"></uni-dateformat>
 								</uni-td>
-								<uni-td v-else :key="'key3'+i+index" align="center">
+								<uni-td v-else :key="mapper.field" align="center">
 									{{item[mapper.field] !== undefined ? item[mapper.field] : '-'}}
 								</uni-td>
 							</template>
@@ -418,9 +418,11 @@
 						this.getTotalLaunch(stringifyQuery(queryTemp, false, ['uni_platform'])).then(res => {
 							const total = res.result.data[0]
 							console.log('result total---', total);
-							let launch_count = total && total.total_app_launch_count
-							item.app_launch_count = launch_count
-							this.panelData = mapfields(panelOption, item)
+							if (item) {
+								let launch_count = total && total.total_app_launch_count
+								item.app_launch_count = launch_count
+								this.panelData = mapfields(panelOption, item)
+							}
 						})
 					})
 			},
