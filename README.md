@@ -1,6 +1,6 @@
-## uni-admin 框架（原名 uniCloud admin）
+## uni-admin
 
-uni-admin 框架，是基于 uni-app 和 uniCloud 的应用后台管理的开源框架。
+uni-admin，是基于 uni-app 和 uniCloud 的管理后台项目模版。
 
 对于uniCloud的开发者而言，其后台管理系统应该使用本框架。
 
