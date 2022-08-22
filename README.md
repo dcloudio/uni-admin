@@ -4,11 +4,9 @@ uni-admin，是基于 uni-app 和 uniCloud 的管理后台项目模版。
 
 对于uniCloud的开发者而言，其后台管理系统应该使用本框架。
 
-演示地址：[https://hellouniadmin.dcloud.net.cn](https://hellouniadmin.dcloud.net.cn)
+我们搭建了[uni-admin演示站点](http://hellouniadmin.dcloud.net.cn/admin/)，你登录后即可快速体验uni-admin。
 
-下载地址：[https://ext.dcloud.net.cn/plugin?id=3268](https://ext.dcloud.net.cn/plugin?id=3268)
-
-官方文档：[https://uniapp.dcloud.io/uniCloud/admin](https://uniapp.dcloud.io/uniCloud/admin)
+uni-admin 是开源的，遵循 MIT 协议，你可以从[Github](https://github.com/dcloudio/uni-admin)或[码云](https://gitee.com/dcloud/uni-admin)获取源码，也可以从[DCloud插件市场](https://ext.dcloud.net.cn/plugin?id=3268)快捷下载。
 
 ## 框架特征
 - 基于 uni-app 的宽屏适配，可自动适配 PC 宽屏和手机各端。了解[宽屏适配](https://uniapp.dcloud.io/adapt)
