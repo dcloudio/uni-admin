@@ -224,6 +224,7 @@
 		methods: {
 			loadData() {
 				this.mixinDatacomGet().then(res=>{
+          console.log('mix', res)
 					this.mixinDatacomResData = res.result.data
 					if(this.mixinDatacomResData.length === 0){
 						this.isLocal = false
