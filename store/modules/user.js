@@ -31,5 +31,21 @@ export default {
             state.userInfo = userInfo
         }
     },
-    actions: {}
+    actions: {
+		getUserInfo ({commit}) {
+			const db = uniCloud.database()
+			return db
+				.collection('uni-id-users')
+				.where('_id==$cloudEnv_uid')
+				.field('username')
+				.get()
+				.then(({result}) => {
+					const [userInfo] = result.data
+
+					commit('SET_USER_INFO', userInfo)
+
+					return Promise.resolve(userInfo)
+				})
+		}
+	}
 }

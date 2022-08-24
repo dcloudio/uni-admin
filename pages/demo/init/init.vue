@@ -122,12 +122,10 @@
 				// #endif
 				// #endif
 				this.loading = true
-				this.$request('registerAdmin', formData, {
-					functionName: 'uni-id-cf'
-				}).then(res => {
+				this.$request('registerAdmin', formData).then(res => {
 					uni.showModal({
 						title: '提示',
-						content: res.code ? res.message : '创建成功',
+						content: '创建成功',
 						showCancel: false,
 						success: (res) => {
 							if (res.confirm) {
@@ -137,7 +135,20 @@
 							}
 						}
 					})
-				}).catch(err => {}).finally(err => {
+				}).catch(err => {
+					uni.showModal({
+						title: '提示',
+						content: err.errMsg || `创建失败: ${err.errCode}`,
+						showCancel: false,
+						success: (res) => {
+							if (res.confirm) {
+								uni.navigateTo({
+									url: '/pages/login/login'
+								})
+							}
+						}
+					})
+				}).finally(err => {
 					this.loading = false
 				})
 			},

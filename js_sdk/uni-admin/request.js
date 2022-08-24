@@ -27,33 +27,32 @@ setTimeout(()=> {
 
 }, 16)
 
-export function request(action, params, {
-	functionName = 'uni-id-cf',
-	showModal = true
-} = {}) {
-	return uniCloud.callFunction({
-		name: functionName,
-		data: {
-			action,
-			params
-		}
-	}).then(({
-		result
-	}) => {
+export function request (action, params, options) {
+	const {objectName, showModal, ...objectOptions} = Object.assign({
+		objectName: 'uni-id-co',
+		showModal: false,
+
+		customUI: true,
+		loadingOptions: {
+			title: 'xxx'
+		},
+	}, options)
+
+	const uniCloudObject = uniCloud.importObject(objectName, objectOptions)
+	return uniCloudObject[action](params).then(result => {
 		if (!result) {
 			return Promise.resolve(result)
 		}
-		if (result.code) {
-			reLaunchToLogin(result.code)
-			// const err = new Error(result.message)
-			// err.code = result.code
-			const err = result
-			return Promise.reject(err)
+
+		if (result.errCode) {
+			reLaunchToLogin(result.errCode)
+			return Promise.reject(result)
 		}
+
 		const {
 			token,
 			tokenExpired
-		} = result
+		} = result.newToken ?? {}
 		if (token && tokenExpired) {
 			store.commit('user/SET_TOKEN', {
 				token,
@@ -61,9 +60,10 @@ export function request(action, params, {
 			})
 		}
 		return Promise.resolve(result)
+
 	}).catch(err => {
 		showModal && uni.showModal({
-			content: err.message || '请求服务失败',
+			content: err.errMsg || '请求服务失败',
 			showCancel: false
 		})
 		// #ifdef H5
@@ -83,7 +83,7 @@ export function request(action, params, {
 }
 
 function reLaunchToLogin(code) {
-	if (code === 30202 || typeof code === 'string' && code.indexOf('TOKEN_INVALID') === 0) {
+	if (typeof code === 'string' && code.indexOf('TOKEN_INVALID') === 0) {
 		uni.reLaunch({
 			url: config.login.url
 		})

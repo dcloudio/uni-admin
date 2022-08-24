@@ -121,14 +121,12 @@
 			},
 			save(formData) {
 				this.isLoading = true
-				this.$request('updatePwd', formData, {
-					functionName: 'uni-id-cf'
-				}).then(res => {
+				this.$request('updatePwd', formData).then(res => {
 					this.isLoading = false
-					if (res.code === 0) {
+					if (res.errCode === 0) {
 						uni.showModal({
 							title: '提示',
-							content: res.message,
+							content: res.errMsg || '修改成功，请重新登录',
 							showCancel: false,
 							success: (res) => {
 								if (res.confirm) {
@@ -142,13 +140,11 @@
 						});
 					} else {
 						uni.showToast({
-							title: res.message,
+							title: res.errMsg || '修改失败',
 							icon: 'none',
 							duration: 2000
 						})
 					}
-				}).catch(res => {
-
 				}).finally(err => {
 					this.isLoading = false
 				})

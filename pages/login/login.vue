@@ -41,16 +41,18 @@
 
 <script>
 	import {
-		mapMutations
+		mapMutations,
+		mapActions
 	} from 'vuex'
 	import config from '@/admin.config.js'
 	import {
 		getDeviceUUID
 	} from '@/js_sdk/uni-admin/util.js'
+	import {UNI_ID_ERR_CODE} from "@/js_sdk/uni-admin/constants"
 
 	const captchaOptions = {
 		deviceId: getDeviceUUID(),
-		scene: 'login'
+		scene: 'login-by-pwd'
 	}
 
 	export default {
@@ -117,33 +119,16 @@
 					self.formData.username = res.data
 				}
 			})
-			this.getNeedCaptcha()
 		},
 		methods: {
 			...mapMutations({
 				setToken(commit, tokenInfo) {
 					commit('user/SET_TOKEN', tokenInfo)
-				},
-				setUserInfo(commit, userInfo) {
-					commit('user/SET_USER_INFO', userInfo, {
-						root: true
-					})
 				}
 			}),
-			getNeedCaptcha() {
-				this.$request('getNeedCaptcha', {
-					functionName: 'uni-id-cf',
-					showModal: false
-				}).then(res => {
-					if (res.needCaptcha) {
-						this.formData.captcha = ''
-						this.createCaptcha()
-						this.needCaptcha = true
-					} else {
-						this.needCaptcha = false
-					}
-				})
-			},
+			...mapActions({
+				getUserInfo: 'user/getUserInfo'
+			}),
 			submit(value = this.formData) {
 				if (this.loading) {
 					return
@@ -160,47 +145,50 @@
 					...value,
 					...captchaOptions
 				}, {
-					functionName: 'uni-id-cf',
-					showModal: false
-				}).then(res => {
+					showModal: false,
+					customUI: true
+				}).then(({newToken} = {}) => {
 					this.setToken({
-						token: res.token,
-						tokenExpired: res.tokenExpired
+						token: newToken.token,
+						tokenExpired: newToken.tokenExpired
 					})
-					this.setUserInfo(res.userInfo)
+
+					return this.getUserInfo()
+				}).then((userInfo) => {
 					uni.showToast({
 						title: '登录成功',
 						icon: 'none'
 					})
 					uni.setStorage({
 						key: 'lastUsername',
-						data: value.username
+						data: userInfo.username
 					});
 					uni.redirectTo({
-						url: this.indexPage,
+						url: this.indexPage
 					})
 				}).catch(err => {
-					if (err.needCaptcha) {
-						this.formData.captcha = ''
+					this.formData.captcha = ''
+					if (err.errCode === UNI_ID_ERR_CODE.CAPTCHA_REQUIRED) {
 						this.createCaptcha()
 						this.needCaptcha = true
 					} else {
 						this.needCaptcha = false
 					}
+
 					const that = this
 					uni.showModal({
-						content: err.message || '请求服务失败',
+						content: err.errMsg || '请求服务失败',
 						showCancel: false,
 						success: function() {
 							// #ifdef H5
 							// #ifndef VUE3
-							if (err.code === 10101 && that.$refs.usernameInput) {
+							if (err.errCode === UNI_ID_ERR_CODE.ACCOUNT_NOT_EXISTS && that.$refs.usernameInput) {
 								that.$refs.usernameInput.$refs.input.focus()
 							}
-							if (err.code === 10102 && that.$refs.passwordInput) {
+							if (err.errCode === UNI_ID_ERR_CODE.PASSWORD_ERROR && that.$refs.passwordInput) {
 								that.$refs.passwordInput.$refs.input.focus()
 							}
-							if (err.code === 10002 && that.$refs.captchaInput) {
+							if (err.errCode === UNI_ID_ERR_CODE.CAPTCHA_REQUIRED && that.$refs.captchaInput) {
 								that.$refs.captchaInput.$refs.input.focus()
 							}
 							// #endif
@@ -215,9 +203,7 @@
 
 			createCaptcha() {
 				this.captchaLoading = true
-				this.$request('createCaptcha', captchaOptions, {
-					functionName: 'uni-id-cf'
-				}).then(res => {
+				this.$request('createCaptcha', captchaOptions).then(res => {
 					if (res.code === 0) {
 						this.captchaBase64 = res.captchaBase64
 					}

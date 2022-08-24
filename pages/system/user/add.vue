@@ -16,8 +16,8 @@
 				<span class="link-btn" @click="gotoTagAdd">新增</span>
 				<span class="link-btn" @click="gotoTagList" style="margin-left: 10px;">管理</span>
 			</uni-forms-item>
-			<uni-forms-item name="dcloud_appid" label="可登录应用" labelWidth="100" class="flex-center-x">
-				<uni-data-checkbox :multiple="true" v-model="formData.dcloud_appid" collection="opendb-app-list"
+			<uni-forms-item name="authorizedApp" label="可登录应用" labelWidth="100" class="flex-center-x">
+				<uni-data-checkbox :multiple="true" v-model="formData.authorizedApp" collection="opendb-app-list"
 					field="appid as value, name as text"></uni-data-checkbox>
 				<span class="link-btn" @click="gotoAppList">管理</span>
 			</uni-forms-item>
@@ -66,7 +66,7 @@
 					"username": "",
 					"password": "",
 					"role": [],
-					"dcloud_appid": [],
+					"authorizedApp": [],
 					"tags": [],
 					"mobile": "",
 					"email": "",
@@ -140,9 +140,7 @@
 				if (typeof value.status === "boolean") {
 					value.status = Number(!value.status)
 				}
-				this.$request('registerUser', value, {
-					functionName: 'uni-id-cf'
-				}).then(res => {
+				this.$request('addUser', value).then(() => {
 					uni.showToast({
 						title: '新增成功'
 					})
