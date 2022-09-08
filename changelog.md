@@ -1,3 +1,5 @@
+## 1.10.1（2022-09-08）
+- 修复 使用 uniIdRouter 时导致页面无法打开的Bug
 ## 1.10.0（2022-09-08）
 - 升级 uni-id 至 4.0，移除 uni-id、uni-id-cf 插件，增加 uni-id-pages、uni-id-common 插件。[uni-id详情](https://uniapp.dcloud.net.cn/uniCloud/uni-id-summary.html)
 ## 1.9.8（2022-08-15）
