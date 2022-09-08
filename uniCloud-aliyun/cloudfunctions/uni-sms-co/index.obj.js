@@ -1,0 +1,281 @@
+// 云对象教程: https://uniapp.dcloud.net.cn/uniCloud/cloud-obj
+// jsdoc语法提示教程：https://ask.dcloud.net.cn/docs/#//ask.dcloud.net.cn/article/129
+const createConfig = require('uni-config-center')
+const buildTemplateData = require('./build-template-data')
+const { parserDynamicField, checkIsStaticTemplate } = require('./utils')
+
+const uniSmsCo = uniCloud.importObject('uni-sms-co')
+const db = uniCloud.database()
+const smsConfig = createConfig({
+  pluginId: 'uni-sms-co'
+}).config()
+
+function errCode(code) {
+  return 'uni-sms-co-' + code
+}
+
+function sendSms(template) {
+  return new Promise((resolve, reject) => {
+    const templateContent = smsConfig.template.find(item => item.id === template.templateId)
+    if (!templateContent) {
+      reject('模板不存在')
+      return
+    }
+    const content = templateContent.content.replace(/\$\{(.*?)\}/g, ($1, param) => {
+      if (!(param in template.data)) {
+        reject(`field [${param}] not found`)
+      }
+      return template.data[param]
+    })
+
+    if (template.phoneList && template.phoneList.length) {
+      for (const mobile of template.phoneList) {
+        console.log({ mobile, text: content })
+      }
+    } else {
+      console.log({
+        mobile: template.phone,
+        text: content
+      })
+    }
+
+    setTimeout(() => {
+      resolve({
+        code: 0,
+        errCode: 0,
+        success: true
+      })
+    }, 1000)
+  })
+}
+module.exports = {
+  _before: function () { // 通用预处理器
+
+  },
+  /**
+ * 创建短信任务
+ * @param {Object} to
+ * @param {Boolean} to.all=false 全部用户发送
+ * @param {String} to.type=user to.all=true时用来区分发送类型
+ * @param {Array} to.receiver 用户ID's / 用户标签ID's
+ * @param {String} templateId 短信模板ID
+ * @param {Array} templateData 短信模板数据
+ */
+  async createSmsTask(to, templateId, templateData) {
+    if (!templateId) {
+      return {
+        errCode: errCode('template-id-required'),
+        errMsg: '缺少templateId'
+      }
+    }
+
+    if (!to.all && (!to.receiver || to.receiver.length <= 0)) {
+      return {
+        errCode: errCode('send-users-is-null'),
+        errMsg: '请选择要发送的用户'
+      }
+    }
+
+    const clientInfo = this.getClientInfo()
+
+    // 创建短信任务
+    const task = await db.collection('batch-sms-task').add({
+      app_id: clientInfo.appId,
+      template_id: templateId,
+      vars: templateData,
+      to,
+      send_qty: 0,
+      success_qty: 0,
+      fail_qty: 0,
+      create_date: Date.now()
+    })
+
+    uniSmsCo.createUserSmsMessage(task.id)
+
+    return {
+      errCode: 0,
+      errMsg: '任务创建成功',
+      taskId: task.id
+    }
+  },
+  async createUserSmsMessage(taskId, execData = {}) {
+    const parallel = 100
+    let beforeId
+    const { data: tasks } = await db.collection('batch-sms-task').where({ _id: taskId }).get()
+
+    if (tasks.length <= 0) {
+      return {
+        errCode: errCode('task-id-not-found'),
+        errMsg: '任务ID不存在'
+      }
+    }
+
+    const [task] = tasks
+    const query = {
+      mobile: db.command.exists(true)
+    }
+
+    // 指定用户发送
+    if (!task.to.all && task.to.type === 'user') {
+      let index = 0
+      if (execData.beforeId) {
+        const i = task.to.receiver.findIndex(id => id === execData.beforeId)
+        index = i !== -1 ? i + 1 : 0
+      }
+
+      const receiver = task.to.receiver.slice(index, index + parallel)
+      query._id = db.command.in(receiver)
+      beforeId = receiver[receiver.length - 1]
+    }
+
+    // 指定用户标签
+    if (task.to.type === 'userTags') {
+      query.tags = db.command.in(task.to.receiver)
+    }
+
+    // 全部用户
+    if (task.to.all && execData.beforeId) {
+      query._id = db.command.gt(execData.beforeId)
+    }
+
+    // 动态数据仅支持uni-id-users表字段
+    const dynamicField = parserDynamicField(task.vars)
+    const { data: users } = await db.collection('uni-id-users')
+      .where(query)
+      .field({
+        mobile: true,
+        ...dynamicField.reduce((res, field) => {
+          res[field] = true
+          return res
+        }, {})
+      })
+      .limit(parallel)
+      .orderBy('_id', 'asc')
+      .get()
+
+    if (users.length <= 0) {
+      // 更新要发送的短信数量
+      const count = await db.collection('batch-sms-result').where({ task_id: taskId }).count()
+      await db.collection('batch-sms-task').where({ _id: taskId }).update({
+        send_qty: count.total
+      })
+
+      // 开始发送
+      uniSmsCo.sendSms(taskId)
+
+      return {
+        errCode: 0,
+        errMsg: '创建完成'
+      }
+    }
+
+    if (!beforeId) {
+      beforeId = users[users.length - 1]._id
+    }
+
+    let docs = []
+    for (const user of users) {
+      const varData = await buildTemplateData(task.vars, user)
+      docs.push({
+        uid: user._id,
+        task_id: taskId,
+        mobile: user.mobile,
+        var_data: varData,
+        status: 0,
+        create_date: Date.now()
+      })
+    }
+
+    await db.collection('batch-sms-result').add(docs)
+
+    uniSmsCo.createUserSmsMessage(taskId, { beforeId })
+  },
+  async sendSms(taskId) {
+    const { data: tasks } = await db.collection('batch-sms-task').where({ _id: taskId }).get()
+    if (tasks.length <= 0) {
+      console.warn(`task [${taskId}] not found`)
+      return
+    }
+
+    const [task] = tasks
+    const isStaticTemplate = !task.vars.length
+
+    let sendData = {
+      appId: task.app_id,
+      smsKey: smsConfig.smsKey,
+      smsSecret: smsConfig.smsSecret,
+      templateId: task.template_id
+    }
+
+    const { data: records } = await db.collection('batch-sms-result')
+      .where({ task_id: taskId, status: 0 })
+      .limit(isStaticTemplate ? 50 : 1)
+      .field({ mobile: true, var_data: true })
+      .get()
+
+    if (records.length <= 0) {
+      return {
+        errCode: 0,
+        errMsg: '发送完成'
+      }
+    }
+
+    if (isStaticTemplate) {
+      sendData.phoneList = records.reduce((res, user) => {
+        res.push(user.mobile)
+        return res
+      }, [])
+    } else {
+      const [record] = records
+      sendData.phone = record.mobile
+      sendData.data = record.var_data
+    }
+
+    try {
+      //   await sendSms(sendData)
+      await uniCloud.sendSms(sendData)
+      // 修改发送状态为已发送
+      await db.collection('batch-sms-result').where({
+        _id: db.command.in(records.map(record => record._id))
+      }).update({
+        status: 1
+      })
+      // 更新任务的短信成功数
+      await db.collection('batch-sms-task').where({ _id: taskId })
+        .update({
+          success_qty: db.command.inc(records.length),
+          send_date: Date.now()
+        })
+    } catch (e) {
+      console.error('[sendSms Fail]', e)
+      // 修改发送状态为发送失败
+      await db.collection('batch-sms-result').where({
+        _id: db.command.in(records.map(record => record._id))
+      }).update({
+        status: 2,
+        reason: e.errMsg || '未知原因'
+      })
+      // 更新任务的短信失败数
+      await db.collection('batch-sms-task').where({ _id: taskId })
+        .update({
+          fail_qty: db.command.inc(records.length)
+        })
+    }
+
+    uniSmsCo.sendSms(taskId)
+  },
+  async template() {
+    return smsConfig.template
+  },
+  async task (id) {
+    const {data: tasks} = await db.collection('batch-sms-task').where({_id: id}).get()
+    if (tasks.length <= 0) {
+      return null
+    }
+
+    const [task] = tasks
+    task.template = smsConfig.template.find(item => item.id === task.template_id)
+
+    return task
+  }
+}

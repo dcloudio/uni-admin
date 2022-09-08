@@ -145,6 +145,16 @@
             "style": {
                 "navigationBarTitleText": "用户日志"
             }
+        }, {
+            "path": "safety/sms/task",
+            "style": {
+                "navigationBarTitleText": "短信任务"
+            }
+        }, {
+            "path": "safety/sms/record",
+            "style": {
+                "navigationBarTitleText": "短信记录"
+            }
         }]
     }, {
         "root": "pages/demo",

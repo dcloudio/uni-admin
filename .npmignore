@@ -1,4 +1,6 @@
 .hbuilderx
+.idea
+.vscode
 scripts
 unpackage
 node_modules
