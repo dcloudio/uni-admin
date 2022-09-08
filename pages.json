@@ -331,9 +331,5 @@
         "style": {
             "width": "240px"
         }
-    },
-	"uniIdRouter": {
-		"loginPage": "pages/login/login",
-		"resToLogin": true
-	}
+    }
 }
