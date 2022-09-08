@@ -1,0 +1,72 @@
+.uni-content {
+  padding: 0 60rpx;
+}
+
+/* #ifndef APP-NVUE */
+@media screen and (min-width: 690px) {
+  .uni-content {
+    padding: 0;
+    max-width: 400px;
+    margin-left: calc(50% - 200px);
+  }
+}
+
+.uni-content view {
+  box-sizing: border-box;
+}
+
+/* #endif */
+.title {
+  /* #ifndef APP-NVUE */
+  display: flex;
+  /* #endif */
+  padding: 18px 0;
+  font-weight: 800;
+  flex-direction: column;
+}
+
+.tip {
+  /* #ifndef APP-NVUE */
+  display: flex;
+  /* #endif */
+  color: #BDBDC0;
+  font-size: 11px;
+  margin: 6px 0;
+}
+
+.input-box {
+  padding: 4px;
+  background-color: #F8F8F8;
+  border-radius: 0;
+  font-size: 14px;
+  /* #ifndef APP-NVUE */
+  display: flex;
+  /* #endif */
+  flex: 1;
+}
+
+.link {
+  color: #04498c;
+  cursor: pointer;
+}
+
+.uni-content ::v-deep .uni-forms-item__inner {
+  padding-bottom: 8px;
+}
+
+.uni-btn {
+	text-align: center;
+	height: 40px;
+	line-height: 40px;
+	margin: 15px 0 0 0;
+	color: #FFF !important;
+	border-radius: 5px;
+}
+/*
+.uni-btn::after{
+  display: none;
+}
+.uni-btn[disabled]{
+	background-color: $uni-color-primary !important;
+	opacity: 0.3;
+}*/

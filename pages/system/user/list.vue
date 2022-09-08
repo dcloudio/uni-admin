@@ -95,9 +95,8 @@
 				<uni-data-checkbox ref="checkbox" v-model="managerTags" class="mb ml" :multiple="true"
 					collection="uni-id-tag" field="tagid as value, name as text"></uni-data-checkbox>
 				<view class="uni-group">
-					<button @click="managerMultiTag('add')" class="uni-button" type="primary"
-						style="margin-right: 75px;">添加</button>
-					<button @click="managerMultiTag('del')" class="uni-button" type="warn">删除</button>
+					<button @click="managerMultiTag" class="uni-button" type="primary"
+						style="margin-right: 75px;">保存</button>
 				</view>
 			</view>
 		</uni-popup>
@@ -347,32 +346,31 @@
 					})
 				})
 			},
-			managerMultiTag(type) {
+			managerMultiTag() {
 				const ids = this.selectedItems()
-				const options = {
-					type,
-					ids,
-					value: this.managerTags
-				}
-				this.$request('managerMultiTag', options, {
-					functionName: 'uni-id-cf'
-				}).then(res => {
-					uni.showToast({
-						title: '修改标签成功',
-						duration: 2000
-					})
-					this.$refs.table.clearSelection()
-					this.managerTags = []
-					this.loadData()
-					this.closeTagsPopup()
-				}).catch(err => {
-					uni.showModal({
-						content: err.message || '请求服务失败',
-						showCancel: false
-					})
-				}).finally(err => {
-					uni.hideLoading()
-				})
+
+        db.collection('uni-id-users').where({
+          _id: db.command.in(ids)
+        }).update({
+          tags: this.managerTags
+        }).then(() => {
+          uni.showToast({
+            title: '修改标签成功',
+            duration: 2000
+          })
+          this.$refs.table.clearSelection()
+          this.managerTags = []
+          this.loadData()
+          this.closeTagsPopup()
+        }).catch(err => {
+          uni.showModal({
+            content: err.message || '请求服务失败',
+            showCancel: false
+          })
+        }).finally(err => {
+          uni.hideLoading()
+        })
+
 			}
 		}
 	}

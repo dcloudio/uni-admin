@@ -34,20 +34,13 @@ export default {
 	},
 	actions: {
 		init({
-			commit
-		}) {
-			return request('getCurrentUserInfo', {}, {
-				functionName: 'uni-id-cf'
-			}).then(res => {
-					const {
-						navMenu,
-						userInfo
-					} = res
-					// commit('SET_NAV_MENU', navMenu)
-					commit('user/SET_USER_INFO', userInfo, {
-						root: true
-					})
-				})
+			commit,
+		 	dispatch
+		 }) {
+			// 初始化获取用户信息
+			dispatch('user/getUserInfo', null, {
+				root: true
+			})
 		},
 		setAppName({
 			commit

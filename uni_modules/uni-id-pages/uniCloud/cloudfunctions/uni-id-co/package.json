@@ -1,0 +1,15 @@
+{
+  "name": "uni-id-co",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "keywords": [],
+  "author": "DCloud",
+  "dependencies": {
+    "jsonwebtoken": "8.5.1",
+    "uni-captcha": "file:../../../../uni-captcha/uniCloud/cloudfunctions/common/uni-captcha",
+    "uni-config-center": "file:../../../../uni-config-center/uniCloud/cloudfunctions/common/uni-config-center",
+    "uni-id-common": "file:../../../../uni-id-common/uniCloud/cloudfunctions/common/uni-id-common"
+  },
+  "extensions": {}
+}
