@@ -13,7 +13,7 @@
 					@click="delTable">{{ $t('common.button.batchDelete') }}</button>
 				<button class="uni-button" type="primary" size="mini" :disabled="!selectedIndexs.length"
 					@click="openTagsPopup">标签管理</button>
-				<button class="uni-button" type="primary" size="mini" @click="$refs.batchSms.open()">发送短信</button>
+				<button class="uni-button" type="primary" size="mini" @click="$refs.batchSms.open()">群发短信</button>
 				<!-- #ifdef H5 -->
 				<download-excel class="hide-on-phone" :fields="exportExcel.fields" :data="exportExcelData"
 					:type="exportExcel.type" :name="exportExcel.filename">

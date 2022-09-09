@@ -12,7 +12,7 @@
 					:type="exportExcel.type" :name="exportExcel.filename">
 					<button class="uni-button" type="primary" size="mini">导出 Excel</button>
 				</download-excel>
-				<button class="uni-button" type="primary" size="mini" @click="$refs.batchSms.open()">发送短信</button>
+				<button class="uni-button" type="primary" size="mini" @click="$refs.batchSms.open()">群发短信</button>
 			</view>
 		</view>
 		<view class="uni-container">

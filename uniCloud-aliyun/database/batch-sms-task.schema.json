@@ -11,6 +11,11 @@
     "_id": {
       "description": "ID，系统自动生成"
     },
+	"name": {
+	  "bsonType": "string",
+	  "description": "任务名称",
+	  "trim": "both"
+	},
     "app_id": {
       "bsonType": "string",
       "description": "App ID",
@@ -19,6 +24,11 @@
 	"template_id": {
 	  "bsonType": "string",
 	  "description": "短信模板ID",
+	  "trim": "both"
+	},
+	"template_content": {
+	  "bsonType": "string",
+	  "description": "短信模板内容",
 	  "trim": "both"
 	},
     "vars": {

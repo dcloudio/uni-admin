@@ -60,8 +60,9 @@ module.exports = {
  * @param {Array} to.receiver 用户ID's / 用户标签ID's
  * @param {String} templateId 短信模板ID
  * @param {Array} templateData 短信模板数据
+ * @param {String} options.taskName 任务名称
  */
-  async createSmsTask(to, templateId, templateData) {
+  async createSmsTask(to, templateId, templateData, options = {}) {
     if (!templateId) {
       return {
         errCode: errCode('template-id-required'),
@@ -78,10 +79,21 @@ module.exports = {
 
     const clientInfo = this.getClientInfo()
 
+    const {data: templates} = await db.collection('batch-sms-template').where({_id: templateId}).get()
+    if (templates.length <= 0) {
+      return {
+        errCode: errCode('template-not-found'),
+        errMsg: '短信模板不存在'
+      }
+    }
+    const [template] = templates
+
     // 创建短信任务
     const task = await db.collection('batch-sms-task').add({
       app_id: clientInfo.appId,
+      name: options.taskName,
       template_id: templateId,
+      template_contnet: template.content,
       vars: templateData,
       to,
       send_qty: 0,
@@ -204,7 +216,8 @@ module.exports = {
       appId: task.app_id,
       smsKey: smsConfig.smsKey,
       smsSecret: smsConfig.smsSecret,
-      templateId: task.template_id
+      templateId: task.template_id,
+      data: {}
     }
 
     const { data: records } = await db.collection('batch-sms-result')
@@ -253,7 +266,8 @@ module.exports = {
         _id: db.command.in(records.map(record => record._id))
       }).update({
         status: 2,
-        reason: e.errMsg || '未知原因'
+        reason: e.errMsg || '未知原因',
+        send_date: Date.now()
       })
       // 更新任务的短信失败数
       await db.collection('batch-sms-task').where({ _id: taskId })
@@ -265,7 +279,8 @@ module.exports = {
     uniSmsCo.sendSms(taskId)
   },
   async template() {
-    return smsConfig.template
+    const {data: templates} = db.collection('batch-sms-template').get()
+    return templates
   },
   async task (id) {
     const {data: tasks} = await db.collection('batch-sms-task').where({_id: id}).get()
@@ -273,9 +288,77 @@ module.exports = {
       return null
     }
 
-    const [task] = tasks
-    task.template = smsConfig.template.find(item => item.id === task.template_id)
+    return tasks[0]
+  },
+  async updateTemplates (templates) {
+    if (templates.length <= 0) {
+      return {
+        errCode: errCode('template-is-null'),
+        errMsg: '缺少模板信息'
+      }
+    }
 
-    return task
+    let group = []
+    for (const template of templates) {
+      group.push(
+        db.collection('batch-sms-template').doc(template.id).set({
+          content: template.content
+        })
+      )
+    }
+
+    await Promise.all(group)
+
+    return {
+      errCode: 0,
+      errMsg: '更新成功'
+    }
+  },
+  async preview (to, templateId, templateData) {
+    const count  = 10
+    let query = {
+      mobile: db.command.exists(true)
+    }
+
+    // 指定用户发送
+    if (!to.all && to.type === 'user') {
+      const receiver = to.receiver.slice(0, 10)
+      query._id = db.command.in(receiver)
+    }
+
+    // 指定用户标签
+    if (to.type === 'userTags') {
+      query.tags = db.command.in(to.receiver)
+    }
+    
+    const {data: users} = await db.collection('uni-id-users').where(query).limit(count).get()
+    if (users.length <= 0) {
+      return {
+        errCode: errCode('users-is-null'),
+        errMsg: '请添加要发送的用户'
+      }
+    }
+
+    const {data: templates} = await db.collection('batch-sms-template').where({_id: templateId}).get()
+    if (templates.length <= 0) {
+      return {
+        errCode: errCode('template-not-found'),
+        errMsg: '模板不存在'
+      }
+    }
+    const [template] = templates
+
+    let docs = []
+    for (const user of users) {
+      const varData = await buildTemplateData(templateData, user)
+      const content = template.content.replace(/\$\{(.*?)\}/g, ($1, param) => varData[param] || $1)
+      docs.push(content)
+    }
+
+    return {
+      errCode: 0,
+      errMsg: '',
+      list: docs
+    }
   }
 }

@@ -5,6 +5,7 @@
             <view class="uni-group">
                 <input class="uni-search" type="text" v-model="query" @confirm="search" placeholder="请输入手机号查询" />
 				<button class="uni-button hide-on-phone" type="default" size="mini" @click="search">{{$t('common.button.search')}}</button>
+				<button class="uni-button hide-on-phone" type="default" size="mini" @click="refresh">刷新</button>
             </view>
         </view>
         <view class="uni-container">
@@ -51,6 +52,7 @@ const recordStatus = {
     1: "已发送",
     2: "发送失败"
 }
+
 export default {
     data() {
         return {
@@ -58,6 +60,7 @@ export default {
             task: {},
             recordStatus,
             where: '',
+            query: '',
             page: {
                 size: 20,
                 current: 1
@@ -66,31 +69,46 @@ export default {
     },
     onLoad(e) {
         this.taskId = e.id
-        this.where = ``
+        this.where = this.getWhere({task_id: this.taskId})
+
         this.loadTask()
     },
-    computed: {
-        
-    },
     methods: {
+        getWhere (params) {
+            return Object.keys(params).reduce((res, key) => {
+                const param = params[key]
+                res.push(`${key}=='${param}'`)
+                return res
+            }, []).join(' && ')
+        },
         templateContent (record) {
-            const {content} = this.task.template
+            const {template_contnet: content} = this.task
             if (!content) return
 
-            return content.replace(/\$\{(.*?)\}/g, ($1, param) => {
-                console.log(record)
-                return record.var_data?.[param] ?? $1
-            })
+            return content.replace(/\$\{(.*?)\}/g, ($1, param) => record.var_data[param] || $1)
         },
         async loadTask () {
             const task = await uniSmsCo.task(this.taskId)
-
-            if (task) {
-                this.task = task
-            }
+            if (task) this.task = task
+        },
+        onPageChanged(e) {
+            this.$refs.udb.loadData({
+                current: e.current
+            })
         },
         search () {
+            const query = {
+                task_id: this.taskId
+            }
 
+            if (this.query) {
+                query.mobile = this.query
+            }
+
+            this.where = this.getWhere(query)
+        },
+        refresh () {
+            this.$refs.udb.refresh()
         }
     }
 }

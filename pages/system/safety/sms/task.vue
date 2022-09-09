@@ -10,7 +10,8 @@
                 <uni-table :loading="loading" :emptyText="error.message || '没有更多数据'" border stripe>
                     <uni-tr>
                         <uni-th align="center">序号</uni-th>
-                        <uni-th align="center">App ID</uni-th>
+                        <uni-th align="center">名称</uni-th>
+                        <!-- <uni-th align="center">App ID</uni-th> -->
                         <uni-th align="center">短信模板</uni-th>
                         <uni-th align="center">发送总数</uni-th>
                         <uni-th align="center">成功</uni-th>
@@ -19,7 +20,8 @@
                     </uni-tr>
                     <uni-tr v-for="(item,index) in data" :key="index">
                         <uni-td align="center">{{(pagination.current -1)*pagination.size + (index+1)}}</uni-td>
-                        <uni-td align="center">{{item.app_id}}</uni-td>
+                        <uni-td align="center">{{item.name}}</uni-td>
+                        <!-- <uni-td align="center">{{item.app_id}}</uni-td> -->
                         <uni-td align="center">{{item.template_id}}</uni-td>
                         <uni-td align="center">{{item.send_qty}}</uni-td>
                         <uni-td align="center">{{item.success_qty}}</uni-td>
@@ -29,7 +31,7 @@
                         </uni-td>
                         <uni-td align="center">
                             <view class="uni-group">
-                                <button @click="navigateTo('./record?id=' + item._id, false)" class="uni-button"
+                                <button @click="navigateTo('./record?id=' + item._id)" class="uni-button"
                                     size="mini" type="primary">发送记录</button>
                             </view>
                         </uni-td>
@@ -55,16 +57,14 @@ export default {
         }
     },
     methods: {
-        navigateTo(url, clear) {
-            // clear 表示刷新列表时是否清除页码，true 表示刷新并回到列表第 1 页，默认为 true
+        navigateTo(url) {
             uni.navigateTo({
-                url,
-                events: {
-                    refreshData: () => {
-                        this.loadTags()
-                        this.loadData(clear)
-                    }
-                }
+                url
+            })
+        },
+        onPageChanged(e) {
+            this.$refs.udb.loadData({
+                current: e.current
             })
         }
     }
