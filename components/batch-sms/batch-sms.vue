@@ -1,6 +1,6 @@
 <template>
     <view>
-        <uni-popup ref="smsPopup" type="center" @change="popupChange">
+        <uni-popup ref="smsPopup" type="center" @change="popupChange" :is-mask-click="false">
             <view class="sms-manager">
                 <view class="sms-manager--header mb">群发短信</view>
                 <uni-forms :label-width="100" :modelValue="smsDataModel" ref="smsForm">
@@ -11,31 +11,39 @@
                     </uni-forms-item>
                     <uni-forms-item label="目标对象" v-else>
                         <view>当前已选择{{ receiver.length }}个标签</view>
-                        <view class="sms-data-tip">请确认此处填写的字段与短信模板中的字段相匹配，否则短信会发送失败。</view>
+                        <view class="sms-data-tip">如标签关联的用户没有绑定手机号，将不会发送短信。</view>
                     </uni-forms-item>
-                    <uni-forms-item label="名称" name="name" required :rules="[{ required: true, errorMessage: '请输入任务名称' }]">
-                        <uni-easyinput v-model="smsDataModel.name" placeholder="请输入任务名称" />
+                    <uni-forms-item label="任务名称" name="name" required
+                        :rules="[{ required: true, errorMessage: '请输入任务名称' }]">
+                        <uni-easyinput v-model="smsDataModel.name" placeholder="请输入任务名称，例如 “放假通知”" />
                     </uni-forms-item>
                     <uni-forms-item required label="短信模板" name="templateId"
                         :rules="[{ required: true, errorMessage: '请选择短信模板' }]">
                         <unicloud-db ref="template_db" collection="batch-sms-template" v-slot:default="{data,loading}"
-                            field="_id as value,content as text">
+                            field="_id as value,name as text,sign,content">
                             <template v-if="!loading">
                                 <view v-if="data.length">
                                     <uni-data-select class="type m" placeholder="请选择短信模板" size="mini" :clear="false"
-                                        :localdata="data" v-model="smsDataModel.templateId" @change="onSmsTemplateSelected">
+                                        :localdata="data" v-model="smsDataModel.templateId"
+                                        @change="onSmsTemplateSelected">
                                     </uni-data-select>
-                                    <view class="sms-data-tip">添加新的短信模板后，<text @click="chooseFile" class="a-link">点此重新导入</text></view>
+                                    <view class="sms-data-tip">添加新的短信模板后，<text @click="chooseFile"
+                                            class="a-link">点此重新导入</text></view>
                                 </view>
                                 <view v-else>
-                                    <button @click="chooseFile" type="primary" style="width: 120px;" size="mini">上传短信模板</button>
-                                    <view class="sms-data-tip">当前未添加短信模板，请在开发者中心-短信验证码导出短信模板后上传</view>
+                                    <button @click="chooseFile" type="primary" style="width: 120px;"
+                                        size="mini">上传短信模板</button>
+                                    <view class="sms-data-tip">当前未添加短信模板，请在<a class="a-link"
+                                            href="https://dev.dcloud.net.cn" target="_blank">开发者中心</a>后台导出短信模板后上传</view>
                                 </view>
                             </template>
                             <template v-else>
                                 模板加载中...
                             </template>
                         </unicloud-db>
+                    </uni-forms-item>
+                    <uni-forms-item label="短信内容" v-if="smsPreviewContent">
+                        <view class="form-item-flex-center">{{smsPreviewContent}}</view>
                     </uni-forms-item>
                     <uni-forms-item label="模板变量配置" :error-message="smsTemplateDataErrorMessage"
                         v-if="smsDataModel.templateData.length">
@@ -44,12 +52,9 @@
                             <uni-easyinput class="field m" v-model="template.field" placeholder="字段" :clearable="false"
                                 :disabled="true" style="width: 120px;flex:none;" />
                             <uni-easyinput class="value m" v-model="template.value"
-                                placeholder="支持 uni-id-users 表字段，格式 {字段名} 例 {username}" :clearable="false" />
+                                placeholder="支持数据库字段 格式 {表.字段} 例 {uni-id-users.username}" :clearable="false" />
                         </view>
-                        <view class="sms-data-tip">如填写字段变量，请确保数据库中字段值不为空，否则短信将发送失败。</view>
-                    </uni-forms-item>
-                    <uni-forms-item label="短信预览" v-if="smsPreviewContent">
-                        <view class="form-item-flex-center">{{smsPreviewContent}}</view>
+                        <view class="sms-data-tip">目前仅支持替换 uni-id-users 表中字段。填写字段变量，请确保数据库中字段值不为空，否则短信将发送失败。</view>
                     </uni-forms-item>
                 </uni-forms>
                 <view class="uni-group">
@@ -57,6 +62,7 @@
                     <button @click="sendSms()" class="uni-button" type="primary">发送</button>
                 </view>
             </view>
+            <uni-icons type="closeempty" size="24" class="close" @click="close"></uni-icons>
         </uni-popup>
     </view>
 </template>
@@ -110,19 +116,23 @@ export default {
                 let content = smsDataModel.templateData.reduce((res, param) => {
                     const reg = new RegExp(`\\$\\{${param.field}\\}`)
                     return res.replace(reg, ($1) => param.value || $1)
-                }, template.text)
+                }, template.content)
 
-                this.smsPreviewContent = content
+                this.smsPreviewContent = `【${template.sign}】${content}`
             },
             deep: true
         }
     },
     methods: {
-        popupChange (e) {
+        popupChange(e) {
             if (!e.show) this.reset()
         },
         open() {
             this.$refs.smsPopup.open()
+        },
+        close() {
+            this.reset()
+            this.$refs.smsPopup.close()
         },
         onSmsTemplateSelected(templateId) {
             const current = this.$refs.template_db.dataList.find(template => template.value === templateId)
@@ -133,7 +143,7 @@ export default {
             let templateVars = []
             let _execResult
 
-            while (_execResult = reg.exec(current.text)) {
+            while (_execResult = reg.exec(current.content)) {
                 const param = _execResult[1]
 
                 if (param) {
@@ -151,11 +161,10 @@ export default {
             const receiver = this.receiver
 
             for (const template of this.smsDataModel.templateData) {
-                if (!template.field || !template.value) {
+                if (!template.value) {
                     this.smsTemplateDataErrorMessage = '字段/值不可为空'
                     return
                 }
-                break
             }
             this.smsTemplateDataErrorMessage = ''
 
@@ -182,7 +191,7 @@ export default {
 
             uni.showModal({
                 title: '发送确认',
-                content: `短信${this.sendAll ? '将发送给所有用户': `预计发送${this.receiver.length}人`}，确定发送？`,
+                content: `短信${this.sendAll ? '将发送给所有用户' : `预计发送${this.receiver.length}人`}，确定发送？`,
                 success: async (e) => {
                     if (e.cancel) return
 
@@ -191,8 +200,8 @@ export default {
                         type: this.toType,
                         receiver
                     },
-                    values.templateId,
-                    this.smsDataModel.templateData, {
+                        values.templateId,
+                        this.smsDataModel.templateData, {
                         taskName: values.name
                     }
                     )
@@ -200,10 +209,18 @@ export default {
                     if (res.taskId) {
                         uni.showModal({
                             content: '短信任务已创建，可在短信任务中查看进度',
-                            showCancel: false,
-                            success: () => {
-                                this.reset()
-                                this.$refs.smsPopup.close()
+                            confirmText: '立即查看',
+                            cancelText: '关闭',
+                            success: (e) => {
+                                if (e.cancel) {
+                                    this.reset()
+                                    this.$refs.smsPopup.close()
+                                } else {
+                                    uni.navigateTo({
+                                        url: '/pages/system/safety/sms/task'
+                                    })
+                                }
+
                             }
                         })
                     }
@@ -272,7 +289,7 @@ export default {
                 })
             }
         },
-        reset () {
+        reset() {
             this.smsDataModel.name = ''
             this.smsDataModel.templateId = ''
             this.smsDataModel.templateData = []
@@ -287,9 +304,19 @@ export default {
 
 .a-link {
     cursor: pointer;
+    color: $uni-primary;
+    text-decoration: none;
 }
+
+.close {
+    position: absolute;
+    right: 20px;
+    top: 20px;
+    cursor: pointer;
+}
+
 .sms-manager {
-    width: 560px;
+    width: 570px;
     background: #fff;
     padding: 30px;
     border-radius: 5px;

@@ -3,9 +3,10 @@ module.exports = (templateData, user) => {
   for (const template of templateData) {
     const isDynamic = /\{.*?\}/.test(template.value)
 
+    // 仅支持uni-id-users
     if (isDynamic) {
-      const value = template.value.replace(/\{|\}/g, '')
-      data[template.field] = user[value] || ''
+      const [collection, field] = template.value.replace(/\{|\}/g, '').split('.')
+      data[template.field] = collection === 'uni-id-users' ? user[field] || template.value: template.value
     } else {
       data[template.field] = template.value
     }

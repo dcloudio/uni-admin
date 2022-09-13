@@ -14,43 +14,14 @@ function errCode(code) {
   return 'uni-sms-co-' + code
 }
 
-function sendSms(template) {
-  return new Promise((resolve, reject) => {
-    const templateContent = smsConfig.template.find(item => item.id === template.templateId)
-    if (!templateContent) {
-      reject('模板不存在')
-      return
-    }
-    const content = templateContent.content.replace(/\$\{(.*?)\}/g, ($1, param) => {
-      if (!(param in template.data)) {
-        reject(`field [${param}] not found`)
-      }
-      return template.data[param]
-    })
-
-    if (template.phoneList && template.phoneList.length) {
-      for (const mobile of template.phoneList) {
-        console.log({ mobile, text: content })
-      }
-    } else {
-      console.log({
-        mobile: template.phone,
-        text: content
-      })
-    }
-
-    setTimeout(() => {
-      resolve({
-        code: 0,
-        errCode: 0,
-        success: true
-      })
-    }, 1000)
-  })
-}
 module.exports = {
   _before: function () { // 通用预处理器
-
+    if (!smsConfig.smsKey || !smsConfig.smsSecret) {
+      return {
+        errCode: errCode('key-and-secret-not-configured'),
+        errMsg: '请先配置smsKey和smsSecret'
+      }
+    }
   },
   /**
  * 创建短信任务
@@ -152,14 +123,15 @@ module.exports = {
 
     // 动态数据仅支持uni-id-users表字段
     const dynamicField = parserDynamicField(task.vars)
+    const userFields = dynamicField['uni-id-users'] ? dynamicField['uni-id-users'].reduce((res, field) => {
+      res[field] = true
+      return res
+    }, {}): {}
     const { data: users } = await db.collection('uni-id-users')
       .where(query)
       .field({
         mobile: true,
-        ...dynamicField.reduce((res, field) => {
-          res[field] = true
-          return res
-        }, {})
+        ...userFields
       })
       .limit(parallel)
       .orderBy('_id', 'asc')
@@ -301,8 +273,11 @@ module.exports = {
     let group = []
     for (const template of templates) {
       group.push(
-        db.collection('batch-sms-template').doc(template.id).set({
-          content: template.content
+        db.collection('batch-sms-template').doc(String(template.templateId)).set({
+          name: template.templateName,
+          content: template.templateContent,
+          type: template.templateType,
+          sign: template.templateSign
         })
       )
     }
@@ -315,7 +290,7 @@ module.exports = {
     }
   },
   async preview (to, templateId, templateData) {
-    const count  = 10
+    const count  = 5
     let query = {
       mobile: db.command.exists(true)
     }
@@ -352,7 +327,7 @@ module.exports = {
     for (const user of users) {
       const varData = await buildTemplateData(templateData, user)
       const content = template.content.replace(/\$\{(.*?)\}/g, ($1, param) => varData[param] || $1)
-      docs.push(content)
+      docs.push(`【${template.sign}】${content}`)
     }
 
     return {

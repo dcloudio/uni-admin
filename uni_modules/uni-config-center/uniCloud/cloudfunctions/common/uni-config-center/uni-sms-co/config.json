@@ -1,26 +1,4 @@
 {
-  "smsKey": "714d8a22006f398cb8ce332ca93924b7",
-  "smsSecret": "418f0655ba87410e6f2ec7d451bf73ba",
-  "template": [
-    {
-      "id": "uni-sms",
-      "name": "中秋短信",
-      "content": "尊敬的用户祝您中秋节日快乐！"
-    },
-    {
-      "id": "uni_sms_test",
-      "name": "验证码",
-      "content": "【统一应用软件】尊敬的用户，您的验证码是：${code}。5分钟内有效，请尽快验证。请勿泄漏您的验证码。"
-    },
-    {
-      "id": "uni-sms-test-1",
-      "name": "生日祝福",
-      "content": "尊敬的用户祝您生日快乐！"
-    },
-    {
-      "id": "uni-sms-test-2",
-      "name": "商品优惠",
-      "content": "【crl商城】尊敬的${username}, 您关注的${goodsName}, 正在打折处理，点击查看优惠！"
-    }
-  ]
+  "smsKey": "your smsKey",
+  "smsSecret": "your smsSecret"
 }

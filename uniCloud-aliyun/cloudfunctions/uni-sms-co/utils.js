@@ -31,9 +31,12 @@ exports.checkIsStaticTemplate = function (data = []) {
 exports.parserDynamicField = function (templateData) {
   return templateData.reduce((res, template) => {
     if (/\{.*?\}/.test(template.value)) {
-      const value = template.value.replace(/\{|\}/g, '')
-      res.push(value)
+      const [collection, field] = template.value.replace(/\{|\}/g, '').split('.')
+      if (!res[collection]) {
+        res[collection] = []
+      }
+      res[collection].push(field)
     }
     return res
-  }, [])
+  }, {})
 }

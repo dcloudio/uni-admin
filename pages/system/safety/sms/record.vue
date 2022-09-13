@@ -3,9 +3,10 @@
         <view class="uni-header">
             <uni-stat-breadcrumb />
             <view class="uni-group">
-                <input class="uni-search" type="text" v-model="query" @confirm="search" placeholder="请输入手机号查询" />
-				<button class="uni-button hide-on-phone" type="default" size="mini" @click="search">{{$t('common.button.search')}}</button>
-				<button class="uni-button hide-on-phone" type="default" size="mini" @click="refresh">刷新</button>
+                <input class="uni-search" type="text" v-model="query.mobile" @confirm="search" placeholder="请输入手机号查询" />
+                <button class="uni-button hide-on-phone" type="default" size="mini"
+                    @click="search">{{$t('common.button.search')}}</button>
+                <button class="uni-button hide-on-phone" type="default" size="mini" @click="refresh">刷新</button>
             </view>
         </view>
         <view class="uni-container">
@@ -19,7 +20,8 @@
                         <uni-th align="center">短信内容</uni-th>
                         <uni-th align="center">创建时间</uni-th>
                         <uni-th align="center">发送时间</uni-th>
-                        <uni-th align="center">状态</uni-th>
+                        <uni-th align="center" filter-type="select" :filter-data="status"
+                            @filter-change="filterStatusChange">状态</uni-th>
                         <uni-th align="center">原因</uni-th>
                     </uni-tr>
                     <uni-tr v-for="(item,index) in data" :key="index">
@@ -60,34 +62,56 @@ export default {
             task: {},
             recordStatus,
             where: '',
-            query: '',
+            query: {},
             page: {
                 size: 20,
                 current: 1
-            }
+            },
+            status: [
+                {
+                    "text": "未发送",
+                    "value": 0
+                },
+                {
+                    "text": "已发送",
+                    "value": 1
+                },
+                {
+                    "text": "发送失败",
+                    "value": 2
+                }
+            ]
         }
     },
     onLoad(e) {
         this.taskId = e.id
-        this.where = this.getWhere({task_id: this.taskId})
+        this.query.task_id = this.taskId
+        this.where = this.getWhere()
 
         this.loadTask()
     },
     methods: {
-        getWhere (params) {
-            return Object.keys(params).reduce((res, key) => {
-                const param = params[key]
-                res.push(`${key}=='${param}'`)
+        getWhere() {
+            return Object.keys(this.query).reduce((res, key) => {
+                const param = this.query[key]
+
+                if (!param) return res
+                
+                if (param instanceof Array) {
+                    param.length && res.push(`in(${key}, [${param.join(',')}])`)
+                } else {
+                    res.push(`${key}=='${param}'`)
+                }
                 return res
             }, []).join(' && ')
         },
-        templateContent (record) {
-            const {template_contnet: content} = this.task
+        templateContent(record) {
+            const { template_contnet: content } = this.task
             if (!content) return
 
             return content.replace(/\$\{(.*?)\}/g, ($1, param) => record.var_data[param] || $1)
         },
-        async loadTask () {
+        async loadTask() {
             const task = await uniSmsCo.task(this.taskId)
             if (task) this.task = task
         },
@@ -96,19 +120,17 @@ export default {
                 current: e.current
             })
         },
-        search () {
-            const query = {
-                task_id: this.taskId
-            }
-
-            if (this.query) {
-                query.mobile = this.query
-            }
-
-            this.where = this.getWhere(query)
+        search() {
+            this.where = this.getWhere()
         },
-        refresh () {
+        refresh() {
             this.$refs.udb.refresh()
+        },
+        filterStatusChange (e) {
+            this.query.status = e.filter
+
+            this.where = this.getWhere()
+            console.log(this.where)
         }
     }
 }
