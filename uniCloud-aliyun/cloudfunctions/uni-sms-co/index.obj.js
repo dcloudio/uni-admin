@@ -16,11 +16,8 @@ function errCode(code) {
 
 module.exports = {
   _before: function () { // 通用预处理器
-    if (!smsConfig.smsKey || !smsConfig.smsSecret) {
-      return {
-        errCode: errCode('key-and-secret-not-configured'),
-        errMsg: '请先配置smsKey和smsSecret'
-      }
+    if (!smsConfig.smsKey || smsConfig.smsKey.length <= 20 || !smsConfig.smsSecret  || smsConfig.smsSecret.length <= 20) {
+      throw new Error('请先配置smsKey和smsSecret')
     }
   },
   /**
@@ -75,11 +72,11 @@ module.exports = {
 
     uniSmsCo.createUserSmsMessage(task.id)
 
-    return {
+    return new Promise(resolve => setTimeout(() => resolve({
       errCode: 0,
       errMsg: '任务创建成功',
       taskId: task.id
-    }
+    }), 300))
   },
   async createUserSmsMessage(taskId, execData = {}) {
     const parallel = 100
@@ -147,10 +144,10 @@ module.exports = {
       // 开始发送
       uniSmsCo.sendSms(taskId)
 
-      return {
+      return new Promise(resolve => setTimeout(() => resolve({
         errCode: 0,
         errMsg: '创建完成'
-      }
+      }), 500))
     }
 
     if (!beforeId) {
@@ -173,6 +170,8 @@ module.exports = {
     await db.collection('batch-sms-result').add(docs)
 
     uniSmsCo.createUserSmsMessage(taskId, { beforeId })
+
+    return new Promise(resolve => setTimeout(() => resolve(), 500))
   },
   async sendSms(taskId) {
     const { data: tasks } = await db.collection('batch-sms-task').where({ _id: taskId }).get()
@@ -223,13 +222,13 @@ module.exports = {
       await db.collection('batch-sms-result').where({
         _id: db.command.in(records.map(record => record._id))
       }).update({
-        status: 1
+        status: 1,
+        send_date: Date.now()
       })
       // 更新任务的短信成功数
       await db.collection('batch-sms-task').where({ _id: taskId })
         .update({
-          success_qty: db.command.inc(records.length),
-          send_date: Date.now()
+          success_qty: db.command.inc(records.length)
         })
     } catch (e) {
       console.error('[sendSms Fail]', e)
@@ -249,6 +248,8 @@ module.exports = {
     }
 
     uniSmsCo.sendSms(taskId)
+
+    return new Promise(resolve => setTimeout(() => resolve(), 500))
   },
   async template() {
     const {data: templates} = db.collection('batch-sms-template').get()
