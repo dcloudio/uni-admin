@@ -28,18 +28,33 @@ setTimeout(()=> {
 }, 16)
 
 export function request (action, params, options) {
-	const {objectName, showModal, ...objectOptions} = Object.assign({
+	const {objectName, functionName, showModal, ...objectOptions} = Object.assign({
 		objectName: 'uni-id-co',
+		functionName: '',
 		showModal: false,
-
+		
 		customUI: true,
 		loadingOptions: {
 			title: 'xxx'
 		},
 	}, options)
 
-	const uniCloudObject = uniCloud.importObject(objectName, objectOptions)
-	return uniCloudObject[action](params).then(result => {
+	// 兼容 云函数 与 云对象 请求，默认为云对象
+	let call
+	if (functionName) {
+		call = uniCloud.callFunction({
+			name: functionName,
+			data: {
+				action,
+				params
+			}
+		})
+	} else {
+		const uniCloudObject = uniCloud.importObject(objectName, objectOptions)
+		call = uniCloudObject[action](params)
+	}
+
+	return call.then(result => {
 		if (!result) {
 			return Promise.resolve(result)
 		}
