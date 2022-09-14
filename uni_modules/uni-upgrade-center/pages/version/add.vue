@@ -53,7 +53,7 @@
 			<uni-forms-item v-if="!isiOS && !isWGT && formData.store_list.length" label="Android应用市场" labelWidth="125px"
 				key="store_list" name="store_list">
 				<view style="flex: 1;">
-					<view v-for="(item,index) in formData.store_list" :key="item.id">
+					<view v-for="(item) in formData.store_list" :key="item.id">
 						<uni-card style="margin: 0px 0px 20px 0px;">
 							<view style="display: flex;">
 								<checkbox-group style="user-select: none;"
@@ -207,20 +207,14 @@
 		},
 		watch: {
 			isiOS(val) {
-				if (val) {
-					this.setFormData(platform_iOS)
-					return;
-				} else if (this.hasPackage) {
+				if (!val && this.hasPackage) {
 					this.formData.url = this.appFileList.url
 					return;
 				}
 				this.formData.url = ''
 			},
 			"formData.platform"(val) {
-				// wgt热更新数据渲染
-				if (this.isWGT) {
-					this.setFormData(val)
-				}
+				this.setFormData(val)
 			}
 		},
 		methods: {
