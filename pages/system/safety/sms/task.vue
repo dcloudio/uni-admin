@@ -17,6 +17,7 @@
                         <uni-th align="center">成功</uni-th>
                         <uni-th align="center">失败</uni-th>
                         <uni-th align="center">创建时间</uni-th>
+                        <uni-th align="center">操作</uni-th>
                     </uni-tr>
                     <uni-tr v-for="(item,index) in data" :key="index">
                         <uni-td align="center">{{(pagination.current -1)*pagination.size + (index+1)}}</uni-td>

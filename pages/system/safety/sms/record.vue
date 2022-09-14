@@ -22,7 +22,7 @@
                         <uni-th align="center">发送时间</uni-th>
                         <uni-th align="center" filter-type="select" :filter-data="status"
                             @filter-change="filterStatusChange">状态</uni-th>
-                        <uni-th align="center">原因</uni-th>
+                        <uni-th align="center">备注</uni-th>
                     </uni-tr>
                     <uni-tr v-for="(item,index) in data" :key="index">
                         <uni-td align="center">{{(pagination.current -1)*pagination.size + (index+1)}}</uni-td>
@@ -50,8 +50,8 @@
 <script>
 const uniSmsCo = uniCloud.importObject('uni-sms-co')
 const recordStatus = {
-    0: "未发送",
-    1: "已发送",
+    0: "队列中",
+    1: "发送成功",
     2: "发送失败"
 }
 
@@ -69,11 +69,11 @@ export default {
             },
             status: [
                 {
-                    "text": "未发送",
+                    "text": "队列中",
                     "value": 0
                 },
                 {
-                    "text": "已发送",
+                    "text": "发送成功",
                     "value": 1
                 },
                 {
