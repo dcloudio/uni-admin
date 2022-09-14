@@ -8,6 +8,9 @@ const {
 const {
   ERROR
 } = require('../../common/error')
+const {
+  logout
+} = require('./logout')
 const PasswordUtils = require('./password')
 
 async function realPreLogin (params = {}) {
@@ -173,10 +176,14 @@ async function postLogin (params = {}) {
     extraData,
     isThirdParty = false
   } = params
+  const {
+    clientIP,
+    uniIdToken
+  } = this.getClientInfo()
   const uid = user._id
   const updateData = {
     last_login_date: Date.now(),
-    last_login_ip: this.getClientInfo().clientIP,
+    last_login_ip: clientIP,
     ...extraData
   }
   const {
@@ -185,6 +192,13 @@ async function postLogin (params = {}) {
   } = await this.uniIdCommon.createToken({
     uid
   })
+
+  if (uniIdToken) {
+    try {
+      await logout.call(this)
+    } catch (error) {}
+  }
+
   await userCollection.doc(uid).update(updateData)
   await this.middleware.uniIdLog({
     data: {

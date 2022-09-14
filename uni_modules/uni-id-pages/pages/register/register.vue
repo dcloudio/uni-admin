@@ -1,6 +1,13 @@
 <!-- 账号注册页 -->
 <template>
 	<view class="uni-content">
+		<match-media :min-width="690">
+			<view class="login-logo">
+				<image :src="logo"></image>
+			</view>
+			<!-- 顶部文字 -->
+			<text class="title title-box">用户名密码注册</text>
+		</match-media>
 		<uni-forms ref="form" :value="formData" :rules="rules" validate-trigger="submit" err-show-type="toast">
 			<uni-forms-item name="username" required>
 				<uni-easyinput :inputBorder="false" :focus="focusUsername" @blur="focusUsername = false"
@@ -12,7 +19,7 @@
 			</uni-forms-item>
 			<uni-forms-item name="password" v-model="formData.password" required>
 				<uni-easyinput :inputBorder="false" :focus="focusPassword" @blur="focusPassword = false"
-					class="input-box" maxlength="20" placeholder="请输入6-20位密码" type="password"
+					class="input-box" maxlength="20" :placeholder="'请输入' + (config.passwordStrength == 'weak'?'6':'8') + '-16位密码'" type="password"
 					v-model="formData.password" trim="both" />
 			</uni-forms-item>
 			<uni-forms-item name="password2" v-model="formData.password2" required>
@@ -25,7 +32,13 @@
 			</uni-forms-item>
 			<uni-id-pages-agreements scope="register" ref="agreements" ></uni-id-pages-agreements>
 			<button class="uni-btn" type="primary" @click="submit">注册</button>
-			<button @click="navigateBack">返回</button>
+			<button @click="navigateBack" class="register-back">返回</button>
+			<match-media :min-width="690">
+				<view class="link-box">
+					<text class="link" @click="registerByEmail">邮箱验证码注册</text>
+					<text class="link" @click="toLogin">已有账号？点此登录</text>
+				</view>
+			</match-media>
 		</uni-forms>
 	</view>
 </template>
@@ -33,6 +46,7 @@
 <script>
 	import rules from './validator.js';
 	import mixin from '@/uni_modules/uni-id-pages/common/login-page.mixin.js';
+	import config from '@/uni_modules/uni-id-pages/config.js'
 	const uniIdCo = uniCloud.importObject("uni-id-co")
 	export default {
 		mixins: [mixin],
@@ -49,7 +63,8 @@
 				focusUsername:false,
 				focusNickname:false,
 				focusPassword:false,
-				focusPassword2:false
+				focusPassword2:false,
+				logo: "/static/logo.png"
 			}
 		},
 		onReady() {
@@ -105,6 +120,16 @@
 			},
 			navigateBack() {
 				uni.navigateBack()
+			},
+			toLogin() {
+				uni.navigateTo({
+					url: '/uni_modules/uni-id-pages/pages/login/login-withpwd'
+				})
+			},
+			registerByEmail() {
+				uni.navigateTo({
+					url: '/uni_modules/uni-id-pages/pages/register/register-by-email'
+				})
 			}
 		}
 	}
@@ -112,9 +137,33 @@
 
 <style lang="scss">
 	@import "@/uni_modules/uni-id-pages/common/login-page.scss";
-	.uni-content{
-		margin-top: 15px;
+	
+	@media screen and (max-width: 690px) {
+		.uni-content{
+			margin-top: 15px;
+			height: 100%;
+			background-color: #fff;
+		}
 	}
+	@media screen and (min-width: 690px) {
+		.uni-content{
+			padding: 30px 40px 60px;
+		}
+		
+		.link-box {
+			/* #ifndef APP-NVUE */
+			display: flex;
+			/* #endif */
+			flex-direction: row;
+			justify-content: space-between;
+			margin-top: 10px;
+		}
+		
+		.link {
+			font-size: 12px;
+		}
+	}
+	
 	.uni-content ::v-deep .uni-forms-item__label {
 		position: absolute;
 		left: -15px;

@@ -12,9 +12,13 @@ const {
   getValidInviteCode,
   generateInviteInfo
 } = require('./fission')
+const {
+  logout
+} = require('./logout')
 const PasswordUtils = require('./password')
+const merge = require('lodash.merge')
 
-async function realPreRegister (params = {}) {
+async function realPreRegister(params = {}) {
   const {
     user
   } = params
@@ -29,7 +33,7 @@ async function realPreRegister (params = {}) {
   }
 }
 
-async function preRegister (params = {}) {
+async function preRegister(params = {}) {
   try {
     await realPreRegister.call(this, params)
   } catch (error) {
@@ -41,7 +45,7 @@ async function preRegister (params = {}) {
   }
 }
 
-async function preRegisterWithPassword (params = {}) {
+async function preRegisterWithPassword(params = {}) {
   const {
     user,
     password
@@ -68,14 +72,16 @@ async function preRegisterWithPassword (params = {}) {
   }
 }
 
-async function thirdPartyRegister () {
+async function thirdPartyRegister({
+  user = {}
+} = {}) {
   return {
-    mobileConfirmed: false,
-    emailConfirmed: false
+    mobileConfirmed: !!(user.mobile && user.mobile_confirmed) || false,
+    emailConfirmed: !!(user.email && user.email_confirmed) || false
   }
 }
 
-async function postRegister (params = {}) {
+async function postRegister(params = {}) {
   const {
     user,
     extraData = {},
@@ -90,10 +96,11 @@ async function postRegister (params = {}) {
     channel,
     scene,
     clientIP,
-    osName
+    osName,
+    uniIdToken
   } = this.getClientInfo()
 
-  Object.assign(user, extraData)
+  merge(user, extraData)
 
   const registerChannel = channel || scene
   user.register_env = {
@@ -144,9 +151,24 @@ async function postRegister (params = {}) {
     user.invite_time = inviteTime
   }
 
+  if (uniIdToken) {
+    try {
+      await logout.call(this)
+    } catch (error) {}
+  }
+
+  const beforeRegister = this.hooks.beforeRegister
+  let userRecord = user
+  if (beforeRegister) {
+    userRecord = await beforeRegister({
+      userRecord,
+      clientInfo: this.getClientInfo()
+    })
+  }
+
   const {
     id: uid
-  } = await userCollection.add(user)
+  } = await userCollection.add(userRecord)
 
   const {
     token,
@@ -173,7 +195,7 @@ async function postRegister (params = {}) {
       isThirdParty
         ? thirdPartyRegister({
           user: {
-            ...user,
+            ...userRecord,
             _id: uid
           }
         })

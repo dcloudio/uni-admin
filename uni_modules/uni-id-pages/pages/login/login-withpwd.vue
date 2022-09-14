@@ -1,11 +1,14 @@
 <!-- 账号密码登录页 -->
 <template>
 	<view class="uni-content">
+		<view class="login-logo">
+			<image :src="logo"></image>
+		</view>
 		<!-- 顶部文字 -->
 		<text class="title title-box">账号密码登录</text>
 		<uni-forms>
 			<uni-forms-item name="username">
-				<uni-easyinput :focus="focusUsername" @blur="focusUsername = false" class="input-box" :inputBorder="false" v-model="username" placeholder="请输入手机号/用户名" />
+				<uni-easyinput :focus="focusUsername" @blur="focusUsername = false" class="input-box" :inputBorder="false" v-model="username" placeholder="请输入手机号/用户名/邮箱" />
 			</uni-forms-item>
 			<uni-forms-item name="password">
 				<uni-easyinput :focus="focusPassword" @blur="focusPassword = false" class="input-box" clearable type="password" :inputBorder="false" v-model="password"
@@ -45,7 +48,8 @@
 				"captcha": "",
 				"needCaptcha": false,
 				"focusUsername":false,
-				"focusPassword":false
+				"focusPassword":false,
+				"logo": "/static/logo.png"
 			}
 		},
 		onShow() {
@@ -84,7 +88,7 @@
 				if(!this.username.length){
 					this.focusUsername = true
 					return uni.showToast({
-						title: '请输入手机号/用户名',
+						title: '请输入手机号/用户名/邮箱',
 						icon: 'none'
 					});
 				}
@@ -107,6 +111,8 @@
 				
 				if (/^1\d{10}$/.test(this.username)) {
 					data.mobile = this.username
+				}else if(/@/.test(this.username)) {
+					data.email = this.username
 				}else{
 					data.username = this.username
 				}
@@ -135,7 +141,9 @@
 
 <style lang="scss" scoped>
 	@import "@/uni_modules/uni-id-pages/common/login-page.scss";
-
+	@media screen and (min-width: 690px) {
+		
+	}
 	.forget{
 		font-size: 12px;
 		color: #8a8f8b;

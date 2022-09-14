@@ -163,23 +163,12 @@ function coverMobile (mobile) {
   return mobile.slice(0, 3) + '****' + mobile.slice(7)
 }
 
-function getOauthConfig (params = {}) {
-  const {
-    config,
-    oatuhProivder,
-    clientPlatform,
-    requiredItem = []
-  } = params
-  if (!config.oauth || !config.oauth[oatuhProivder]) {
-    throw new Error(`Missing config param: ${clientPlatform}.${oatuhProivder}`)
+function getNonceStr (length = 16) {
+  let str = ''
+  while (str.length < length) {
+    str += Math.random().toString(32).substring(2)
   }
-  const oauthConfig = config.oauth[oatuhProivder]
-  requiredItem.forEach((item) => {
-    if (!oauthConfig[item]) {
-      throw new Error(`Missing config param: ${clientPlatform}.${oatuhProivder}.${item}`)
-    }
-  })
-  return oauthConfig
+  return str.substring(0, length)
 }
 
 module.exports = {
@@ -197,5 +186,5 @@ module.exports = {
   getExtension,
   getVerifyCode,
   coverMobile,
-  getOauthConfig
+  getNonceStr
 }

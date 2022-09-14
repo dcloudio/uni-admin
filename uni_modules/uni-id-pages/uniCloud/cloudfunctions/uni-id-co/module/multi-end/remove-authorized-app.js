@@ -16,7 +16,7 @@ module.exports = async function (params = {}) {
     uid: 'string',
     appId: 'string'
   }
-  this.moddleware.validate(params, schema)
+  this.middleware.validate(params, schema)
   const {
     uid,
     appId

@@ -1,6 +1,13 @@
 <!-- 绑定手机号码页 -->
 <template>
 	<view class="uni-content">
+		<match-media :min-width="690">
+			<view class="login-logo">
+				<image :src="logo"></image>
+			</view>
+			<!-- 顶部文字 -->
+			<text class="title title-box">绑定手机号</text>
+		</match-media>
 		<!-- 登录框 (选择手机号所属国家和地区需要另行实现) -->
 		<uni-easyinput clearable :focus="focusMobile" @blur="focusMobile = false" type="number" class="input-box" :inputBorder="false" v-model="formData.mobile"
 			maxlength="11" placeholder="请输入手机号"></uni-easyinput>
@@ -20,7 +27,8 @@
 					code: "",
 					captcha: ""
 				},
-				focusMobile:true
+				focusMobile:true,
+				logo: "/static/logo.png"
 			}
 		},
 		computed: {
@@ -89,6 +97,13 @@
 		justify-content: center;
 		padding: 50rpx;
 		padding-top: 10px;
+	}
+	
+	
+	@media screen and (min-width: 690px) {
+		.uni-content{
+			padding: 30px 40px 40px;
+		}
 	}
 
 	/* #ifndef APP-NVUE  || VUE3 */

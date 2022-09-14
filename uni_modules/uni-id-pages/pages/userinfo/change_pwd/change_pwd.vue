@@ -1,6 +1,13 @@
 <!-- 修改密码 -->
 <template>
 	<view class="uni-content">
+		<match-media :min-width="690">
+			<view class="login-logo">
+				<image :src="logo"></image>
+			</view>
+			<!-- 顶部文字 -->
+			<text class="title title-box">修改密码</text>
+		</match-media>
 		<uni-forms ref="form" :value="formData" err-show-type="toast">
 			<uni-forms-item name="oldPassword">
 				<uni-easyinput :focus="focusOldPassword" @blur="focusOldPassword = false" class="input-box"
@@ -81,7 +88,8 @@
 							}
 						]
 					}
-				}
+				},
+				logo: "/static/logo.png"
 			}
 		},
 		onReady() {
@@ -140,7 +148,15 @@
 <style lang="scss">
 	@import "@/uni_modules/uni-id-pages/common/login-page.scss";
 
-	.uni-content {
-		margin-top: 15px;
+	@media screen and (max-width: 690px) {
+		.uni-content{
+			margin-top: 15px;
+		}
+	}
+	
+	@media screen and (min-width: 690px) {
+		.uni-content{
+			padding: 30px 40px 40px;
+		}
 	}
 </style>

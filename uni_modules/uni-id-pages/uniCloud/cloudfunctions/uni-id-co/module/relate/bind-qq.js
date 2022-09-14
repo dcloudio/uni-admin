@@ -11,6 +11,11 @@ const {
 const {
   initQQ
 } = require('../../lib/third-party/index')
+const {
+  generateQQCache,
+  getQQPlatform,
+  saveQQUserKey
+} = require('../../lib/utils/qq')
 
 /**
  * 绑定QQ
@@ -18,6 +23,7 @@ const {
  * @param {Object} params
  * @param {String} params.code          小程序端QQ登录返回的code
  * @param {String} params.accessToken   APP端QQ登录返回的accessToken
+ * @param {String} params.accessTokenExpired    accessToken过期时间，由App端QQ登录返回的expires_in参数计算而来，单位：毫秒
  * @returns
  */
 module.exports = async function (params = {}) {
@@ -29,14 +35,21 @@ module.exports = async function (params = {}) {
     accessToken: {
       type: 'string',
       required: false
+    },
+    accessTokenExpired: {
+      type: 'number',
+      required: false
     }
   }
   this.middleware.validate(params, schema)
   const uid = this.authInfo.uid
   const {
     code,
-    accessToken
+    accessToken,
+    accessTokenExpired
   } = params
+  const qqPlatform = getQQPlatform.call(this)
+  const appId = this.getClientInfo().appId
   const qqApi = initQQ.call(this)
   const clientPlatform = this.clientPlatform
   const apiName = clientPlatform === 'mp-qq' ? 'code2Session' : 'getOpenidByToken'
@@ -74,15 +87,23 @@ module.exports = async function (params = {}) {
     bindAccount,
     logType: LOG_TYPE.BIND_QQ
   })
+  await saveQQUserKey.call(this, {
+    openid,
+    sessionKey,
+    accessToken,
+    accessTokenExpired
+  })
   return postBind.call(this, {
     uid,
     bindAccount,
     extraData: {
-      third_party: {
-        [clientPlatform]: {
-          session_key: sessionKey
-        }
-      }
+      qq_openid: {
+        [`${qqPlatform}_${appId}`]: openid
+      },
+      ...generateQQCache.call(this, {
+        openid,
+        sessionKey
+      })
     },
     logType: LOG_TYPE.BIND_QQ
   })

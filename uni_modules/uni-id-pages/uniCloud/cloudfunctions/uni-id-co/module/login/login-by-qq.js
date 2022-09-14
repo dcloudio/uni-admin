@@ -13,7 +13,8 @@ const {
 } = require('../../common/constants')
 const {
   getQQPlatform,
-  generateQQCache
+  generateQQCache,
+  saveQQUserKey
 } = require('../../lib/utils/qq')
 const url = require('url')
 
@@ -23,7 +24,7 @@ const url = require('url')
  * @param {Object} params
  * @param {String} params.code                  QQ小程序登录返回的code参数
  * @param {String} params.accessToken           App端QQ登录返回的accessToken参数
- * @param {String} params.accessTokenExpired    由App端QQ登录返回的expires_in参数计算而来
+ * @param {String} params.accessTokenExpired    accessToken过期时间，由App端QQ登录返回的expires_in参数计算而来，单位：毫秒
  * @param {String} params.inviteCode            邀请码
  * @returns
  */
@@ -53,6 +54,9 @@ module.exports = async function (params = {}) {
     accessTokenExpired,
     inviteCode
   } = params
+  const {
+    appId
+  } = this.getClientInfo()
   const qqApi = initQQ.call(this)
   const qqPlatform = getQQPlatform.call(this)
   let apiName
@@ -101,7 +105,11 @@ module.exports = async function (params = {}) {
       qq_unionid: unionid
     }
   })
-  const extraData = {}
+  const extraData = {
+    qq_openid: {
+      [`${qqPlatform}_${appId}`]: openid
+    }
+  }
   if (type === 'register' && qqPlatform !== 'mp') {
     const {
       nickname,
@@ -132,11 +140,18 @@ module.exports = async function (params = {}) {
       url: fileID
     }
   }
+  await saveQQUserKey.call(this, {
+    openid,
+    sessionKey,
+    accessToken,
+    accessTokenExpired
+  })
   return postUnifiedLogin.call(this, {
     user,
     extraData: {
       ...extraData,
       ...generateQQCache.call(this, {
+        openid,
         sessionKey, // QQ小程序用户sessionKey
         accessToken, // App端QQ用户accessToken
         accessTokenExpired // App端QQ用户accessToken过期时间

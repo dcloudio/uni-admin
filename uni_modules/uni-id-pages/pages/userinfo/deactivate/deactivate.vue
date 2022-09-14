@@ -1,6 +1,6 @@
 <!-- 注销（销毁）账号 -->
 <template>
-	<view class="content">
+	<view class="uni-content">
 		<text class="words" space="emsp">
 			一、注销是不可逆操作，注销后:\n
 			1.帐号将无法登录、无法找回。\n
@@ -64,7 +64,7 @@
 </script>
 
 <style>
-	.content {
+	.uni-content {
 		display: flex;
 		flex-direction: column;
 		font-size: 28rpx;
@@ -75,20 +75,6 @@
 		line-height: 46rpx;
 		margin-top: 20rpx;
 		margin-bottom: 80px;
-	}
-
-	.button-group {
-		display: flex;
-		flex-direction: row;
-		position: fixed;
-		height: 50px;
-		bottom: 10px;
-		width: 750rpx;
-		justify-content: center;
-		align-items: center;
-		border-top: solid 1px #e4e6ec;
-		padding-top: 10px;
-		background-color: #FFFFFF;
 	}
 
 	.button-group button {
@@ -107,5 +93,27 @@
 	.button-group button.next {
 		color: #e64340;
 		border: solid 1px #e64340;
+	}
+	.button-group {
+		display: flex;
+		flex-direction: row;
+		position: fixed;
+		height: 50px;
+		bottom: 10px;
+		width: 750rpx;
+		justify-content: center;
+		align-items: center;
+		border-top: solid 1px #e4e6ec;
+		padding-top: 10px;
+		background-color: #FFFFFF;
+		max-width: 690px;
+	}
+	
+	
+	@media screen and (min-width: 690px) {
+		.uni-content{
+			max-width: 690px;
+			margin-left: calc(50% - 345px);
+		}
 	}
 </style>

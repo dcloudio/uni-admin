@@ -40,7 +40,7 @@
 				if(res.errMsg != "getUserProfile:ok"){
 					return this.closeMe()
 				}
-				let {avatarUrl,nickName} = res.userInfo, cloudPath = userId+'/'+Date.now()+'avatarUrl.jpg';
+				let {avatarUrl,nickName} = res.userInfo;
 				
 				let tempFilePath = await new Promise((callBack)=>{
 					uni.downloadFile({
@@ -60,6 +60,8 @@
 						}
 					});
 				})
+				const extName = tempFilePath.split('.').pop() || 'jpg'
+				const cloudPath = 'user/avatar/'+ userId+'/'+Date.now()+'-avatar.'+extName;
 				// console.log(tempFilePath);
 				const result = await uniCloud.uploadFile({
 					filePath: tempFilePath,

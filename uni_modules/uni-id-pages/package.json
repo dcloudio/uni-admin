@@ -1,7 +1,7 @@
 {
 	"id": "uni-id-pages",
 	"displayName": "uni-id-pages",
-	"version": "1.0.7",
+	"version": "1.0.12",
 	"description": "云端一体简单、统一、可扩展的用户中心页面模版",
 	"keywords": [
         "用户管理",
@@ -14,12 +14,8 @@
 	"engines": {
 		"HBuilderX": "^3.4.17"
 	},
-	"dcloudext": {
-		"category": [
-			"uniCloud",
-			"云端一体页面模板"
-		],
-		"sale": {
+    "dcloudext": {
+        "sale": {
 			"regular": {
 				"price": "0.00"
 			},
@@ -35,7 +31,8 @@
 			"data": "无",
 			"permissions": "无"
 		},
-		"npmurl": ""
+        "npmurl": "",
+        "type": "unicloud-template-page"
 	},
 	"uni_modules": {
 		"dependencies": [
@@ -50,7 +47,8 @@
 			"uni-load-more",
 			"uni-popup",
 			"uni-scss",
-			"uni-transition"
+			"uni-transition",
+			"uni-open-bridge-common"
 		],
 		"encrypt": [],
 		"platforms": {
@@ -89,7 +87,7 @@
 					"钉钉": "u",
 					"快手": "u",
 					"飞书": "u",
-                    "京东": "u"
+					"京东": "u"
 				},
 				"快应用": {
 					"华为": "u",
@@ -97,5 +95,7 @@
 				}
 			}
 		}
+	},
+	"dependencies": {
 	}
 }

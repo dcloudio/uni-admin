@@ -2,20 +2,54 @@
   padding: 0 60rpx;
 }
 
+.login-logo {
+	display: none;
+}
+
 /* #ifndef APP-NVUE */
 @media screen and (min-width: 690px) {
   .uni-content {
-    padding: 0;
-    max-width: 400px;
-    margin-left: calc(50% - 200px);
+	/* #ifndef H5 */
+	padding: 0;
+	max-width: 300px;
+	margin-left: calc(50% - 200px);
+	/* #endif */
+	/* #ifdef H5 */
+	margin: 0 auto;
+	position: relative;
+	top: 100px;
+	padding: 30px 40px 80px 40px;
+	max-width: 450px;
+	max-height: 450px;
+	border-radius: 10px;
+	box-shadow: 0 0 20px #efefef;
+	background-color: #FFF;
+	/* #endif */
   }
+  /* #ifdef H5 */
+  .login-logo {
+  	display: flex;
+  	justify-content: center;
+  }
+  
+  .login-logo image {
+	width: 60px;
+  	height: 60px;
+  }
+  
+  .register-back{
+	  display: none;
+  }
+  /* #endif */
 }
 
 .uni-content view {
   box-sizing: border-box;
 }
-
 /* #endif */
+
+
+
 .title {
   /* #ifndef APP-NVUE */
   display: flex;
@@ -62,11 +96,8 @@
 	color: #FFF !important;
 	border-radius: 5px;
 }
-/*
-.uni-btn::after{
-  display: none;
+
+.uni-body.uni_modules-uni-id-pages-pages-login-login-withoutpwd{
+	height: auto !important;
 }
-.uni-btn[disabled]{
-	background-color: $uni-color-primary !important;
-	opacity: 0.3;
-}*/
+	
