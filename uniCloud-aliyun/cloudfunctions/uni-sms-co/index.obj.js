@@ -291,7 +291,7 @@ module.exports = {
     }
   },
   async preview (to, templateId, templateData) {
-    const count  = 5
+    const count  = 1
     let query = {
       mobile: db.command.exists(true)
     }

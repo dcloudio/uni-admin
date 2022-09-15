@@ -194,16 +194,6 @@
 		}, {
 			"permission": [],
 			"enable": true,
-			"menu_id": "safety_statistics_sms_task",
-			"name": "短信任务",
-			"icon": "",
-			"url": "/pages/system/safety/sms/task",
-			"sort": 3102,
-			"parent_id": "safety_statistics",
-			"create_date": 1662625749440
-		}, {
-			"permission": [],
-			"enable": true,
 			"menu_id": "uni-stat",
 			"name": "uni 统计",
 			"icon": "admin-icons-tongji",

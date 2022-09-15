@@ -27,14 +27,15 @@
                                         :localdata="data" v-model="smsDataModel.templateId"
                                         @change="onSmsTemplateSelected">
                                     </uni-data-select>
-                                    <view class="sms-data-tip">添加新的短信模板后，<text @click="chooseFile"
-                                            class="a-link">点此重新导入</text></view>
+                                    <view class="sms-data-tip">
+                                        导入短信模版参考<a class="a-link" href="https://uniapp.dcloud.net.cn/uniCloud/admin.html#群发短信" target="_blank">教程</a>；若有新的短信模版，可<text @click="chooseFile"
+                                            class="a-link">点此导入</text>
+                                        </view>
                                 </view>
                                 <view v-else>
                                     <button @click="chooseFile" type="primary" style="width: 120px;"
                                         size="mini">上传短信模板</button>
-                                    <view class="sms-data-tip">当前未添加短信模板，请在<a class="a-link"
-                                            href="https://dev.dcloud.net.cn" target="_blank">开发者中心</a>后台导出短信模板后上传</view>
+                                    <view class="sms-data-tip">当前未导入短信模板，导入短信模版参考<a class="a-link" href="https://uniapp.dcloud.net.cn/uniCloud/admin.html#群发短信" target="_blank">教程</a>导入</view>
                                 </view>
                             </template>
                             <template v-else>
@@ -42,8 +43,8 @@
                             </template>
                         </unicloud-db>
                     </uni-forms-item>
-                    <uni-forms-item label="短信内容" v-if="smsPreviewContent">
-                        <view class="form-item-flex-center">{{smsPreviewContent}}</view>
+                    <uni-forms-item label="短信内容" v-if="smsTemplateContent">
+                        <view class="form-item-flex-center">{{smsTemplateContent}}</view>
                     </uni-forms-item>
                     <uni-forms-item label="模板变量配置" :error-message="smsTemplateDataErrorMessage"
                         v-if="smsDataModel.templateData.length">
@@ -54,15 +55,36 @@
                             <uni-easyinput class="value m" v-model="template.value"
                                 placeholder="支持数据库字段 格式 {表.字段} 例 {uni-id-users.username}" :clearable="false" />
                         </view>
-                        <view class="sms-data-tip">目前仅支持替换 uni-id-users 表中字段。填写字段变量，请确保数据库中字段值不为空，否则短信将发送失败。</view>
+                        <view class="sms-data-tip">短信变量支持固定值或从数据表中查询；若从数据表中查询，目前仅支持替换 uni-id-users 表中字段，并请确保数据库中字段值不为空，否则短信将发送失败。</view>
                     </uni-forms-item>
                 </uni-forms>
                 <view class="uni-group">
                     <button @click="sendSms(true)" class="uni-button">预览</button>
-                    <button @click="sendSms()" class="uni-button" type="primary">发送</button>
+                    <button @click="sendSms()" class="uni-button" type="primary">提交</button>
                 </view>
             </view>
             <uni-icons type="closeempty" size="24" class="close" @click="close"></uni-icons>
+        </uni-popup>
+        <uni-popup ref="previewPopup" type="center" :is-mask-click="false">
+            <view class="sms-manager preview">
+                <view class="sms-manager--header mb">
+                    <view>短信预览</view>
+                    <view class="sub-title">仅预览第一条短信内容</view>
+                </view>
+                <view class="content">
+                    <view v-for="content of smsPreviewContent">{{content}}</view>
+                    <view class="length">短信字数：<text class="num">{{smsPreviewContent.length ? smsPreviewContent[0].length : 0}}</text>字</view>
+                </view>
+                <view class="tip">
+                    <view>说明：</view>
+                    <view>若从数据表中查询，字段内容长度会影响总字数，短信字数＝短信签名字数+短信内容字数。</view>
+                    <view>短信长度不超过70个字，按照一条短信计费；超过70个字，按照67字/条拆分成多条计费。</view>
+                    <view>短信计费标准：0.036元/条</view>
+                </view>
+                <view class="uni-group">
+                    <button @click="$refs.previewPopup.close()" class="uni-button">关闭</button>
+                </view>
+            </view>
         </uni-popup>
     </view>
 </template>
@@ -96,7 +118,8 @@ export default {
                 templateId: '',
                 templateData: []
             },
-            smsPreviewContent: ''
+            smsTemplateContent: '',
+            smsPreviewContent: [],
         }
     },
     computed: {
@@ -118,7 +141,7 @@ export default {
                     return res.replace(reg, ($1) => param.value || $1)
                 }, template.content)
 
-                this.smsPreviewContent = `【${template.sign}】${content}`
+                this.smsTemplateContent = `【${template.sign}】${content}`
             },
             deep: true
         }
@@ -180,11 +203,8 @@ export default {
                 )
 
                 if (res.errCode === 0) {
-                    uni.showModal({
-                        title: '短信预览',
-                        content: res.list.join('\n'),
-                        showCancel: false
-                    })
+                    this.smsPreviewContent = res.list
+                    this.$refs.previewPopup.open()
                     return
                 }
             }
@@ -208,7 +228,7 @@ export default {
 
                     if (res.taskId) {
                         uni.showModal({
-                            content: '短信任务已创建，可在短信任务中查看进度',
+                            content: '短信任务已提交，您可在开发者后台查看短信发送记录',
                             confirmText: '立即查看',
                             cancelText: '关闭',
                             success: (e) => {
@@ -216,11 +236,14 @@ export default {
                                     this.reset()
                                     this.$refs.smsPopup.close()
                                 } else {
-                                    uni.navigateTo({
-                                        url: '/pages/system/safety/sms/task'
-                                    })
+                                    // #ifdef H5
+                                    window.open('https://dev.dcloud.net.cn/#/pages/sms/sendLog', '_blank')
+                                    // #endif
+                                    // ifndef H5
+                                    this.reset()
+                                    this.$refs.smsPopup.close()
+                                    // endif
                                 }
-
                             }
                         })
                     }
@@ -293,7 +316,8 @@ export default {
             this.smsDataModel.name = ''
             this.smsDataModel.templateId = ''
             this.smsDataModel.templateData = []
-            this.smsPreviewContent = ''
+            this.smsPreviewContent = []
+            this.smsTemplateContent = ''
         }
     }
 }
@@ -320,7 +344,9 @@ export default {
     background: #fff;
     padding: 30px;
     border-radius: 5px;
-
+    &.preview {
+        width: 550px;
+    }
     &--header {
         text-align: center;
         font-size: 22px;
@@ -328,6 +354,31 @@ export default {
         &.mb {
             margin-bottom: 50px;
         }
+        .sub-title {
+            margin-top: 5px;
+            font-size: 16px;
+            color: #999;
+        }
+    }
+    .content {
+        margin-top: 20px;
+        font-size: 16px;
+        line-height: 1.5;
+        .length {
+            text-align: right;
+            font-size: 13px;
+            margin-top: 20px;
+            .num {
+                color: red;
+            }
+        }
+    }
+    .tip {
+        border-top: #ccc solid 1px;
+        padding-top: 20px;
+        margin-top: 20px;
+        line-height: 1.7;
+        font-size: 13px;
     }
 }
 
