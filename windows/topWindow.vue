@@ -63,11 +63,6 @@
 				</scroll-view>
 			</view>
 		</uni-popup>
-		<uni-popup ref="passwordPopup" type="center">
-			<view class="modal" style="width:400px; padding: 20px;">
-				<update-password class="password-popup" :isPhone="true" v-on:closePasswordPopup="closePasswordPopup" />
-			</view>
-		</uni-popup>
 		<!-- 沉余代码，临时处理 uni-datetime-picker 国际化不生效的问题 -->
 		<!-- #ifdef H5 -->
 		<uni-datetime-picker type="date" v-show="false"></uni-datetime-picker>
@@ -148,10 +143,11 @@
 				this.$refs.passwordPopup.open()
 			},
 			logout() {
+				const pages = getCurrentPages()
 				this.removeToken()
 				this.popupMenuOpened = false
 				uni.reLaunch({
-					url: config.login.url
+					url: `${config.login.url}?redirect=/${pages[pages.length - 1].route}`
 				})
 			},
 			toggleSidebar() {
@@ -164,16 +160,13 @@
 			togglePopupMenu() {
 				this.popupMenuOpened = !this.popupMenuOpened
 			},
-			closePasswordPopup() {
-				this.$refs.passwordPopup.close()
-			},
-			toPasswordPage() {
-				uni.navigateTo({
-					url: '/pages/changepwd/changepwd'
-				})
-			},
 			changePassword() {
-				!this.matchLeftWindow ? this.toPasswordPage() : this.showPasswordPopup()
+				uni.navigateTo({
+					url: '/uni_modules/uni-id-pages/pages/userinfo/change_pwd/change_pwd',
+					complete: () => {
+						this.popupMenuOpened = false
+					}
+				})
 			},
 			changeLanguage(e) {
 				const index = typeof e === 'object' ? e.detail.value : e

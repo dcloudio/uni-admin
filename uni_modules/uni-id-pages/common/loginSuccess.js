@@ -1,6 +1,8 @@
+import pagesJson from '@/pages.json'
+
 export default function(e = {}) {
 	const {
-		showToast = true, toastText = '登录成功', autoBack = true
+		showToast = true, toastText = '登录成功', autoBack = true, redirect = ''
 	} = e
 	console.log({
 		toastText,
@@ -23,13 +25,25 @@ export default function(e = {}) {
 			}
 		})
 		console.log('判断需要返回几层:',pages, delta);
+		if (redirect) {
+			return uni.reLaunch({
+				url: redirect
+			})
+		}
 		// #ifdef H5
 		if(e.loginType == 'weixin'){
 			console.log('window.history',window.history);
 			return window.history.go(-3)
 		}
 		// #endif
-		
+
+		if (delta) {
+			const page = pagesJson.pages[0]
+			return uni.reLaunch({
+				url: `/${page.path}`
+			})
+		}
+
 		uni.navigateBack({
 			delta
 		})

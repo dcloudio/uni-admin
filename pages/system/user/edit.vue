@@ -186,7 +186,7 @@
 				})
 				db.collection(dbCollectionName)
 					.doc(id)
-					.field('username,role,dcloud_appid,tags,mobile,email,status')
+					.field('username,role,dcloud_appid as authorizedApp,tags,mobile,email,status')
 					.get()
 					.then((res) => {
 						const data = res.result.data[0]

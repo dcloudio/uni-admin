@@ -1,6 +1,6 @@
 export default {
 	login: {
-		url: 'uni_modules/uni-id-pages/pages/login/login-withpwd' // 登录页面路径
+		url: '/uni_modules/uni-id-pages/pages/login/login-withpwd' // 登录页面路径
 	},
 	index: {
 		url: '/pages/index/index' // 登录后跳转的第一个页面

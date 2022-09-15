@@ -4,6 +4,7 @@ let mixin = {
 	data() {
 		return {
 			config,
+			redirect: '',
 			isMounted: false
 		}
 	},
@@ -38,6 +39,10 @@ let mixin = {
 				}, 'weixin')
 			})
 		}
+
+		if (e.redirect) {
+			this.redirect = e.redirect
+		}
 	},
 	computed: {
 		needAgreements() {
@@ -66,11 +71,17 @@ let mixin = {
 					console.log('不存在 隐私政策协议组件');
 				}
 			}
+		},
+		isAdmin () {
+			return config.clientType === "admin"
 		}
 	},
 	methods: {
 		loginSuccess(e) {
-			loginSuccess(e)
+			loginSuccess({
+				...e,
+				redirect: this.redirect
+			})
 		}
 	}
 }

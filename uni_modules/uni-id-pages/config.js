@@ -5,6 +5,7 @@ export default {
 		登录类型 未列举到的或运行环境不支持的，将被自动隐藏。
 		如果需要在不同平台有不同的配置，直接用条件编译即可
 	*/
+	"clientType": "admin", // 客户端类型 user 普通用户，admin 管理员
 	"loginTypes": [
 		// "qq",
 		// "xiaomi",

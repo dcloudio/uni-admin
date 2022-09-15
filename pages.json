@@ -61,20 +61,10 @@
     }
 }
 ,{
-    "path": "uni_modules/uni-id-pages/pages/login/login-withoutpwd",
-    "style": {
-        "navigationBarTitleText": ""
-    }
-}
-,{
-    "path": "uni_modules/uni-id-pages/pages/login/login-withpwd",
-    "style": {
-        "navigationBarTitleText": ""
-    }
-}
-,{
     "path": "uni_modules/uni-id-pages/pages/login/login-smscode",
     "style": {
+        "topWindow": false,
+		"leftWindow": false,
         "navigationBarTitleText": "手机验证码登录"
     }
 }
@@ -87,35 +77,44 @@
     }
 }
 ,{
+    "path": "uni_modules/uni-id-pages/pages/register/register-admin",
+    "style": {
+		"topWindow": false,
+		"leftWindow": false,
+        "navigationBarTitleText": "创建超级管理员"
+    }
+}
+,{
     "path": "uni_modules/uni-id-pages/pages/register/register-by-email",
     "style": {
+        "topWindow": false,
+		"leftWindow": false,
         "navigationBarTitleText": "邮箱验证码注册"
     }
 }
 ,{
     "path": "uni_modules/uni-id-pages/pages/retrieve/retrieve",
     "style": {
+        "topWindow": false,
+		"leftWindow": false,
         "navigationBarTitleText": "重置密码"
     }
 }
 ,{
     "path": "uni_modules/uni-id-pages/pages/retrieve/retrieve-by-email",
     "style": {
+        "topWindow": false,
+		"leftWindow": false,
         "navigationBarTitleText": "通过邮箱重置密码"
     }
 }
 ,{
     "path": "uni_modules/uni-id-pages/pages/common/webview/webview",
     "style": {
+        "topWindow": false,
+		"leftWindow": false,
         "enablePullDownRefresh": false,
         "navigationBarTitleText": ""
-    }
-}
-,{
-    "path": "uni_modules/uni-id-pages/pages/userinfo/change_pwd/change_pwd",
-    "style": {
-        "enablePullDownRefresh": false,
-        "navigationBarTitleText": "修改密码"
     }
 }
 ],
