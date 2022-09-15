@@ -26,3 +26,21 @@ uni-button[disabled][type=primary] {
 .uni-tabs__item.is-active{
 	color: $uni-color-primary;
 }
+
+.uni-modal__btn_primary{
+	color: $uni-color-primary !important;
+}
+
+.uni-link {
+	color: $uni-color-primary;
+}
+
+.uni-switch-input-checked{
+	background-color: $uni-color-primary !important;
+	border-color: $uni-color-primary !important;
+}
+
+.uni-radio-input-checked{
+	background-color: $uni-color-primary !important;
+	border-color: $uni-color-primary !important;
+}

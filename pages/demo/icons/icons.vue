@@ -64,7 +64,7 @@
 	}
 </script>
 
-<style>
+<style lang="scss">
 	/* #ifndef H5 */
 	page {
 		padding-top: 85px;
@@ -89,7 +89,7 @@
 
 	.icon-item:hover,
 	.icon-item:hover .icon-text {
-		color: #007AFF;
+		color: $uni-color-primary;
 	}
 
 	.icon-text {

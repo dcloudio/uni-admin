@@ -233,7 +233,7 @@
 	}
 </script>
 
-<style>
+<style lang="scss">
 	page {
 		width: 100%;
 		height: 100%;
@@ -267,7 +267,7 @@
 		cursor: pointer;
 		text-decoration: underline;
 		font-size: 13px;
-		color: #007AFF;
+		color: $uni-color-primary;
 		opacity: 0.8;
 	}
 
