@@ -14,11 +14,16 @@
 
 /* 颜色变量 */
 
+@import '@/uni_modules/uni-scss/variables.scss';
+
 /* 行为相关颜色 */
 $uni-color-primary: #2979ff;
 $uni-color-success: #18bc37;
 $uni-color-warning: #f3a73f;
 $uni-color-error: #e43d33;
+
+/* 兼容 uni-ui 相关颜色 */
+$uni-primary: $uni-color-primary;
 
 /* 文字基本颜色 */
 $uni-text-color:#333;//基本色

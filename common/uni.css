@@ -274,7 +274,7 @@ uni-page-head .uni-btn-icon {
 }
 
 .uni-tabs__item.is-active {
-	color: #007aff;
+	color: $uni-color-primary;
 	background-color: #fff;
 	border-right-color: #dcdfe6;
 	border-left-color: #dcdfe6;

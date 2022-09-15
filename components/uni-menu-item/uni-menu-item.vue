@@ -1,5 +1,13 @@
 <template>
-	<view class="uni-menu-item" :class="{'is-active':active,'is-disabled':disabled}" :style="{paddingLeft:paddingLeft,'color':disabled?'#999':(active?activeTextColor:textColor),'background-color':active?activeBackgroundColor:''}"
+	<view class="uni-menu-item"
+		:class="{
+			'is-active':active,
+			'is-disabled':disabled
+		}"
+		:style="{
+			paddingLeft:paddingLeft,
+			'background-color':active?activeBackgroundColor:''
+		}"
 	 @click="onClickItem">
 		<slot></slot>
 	</view>
@@ -108,7 +116,7 @@
 	}
 
 	.is-active {
-		color: #42B983;
+		color: $uni-color-primary;
 		// background-color: #ecf8f3;
 	}
 
