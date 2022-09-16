@@ -1,6 +1,13 @@
 <!-- 找回密码页 -->
 <template>
 	<view class="uni-content">
+		<match-media :min-width="690">
+		<view class="login-logo">
+			<image :src="logo"></image>
+		</view>
+		<!-- 顶部文字 -->
+		<text class="title title-box">通过手机验证码找回密码</text>
+		</match-media>
 		<uni-forms ref="form" :value="formData" err-show-type="toast">
 			<uni-forms-item name="phone">
 				<uni-easyinput :focus="focusPhone" @blur="focusPhone = false" class="input-box" :disabled="lock" type="number" :inputBorder="false"
@@ -20,6 +27,12 @@
 					placeholder="请再次输入新密码"></uni-easyinput>
 			</uni-forms-item>
 			<button class="uni-btn send-btn-box" type="primary" @click="submit">提交</button>
+			<match-media :min-width="690">
+				<view class="link-box">
+					<text class="link" @click="retrieveByEmail">通过邮箱验证码找回密码</text>
+					<view></view>
+				</view>
+			</match-media>
 		</uni-forms>
 		<uni-popup-captcha @confirm="submit" v-model="formData.captcha" scene="reset-pwd-by-sms" ref="popup"></uni-popup-captcha>
 	</view>
@@ -101,7 +114,8 @@
 							}
 						]
 					}
-				}
+				},
+				logo: "/static/logo.png"
 			}
 		},
 		computed: {
@@ -187,6 +201,11 @@
 						console.log(key,'focus'+key);
 						this['focus'+key] = true
 					})
+			},
+			retrieveByEmail() {
+				uni.navigateTo({
+					url: '/uni_modules/uni-id-pages/pages/retrieve/retrieve-by-email'
+				})
 			}
 		}
 	}
@@ -195,7 +214,26 @@
 <style lang="scss">
 	@import "@/uni_modules/uni-id-pages/common/login-page.scss";
 
-	.uni-content {
-		margin-top: 15px;
+	@media screen and (max-width: 690px) {
+		.uni-content{
+			margin-top: 15px;
+		}
+	}
+	@media screen and (min-width: 690px) {
+		.uni-content{
+			padding: 30px 40px 40px;
+		}
+		.link-box {
+			/* #ifndef APP-NVUE */
+			display: flex;
+			/* #endif */
+			flex-direction: row;
+			justify-content: space-between;
+			margin-top: 10px;
+		}
+		
+		.link {
+			font-size: 12px;
+		}
 	}
 </style>

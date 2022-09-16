@@ -5,6 +5,9 @@ const {
 const {
   verifyCaptcha
 } = require('../../lib/utils/captcha')
+const {
+  CAPTCHA_SCENE
+} = require('../../common/constants')
 
 /**
  * 注册普通用户
@@ -42,7 +45,7 @@ module.exports = async function (params = {}) {
 
   await verifyCaptcha.call(this, {
     captcha,
-    scene: 'register'
+    scene: CAPTCHA_SCENE.REGISTER
   })
 
   const {

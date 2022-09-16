@@ -7,6 +7,9 @@ module.exports = {
     // permission: [] // 允许进行此操作的权限，包含任一权限均可操作。
     // 权限角色均配置时，用户拥有任一权限或任一角色均可操作
   },
+  updateUser: {
+    role: ['admin']
+  },
   authorizeAppLogin: {
     role: ['admin']
   },

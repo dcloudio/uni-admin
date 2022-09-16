@@ -63,11 +63,6 @@
 				</scroll-view>
 			</view>
 		</uni-popup>
-		<uni-popup ref="passwordPopup" type="center">
-			<view class="modal" style="width:400px; padding: 20px;">
-				<update-password class="password-popup" :isPhone="true" v-on:closePasswordPopup="closePasswordPopup" />
-			</view>
-		</uni-popup>
 		<!-- 沉余代码，临时处理 uni-datetime-picker 国际化不生效的问题 -->
 		<!-- #ifdef H5 -->
 		<uni-datetime-picker type="date" v-show="false"></uni-datetime-picker>
@@ -77,18 +72,16 @@
 
 <script>
 	import {
-		mapMutations,
 		mapState
 	} from 'vuex'
 
+	import uniIdPagesCommon from '@/uni_modules/uni-id-pages/common/common'
 	import errorLog from '@/windows/components/error-log.vue'
-	import updatePassword from '@/windows/components/update-password.vue'
 	import config from '@/admin.config.js'
 
 	export default {
 		components: {
-			errorLog,
-			updatePassword
+			errorLog
 		},
 		props: {
 			navigationBarTitleText: {
@@ -130,11 +123,6 @@
 			// #endif
 		},
 		methods: {
-			...mapMutations({
-				removeToken(commit) {
-					commit('user/REMOVE_TOKEN')
-				}
-			}),
 			showErrorLogs() {
 				if (this.popupMenuOpened) {
 					this.popupMenuOpened = false
@@ -148,11 +136,8 @@
 				this.$refs.passwordPopup.open()
 			},
 			logout() {
-				this.removeToken()
 				this.popupMenuOpened = false
-				uni.reLaunch({
-					url: config.login.url
-				})
+				uniIdPagesCommon.logout()
 			},
 			toggleSidebar() {
 				if (!this.showLeftWindow) {
@@ -164,16 +149,13 @@
 			togglePopupMenu() {
 				this.popupMenuOpened = !this.popupMenuOpened
 			},
-			closePasswordPopup() {
-				this.$refs.passwordPopup.close()
-			},
-			toPasswordPage() {
-				uni.navigateTo({
-					url: '/pages/changepwd/changepwd'
-				})
-			},
 			changePassword() {
-				!this.matchLeftWindow ? this.toPasswordPage() : this.showPasswordPopup()
+				uni.navigateTo({
+					url: '/uni_modules/uni-id-pages/pages/userinfo/change_pwd/change_pwd',
+					complete: () => {
+						this.popupMenuOpened = false
+					}
+				})
 			},
 			changeLanguage(e) {
 				const index = typeof e === 'object' ? e.detail.value : e

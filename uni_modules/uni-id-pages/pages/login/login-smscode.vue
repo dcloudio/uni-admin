@@ -1,6 +1,9 @@
 <!-- 短信验证码登录页 -->
 <template>
 	<view class="uni-content">
+		<view class="login-logo">
+			<image :src="logo"></image>
+		</view>
 		<!-- 顶部文字 -->
 		<text class="title">请输入验证码</text>
 		<text class="tip">先输入图形验证码，再获取短信验证码</text>
@@ -21,6 +24,7 @@
 				"code": "",
 				"phone": "",
 				"captcha": "",
+				"logo": "/static/logo.png"
 			}
 		},
 		computed: {

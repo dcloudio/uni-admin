@@ -102,7 +102,7 @@
 			}
 		},
 		created() {
-			this.needAgreements = config.agreements.scope.includes(this.scope)
+			this.needAgreements = (config?.agreements?.scope || []).includes(this.scope)
 		},
 		data() {
 			return {

@@ -10,7 +10,8 @@ const {
 } = require('../../lib/utils/unified-login')
 const {
   generateWeixinCache,
-  getWeixinPlatform
+  getWeixinPlatform,
+  saveWeixinUserKey
 } = require('../../lib/utils/weixin')
 const {
   LOG_TYPE
@@ -38,6 +39,9 @@ module.exports = async function (params = {}) {
     code,
     inviteCode
   } = params
+  const {
+    appId
+  } = this.getClientInfo()
   const weixinApi = initWeixin.call(this)
   const weixinPlatform = getWeixinPlatform.call(this)
   let apiName
@@ -88,7 +92,11 @@ module.exports = async function (params = {}) {
       wx_unionid: unionid
     }
   })
-  const extraData = {}
+  const extraData = {
+    wx_openid: {
+      [`${weixinPlatform}_${appId}`]: openid
+    }
+  }
   if (type === 'register' && weixinPlatform !== 'mp') {
     const {
       nickname,
@@ -98,7 +106,8 @@ module.exports = async function (params = {}) {
       openid
     })
     // eslint-disable-next-line n/no-deprecated-api
-    const extName = url.parse(avatar).pathname.split('.').pop()
+    const avatarPath = url.parse(avatar).pathname
+    const extName = avatarPath.indexOf('.') > -1 ? url.parse(avatar).pathname.split('.').pop() : 'jpg'
     const cloudPath = `user/avatar/${openid.slice(-8) + Date.now()}-avatar.${extName}`
     const getAvatarRes = await uniCloud.httpclient.request(avatar)
     if (getAvatarRes.status >= 400) {
@@ -119,11 +128,19 @@ module.exports = async function (params = {}) {
       url: fileID
     }
   }
+  await saveWeixinUserKey.call(this, {
+    openid,
+    sessionKey,
+    accessToken,
+    refreshToken,
+    accessTokenExpired
+  })
   return postUnifiedLogin.call(this, {
     user,
     extraData: {
       ...extraData,
       ...generateWeixinCache.call(this, {
+        openid,
         sessionKey, // 微信小程序用户sessionKey
         accessToken, // App端微信用户accessToken
         refreshToken, // App端微信用户refreshToken

@@ -56,7 +56,7 @@ module.exports = class Auth {
       }
     })
     if (result.expiresIn) {
-      result.expired = Date.now() + result.expiresIn
+      result.expired = Date.now() + result.expiresIn * 1000
       // delete result.expiresIn
     }
     return result

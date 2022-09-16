@@ -13,20 +13,21 @@ const PasswordUtils = require('../../lib/utils/password')
  * 修改用户
  * @tutorial https://uniapp.dcloud.net.cn/uniCloud/uni-id-pages.html#update-user
  * @param {Object}  params
- * @param {String} params.id              要更新的用户id
+ * @param {String}  params.uid            要更新的用户id
  * @param {String}  params.username       用户名
  * @param {String}  params.password       密码
  * @param {String}  params.nickname       昵称
  * @param {Array}   params.authorizedApp  允许登录的AppID列表
  * @param {Array}   params.role           用户角色列表
- * @param {String} params.mobile          手机号
- * @param {String} params.email           邮箱
- * @param {Array}  params.tags            用户标签
- * @param {Number} params.status          用户状态
+ * @param {String}  params.mobile         手机号
+ * @param {String}  params.email          邮箱
+ * @param {Array}   params.tags           用户标签
+ * @param {Number}  params.status         用户状态
  * @returns
  */
 module.exports = async function (params = {}) {
   const schema = {
+    uid: 'string',
     username: 'username',
     password: {
       required: false,
@@ -65,7 +66,7 @@ module.exports = async function (params = {}) {
   this.middleware.validate(params, schema)
 
   const {
-    id,
+    uid,
     username,
     password,
     authorizedApp,
@@ -78,7 +79,7 @@ module.exports = async function (params = {}) {
   } = params
 
   // 更新的用户数据字段
-  const collection = {
+  const data = {
     username,
     dcloud_appid: authorizedApp || [],
     nickname,
@@ -97,7 +98,7 @@ module.exports = async function (params = {}) {
       },
       authorizedApp
     })
-    if (userMatched.filter(user => user._id !== id).length) {
+    if (userMatched.filter(user => user._id !== uid).length) {
       throw {
         errCode: ERROR.ACCOUNT_EXISTS
       }
@@ -115,11 +116,11 @@ module.exports = async function (params = {}) {
       password
     })
 
-    collection.passwordHash = passwordHash
-    collection.password = password
+    data.password = passwordHash
+    data.password_secret_version = version
   }
 
-  await userCollection.where({_id: id}).update(collection)
+  await userCollection.doc(uid).update(data)
 
   return {
     errCode: 0

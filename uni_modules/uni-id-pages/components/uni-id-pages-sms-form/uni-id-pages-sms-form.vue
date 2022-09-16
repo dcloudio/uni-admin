@@ -198,7 +198,7 @@
 		top: 0;
 		right: 8px;
 		width: 260rpx;
-		max-width: 130px;
+		max-width: 100px;
 		height: 44px;
 		/* #ifndef APP-NVUE */
 		display: flex;
@@ -229,7 +229,7 @@
 	}
 
 	.box ::v-deep .content-clear-icon {
-		margin-right: 100px;
+		margin-right: 110px;
 	}
 
 	.box {

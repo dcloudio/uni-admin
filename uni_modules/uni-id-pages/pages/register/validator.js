@@ -1,3 +1,4 @@
+import passwordMod from '@/uni_modules/uni-id-pages/common/password.js'
 export default {
 	"username": {
 		"rules": [{
@@ -51,39 +52,5 @@ export default {
 		],
 		"label": "昵称"
 	},
-	"password": {
-		"rules": [{
-				required: true,
-				errorMessage: '密码长度不少于6位',
-			},
-			{
-				minLength: 6,
-				maxLength: 20,
-				errorMessage: '密码长度在 {minLength} 到 {maxLength} 个字符',
-			}
-		],
-		"label": "密码"
-	},
-	"password2": {
-		"rules": [{
-				required: true,
-				errorMessage: '再次输入密码',
-			},
-			{
-				minLength: 6,
-				maxLength: 20,
-				errorMessage: '密码长度在 {minLength} 到 {maxLength} 个字符',
-			},
-			{
-				validateFunction: function(rule, value, data, callback) {
-					// console.log(value);
-					if (value != data.password) {
-						callback('两次输入密码不一致')
-					};
-					return true
-				}
-			}
-		],
-		"label": "确认密码"
-	}
+	...passwordMod.getPwdRules()
 }

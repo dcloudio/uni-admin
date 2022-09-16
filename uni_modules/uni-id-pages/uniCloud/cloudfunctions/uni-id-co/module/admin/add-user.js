@@ -18,10 +18,10 @@ const PasswordUtils = require('../../lib/utils/password')
  * @param {String}  params.nickname       昵称
  * @param {Array}   params.authorizedApp  允许登录的AppID列表
  * @param {Array}   params.role           用户角色列表
- * @param {String} params.mobile          手机号
- * @param {String} params.email           邮箱
- * @param {Array}  params.tags            用户标签
- * @param {Number} params.status          用户状态
+ * @param {String}  params.mobile         手机号
+ * @param {String}  params.email          邮箱
+ * @param {Array}   params.tags           用户标签
+ * @param {Number}  params.status         用户状态
  * @returns
  */
 module.exports = async function (params = {}) {
@@ -71,7 +71,9 @@ module.exports = async function (params = {}) {
   } = params
   const userMatched = await findUser({
     userQuery: {
-      username
+      username,
+      mobile,
+      email
     },
     authorizedApp
   })
@@ -89,8 +91,7 @@ module.exports = async function (params = {}) {
   } = passwordUtils.generatePasswordHash({
     password
   })
-
-  await userCollection.add({
+  const data = {
     username,
     password: passwordHash,
     password_secret_version: version,
@@ -101,9 +102,17 @@ module.exports = async function (params = {}) {
     email,
     tags: tags || [],
     status
-  })
+  }
+  if (email) {
+    data.email_confirmed = 1
+  }
+  if (mobile) {
+    data.mobile_confirmed = 1
+  }
 
+  await userCollection.add(data)
   return {
-    errCode: 0
+    errCode: 0,
+    errMsg: ''
   }
 }

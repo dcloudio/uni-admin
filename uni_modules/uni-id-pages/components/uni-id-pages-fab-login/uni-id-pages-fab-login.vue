@@ -16,9 +16,11 @@
 	import config from '@/uni_modules/uni-id-pages/config.js'
 	//前一个窗口的页面地址。控制点击切换快捷登录方式是创建还是返回
 	import loginSuccess from '../../common/loginSuccess.js';
+	
 	const db = uniCloud.database();
 	const usersTable = db.collection('uni-id-users')
 	let allServicesList = []
+	
 	export default {
 		computed: {
 			agreements() {
@@ -41,11 +43,11 @@
 			},
 			agree: {
 				get() {
-					return this.$parent.agree
+					return this.getParentComponent().agree
 				},
 				set(agree) {
 					console.log('setAgree', agree);
-					this.$parent.agree = agree
+					return this.getParentComponent().agree = agree
 				}
 			}
 		},
@@ -187,6 +189,15 @@
 			//console.log('servicesList', servicesList, this.servicesList);
 		},
 		methods: {
+			getParentComponent(){
+				// #ifndef H5
+				return this.$parent;
+				// #endif
+				
+				// #ifdef H5
+				return this.$parent.$parent;
+				// #endif
+			},
 			setUserInfo(e) {
 				console.log('setUserInfo', e);
 			},
@@ -222,7 +233,6 @@
 			},
 			async login_before(type, navigateBack = true) {
 				console.log(type);
-				
 				//提示空实现
 				if (["qq",
 						"xiaomi",
@@ -232,10 +242,6 @@
 						"google",
 						"alipay",
 						"douyin",
-						//H5端没有支持微信登录
-						// #ifdef H5
-						"weixin"
-						// #endif
 					].includes(type)) {
 					return uni.showToast({
 						title: '该登录方式暂未实现，欢迎提交pr',
@@ -283,16 +289,46 @@
 				
 				//判断是否需要弹出隐私协议授权框
 				console.log(type, this.agree);
-				let needAgreements = config.agreements.scope.includes('register')
+				let needAgreements = (config?.agreements?.scope || []).includes('register')
 				console.log({
 					needAgreements
 				});
 				if (type != 'univerify' && needAgreements && !this.agree) {
-					return this.$parent.$refs.agreements.popup(() => {
+					let agreementsRef = this.getParentComponent().$refs.agreements
+					return agreementsRef.popup(() => {
 						console.log(type, navigateBack);
 						this.login_before(type, navigateBack)
 					})
 				}
+				
+				// #ifdef H5
+					if(type == 'weixin'){
+						// console.log('开始微信网页登录');
+						let redirectUrl = location.protocol +'//'+ 
+										document.domain + 
+										(window.location.href.includes('#')?'/#':'') +
+										'/uni_modules/uni-id-pages/pages/login/login-withoutpwd?is_weixin_redirect=true&type=weixin'
+						console.log('redirectUrl----',redirectUrl);
+						let ua = window.navigator.userAgent.toLowerCase();
+						if (ua.match(/MicroMessenger/i) == 'micromessenger'){
+							// console.log('在微信公众号内');
+							return window.open(`https://open.weixin.qq.com/connect/oauth2/authorize?
+										appid=${config.appid.weixin.h5}
+										&redirect_uri=${encodeURIComponent(redirectUrl)}
+										&response_type=code
+										&scope=snsapi_userinfo
+										&state=STATE&connect_redirect=1#wechat_redirect`);
+							
+						}else{
+							// console.log('非微信公众号内');
+							return location.href = `https://open.weixin.qq.com/connect/qrconnect?appid=${config.appid.weixin.web}
+											&redirect_uri=${encodeURIComponent(redirectUrl)}
+											&response_type=code&scope=snsapi_login&state=STATE#wechat_redirect`
+						}
+					}
+				// #endif
+				
+				
 				uni.showLoading({
 					mask: true
 				})
@@ -384,6 +420,7 @@
 				})
 			},
 			login(params, type) { //联网验证登录
+				console.log('执行登录开始----');
 				console.log({
 					params,
 					type
@@ -409,6 +446,9 @@
 						})
 						return this.$refs.userProfile.open(result.uid)
 					}
+					// #endif
+					// #ifdef H5
+					result.loginType = type
 					// #endif
 					loginSuccess(result)
 				})
@@ -472,8 +512,15 @@
 		width: 750rpx;
 		justify-content: space-around;
 		position: fixed;
-		bottom: 10rpx;
 		left: 0;
+	}
+	
+	.item {
+		flex-direction: column;
+		justify-content: center;
+		align-items: center;
+		height: 200rpx;
+		cursor: pointer;
 	}
 
 	/* #ifndef APP-NVUE */
@@ -482,17 +529,20 @@
 			max-width: 500px;
 			margin-left: calc(50% - 250px);
 		}
+		.item {
+			height: 160rpx;
+		}
+	}
+	
+	@media screen and (max-width: 690px) {
+		.fab-login-box {
+			bottom: 10rpx;
+		}
 	}
 
 	/* #endif */
 
-	.item {
-		flex-direction: column;
-		justify-content: center;
-		align-items: center;
-		height: 200rpx;
-		cursor: pointer;
-	}
+	
 
 	.logo {
 		width: 60rpx;

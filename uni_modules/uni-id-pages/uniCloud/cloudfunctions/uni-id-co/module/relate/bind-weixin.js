@@ -6,7 +6,9 @@ const {
   LOG_TYPE
 } = require('../../common/constants')
 const {
-  generateWeixinCache
+  generateWeixinCache,
+  saveWeixinUserKey,
+  getWeixinPlatform
 } = require('../../lib/utils/weixin')
 const {
   initWeixin
@@ -31,6 +33,9 @@ module.exports = async function (params = {}) {
   const {
     code
   } = params
+  const weixinPlatform = getWeixinPlatform.call(this)
+  const appId = this.getClientInfo().appId
+
   const weixinApi = initWeixin.call(this)
   const clientPlatform = this.clientPlatform
   const apiName = clientPlatform === 'mp-weixin' ? 'code2Session' : 'getOauthAccessToken'
@@ -68,11 +73,22 @@ module.exports = async function (params = {}) {
     bindAccount,
     logType: LOG_TYPE.BIND_WEIXIN
   })
+  await saveWeixinUserKey.call(this, {
+    openid,
+    sessionKey,
+    accessToken,
+    refreshToken,
+    accessTokenExpired
+  })
   return postBind.call(this, {
     uid,
     bindAccount,
     extraData: {
+      wx_openid: {
+        [`${weixinPlatform}_${appId}`]: openid
+      },
       ...generateWeixinCache.call(this, {
+        openid,
         sessionKey, // 微信小程序用户sessionKey
         accessToken, // App端微信用户accessToken
         refreshToken, // App端微信用户refreshToken

@@ -4,7 +4,8 @@ let mixin = {
 	data() {
 		return {
 			config,
-			isMounted:false
+			uniIdRedirectUrl: '',
+			isMounted: false
 		}
 	},
 	onUnload() {
@@ -15,9 +16,37 @@ let mixin = {
 	mounted() {
 		this.isMounted = true;
 	},
+	onLoad(e) {
+		if (e.is_weixin_redirect) {
+			uni.showLoading({
+				mask: true
+			})
+
+			if( window.location.href.includes('#') ){
+				// 将url通过 ? 分割获取后面的参数字符串 再通过 & 将每一个参数单独分割出来
+				let paramsArr = window.location.href.split('?')[1].split('&')
+				paramsArr.forEach(item=>{
+					let arr = item.split('=')
+					if(arr[0] == 'code'){
+						e.code = arr[1]
+					}
+				})
+			}
+			this.$nextTick(n => {
+				console.log(this.$refs.uniFabLogin);
+				this.$refs.uniFabLogin.login({
+					code:e.code
+				}, 'weixin')
+			})
+		}
+
+		if (e.uniIdRedirectUrl) {
+			this.uniIdRedirectUrl = decodeURIComponent(e.uniIdRedirectUrl)
+		}
+	},
 	computed: {
-		needAgreements(){
-			if(this.isMounted){
+		needAgreements() {
+			if (this.isMounted) {
 				if (this.$refs.agreements) {
 					return this.$refs.agreements.needAgreements
 				} else {
@@ -27,7 +56,7 @@ let mixin = {
 		},
 		agree: {
 			get() {
-				if(this.isMounted){
+				if (this.isMounted) {
 					if (this.$refs.agreements) {
 						return this.$refs.agreements.isAgree
 					} else {
@@ -38,7 +67,7 @@ let mixin = {
 			set(agree) {
 				if (this.$refs.agreements) {
 					this.$refs.agreements.isAgree = agree
-				}else{
+				} else {
 					console.log('不存在 隐私政策协议组件');
 				}
 			}
@@ -46,7 +75,10 @@ let mixin = {
 	},
 	methods: {
 		loginSuccess(e) {
-			loginSuccess(e)
+			loginSuccess({
+				...e,
+				uniIdRedirectUrl: this.uniIdRedirectUrl
+			})
 		}
 	}
 }

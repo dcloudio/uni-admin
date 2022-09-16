@@ -36,7 +36,7 @@ module.exports = async function (params = {}) {
   const alipayApi = initAlipay.call(this)
   let getAlipayAccountResult
   try {
-    getAlipayAccountResult = await alipayApi().code2Session(code)
+    getAlipayAccountResult = await alipayApi.code2Session(code)
   } catch (error) {
     console.error(error)
     await this.middleware.uniIdLog({

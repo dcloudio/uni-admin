@@ -1,21 +1,7 @@
-import store from '@/store'
 import config from '@/admin.config.js'
 
 export function initInterceptor() {
     uni.addInterceptor('navigateTo', {
-        invoke(params) {
-            if (!store.getters['user/isTokenValid']) {
-                uni.showModal({
-                    content: '登录状态失效，请重新登录',
-                    showCancel: false,
-                    success() {
-                        uni.reLaunch({
-                            url: config.login.url
-                        })
-                    }
-                })
-            }
-        },
         fail: ({
             errMsg
         }) => {

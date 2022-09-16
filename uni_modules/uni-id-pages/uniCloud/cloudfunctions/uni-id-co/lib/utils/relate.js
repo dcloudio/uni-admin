@@ -7,6 +7,7 @@ const {
 const {
   userCollection
 } = require('../../common/constants')
+const merge = require('lodash.merge')
 
 /**
  *
@@ -43,10 +44,7 @@ async function postBind ({
   bindAccount,
   logType
 } = {}) {
-  await userCollection.doc(uid).update({
-    ...bindAccount,
-    ...extraData
-  })
+  await userCollection.doc(uid).update(merge(bindAccount, extraData))
   await this.middleware.uniIdLog({
     data: {
       user_id: uid

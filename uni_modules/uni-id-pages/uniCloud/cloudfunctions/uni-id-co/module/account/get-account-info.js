@@ -55,6 +55,7 @@ module.exports = async function () {
     }
   }
   return {
+    errCode: 0,
     isUsernameSet: isUsernameSet(userRecord),
     isNicknameSet: isNicknameSet(userRecord),
     isPasswordSet: isPasswordSet(userRecord),

@@ -15,7 +15,8 @@ const middleware = require('./middleware/index')
 
 const {
   registerAdmin,
-  registerUser
+  registerUser,
+  registerUserByEmail
 } = require('./module/register/index')
 const {
   addUser,
@@ -45,13 +46,15 @@ const {
 const {
   updatePwd,
   resetPwdBySms,
+  resetPwdByEmail,
   closeAccount,
   getAccountInfo
 } = require('./module/account/index')
 const {
   createCaptcha,
   refreshCaptcha,
-  sendSmsCode
+  sendSmsCode,
+  sendEmailCode
 } = require('./module/verify/index')
 const {
   refreshToken,
@@ -71,7 +74,7 @@ const {
 } = require('./module/dev/index')
 
 module.exports = {
-  async _before () {
+  async _before() {
     const clientInfo = this.getClientInfo()
     /**
      * 检查clientInfo，无appId和uniPlatform时本云对象无法正常运行
@@ -103,12 +106,15 @@ module.exports = {
     })
 
     // 包含uni-id配置合并等功能的工具集
-    this.config = new ConfigUtils({
-      appId: clientInfo.appId,
-      platform: clientPlatform
-    }).getPlatformConfig()
+    this.configUtils = new ConfigUtils({
+      context: this
+    })
+    this.config = this.configUtils.getPlatformConfig()
+    this.hooks = this.configUtils.getHooks()
 
-    this.validator = new Validator()
+    this.validator = new Validator({
+      passwordStrength: this.config.passwordStrength
+    })
     /**
      * 示例：覆盖密码验证规则
      */
@@ -150,6 +156,11 @@ module.exports = {
 
     // 挂载uni-captcha到this上，方便后续调用
     this.uniCaptcha = uniCaptcha
+    Object.defineProperty(this, 'uniOpenBridge', {
+      get() {
+        return require('uni-open-bridge-common')
+      }
+    })
 
     // 挂载中间件
     this.middleware = {}
@@ -170,7 +181,7 @@ module.exports = {
     // 通用权限校验模块
     await this.middleware.accessControl()
   },
-  _after (error, result) {
+  _after(error, result) {
     if (error) {
       // 处理中间件内抛出的标准响应对象
       if (error.errCode && getType(error) === 'object') {
@@ -266,6 +277,17 @@ module.exports = {
    */
   registerUser,
   /**
+   * 通过邮箱+验证码注册用户
+   * @param {Object} params
+   * @param {String} params.email    邮箱
+   * @param {String} params.password      密码
+   * @param {String} params.nickname    昵称
+   * @param {String} params.code  邮箱验证码
+   * @param {String} params.inviteCode  邀请码
+   * @returns
+   */
+  registerUserByEmail,
+  /**
    * 用户名密码登录
    * @tutorial https://uniapp.dcloud.net.cn/uniCloud/uni-id-pages.html#login
    * @param {Object} params
@@ -322,7 +344,7 @@ module.exports = {
    * @param {Object} params
    * @param {String} params.code                  QQ小程序登录返回的code参数
    * @param {String} params.accessToken           App端QQ登录返回的accessToken参数
-   * @param {String} params.accessTokenExpired    由App端QQ登录返回的expires_in参数计算而来
+   * @param {String} params.accessTokenExpired    accessToken过期时间，由App端QQ登录返回的expires_in参数计算而来，单位：毫秒
    * @param {String} params.inviteCode            邀请码
    * @returns
    */
@@ -385,6 +407,7 @@ module.exports = {
    * @param {Object} params
    * @param {String} params.code          小程序端QQ登录返回的code
    * @param {String} params.accessToken   APP端QQ登录返回的accessToken
+   * @param {String} params.accessTokenExpired    accessToken过期时间，由App端QQ登录返回的expires_in参数计算而来，单位：毫秒
    * @returns
    */
   bindQQ,
@@ -425,6 +448,16 @@ module.exports = {
    */
   resetPwdBySms,
   /**
+   * 通过邮箱验证码重置密码
+   * @param {object} params
+   * @param {string} params.email   邮箱
+   * @param {string} params.code   邮箱验证码
+   * @param {string} params.password 密码
+   * @param {string} params.captcha  图形验证码
+   * @returns {object}
+   */
+  resetPwdByEmail,
+  /**
    * 注销账户
    * @tutorial https://uniapp.dcloud.net.cn/uniCloud/uni-id-pages.html#close-account
    * @returns
@@ -462,6 +495,16 @@ module.exports = {
    */
   sendSmsCode,
   /**
+   * 发送邮箱验证码
+   * @tutorial 需自行实现功能
+   * @param {Object} params
+   * @param {String} params.email    邮箱
+   * @param {String} params.captcha   图形验证码
+   * @param {String} params.scene     短信验证码使用场景
+   * @returns
+   */
+  sendEmailCode,
+  /**
    * 刷新token
    * @tutorial https://uniapp.dcloud.net.cn/uniCloud/uni-id-pages.html#refresh-token
    */
@@ -496,9 +539,6 @@ module.exports = {
   /**
    * 获取支持的登录方式
    * @tutorial https://uniapp.dcloud.net.cn/uniCloud/uni-id-pages.html#get-supported-login-type
-   * @param {Object} params
-   * @param {String} params.appId     应用AppId
-   * @param {String} params.platform  应用平台
    * @returns
    */
   getSupportedLoginType

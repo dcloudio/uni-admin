@@ -32,10 +32,13 @@ const USER_STATUS = {
 }
 
 const CAPTCHA_SCENE = {
+  REGISTER: 'register',
   LOGIN_BY_PWD: 'login-by-pwd',
   LOGIN_BY_SMS: 'login-by-sms',
   RESET_PWD_BY_SMS: 'reset-pwd-by-sms',
+  RESET_PWD_BY_EMAIL: 'reset-pwd-by-email',
   SEND_SMS_CODE: 'send-sms-code',
+  SEND_EMAIL_CODE: 'send-email-code',
   BIND_MOBILE_BY_SMS: 'bind-mobile-by-sms'
 }
 
@@ -44,6 +47,7 @@ const LOG_TYPE = {
   LOGIN: 'login',
   REGISTER: 'register',
   RESET_PWD_BY_SMS: 'reset-pwd',
+  RESET_PWD_BY_EMAIL: 'reset-pwd',
   BIND_MOBILE: 'bind-mobile',
   BIND_WEIXIN: 'bind-weixin',
   BIND_QQ: 'bind-qq',
@@ -57,6 +61,13 @@ const SMS_SCENE = {
   BIND_MOBILE_BY_SMS: 'bind-mobile-by-sms'
 }
 
+const EMAIL_SCENE = {
+  REGISTER: 'register',
+  LOGIN_BY_EMAIL: 'login-by-email',
+  RESET_PWD_BY_EMAIL: 'reset-pwd-by-email',
+  BIND_EMAIL: 'bind-email'
+}
+
 module.exports = {
   db,
   dbCmd,
@@ -67,5 +78,6 @@ module.exports = {
   USER_STATUS,
   CAPTCHA_SCENE,
   LOG_TYPE,
-  SMS_SCENE
+  SMS_SCENE,
+  EMAIL_SCENE
 }

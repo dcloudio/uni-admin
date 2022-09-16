@@ -3,7 +3,7 @@
         {
             "path": "pages/index/index"
         }, {
-            "path": "pages/login/login",
+            "path": "uni_modules/uni-id-pages/pages/login/login-withpwd",
             "style": {
                 "topWindow": false,
                 "leftWindow": false,
@@ -15,7 +15,7 @@
                 "navigationBarTitleText": "Not Found"
             }
         }, {
-            "path": "pages/changepwd/changepwd",
+            "path": "uni_modules/uni-id-pages/pages/userinfo/change_pwd/change_pwd",
             "style": {
                 "navigationBarTitleText": "修改密码"
             }
@@ -36,7 +36,96 @@
                 "navigationBarTitleText": "版本信息查看"
             }
         }
-    ],
+    ,{
+    "path": "uni_modules/uni-id-pages/pages/userinfo/deactivate/deactivate",
+    "style": {
+        "navigationBarTitleText": "注销账号"
+    }
+}
+,{
+    "path": "uni_modules/uni-id-pages/pages/userinfo/userinfo",
+    "style": {
+        "navigationBarTitleText": "个人资料"
+    }
+}
+,{
+    "path": "uni_modules/uni-id-pages/pages/userinfo/bind-mobile/bind-mobile",
+    "style": {
+        "navigationBarTitleText": "绑定手机号码"
+    }
+}
+,{
+    "path": "uni_modules/uni-id-pages/pages/userinfo/cropImage/cropImage",
+    "style": {
+        "navigationBarTitleText": ""
+    }
+}
+,{
+    "path": "uni_modules/uni-id-pages/pages/login/login-smscode",
+    "style": {
+        "topWindow": false,
+		"leftWindow": false,
+        "navigationBarTitleText": "手机验证码登录"
+    }
+}
+,{
+    "path": "uni_modules/uni-id-pages/pages/login/login-withoutpwd",
+    "style": {
+        "topWindow": false,
+		"leftWindow": false,
+        "navigationBarTitleText": "免密登录页"
+    }
+}
+,{
+    "path": "uni_modules/uni-id-pages/pages/register/register",
+    "style": {
+		"topWindow": false,
+		"leftWindow": false,
+        "navigationBarTitleText": "注册"
+    }
+}
+,{
+    "path": "uni_modules/uni-id-pages/pages/register/register-admin",
+    "style": {
+		"topWindow": false,
+		"leftWindow": false,
+        "navigationBarTitleText": "创建超级管理员"
+    }
+}
+,{
+    "path": "uni_modules/uni-id-pages/pages/register/register-by-email",
+    "style": {
+        "topWindow": false,
+		"leftWindow": false,
+        "navigationBarTitleText": "邮箱验证码注册"
+    }
+}
+,{
+    "path": "uni_modules/uni-id-pages/pages/retrieve/retrieve",
+    "style": {
+        "topWindow": false,
+		"leftWindow": false,
+        "navigationBarTitleText": "重置密码"
+    }
+}
+,{
+    "path": "uni_modules/uni-id-pages/pages/retrieve/retrieve-by-email",
+    "style": {
+        "topWindow": false,
+		"leftWindow": false,
+        "navigationBarTitleText": "通过邮箱重置密码"
+    }
+}
+,{
+    "path": "uni_modules/uni-id-pages/pages/common/webview/webview",
+    "style": {
+        "topWindow": false,
+		"leftWindow": false,
+        "enablePullDownRefresh": false,
+        "navigationBarTitleText": ""
+    }
+}
+],
     "subPackages": [{
         "root": "pages/system",
         "pages": [{
@@ -149,13 +238,6 @@
     }, {
         "root": "pages/demo",
         "pages": [{
-            "path": "init/init",
-            "style": {
-                "topWindow": false,
-                "leftWindow": false,
-                "navigationBarTitleText": "创建超级管理员"
-            }
-        }, {
             "path": "icons/icons",
             "style": {
                 "navigationBarTitleText": "图标"
@@ -331,5 +413,12 @@
         "style": {
             "width": "240px"
         }
-    }
+    },
+	"uniIdRouter": {
+		"loginPage": "uni_modules/uni-id-pages/pages/login/login-withpwd",
+		"needLogin": [
+            "^((?!uni-id-pages\/pages\/login|register|retrieve).)*$"
+        ],
+		"resToLogin": true
+	}
 }
