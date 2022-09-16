@@ -77,7 +77,7 @@
 		},
 		"network_model": {
 			"bsonType": "string",
-			"description": "设备网络型号wifi/3G/4G/"
+			"description": "设备网络型号wifi\/3G\/4G\/"
 		},
 		"window_width": {
 			"bsonType": "string",

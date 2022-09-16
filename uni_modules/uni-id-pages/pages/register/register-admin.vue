@@ -141,7 +141,7 @@
 
 <style lang="scss">
 	@import "@/uni_modules/uni-id-pages/common/login-page.scss";
-
+	
 	@media screen and (max-width: 690px) {
 		.uni-content{
 			margin-top: 15px;
@@ -153,7 +153,7 @@
 		.uni-content{
 			padding: 30px 40px 60px;
 		}
-
+		
 		.link-box {
 			/* #ifndef APP-NVUE */
 			display: flex;
@@ -162,12 +162,12 @@
 			justify-content: space-between;
 			margin-top: 10px;
 		}
-
+		
 		.link {
 			font-size: 12px;
 		}
 	}
-
+	
 	.uni-content ::v-deep .uni-forms-item__label {
 		position: absolute;
 		left: -15px;

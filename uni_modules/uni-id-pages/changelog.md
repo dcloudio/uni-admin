@@ -1,8 +1,13 @@
-## 1.0.12（2022-09-08）
-- uni-id-co 新增 邮箱验证码注册账号 [详情](https://uniapp.dcloud.net.cn/uniCloud/uni-id-pages.html#send-email-code)
-- uni-id-co 新增 邮箱验证码找回密码 [详情](https://uniapp.dcloud.net.cn/uniCloud/uni-id-pages.html#reset-pwd-by-email)
+## 1.0.13（2022-09-16）
+- 新增 管理员注册页面
+- 新增 配置项`isAdmin`区分是否为管理端
+- 新增 登录成功后自动跳转；跳转优先级：路由携带(`uniIdRedirectUrl`参数) > 返回上一路由 > 跳转首页
+- uni-id-co 优化 注册管理员时管理员存在提示文案
+## 1.0.12（2022-09-07）
 - 修复 getSupportedLoginType判断是否支持微信公众号、PC网页微信扫码登录方式报错的Bug
 - 优化 适配pc端样式
+- 新增 邮箱验证码注册
+- 新增 邮箱验证码找回密码
 - 新增 退出登录(全局)回调事件：`uni-id-pages-logout`，支持通过[uni.$on](https://uniapp.dcloud.net.cn/api/window/communication.html#on)监听;
 - 调整 抽离退出登录方法至`/uni_modules/uni-id-pages/common/common.js`中，方便在项目其他页面中调用
 - 调整 用户中心（路径：`/uni_modules/uni-id-pages/pages/userinfo/userinfo`）默认不再显示退出登录按钮。支持页面传参数`showLoginManage=true`恢复显示

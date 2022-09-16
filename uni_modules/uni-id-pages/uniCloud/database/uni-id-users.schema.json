@@ -1,11 +1,8 @@
 {
 	"bsonType": "object",
-	"required": ["username", "password"],
 	"permission": {
-		"read": "doc._id == auth.uid || 'READ_UNI_ID_USERS' in auth.permission",
-		"create": "'CREATE_UNI_ID_USERS' in auth.permission",
-		"update": "doc._id == auth.uid || 'UPDATE_UNI_ID_USERS' in auth.permission",
-		"delete": "'DELETE_UNI_ID_USERS' in auth.permission"
+		"update": "doc._id == auth.uid",
+		"read": "doc._id == auth.uid"
 	},
 	"properties": {
 		"_id": {
@@ -27,8 +24,8 @@
 		},
 		"avatar": {
 			"bsonType": "string",
-			"title": "头像地址",
 			"description": "头像地址",
+			"title": "头像地址",
 			"trim": "both"
 		},
 		"avatar_file": {
@@ -38,8 +35,8 @@
 		},
 		"comment": {
 			"bsonType": "string",
-			"title": "备注",
 			"description": "备注",
+			"title": "备注",
 			"trim": "both",
 			"permission": {
 				"write": false
@@ -47,12 +44,7 @@
 		},
 		"dcloud_appid": {
 			"bsonType": "array",
-			"title": "允许登录的客户端的appid列表",
 			"description": "允许登录的客户端的appid列表",
-			"enum": {
-				"collection": "opendb-app-list",
-				"field": "appid as value, name as text"
-			},
 			"foreignKey": "opendb-app-list.appid",
 			"permission": {
 				"write": false
@@ -74,9 +66,9 @@
 		},
 		"email": {
 			"bsonType": "string",
+			"description": "邮箱地址",
 			"format": "email",
 			"title": "邮箱",
-			"description": "邮箱地址",
 			"trim": "both",
 			"permission": {
 				"write": false
@@ -84,35 +76,40 @@
 		},
 		"email_confirmed": {
 			"bsonType": "int",
-			"description": "邮箱验证状态：0 未验证 1 已验证",
-			"title": "邮箱验证状态",
 			"defaultValue": 0,
+			"description": "邮箱验证状态：0 未验证 1 已验证",
 			"enum": [{
 					"text": "未验证",
 					"value": 0
-				}, {
+				},
+				{
 					"text": "已验证",
 					"value": 1
-				}],
+				}
+			],
+			"title": "邮箱验证状态",
 			"permission": {
 				"write": false
 			}
 		},
 		"gender": {
 			"bsonType": "int",
-			"title": "性别",
-			"description": "用户性别：0 未知 1 男性 2 女性",
 			"defaultValue": 0,
+			"description": "用户性别：0 未知 1 男性 2 女性",
 			"enum": [{
 					"text": "未知",
 					"value": 0
-				}, {
+				},
+				{
 					"text": "男",
 					"value": 1
-				}, {
+				},
+				{
 					"text": "女",
 					"value": 2
-				}],
+				}
+			],
+			"title": "性别",
 			"permission": {
 				"write": false
 			}
@@ -159,15 +156,17 @@
 		"mobile_confirmed": {
 			"bsonType": "int",
 			"defaultValue": 0,
-			"title": "手机号验证状态",
 			"description": "手机号验证状态：0 未验证 1 已验证",
 			"enum": [{
 					"text": "未验证",
 					"value": 0
-				}, {
+				},
+				{
 					"text": "已验证",
 					"value": 1
-				}],
+				}
+			],
+			"title": "手机号验证状态",
 			"permission": {
 				"write": false
 			}
@@ -187,10 +186,9 @@
 		},
 		"password": {
 			"bsonType": "password",
-			"title": "密码",
 			"description": "密码，加密存储",
+			"title": "密码",
 			"trim": "both",
-			"minLength": 6,
 			"permission": {
 				"write": false,
 				"read": false
@@ -286,7 +284,6 @@
 		},
 		"role": {
 			"bsonType": "array",
-			"title": "角色",
 			"description": "用户角色",
 			"enum": {
 				"collection": "uni-id-roles",
@@ -295,7 +292,8 @@
 			"foreignKey": "uni-id-roles.role_id",
 			"permission": {
 				"write": false
-			}
+			},
+			"title": "角色"
 		},
 		"score": {
 			"bsonType": "int",
@@ -398,19 +396,7 @@
 			"permission": {
 				"write": false
 			}
-		},
-		"tags": {
-			"bsonType": "array",
-			"title": "用户标签tagid",
-			"description": "用户标签tagid",
-			"enum": {
-				"collection": "uni-id-tag",
-				"field": "tagid as value, name as text"
-			},
-			"foreignKey": "uni-id-tag.tagid",
-			"permission": {
-				"write": false
-			}
 		}
-	}
+	},
+	"required": []
 }

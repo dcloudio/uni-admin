@@ -39,7 +39,7 @@ module.exports = async function (params = {}) {
   if (getAdminRes.data.length > 0) {
     return {
       errCode: ERROR.ADMIN_EXISTS,
-      errMsg: '管理员已存在'
+      errMsg: this.t('uni-id-admin-exists')
     }
   }
   const {

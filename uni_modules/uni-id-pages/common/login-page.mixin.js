@@ -21,14 +21,14 @@ let mixin = {
 			uni.showLoading({
 				mask: true
 			})
-			
+
 			if( window.location.href.includes('#') ){
 				// 将url通过 ? 分割获取后面的参数字符串 再通过 & 将每一个参数单独分割出来
 				let paramsArr = window.location.href.split('?')[1].split('&')
 				paramsArr.forEach(item=>{
 					let arr = item.split('=')
 					if(arr[0] == 'code'){
-						 e.code = arr[1]
+						e.code = arr[1]
 					}
 				})
 			}
@@ -71,9 +71,6 @@ let mixin = {
 					console.log('不存在 隐私政策协议组件');
 				}
 			}
-		},
-		isAdmin () {
-			return config.clientType === "admin"
 		}
 	},
 	methods: {
