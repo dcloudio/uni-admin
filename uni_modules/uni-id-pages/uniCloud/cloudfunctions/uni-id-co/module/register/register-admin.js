@@ -38,7 +38,8 @@ module.exports = async function (params = {}) {
   }).limit(1).get()
   if (getAdminRes.data.length > 0) {
     return {
-      errCode: ERROR.ADMIN_EXISTS
+      errCode: ERROR.ADMIN_EXISTS,
+      errMsg: '管理员已存在'
     }
   }
   const {

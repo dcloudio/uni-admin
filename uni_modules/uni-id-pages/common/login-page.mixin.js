@@ -4,7 +4,7 @@ let mixin = {
 	data() {
 		return {
 			config,
-			redirect: '',
+			uniIdRedirectUrl: '',
 			isMounted: false
 		}
 	},
@@ -40,8 +40,8 @@ let mixin = {
 			})
 		}
 
-		if (e.redirect) {
-			this.redirect = e.redirect
+		if (e.uniIdRedirectUrl) {
+			this.uniIdRedirectUrl = decodeURIComponent(e.uniIdRedirectUrl)
 		}
 	},
 	computed: {
@@ -80,7 +80,7 @@ let mixin = {
 		loginSuccess(e) {
 			loginSuccess({
 				...e,
-				redirect: this.redirect
+				uniIdRedirectUrl: this.uniIdRedirectUrl
 			})
 		}
 	}

@@ -2,7 +2,7 @@ import pagesJson from '@/pages.json'
 
 export default function(e = {}) {
 	const {
-		showToast = true, toastText = '登录成功', autoBack = true, redirect = ''
+		showToast = true, toastText = '登录成功', autoBack = true, uniIdRedirectUrl = ''
 	} = e
 	console.log({
 		toastText,
@@ -25,9 +25,9 @@ export default function(e = {}) {
 			}
 		})
 		console.log('判断需要返回几层:',pages, delta);
-		if (redirect) {
+		if (uniIdRedirectUrl) {
 			return uni.reLaunch({
-				url: redirect
+				url: uniIdRedirectUrl
 			})
 		}
 		// #ifdef H5

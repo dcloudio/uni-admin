@@ -1,7 +1,3 @@
-import {
-	request
-} from '@/js_sdk/uni-admin/request.js'
-
 // #ifndef VUE3
 const statConfig = require('uni-stat-config').default || require('uni-stat-config');
 // #endif

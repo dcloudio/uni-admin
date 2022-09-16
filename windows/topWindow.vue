@@ -72,18 +72,16 @@
 
 <script>
 	import {
-		mapMutations,
 		mapState
 	} from 'vuex'
 
+	import uniIdPagesCommon from '@/uni_modules/uni-id-pages/common/common'
 	import errorLog from '@/windows/components/error-log.vue'
-	import updatePassword from '@/windows/components/update-password.vue'
 	import config from '@/admin.config.js'
 
 	export default {
 		components: {
-			errorLog,
-			updatePassword
+			errorLog
 		},
 		props: {
 			navigationBarTitleText: {
@@ -125,11 +123,6 @@
 			// #endif
 		},
 		methods: {
-			...mapMutations({
-				removeToken(commit) {
-					commit('user/REMOVE_TOKEN')
-				}
-			}),
 			showErrorLogs() {
 				if (this.popupMenuOpened) {
 					this.popupMenuOpened = false
@@ -143,12 +136,8 @@
 				this.$refs.passwordPopup.open()
 			},
 			logout() {
-				const pages = getCurrentPages()
-				this.removeToken()
 				this.popupMenuOpened = false
-				uni.reLaunch({
-					url: `${config.login.url}?redirect=/${pages[pages.length - 1].route}`
-				})
+				uniIdPagesCommon.logout()
 			},
 			toggleSidebar() {
 				if (!this.showLeftWindow) {

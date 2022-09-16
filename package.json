@@ -17,7 +17,7 @@
         "uni-admin"
     ],
 	"engines": {
-		"HBuilderX": "^3.5.3"
+		"HBuilderX": "^3.6.0"
 	},
 	"author": "",
 	"license": "MIT",

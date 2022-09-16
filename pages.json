@@ -69,6 +69,14 @@
     }
 }
 ,{
+    "path": "uni_modules/uni-id-pages/pages/login/login-withoutpwd",
+    "style": {
+        "topWindow": false,
+		"leftWindow": false,
+        "navigationBarTitleText": "免密登录页"
+    }
+}
+,{
     "path": "uni_modules/uni-id-pages/pages/register/register",
     "style": {
 		"topWindow": false,
@@ -230,13 +238,6 @@
     }, {
         "root": "pages/demo",
         "pages": [{
-            "path": "init/init",
-            "style": {
-                "topWindow": false,
-                "leftWindow": false,
-                "navigationBarTitleText": "创建超级管理员"
-            }
-        }, {
             "path": "icons/icons",
             "style": {
                 "navigationBarTitleText": "图标"
@@ -412,5 +413,12 @@
         "style": {
             "width": "240px"
         }
-    }
+    },
+	"uniIdRouter": {
+		"loginPage": "uni_modules/uni-id-pages/pages/login/login-withpwd",
+		"needLogin": [
+            "^((?!uni-id-pages\/pages\/login|register|retrieve).)*$"
+        ],
+		"resToLogin": true
+	}
 }

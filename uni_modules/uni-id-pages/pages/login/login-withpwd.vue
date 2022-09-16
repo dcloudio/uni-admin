@@ -26,6 +26,7 @@
 				<text class="link" @click="toRetrievePwd">找回密码</text>
 			</view>
 			<text class="link" @click="toRegister">{{isAdmin ? '注册管理员账号': '注册账号'}}</text>
+			<!-- <text class="link" @click="toRegister" v-if="!isAdmin">注册账号</text> -->
 		</view>
 		<!-- 悬浮登录方式组件 -->
 		<uni-id-pages-fab-login ref="uniFabLogin"></uni-id-pages-fab-login>
@@ -99,16 +100,16 @@
 						icon: 'none'
 					});
 				}
-				
+
 				if (this.needAgreements && !this.agree) {
 					return this.$refs.agreements.popup(this.pwdLogin)
 				}
-				
+
 				let data = {
 					"password": this.password,
 					"captcha": this.captcha
 				}
-				
+
 				if (/^1\d{10}$/.test(this.username)) {
 					data.mobile = this.username
 				}else if(/@/.test(this.username)) {
@@ -116,7 +117,7 @@
 				}else{
 					data.username = this.username
 				}
-				
+
 				uniIdCo.login(data).then(e => {
 					this.loginSuccess(e)
 				}).catch(e => {
@@ -141,7 +142,7 @@
 <style lang="scss" scoped>
 	@import "@/uni_modules/uni-id-pages/common/login-page.scss";
 	@media screen and (min-width: 690px) {
-		
+
 	}
 	.forget{
 		font-size: 12px;

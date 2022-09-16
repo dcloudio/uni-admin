@@ -1,7 +1,8 @@
 <script>
 	import {
 		mapGetters,
-		mapActions
+		mapActions,
+		mapMutations
 	} from 'vuex'
 	import config from '@/admin.config.js'
 	import {
@@ -10,11 +11,6 @@
 	export default {
 		created() {
 			this.clear = undefined
-		},
-		computed: {
-			...mapGetters({
-				isTokenValid: 'user/isTokenValid'
-			})
 		},
 		methods: {
 			...mapActions({
@@ -40,17 +36,12 @@
 			// #endif
 			// 线上示例使用
 			// console.log('%c uni-app官方团队诚邀优秀前端工程师加盟，一起打造更卓越的uni-app & uniCloud，欢迎投递简历到 hr2013@dcloud.io', 'color: red');
-			console.log('App Launch1')
-			if (!this.isTokenValid) {
-				uni.redirectTo({
-					url: config.login.url
-				})
-			} else {
-				this.init()
-			}
+			console.log('App Launch')
+			this.init()
 
 			// 登录成功回调
 			uni.$on('uni-id-pages-login-success', () => {
+				// this.setToken()
 				this.init()
 			})
 		},
