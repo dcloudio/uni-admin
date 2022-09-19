@@ -14,7 +14,7 @@ export default {
 			return db
 				.collection('uni-id-users')
 				.where('_id==$cloudEnv_uid')
-				.field('username')
+				.field('username,nickname')
 				.get()
 				.then(({result}) => {
 					const [userInfo] = result.data
