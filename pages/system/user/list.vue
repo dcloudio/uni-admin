@@ -23,7 +23,7 @@
 		</view>
 		<view class="uni-container">
 			<unicloud-db ref="udb" collection="uni-id-users,uni-id-roles"
-				field="username,mobile,status,email,role{role_name},dcloud_appid,tags,last_login_date" :where="where"
+				field="username,nickname,mobile,status,email,role{role_name},dcloud_appid,tags,last_login_date" :where="where"
 				page-data="replace" :orderby="orderby" :getcount="true" :page-size="options.pageSize"
 				:page-current="options.pageCurrent" v-slot:default="{data,pagination,loading,error,options}"
 				:options="options" loadtime="manual" @load="onqueryload">
@@ -32,6 +32,8 @@
 					<uni-tr>
 						<uni-th align="center" filter-type="search" @filter-change="filterChange($event, 'username')"
 							sortable @sort-change="sortChange($event, 'username')">用户名</uni-th>
+						<uni-th align="center" filter-type="search" @filter-change="filterChange($event, 'nickname')"
+							sortable @sort-change="sortChange($event, 'nickname')">用户昵称</uni-th>
 						<uni-th align="center" filter-type="search" @filter-change="filterChange($event, 'mobile')"
 							sortable @sort-change="sortChange($event, 'mobile')">手机号码</uni-th>
 						<uni-th align="center" filter-type="select" :filter-data="options.filterData.status_localdata"
@@ -49,6 +51,7 @@
 					</uni-tr>
 					<uni-tr v-for="(item,index) in data" :key="index">
 						<uni-td align="center">{{item.username}}</uni-td>
+						<uni-td align="center">{{item.nickname}}</uni-td>
 						<uni-td align="center">{{item.mobile}}</uni-td>
 						<uni-td align="center">{{options.status_valuetotext[item.status]}}</uni-td>
 						<uni-td align="center">

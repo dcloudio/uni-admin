@@ -4,6 +4,9 @@
 			<uni-forms-item name="username" label="用户名" required>
 				<uni-easyinput v-model="formData.username" :clearable="false" placeholder="请输入用户名" />
 			</uni-forms-item>
+			<uni-forms-item name="nickname" label="用户昵称" required>
+				<uni-easyinput v-model="formData.nickname" :clearable="false" placeholder="请输入用户昵称" />
+			</uni-forms-item>
 			<uni-forms-item name="password" label="初始密码" required>
 				<uni-easyinput v-model="formData.password" :clearable="false" placeholder="请输入初始密码" />
 			</uni-forms-item>
@@ -64,6 +67,7 @@
 			return {
 				formData: {
 					"username": "",
+					"nickname": "",
 					"password": "",
 					"role": [],
 					"authorizedApp": [],
