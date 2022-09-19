@@ -117,7 +117,7 @@
 				// #endif
 
 				// #ifdef MP-WEIXIN
-				this.$refs['bind-mobile'].open()
+				this.$refs['bind-mobile-by-sms'].open()
 				// #endif
 
 				// #ifdef H5

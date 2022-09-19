@@ -1,5 +1,9 @@
 {
 	"bsonType": "object",
+	"required": ["user_id"],
+	"permission": {
+		"read": "'READ_UNI_ID_LOG' in auth.permission"
+	},
 	"properties": {
 		"_id": {
 			"description": "ID，系统自动生成"
@@ -44,6 +48,7 @@
 		},
 		"user_id": {
 			"bsonType": "string",
+			"foreignKey": "uni-id-users._id",
 			"description": "用户id，参考uni-id-users表"
 		},
 		"username": {
@@ -62,6 +67,5 @@
 			"bsonType": "string",
 			"description": "客户端DCloud AppId"
 		}
-	},
-	"required": []
+	}
 }

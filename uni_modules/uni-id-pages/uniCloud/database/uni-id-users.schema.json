@@ -1,8 +1,11 @@
 {
 	"bsonType": "object",
+	"required": ["username", "password"],
 	"permission": {
-		"update": "doc._id == auth.uid",
-		"read": "doc._id == auth.uid"
+		"read": true,
+		"create": "'CREATE_UNI_ID_USERS' in auth.permission",
+		"update": "doc._id == auth.uid || 'UPDATE_UNI_ID_USERS' in auth.permission",
+		"delete": "'DELETE_UNI_ID_USERS' in auth.permission"
 	},
 	"properties": {
 		"_id": {
@@ -12,14 +15,16 @@
 			"bsonType": "string",
 			"description": "支付宝平台openid",
 			"permission": {
-				"write": false
+				"write": false,
+				"read": "doc._id == auth.uid"
 			}
 		},
 		"apple_openid": {
 			"bsonType": "string",
 			"description": "苹果登录openid",
 			"permission": {
-				"write": false
+				"write": false,
+				"read": "doc._id == auth.uid"
 			}
 		},
 		"avatar": {
@@ -39,7 +44,8 @@
 			"title": "备注",
 			"trim": "both",
 			"permission": {
-				"write": false
+				"write": false,
+				"read": false
 			}
 		},
 		"dcloud_appid": {
@@ -47,7 +53,8 @@
 			"description": "允许登录的客户端的appid列表",
 			"foreignKey": "opendb-app-list.appid",
 			"permission": {
-				"write": false
+				"write": false,
+				"read": "doc._id == auth.uid"
 			}
 		},
 		"department_id": {
@@ -61,7 +68,8 @@
 			"enumType": "tree",
 			"title": "部门",
 			"permission": {
-				"write": false
+				"write": false,
+				"read": "doc._id == auth.uid"
 			}
 		},
 		"email": {
@@ -71,7 +79,8 @@
 			"title": "邮箱",
 			"trim": "both",
 			"permission": {
-				"write": false
+				"write": false,
+				"read": "doc._id == auth.uid"
 			}
 		},
 		"email_confirmed": {
@@ -89,7 +98,8 @@
 			],
 			"title": "邮箱验证状态",
 			"permission": {
-				"write": false
+				"write": false,
+				"read": "doc._id == auth.uid"
 			}
 		},
 		"gender": {
@@ -111,14 +121,16 @@
 			],
 			"title": "性别",
 			"permission": {
-				"write": false
+				"write": false,
+				"read": "doc._id == auth.uid"
 			}
 		},
 		"invite_time": {
 			"bsonType": "timestamp",
 			"description": "受邀时间",
 			"permission": {
-				"write": false
+				"write": false,
+				"read": "doc._id == auth.uid"
 			}
 		},
 		"inviter_uid": {
@@ -126,21 +138,24 @@
 			"description": "用户全部上级邀请者",
 			"trim": "both",
 			"permission": {
-				"write": false
+				"write": false,
+				"read": "doc._id == auth.uid"
 			}
 		},
 		"last_login_date": {
 			"bsonType": "timestamp",
 			"description": "最后登录时间",
 			"permission": {
-				"write": false
+				"write": false,
+				"read": "doc._id == auth.uid"
 			}
 		},
 		"last_login_ip": {
 			"bsonType": "string",
 			"description": "最后登录时 IP 地址",
 			"permission": {
-				"write": false
+				"write": false,
+				"read": "doc._id == auth.uid"
 			}
 		},
 		"mobile": {
@@ -150,7 +165,8 @@
 			"title": "手机号码",
 			"trim": "both",
 			"permission": {
-				"write": false
+				"write": false,
+				"read": "doc._id == auth.uid"
 			}
 		},
 		"mobile_confirmed": {
@@ -168,14 +184,16 @@
 			],
 			"title": "手机号验证状态",
 			"permission": {
-				"write": false
+				"write": false,
+				"read": "doc._id == auth.uid"
 			}
 		},
 		"my_invite_code": {
 			"bsonType": "string",
 			"description": "用户自身邀请码",
 			"permission": {
-				"write": false
+				"write": false,
+				"read": "doc._id == auth.uid"
 			}
 		},
 		"nickname": {
@@ -207,7 +225,8 @@
 			"bsonType": "object",
 			"description": "实名认证信息",
 			"permission": {
-				"write": false
+				"write": false,
+				"read": "doc._id == auth.uid"
 			},
 			"properties": {
 				"auth_date": {
@@ -272,14 +291,16 @@
 			"bsonType": "timestamp",
 			"description": "注册时间",
 			"forceDefaultValue": {
-				"$env": "now"
+				"$env": "now",
+				"read": "doc._id == auth.uid"
 			}
 		},
 		"register_ip": {
 			"bsonType": "string",
 			"description": "注册时 IP 地址",
 			"forceDefaultValue": {
-				"$env": "clientIP"
+				"$env": "clientIP",
+				"read": "doc._id == auth.uid"
 			}
 		},
 		"role": {
@@ -291,7 +312,8 @@
 			},
 			"foreignKey": "uni-id-roles.role_id",
 			"permission": {
-				"write": false
+				"write": false,
+				"read": "doc._id == auth.uid"
 			},
 			"title": "角色"
 		},
@@ -299,7 +321,8 @@
 			"bsonType": "int",
 			"description": "用户积分，积分变更记录可参考：uni-id-scores表定义",
 			"permission": {
-				"write": false
+				"write": false,
+				"read": "doc._id == auth.uid"
 			}
 		},
 		"status": {
@@ -307,7 +330,8 @@
 			"defaultValue": 0,
 			"description": "用户状态：0 正常 1 禁用 2 审核中 3 审核拒绝",
 			"permission": {
-				"write": false
+				"write": false,
+				"read": "doc._id == auth.uid"
 			},
 			"enum": [{
 					"text": "正常",
@@ -330,7 +354,10 @@
 		},
 		"token": {
 			"bsonType": "array",
-			"description": "用户token"
+			"description": "用户token",
+			"permission": {
+				"read": "doc._id == auth.uid"
+			}
 		},
 		"username": {
 			"bsonType": "string",
@@ -363,14 +390,16 @@
 				}
 			},
 			"permission": {
-				"write": false
+				"write": false,
+				"read": "doc._id == auth.uid"
 			}
 		},
 		"wx_unionid": {
 			"bsonType": "string",
 			"description": "微信unionid",
 			"permission": {
-				"write": false
+				"write": false,
+				"read": "doc._id == auth.uid"
 			}
 		},
 		"qq_openid": {
@@ -387,16 +416,17 @@
 				}
 			},
 			"permission": {
-				"write": false
+				"write": false,
+				"read": "doc._id == auth.uid"
 			}
 		},
 		"qq_unionid": {
 			"bsonType": "string",
 			"description": "QQ unionid",
 			"permission": {
-				"write": false
+				"write": false,
+				"read": "doc._id == auth.uid"
 			}
 		}
-	},
-	"required": []
+	}
 }

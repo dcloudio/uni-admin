@@ -1,3 +1,12 @@
+// 隐藏 edge 浏览器的密码查看按钮
+.input-box ::v-deep{
+  .uni-input-input[type="password"] {
+    &::-ms-reveal {
+      display: none;
+    }
+  }
+}
+
 .uni-content {
   padding: 0 60rpx;
 }
@@ -31,12 +40,12 @@
   	display: flex;
   	justify-content: center;
   }
-  
+
   .login-logo image {
 	width: 60px;
   	height: 60px;
   }
-  
+
   .register-back{
 	  display: none;
   }
@@ -100,4 +109,3 @@
 .uni-body.uni_modules-uni-id-pages-pages-login-login-withoutpwd{
 	height: auto !important;
 }
-	

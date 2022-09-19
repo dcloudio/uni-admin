@@ -31,7 +31,8 @@
 
 <script>
 	import mixin from '@/uni_modules/uni-id-pages/common/login-page.mixin.js';
-	const uniIdCo = uniCloud.importObject("uni-id-co", {
+  import passwordMod from '@/uni_modules/uni-id-pages/common/password.js'
+  const uniIdCo = uniCloud.importObject("uni-id-co", {
 		customUI:true
 	})
 	export default {
@@ -58,37 +59,8 @@
 							}
 						]
 					},
-					newPassword: {
-						rules: [{
-								required: true,
-								errorMessage: '请输入新密码',
-							},
-							{
-								pattern: /^.{6,20}$/,
-								errorMessage: '密码为6 - 20位',
-							}
-						]
-					},
-					newPassword2: {
-						rules: [{
-								required: true,
-								errorMessage: '请确认密码',
-							},
-							{
-								pattern: /^.{6,20}$/,
-								errorMessage: '密码为6 - 20位',
-							},
-							{
-								validateFunction: function(rule, value, data, callback) {
-									if (value != data.newPassword) {
-										callback('两次输入密码不一致')
-									};
-									return true
-								}
-							}
-						]
-					}
-				},
+          ...passwordMod.getPwdRules('newPassword', 'newPassword2')
+        },
 				logo: "/static/logo.png"
 			}
 		},
@@ -153,7 +125,7 @@
 			margin-top: 15px;
 		}
 	}
-	
+
 	@media screen and (min-width: 690px) {
 		.uni-content{
 			padding: 30px 40px 40px;

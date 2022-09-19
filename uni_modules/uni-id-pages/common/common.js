@@ -6,7 +6,7 @@ export default {
 		uni.removeStorageSync('uni_id_token');
 		uni.setStorageSync('uni_id_token_expired', 0)
 		uni.redirectTo({
-			url: config.isAdmin ? '/uni_modules/uni-id-pages/pages/login/login-withpwd': '/uni_modules/uni-id-pages/pages/login/login-withoutpwd',
+			url: `/${pagesJson.uniIdRouter?.loginPage ?? 'uni_modules/uni-id-pages/pages/login/login-withoutpwd'}`,
 		});
 		uni.$emit('uni-id-pages-logout')
 	},
