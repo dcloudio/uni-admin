@@ -36,14 +36,14 @@
 				</picker>
 
 				<view class="" style="position: relative;">
-					<view v-show="userInfo.nickname || userInfo.username" class="navbar-user" @click="togglePopupMenu">
+					<view v-show="userInfo.nickname || userInfo.username || userInfo.mobile || userInfo.email" class="navbar-user" @click="togglePopupMenu">
 						<view class="admin-icons-user user-icon" />
-						<view class="username ml-s"><text>{{userInfo.nickname || userInfo.username}}</text></view>
+						<view class="username ml-s"><text>{{userInfo.nickname || userInfo.username || userInfo.mobile || userInfo.email}}</text></view>
 						<uni-icons class="arrowdown" type="arrowdown" color="#666" size="13"></uni-icons>
 					</view>
 					<view class="uni-mask" @click="togglePopupMenu" />
 					<view class="navbar-menu">
-						<template v-if="userInfo.nickname || userInfo.username">
+						<template v-if="userInfo.nickname || userInfo.username || userInfo.mobile || userInfo.email">
 							<view class="menu-item hover-highlight" @click="changePassword">
 								<text>{{ $t("topwindow.text.changePwd") }}</text>
 							</view>

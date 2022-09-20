@@ -1,4 +1,4 @@
-import config from '../config'
+import pagesJson from '@/pages.json'
 const uniIdCo = uniCloud.importObject("uni-id-co")
 export default {
 	async logout() {

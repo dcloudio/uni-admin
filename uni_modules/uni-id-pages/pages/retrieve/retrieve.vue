@@ -31,7 +31,8 @@
 				<view class="link-box">
 					<text class="link" @click="retrieveByEmail">通过邮箱验证码找回密码</text>
 					<view></view>
-				</view>
+          <text class="link" @click="backLogin">返回登录</text>
+        </view>
 			</match-media>
 		</uni-forms>
 		<uni-popup-captcha @confirm="submit" v-model="formData.captcha" scene="reset-pwd-by-sms" ref="popup"></uni-popup-captcha>
@@ -206,7 +207,12 @@
 				uni.navigateTo({
 					url: '/uni_modules/uni-id-pages/pages/retrieve/retrieve-by-email'
 				})
-			}
+			},
+      backLogin () {
+        uni.redirectTo({
+          url: '/uni_modules/uni-id-pages/pages/login/login-withpwd'
+        })
+      }
 		}
 	}
 </script>
@@ -231,7 +237,7 @@
 			justify-content: space-between;
 			margin-top: 10px;
 		}
-		
+
 		.link {
 			font-size: 12px;
 		}

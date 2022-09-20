@@ -1,4 +1,6 @@
 // 隐藏 edge 浏览器的密码查看按钮
+
+/* #ifdef H5 */
 .input-box ::v-deep{
   .uni-input-input[type="password"] {
     &::-ms-reveal {
@@ -6,6 +8,7 @@
     }
   }
 }
+/* #endif */
 
 .uni-content {
   padding: 0 60rpx;
