@@ -2,7 +2,7 @@
 	<!-- 对应页面：设备统计-粘性  -->
 	<view class="fix-top-window">
 		<view class="uni-header">
-			<uni-stat-breadcrumb class="uni-stat-breadcrumb-on-phone" />
+			<view></view>
 			<view class="uni-group">
 				<!-- <view class="uni-title">用户忠诚度</view> -->
 				<view class="uni-sub-title hide-on-phone">用户忠诚度用户对您应用的访问深度及访问频次情况。助您了解用户对应用的粘度，尤其在对内容改进后，效果是否有所提升</view>

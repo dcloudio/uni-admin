@@ -2,7 +2,7 @@
 	<!-- 对应页面：注册用户统计-留存  -->
 	<view class="fix-top-window">
 		<view class="uni-header">
-			<uni-stat-breadcrumb class="uni-stat-breadcrumb-on-phone" />
+			<view></view>
 			<view class="uni-group">
 				<view class="uni-sub-title hide-on-phone">用户留存趋势分析</view>
 			</view>

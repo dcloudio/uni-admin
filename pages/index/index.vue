@@ -1,11 +1,5 @@
 <template>
 	<view class="fix-top-window">
-		<view class="uni-header">
-			<uni-stat-breadcrumb class="uni-stat-breadcrumb-on-phone" />
-			<view class="uni-group">
-				<view class="uni-sub-title hide-on-phone"></view>
-			</view>
-		</view>
 		<view class="uni-container">
 			<uni-notice-bar v-if="!deviceTableData.length && !userTableData.length && !query.platform_id" showGetMore
 				showIcon class="mb-m pointer" text="暂无数据, 统计相关功能需开通 uni 统计后才能使用, 如未开通, 点击查看具体流程"

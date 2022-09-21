@@ -2,7 +2,7 @@
 		<!-- 对应页面：事件分析  -->
 	<view class="fix-top-window">
 		<view class="uni-header">
-			<uni-stat-breadcrumb class="uni-stat-breadcrumb-on-phone" />
+			<view></view>
 			<view class="uni-group">
 				<!-- <view class="uni-title">事件分析管理</view> -->
 				<view class="uni-sub-title hide-on-phone">分析用户自定义事件

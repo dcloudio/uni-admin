@@ -274,7 +274,7 @@ uni-page-head .uni-btn-icon {
 }
 
 .uni-tabs__item.is-active {
-	color: $uni-color-primary;
+	color: #2979ff;
 	background-color: #fff;
 	border-right-color: #dcdfe6;
 	border-left-color: #dcdfe6;
@@ -510,6 +510,9 @@ button:after {
 
 /* #ifndef APP-NVUE */
 @media screen and (max-width: 500px) {
+	uni-content{
+		margin-top: -40px;
+	}
 	.hide-on-phone {
 		display: none !important;
 	}
@@ -583,7 +586,7 @@ button:after {
 /* #ifdef H5 */
 /* fix 弹出层被遮盖 */
 ::v-deep .uni-table-scroll {
-	min-height: calc(100vh - 237px);
+	min-height: calc(100vh - 238px - 50px);
 	box-sizing: border-box;
 }
 ::v-deep .uni-table .tr-table--border {
@@ -594,7 +597,7 @@ button:after {
 /* #ifdef H5 */
 /* fix 弹出层被遮盖 */
 ::v-deep .uni-table-scroll {
-	min-height: calc(100vh - 237px);
+	min-height: calc(100vh - 238px - 50px);
 	box-sizing: border-box;
 }
 ::v-deep .uni-table .tr-table--border {

@@ -1,9 +1,6 @@
 <template>
 	<!-- 对应页面：注册用户统计-概况  -->
 	<view class="fix-top-window">
-		<view class="uni-header">
-			<uni-stat-breadcrumb class="uni-stat-breadcrumb-on-phone" />
-		</view>
 		<view class="uni-container">
 			<view class="uni-stat--x flex">
 				<uni-data-select collection="opendb-app-list" field="appid as value, name as text" orderby="text asc"

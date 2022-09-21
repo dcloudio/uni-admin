@@ -40,7 +40,7 @@
 			// 展开菜单的背景色
 			backgroundColor: {
 				type: String,
-				default: '#f5f5f5'
+				default: '#f1f1f1'
 			},
 		},
 		data() {
@@ -114,8 +114,8 @@
 		align-items: center;
 		padding: 0 20px;
 		padding-right: 10px;
-		height: 56px;
-		line-height: 56px;
+		height: 50px;
+		line-height: 50px;
 		color: #303133;
 		cursor: pointer;
 		/* border-bottom: 1px #f5f5f5 solid; */

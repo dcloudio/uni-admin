@@ -1,7 +1,7 @@
 <template>
 	<view>
 		<view class="uni-header">
-			<uni-stat-breadcrumb class="uni-stat-breadcrumb-on-phone" />
+			<view></view>
 			<view class="uni-group">
 				<!-- <input class="uni-search" type="text" v-model="query" placeholder="用户/内容" />
 				<button class="uni-button" type="default" size="mini" @click="search">搜索</button> -->

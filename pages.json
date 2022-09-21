@@ -136,14 +136,12 @@
         }, {
             "path": "menu/add",
             "style": {
-                "navigationBarTitleText": "新增菜单",
-                "navigationStyle": "default"
+                "navigationBarTitleText": "新增菜单"
             }
         }, {
             "path": "menu/edit",
             "style": {
-                "navigationBarTitleText": "修改菜单",
-                "navigationStyle": "default"
+                "navigationBarTitleText": "修改菜单"
             }
         }, {
             "path": "permission/list",
@@ -153,26 +151,22 @@
         }, {
             "path": "permission/add",
             "style": {
-                "navigationBarTitleText": "新增权限",
-                "navigationStyle": "default"
+                "navigationBarTitleText": "新增权限"
             }
         }, {
             "path": "permission/edit",
             "style": {
-                "navigationBarTitleText": "修改权限",
-                "navigationStyle": "default"
+                "navigationBarTitleText": "修改权限"
             }
         }, {
             "path": "role/add",
             "style": {
-                "navigationBarTitleText": "新增角色",
-                "navigationStyle": "default"
+                "navigationBarTitleText": "新增角色"
             }
         }, {
             "path": "role/edit",
             "style": {
-                "navigationBarTitleText": "修改角色",
-                "navigationStyle": "default"
+                "navigationBarTitleText": "修改角色"
             }
         }, {
             "path": "role/list",
@@ -182,14 +176,12 @@
         }, {
             "path": "user/add",
             "style": {
-                "navigationBarTitleText": "新增用户",
-                "navigationStyle": "default"
+                "navigationBarTitleText": "新增用户"
             }
         }, {
             "path": "user/edit",
             "style": {
-                "navigationBarTitleText": "修改用户",
-                "navigationStyle": "default"
+                "navigationBarTitleText": "修改用户"
             }
         }, {
             "path": "user/list",
@@ -199,8 +191,7 @@
         }, {
             "path": "app/add",
             "style": {
-                "navigationBarTitleText": "新增应用",
-                "navigationStyle": "default"
+                "navigationBarTitleText": "新增应用"
             }
         }, {
             "path": "app/list",
@@ -210,8 +201,7 @@
         }, {
 			"path": "app/uni-portal/uni-portal",
 			"style": {
-				"navigationBarTitleText": "发布页管理",
-                "navigationStyle": "default"
+				"navigationBarTitleText": "发布页管理"
 			}
 
 		},{
@@ -402,7 +392,7 @@
     "topWindow": {
         "path": "windows/topWindow",
         "style": {
-            "height": "60px"
+            "height": "110px"
         },
         "matchMedia": {
             "minWidth": 0

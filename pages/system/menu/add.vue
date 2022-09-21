@@ -23,7 +23,7 @@
 				<uni-easyinput v-model="formData.sort" :clearable="false" placeholder="请输入菜单序号（越大越靠后）" />
 			</uni-forms-item>
 			<uni-forms-item name="parent_id" label="父菜单标识">
-				<uni-easyinput :disabled="true" v-model="formData.parent_id" :clearable="false" placeholder="新增菜单时自动填充, 一级菜单不需要填写" />
+				<uni-easyinput v-model="formData.parent_id" :clearable="false" placeholder="新增菜单时自动填充, 一级菜单不需要填写" />
 			</uni-forms-item>
 			<uni-forms-item name="permission" label="权限列表" class="flex-center-x">
 				<uni-data-checkbox :multiple="true" v-model="formData.permission" collection="uni-id-permissions" :page-size="500" field="permission_name as text, permission_id as value" />
@@ -33,6 +33,12 @@
 			</uni-forms-item>
 			<uni-forms-item name="enable" label="是否启用">
 				<switch @change="binddata('enable', $event.detail.value)" :checked="formData.enable" />
+			</uni-forms-item>
+			<uni-forms-item name="isShow" label="菜单展示">
+				<switch @change="binddata('isShow', $event.detail.value)" :checked="formData.isShow" />
+				<view class="uni-form-item-tips">
+					是否在导航菜单中展示此菜单，关闭此选项，此菜单将不会出现在导航菜单中。
+				</view>
 			</uni-forms-item>
 			<view class="uni-button-group">
 				<button type="primary" class="uni-button" @click="submitForm" style="width: 100px;">{{$t('common.button.submit')}}</button>
@@ -79,10 +85,11 @@
 					"sort": null,
 					"parent_id": "",
 					"permission": [],
-					"enable": true
+					"enable": true,
+					"isShow": true
 				},
 				rules: {
-					...getValidator(["menu_id", "name", "icon", "url", "sort", "parent_id", "permission", "enable"])
+					...getValidator(["menu_id", "name", "icon", "url", "sort", "parent_id", "permission", "enable", "isShow"])
 				}
 			}
 		},
@@ -156,9 +163,9 @@
 			width: 600px;
 		}
 	}
-	
+
 	::v-deep .uni-forms-item__label {
 		width: 90px !important;
 	}
-	
+
 </style>

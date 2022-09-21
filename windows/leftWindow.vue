@@ -16,7 +16,7 @@
 		data() {
 			return {
 				...config.sideBar,
-				field: 'url as value, name as text, menu_id, parent_id, sort, icon, permission',
+				field: 'url as value, name as text, menu_id, parent_id, sort, icon, permission, isShow',
 				currentMenu: '/'
 			}
 		},
@@ -58,7 +58,6 @@
 					url = this.active
 				}
 				this.clickMenuItem(url)
-				console.log('select', routes);
 				this.setRoutes(routes)
 				// #ifdef H5
 				// #ifdef VUE3
@@ -77,7 +76,6 @@
 				if (url[0] !== '/' && url.indexOf('http') !== 0) {
 					url = '/' + url
 				}
-				console.log('跳转页面');
 				// TODO 后续要调整
 				uni.redirectTo({
 					url: url,
@@ -104,12 +102,14 @@
 	.sidebar {
 		position: fixed;
 		// top: var(--top-window-height); // useless
+		top: 60px;
 		width: 240px;
-		height: calc(100vh - (var(--top-window-height)));
+		height: calc(100vh + 60px - (var(--top-window-height)));
 		box-sizing: border-box;
-		border-right: 1px solid darken($left-window-bg-color, 8%);
+		// border-right: 1px solid darken($left-window-bg-color, 8%);
 		background-color: $left-window-bg-color;
 		padding-bottom: 10px;
+		z-index: 10000;
 	}
 
 	.sidebar ::-webkit-scrollbar {

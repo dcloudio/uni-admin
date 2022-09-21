@@ -94,7 +94,8 @@
 		// },
 		methods: {
 			...mapActions({
-				setRoutes: 'app/setRoutes'
+				setRoutes: 'app/setRoutes',
+				setAllMenu: 'app/setAllMenu'
 			}),
 			getUserMenu(menuList) {
 				const {
@@ -146,9 +147,9 @@
 						data,
 						count
 					} = res.result
+					this.setAllMenu(data)
 					this.menus = data
 					this.userMenu = this.getUserMenu(this.menus)
-					console.log('this.userMenu',this.userMenu);
 				}).catch((err) => {
 					this.mixinDatacomLoading = false
 					this.mixinDatacomErrorMessage = err

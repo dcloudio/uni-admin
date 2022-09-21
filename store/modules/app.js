@@ -7,6 +7,7 @@ export default {
 	state: {
 		inited: false,
 		navMenu: [],
+		allMenu: [], // 储存所有 menu，包括隐藏的
 		routes: [],
 		appName: process.env.VUE_APP_NAME || process.env.UNI_APP_NAME || '',
 		// #ifndef VUE3
@@ -23,6 +24,9 @@ export default {
 		SET_NAV_MENU: (state, navMenu) => {
 			state.inited = true
 			state.navMenu = navMenu
+		},
+		SET_ALL_MENU: (state, allMenu) => {
+			state.allMenu = allMenu
 		},
 		SET_ROUTES: (state, routes) => {
 			state.routes = routes
@@ -47,6 +51,11 @@ export default {
 			commit
 		}, routes) {
 			commit('SET_ROUTES', routes)
+		},
+		setAllMenu({
+			commit
+		}, allMenu) {
+			commit('SET_ALL_MENU', allMenu)
 		}
 	}
 }

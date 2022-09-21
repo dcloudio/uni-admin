@@ -2,7 +2,7 @@
 	<!-- 对应页面： js报错 -->
 	<view class="fix-top-window">
 		<view class="uni-header">
-			<uni-stat-breadcrumb class="uni-stat-breadcrumb-on-phone" />
+			<view></view>
 			<view class="uni-group hide-on-phone">
 				<!-- <view class="uni-title">错误分析</view> -->
 				<view class="uni-sub-title">开发者可以在这里快速查询应用最近出现的具体错误内容，了解错误概况信息，以便快速修复问题</view>

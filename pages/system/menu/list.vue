@@ -1,8 +1,5 @@
 <template>
 	<view>
-		<view class="uni-header">
-			<uni-stat-breadcrumb class="uni-stat-breadcrumb-on-phone" />
-		</view>
 		<view class="uni-tabs__header">
 			<view class="uni-tabs__nav-wrap">
 				<view class="uni-tabs__nav-scroll">

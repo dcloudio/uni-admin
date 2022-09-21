@@ -38,37 +38,44 @@ export default {
 			text: '静态功能演示',
 			icon: 'admin-icons-kaifashili',
 			url: "",
+			isSHow: true,
 			children: [{
 				menu_id: "icons",
 				text: '图标',
 				icon: 'admin-icons-icon',
 				value: '/pages/demo/icons/icons',
+				isShow: true
 			}, {
 				menu_id: "table",
 				text: '表格',
 				icon: 'admin-icons-table',
 				value: '/pages/demo/table/table',
+				isShow: true
 			}]
 		}, {
 			menu_id: "admim-doc-pulgin",
 			text: '文档与插件',
 			icon: 'admin-icons-eco',
 			url: "",
+			isSHow: true,
 			children: [{
 				menu_id: "admin-doc",
 				icon: 'admin-icons-doc',
 				text: 'uni-admin 框架文档',
-				value: 'https://uniapp.dcloud.net.cn/uniCloud/admin'
+				value: 'https://uniapp.dcloud.net.cn/uniCloud/admin',
+				isShow: true
 			}, {
 				menu_id: "stat-doc",
 				icon: 'admin-icons-help',
 				text: 'uni 统计教程',
-				value: 'https://uniapp.dcloud.net.cn/uni-stat-v2.html'
+				value: 'https://uniapp.dcloud.net.cn/uni-stat-v2.html',
+				isShow: true
 			}, {
 				menu_id: "admin-pulgin",
 				icon: 'admin-icons-pulgin',
 				text: 'uni-admin 插件',
-				value: 'https://ext.dcloud.net.cn/?cat1=7&cat2=74'
+				value: 'https://ext.dcloud.net.cn/?cat1=7&cat2=74',
+				isShow: true
 			}]
 		}]
 	},

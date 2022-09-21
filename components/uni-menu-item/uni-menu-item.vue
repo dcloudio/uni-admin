@@ -14,6 +14,7 @@
 </template>
 
 <script>
+	import { mapState } from 'vuex'
 	import rootParent from '../uni-nav-menu/mixins/rootParent.js'
 	export default {
 		name: 'uniMenuItem',
@@ -41,6 +42,7 @@
 			};
 		},
 		computed: {
+			...mapState('app', ['allMenu']),
 			paddingLeft() {
 				return 20 + 20 * this.rootMenu.SubMenu.length + 'px'
 			}
@@ -66,15 +68,23 @@
 				// 获取最外层父元素实例
 				this.$menuParent = this.getParent('uniNavMenu', this)
 				this.$subMenu = this.rootMenu.SubMenu
-
 				this.activeTextColor = this.$menuParent.activeTextColor
 				this.textColor = this.$menuParent.textColor
 				this.activeBackgroundColor = this.$menuParent.activeBackgroundColor
-
 				// 将当前插入到menu数组中
 				if (this.$menuParent) {
 					this.$menuParent.itemChildrens.push(this)
 					this.$menuParent.isActive(this)
+				}
+				// 如果是隐藏菜单，高亮父节点
+				const pages = getCurrentPages()
+				if (this.index.isShow === false && pages.length && this.index.value === `/${pages[pages.length - 1].route}`) {
+					const sidebar = this.getParent('uniMenuSidebar', this)
+					sidebar.$children[0].$children.forEach(item => {
+						if (item.index.menu_id === this.index.parent_id) {
+							item.active = true
+						}
+					})
 				}
 			},
 
@@ -92,7 +102,22 @@
 				}
 			}
 
-		}
+		},
+		watch: {
+			$route: {
+				immediate: false,
+				handler(val, old) {
+					if (this.index.isShow === false && this.index.value === val.path) {
+						const sidebar = this.getParent('uniMenuSidebar', this)
+						sidebar.$children[0].$children.forEach(item => {
+							if (item.index.menu_id === this.index.parent_id) {
+								item.active = true
+							}
+						})
+					}
+				}
+			}
+		},
 	}
 </script>
 
@@ -101,8 +126,8 @@
 		display: flex;
 		align-items: center;
 		padding: 0 20px;
-		height: 56px;
-		line-height: 56px;
+		height: 50px;
+		line-height: 50px;
 		color: #303133;
 		transition: all 0.3s;
 		cursor: pointer;

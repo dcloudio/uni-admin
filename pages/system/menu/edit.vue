@@ -32,7 +32,12 @@
 			<uni-forms-item name="enable" label="是否启用">
 				<switch @change="binddata('enable', $event.detail.value)" :checked="formData.enable" />
 			</uni-forms-item>
-
+			<uni-forms-item name="isShow" label="菜单展示">
+				<switch @change="binddata('isShow', $event.detail.value)" :checked="formData.isShow" />
+				<view class="uni-form-item-tips">
+					是否在导航菜单中展示此菜单，关闭此选项，此菜单将不会出现在导航菜单中。
+				</view>
+			</uni-forms-item>
 			<view class="uni-button-group">
 				<button type="primary" class="uni-button" @click="submitForm" style="width: 100px;">{{$t('common.button.submit')}}</button>
 				<navigator open-type="navigateBack" style="margin-left: 15px;"><button class="uni-button" style="width: 100px;">{{$t('common.button.back')}}</button></navigator>
@@ -78,10 +83,11 @@
 					"sort": '',
 					"parent_id": "",
 					"permission": [],
-					"enable": null
+					"enable": null,
+					"isShow": null
 				},
 				rules: {
-					...getValidator(["menu_id", "name", "icon", "url", "sort", "parent_id", "permission", "enable"])
+					...getValidator(["menu_id", "name", "icon", "url", "sort", "parent_id", "permission", "enable", "isShow"])
 				}
 			}
 		},
@@ -145,6 +151,7 @@
 				db.collection(dbCollectionName).where({
 					_id: id
 				}).get().then((res) => {
+					console.log(res);
 					const data = res.result.data[0]
 					if (data) {
 						this.formData = data
