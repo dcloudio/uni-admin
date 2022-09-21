@@ -9,7 +9,7 @@ export function request (action, params, options) {
 		objectName: 'uni-id-co',
 		functionName: '',
 		showModal: false,
-		
+
 		customUI: true,
 		loadingOptions: {
 			title: 'xxx'
@@ -32,6 +32,7 @@ export function request (action, params, options) {
 	}
 
 	return call.then(result => {
+		result = functionName ? result.result: result
 		if (!result) {
 			return Promise.resolve(result)
 		}
