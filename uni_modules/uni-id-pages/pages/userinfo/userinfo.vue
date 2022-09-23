@@ -22,9 +22,9 @@
 				placeholder="请输入要设置的昵称">
 			</uni-popup-dialog>
 		</uni-popup>
-		<uni-id-pages-bind-mobile ref="bind-mobile-by-sms" @success="getUserInfo"></uni-id-pages-bind-mobile>
+		<uni-id-pages-bind-mobile ref="bind-mobile-by-sms" @success="bindMobileSuccess"></uni-id-pages-bind-mobile>
 		<template v-if="showLoginManage">
-			<button v-if="hasLogin" @click="logout">退出登录</button>
+			<button v-if="userInfo._id" @click="logout">退出登录</button>
 			<button v-else @click="login">去登录</button>
 		</template>
 	</view>
@@ -33,8 +33,16 @@
 	const db = uniCloud.database();
 	const usersTable = db.collection('uni-id-users')
 	const uniIdCo = uniCloud.importObject("uni-id-co")
-	import common from '@/uni_modules/uni-id-pages/common/common.js';
+	import {
+		store,
+		mutations
+	} from '@/uni_modules/uni-id-pages/common/store.js'
 	export default {
+		computed: {
+			userInfo() {
+				return store.userInfo
+			}
+		},
 		data() {
 			return {
 				univerifyStyle: {
@@ -45,11 +53,10 @@
 						"title": "其他号码绑定",
 					}
 				},
-				userInfo: {
-					mobile:'',
-					nickname:''
-				},
-				hasLogin: false,
+				// userInfo: {
+				// 	mobile:'',
+				// 	nickname:''
+				// },
 				hasPwd:false,
 				showLoginManage:false//通过页面传参隐藏登录&退出登录按钮
 			}
@@ -62,7 +69,6 @@
 			if(e.showLoginManage){
 				this.showLoginManage = true//通过页面传参隐藏登录&退出登录按钮
 			}
-			this.getUserInfo()
 			//判断当前用户是否有密码，否则就不显示密码修改功能
 			let res = await uniIdCo.getAccountInfo()
 			this.hasPwd = res.isPasswordSet
@@ -76,31 +82,18 @@
 					}
 				})
 			},
-			logout:common.logout,
+			logout(){
+				mutations.logout()
+			},
+			bindMobileSuccess(){
+				mutations.updateUserInfo()
+			},
 			changePassword(){
 				uni.navigateTo({
 					url: '/uni_modules/uni-id-pages/pages/userinfo/change_pwd/change_pwd',
 					complete: (e) => {
 						console.log(e);
 					}
-				})
-			},
-			getUserInfo(e) {
-				uni.showLoading({
-					mask: true
-				});
-				usersTable.where("'_id' == $cloudEnv_uid").field('mobile,nickname,email').get().then(res => {
-					console.log({res});
-					this.userInfo = res.result.data[0]
-					console.log('this.userInfo', this.userInfo);
-					this.hasLogin = true
-				}).catch(e => {
-					this.userInfo = {}
-					this.hasLogin = false
-					console.log(e.message, e.errCode);
-				}).finally(e => {
-					// console.log(e);
-					uni.hideLoading()
 				})
 			},
 			bindMobile() {
@@ -133,7 +126,7 @@
 						console.log(e.authResult);
 						uniIdCo.bindMobileByUniverify(e.authResult).then(res => {
 							console.log(res);
-							this.getUserInfo()
+							mutations.updateUserInfo()
 						}).catch(e => {
 							console.log(e);
 						}).finally(e=>{
@@ -151,37 +144,13 @@
 			},
 			bindMobileBySmsCode() {
 				uni.navigateTo({
-					url: './bind-mobile/bind-mobile',
-					events: {
-						getUserInfo: () => {
-							this.getUserInfo()
-						}
-					},
-					complete(e) {
-						console.log(e);
-					}
+					url: './bind-mobile/bind-mobile'
 				})
 			},
 			setNickname(nickname) {
 				console.log(nickname);
 				if (nickname) {
-					usersTable.where('_id==$env.uid').update({
-						nickname
-					}).then(e => {
-						console.log(e);
-						if (e.result.updated) {
-							uni.showToast({
-								title: "更新成功",
-								icon: 'none'
-							});
-							this.userInfo.nickname = nickname
-						} else {
-							uni.showToast({
-								title: "没有改变",
-								icon: 'none'
-							});
-						}
-					})
+					mutations.updateUserInfo({nickname})
 					this.$refs.dialog.close()
 				} else {
 					this.$refs.dialog.open()
@@ -196,7 +165,8 @@
 	}
 </script>
 <style lang="scss" scoped>
-	@import url("/uni_modules/uni-id-pages/common/login-page.scss");
+	
+	@import "@/uni_modules/uni-id-pages/common/login-page.scss";
 
 	.uni-content {
 		padding: 0;

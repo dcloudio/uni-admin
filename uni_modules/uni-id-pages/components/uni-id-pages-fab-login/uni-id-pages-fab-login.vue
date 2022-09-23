@@ -15,7 +15,10 @@
 <script>
 	import config from '@/uni_modules/uni-id-pages/config.js'
 	//前一个窗口的页面地址。控制点击切换快捷登录方式是创建还是返回
-	import loginSuccess from '../../common/loginSuccess.js';
+	import {
+			store,
+			mutations
+		} from '@/uni_modules/uni-id-pages/common/store.js'
 	
 	const db = uniCloud.database();
 	const usersTable = db.collection('uni-id-users')
@@ -439,7 +442,7 @@
 					// #ifdef MP-WEIXIN
 					//如果是微信小程序端的微信登录，且为首次登录，就弹出获取微信昵称+头像用于绑定资料
 					if (type == 'weixin' && result.type == "register") {
-						loginSuccess({
+						mutations.loginSuccess({
 							...result,
 							showToast: false,
 							autoBack: false
@@ -450,7 +453,7 @@
 					// #ifdef H5
 					result.loginType = type
 					// #endif
-					loginSuccess(result)
+					mutations.loginSuccess(result)
 				})
 				.catch(e=>{
 					console.log(e);
@@ -469,7 +472,7 @@
 			},
 			doUserProfileNext() {
 				try {
-					loginSuccess()
+					mutations.loginSuccess()
 				} catch (e) {
 					console.log(e);
 				}

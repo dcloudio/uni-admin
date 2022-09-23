@@ -16,11 +16,17 @@ import {
 import {
     initInterceptor
 } from './interceptor.js'
+
+import {
+	initUniIdPageStore
+} from "../uni-id-pages/store"
+
 export default {
     install(Vue) {
         initUtil(Vue)
         initError(Vue)
-        initRequest(Vue)
+		initUniIdPageStore(Vue)
+		initRequest(Vue)
 		initFetch(Vue)
         initPermission(Vue)
         initInterceptor()

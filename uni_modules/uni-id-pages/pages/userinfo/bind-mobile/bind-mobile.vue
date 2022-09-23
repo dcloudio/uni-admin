@@ -19,6 +19,10 @@
 	</view>
 </template>
 <script>
+	import {
+		store,
+		mutations
+	} from '@/uni_modules/uni-id-pages/common/store.js'
 	export default {
 		data() {
 			return {
@@ -73,7 +77,7 @@
 					// #ifndef APP-NVUE
 					const eventChannel = this.getOpenerEventChannel();
 					// #endif
-					eventChannel.emit('getUserInfo')
+					mutations.setUserInfo(this.formData)
 					uni.navigateBack()
 				}).catch(e => {
 					console.log(e);

@@ -12,7 +12,7 @@ const sentence = {
   'uni-id-account-audit-failed': '此账号审核失败',
   'uni-id-account-closed': '此账号已注销',
   'uni-id-captcha-required': '请输入图形验证码',
-  'uni-id-password-error': '用户名或密码错误',
+  'uni-id-password-error': '密码错误',
   'uni-id-password-error-exceed-limit': '密码错误次数过多，请稍后再试',
   'uni-id-invalid-username': '用户名不合法',
   'uni-id-invalid-password': '密码不合法',

@@ -1,4 +1,7 @@
-import loginSuccess from './loginSuccess.js';
+import {
+		store,
+		mutations
+	} from '@/uni_modules/uni-id-pages/common/store.js'
 import config from '@/uni_modules/uni-id-pages/config.js'
 let mixin = {
 	data() {
@@ -75,7 +78,7 @@ let mixin = {
 	},
 	methods: {
 		loginSuccess(e) {
-			loginSuccess({
+			mutations.loginSuccess({
 				...e,
 				uniIdRedirectUrl: this.uniIdRedirectUrl
 			})

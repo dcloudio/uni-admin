@@ -22,7 +22,9 @@
 		},
 		computed: {
 			...mapState('app', ['inited', 'navMenu', 'active']),
-			...mapState('user', ['userInfo']),
+			userInfo () {
+				return this.$uniIdPagesStore.store.userInfo
+			}
 		},
 		// #ifdef H5
 		watch: {
@@ -58,7 +60,6 @@
 					url = this.active
 				}
 				this.clickMenuItem(url)
-				console.log('select', routes);
 				this.setRoutes(routes)
 				// #ifdef H5
 				// #ifdef VUE3
@@ -77,7 +78,6 @@
 				if (url[0] !== '/' && url.indexOf('http') !== 0) {
 					url = '/' + url
 				}
-				console.log('跳转页面');
 				// TODO 后续要调整
 				uni.redirectTo({
 					url: url,

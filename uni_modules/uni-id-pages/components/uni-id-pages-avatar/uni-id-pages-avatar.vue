@@ -1,5 +1,5 @@
 <template>
-	<view @click="uploadAvatarImg">
+	<view @click="uploadAvatarImg" class="box" :class="{'showBorder':border}"  :style="{width,height,lineHeight:height}">
 		<cloud-image v-if="avatar_file" :src="avatar_file.url" :width="width" :height="height"></cloud-image>
 		<uni-icons v-else :style="{width,height,lineHeight:height}" class="chooseAvatar" type="plusempty" size="30"
 			color="#dddddd"></uni-icons>
@@ -7,8 +7,10 @@
 </template>
 
 <script>
-	const db = uniCloud.database();
-	const usersTable = db.collection('uni-id-users')
+	import {
+		store,
+		mutations
+	} from '@/uni_modules/uni-id-pages/common/store.js'
 	/**
 	* uni-id-pages-avatar 
 	* @description 用户头像组件
@@ -18,9 +20,7 @@
 	export default {
 		data() {
 			return {
-				userInfo: {},
-				isPC: false,
-				hasLogin:false
+				isPC: false
 			}
 		},
 		props: {
@@ -37,71 +37,38 @@
 				default () {
 					return "50px"
 				}
+			},
+			border:{
+				type: Boolean,
+				default () {
+					return false
+				}
 			}
 		},
 		async mounted() {
-			usersTable.where("'_id' == $cloudEnv_uid").field('avatar_file,mobile,nickname').get().then(res=>{
-				this.userInfo = res.result.data[0]||{}
-				console.log('this.userInfo', this.userInfo);
-				this.hasLogin = true
-			}).catch (e=>{
-				this.userInfo = {}
-				this.hasLogin = false
-				console.log(e.message, e.errCode);
-			})
-			
-			// try {
-			// 	let res = await usersTable.where("'_id' == $cloudEnv_uid").field('avatar_file').get()
-			// 	this.userInfo = res.result.data[0]
-			// 	console.log('this.userInfo', this.userInfo);
-			// } catch (e) {
-			// 	console.log(e.message);
-			// }
 			// #ifdef H5
 			this.isPC = !['ios', 'android'].includes(uni.getSystemInfoSync().platform);
 			console.log(' this.isPC', this.isPC, uni.getSystemInfoSync().platform);
 			// #endif
 		},
 		computed: {
+			hasLogin() {
+				return store.hasLogin
+			},
+			userInfo() {
+				return store.userInfo
+			},
 			avatar_file() {
-				if (this.userInfo.avatar_file && this.userInfo.avatar_file.url) {
-					return this.userInfo.avatar_file
-				}
+				return store.userInfo.avatar_file
 			}
 		},
 		methods: {
 			setAvatarFile(avatar_file) {
-				uni.showLoading({
-					title: "设置中",
-					mask: true
-				});
 				// 使用 clientDB 提交数据
-				usersTable.where('_id==$env.uid').update({
-					avatar_file
-				}).then((res) => {
-					console.log(res);
-					if (avatar_file) {
-						uni.showToast({
-							icon: 'none',
-							title: "更新成功"
-						})
-					} else {
-						uni.showToast({
-							icon: 'none',
-							title: "删除成功"
-						})
-					}
-					this.$set(this.userInfo, 'avatar_file', avatar_file)
-				}).catch((err) => {
-					uni.showModal({
-						content: err.message || "请求失败",
-						showCancel: false
-					})
-				}).finally(() => {
-					uni.hideLoading()
-				})
+				mutations.updateUserInfo({avatar_file})
 			},
 			uploadAvatarImg(res) {
+				console.log(this.hasLogin);
 				if(!this.hasLogin){
 					return uni.navigateTo({
 						url:'/uni_modules/uni-id-pages/pages/login/login-withoutpwd'
@@ -177,12 +144,23 @@
 </script>
 
 <style>
+	/* #ifndef APP-NVUE */
+	.box{
+		overflow: hidden;
+	}
+	/* #endif */
+	
 	.chooseAvatar {
 		/* #ifndef APP-NVUE */
 		display: inline-block;
+		box-sizing: border-box;
 		/* #endif */
 		border: dotted 1px #ddd;
 		border-radius: 10px;
 		text-align: center;
+		padding: 1px;
+	}
+	.showBorder{
+		border: solid 1px #ddd;
 	}
 </style>

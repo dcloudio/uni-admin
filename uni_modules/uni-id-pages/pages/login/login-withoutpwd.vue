@@ -56,8 +56,8 @@
 		},
 		async onLoad(e) {
 			console.log(e);
-			let type = e.type
-			// console.log({type});
+			//获取通过url传递的参数type设置当前登录方式，如果没传递直接默认以配置的登录
+			let type = e.type || config.loginTypes[0]
 			this.type = type
 			if(type != 'univerify'){
 				this.focusPhone = true
@@ -65,8 +65,7 @@
 			this.$nextTick(() => {
 				//关闭重复显示的登录快捷方式
 				if (['weixin', 'apple'].includes(type)) {
-					this.$refs.uniFabLogin.servicesList = this.$refs.uniFabLogin.servicesList.filter(item =>
-						item.id != type)
+					this.$refs.uniFabLogin.servicesList = this.$refs.uniFabLogin.servicesList.filter(item =>item.id != type)
 				}
 			})
 			uni.$on('uni-id-pages-set-login-type', type => {
@@ -169,7 +168,11 @@
 		left: 3px;
 		position: relative;
 	}
-
+	
+	/* #ifdef MP */
+	// 解决小程序端开启虚拟节点virtualHost引起的 class = input-box丢失的问题 [详情参考](https://uniapp.dcloud.net.cn/matter.html#%E5%90%84%E5%AE%B6%E5%B0%8F%E7%A8%8B%E5%BA%8F%E5%AE%9E%E7%8E%B0%E6%9C%BA%E5%88%B6%E4%B8%8D%E5%90%8C-%E5%8F%AF%E8%83%BD%E5%AD%98%E5%9C%A8%E7%9A%84%E5%B9%B3%E5%8F%B0%E5%85%BC%E5%AE%B9%E9%97%AE%E9%A2%98)
+	.phone-box ::v-deep .uni-easyinput__content,
+	/* #endif */
 	.input-box {
 		/* #ifndef APP-NVUE */
 		box-sizing: border-box;

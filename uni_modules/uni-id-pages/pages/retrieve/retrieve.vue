@@ -228,6 +228,7 @@
 	@media screen and (min-width: 690px) {
 		.uni-content{
 			padding: 30px 40px 40px;
+			max-height: 650px;
 		}
 		.link-box {
 			/* #ifndef APP-NVUE */

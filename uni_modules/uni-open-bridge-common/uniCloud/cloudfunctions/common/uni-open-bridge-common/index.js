@@ -124,8 +124,10 @@ class Ticket extends Storage {
 
     const responseData = await WeixinServer.GetH5TicketData(accessToken)
 
-    const duration = responseData.expires_in
+    const duration = responseData.expires_in || (60 * 60 * 2)
     delete responseData.expires_in
+    delete responseData.errcode
+    delete responseData.errmsg
 
     return {
       value: responseData,

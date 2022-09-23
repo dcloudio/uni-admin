@@ -66,7 +66,7 @@ function getPwdRules(pwdName = 'password', rePwdName = 'password2') {
 				},
 				{
 					validateFunction: function(rule, value, data, callback) {
-						if (value != data.password) {
+						if (value != data[pwdName]) {
 							callback(ERROR.normal.rePwdErr)
 						}
 						return true

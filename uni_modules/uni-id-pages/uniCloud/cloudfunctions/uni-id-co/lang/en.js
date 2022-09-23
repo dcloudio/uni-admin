@@ -12,7 +12,7 @@ const sentence = {
   'uni-id-account-audit-failed': 'Account audit failed',
   'uni-id-account-closed': 'Account has been closed',
   'uni-id-captcha-required': 'Captcha required',
-  'uni-id-password-error': 'Username or password error',
+  'uni-id-password-error': 'Password error',
   'uni-id-password-error-exceed-limit': 'The number of password errors is excessive',
   'uni-id-invalid-username': 'Invalid username',
   'uni-id-invalid-password': 'invalid password',

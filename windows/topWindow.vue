@@ -75,7 +75,6 @@
 		mapState
 	} from 'vuex'
 
-	import uniIdPagesCommon from '@/uni_modules/uni-id-pages/common/common'
 	import errorLog from '@/windows/components/error-log.vue'
 	import config from '@/admin.config.js'
 
@@ -104,8 +103,10 @@
 		computed: {
 			...mapState('app', ['appName']),
 			...mapState('app', ['routes']),
-			...mapState('user', ['userInfo']),
-			...mapState('error', ['logs'])
+			...mapState('error', ['logs']),
+			userInfo () {
+				return this.$uniIdPagesStore.store.userInfo
+			}
 		},
 		mounted() {
 			// #ifdef MP
@@ -137,7 +138,7 @@
 			},
 			logout() {
 				this.popupMenuOpened = false
-				uniIdPagesCommon.logout()
+				this.$uniIdPagesStore.mutations.logout()
 			},
 			toggleSidebar() {
 				if (!this.showLeftWindow) {
