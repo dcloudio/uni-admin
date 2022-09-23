@@ -20,6 +20,24 @@ module.exports = {
       throw new Error('请先配置smsKey和smsSecret')
     }
   },
+  _after: function (error, result) {
+	  if (error) {
+		if (error instanceof Error) {
+			return {
+				errCode: 'error',
+				errMsg: error.message
+			}
+		}
+
+		if (error.errCode) {
+			return error
+		}
+
+		throw error
+	  }
+
+	  return result
+  },
   /**
  * 创建短信任务
  * @param {Object} to
@@ -306,7 +324,7 @@ module.exports = {
     if (to.type === 'userTags') {
       query.tags = db.command.in(to.receiver)
     }
-    
+
     const {data: users} = await db.collection('uni-id-users').where(query).limit(count).get()
     if (users.length <= 0) {
       return {
