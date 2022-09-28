@@ -53,9 +53,9 @@
                             <uni-easyinput class="field m" v-model="template.field" placeholder="字段" :clearable="false"
                                 :disabled="true" style="width: 120px;flex:none;" />
                             <uni-easyinput class="value m" v-model="template.value"
-                                placeholder="支持数据库字段 格式 {表.字段} 例 {uni-id-users.username}" :clearable="false" />
+                                placeholder="例 {uni-id-users.username}" :clearable="false" />
                         </view>
-                        <view class="sms-data-tip">短信变量支持固定值或从数据表中查询；若从数据表中查询，目前仅支持替换 uni-id-users 表中字段，并请确保数据库中字段值不为空，否则短信将发送失败。</view>
+                        <view class="sms-data-tip">短信变量支持固定值和数据表查询两种方式；固定值如：各位同事，数据表查询如：{uni-id-users.username}；请注意，若使用数据表查询方式，目前仅支持查询 uni-id-users 表；并注意确保数据库中查询字段值不为空，否则短信将发送失败。</view>
                     </uni-forms-item>
                 </uni-forms>
                 <view class="uni-group">
@@ -79,7 +79,6 @@
                     <view>说明：</view>
                     <view>若从数据表中查询，字段内容长度会影响总字数，短信字数＝短信签名字数+短信内容字数。</view>
                     <view>短信长度不超过70个字，按照一条短信计费；超过70个字，按照67字/条拆分成多条计费。</view>
-                    <view>短信计费标准：0.036元/条</view>
                 </view>
                 <view class="uni-group">
                     <button @click="$refs.previewPopup.close()" class="uni-button">关闭</button>
@@ -228,7 +227,7 @@ export default {
 
                     if (res.taskId) {
                         uni.showModal({
-                            content: '短信任务已提交，您可在开发者后台查看短信发送记录',
+                            content: '短信任务已提交，您可在DCloud开发者后台查看短信发送记录',
                             confirmText: '立即查看',
                             cancelText: '关闭',
                             success: (e) => {
@@ -379,6 +378,7 @@ export default {
         margin-top: 20px;
         line-height: 1.7;
         font-size: 13px;
+		color: #999;
     }
 }
 
