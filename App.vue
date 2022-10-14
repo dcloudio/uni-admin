@@ -38,7 +38,7 @@
 			// console.log('%c uni-app官方团队诚邀优秀前端工程师加盟，一起打造更卓越的uni-app & uniCloud，欢迎投递简历到 hr2013@dcloud.io', 'color: red');
 			console.log('App Launch')
 			if (this.$uniIdPagesStore.store.hasLogin) {
-				this.$uniIdPagesStore.mutations.updateUserInfo()
+				this.init()
 			}
 
 			// 登录成功回调

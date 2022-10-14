@@ -313,7 +313,7 @@
 						})
 						const checkAll = menus.length === pluginMenus.length
 						uniCloud.database().collection('opendb-admin-menus').add(menus).then(res => {
-							this.init()
+							// this.init()
 							uni.showModal({
 								title: '提示',
 								content: '添加菜单成功！',
