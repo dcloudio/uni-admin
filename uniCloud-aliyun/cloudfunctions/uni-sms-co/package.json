@@ -1,0 +1,10 @@
+{
+  "name": "uni-sms-co",
+  "dependencies": {
+    "uni-config-center": "file:../../../uni_modules/uni-config-center/uniCloud/cloudfunctions/common/uni-config-center"
+  },
+  "extensions": {
+    "uni-cloud-sms": {},
+    "uni-cloud-jql": {}
+  }
+}

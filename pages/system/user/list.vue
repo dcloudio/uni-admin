@@ -13,6 +13,7 @@
 					@click="delTable">{{$t('common.button.batchDelete')}}</button>
 				<button class="uni-button" type="primary" size="mini" :disabled="!selectedIndexs.length"
 					@click="openTagsPopup">标签管理</button>
+				<button class="uni-button" type="primary" size="mini" @click="$refs.batchSms.open()">群发短信</button>
 				<!-- #ifdef H5 -->
 				<download-excel class="hide-on-phone" :fields="exportExcel.fields" :data="exportExcelData"
 					:type="exportExcel.type" :name="exportExcel.filename">
@@ -25,7 +26,7 @@
 			<unicloud-db ref="udb" collection="uni-id-users,uni-id-roles"
 				field="username,nickname,mobile,status,email,role{role_name},dcloud_appid,tags,last_login_date" :where="where"
 				page-data="replace" :orderby="orderby" :getcount="true" :page-size="options.pageSize"
-				:page-current="options.pageCurrent" v-slot:default="{data,pagination,loading,error,options}"
+				:page-current="options.pageCurrent" v-slot:default="{ data, pagination, loading, error, options }"
 				:options="options" loadtime="manual" @load="onqueryload">
 				<uni-table ref="table" :loading="loading" :emptyText="error.message || $t('common.empty')" border stripe
 					type="selection" @selection-change="selectionChange">
@@ -55,9 +56,9 @@
 						<uni-td align="center">{{item.mobile}}</uni-td>
 						<uni-td align="center">{{options.status_valuetotext[item.status]}}</uni-td>
 						<uni-td align="center">
-							<uni-link :href="'mailto:'+item.email" :text="item.email"></uni-link>
+							<uni-link :href="'mailto:' + item.email" :text="item.email"></uni-link>
 						</uni-td>
-						<uni-td align="center">{{item.role}}</uni-td>
+						<uni-td align="center">{{ item.role }}</uni-td>
 						<uni-td align="center">
 							<template v-if="item.tags" v-for="tag in item.tags">
 								<uni-tag type="primary" inverted size="small" :text="tag" style="margin: 0 5px;">
@@ -68,17 +69,17 @@
 							<uni-link v-if="item.dcloud_appid === undefined" :href="noAppidWhatShouldIDoLink">
 								未绑定可登录应用<view class="uni-icons-help"></view>
 							</uni-link>
-							{{item.dcloud_appid}}
+							{{ item.dcloud_appid }}
 						</uni-td>
 						<uni-td align="center">
 							<uni-dateformat :threshold="[0, 0]" :date="item.last_login_date"></uni-dateformat>
 						</uni-td>
 						<uni-td align="center">
 							<view class="uni-group">
-								<button @click="navigateTo('./edit?id='+item._id, false)" class="uni-button" size="mini"
-									type="primary">{{$t('common.button.edit')}}</button>
+								<button @click="navigateTo('./edit?id=' + item._id, false)" class="uni-button" size="mini"
+									type="primary">{{ $t('common.button.edit') }}</button>
 								<button @click="confirmDelete(item._id)" class="uni-button" size="mini"
-									type="warn">{{$t('common.button.delete')}}</button>
+									type="warn">{{ $t('common.button.delete') }}</button>
 							</view>
 						</uni-td>
 					</uni-tr>
@@ -103,6 +104,8 @@
 				</view>
 			</view>
 		</uni-popup>
+		{{smsReceiver}}
+		<batch-sms ref="batchSms" toType="user" :receiver="smsReceiver"></batch-sms>
 	</view>
 </template>
 
@@ -111,7 +114,9 @@
 		enumConverter,
 		filterToWhere
 	} from '../../../js_sdk/validator/uni-id-users.js';
-
+	import UniForms from "@/uni_modules/uni-forms/components/uni-forms/uni-forms";
+	import UniFormsItem from "@/uni_modules/uni-forms/components/uni-forms-item/uni-forms-item";
+	import UniEasyinput from "@/uni_modules/uni-easyinput/components/uni-easyinput/uni-easyinput";
 	const db = uniCloud.database()
 	// 表查询配置
 	const dbOrderBy = 'last_login_date desc' // 排序字段
@@ -215,6 +220,12 @@
 					dynamic_data.push(tag)
 				}
 				return dynamic_data
+			},
+			smsReceiver () {
+				if (this.selectedIndexs.length) {
+					var dataList = this.$refs.udb.dataList
+					return this.selectedIndexs.map(i => dataList[i]._id)
+				}
 			}
 		},
 		methods: {
@@ -352,28 +363,27 @@
 			managerMultiTag() {
 				const ids = this.selectedItems()
 
-        db.collection('uni-id-users').where({
-          _id: db.command.in(ids)
-        }).update({
-          tags: this.managerTags
-        }).then(() => {
-          uni.showToast({
-            title: '修改标签成功',
-            duration: 2000
-          })
-          this.$refs.table.clearSelection()
-          this.managerTags = []
-          this.loadData()
-          this.closeTagsPopup()
-        }).catch(err => {
-          uni.showModal({
-            content: err.message || '请求服务失败',
-            showCancel: false
-          })
-        }).finally(err => {
-          uni.hideLoading()
-        })
-
+				db.collection('uni-id-users').where({
+					_id: db.command.in(ids)
+				}).update({
+					tags: this.managerTags
+				}).then(() => {
+					uni.showToast({
+						title: '修改标签成功',
+						duration: 2000
+					})
+					this.$refs.table.clearSelection()
+					this.managerTags = []
+					this.loadData()
+					this.closeTagsPopup()
+				}).catch(err => {
+					uni.showModal({
+						content: err.message || '请求服务失败',
+						showCancel: false
+					})
+				}).finally(err => {
+					uni.hideLoading()
+				})
 			}
 		}
 	}
