@@ -7,11 +7,13 @@
 			<uni-forms-item name="nickname" label="用户昵称" required>
 				<uni-easyinput v-model="formData.nickname" :clearable="false" placeholder="请输入用户昵称" />
 			</uni-forms-item>
-			<uni-forms-item :name="showPassword ? 'password' : ''" label="重置密码">
-				<span v-show="!showPassword" class="reset-password-btn" @click="trigger">点击重置密码</span>
-				<uni-easyinput v-show="showPassword" v-model="formData.password" :clearable="false" placeholder="请输入重置密码">
+			<uni-forms-item v-if="showPassword" name="password" label="重置密码" key="password">
+				<uni-easyinput v-model="formData.password" :clearable="false" placeholder="请输入重置密码">
 					<view slot="right" class="cancel-reset-password-btn" @click="trigger">取消</view>
 				</uni-easyinput>
+			</uni-forms-item>
+			<uni-forms-item v-else label="重置密码">
+				<span class="reset-password-btn" @click="trigger">点击重置密码</span>
 			</uni-forms-item>
 			<uni-forms-item name="role" label="角色列表" class="flex-center-x">
 				<uni-data-checkbox multiple :localdata="roles" v-model="formData.role" />
@@ -140,6 +142,7 @@
 					value,
 					errors
 				} = event.detail
+				console.log(event)
 				// 表单校验失败页面会提示报错 ，要停止表单提交逻辑
 				if (errors) {
 					return
