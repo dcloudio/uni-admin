@@ -1,3 +1,6 @@
+## 2.1.1（2022-10-17）
+- 修复 uni统计 App-Android 平台部分统计数据不准确的Bug [详情](https://ask.dcloud.net.cn/article/40097)
+- 修复 uni统计 周/月数据不准确的Bug
 ## 2.1.0（2022-10-14）
 - 新增 群发短信功能 [详情](https://uniapp.dcloud.net.cn//uniCloud/admin.html#群发短信)
 - 修复 无法重置用户密码的bug
