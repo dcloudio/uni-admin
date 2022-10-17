@@ -16,9 +16,13 @@ function errCode(code) {
 
 module.exports = {
   _before: function () { // 通用预处理器
-    if (!smsConfig.smsKey || smsConfig.smsKey.length <= 20 || !smsConfig.smsSecret  || smsConfig.smsSecret.length <= 20) {
-      throw new Error('请先配置smsKey和smsSecret')
-    }
+	  return {
+		  errCode: 'demo-not-supported',
+		  errMsg: '演示站不支持发送短信，请查看预览短信内容'
+	  }
+    // if (!smsConfig.smsKey || smsConfig.smsKey.length <= 20 || !smsConfig.smsSecret  || smsConfig.smsSecret.length <= 20) {
+    //   throw new Error('请先配置smsKey和smsSecret')
+    // }
   },
   _after: function (error, result) {
 	  if (error) {
@@ -49,6 +53,10 @@ module.exports = {
  * @param {String} options.taskName 任务名称
  */
   async createSmsTask(to, templateId, templateData, options = {}) {
+	return {
+	  errCode: 'demo-not-supported',
+	  errMsg: '演示站不支持发送短信，请查看预览短信内容'
+	}
     if (!templateId) {
       return {
         errCode: errCode('template-id-required'),
