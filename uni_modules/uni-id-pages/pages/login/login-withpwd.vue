@@ -26,7 +26,10 @@
 				<text class="forget">忘记了？</text>
 				<text class="link" @click="toRetrievePwd">找回密码</text>
 			</view>
-			<text class="link" @click="toRegister">{{config.isAdmin ? '注册管理员账号': '注册账号'}}</text>
+			<view style="flex: 1; text-align: right;">
+				<text class="text" style="font-size: 13px; color: #666; font-style: normal;">账号：visitor 密码：123456</text>
+			</view>
+			<!--			<text class="link" @click="toRegister">{{config.isAdmin ? '注册管理员账号': '注册账号'}}</text>-->
 			<!-- <text class="link" @click="toRegister" v-if="!config.isAdmin">注册账号</text> -->
 		</view>
 		<!-- 悬浮登录方式组件 -->
@@ -45,8 +48,8 @@
 		mixins: [mixin],
 		data() {
 			return {
-				"password": "",
-				"username": "",
+				"password": "123456",
+				"username": "visitor",
 				"captcha": "",
 				"needCaptcha": false,
 				"focusUsername": false,

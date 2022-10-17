@@ -2,7 +2,7 @@
 	"bsonType": "object",
 	"required": ["username", "password"],
 	"permission": {
-		"read": true,
+		"read": "'READ_UNI_ID_USERS' in auth.permission",
 		"create": "'CREATE_UNI_ID_USERS' in auth.permission",
 		"update": "doc._id == auth.uid || 'UPDATE_UNI_ID_USERS' in auth.permission",
 		"delete": "'DELETE_UNI_ID_USERS' in auth.permission"
@@ -53,8 +53,7 @@
 			"description": "允许登录的客户端的appid列表",
 			"foreignKey": "opendb-app-list.appid",
 			"permission": {
-				"write": false,
-				"read": "doc._id == auth.uid"
+				"write": false
 			}
 		},
 		"department_id": {
@@ -79,8 +78,7 @@
 			"title": "邮箱",
 			"trim": "both",
 			"permission": {
-				"write": false,
-				"read": "doc._id == auth.uid"
+				"write": false
 			}
 		},
 		"email_confirmed": {
@@ -146,16 +144,14 @@
 			"bsonType": "timestamp",
 			"description": "最后登录时间",
 			"permission": {
-				"write": false,
-				"read": "doc._id == auth.uid"
+				"write": false
 			}
 		},
 		"last_login_ip": {
 			"bsonType": "string",
 			"description": "最后登录时 IP 地址",
 			"permission": {
-				"write": false,
-				"read": "doc._id == auth.uid"
+				"write": false
 			}
 		},
 		"mobile": {
@@ -165,8 +161,7 @@
 			"title": "手机号码",
 			"trim": "both",
 			"permission": {
-				"write": false,
-				"read": "doc._id == auth.uid"
+				"write": false
 			}
 		},
 		"mobile_confirmed": {
@@ -184,8 +179,7 @@
 			],
 			"title": "手机号验证状态",
 			"permission": {
-				"write": false,
-				"read": "doc._id == auth.uid"
+				"write": false
 			}
 		},
 		"my_invite_code": {
@@ -291,8 +285,7 @@
 			"bsonType": "timestamp",
 			"description": "注册时间",
 			"forceDefaultValue": {
-				"$env": "now",
-				"read": "doc._id == auth.uid"
+				"$env": "now"
 			}
 		},
 		"register_ip": {
@@ -312,8 +305,7 @@
 			},
 			"foreignKey": "uni-id-roles.role_id",
 			"permission": {
-				"write": false,
-				"read": "doc._id == auth.uid"
+				"write": false
 			},
 			"title": "角色"
 		},
@@ -330,8 +322,7 @@
 			"defaultValue": 0,
 			"description": "用户状态：0 正常 1 禁用 2 审核中 3 审核拒绝",
 			"permission": {
-				"write": false,
-				"read": "doc._id == auth.uid"
+				"write": false
 			},
 			"enum": [{
 					"text": "正常",
