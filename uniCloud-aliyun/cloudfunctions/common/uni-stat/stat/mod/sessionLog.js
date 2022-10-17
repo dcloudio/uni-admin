@@ -138,6 +138,10 @@ module.exports = class SessionLog extends BaseMod {
 			create_time: nowTime
 		}
 
+		if(this.isHaveOldDeviceId(params)) {
+			fillParams.old_device_id = params.odid
+		}
+
 		const res = await this.insert(this.tableName, fillParams)
 
 		if (res && res.id) {
@@ -172,6 +176,19 @@ module.exports = class SessionLog extends BaseMod {
 			}
 		}
 	}
+
+	/**
+	 * 判断是否包含老版本sdk生成的device_id, 此功能用于处理前端sdk升级后 device_id 发生变化导致日活、留存数据不准确的问题
+	 * @param {Object} params
+	 */
+	isHaveOldDeviceId(params) {
+		if(params.odid && params.odid !== params.did && params.odid !== 'YluY92BA6nJ6NfixI77sFQ%3D%3D&ie=1') {
+			console.log('params.odid', params.odid)
+			return true
+		}
+		return false
+	}
+
 
 	/**
 	 * 获取会话
