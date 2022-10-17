@@ -9,3 +9,5 @@ pages/system/.DS_Store
 manifest.json
 .idea
 .vscode
+test-cron/
+uni-stat-receiver.param.js
