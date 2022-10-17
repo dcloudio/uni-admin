@@ -258,11 +258,11 @@
 				}
 			},
 
-			getTabelData(query, field = 'active_device_count') {
+			getTabelData(queryData, field = 'active_device_count') {
 				const {
 					pageCurrent
 				} = this.options
-				query = stringifyQuery(query)
+				let query = stringifyQuery(queryData)
 				this.loading = true
 				const db = uniCloud.database()
 				db.collection(this.tableName)
@@ -286,14 +286,19 @@
 							weeks = [],
 							months = []
 						// 获取周活、月活
-						this.getRangeCountData(query, 'week').then(res => {
+						// stringifyQuery(queryData)
+						let query = JSON.parse(JSON.stringify(queryData))
+						query.dimension = 'week'
+						this.getRangeCountData(stringifyQuery(query), 'week').then(res => {
 							const {
 								count,
 								data
 							} = res.result
 							weeks = data
-
-							this.getRangeCountData(query, 'month').then(res => {
+							// queryData.dimension = 'month'
+							let query = JSON.parse(JSON.stringify(queryData))
+							query.dimension = 'month'
+							this.getRangeCountData(stringifyQuery(query), 'month').then(res => {
 								const {
 									count,
 									data
