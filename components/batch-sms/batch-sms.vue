@@ -35,7 +35,7 @@
                                 <view v-else>
                                     <button @click="chooseFile" type="primary" style="width: 120px;"
                                         size="mini">上传短信模板</button>
-                                    <view class="sms-data-tip">当前未导入短信模板，导入短信模版参考<a class="a-link" href="https://uniapp.dcloud.net.cn/uniCloud/admin.html#群发短信" target="_blank">教程</a>导入</view>
+									<view class="sms-data-tip">当前未导入短信模板，请从dev.dcloud.net.cn的短信-<a href="https://dev.dcloud.net.cn/pages/sms/template" target="_blank">模板配置</a>中导出短信模版，并在此导入。教程<a href="https://uniapp.dcloud.net.cn/uniCloud/admin.html#batch-sms" target="_blank">详见</a></view>
                                 </view>
                             </template>
                             <template v-else>

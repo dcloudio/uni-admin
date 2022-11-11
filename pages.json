@@ -277,14 +277,17 @@
                 "enablePullDownRefresh": false
             }
 
-        }, {
+        },
+		// #ifndef MP
+		{
             "path": "error/js/js",
             "style": {
                 "navigationBarTitleText": "js报错统计",
                 "enablePullDownRefresh": false
             }
-
-        }, {
+        },
+		// #endif
+		{
             "path": "error/js/detail",
             "style": {
                 "navigationBarTitleText": "错误信息",

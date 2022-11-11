@@ -8,11 +8,12 @@ export default {
 		inited: false,
 		navMenu: [],
 		routes: [],
-		appName: process.env.VUE_APP_NAME || process.env.UNI_APP_NAME || '',
 		// #ifndef VUE3
+		appName: process.env.VUE_APP_NAME || '',
 		appid: statConfig && statConfig.appid || ''
 		// #endif
 		// #ifdef VUE3
+		appName: process.env.UNI_APP_NAME || '',
 		appid: process.env.UNI_APP_ID || ''
 		// #endif
 	},
