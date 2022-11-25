@@ -17,7 +17,7 @@ async function realPreLogin (params = {}) {
   const {
     user
   } = params
-  const appId = this.getClientInfo().appId
+  const appId = this.getUniversalClientInfo().appId
   const userMatched = await findUser({
     userQuery: user,
     authorizedApp: appId
@@ -66,7 +66,7 @@ async function preLoginWithPassword (params = {}) {
     } = this.config
     const {
       clientIP
-    } = this.getClientInfo()
+    } = this.getUniversalClientInfo()
     // 根据ip地址，密码错误次数过多，锁定登录
     let loginIPLimit = userRecord.login_ip_limit || []
     // 清理无用记录
@@ -78,6 +78,8 @@ async function preLoginWithPassword (params = {}) {
       }
     }
     const passwordUtils = new PasswordUtils({
+      userRecord,
+      clientInfo: this.getUniversalClientInfo(),
       passwordSecret: this.config.passwordSecret
     })
 
@@ -85,9 +87,7 @@ async function preLoginWithPassword (params = {}) {
       success: checkPasswordSuccess,
       refreshPasswordInfo
     } = passwordUtils.checkUserPassword({
-      password,
-      passwordHash: userRecord.password,
-      passwordSecretVersion: userRecord.password_secret_version
+      password
     })
     if (!checkPasswordSuccess) {
       // 更新用户ip对应的密码错误记录
@@ -179,7 +179,7 @@ async function postLogin (params = {}) {
   const {
     clientIP,
     uniIdToken
-  } = this.getClientInfo()
+  } = this.getUniversalClientInfo()
   const uid = user._id
   const updateData = {
     last_login_date: Date.now(),
@@ -219,7 +219,8 @@ async function postLogin (params = {}) {
           user
         })
         : {}
-    )
+    ),
+    passwordConfirmed: !!user.password
   }
 }
 

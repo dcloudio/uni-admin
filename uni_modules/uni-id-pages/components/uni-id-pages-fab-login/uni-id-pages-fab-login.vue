@@ -19,11 +19,11 @@
 			store,
 			mutations
 		} from '@/uni_modules/uni-id-pages/common/store.js'
-	
+
 	const db = uniCloud.database();
 	const usersTable = db.collection('uni-id-users')
 	let allServicesList = []
-	
+
 	export default {
 		computed: {
 			agreements() {
@@ -127,11 +127,11 @@
 						"list": []
 					},
 					"privacyTerms": {
-						"defaultCheckBoxState": false, // 条款勾选框初始状态 默认值： true   
-						"textColor": "#BBBBBB", // 文字颜色 默认值：#BBBBBB  
-						"termsColor": "#5496E3", //  协议文字颜色 默认值： #5496E3  
-						"prefix": "我已阅读并同意", // 条款前的文案 默认值：“我已阅读并同意”  
-						"suffix": "并使用本机号码登录", // 条款后的文案 默认值：“并使用本机号码登录”  
+						"defaultCheckBoxState": false, // 条款勾选框初始状态 默认值： true
+						"textColor": "#BBBBBB", // 文字颜色 默认值：#BBBBBB
+						"termsColor": "#5496E3", //  协议文字颜色 默认值： #5496E3
+						"prefix": "我已阅读并同意", // 条款前的文案 默认值：“我已阅读并同意”
+						"suffix": "并使用本机号码登录", // 条款后的文案 默认值：“并使用本机号码登录”
 						"privacyItems": []
 					}
 				}
@@ -147,14 +147,14 @@
 			let loginTypes = config.loginTypes
 
 			servicesList = servicesList.filter(item => {
-				
+
 				// #ifndef APP
 				//非app端去掉apple登录
 				if (item.id == 'apple') {
 					return false
 				}
 				// #endif
-				
+
 				// #ifdef APP
 				//去掉非ios系统上的apple登录
 				if (item.id == 'apple' && uni.getSystemInfoSync().osName != 'ios') {
@@ -196,7 +196,7 @@
 				// #ifndef H5
 				return this.$parent;
 				// #endif
-				
+
 				// #ifdef H5
 				return this.$parent.$parent;
 				// #endif
@@ -234,7 +234,7 @@
 					console.log('出乎意料的情况,path：' + path);
 				}
 			},
-			async login_before(type, navigateBack = true) {
+			async login_before(type, navigateBack = true, options = {}) {
 				console.log(type);
 				//提示空实现
 				if (["qq",
@@ -251,7 +251,7 @@
 						icon: 'none'
 					});
 				}
-				
+
 				//检查当前环境是否支持这种登录方式
 				// #ifdef APP
 				let isAppExist = true
@@ -272,24 +272,24 @@
 					})
 				})
 				// #endif
-				
+
 				if (
 					// #ifdef APP
 					!isAppExist
 					// #endif
-					
+
 					//非app端使用了，app特有登录方式
 					// #ifndef APP
 					["univerify","apple"].includes(type)
 					// #endif
-					
+
 				) {
 					return uni.showToast({
 						title: '当前设备不支持此登录，请选择其他登录方式',
 						icon: 'none'
 					});
 				}
-				
+
 				//判断是否需要弹出隐私协议授权框
 				console.log(type, this.agree);
 				let needAgreements = (config?.agreements?.scope || []).includes('register')
@@ -300,15 +300,15 @@
 					let agreementsRef = this.getParentComponent().$refs.agreements
 					return agreementsRef.popup(() => {
 						console.log(type, navigateBack);
-						this.login_before(type, navigateBack)
+						this.login_before(type, navigateBack, options)
 					})
 				}
-				
+
 				// #ifdef H5
 					if(type == 'weixin'){
 						// console.log('开始微信网页登录');
-						let redirectUrl = location.protocol +'//'+ 
-										document.domain + 
+						let redirectUrl = location.protocol +'//'+
+										document.domain +
 										(window.location.href.includes('#')?'/#':'') +
 										'/uni_modules/uni-id-pages/pages/login/login-withoutpwd?is_weixin_redirect=true&type=weixin'
 						console.log('redirectUrl----',redirectUrl);
@@ -321,7 +321,7 @@
 										&response_type=code
 										&scope=snsapi_userinfo
 										&state=STATE&connect_redirect=1#wechat_redirect`);
-							
+
 						}else{
 							// console.log('非微信公众号内');
 							return location.href = `https://open.weixin.qq.com/connect/qrconnect?appid=${config.appid.weixin.web}
@@ -330,8 +330,7 @@
 						}
 					}
 				// #endif
-				
-				
+
 				uni.showLoading({
 					mask: true
 				})
@@ -397,6 +396,13 @@
 						}
 					})
 				}
+
+        if (type === 'weixinMobile') {
+          return this.login({
+            phoneCode: options.phoneNumberCode
+          }, type)
+        }
+
 				uni.login({
 					"provider": type,
 					"onlyAuthorize": true,
@@ -429,7 +435,7 @@
 					type
 				});
 				//toLowerCase
-				let action = 'loginBy' + type.trim().toLowerCase().replace(type[0], type[0].toUpperCase())
+				let action = 'loginBy' + type.trim().replace(type[0], type[0].toUpperCase())
 				const uniIdCo = uniCloud.importObject("uni-id-co",{
 					customUI:true
 				})
@@ -441,8 +447,8 @@
 					});
 					// #ifdef MP-WEIXIN
 					//如果是微信小程序端的微信登录，且为首次登录，就弹出获取微信昵称+头像用于绑定资料
-					if (type == 'weixin' && result.type == "register") {
-						mutations.loginSuccess({
+					if (['weixin', 'weixinMobile'].includes(type) && result.type == "register") {
+            mutations.loginSuccess({
 							...result,
 							showToast: false,
 							autoBack: false
@@ -517,7 +523,7 @@
 		position: fixed;
 		left: 0;
 	}
-	
+
 	.item {
 		flex-direction: column;
 		justify-content: center;
@@ -536,7 +542,7 @@
 			height: 160rpx;
 		}
 	}
-	
+
 	@media screen and (max-width: 690px) {
 		.fab-login-box {
 			bottom: 10rpx;
@@ -545,7 +551,7 @@
 
 	/* #endif */
 
-	
+
 
 	.logo {
 		width: 60rpx;

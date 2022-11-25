@@ -33,7 +33,7 @@ export const mutations = {
 					});
 				}
 			})
-			
+
 		} else {
 			try {
 				let res = await usersTable.where("'_id' == $cloudEnv_uid")
@@ -69,7 +69,7 @@ export const mutations = {
 		uni.$emit('uni-id-pages-logout')
 		this.setUserInfo({},{cover:true})
 	},
-	loginSuccess(e){
+	loginSuccess(e = {}){
 		const {
 			showToast = true, toastText = '登录成功', autoBack = true, uniIdRedirectUrl = ''
 		} = e
@@ -94,7 +94,7 @@ export const mutations = {
 					delta++
 				}
 			})
-			console.log('判断需要返回几层:', pages, delta);
+			// console.log('判断需要返回几层:', delta);
 			if (uniIdRedirectUrl) {
 				return uni.reLaunch({
 					url: uniIdRedirectUrl
@@ -106,20 +106,20 @@ export const mutations = {
 				return window.history.go(-3)
 			}
 			// #endif
-		
+
 			if (delta) {
 				const page = pagesJson.pages[0]
 				return uni.reLaunch({
 					url: `/${page.path}`
 				})
 			}
-		
+
 			uni.navigateBack({
 				delta
 			})
 		}
 	}
-	
+
 }
 
 // #ifdef VUE2

@@ -15,5 +15,6 @@ module.exports = {
   loginByEmailLink: require('./login-by-email-link'),
   loginByEmailCode: require('./login-by-email-code'),
   loginByFacebook: require('./login-by-facebook'),
-  loginByGoogle: require('./login-by-google')
+  loginByGoogle: require('./login-by-google'),
+  loginByWeixinMobile: require('./login-by-weixin-mobile')
 }

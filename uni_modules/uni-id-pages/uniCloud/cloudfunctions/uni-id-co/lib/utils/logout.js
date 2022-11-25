@@ -5,11 +5,11 @@ const {
   userCollection
 } = require('../../common/constants')
 
-async function logout() {
+async function logout () {
   const {
     uniIdToken,
     deviceId
-  } = this.getClientInfo()
+  } = this.getUniversalClientInfo()
   const {
     uid
   } = await this.uniIdCommon.checkToken(

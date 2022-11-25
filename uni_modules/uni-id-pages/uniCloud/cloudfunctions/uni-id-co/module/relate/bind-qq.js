@@ -49,7 +49,7 @@ module.exports = async function (params = {}) {
     accessTokenExpired
   } = params
   const qqPlatform = getQQPlatform.call(this)
-  const appId = this.getClientInfo().appId
+  const appId = this.getUniversalClientInfo().appId
   const qqApi = initQQ.call(this)
   const clientPlatform = this.clientPlatform
   const apiName = clientPlatform === 'mp-qq' ? 'code2Session' : 'getOpenidByToken'
@@ -78,7 +78,7 @@ module.exports = async function (params = {}) {
 
   const bindAccount = {
     qq_openid: {
-      [clientPlatform]: openid
+      [qqPlatform]: openid
     },
     qq_unionid: unionid
   }

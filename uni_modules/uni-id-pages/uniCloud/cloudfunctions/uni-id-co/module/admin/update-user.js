@@ -107,6 +107,7 @@ module.exports = async function (params = {}) {
 
   if (password) {
     const passwordUtils = new PasswordUtils({
+      clientInfo: this.getUniversalClientInfo(),
       passwordSecret: this.config.passwordSecret
     })
     const {

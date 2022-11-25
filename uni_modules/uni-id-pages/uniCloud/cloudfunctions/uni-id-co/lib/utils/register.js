@@ -18,13 +18,13 @@ const {
 const PasswordUtils = require('./password')
 const merge = require('lodash.merge')
 
-async function realPreRegister(params = {}) {
+async function realPreRegister (params = {}) {
   const {
     user
   } = params
   const userMatched = await findUser({
     userQuery: user,
-    authorizedApp: this.getClientInfo().appId
+    authorizedApp: this.getUniversalClientInfo().appId
   })
   if (userMatched.length > 0) {
     throw {
@@ -33,7 +33,7 @@ async function realPreRegister(params = {}) {
   }
 }
 
-async function preRegister(params = {}) {
+async function preRegister (params = {}) {
   try {
     await realPreRegister.call(this, params)
   } catch (error) {
@@ -45,7 +45,7 @@ async function preRegister(params = {}) {
   }
 }
 
-async function preRegisterWithPassword(params = {}) {
+async function preRegisterWithPassword (params = {}) {
   const {
     user,
     password
@@ -54,6 +54,7 @@ async function preRegisterWithPassword(params = {}) {
     user
   })
   const passwordUtils = new PasswordUtils({
+    clientInfo: this.getUniversalClientInfo(),
     passwordSecret: this.config.passwordSecret
   })
   const {
@@ -72,7 +73,7 @@ async function preRegisterWithPassword(params = {}) {
   }
 }
 
-async function thirdPartyRegister({
+async function thirdPartyRegister ({
   user = {}
 } = {}) {
   return {
@@ -81,7 +82,7 @@ async function thirdPartyRegister({
   }
 }
 
-async function postRegister(params = {}) {
+async function postRegister (params = {}) {
   const {
     user,
     extraData = {},
@@ -98,7 +99,7 @@ async function postRegister(params = {}) {
     clientIP,
     osName,
     uniIdToken
-  } = this.getClientInfo()
+  } = this.getUniversalClientInfo()
 
   merge(user, extraData)
 
@@ -162,7 +163,7 @@ async function postRegister(params = {}) {
   if (beforeRegister) {
     userRecord = await beforeRegister({
       userRecord,
-      clientInfo: this.getClientInfo()
+      clientInfo: this.getUniversalClientInfo()
     })
   }
 

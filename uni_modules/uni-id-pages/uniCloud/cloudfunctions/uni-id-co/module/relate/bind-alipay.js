@@ -47,7 +47,7 @@ module.exports = async function (params = {}) {
   } = getAlipayAccountResult
 
   const bindAccount = {
-    apple_openid: openid
+    ali_openid: openid
   }
   await preBind.call(this, {
     uid,

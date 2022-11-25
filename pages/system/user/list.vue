@@ -143,6 +143,7 @@
 				tags: {},
 				managerTags: [],
 				queryTagid: '',
+				queryUserId: '',
 				options: {
 					pageSize,
 					pageCurrent,
@@ -191,6 +192,8 @@
 		onLoad(e) {
 			this._filter = {}
 			const tagid = e.tagid
+			const userId = e.id
+
 			if (tagid) {
 				this.queryTagid = tagid
 				const options = {
@@ -199,10 +202,19 @@
 				}
 				this.filterChange(options, "tags")
 			}
+
+			if (userId) {
+				this.queryUserId = userId
+				const options = {
+					filterType: "select",
+					filter: [userId]
+				}
+				this.filterChange(options, "_id")
+			}
 		},
 		onReady() {
 			this.loadTags()
-			if (!this.queryTagid) {
+			if (!this.queryTagid && !this.queryUserId) {
 				this.$refs.udb.loadData()
 			}
 		},

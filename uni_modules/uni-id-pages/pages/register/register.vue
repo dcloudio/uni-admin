@@ -53,9 +53,6 @@
 		mutations
 	} from '@/uni_modules/uni-id-pages/common/store.js'
 
-	const {
-		loginSuccess
-	} = mutations
 	const uniIdCo = uniCloud.importObject("uni-id-co")
 	export default {
 		mixins: [mixin],
@@ -118,7 +115,7 @@
 			submitForm(params) {
 				uniIdCo.registerUser(this.formData).then(e => {
 						console.log(e);
-						loginSuccess()
+						this.loginSuccess(e)
 					})
 					.catch(e => {
 						console.log(e);

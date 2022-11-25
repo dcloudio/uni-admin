@@ -23,26 +23,26 @@ module.exports = async function (params = {}) {
     scene: 'string'
   }
   this.middleware.validate(params, schema)
-  
+
   const {
     email,
     captcha,
     scene
   } = params
-  
+
   if (!(Object.values(EMAIL_SCENE).includes(scene))) {
     throw {
       errCode: ERROR.INVALID_PARAM
     }
   }
-  
+
   await verifyCaptcha.call(this, {
     scene: 'send-email-code',
     captcha
   })
-  
+
   // -- 测试代码
-  require('../../lib/utils/verify-code')
+  await require('../../lib/utils/verify-code')
     .setEmailVerifyCode.call(this, {
       email,
       code: '123456',
@@ -54,7 +54,7 @@ module.exports = async function (params = {}) {
     errMsg: `已启动测试模式，直接使用：123456作为邮箱验证码即可。\n如果是正式项目，需自行实现发送邮件的相关功能`
   }
   // -- 测试代码
-  
-  
+
+
   //发送邮件--需自行实现
 }

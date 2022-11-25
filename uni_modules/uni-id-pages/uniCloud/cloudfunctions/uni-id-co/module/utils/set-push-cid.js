@@ -25,7 +25,7 @@ async function setOpendbDevice ({
     screenHeight,
     romName,
     romVersion
-  } = this.getClientInfo()
+  } = this.getUniversalClientInfo()
   const platform = this.clientPlatform
   const now = Date.now()
 
@@ -80,7 +80,7 @@ module.exports = async function (params = {}) {
     deviceId,
     appId,
     osName
-  } = this.getClientInfo()
+  } = this.getUniversalClientInfo()
   let platform = this.clientPlatform
   if (platform === 'app') {
     platform += osName

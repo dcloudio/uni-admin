@@ -79,7 +79,7 @@ module.exports = async function (params = {}) {
     userQuery: {
       email
     },
-    authorizedApp: [this.getClientInfo().appId]
+    authorizedApp: [this.getUniversalClientInfo().appId]
   })
   if (userMatched.length === 0) {
     throw {
@@ -95,6 +95,7 @@ module.exports = async function (params = {}) {
     passwordHash,
     version
   } = new PasswordUtils({
+    clientInfo: this.getUniversalClientInfo(),
     passwordSecret: this.config.passwordSecret
   }).generatePasswordHash({
     password

@@ -83,6 +83,7 @@ module.exports = async function (params = {}) {
     }
   }
   const passwordUtils = new PasswordUtils({
+    clientInfo: this.getUniversalClientInfo(),
     passwordSecret: this.config.passwordSecret
   })
   const {

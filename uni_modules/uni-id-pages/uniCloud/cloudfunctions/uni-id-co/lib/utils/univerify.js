@@ -13,7 +13,7 @@ async function getPhoneNumber ({
   }
   return uniCloud.getPhoneNumber({
     provider: 'univerify',
-    appid: this.getClientInfo().appId,
+    appid: this.getUniversalClientInfo().appId,
     apiKey: univerifyConfig.apiKey,
     apiSecret: univerifyConfig.apiSecret,
     // eslint-disable-next-line camelcase

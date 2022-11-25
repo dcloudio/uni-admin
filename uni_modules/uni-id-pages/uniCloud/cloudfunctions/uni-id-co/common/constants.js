@@ -6,6 +6,8 @@ const verifyCollectionName = 'opendb-verify-codes'
 const verifyCollection = db.collection(verifyCollectionName)
 const deviceCollectionName = 'uni-id-device'
 const deviceCollection = db.collection(deviceCollectionName)
+const openDataCollectionName = 'opendb-open-data'
+const openDataCollection = db.collection(openDataCollectionName)
 
 const USER_IDENTIFIER = {
   username: 'username',
@@ -52,7 +54,11 @@ const LOG_TYPE = {
   BIND_WEIXIN: 'bind-weixin',
   BIND_QQ: 'bind-qq',
   BIND_APPLE: 'bind-apple',
-  BIND_ALIPAY: 'bind-alipay'
+  BIND_ALIPAY: 'bind-alipay',
+  UNBIND_WEIXIN: 'unbind-weixin',
+  UNBIND_QQ: 'unbind-qq',
+  UNBIND_ALIPAY: 'unbind-alipay',
+  UNBIND_APPLE: 'unbind-apple'
 }
 
 const SMS_SCENE = {
@@ -74,6 +80,7 @@ module.exports = {
   userCollection,
   verifyCollection,
   deviceCollection,
+  openDataCollection,
   USER_IDENTIFIER,
   USER_STATUS,
   CAPTCHA_SCENE,

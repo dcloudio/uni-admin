@@ -37,9 +37,19 @@ module.exports = async function (params = {}) {
     role: 'admin'
   }).limit(1).get()
   if (getAdminRes.data.length > 0) {
-    return {
-      errCode: ERROR.ADMIN_EXISTS,
-      errMsg: this.t('uni-id-admin-exists')
+    const [admin] = getAdminRes.data
+    const appId = this.getUniversalClientInfo().appId
+
+    if (!admin.dcloud_appid || (admin.dcloud_appid && admin.dcloud_appid.includes(appId))) {
+      return {
+        errCode: ERROR.ADMIN_EXISTS,
+        errMsg: this.t('uni-id-admin-exists')
+      }
+    } else {
+      return {
+        errCode: ERROR.ADMIN_EXISTS,
+        errMsg: this.t('uni-id-admin-exist-in-other-apps')
+      }
     }
   }
   const {

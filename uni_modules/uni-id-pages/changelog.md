@@ -1,3 +1,27 @@
+## 1.0.31（2022-11-16）
+- uni-id-co 修复 验证码可能无法收到的bug
+## 1.0.30（2022-11-11）
+- uni-id-co 修复 用户只有openid时绑定微信/QQ报错
+## 1.0.29（2022-11-10）
+- uni-id-co 支持URL化方式请求 [详情](https://uniapp.dcloud.net.cn/uniCloud/uni-id-pages.html#adapter-http)
+## 1.0.28（2022-11-09）
+- uni-id-co 升级密码加密算法，支持hmac-sha256加密 [详情](https://uniapp.dcloud.net.cn/uniCloud/uni-id-summary.html#password-safe)
+- uni-id-co 新增 开发者可以自定义密码加密规则 [详情](https://uniapp.dcloud.net.cn/uniCloud/uni-id-summary.html#custom-password-encrypt)
+- uni-id-co 新增 支持将其他系统用户迁移至uni-id [详情](https://uniapp.dcloud.net.cn/uniCloud/uni-id-summary.html#move-users-to-uni-id)
+## 1.0.27（2022-10-26）
+- uni-id-co 新增 secureNetworkHandshakeByWeixin 接口，用于建立和微信小程序的安全网络连接
+## 1.0.26（2022-10-18）
+- 修复 uni-id-pages 导入时异常的Bug
+## 1.0.25（2022-10-14）
+- uni-id-co 增加 微信授权手机号登录方式 [文档](https://uniapp.dcloud.net.cn/uniCloud/uni-id-pages.html#login-by-weixin-mobile)
+- uni-id-co 增加 解绑第三方平台账号 [文档](https://uniapp.dcloud.net.cn/uniCloud/uni-id-pages.html#unbind-third-account)
+- uni-id-co 微信绑定手机号支持通过`getPhoneNumber`事件回调的`code`绑定 [文档](https://uniapp.dcloud.net.cn/uniCloud/uni-id-pages.html#bind-mobile-by-mp-weixin)
+- 修复 sendSmsCode 接口未在参数内传递 templateId 时 未能从配置文件读取 templateId 的Bug
+## 1.0.24（2022-10-08）
+- 修复 报uni-id-users表schema内错误的bug
+## 1.0.23（2022-10-08）
+- 修复 vue3下vite编译发行打包失败
+- 修复 某些情况下注册账号，报TypeErroe：Cannot read properties of undefined （reading ’showToast‘）的错误
 ## 1.0.22（2022-09-23）
 - 修复 某些情况下，修改密码报“两次输入密码不一致”的bug
 ## 1.0.21（2022-09-21）

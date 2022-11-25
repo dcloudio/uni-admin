@@ -5,7 +5,7 @@ const {
   ERROR
 } = require('../../common/error')
 
-function getQQPlatform() {
+function getQQPlatform () {
   const platform = this.clientPlatform
   switch (platform) {
     case 'app':
@@ -18,7 +18,7 @@ function getQQPlatform() {
   }
 }
 
-async function saveQQUserKey({
+async function saveQQUserKey ({
   openid,
   sessionKey, // QQ小程序用户sessionKey
   accessToken, // App端QQ用户accessToken
@@ -26,7 +26,7 @@ async function saveQQUserKey({
 } = {}) {
   // 微信公众平台、开放平台refreshToken有效期均为30天（微信没有在网络请求里面返回30天这个值，务必注意未来可能出现调整，需及时更新此处逻辑）。
   // 此前QQ开放平台有调整过accessToken的过期时间：[access_token有效期由90天缩短至30天](https://wiki.connect.qq.com/%E3%80%90qq%E4%BA%92%E8%81%94%E3%80%91access_token%E6%9C%89%E6%95%88%E6%9C%9F%E8%B0%83%E6%95%B4)
-  const appId = this.getClientInfo().appId
+  const appId = this.getUniversalClientInfo().appId
   const qqPlatform = getQQPlatform.call(this)
   const keyObj = {
     dcloudAppid: appId,
@@ -45,9 +45,9 @@ async function saveQQUserKey({
       await this.uniOpenBridge.setUserAccessToken(keyObj, {
         access_token: accessToken,
         access_token_expired: accessTokenExpired
-      }, accessTokenExpired ?
-        Math.floor((accessTokenExpired - Date.now()) / 1000) :
-        30 * 24 * 60 * 60
+      }, accessTokenExpired
+        ? Math.floor((accessTokenExpired - Date.now()) / 1000)
+        : 30 * 24 * 60 * 60
       )
       break
     default:
@@ -55,7 +55,7 @@ async function saveQQUserKey({
   }
 }
 
-function generateQQCache({
+function generateQQCache ({
   sessionKey, // QQ小程序用户sessionKey
   accessToken, // App端QQ用户accessToken
   accessTokenExpired // App端QQ用户accessToken过期时间
@@ -84,11 +84,11 @@ function generateQQCache({
   }
 }
 
-function getQQOpenid({
+function getQQOpenid ({
   userRecord
 } = {}) {
   const qqPlatform = getQQPlatform.call(this)
-  const appId = this.getClientInfo().appId
+  const appId = this.getUniversalClientInfo().appId
   const qqOpenidObj = userRecord.qq_openid
   if (!qqOpenidObj) {
     return
@@ -96,7 +96,7 @@ function getQQOpenid({
   return qqOpenidObj[`${qqPlatform}_${appId}`] || qqOpenidObj[qqPlatform]
 }
 
-async function getQQCacheFallback({
+async function getQQCacheFallback ({
   userRecord,
   key
 } = {}) {
@@ -109,13 +109,13 @@ async function getQQCacheFallback({
   return qqCache && qqCache[key]
 }
 
-async function getQQCache({
+async function getQQCache ({
   uid,
   userRecord,
   key
 } = {}) {
   const qqPlatform = getQQPlatform.call(this)
-  const appId = this.getClientInfo().appId
+  const appId = this.getUniversalClientInfo().appId
 
   if (!userRecord) {
     const getUserRes = await userCollection.doc(uid).get()

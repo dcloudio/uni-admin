@@ -34,7 +34,7 @@ module.exports = async function (params = {}) {
     code
   } = params
   const weixinPlatform = getWeixinPlatform.call(this)
-  const appId = this.getClientInfo().appId
+  const appId = this.getUniversalClientInfo().appId
 
   const weixinApi = initWeixin.call(this)
   const clientPlatform = this.clientPlatform
@@ -64,7 +64,7 @@ module.exports = async function (params = {}) {
 
   const bindAccount = {
     wx_openid: {
-      [clientPlatform]: openid
+      [weixinPlatform]: openid
     },
     wx_unionid: unionid
   }

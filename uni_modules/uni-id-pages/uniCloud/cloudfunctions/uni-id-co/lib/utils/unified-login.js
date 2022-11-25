@@ -17,7 +17,7 @@ async function realPreUnifiedLogin (params = {}) {
     user,
     type
   } = params
-  const appId = this.getClientInfo().appId
+  const appId = this.getUniversalClientInfo().appId
   const userMatched = await findUser({
     userQuery: user,
     authorizedApp: appId

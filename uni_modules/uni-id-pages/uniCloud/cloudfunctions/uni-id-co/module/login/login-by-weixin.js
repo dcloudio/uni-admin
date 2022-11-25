@@ -11,7 +11,8 @@ const {
 const {
   generateWeixinCache,
   getWeixinPlatform,
-  saveWeixinUserKey
+  saveWeixinUserKey,
+  saveSecureNetworkCache
 } = require('../../lib/utils/weixin')
 const {
   LOG_TYPE
@@ -37,11 +38,13 @@ module.exports = async function (params = {}) {
   this.middleware.validate(params, schema)
   const {
     code,
-    inviteCode
+    inviteCode,
+    // 内部参数，暂不暴露
+    secureNetworkCache = false
   } = params
   const {
     appId
-  } = this.getClientInfo()
+  } = this.getUniversalClientInfo()
   const weixinApi = initWeixin.call(this)
   const weixinPlatform = getWeixinPlatform.call(this)
   let apiName
@@ -80,6 +83,18 @@ module.exports = async function (params = {}) {
     refreshToken, // App端微信用户refreshToken
     expired: accessTokenExpired // App端微信用户accessToken过期时间
   } = getWeixinAccountResult
+
+  if (secureNetworkCache) {
+    if (weixinPlatform !== 'mp') {
+      throw new Error('Unsupported weixin platform, expect mp-weixin')
+    }
+    await saveSecureNetworkCache({
+      code,
+      openid,
+      unionid,
+      sessionKey
+    })
+  }
 
   const {
     type,

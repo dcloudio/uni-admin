@@ -7,11 +7,12 @@
 		<!-- 顶部文字 -->
 		<text class="title">请选择登录方式</text>
 		<!-- 快捷登录框 当url带参数时有效 -->
-		<template v-if="['apple','weixin'].includes(type)">
+		<template v-if="['apple','weixin', 'weixinMobile'].includes(type)">
 			<text class="tip">将根据第三方账号服务平台的授权范围获取你的信息</text>
 			<view class="quickLogin">
-				<image @click="quickLogin" :src="imgSrc" mode="widthFix" class="quickLoginBtn"></image>
-				<uni-id-pages-agreements scope="register" ref="agreements"></uni-id-pages-agreements>
+				<image v-if="type !== 'weixinMobile'" @click="quickLogin" :src="imgSrc" mode="widthFix" class="quickLoginBtn"></image>
+        <button v-else type="primary" open-type="getPhoneNumber" @getphonenumber="quickLogin">微信授权手机号登录</button>
+        <uni-id-pages-agreements scope="register" ref="agreements"></uni-id-pages-agreements>
 			</view>
 		</template>
 		<template v-else>
@@ -98,8 +99,16 @@
 			//#endif
 		},
 		methods: {
-			quickLogin() {
-				this.$refs.uniFabLogin.login_before(this.type)
+			quickLogin(e) {
+        let options = {}
+
+        if (e.detail?.code) {
+          options.phoneNumberCode = e.detail.code
+        }
+
+        if (this.type === 'weixinMobile' && !e.detail?.code) return
+
+				this.$refs.uniFabLogin.login_before(this.type, true, options)
 			},
 			toSmsPage() {
 				console.log('toSmsPage',this.agree);
@@ -203,7 +212,7 @@
 		margin-top: -15px;
 		margin-bottom: 20px;
 	}
-	
+
 	@media screen and (min-width: 690px) {
 		.quickLogin{
 			height: auto;

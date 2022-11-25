@@ -18,7 +18,7 @@ module.exports = async function (params = {}) {
   }
   this.middleware.validate(params, schema)
 
-  const deviceId = this.getClientInfo().deviceId
+  const deviceId = this.getUniversalClientInfo().deviceId
   const {
     scene
   } = params

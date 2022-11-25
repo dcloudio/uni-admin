@@ -12,6 +12,7 @@ const {
   isUniIdError
 } = require('./common/error')
 const middleware = require('./middleware/index')
+const universal = require('./common/universal')
 
 const {
   registerAdmin,
@@ -29,7 +30,8 @@ const {
   loginByWeixin,
   loginByAlipay,
   loginByQQ,
-  loginByApple
+  loginByApple,
+  loginByWeixinMobile
 } = require('./module/login/index')
 const {
   logout
@@ -41,7 +43,11 @@ const {
   bindAlipay,
   bindApple,
   bindQQ,
-  bindWeixin
+  bindWeixin,
+  unbindWeixin,
+  unbindAlipay,
+  unbindQQ,
+  unbindApple
 } = require('./module/relate/index')
 const {
   updatePwd,
@@ -58,7 +64,8 @@ const {
 } = require('./module/verify/index')
 const {
   refreshToken,
-  setPushCid
+  setPushCid,
+  secureNetworkHandshakeByWeixin
 } = require('./module/utils/index')
 const {
   getInvitedUser,
@@ -74,8 +81,11 @@ const {
 } = require('./module/dev/index')
 
 module.exports = {
-  async _before() {
-    const clientInfo = this.getClientInfo()
+  async _before () {
+    // 支持 callFunction 与 URL化
+    universal.call(this)
+
+    const clientInfo = this.getUniversalClientInfo()
     /**
      * 检查clientInfo，无appId和uniPlatform时本云对象无法正常运行
      * 此外需要保证用到的clientInfo字段均经过类型检查
@@ -157,7 +167,7 @@ module.exports = {
     // 挂载uni-captcha到this上，方便后续调用
     this.uniCaptcha = uniCaptcha
     Object.defineProperty(this, 'uniOpenBridge', {
-      get() {
+      get () {
         return require('uni-open-bridge-common')
       }
     })
@@ -181,7 +191,7 @@ module.exports = {
     // 通用权限校验模块
     await this.middleware.accessControl()
   },
-  _after(error, result) {
+  _after (error, result) {
     if (error) {
       // 处理中间件内抛出的标准响应对象
       if (error.errCode && getType(error) === 'object') {
@@ -217,6 +227,10 @@ module.exports = {
    * @param {String}  params.nickname       昵称
    * @param {Array}   params.authorizedApp  允许登录的AppID列表
    * @param {Array}   params.role           用户角色列表
+   * @param {String}  params.mobile         手机号
+   * @param {String}  params.email          邮箱
+   * @param {Array}   params.tags           用户标签
+   * @param {Number}  params.status         用户状态
    * @returns
    */
   addUser,
@@ -359,6 +373,7 @@ module.exports = {
    * @returns
    */
   loginByApple,
+  loginByWeixinMobile,
   /**
    * 用户退出登录
    * @tutorial https://uniapp.dcloud.net.cn/uniCloud/uni-id-pages.html#logout
@@ -541,5 +556,34 @@ module.exports = {
    * @tutorial https://uniapp.dcloud.net.cn/uniCloud/uni-id-pages.html#get-supported-login-type
    * @returns
    */
-  getSupportedLoginType
+  getSupportedLoginType,
+
+  /**
+   * 解绑微信
+   * @tutorial https://uniapp.dcloud.net.cn/uniCloud/uni-id-pages.html#unbind-weixin
+   * @returns
+   */
+  unbindWeixin,
+  /**
+   * 解绑支付宝
+   * @tutorial https://uniapp.dcloud.net.cn/uniCloud/uni-id-pages.html#unbind-alipay
+   * @returns
+   */
+  unbindAlipay,
+  /**
+   * 解绑QQ
+   * @tutorial https://uniapp.dcloud.net.cn/uniCloud/uni-id-pages.html#unbind-qq
+   * @returns
+   */
+  unbindQQ,
+  /**
+   * 解绑Apple
+   * @tutorial https://uniapp.dcloud.net.cn/uniCloud/uni-id-pages.html#unbind-apple
+   * @returns
+   */
+  unbindApple,
+  /**
+   * 安全网络握手，目前仅处理微信小程序安全网络握手
+   */
+  secureNetworkHandshakeByWeixin
 }

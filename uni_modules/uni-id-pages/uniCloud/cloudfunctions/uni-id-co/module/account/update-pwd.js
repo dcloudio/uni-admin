@@ -32,16 +32,18 @@ module.exports = async function (params = {}) {
     newPassword
   } = params
   const passwordUtils = new PasswordUtils({
+    userRecord,
+    clientInfo: this.getUniversalClientInfo(),
     passwordSecret: this.config.passwordSecret
   })
+
   const {
     success: checkPasswordSuccess
   } = passwordUtils.checkUserPassword({
     password: oldPassword,
-    passwordHash: userRecord.password,
-    passwordSecretVersion: userRecord.password_secret_version,
     autoRefresh: false
   })
+
   if (!checkPasswordSuccess) {
     throw {
       errCode: ERROR.PASSWORD_ERROR
