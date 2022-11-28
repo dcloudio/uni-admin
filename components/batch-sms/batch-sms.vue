@@ -19,7 +19,7 @@
                     </uni-forms-item>
                     <uni-forms-item required label="短信模板" name="templateId"
                         :rules="[{ required: true, errorMessage: '请选择短信模板' }]">
-                        <unicloud-db ref="template_db" collection="batch-sms-template" v-slot:default="{data,loading}"
+                        <unicloud-db ref="template_db" collection="uni-batch-sms-template" v-slot:default="{data,loading}"
                             field="_id as value,name as text,sign,content">
                             <template v-if="!loading">
                                 <view v-if="data.length">

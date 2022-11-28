@@ -65,7 +65,7 @@ module.exports = {
 
     const clientInfo = this.getClientInfo()
 
-    const {data: templates} = await db.collection('batch-sms-template').where({_id: templateId}).get()
+    const {data: templates} = await db.collection('uni-batch-sms-template').where({_id: templateId}).get()
     if (templates.length <= 0) {
       return {
         errCode: errCode('template-not-found'),
@@ -75,7 +75,7 @@ module.exports = {
     const [template] = templates
 
     // 创建短信任务
-    const task = await db.collection('batch-sms-task').add({
+    const task = await db.collection('uni-batch-sms-task').add({
       app_id: clientInfo.appId,
       name: options.taskName,
       template_id: templateId,
@@ -99,7 +99,7 @@ module.exports = {
   async createUserSmsMessage(taskId, execData = {}) {
     const parallel = 100
     let beforeId
-    const { data: tasks } = await db.collection('batch-sms-task').where({ _id: taskId }).get()
+    const { data: tasks } = await db.collection('uni-batch-sms-task').where({ _id: taskId }).get()
 
     if (tasks.length <= 0) {
       return {
@@ -154,8 +154,8 @@ module.exports = {
 
     if (users.length <= 0) {
       // 更新要发送的短信数量
-      const count = await db.collection('batch-sms-result').where({ task_id: taskId }).count()
-      await db.collection('batch-sms-task').where({ _id: taskId }).update({
+      const count = await db.collection('uni-batch-sms-result').where({ task_id: taskId }).count()
+      await db.collection('uni-batch-sms-task').where({ _id: taskId }).update({
         send_qty: count.total
       })
 
@@ -185,14 +185,14 @@ module.exports = {
       })
     }
 
-    await db.collection('batch-sms-result').add(docs)
+    await db.collection('uni-batch-sms-result').add(docs)
 
     uniSmsCo.createUserSmsMessage(taskId, { beforeId })
 
     return new Promise(resolve => setTimeout(() => resolve(), 500))
   },
   async sendSms(taskId) {
-    const { data: tasks } = await db.collection('batch-sms-task').where({ _id: taskId }).get()
+    const { data: tasks } = await db.collection('uni-batch-sms-task').where({ _id: taskId }).get()
     if (tasks.length <= 0) {
       console.warn(`task [${taskId}] not found`)
       return
@@ -209,7 +209,7 @@ module.exports = {
       data: {}
     }
 
-    const { data: records } = await db.collection('batch-sms-result')
+    const { data: records } = await db.collection('uni-batch-sms-result')
       .where({ task_id: taskId, status: 0 })
       .limit(isStaticTemplate ? 50 : 1)
       .field({ mobile: true, var_data: true })
@@ -237,21 +237,21 @@ module.exports = {
       //   await sendSms(sendData)
       await uniCloud.sendSms(sendData)
       // 修改发送状态为已发送
-      await db.collection('batch-sms-result').where({
+      await db.collection('uni-batch-sms-result').where({
         _id: db.command.in(records.map(record => record._id))
       }).update({
         status: 1,
         send_date: Date.now()
       })
       // 更新任务的短信成功数
-      await db.collection('batch-sms-task').where({ _id: taskId })
+      await db.collection('uni-batch-sms-task').where({ _id: taskId })
         .update({
           success_qty: db.command.inc(records.length)
         })
     } catch (e) {
       console.error('[sendSms Fail]', e)
       // 修改发送状态为发送失败
-      await db.collection('batch-sms-result').where({
+      await db.collection('uni-batch-sms-result').where({
         _id: db.command.in(records.map(record => record._id))
       }).update({
         status: 2,
@@ -259,7 +259,7 @@ module.exports = {
         send_date: Date.now()
       })
       // 更新任务的短信失败数
-      await db.collection('batch-sms-task').where({ _id: taskId })
+      await db.collection('uni-batch-sms-task').where({ _id: taskId })
         .update({
           fail_qty: db.command.inc(records.length)
         })
@@ -270,11 +270,11 @@ module.exports = {
     return new Promise(resolve => setTimeout(() => resolve(), 500))
   },
   async template() {
-    const {data: templates} = db.collection('batch-sms-template').get()
+    const {data: templates} = db.collection('uni-batch-sms-template').get()
     return templates
   },
   async task (id) {
-    const {data: tasks} = await db.collection('batch-sms-task').where({_id: id}).get()
+    const {data: tasks} = await db.collection('uni-batch-sms-task').where({_id: id}).get()
     if (tasks.length <= 0) {
       return null
     }
@@ -292,7 +292,7 @@ module.exports = {
     let group = []
     for (const template of templates) {
       group.push(
-        db.collection('batch-sms-template').doc(String(template.templateId)).set({
+        db.collection('uni-batch-sms-template').doc(String(template.templateId)).set({
           name: template.templateName,
           content: template.templateContent,
           type: template.templateType,
@@ -333,7 +333,7 @@ module.exports = {
       }
     }
 
-    const {data: templates} = await db.collection('batch-sms-template').where({_id: templateId}).get()
+    const {data: templates} = await db.collection('uni-batch-sms-template').where({_id: templateId}).get()
     if (templates.length <= 0) {
       return {
         errCode: errCode('template-not-found'),
