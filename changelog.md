@@ -1,3 +1,5 @@
+## 2.1.6（2022-11-28）
+- 优化 群发短信功能的 schema 命名规范；如已使用此功能，请按照此[文档](https://uniapp.dcloud.net.cn//uniCloud/admin.html#rename-batch-sms-schema)进行升级优化
 ## 2.1.5（2022-11-17）
 - 升级 uni-id-pages 至 1.0.31
 - 优化 添加用户时手机号、邮箱必填
@@ -11,7 +13,7 @@
 - 修复 uni统计 App-Android 平台部分统计数据不准确的Bug [详情](https://ask.dcloud.net.cn/article/40097)
 - 修复 uni统计 周/月数据不准确的Bug
 ## 2.1.0（2022-10-14）
-- 新增 群发短信功能 [详情](https://uniapp.dcloud.net.cn//uniCloud/admin.html#群发短信)
+- 新增 群发短信功能 [详情](https://uniapp.dcloud.net.cn//uniCloud/admin.html#batch-sms)
 - 修复 无法重置用户密码的bug
 ## 2.0.5（2022-09-28）
 - 修复 导入插件时不显示“待添加菜单”bug
