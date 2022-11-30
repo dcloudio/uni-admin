@@ -72,7 +72,7 @@
                     <view class="sub-title">仅预览第一条短信内容</view>
                 </view>
                 <view class="content">
-                    <view v-for="content of smsPreviewContent">{{content}}</view>
+                    <view v-for="(content,index) of smsPreviewContent" :key="index">{{content}}</view>
                     <view class="length">短信字数：<text class="num">{{smsPreviewContent.length ? smsPreviewContent[0].length : 0}}</text>字</view>
                 </view>
                 <view class="tip">

@@ -14,7 +14,7 @@
 		<view class="tab-c">
 			<template v-for="(child, i) in dataList" >
 				<scroll-view class="list" :key="i" v-if="i==selectedIndex" :scroll-y="true">
-					<view class="item" :class="{'is-disabled': !!item.disable}" v-for="(item, j) in child"
+					<view class="item" :class="{'is-disabled': !!item.disable}" v-for="(item, j) in child" :key="j"
 						@click="handleNodeClick(item, i, j)">
 						<text class="item-text item-text-overflow">{{item[map.text]}}</text>
 						<view class="check" v-if="selected.length > i && item[map.value] == selected[i].value"></view>
