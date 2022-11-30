@@ -1,6 +1,5 @@
 <script>
 	import {
-		mapGetters,
 		mapActions,
 		mapMutations
 	} from 'vuex'
@@ -8,11 +7,13 @@
 	import {
 		version
 	} from './package.json'
+	import { UNI_ADMIN_THEME } from './store/constants.js'
 	export default {
 		created() {
 			this.clear = undefined
 		},
 		methods: {
+			...mapMutations('app',['SET_THEME']),
 			...mapActions({
 				init: 'app/init'
 			}),
@@ -45,6 +46,9 @@
 			uni.$on('uni-id-pages-login-success', () => {
 				this.init()
 			})
+			
+			// theme
+			this.SET_THEME(uni.getStorageSync(UNI_ADMIN_THEME) || 'default')
 		},
 		onShow: function() {
 			console.log('App Show')

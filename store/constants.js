@@ -1,0 +1,1 @@
+export const UNI_ADMIN_THEME = 'UNI_ADMIN_THEME'

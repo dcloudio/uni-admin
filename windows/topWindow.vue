@@ -23,7 +23,7 @@
 			</view>
 			<view class="navbar-right pointer">
 				<!-- #ifdef H5 -->
-				<view v-if="logs.length" @click="showErrorLogs" class="menu-item debug pointer">
+				<view v-if="logs.length" @click="showErrorLogs" class="menu-item debug pointer navbar-right-item-gap">
 					<svg class="svg-icon">
 						<use xlink:href="#icon-bug"></use>
 					</svg>
@@ -31,8 +31,12 @@
 				</view>
 				<!-- #endif -->
 
-				<picker mode="selector" :range="langs" range-key="text" @change="changeLanguage">
-					<view class="admin-icons-lang flex lang-icon" />
+				<picker class="navbar-right-item-gap" mode="selector" :range="themes" range-key="text" :value="themeIndex" @change="changeTheme">
+					<uni-icons type="color-filled" size="24" color="#999" />
+				</picker>
+
+				<picker class="navbar-right-item-gap" mode="selector" :range="langs" range-key="text" @change="changeLanguage">
+					<view class="admin-icons-lang" />
 				</picker>
 
 				<view class="" style="position: relative;">
@@ -72,7 +76,8 @@
 
 <script>
 	import {
-		mapState
+		mapState,
+		mapMutations
 	} from 'vuex'
 
 	import errorLog from '@/windows/components/error-log.vue'
@@ -101,11 +106,17 @@
 			}
 		},
 		computed: {
-			...mapState('app', ['appName']),
-			...mapState('app', ['routes']),
+			...mapState('app', ['appName', 'routes', 'theme']),
 			...mapState('error', ['logs']),
 			userInfo () {
 				return this.$uniIdPagesStore.store.userInfo
+			},
+			themeIndex () {
+				let i = 0
+				this.themes.forEach((theme,index) => {
+					if(theme.value === this.theme) i = index
+				})
+				return i
 			}
 		},
 		mounted() {
@@ -124,6 +135,7 @@
 			// #endif
 		},
 		methods: {
+			...mapMutations('app',['SET_THEME']),
 			showErrorLogs() {
 				if (this.popupMenuOpened) {
 					this.popupMenuOpened = false
@@ -177,6 +189,11 @@
 				uni.reLaunch({
 					url: '/'
 				})
+			},
+			changeTheme(e) {
+				const index = typeof e === 'object' ? e.detail.value : e
+				const theme = this.themes[index].value || 'default'
+				if(this.theme !== theme) this.SET_THEME(theme)
 			}
 		}
 	}
@@ -232,6 +249,11 @@
 		/* #endif */
 	}
 
+	.navbar-right-item-gap {
+		margin-right: 30px;
+	}
+
+
 	.navbar-left {
 		display: flex;
 	}
@@ -280,7 +302,6 @@
 	}
 
 	.debug {
-		margin: 0 30px;
 		display: inline-block;
 		position: relative;
 	}
@@ -365,11 +386,10 @@
 	}
 
 	/* 小屏时，隐藏的内容 */
+	// .navbar-mini .navbar-menu .username
 	.navbar-mini .logo,
 	.navbar-mini .debug,
-	.navbar-menu,
-	// .navbar-mini .navbar-menu .username
-		{
+	.navbar-menu {
 		display: none;
 	}
 

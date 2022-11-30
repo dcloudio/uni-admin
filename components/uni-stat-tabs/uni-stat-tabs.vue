@@ -297,14 +297,14 @@
 					border: 1px solid #dcdfe6;
 					// margin: 0;
 
-					&:not(:last-child) {
+					/* &:not(:last-child) {
 						border-right-color: transparent;
-					}
+					} */
 
 
 					&-active {
 						box-sizing: border-box;
-						border: 1px solid $uni-color-primary !important;
+						border: 1px solid $uni-color-primary;
 					}
 				}
 			}
