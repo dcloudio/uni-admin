@@ -1,3 +1,5 @@
+## 2.1.7（2022-11-30）
+- 新增 换肤功能
 ## 2.1.6（2022-11-28）
 - 优化 群发短信功能的 schema 命名规范；如已使用此功能，请按照此[文档](https://uniapp.dcloud.net.cn//uniCloud/admin.html#rename-batch-sms-schema)进行升级优化
 ## 2.1.5（2022-11-17）
