@@ -1,5 +1,5 @@
 const uniStat = require('uni-stat')
-const uniID = require('uni-id')
+const uniID = require('uni-id-common')
 module.exports = {
 	report: async function (params = {}) {
 		//客户端信息
