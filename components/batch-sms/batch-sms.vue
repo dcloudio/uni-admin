@@ -19,29 +19,26 @@
                     </uni-forms-item>
                     <uni-forms-item required label="短信模板" name="templateId"
                         :rules="[{ required: true, errorMessage: '请选择短信模板' }]">
-                        <unicloud-db ref="template_db" collection="uni-batch-sms-template" v-slot:default="{data,loading}"
-                            field="_id as value,name as text,sign,content">
-                            <template v-if="!loading">
-                                <view v-if="data.length">
-                                    <uni-data-select class="type m" placeholder="请选择短信模板" size="mini" :clear="false"
-                                        :localdata="data" v-model="smsDataModel.templateId"
-                                        @change="onSmsTemplateSelected">
-                                    </uni-data-select>
-                                    <view class="sms-data-tip">
-                                        导入短信模版参考<a class="a-link" href="https://uniapp.dcloud.net.cn/uniCloud/admin.html#群发短信" target="_blank">教程</a>；若有新的短信模版，可<text @click="chooseFile"
-                                            class="a-link">点此导入</text>
-                                        </view>
-                                </view>
-                                <view v-else>
-                                    <button @click="chooseFile" type="primary" style="width: 120px;"
-                                        size="mini">上传短信模板</button>
-									<view class="sms-data-tip">当前未导入短信模板，请从dev.dcloud.net.cn的短信-<a href="https://dev.dcloud.net.cn/pages/sms/template" target="_blank">模板配置</a>中导出短信模版，并在此导入。教程<a href="https://uniapp.dcloud.net.cn/uniCloud/admin.html#batch-sms" target="_blank">详见</a></view>
-                                </view>
-                            </template>
-                            <template v-else>
-                                模板加载中...
-                            </template>
-                        </unicloud-db>
+						<template v-if="!smsTemplateLoading">
+							<view v-if="smsTemplate.length">
+								<uni-data-select class="type m" placeholder="请选择短信模板" size="mini" :clear="false"
+									:localdata="smsTemplate" v-model="smsDataModel.templateId"
+									@change="onSmsTemplateSelected">
+								</uni-data-select>
+								<view class="sms-data-tip">
+									导入短信模版参考<a class="a-link" href="https://uniapp.dcloud.net.cn/uniCloud/admin.html#群发短信" target="_blank">教程</a>；若有新的短信模版，可<text @click="chooseFile"
+										class="a-link">点此导入</text>
+									</view>
+							</view>
+							<view v-else>
+								<button @click="chooseFile" type="primary" style="width: 120px;"
+									size="mini">上传短信模板</button>
+								<view class="sms-data-tip">当前未导入短信模板，请从dev.dcloud.net.cn的短信-<a href="https://dev.dcloud.net.cn/pages/sms/template" target="_blank">模板配置</a>中导出短信模版，并在此导入。教程<a href="https://uniapp.dcloud.net.cn/uniCloud/admin.html#batch-sms" target="_blank">详见</a></view>
+							</view>
+						</template>
+						<template v-else>
+							模板加载中...
+						</template>
                     </uni-forms-item>
                     <uni-forms-item label="短信内容" v-if="smsTemplateContent">
                         <view class="form-item-flex-center">{{smsTemplateContent}}</view>
@@ -107,10 +104,8 @@ export default {
     },
     data() {
         return {
-            smsdDataFieldSelect: [
-                { value: 'static', text: "静态数据" },
-                { value: 'dynamic', text: "动态数据" }
-            ],
+			smsTemplateLoading: false,
+            smsTemplate: [],
             smsTemplateDataErrorMessage: '',
             smsDataModel: {
                 name: '',
@@ -134,7 +129,7 @@ export default {
             handler(smsDataModel) {
                 if (!smsDataModel.templateId) return ''
 
-                const template = this.$refs.template_db.dataList.find(template => template.value === smsDataModel.templateId)
+                const template = this.smsTemplate.find(template => template.value === smsDataModel.templateId)
                 let content = smsDataModel.templateData.reduce((res, param) => {
                     const reg = new RegExp(`\\$\\{${param.field}\\}`)
                     return res.replace(reg, ($1) => param.value || $1)
@@ -151,13 +146,31 @@ export default {
         },
         open() {
             this.$refs.smsPopup.open()
+			this.loadSmsTemplate()
         },
         close() {
             this.reset()
             this.$refs.smsPopup.close()
         },
+		async loadSmsTemplate () {
+			if (this.smsTemplate.length > 0 || this.smsTemplateLoading) return
+
+			this.smsTemplateLoading = true
+
+			try {
+				const uniSmsCo = uniCloud.importObject('uni-sms-co', {customUI: true})
+				const res = await uniSmsCo.template()
+				this.smsTemplate = res.map(item => ({
+					...item,
+					value: item._id,
+					text: item.name,
+				}))
+			} finally {
+				this.smsTemplateLoading = false
+			}
+		},
         onSmsTemplateSelected(templateId) {
-            const current = this.$refs.template_db.dataList.find(template => template.value === templateId)
+            const current = this.smsTemplate.find(template => template.value === templateId)
 
             if (!current) return
 
@@ -306,7 +319,7 @@ export default {
                     content: '短信模板更新成功',
                     showCancel: false,
                     success: () => {
-                        this.$refs.template_db.refresh()
+						this.loadSmsTemplate()
                     }
                 })
             }
