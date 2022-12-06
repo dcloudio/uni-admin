@@ -506,7 +506,8 @@ export default {
 			if (!this.image) {
 				uni.showToast({
 					title: '请选择图片',
-					icon: 'none'
+					icon: 'none',
+					duration: 3000
 				});
 				return;
 			}
@@ -536,7 +537,8 @@ export default {
 			if (!this.image) {
 				uni.showToast({
 					title: '请选择图片',
-					icon: 'none'
+					icon: 'none',
+					duration: 3000
 				});
 				return;
 			}
@@ -721,7 +723,8 @@ export default {
 			if (!this.image) {
 				uni.showToast({
 					title: '请选择图片',
-					icon: 'none'
+					icon: 'none',
+					duration: 3000
 				});
 				return;
 			}
@@ -739,7 +742,8 @@ export default {
 			if (!this.image) {
 				uni.showToast({
 					title: '请选择图片',
-					icon: 'none'
+					icon: 'none',
+					duration: 3000
 				});
 				return;
 			}

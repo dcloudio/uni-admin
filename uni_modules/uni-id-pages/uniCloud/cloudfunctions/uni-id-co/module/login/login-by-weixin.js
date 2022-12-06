@@ -120,28 +120,34 @@ module.exports = async function (params = {}) {
       accessToken,
       openid
     })
-    // eslint-disable-next-line n/no-deprecated-api
-    const avatarPath = url.parse(avatar).pathname
-    const extName = avatarPath.indexOf('.') > -1 ? url.parse(avatar).pathname.split('.').pop() : 'jpg'
-    const cloudPath = `user/avatar/${openid.slice(-8) + Date.now()}-avatar.${extName}`
-    const getAvatarRes = await uniCloud.httpclient.request(avatar)
-    if (getAvatarRes.status >= 400) {
-      throw {
-        errCode: ERROR.GET_THIRD_PARTY_USER_INFO_FAILED
+
+    if (avatar) {
+      // eslint-disable-next-line n/no-deprecated-api
+      const avatarPath = url.parse(avatar).pathname
+      const extName = avatarPath.indexOf('.') > -1 ? url.parse(avatar).pathname.split('.').pop() : 'jpg'
+      const cloudPath = `user/avatar/${openid.slice(-8) + Date.now()}-avatar.${extName}`
+      const getAvatarRes = await uniCloud.httpclient.request(avatar)
+      if (getAvatarRes.status >= 400) {
+        throw {
+          errCode: ERROR.GET_THIRD_PARTY_USER_INFO_FAILED
+        }
+      }
+
+      const {
+        fileID
+      } = await uniCloud.uploadFile({
+        cloudPath,
+        fileContent: getAvatarRes.data
+      })
+
+      extraData.avatar_file = {
+        name: cloudPath,
+        extname: extName,
+        url: fileID
       }
     }
-    const {
-      fileID
-    } = await uniCloud.uploadFile({
-      cloudPath,
-      fileContent: getAvatarRes.data
-    })
+
     extraData.nickname = nickname
-    extraData.avatar_file = {
-      name: cloudPath,
-      extname: extName,
-      url: fileID
-    }
   }
   await saveWeixinUserKey.call(this, {
     openid,

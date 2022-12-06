@@ -125,6 +125,13 @@
         "navigationBarTitleText": ""
     }
 }
+,{
+    "path": "uni_modules/uni-id-pages/pages/userinfo/set-pwd/set-pwd",
+    "style": {
+        "enablePullDownRefresh": false,
+        "navigationBarTitleText": "设置密码"
+    }
+}
 ],
     "subPackages": [{
         "root": "pages/system",

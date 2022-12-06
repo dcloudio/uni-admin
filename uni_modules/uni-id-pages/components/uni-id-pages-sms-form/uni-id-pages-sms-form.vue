@@ -2,7 +2,7 @@
 	<view>
 		<uni-captcha :focus="focusCaptchaInput" ref="captcha" scene="send-sms-code" v-model="captcha" />
 		<view class="box">
-			<uni-easyinput :focus="focusSmsCodeInput" @blur="focusSmsCodeInput = false" type="number" class="input-box" :inputBorder="false" v-model="modelValue" maxlength="6"
+			<uni-easyinput :focus="focusSmsCodeInput" @blur="focusSmsCodeInput = false" type="number" class="input-box" :inputBorder="false" v-model="modelValue" maxlength="6" :clearable="false"
 				placeholder="请输入短信验证码">
 			</uni-easyinput>
 			<view class="short-code-btn" hover-class="hover" @click="start">
@@ -28,7 +28,7 @@
 		}
 	}
 	/**
-	 * sms-form 
+	 * sms-form
 	 * @description 获取短信验证码组件
 	 * @tutorial https://ext.dcloud.net.cn/plugin?id=
 	 * @property {Number} count 倒计时时长 s
@@ -123,36 +123,32 @@
 					this.$refs.captcha.focusCaptchaInput = true
 					return uni.showToast({
 						title: '请先输入图形验证码',
-						icon: 'none'
+						icon: 'none',
+						duration: 3000
 					});
 				}
 				let reg_phone = /^1\d{10}$/;
 				if (!reg_phone.test(this.phone)) return uni.showToast({
 					title: "手机号格式错误",
-					icon: 'none'
+					icon: 'none',
+					duration: 3000
 				});
 				const uniIdCo = uniCloud.importObject("uni-id-co", {
 					customUI: true
 				})
-				console.log('sendSmsCode',{
-					"mobile": this.phone,
-					"scene": this.type,
-					"captcha": this.captcha
-				});
 				uniIdCo.sendSmsCode({
 					"mobile": this.phone,
 					"scene": this.type,
 					"captcha": this.captcha
 				}).then(result => {
-					console.log(result.code);
 					uni.showToast({
 						title: "短信验证码发送成功",
-						icon: 'none'
+						icon: 'none',
+						duration: 3000
 					});
 					this.reverseNumber = Number(this.count);
 					this.getCode();
 				}).catch(e => {
-					console.log(JSON.stringify(e));
 					if (e.code == "uni-id-invalid-sms-template-id") {
 						this.modelValue = "123456"
 						uni.showToast({
@@ -166,7 +162,8 @@
 						this.captcha = ""
 						uni.showToast({
 							title: e.message,
-							icon: 'none'
+							icon: 'none',
+							duration: 3000
 						});
 					}
 				})
@@ -205,7 +202,7 @@
 		/* #endif */
 		justify-content: center;
 		align-items: center;
-		
+
 	}
 
 	.inner-text {

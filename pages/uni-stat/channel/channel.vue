@@ -192,7 +192,6 @@
 			},
 			changePlatform(id, index, name, item) {
 				this.query.version_id = 0
-				console.log(item.code);
 				this.query.uni_platform = item.code
 			},
 			changeTimeRange(id, index) {
@@ -266,7 +265,6 @@
 							}
 						}
 						const hasChannels = []
-						console.log('data----', data);
 						data.forEach(item => {
 							if (hasChannels.indexOf(item.channel_id) < 0) {
 								hasChannels.push(item.channel_id)
@@ -313,7 +311,6 @@
 								}
 							})
 
-							console.log(options);
 							options.series = options.series.sort((a, b) => {
 								return a.name.localeCompare(b.name)
 							})
@@ -328,7 +325,6 @@
 
 			getChannels() {
 				const db = uniCloud.database()
-				console.log(this.query);
 				return db.collection('uni-stat-app-channels').where(stringifyQuery({
 					appid: this.query.appid,
 					platform_id: this.query.platform_id
@@ -403,7 +399,6 @@
 				query.dimension = 'day'
 				// let query = stringifyQuery(cloneQuery)
 				let querystr = stringifyQuery(query, false, ['uni_platform'])
-				console.log('channel --:', querystr);
 				const db = uniCloud.database()
 				const subTable = db.collection('uni-stat-result')
 					.where(querystr)

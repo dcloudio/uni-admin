@@ -27,7 +27,9 @@ async function preBind ({
   bindAccount,
   logType
 } = {}) {
-  const userMatched = await findUser({
+  const {
+    userMatched
+  } = await findUser({
     userQuery: bindAccount,
     authorizedApp: this.getUniversalClientInfo().appId
   })

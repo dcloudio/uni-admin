@@ -202,7 +202,6 @@
 			changePlatform(id, index, name, item) {
 				this.getChannelData(null, id)
 				this.query.version_id = 0
-				console.log('-- item.code', item.code);
 				this.query.uni_platform = item.code
 			},
 			changeTimeRange(id, index) {
@@ -241,7 +240,6 @@
 			},
 
 			getChartData(query, field = this.chartTab, name = '新增用户') {
-				console.log('---', field, name);
 				// this.chartData = {}
 				query = stringifyQuery(query, true, ['uni_platform'])
 				const dimension = this.query.dimension

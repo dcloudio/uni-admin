@@ -28,12 +28,10 @@
 					uni.showLoading({ mask: true })
 					wx.checkSession({
 						success() {
-							console.log('session_key 未过期');
 							resolve()
 							uni.hideLoading()
 						},
 						fail() {
-							console.log('session_key 已经失效，正在执行更新');
 							wx.login({
 								success({
 									code
@@ -61,13 +59,10 @@
 				})
 			},
 			async bindMobileByMpWeixin(e) {
-				console.log(e);
 				if (e.detail.errMsg == "getPhoneNumber:ok") {
-					console.log(e.detail);
 					//检查登录信息是否过期，否则通过重新登录刷新session_key
 					await this.beforeGetphonenumber()
 					uniIdCo.bindMobileByMpWeixin(e.detail).then(e => {
-						console.log(e);
 						this.$emit('success')
 					}).finally(e => {
 						this.closeMe()

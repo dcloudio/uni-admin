@@ -178,6 +178,22 @@ try {
   throw error
 }
 
+function isMatchUserApp (userAppList, matchAppList) {
+  if (userAppList === undefined || userAppList === null) {
+    return true
+  }
+  if (getType(userAppList) !== 'array') {
+    return false    
+  }
+  if (userAppList.includes('*')) {
+    return true
+  }
+  if (getType(matchAppList) === 'string') {
+    matchAppList = [matchAppList]
+  }
+  return userAppList.some(item => matchAppList.includes(item))
+}
+
 module.exports = {
   getType,
   isValidString,
@@ -193,5 +209,6 @@ module.exports = {
   getExtension,
   getVerifyCode,
   coverMobile,
-  getNonceStr
+  getNonceStr,
+  isMatchUserApp
 }

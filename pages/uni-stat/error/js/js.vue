@@ -389,12 +389,9 @@
 						const resData = res.result.data
 						let data = []
 
-						console.log("timeAll: ", timeAll);
-						console.log("resData: ", resData);
 
 						timeAll.forEach(v => {
 							let item = resData.find(item => item.start_time === v)
-							console.log(item);
 							if (item) {
 								data.push(item)
 							} else {
@@ -405,7 +402,6 @@
 							}
 						})
 
-						console.log('----data', data);
 						const options = {
 							categories: [],
 							series: [{
@@ -429,7 +425,6 @@
 							this.chartData = options
 						} else {
 							let dayAppLaunchs = await this.getDayLaunch(querystr)
-							console.log('++++', dayAppLaunchs);
 							const rateLine = options.series[0] = {
 								name: '错误率(%)',
 								data: [],
@@ -505,7 +500,6 @@
 			 * @param {Object} query
 			 */
 			async getDayLaunch(query) {
-				console.log(query);
 				const db = uniCloud.database()
 				const res = await db.collection('uni-stat-result')
 					.where(query)
@@ -722,7 +716,6 @@
 				} = this.uploadOptions
 
 				const prefix = `__UNI__/uni-stat/sourcemap/${appid}/${uni_platform}/${version}/`
-				console.log('...........prefix', prefix);
 
 				// 原生 input 上传逻辑
 				const inputEl = document.createElement('input')

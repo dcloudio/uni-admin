@@ -393,10 +393,8 @@
 			},
 
 			getPanelData(query) {
-				// console.log(query);
 				let querystr = stringifyQuery(this.query, false, ['uni_platform'])
 				const db = uniCloud.database()
-				console.log('queryStr', querystr);
 				db.collection('uni-stat-error-result')
 					.where(querystr)
 					.field('count as temp_count, app_launch_count as temp_app_launch_count, appid')
@@ -414,10 +412,8 @@
 						// this.panelData = []
 						let queryTemp = Object.assign({}, this.query)
 						delete queryTemp.type
-						console.log('---- query ', queryTemp);
 						this.getTotalLaunch(stringifyQuery(queryTemp, false, ['uni_platform'])).then(res => {
 							const total = res.result.data[0]
-							console.log('result total---', total);
 							if (item) {
 								let launch_count = total && total.total_app_launch_count
 								item.app_launch_count = launch_count
@@ -462,7 +458,6 @@
 						let dataAll = []
 						timeAll.forEach(v => {
 							let item = data.find(item => item.start_time === v)
-							console.log(item);
 							if (item) {
 								dataAll.push(item)
 							} else {
@@ -529,7 +524,6 @@
 								} = item
 								let date = item.start_time
 								const x = formatDate(date, 'day')
-								console.log('---', x);
 								xAxis.push(x)
 								let y = count / app_launch_count
 								y = !y ? 0 : y.toFixed(2)

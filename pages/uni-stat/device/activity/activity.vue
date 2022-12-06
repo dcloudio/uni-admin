@@ -160,7 +160,6 @@
 				this.getChannelData(null, id)
 				this.query.version_id = 0
 				this.query.uni_platform = item.code
-				console.log('this.query.uni_platform = item.code', item.code);
 			},
 			changeTimeRange(id, index) {
 				this.currentDateTab = index

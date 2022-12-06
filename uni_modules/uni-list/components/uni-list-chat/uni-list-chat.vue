@@ -224,7 +224,7 @@
 				}
 			},
 			pageApi(api) {
-				let callback = {
+				uni[api]({
 					url: this.to,
 					success: res => {
 						this.$emit('click', {
@@ -235,24 +235,9 @@
 						this.$emit('click', {
 							data: err
 						});
+						console.error(err.errMsg);
 					}
-				}
-				switch (api) {
-					case 'navigateTo':
-						uni.navigateTo(callback)
-						break
-					case 'redirectTo':
-						uni.redirectTo(callback)
-						break
-					case 'reLaunch':
-						uni.reLaunch(callback)
-						break
-					case 'switchTab':
-						uni.switchTab(callback)
-						break
-					default:
-					uni.navigateTo(callback)
-				}
+				});
 			}
 		}
 	};

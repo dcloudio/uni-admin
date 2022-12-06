@@ -89,7 +89,8 @@
 						this.$refs.captcha.focusCaptchaInput = true
 						return uni.showToast({
 							title: '请输入验证码',
-							icon: 'none'
+							icon: 'none',
+							duration: 3000
 						});
 					}
 					if (this.needAgreements && !this.agree) {
@@ -101,13 +102,11 @@
 				}).catch((errors) => {
 					let key = errors[0].key
 					key = key.replace(key[0], key[0].toUpperCase())
-					console.log(key);
 					this['focus'+key] = true
 				})
 			},
 			submitForm(params) {
 				uniIdCo.registerAdmin(this.formData).then(e => {
-					console.log(e);
 					uni.navigateBack()
 				})
 				.catch(e => {

@@ -22,7 +22,9 @@ async function realPreRegister (params = {}) {
   const {
     user
   } = params
-  const userMatched = await findUser({
+  const {
+    userMatched
+  } = await findUser({
     userQuery: user,
     authorizedApp: this.getUniversalClientInfo().appId
   })
@@ -97,9 +99,9 @@ async function postRegister (params = {}) {
     channel,
     scene,
     clientIP,
-    osName,
-    uniIdToken
+    osName
   } = this.getUniversalClientInfo()
+  const uniIdToken = this.getUniversalUniIdToken()
 
   merge(user, extraData)
 
@@ -201,7 +203,8 @@ async function postRegister (params = {}) {
           }
         })
         : {}
-    )
+    ),
+    passwordConfirmed: !!userRecord.password
   }
 }
 

@@ -52,14 +52,16 @@
 					this.focusMobile = true 
 					return uni.showToast({
 						title: '手机号码格式不正确',
-						icon: 'none'
+						icon: 'none',
+						duration: 3000
 					});
 				}
 				if(! /^\d{6}$/.test(this.formData.code)){
 					this.$refs.smsForm.focusSmsCodeInput = true 
 					return uni.showToast({
 						title: '验证码格式不正确',
-						icon: 'none'
+						icon: 'none',
+						duration: 3000
 					});
 				}
 				
@@ -69,7 +71,8 @@
 					console.log(e);
 					uni.showToast({
 						title: e.errMsg,
-						icon: 'none'
+						icon: 'none',
+						duration: 3000
 					});
 					// #ifdef APP-NVUE
 					const eventChannel = this.$scope.eventChannel; // 兼容APP-NVUE
