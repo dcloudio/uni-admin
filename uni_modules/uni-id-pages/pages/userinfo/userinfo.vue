@@ -183,7 +183,8 @@
               })
               if (res.errCode) {
                 uni.showToast({
-                  title: res.errMsg || '绑定失败'
+                  title: res.errMsg || '绑定失败',
+				  duration: 3000
                 })
               }
               await mutations.updateUserInfo()

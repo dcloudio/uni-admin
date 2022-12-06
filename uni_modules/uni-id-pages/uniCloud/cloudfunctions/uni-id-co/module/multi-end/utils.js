@@ -19,7 +19,9 @@ async function isAuthorizeApproved ({
       errCode: ERROR.ACCOUNT_NOT_EXISTS
     }
   }
-  const userMatched = await findUser({
+  const {
+    userMatched
+  } = await findUser({
     userQuery: userRecord,
     authorizedApp: appIdList
   })

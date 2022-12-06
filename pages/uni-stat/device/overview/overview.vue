@@ -262,7 +262,6 @@
 			},
 			changePlatform(id, index, name, item) {
 				this.query.version_id = 0
-				console.log('item.code',item.code);
 				this.query.uni_platform = item.code
 			},
 			changeTimeRange(id, index) {
@@ -454,7 +453,6 @@
 				query = JSON.parse(JSON.stringify(query))
 				query.dimension = 'day'
 				query = stringifyQuery(query,false,['uni_platform'])
-				console.log('page data ',query);
 				const {
 					pageCurrent
 				} = this.options

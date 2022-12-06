@@ -70,12 +70,11 @@
             },
             // 多选
             selectionChange(e) {
-                console.log(e.detail.index);
                 this.selectedIndexs = e.detail.index
             },
             //批量删除
             delTable() {
-                console.log(this.selectedItems());
+                this.selectedItems();
             },
             // 分页触发
             change(e) {
@@ -94,7 +93,6 @@
                     pageCurrent: pageCurrent,
                     value: value,
                     success: (res) => {
-                        // console.log('data', res);
                         this.tableData = res.data
                         this.total = res.total
                         this.loading = false

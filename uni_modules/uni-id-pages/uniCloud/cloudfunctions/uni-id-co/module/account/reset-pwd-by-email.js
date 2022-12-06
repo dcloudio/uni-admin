@@ -75,13 +75,21 @@ module.exports = async function (params = {}) {
     throw error
   }
   // 根据手机号查找匹配的用户
-  const userMatched = await findUser.call(this, {
+  const {
+    total,
+    userMatched
+  } = await findUser.call(this, {
     userQuery: {
       email
     },
     authorizedApp: [this.getUniversalClientInfo().appId]
   })
   if (userMatched.length === 0) {
+    if (total > 0) {
+      throw {
+        errCode: ERROR.ACCOUNT_NOT_EXISTS_IN_CURRENT_APP
+      }
+    }
     throw {
       errCode: ERROR.ACCOUNT_NOT_EXISTS
     }

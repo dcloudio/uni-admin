@@ -92,7 +92,9 @@ module.exports = async function (params = {}) {
 
   // 更新用户名时验证用户名是否重新
   if (username) {
-    const userMatched = await findUser({
+    const {
+      userMatched
+    } = await findUser({
       userQuery: {
         username
       },

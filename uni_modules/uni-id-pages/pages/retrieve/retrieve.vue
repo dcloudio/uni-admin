@@ -106,7 +106,6 @@
 							},
 							{
 								validateFunction: function(rule, value, data, callback) {
-									// console.log(value);
 									if (value != data.password) {
 										callback('两次输入密码不一致')
 									};
@@ -166,8 +165,6 @@
 			 * 完成并提交
 			 */
 			submit() {
-				console.log("formData", this.formData);
-				console.log('rules', this.rules);
 				this.$refs.form.validate()
 					.then(res => {
 						let {
@@ -182,7 +179,6 @@
 								password,
 								captcha
 							}).then(e => {
-								console.log(e);
 								uni.navigateBack()
 							})
 							.catch(e => {
@@ -195,11 +191,9 @@
 					}).catch(errors=>{
 						let key = errors[0].key
 						if(key == 'code'){
-							console.log(this.$refs.shortCode);
 							return this.$refs.shortCode.focusSmsCodeInput = true
 						}
 						key = key.replace(key[0], key[0].toUpperCase())
-						console.log(key,'focus'+key);
 						this['focus'+key] = true
 					})
 			},

@@ -50,6 +50,7 @@ const {
   unbindApple
 } = require('./module/relate/index')
 const {
+  setPwd,
   updatePwd,
   resetPwdBySms,
   resetPwdByEmail,
@@ -79,6 +80,11 @@ const {
 const {
   getSupportedLoginType
 } = require('./module/dev/index')
+
+const {
+  externalRegister,
+  externalLogin
+} = require('./module/external')
 
 module.exports = {
   async _before () {
@@ -187,6 +193,9 @@ module.exports = {
     this.t = i18n.t.bind(i18n)
 
     this.response = {}
+
+    // 请求鉴权验证
+    await this.middleware.verifyRequestSign()
 
     // 通用权限校验模块
     await this.middleware.accessControl()
@@ -585,5 +594,23 @@ module.exports = {
   /**
    * 安全网络握手，目前仅处理微信小程序安全网络握手
    */
-  secureNetworkHandshakeByWeixin
+  secureNetworkHandshakeByWeixin,
+  /**
+   * 设置密码
+   * @tutorial https://uniapp.dcloud.net.cn/uniCloud/uni-id-pages.html#set-pwd
+   * @returns
+   */
+  setPwd,
+  /**
+   * 外部用户注册，将自身系统的用户账号导入uniId，为其创建一个对应uniId的账号(unieid)，使得该账号可以使用依赖uniId的系统及功能。
+   * @tutorial https://uniapp.dcloud.net.cn/uniCloud/uni-id-pages.html#external-register
+   * @returns
+   */
+  externalRegister,
+  /**
+   * 外部用户登录，使用unieid即可登录
+   * @tutorial https://uniapp.dcloud.net.cn/uniCloud/uni-id-pages.html#external-login
+   * @returns
+   * */
+  externalLogin
 }

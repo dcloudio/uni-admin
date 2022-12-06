@@ -1,6 +1,7 @@
 const ERROR = {
   ACCOUNT_EXISTS: 'uni-id-account-exists',
   ACCOUNT_NOT_EXISTS: 'uni-id-account-not-exists',
+  ACCOUNT_NOT_EXISTS_IN_CURRENT_APP: 'uni-id-account-not-exists-in-current-app',
   ACCOUNT_CONFLICT: 'uni-id-account-conflict',
   ACCOUNT_BANNED: 'uni-id-account-banned',
   ACCOUNT_AUDITING: 'uni-id-account-auditing',
@@ -36,7 +37,8 @@ const ERROR = {
   UNBIND_UNIQUE_LOGIN: 'uni-id-unbind-unique-login',
   UNBIND_PASSWORD_NOT_EXISTS: 'uni-id-unbind-password-not-exists',
   UNBIND_MOBILE_NOT_EXISTS: 'uni-id-unbind-mobile-not-exists',
-  UNSUPPORTED_REQUEST: 'uni-id-unsupported-request'
+  UNSUPPORTED_REQUEST: 'uni-id-unsupported-request',
+  ILLEGAL_REQUEST: 'uni-id-illegal-request'
 }
 
 function isUniIdError (errCode) {

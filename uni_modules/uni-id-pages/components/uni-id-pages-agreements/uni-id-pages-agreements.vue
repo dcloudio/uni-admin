@@ -67,10 +67,8 @@
 		},
 		methods: {
 			popupConfirm(){
-				// console.log("popupConfirm");
 				this.isAgree = true
 				retryFun()
-				// this.$emit('popupConfirm')
 			},
 			popup(Fun){
 				this.needPopupAgreements = true

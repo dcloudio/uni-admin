@@ -443,6 +443,9 @@
 			"create_date": 1638356902516
 		}]
 	},
+	"uni-id-tag": {},
+	"uni-id-device": {},
+	"opendb-department":{},
 	"uni-stat-active-devices": {},
 	"uni-stat-active-users": {},
 	"uni-stat-app-channels": {},

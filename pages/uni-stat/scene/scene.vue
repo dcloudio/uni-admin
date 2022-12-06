@@ -189,7 +189,6 @@
 				query = JSON.parse(JSON.stringify(this.query))
 				query.dimension = 'day'
 				let querystr = stringifyQuery(query, false, ['uni_platform'])
-				console.log('querystr', querystr);
 				const db = uniCloud.database()
 				db.collection('uni-stat-result')
 					.where(querystr)
@@ -341,7 +340,6 @@
 				let query = JSON.parse(JSON.stringify(this.query))
 				query.dimension = 'day'
 				let querystr = stringifyQuery(query, false, ['uni_platform'])
-				console.log('---- getPanelData', querystr);
 				const db = uniCloud.database()
 				const subTable = db.collection('uni-stat-result')
 					.where(querystr)

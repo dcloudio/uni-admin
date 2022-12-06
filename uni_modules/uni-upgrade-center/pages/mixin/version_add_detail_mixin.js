@@ -1,7 +1,7 @@
 import {
 	validator,
 	enumConverter
-} from '@/js_sdk/validator/opendb-app-versions.js';
+} from '@/uni_modules/uni-upgrade-center/js_sdk/validator/opendb-app-versions.js';
 
 const platform_iOS = 'iOS';
 const platform_Android = 'Android';
@@ -17,7 +17,7 @@ function getValidator(fields) {
 }
 
 export const fields =
-	'appid,name,title,contents,platform,type,version,min_uni_version,url,stable_publish,is_silently,is_mandatory,create_date,store_list'
+	'appid,name,title,contents,platform,type,version,min_uni_version,url,stable_publish,is_silently,is_mandatory,create_date'
 
 export default {
 	data() {
@@ -41,7 +41,6 @@ export default {
 				"title": "",
 				"contents": "",
 				"platform": [],
-				"store_list": [],
 				"type": "",
 				"version": "",
 				"min_uni_version": "",
@@ -72,7 +71,7 @@ export default {
 			rules: {
 				...getValidator(["appid", "contents", "platform", "type", "version", "min_uni_version", "url",
 					"stable_publish",
-					"title", "name", "is_silently", "is_mandatory", "store_list"
+					"title", "name", "is_silently", "is_mandatory"
 				])
 			}
 		}
@@ -116,7 +115,7 @@ export default {
 			let [deleteRes] = await this.$request('deleteFile', {
 				fileList: [res.tempFilePath]
 			}, {
-				functionName: 'uni-app-manager'
+				functionName: 'upgrade-center'
 			})
 			if (deleteRes.success) {
 				uni.showToast({

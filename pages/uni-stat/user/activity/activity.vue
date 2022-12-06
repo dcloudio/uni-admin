@@ -323,7 +323,6 @@
 			},
 
 			getRangeCountData(query, type, field = 'active_user_count') {
-				console.log('getRangeCountData', query);
 				if (type === 'week') type = 'isoWeek'
 				const {
 					pageCurrent

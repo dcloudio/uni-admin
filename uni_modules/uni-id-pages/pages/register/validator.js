@@ -43,9 +43,9 @@ export default {
 					if (/^\d+$/.test(value)) {
 						callback('昵称不能为纯数字')
 					};
-					if(/[\u4E00-\u9FA5\uF900-\uFA2D]{1,}/.test(value)){
-						callback('昵称不能包含中文')
-					}
+					// if(/[\u4E00-\u9FA5\uF900-\uFA2D]{1,}/.test(value)){
+					// 	callback('昵称不能包含中文')
+					// }
 					return true
 				}
 			}

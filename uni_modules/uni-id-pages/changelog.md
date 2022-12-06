@@ -1,3 +1,16 @@
+## 1.0.35（2022-11-30）
+- uni-id-co 新增匹配到的用户不可在当前应用登录时的错误码 `uni-id-account-not-exists-in-current-app` [错误码说明](https://uniapp.dcloud.net.cn/uniCloud/uni-id-summary.html#errcode)
+## 1.0.34（2022-11-29）
+- 优化 toast 错误提示时间为3秒
+- uni-id-co 修复 无法从 clientInfo 中获取 uniIdToken
+## 1.0.33（2022-11-25）
+- uni-id-co 新增 外部系统联登接口，可为外部系统创建与uni-id相对应的账号，使该账号可以使用依赖uniId的系统及功能 [详情](https://uniapp.dcloud.net.cn/uniCloud/uni-id-pages.html#external)
+- uni-id-co 新增 URL化请求时鉴权签名验证 [详情](https://uniapp.dcloud.net.cn/uniCloud/uni-id-pages.html#http-reqeust-auth)
+- uni-id-co 修复 微信登录时用户未设置头像的报错问题
+## 1.0.32（2022-11-21）
+- 新增 设置密码页面
+- 新增 登录后跳转设置密码页面配置项`setPasswordAfterLogin` [详情](https://uniapp.dcloud.net.cn/uniCloud/uni-id-pages.html#set-pwd-after-login)
+- uni-id-co 新增 设置密码接口 [详情](https://uniapp.dcloud.net.cn/uniCloud/uni-id-pages.html#set-pwd)
 ## 1.0.31（2022-11-16）
 - uni-id-co 修复 验证码可能无法收到的bug
 ## 1.0.30（2022-11-11）

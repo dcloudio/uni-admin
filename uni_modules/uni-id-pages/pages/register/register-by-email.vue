@@ -87,9 +87,9 @@
 									if (/^\d+$/.test(value)) {
 										callback('昵称不能为纯数字')
 									};
-									if(/[\u4E00-\u9FA5\uF900-\uFA2D]{1,}/.test(value)){
-										callback('昵称不能包含中文')
-									}
+									// if(/[\u4E00-\u9FA5\uF900-\uFA2D]{1,}/.test(value)){
+									// 	callback('昵称不能包含中文')
+									// }
 									return true
 								}
 							}
@@ -144,17 +144,14 @@
 				}).catch((errors) => {
 					let key = errors[0].key
 					key = key.replace(key[0], key[0].toUpperCase())
-					console.log(key);
 					this['focus'+key] = true
 				})
 			},
 			submitForm(params) {
 				uniIdCo.registerUserByEmail(this.formData).then(e => {
-					console.log(e);
 					uni.navigateTo({
 						url: '/uni_modules/uni-id-pages/pages/login/login-withpwd',
 						complete: (e) => {
-							console.log(e);
 						}
 					})
 				})

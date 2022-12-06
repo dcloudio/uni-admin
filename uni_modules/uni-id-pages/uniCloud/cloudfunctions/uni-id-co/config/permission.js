@@ -74,5 +74,8 @@ module.exports = {
   },
   unbindApple: {
     auth: true
+  },
+  setPwd: {
+    auth: true
   }
 }
