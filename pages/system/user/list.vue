@@ -13,8 +13,8 @@
 					@click="delTable">{{$t('common.button.batchDelete')}}</button>
 				<button class="uni-button" type="primary" size="mini" :disabled="!selectedIndexs.length"
 					@click="openTagsPopup">标签管理</button>
-				<button class="uni-button" type="primary" size="mini" @click="$refs.batchSms.open()">群发短信</button>
 				<!-- #ifdef H5 -->
+				<button class="uni-button" type="primary" size="mini" @click="$refs.batchSms.open()">群发短信</button>
 				<download-excel class="hide-on-phone" :fields="exportExcel.fields" :data="exportExcelData"
 					:type="exportExcel.type" :name="exportExcel.filename">
 					<button class="uni-button" type="primary" size="mini">{{$t('common.button.exportExcel')}}</button>
@@ -59,10 +59,9 @@
 						</uni-td>
 						<uni-td align="center"> {{ item.role }}</uni-td>
 						<uni-td align="center">
-							<template v-if="item.tags" v-for="tag in item.tags">
-								<uni-tag type="primary" inverted size="small" :text="tag" style="margin: 0 5px;">
-								</uni-tag>
-							</template>
+							<block v-for="(tag,tagIndex) in item.tags" :key="tagIndex">
+								<uni-tag type="primary" inverted size="small" :text="tag" v-if="item.tags" style="margin: 0 5px;"></uni-tag>
+							</block>
 						</uni-td>
 						<uni-td align="center">
 							<uni-link v-if="item.dcloud_appid === undefined" :href="noAppidWhatShouldIDoLink">
@@ -103,8 +102,10 @@
 				</view>
 			</view>
 		</uni-popup>
+		<!-- #ifdef H5 -->
 		{{smsReceiver}}
 		<batch-sms ref="batchSms" toType="user" :receiver="smsReceiver"></batch-sms>
+		<!-- #endif -->
 	</view>
 </template>
 
@@ -233,10 +234,12 @@
 				}
 				return dynamic_data
 			},
-			smsReceiver () {
+			smsReceiver() {
 				if (this.selectedIndexs.length) {
 					var dataList = this.$refs.udb.dataList
 					return this.selectedIndexs.map(i => dataList[i]._id)
+				} else {
+					return undefined;
 				}
 			}
 		},
