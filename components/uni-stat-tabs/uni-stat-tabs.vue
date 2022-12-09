@@ -104,8 +104,11 @@
 			this.init()
 		},
 		watch: {
-			current(val) {
-				this.currentTab = val
+			current: {
+				immediate: true,
+				handler(val) {
+					this.currentTab = val
+				}
 			},
 
 			// value(val) {
@@ -297,14 +300,14 @@
 					border: 1px solid #dcdfe6;
 					// margin: 0;
 
-					/* &:not(:last-child) {
+					&:not(:last-child) {
 						border-right-color: transparent;
-					} */
+					}
 
 
 					&-active {
 						box-sizing: border-box;
-						border: 1px solid $uni-color-primary;
+						border: 1px solid $uni-color-primary !important;
 					}
 				}
 			}
