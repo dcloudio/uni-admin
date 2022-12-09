@@ -18,4 +18,5 @@ module.exports = {
 	ErrorResult: require('./errorResult'),
 	Loyalty: require('./loyalty'),
 	RunErrors: require('./runErrors'),
+	uniPay: require('./uni-pay'),
 }

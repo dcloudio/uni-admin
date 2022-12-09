@@ -430,6 +430,14 @@ button:after {
 	padding: 15px;
 }
 
+.p-channel {
+	padding: 0 15px 15px 15px;
+}
+
+.p-1015 {
+	padding: 10px 15px;
+}
+
 .uni-charts-box {
 	width: 100%;
 	height: 350px;

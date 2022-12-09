@@ -296,9 +296,9 @@ module.exports = class BaseMod {
 			orderBy,
 			count
 		} = params
-		
+
 		const query = this.getCollection(tab, useDBPre)
-		
+
 		//拼接where条件
 		if (where) {
 			if (where.length > 0) {
@@ -309,34 +309,34 @@ module.exports = class BaseMod {
 				query.where(where)
 			}
 		}
-		
+
 		//排序
 		if (orderBy) {
 			Object.keys(orderBy).forEach(key => {
 				query.orderBy(key, orderBy[key])
 			})
 		}
-		
+
 		//指定跳过的文档数
 		if (skip) {
 			query.skip(skip)
 		}
-		
+
 		//指定返回的记录数
 		if (limit) {
 			query.limit(limit)
 		}
-		
+
 		//指定返回字段
 		if (field) {
 			query.field(field)
 		}
-		
+
 		//指定返回查询结果数量
 		if (count) {
 			return await query.count()
 		}
-		
+
 		//返回查询结果数据
 		return await query.get()
 	}
@@ -388,27 +388,28 @@ module.exports = class BaseMod {
 			limit,
 			sort,
 			getAll,
-			useDBPre
+			useDBPre,
+			addFields
 		} = params
 		//useDBPre 是否使用数据表前缀
 		useDBPre = (useDBPre !== null && useDBPre !== undefined) ? useDBPre : true
 		const query = this.getCollection(tab, useDBPre).aggregate()
-		
+
 		//设置返回字段
 		if (project) {
 			query.project(project)
 		}
-		
+
 		//设置匹配条件
 		if (match) {
 			query.match(match)
 		}
-		
+
 		//数据表关联
 		if (lookup) {
 			query.lookup(lookup)
 		}
-		
+
 		//分组
 		if (group) {
 			if (group.length > 0) {
@@ -419,12 +420,17 @@ module.exports = class BaseMod {
 				query.group(group)
 			}
 		}
-		
+
+		//添加字段
+		if (addFields) {
+			query.addFields(addFields)
+		}
+
 		//排序
 		if (sort) {
 			query.sort(sort)
 		}
-		
+
 		//分页
 		if (skip) {
 			query.skip(skip)
@@ -434,12 +440,12 @@ module.exports = class BaseMod {
 		} else if (!getAll) {
 			query.limit(this.selectMaxLimit)
 		}
-		
+
 		//如果未指定全部返回则直接返回查询结果
 		if (!getAll) {
 			return await query.end()
 		}
-		
+
 		//若指定了全部返回则分页查询全部结果后再返回
 		const resCount = await query.group({
 			_id: {},
@@ -447,7 +453,7 @@ module.exports = class BaseMod {
 				$sum: 1
 			}
 		}).end()
-		
+
 		if (resCount && resCount.data.length > 0 && resCount.data[0].aggregate_count > 0) {
 			//分页查询
 			const total = resCount.data[0].aggregate_count
