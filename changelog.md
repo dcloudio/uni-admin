@@ -1,3 +1,7 @@
+## 2.2.0（2022-12-12）
+- 新增 uni统计新增支付统计 [详情](https://uniapp.dcloud.net.cn/uniCloud/uni-pay.html#pay-stat)
+- 优化 uni统计UI排版细节
+- 修复 国际化繁体中文 新增一級菜單 文案错误问题
 ## 2.1.9（2022-12-06）
 - 升级 uni-id-pages 至 1.0.35
 - 优化 去除非必要的日志打印
