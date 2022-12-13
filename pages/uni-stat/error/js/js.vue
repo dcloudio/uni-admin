@@ -45,7 +45,7 @@
 				</view>
 				<uni-table :loading="loading" border stripe :emptyText="$t('common.empty')">
 					<uni-tr>
-						<template v-for="(mapper, index) in fieldsMap">
+						<block v-for="(mapper, index) in fieldsMap" :key="index">
 							<uni-th v-if="mapper.title" :key="index" align="center">
 								<!-- #ifdef MP -->
 								{{mapper.title}}
@@ -62,13 +62,13 @@
 								</uni-tooltip>
 								<!-- #endif -->
 							</uni-th>
-						</template>
+						</block>
 						<uni-th align="center" v-if="sourceMapEnabled">
 							操作
 						</uni-th>
 					</uni-tr>
 					<uni-tr v-for="(item ,i) in tableData" :key="i">
-						<template v-for="(mapper, index) in fieldsMap">
+						<block v-for="(mapper, index) in fieldsMap" :key="index">
 							<uni-td v-if="mapper.field === 'count'" :key="mapper.field" align="center">
 								<text class="link-btn" @click="navTo('detail', item)">
 									{{item[mapper.field] !== undefined ? item[mapper.field] : '-'}}
@@ -77,7 +77,7 @@
 							<uni-td v-else :key="mapper.field" align="center">
 								{{item[mapper.field] !== undefined ? item[mapper.field] : '-'}}
 							</uni-td>
-						</template>
+						</block>
 						<uni-td v-if="sourceMapEnabled">
 							<button size="mini" type="primary" style="white-space: nowrap;"
 								@click="openErrPopup(item)">详 情</button>

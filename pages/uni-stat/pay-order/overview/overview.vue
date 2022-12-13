@@ -13,10 +13,13 @@
 				<uni-stat-tabs label="平台选择" type="boldLine" mode="platform" v-model="query.platform_id" @change="platformChange" />
 				<uni-data-select ref="version-select" v-if="query.platform_id && query.platform_id.indexOf('==') === -1" collection="uni-stat-app-channels" :where="channelQuery" class="p-channel" field="_id as value, channel_name as text" orderby="text asc" label="渠道/场景值选择" v-model="query.channel_id" />
 			</view>
+			<!-- #ifndef VUE3 -->
+			<!-- 下面2个组件用到了uni-table，而uni-table在VUE3模式下部分情况会有问题，目前原因不明，后续修复-->
 			<!-- 历史数据统计面板（最近7天，本月，本季度，本月，总和 -->
 			<statPanelTotal :query="query"></statPanelTotal>
 			<!-- 今日数据统计面板 -->
 			<statPanelToday :query="query"></statPanelToday>
+			<!-- #endif -->
 			<!-- 趋势图 -->
 			<trendChart :query="query"></trendChart>
 		</view>
