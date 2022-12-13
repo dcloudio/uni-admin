@@ -1,3 +1,6 @@
+## 2.2.1（2022-12-13）
+- 修复 因HBX升级3.6.13导致菜单管理加载失败的问题
+- 优化 微信小程序报很多警告的问题
 ## 2.2.0（2022-12-12）
 - 新增 uni统计新增支付统计 [详情](https://uniapp.dcloud.net.cn/uniCloud/uni-pay.html#pay-stat)
 - 优化 uni统计UI排版细节
