@@ -29,7 +29,7 @@
 			<view class="uni-stat--x p-m">
 				<uni-table :loading="loading" border stripe :emptyText="$t('common.empty')">
 					<uni-tr>
-						<template v-for="(mapper, index) in fieldsMap">
+						<block v-for="(mapper, index) in fieldsMap" :key="index">
 							<uni-th v-if="mapper.title" :key="index" align="center">
 								<!-- #ifdef MP -->
 								{{mapper.title}}
@@ -46,7 +46,7 @@
 								</uni-tooltip>
 								<!-- #endif -->
 							</uni-th>
-						</template>
+						</block>
 					</uni-tr>
 					<uni-tr v-for="(item ,i) in tableData" :key="i">
 						<uni-td :align="index === 0 ? 'left' : 'center'" v-for="(mapper, index) in fieldsMap" :key="index">

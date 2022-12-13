@@ -37,7 +37,7 @@
 					</view>
 					<uni-table :loading="loading" border stripe emptyText="暂无数据">
 						<uni-tr>
-							<template v-for="(mapper, index) in resFieldsMap">
+							<block v-for="(mapper, index) in resFieldsMap" :key="index">
 								<uni-th v-if="mapper.title" :key="index" align="center">
 									<!-- #ifdef MP -->
 									{{mapper.title}}
@@ -54,14 +54,14 @@
 									</uni-tooltip>
 									<!-- #endif -->
 								</uni-th>
-							</template>
+							</block>
 						</uni-tr>
 						<uni-tr v-for="(item ,i) in resTableData" :key="i">
-							<template v-for="(mapper, index) in resFieldsMap">
+							<block v-for="(mapper, index) in resFieldsMap" :key='index'>
 								<uni-td v-if="mapper.title" :key="index" :align="index === 0 ? 'left' : 'center'">
 									{{item[mapper.field] !== undefined ? item[mapper.field] : '-'}}
 								</uni-td>
-							</template>
+							</block>
 						</uni-tr>
 					</uni-table>
 				</view>
@@ -73,7 +73,7 @@
 					</view>
 					<uni-table :loading="loading" border stripe emptyText="暂无数据">
 						<uni-tr>
-							<template v-for="(mapper, index) in entFieldsMap">
+							<block v-for="(mapper, index) in entFieldsMap" :key="index">
 								<uni-th v-if="mapper.title" :key="index" align="center">
 									<!-- #ifdef MP -->
 									{{mapper.title}}
@@ -90,14 +90,14 @@
 									</uni-tooltip>
 									<!-- #endif -->
 								</uni-th>
-							</template>
+							</block>
 						</uni-tr>
 						<uni-tr v-for="(item ,i) in entTableData" :key="i">
-							<template v-for="(mapper, index) in entFieldsMap">
+							<block v-for="(mapper, index) in entFieldsMap" :key="index">
 								<uni-td v-if="mapper.title" :key="index" :align="index === 0 ? 'left' : 'center'">
 									{{item[mapper.field] !== undefined ? item[mapper.field] : '-'}}
 								</uni-td>
-							</template>
+							</block>
 						</uni-tr>
 					</uni-table>
 				</view>

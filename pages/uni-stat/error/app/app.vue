@@ -50,7 +50,7 @@
 					<uni-table ref="table" :loading="loading" border stripe :emptyText="$t('common.empty')"
 						style="overflow-y: scroll;">
 						<uni-tr>
-							<template v-for="(mapper, index) in fieldsMap">
+							<block v-for="(mapper, index) in fieldsMap" :key="index">
 								<!-- todo: schema table -->
 								<!-- <uni-th v-if="mapper.title" :key="index" :filter-type="mapper.filter"
 									@filter-change="filterChange($event, mapper.field)" sortable
@@ -73,10 +73,10 @@
 									</uni-tooltip>
 									<!-- #endif -->
 								</uni-th>
-							</template>
+							</block>
 						</uni-tr>
 						<uni-tr v-for="(item ,i) in tableData" :key="i">
-							<template v-for="(mapper, index) in fieldsMap">
+							<block v-for="(mapper, index) in fieldsMap" :key="index">
 								<uni-td v-if="mapper.field === 'error_msg'" :key="mapper.field" align="left"
 									style="min-width: 500px;">
 									<!-- #ifdef MP -->
@@ -100,7 +100,7 @@
 								<uni-td v-else :key="mapper.field" align="center">
 									{{item[mapper.field] !== undefined ? item[mapper.field] : '-'}}
 								</uni-td>
-							</template>
+							</block>
 						</uni-tr>
 					</uni-table>
 					<view class="uni-pagination-box">

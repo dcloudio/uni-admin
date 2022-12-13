@@ -13,8 +13,8 @@
 		<view class="navbar" :class="{'navbar-mini':!matchLeftWindow,'popup-menu':popupMenuOpened}">
 			<view class="navbar-left">
 				<view class="logo pointer" @click="linkTo">
-					<image :src="logo" mode="heightFix"></image>
-					<text>{{appName}}</text>
+					<image class="logo-image" :src="logo" mode="heightFix"></image>
+					<text class="logo-text">{{appName}}</text>
 				</view>
 				<uni-icons @click="toggleSidebar" type="bars" class="menu-icon" size="30" color="#999"></uni-icons>
 			</view>
@@ -224,13 +224,13 @@
 		display: flex;
 		align-items: center;
 
-		image {
+		.logo-image {
 			// logo宽高开发者可根据情况自行调节
 			width: 30px;
 			height: 30px;
 		}
 
-		text {
+		.logo-text {
 			margin-left: 8px;
 		}
 	}

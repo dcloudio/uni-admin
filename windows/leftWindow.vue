@@ -112,11 +112,12 @@
 		background-color: $left-window-bg-color;
 		padding-bottom: 10px;
 	}
-
+	/* #ifdef H5 */
 	.sidebar ::-webkit-scrollbar {
 		display: none;
 		// scrollbar-width: thin;
 	}
+	/* #endif */
 
 	.title {
 		margin-left: 5px;

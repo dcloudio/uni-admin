@@ -325,10 +325,11 @@
 			flex-wrap: unset;
 			overflow-x: auto !important;
 		}
-
+		/* #ifdef H5 */
 		::-webkit-scrollbar {
 			display: none;
 		}
+		/* #endif */
 	}
 
 	/* #endif */

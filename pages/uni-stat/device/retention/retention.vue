@@ -46,17 +46,17 @@
 				</view>
 				<uni-table :loading="loading" stripe :emptyText="$t('common.empty')">
 					<uni-tr style="background-color: #eee;">
-						<template v-for="(mapper, index) in fieldsMap">
+						<block v-for="(mapper, index) in fieldsMap" :key="index">
 							<uni-th v-if="mapper.title" :key="index" align="center">{{mapper.title}}</uni-th>
-						</template>
+						</block>
 					</uni-tr>
 					<uni-tr v-for="(item ,i) in tableData" :key="i">
-						<template v-for="(mapper, index) in fieldsMap">
+						<block v-for="(mapper, index) in fieldsMap" :key="index">
 							<uni-td v-if="mapper.title" :key="index" align="center"
 								:class="/[d|w|m]_\d/.test(mapper.field)&&[item[mapper.field] ? 'uni-stat-table-bg' : '']">
 								{{item[mapper.field] ? item[mapper.field] : ''}}
 							</uni-td>
-						</template>
+						</block>
 					</uni-tr>
 				</uni-table>
 				<view class="uni-pagination-box">
