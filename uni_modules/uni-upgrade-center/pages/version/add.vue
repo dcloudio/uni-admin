@@ -373,13 +373,7 @@
 						if (res.confirm) {
 							// 若已上传包但取消发布，则自动将包删除
 							if (this.hasPackage) {
-								let fileList = [];
-								fileList.push(this.appFileList.url)
-								this.$request('deleteFile', {
-									fileList
-								}, {
-									functionName: 'upgrade-center'
-								})
+								this.deleteFile([this.appFileList.url])
 							}
 
 							uni.navigateBack()

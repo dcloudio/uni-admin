@@ -49,7 +49,8 @@ export default {
 				"create_date": null
 			},
 			formOptions: {
-				"platform_localdata": [{
+				"platform_localdata": [
+					{
 						"value": "Android",
 						"text": "安卓"
 					},
@@ -58,7 +59,8 @@ export default {
 						"text": "苹果"
 					}
 				],
-				"type_localdata": [{
+				"type_localdata": [
+					{
 						"value": "native_app",
 						"text": "原生App安装包"
 					},
@@ -69,8 +71,9 @@ export default {
 				]
 			},
 			rules: {
-				...getValidator(["appid", "contents", "platform", "type", "version", "min_uni_version", "url",
-					"stable_publish",
+				...getValidator([
+					"appid", "contents", "platform", "type",
+					"version", "min_uni_version", "url", "stable_publish",
 					"title", "name", "is_silently", "is_mandatory"
 				])
 			}
@@ -110,13 +113,16 @@ export default {
 			this.preUrl = this.formData.url
 			this.formData.url = res.tempFilePaths[0]
 		},
+		deleteFile(fileList) {
+			return this.$request('deleteFile', {
+				fileList
+			}, {
+				functionName: 'uni-upgrade-center'
+			})
+		},
 		async packageDelete(res) {
 			if (!this.hasPackage) return;
-			let [deleteRes] = await this.$request('deleteFile', {
-				fileList: [res.tempFilePath]
-			}, {
-				functionName: 'upgrade-center'
-			})
+			let [deleteRes] = await this.deleteFile([res.tempFilePath])
 			if (deleteRes.success) {
 				uni.showToast({
 					icon: 'success',

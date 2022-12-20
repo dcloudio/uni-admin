@@ -273,13 +273,7 @@
 							this.detailsState = true
 
 							if (this.hasPackage) {
-								let fileList = [];
-								fileList.push(this.appFileList.url)
-								this.$request('deleteFile', {
-									fileList
-								}, {
-									functionName: 'upgrade-center'
-								})
+								this.deleteFile([this.appFileList.url])
 							}
 						}
 					}
