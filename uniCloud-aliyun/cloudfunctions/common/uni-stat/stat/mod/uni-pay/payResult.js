@@ -48,8 +48,7 @@ module.exports = class PayResult extends BaseMod {
 		//reset = true;
 		//date = 1667318400000;
 		// 以上是测试代码-----------------------------------------------------------
-
-		let res = await this.run(type, date, reset, config);
+		let res = await this.run(type, date, reset, config); // 每小时
 		if (type === "hour" && config.timely) {
 			/**
 			 * 如果是小时纬度统计，则还需要再统计（今日实时数据）
@@ -62,10 +61,15 @@ module.exports = class PayResult extends BaseMod {
 			date -= 1000 * 3600; // 需要减去1小时
 			let tasks = [];
 			tasks.push(this.run("day", date, true, 0)); // 今日
-			tasks.push(this.run("week", date, true, 0)); // 本周
-			tasks.push(this.run("month", date, true, 0)); // 本月
-			tasks.push(this.run("quarter", date, true, 0)); // 本季度
-			tasks.push(this.run("year", date, true, 0)); // 本年度
+			// 以下数据每6小时刷新一次
+			const dateTime = new DateTime();
+			const timeInfo = dateTime.getTimeInfo(date);
+			if ((timeInfo.nHour + 1) % 6 === 0) {
+				tasks.push(this.run("week", date, true, 0)); // 本周
+				tasks.push(this.run("month", date, true, 0)); // 本月
+				tasks.push(this.run("quarter", date, true, 0)); // 本季度
+				tasks.push(this.run("year", date, true, 0)); // 本年度
+			}
 			await Promise.all(tasks);
 		}
 		return res;

@@ -7,6 +7,23 @@
 			</view>
 		</view>
 		<view class="uni-container">
+			<view class="uni-stat--x p-1015" v-if="$hasRole('admin')">
+				<view class="uni-stat-card-header">统计设置</view>
+				<view class="mt10 uni-stat-text">
+					<label class="flex mt10" v-for="(item, index) in statModeList" :key="item.value" @click="statModeChange(item.value)">
+						<view>
+							<radio :value="item.value" :checked="statSetting.mode === item.value"  />
+						</view>
+						<view v-if="item.value !== 'auto'">{{item.text}}</view>
+						<view v-else class="flex">
+							<text>节能：若</text>
+							<uni-number-box v-model="statSetting.day" :min="1" :max="31" @blur="statModeChange('auto')" class="ml-s"></uni-number-box>
+							<text class="ml-s">天内如无设备访问数据，则uni统计定时任务不再运行，若期间有设备访问数据，则uni统计定时任务会继续执行！</text>
+						</view>
+					</label>
+				</view>
+			</view>
+
 			<uni-notice-bar v-if="!deviceTableData.length && !userTableData.length && !query.platform_id" showGetMore
 				showIcon class="mb-m pointer" text="暂无数据, 统计相关功能需开通 uni 统计后才能使用, 如未开通, 点击查看具体流程"
 				@click="navTo('https://uniapp.dcloud.io/uni-stat-v2.html')" />
@@ -91,7 +108,8 @@
 		division,
 		format,
 		parseDateTime,
-		getFieldTotal
+		getFieldTotal,
+		debounce
 	} from '@/js_sdk/uni-stat/util.js'
 
 	import {
@@ -116,12 +134,26 @@
 				// 数据总量
 				total: 0,
 				loading: false,
-				// fieldsMap,
+				statSetting:{
+					mode:"",
+					day:7
+				},
+				statModeList:[
+					{"value": "open","text": "常开：uni统计定时任务始终运行！（每小时会消耗一些数据库读写操作次数）"	},
+					{"value": "close","text": "关闭：uni统计定时任务始终关闭！（每小时会消耗1次数据库读操作次数）"	},
+					{"value": "auto","text": "节能：N天内如无设备访问数据，则uni统计定时任务不再运行，若期间有设备访问数据，则uni统计定时任务会继续执行！"	},
+				]
 			}
 		},
 		onReady() {
 			this.getApps(this.queryStr, deviceFeildsMap, 'device')
-			this.getApps(this.queryStr, userFeildsMap, 'user')
+			this.getApps(this.queryStr, userFeildsMap, 'user');
+			if (this.$hasRole("admin")) {
+				this.getStatSetting();
+				this.debounceSetStatSetting = debounce(() => {
+					this.setStatSetting();
+				}, 300);
+			}
 		},
 		watch: {
 			query: {
@@ -146,6 +178,33 @@
 			}
 		},
 		methods: {
+			statModeChange(mode){
+				this.statSetting.mode = mode;
+				this.debounceSetStatSetting();
+			},
+			// 获取统计配置
+			async getStatSetting(){
+				const db = uniCloud.database();
+				let res = await db.collection('opendb-tempdata').doc("uni-stat-setting").get({getOne:true});
+				let data = res.result.data;
+				if (!data) {
+					this.statSetting.mode = "open";
+					await db.collection('opendb-tempdata').add({
+						_id:"uni-stat-setting",
+						value: this.statSetting,
+						expired: 0
+					})
+				} else {
+					this.statSetting = data.value;
+				}
+			},
+			// 设置统计配置
+			async setStatSetting(){
+				const db = uniCloud.database();
+				let res = await db.collection('opendb-tempdata').doc("uni-stat-setting").update({
+					value: this.statSetting
+				});
+			},
 			tableFieldsMap(fieldsMap) {
 				let tableFields = []
 				const today = []
@@ -292,5 +351,11 @@
 	.link-btn-color {
 		color: #007AFF;
 		cursor: pointer;
+	}
+	.uni-stat-text{
+		color: #606266;
+	}
+	.mt10{
+		margin-top: 10px;
 	}
 </style>

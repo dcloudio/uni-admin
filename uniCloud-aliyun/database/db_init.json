@@ -528,5 +528,6 @@
 	"uni-stat-share-logs": {},
 	"uni-stat-user-session-logs": {},
 	"uni-pay-orders": {},
-	"uni-stat-pay-result": {}
+	"uni-stat-pay-result": {},
+	"opendb-tempdata":{}
 }
