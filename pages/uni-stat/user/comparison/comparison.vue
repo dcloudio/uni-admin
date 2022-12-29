@@ -59,7 +59,7 @@
 			this.debounceGet = debounce(() => {
 				this.getChartData(this.query)
 				this.getRangeCountData(this.query, 'month')
-			})
+			}, 300);
 		},
 		watch: {
 			query: {

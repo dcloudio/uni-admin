@@ -32,7 +32,7 @@
 				</view>
 				<view class="p-m">
 					<view class="uni-charts-box">
-						<qiun-data-charts type="pie" :chartData="chartData" echartsH5 echartsApp />
+						<qiun-data-charts type="pie" :chartData="chartData" echartsH5 echartsApp :errorMessage="errorMessage"/>
 					</view>
 				</view>
 			</view>
@@ -103,7 +103,8 @@
 						value: [0, 3, 6, 11, 21, 31, 51, 100]
 					}
 				},
-				channelData: []
+				channelData: [],
+				errorMessage: "",
 			}
 		},
 		computed: {
@@ -133,7 +134,9 @@
 			}
 		},
 		created() {
-			this.debounceGet = debounce(() => this.getAllData(this.query))
+			this.debounceGet = debounce(() => {
+				this.getAllData(this.query);
+			}, 300);
 			this.getChannelData()
 		},
 		watch: {
@@ -203,6 +206,11 @@
 			},
 
 			getAllData(query) {
+				if (!query.appid) {
+					this.errorMessage = "请先选择应用";
+					return; // 如果appid为空，则不进行查询
+				}
+				this.errorMessage = "";
 				this.getChartData(query, this.field, this.fieldName)
 				this.getTabelData(query)
 			},

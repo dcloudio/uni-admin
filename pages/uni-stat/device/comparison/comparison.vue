@@ -24,7 +24,7 @@
 			<view class="dispaly-grid">
 				<view v-for="(item,index) in chartsData" :key="index" class="uni-stat--x uni-charts-box1">
 					<view class="label-text" style="margin: 5px 0 20px 0;">{{chartsData[index].title}}</view>
-					<qiun-data-charts type="ring" :chartData="chartsData[index]" echartsH5 echartsApp />
+					<qiun-data-charts type="ring" :chartData="chartsData[index]" echartsH5 echartsApp :errorMessage="errorMessage"/>
 				</view>
 			</view>
 
@@ -56,14 +56,14 @@
 				},
 				platforms: [],
 				dayChartsData: [],
-				monChartsData: []
+				monChartsData: [],
+				errorMessage: "",
 			}
 		},
 		created() {
 			this.debounceGet = debounce(() => {
-				this.getChartData(this.query)
-				this.getRangeCountData(this.query, 'month')
-			})
+				this.getAllData(this.query);
+			}, 300);
 		},
 		watch: {
 			query: {
@@ -88,6 +88,15 @@
 			}
 		},
 		methods: {
+			getAllData(query) {
+				if (!query.appid) {
+					this.errorMessage = "请先选择应用";
+					return; // 如果appid为空，则不进行查询
+				}
+				this.errorMessage = "";
+				this.getChartData(query)
+				this.getRangeCountData(query, 'month')
+			},
 			// 获取天的数据
 			getChartData(query, type = 'day') {
 				query = JSON.parse(JSON.stringify(query))

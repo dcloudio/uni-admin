@@ -27,7 +27,7 @@
 				<uni-stat-panel :items="panelData" class="uni-stat-panel" />
 				<uni-stat-tabs type="box" v-model="chartTab" :tabs="chartTabs" class="mb-l" @change="changeChartTab" />
 				<view class="uni-charts-box" style="height: 400px;">
-					<qiun-data-charts type="area" :chartData="chartData" echartsH5 echartsApp tooltipFormat="tooltipCustom" />
+					<qiun-data-charts type="area" :chartData="chartData" echartsH5 echartsApp tooltipFormat="tooltipCustom" :errorMessage="errorMessage"/>
 				</view>
 			</view>
 
@@ -86,6 +86,7 @@
 				panelData: fieldsMap.filter(f => f.hasOwnProperty('value')),
 				chartData: {},
 				chartTab: 'new_device_count',
+				errorMessage: "",
 			}
 		},
 		computed: {
@@ -131,7 +132,9 @@
 			}
 		},
 		created() {
-			this.debounceGet = debounce(() => this.getAllData())
+			this.debounceGet = debounce(() => {
+				this.getAllData(this.queryStr);
+			}, 300);
 		},
 		watch: {
 			query: {
@@ -172,6 +175,11 @@
 			},
 
 			getAllData(query) {
+				if (query.indexOf("appid") === -1) {
+					this.errorMessage = "请先选择应用";
+					return; // 如果appid为空，则不进行查询
+				}
+				this.errorMessage = "";
 				this.getPanelData(query)
 				this.getChartData(query)
 				this.getTabelData(query)

@@ -24,7 +24,7 @@
 				</view>
 				<uni-stat-tabs type="box" v-model="chartTab" :tabs="chartTabs" class="mb-l" @change="changeChartTab" />
 				<view class="uni-charts-box">
-					<qiun-data-charts type="area" :chartData="chartData" :eopts="eopts" echartsH5 echartsApp tooltipFormat="tooltipCustom"/>
+					<qiun-data-charts type="area" :chartData="chartData" :eopts="eopts" echartsH5 echartsApp tooltipFormat="tooltipCustom" :errorMessage="errorMessage"/>
 				</view>
 			</view>
 
@@ -152,6 +152,7 @@
 					pageSizeIndex: 0, // 与 pageSizeRange 一起计算得出 pageSize
 					pageSizeRange: [10, 20, 50, 100],
 				},
+				errorMessage: "",
 				loading: false,
 				currentDateTab: 2,
 				chartTab: 'new_user_count',
@@ -251,7 +252,9 @@
 			},
 		},
 		created() {
-			this.debounceGet = debounce(() => this.getAllData(this.query))
+			this.debounceGet = debounce(() => {
+				this.getAllData(this.query);
+			}, 300);
 		},
 		watch: {
 			query: {
@@ -302,6 +305,11 @@
 				this.getChartData(this.query, id, name)
 			},
 			getAllData(query) {
+				if (!query.appid) {
+					this.errorMessage = "请先选择应用";
+					return; // 如果appid为空，则不进行查询
+				}
+				this.errorMessage = "";
 				this.getPanelData()
 				this.getChartData(query)
 				this.getPageData(query, 'res')

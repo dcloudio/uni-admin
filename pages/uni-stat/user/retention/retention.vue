@@ -33,7 +33,7 @@
 				<uni-stat-tabs type="box" :tabs="keys" v-model="key" class="mb-l" />
 				<view class="p-m">
 					<view class="uni-charts-box">
-						<qiun-data-charts type="area" :chartData="chartData" echartsH5 echartsApp />
+						<qiun-data-charts type="area" :chartData="chartData" echartsH5 echartsApp :errorMessage="errorMessage"/>
 					</view>
 				</view>
 			</view>
@@ -116,7 +116,8 @@
 					tooltip: '指定时间活跃（即访问应用）用户，在之后的第N天，再次访问应用的用户数占比'
 				}],
 				key: 1,
-				channelData: []
+				channelData: [],
+				errorMessage: "",
 			}
 		},
 		computed: {
@@ -173,7 +174,9 @@
 			}
 		},
 		created() {
-			this.debounceGet = debounce(() => this.getAllData(this.query))
+			this.debounceGet = debounce(() => {
+				this.getAllData(this.query);
+			}, 300);
 			this.getChannelData()
 		},
 		watch: {
@@ -260,6 +263,11 @@
 			},
 
 			getAllData(query) {
+				if (!query.appid) {
+					this.errorMessage = "请先选择应用";
+					return; // 如果appid为空，则不进行查询
+				}
+				this.errorMessage = "";
 				this.getChartData(query, this.key, this.keyName)
 				this.getTabelData(query)
 			},

@@ -27,7 +27,7 @@
 				</view>
 				<uni-stat-tabs type="box" :tabs="chartTabs" class="mb-l" @change="changeChartTab" />
 				<view class="uni-charts-box">
-					<qiun-data-charts type="area" :chartData="chartData" echartsH5 echartsApp />
+					<qiun-data-charts type="area" :chartData="chartData" echartsH5 echartsApp :errorMessage="errorMessage"/>
 				</view>
 			</view>
 			<view class="uni-stat--x p-m">
@@ -85,7 +85,8 @@
 				tableData: [],
 				chartData: {},
 				channelData: [],
-				tabName: '日活'
+				tabName: '日活',
+				errorMessage: "",
 			}
 		},
 		computed: {
@@ -130,7 +131,9 @@
 			},
 		},
 		created() {
-			this.debounceGet = debounce(() => this.getAllData(this.query))
+			this.debounceGet = debounce(() => {
+				this.getAllData(this.query);
+			}, 300);
 			this.getChannelData()
 		},
 		watch: {
@@ -184,6 +187,11 @@
 			},
 
 			getAllData(query) {
+				if (!query.appid) {
+					this.errorMessage = "请先选择应用";
+					return; // 如果appid为空，则不进行查询
+				}
+				this.errorMessage = "";
 				this.getChartData(query, this.currentChartTab, this.tabName)
 				this.getTabelData(query)
 			},
