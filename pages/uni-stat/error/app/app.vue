@@ -25,7 +25,7 @@
 				<uni-stat-panel :items="panelData" class="uni-stat-panel" />
 				<uni-stat-tabs type="box" v-model="chartTab" :tabs="chartTabs" class="mb-l" />
 				<view class="uni-charts-box">
-					<qiun-data-charts type="area" :chartData="chartData" :eopts="{notMerge:true}" echartsH5 echartsApp tooltipFormat="tooltipCustom" />
+					<qiun-data-charts type="area" :chartData="chartData" :eopts="{notMerge:true}" echartsH5 echartsApp tooltipFormat="tooltipCustom" :errorMessage="errorMessage"/>
 				</view>
 			</view>
 
@@ -213,6 +213,7 @@
 					filterData: {},
 					...enumConverter
 				},
+				errorMessage: "",
 				exportExcel: {
 					"filename": "uni-stat-app-crash-logs.xls",
 					"type": "xls",
@@ -296,7 +297,8 @@
 				this.$nextTick(() => {
 					this.$refs.udb && this.$refs.udb.loadData()
 				}, 200)
-			})
+			},300);
+			this.debounceGet();
 		},
 		watch: {
 			query: {
@@ -381,6 +383,11 @@
 			},
 
 			getAllData(query) {
+				if (query.indexOf("appid") === -1) {
+					this.errorMessage = "请先选择应用";
+					return; // 如果appid为空，则不进行查询
+				}
+				this.errorMessage = "";
 				this.getPanelData(query)
 				this.getChartData(query)
 			},

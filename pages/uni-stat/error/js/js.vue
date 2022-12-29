@@ -22,13 +22,14 @@
 					@change="useDatetimePicker" />
 			</view>
 			<view class="uni-stat--x">
-				<uni-stat-tabs label="平台选择" type="boldLine" mode="platform" v-model="query.platform_id" @change="changePlatform" />
+				<uni-stat-tabs label="平台选择" type="boldLine" mode="platform" v-model="query.platform_id" @change="changePlatform"/>
+				<uni-data-select ref="version-select" v-if="query.platform_id && query.platform_id.indexOf('==') === -1" collection="uni-stat-app-channels" :where="channelQuery" class="p-channel" field="_id as value, channel_name as text" orderby="text asc" label="渠道/场景值选择" v-model="query.channel_id" />
 			</view>
 			<view class="uni-stat--x" style="padding: 15px 0;">
 				<uni-stat-panel :items="panelData" class="uni-stat-panel" />
 				<uni-stat-tabs type="box" v-model="chartTab" :tabs="chartTabs" class="mb-l" />
 				<view class="uni-charts-box">
-					<qiun-data-charts type="area" :chartData="chartData" :eopts="{notMerge:true}" echartsH5 echartsApp tooltipFormat="tooltipCustom" />
+					<qiun-data-charts type="area" :chartData="chartData" :eopts="{notMerge:true}" echartsH5 echartsApp tooltipFormat="tooltipCustom" :errorMessage="errorMessage"/>
 				</view>
 			</view>
 
@@ -256,7 +257,8 @@
 					}
 				},
 				uploadSuccessTaskNames: [],
-				errorItem: ''
+				errorItem: '',
+				errorMessage: "",
 			}
 		},
 		components: {
@@ -304,7 +306,13 @@
 			},
 			sourceMapEnabled() {
 				return !!this.uniStat.uploadSourceMapCloudSpaceId
-			}
+			},
+			channelQuery() {
+				const platform_id = this.query.platform_id
+				return stringifyQuery({
+					platform_id
+				})
+			},
 		},
 		created() {
 			this.parsedErrors = {}
@@ -316,13 +324,18 @@
 					spaceId: this.uniStat.uploadSourceMapCloudSpaceId
 				})
 			}
+
+			this.getCloudDataDebounce = debounce(() => {
+				this.getAllData(this.queryStr)
+			}, 300);
+			this.getCloudDataDebounce();
 		},
 		watch: {
 			query: {
 				deep: true,
 				handler(val, old) {
 					this.options.pageCurrent = 1 // 重置分页
-					this.debounceGet()
+					this.getCloudDataDebounce()
 				}
 			},
 			chartTab(val) {
@@ -330,9 +343,6 @@
 			}
 		},
 		methods: {
-			debounceGet: debounce(function() {
-				this.getAllData(this.queryStr)
-			}),
 			useDatetimePicker(res) {
 				this.currentDateTab = -1
 			},
@@ -359,8 +369,13 @@
 			},
 
 			getAllData(query) {
-				this.getChartData(query)
-				this.getTableData(query)
+				if (query.indexOf("appid") === -1) {
+					this.errorMessage = "请先选择应用";
+					return; // 如果appid为空，则不进行查询
+				}
+				this.errorMessage = "";
+				this.getChartData(query);
+				this.getTableData(query);
 			},
 
 			getChartData(query, field = 'day_count') {
