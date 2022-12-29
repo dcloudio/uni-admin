@@ -10,7 +10,44 @@
 			<view class="uni-stat--x p-1015" v-if="$hasRole('admin')">
 				<view class="uni-stat-card-header">统计设置</view>
 				<view class="mt10 uni-stat-text">
-					<label class="flex mt10" v-for="(item, index) in statModeList" :key="item.value" @click="statModeChange(item.value)">
+					<view class="flex">
+						<text>定时任务模式</text>
+						<radio-group @change="statModeChange" class="flex">
+							<label class="uni-radio-cell flex" v-for="(item, index) in statModeList" :key="item.value">
+								<view>
+									<radio :value="item.value" :checked="statSetting.mode === item.value" />
+								</view>
+								<uni-tooltip>
+									<view class="uni-stat--sum-item-title">
+										{{ item.text }}
+										<uni-icons class="ml-s" type="help" color="#606266" />
+									</view>
+									<template v-slot:content>
+										<view class="uni-stat-tooltip-s" v-if="item.value === 'open'">
+											<view> 设置uni统计定时跑批任务始终运行。 </view>
+											<view> 每小时至少消耗20次数据库读写操作次数，数据量越多，消耗次数越多。 </view>
+										</view>
+										<view class="uni-stat-tooltip-s" v-else-if="item.value === 'close'">
+											<view> 设置uni统计定时跑批任务始终关闭。 </view>
+											<view> 由于定时任务无法动态关闭，故此关闭功能为逻辑关闭（即定时任务运行后会马上结束，不执行后续逻辑，减少数据库读写次数） </view>
+											<view> 故每小时仍会消耗1次数据库读操作次数。 </view>
+										</view>
+										<view class="uni-stat-tooltip-s" v-else-if="item.value === 'auto'">
+											<view> 设置uni统计定时跑批任务根据设备访问数据自动动态调整开关。 </view>
+											<view> 若{{ statSetting.day}} 天（可自由设置天数）内无设备访问数据，则uni统计定时跑批任务自动关闭，有设备访问数据产生时，则uni统计定时跑批任务会自动继续执行。 </view>
+										</view>
+									</template>
+								</uni-tooltip>
+							</label>
+						</radio-group>
+						<view class="flex" v-if="statSetting.mode === 'auto'">
+							<text>若</text>
+							<uni-number-box v-model="statSetting.day" :min="1" :max="31" @change="statModeDayChange()" class="ml-s"></uni-number-box>
+							<text class="ml-s">天内无设备访问数据，则uni统计定时任务不再运行，若期间有设备访问数据，则uni统计定时任务会继续执行。</text>
+						</view>
+					</view>
+
+				<!-- 	<label class="flex mt10" v-for="(item, index) in statModeList" :key="item.value" @click="statModeChange(item.value)">
 						<view>
 							<radio :value="item.value" :checked="statSetting.mode === item.value"  />
 						</view>
@@ -18,9 +55,9 @@
 						<view v-else class="flex">
 							<text>节能：若</text>
 							<uni-number-box v-model="statSetting.day" :min="1" :max="31" @blur="statModeChange('auto')" class="ml-s"></uni-number-box>
-							<text class="ml-s">天内如无设备访问数据，则uni统计定时任务不再运行，若期间有设备访问数据，则uni统计定时任务会继续执行！</text>
+							<text class="ml-s">天内无设备访问数据，则uni统计定时任务不再运行，若期间有设备访问数据，则uni统计定时任务会继续执行。</text>
 						</view>
-					</label>
+					</label> -->
 				</view>
 			</view>
 
@@ -139,9 +176,9 @@
 					day:7
 				},
 				statModeList:[
-					{"value": "open","text": "常开：uni统计定时任务始终运行！（每小时会消耗一些数据库读写操作次数）"	},
-					{"value": "close","text": "关闭：uni统计定时任务始终关闭！（每小时会消耗1次数据库读操作次数）"	},
-					{"value": "auto","text": "节能：N天内如无设备访问数据，则uni统计定时任务不再运行，若期间有设备访问数据，则uni统计定时任务会继续执行！"	},
+					{"value": "open","text": "开启"	},
+					{"value": "close","text": "关闭"	},
+					{"value": "auto","text": "节能" },
 				]
 			}
 		},
@@ -178,8 +215,12 @@
 			}
 		},
 		methods: {
-			statModeChange(mode){
+			statModeChange(e){
+				let mode = e.detail.value;
 				this.statSetting.mode = mode;
+				this.setStatSetting();
+			},
+			statModeDayChange(){
 				this.debounceSetStatSetting();
 			},
 			// 获取统计配置
@@ -357,5 +398,12 @@
 	}
 	.mt10{
 		margin-top: 10px;
+	}
+	.uni-radio-cell{
+		margin: 0 10px;
+	}
+	.uni-stat-tooltip-s {
+		width: 400px;
+		white-space: normal;
 	}
 </style>
