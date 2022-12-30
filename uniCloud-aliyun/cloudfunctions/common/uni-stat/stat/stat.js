@@ -41,24 +41,24 @@ class UniStatDataStat {
 		const dateTime = new DateTime()
 		console.log('Cron start time: ', dateTime.getDate('Y-m-d H:i:s'))
 
-		const setting = new Setting();
-		let settingValue = await setting.getSetting()
-		if (settingValue.mode === "close") {
-			// 如果关闭了统计任务，则任务直接结束
-			return {
-				code: 0,
-				msg: 'Task is close',
-			}
-		} else if (settingValue.mode === "auto") {
-			// 如果开启了节能模式，则判断N天内是否有设备访问记录
-			let runKey = await setting.checkAutoRun(settingValue);
-			if (!runKey) {
-				return {
-					code: 0,
-					msg: 'Task is auto close',
-				}
-			}
-		}
+		// const setting = new Setting();
+		// let settingValue = await setting.getSetting()
+		// if (settingValue.mode === "close") {
+		// 	// 如果关闭了统计任务，则任务直接结束
+		// 	return {
+		// 		code: 0,
+		// 		msg: 'Task is close',
+		// 	}
+		// } else if (settingValue.mode === "auto") {
+		// 	// 如果开启了节能模式，则判断N天内是否有设备访问记录
+		// 	let runKey = await setting.checkAutoRun(settingValue);
+		// 	if (!runKey) {
+		// 		return {
+		// 			code: 0,
+		// 			msg: 'Task is auto close',
+		// 		}
+		// 	}
+		// }
 
 		//获取运行参数
 		const timeInfo = dateTime.getTimeInfo(null, false)

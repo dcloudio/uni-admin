@@ -4,16 +4,16 @@
  * Copyright (C) 2018-2022 QIUN (R) 秋云 https://www.ucharts.cn All rights reserved.
  * Licensed ( http://www.apache.org/licenses/LICENSE-2.0 )
  * 复制使用请保留本段注释，感谢支持开源！
- * 
+ *
  * uCharts (R) 官方网站
  * https://www.uCharts.cn
- * 
+ *
  * 开源地址:
  * https://gitee.com/uCharts/uCharts
- * 
+ *
  * uni-app插件市场地址：
  * http://ext.dcloud.net.cn/plugin?id=271
- * 
+ *
  */
 
 'use strict';
@@ -846,6 +846,9 @@ function findRadarChartCurrentIndex(currentPoints, radarData, count) {
 
 function findFunnelChartCurrentIndex(currentPoints, funnelData) {
   var currentIndex = -1;
+	if (!funnelData || !funnelData.series) {
+		return currentIndex;
+	}
   for (var i = 0, len = funnelData.series.length; i < len; i++) {
     var item = funnelData.series[i];
     if (currentPoints.x > item.funnelArea[0] && currentPoints.x < item.funnelArea[2] && currentPoints.y > item.funnelArea[1] && currentPoints.y < item.funnelArea[3]) {
@@ -948,7 +951,7 @@ function splitPoints(points,eachSeries) {
         items = [];
       }
     }
-    
+
   });
   if (items.length) {
     newPoints.push(items);
@@ -1109,7 +1112,7 @@ function calCategoriesData(categories, opts, config, eachSpacing, context) {
     var xitem = opts.xAxis.formatter ? opts.xAxis.formatter(item,index,opts) : item;
     return measureText(String(xitem), fontSize, context);
   });
-  
+
   var maxTextLength = Math.max.apply(this, categoriesTextLenth);
   if (opts.xAxis.rotateLabel == true) {
     result.angle = opts.xAxis.rotateAngle * Math.PI / 180;
@@ -3041,7 +3044,7 @@ function drawMountDataPoints(series, opts, config, context) {
               const left = startX;
               const top = item.y;
               const width = item.width;
-              const height = opts.height - opts.area[2] - item.y - mountOption.borderWidth * opts.pix / 2; 
+              const height = opts.height - opts.area[2] - item.y - mountOption.borderWidth * opts.pix / 2;
               if (mountOption.barBorderCircle) {
                 mountOption.barBorderRadius = [width / 2, width / 2, 0, 0];
               }
@@ -3283,7 +3286,7 @@ function drawBarDataPoints(series, opts, config, context) {
               r1 = r1 < 0 ? 0 : r1;
               r2 = r2 < 0 ? 0 : r2;
               r3 = r3 < 0 ? 0 : r3;
-              
+
               context.arc(left + r3, top + r3, r3, -Math.PI, -Math.PI / 2);
               context.arc(item.x - r0, top + r0, r0, -Math.PI / 2, 0);
               context.arc(item.x - r1, top + width - r1, r1, 0, Math.PI / 2);
@@ -3551,7 +3554,7 @@ function drawAreaDataPoints(series, opts, config, context) {
               context.bezierCurveTo(ctrlPoint.ctrA.x, ctrlPoint.ctrA.y, ctrlPoint.ctrB.x, ctrlPoint.ctrB.y, item.x, item.y);
             }
           };
-        } 
+        }
         if (areaOption.type === 'straight') {
           for (let j = 0; j < points.length; j++) {
             let item = points[j];
@@ -3800,7 +3803,7 @@ function drawBubbleDataPoints(series, opts, config, context) {
     context.closePath();
     context.fill();
     context.stroke();
-    
+
     if (opts.dataLabel !== false && process === 1) {
       points.forEach(function(item, index) {
         context.beginPath();
@@ -4459,7 +4462,7 @@ function drawYAxis(series, opts, config, context) {
   }
   context.closePath();
   context.stroke();
-  
+
   let tStartLeft = opts.area[3];
   let tStartRight = opts.width - opts.area[1];
   let tStartCenter = opts.area[3] + (opts.width - opts.area[1] - opts.area[3]) / 2;
@@ -4940,7 +4943,7 @@ function drawArcbarDataPoints(series, opts, config, context) {
   }
   radius = radius < 10 ? 10 : radius;
   arcbarOption.customColor = fillCustomColor(arcbarOption.linearType, arcbarOption.customColor, series, config);
-  
+
   for (let i = 0; i < series.length; i++) {
     let eachSeries = series[i];
     //背景颜色
@@ -5231,7 +5234,7 @@ function drawRadarDataPoints(series, opts, config, context) {
   });
   context.stroke();
   context.closePath();
-  
+
   // 画背景网格
   var _loop = function _loop(i) {
     var startPos = {};
@@ -5267,7 +5270,7 @@ function drawRadarDataPoints(series, opts, config, context) {
     context.beginPath();
     context.setLineWidth(radarOption.borderWidth * opts.pix);
     context.setStrokeStyle(eachSeries.color);
-    
+
     var fillcolor = hexToRgb(eachSeries.color, radarOption.opacity);
     if (radarOption.linearType == 'custom') {
       var grd;
@@ -5280,7 +5283,7 @@ function drawRadarDataPoints(series, opts, config, context) {
       grd.addColorStop(1, hexToRgb(eachSeries.color, radarOption.opacity))
       fillcolor = grd
     }
-    
+
     context.setFillStyle(fillcolor);
     eachSeries.data.forEach(function(item, index) {
       if (index === 0) {
@@ -5316,10 +5319,10 @@ function drawRadarDataPoints(series, opts, config, context) {
       context.fillText(String(label), centerPosition.x + 3 * opts.pix, centerPosition.y - i * stepLength + fontSize / 2);
     }
   }
-  
+
   // draw label text
   drawRadarLabel(coordinateAngle, radius, centerPosition, opts, config, context);
-  
+
   // draw dataLabel
   if (opts.dataLabel !== false && process === 1) {
     radarDataPoints.forEach(function(eachSeries, seriesIndex) {
@@ -5354,7 +5357,7 @@ function drawRadarDataPoints(series, opts, config, context) {
     });
     context.setTextAlign('left');
   }
-  
+
   return {
     center: centerPosition,
     radius: radius,
@@ -5939,7 +5942,7 @@ function drawFunnelDataPoints(series, opts, config, context) {
       context.translate(0, eachSpacing)
     }
   }
-  
+
   context.restore();
   if (opts.dataLabel !== false && process === 1) {
     drawFunnelText(seriesNew, opts, context, eachSpacing, funnelOption.labelAlign, activeWidth, centerPosition);
@@ -6265,7 +6268,7 @@ function drawCharts(type, opts, config, context) {
   if (type === 'pie' || type === 'ring' || type === 'rose') {
     config._pieTextMaxLength_ = opts.dataLabel === false ? 0 : getPieTextMaxLength(seriesMA, config, context, opts);
   }
-  
+
   switch (type) {
     case 'word':
       this.animationInstance = new Animation({
@@ -6795,7 +6798,7 @@ var uCharts = function uCharts(opts) {
   opts.animation = opts.animation ? true : false;
   opts.rotate = opts.rotate ? true : false;
   opts.canvas2d = opts.canvas2d ? true : false;
-  
+
   let config$$1 = assign({}, config);
   config$$1.color = opts.color ? opts.color : config$$1.color;
   if (opts.type == 'pie') {
@@ -6967,7 +6970,7 @@ uCharts.prototype.dobuleZoom = function(e) {
     tcs[i].x = tcs[i].x ? tcs[i].x : tcs[i].clientX;
     tcs[i].y = tcs[i].y ? tcs[i].y : tcs[i].clientY;
   }
-  const ntcs = [getTouches(tcs[0], this.opts, e),getTouches(tcs[1], this.opts, e)]; 
+  const ntcs = [getTouches(tcs[0], this.opts, e),getTouches(tcs[1], this.opts, e)];
   const xlength = Math.abs(ntcs[0].x - ntcs[1].x);
   // 记录初始的两指之间的数据
   if(!this.scrollOption.moveCount){
@@ -6985,7 +6988,7 @@ uCharts.prototype.dobuleZoom = function(e) {
     this.scrollOption.moveCurrent2 = Math.max(moveCurrent1, moveCurrent2);
     return;
   }
-  
+
   let currentEachSpacing = xlength / this.scrollOption.moveCount;
   let itemCount = (this.opts.width - this.opts.area[1] - this.opts.area[3]) / currentEachSpacing;
   itemCount = itemCount <= 2 ? 2 : itemCount;
@@ -7182,7 +7185,7 @@ uCharts.prototype.showToolTip = function(e) {
         index: index
       };
     }
-    
+
     drawCharts.call(this, opts.type, opts, this.config, this.context);
   }
   if (this.opts.type === 'bar') {

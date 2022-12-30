@@ -7,6 +7,8 @@
 			</view>
 		</view>
 		<view class="uni-container">
+
+		<!--
 			<view class="uni-stat--x p-1015" v-if="$hasRole('admin')">
 				<view class="uni-stat-card-header">统计设置</view>
 				<view class="mt10 uni-stat-text">
@@ -25,7 +27,7 @@
 									<template v-slot:content>
 										<view class="uni-stat-tooltip-s" v-if="item.value === 'open'">
 											<view> 设置uni统计定时跑批任务始终运行。 </view>
-											<view> 每小时至少消耗20次数据库读写操作次数，数据量越多，消耗次数越多。 </view>
+											<view> 每小时至少消耗15+次数据库读写操作次数，数据量越多，消耗次数越多。 </view>
 										</view>
 										<view class="uni-stat-tooltip-s" v-else-if="item.value === 'close'">
 											<view> 设置uni统计定时跑批任务始终关闭。 </view>
@@ -45,25 +47,14 @@
 							<uni-number-box v-model="statSetting.day" :min="1" :max="31" @change="statModeDayChange()" class="ml-s"></uni-number-box>
 							<text class="ml-s">天内无设备访问数据，则uni统计定时任务不再运行，若期间有设备访问数据，则uni统计定时任务会继续执行。</text>
 						</view>
+						<text class="uni-a" @click="toUrl('https://uniapp.dcloud.net.cn/uni-stat-v2.html')">详细说明</text>
 					</view>
-
-				<!-- 	<label class="flex mt10" v-for="(item, index) in statModeList" :key="item.value" @click="statModeChange(item.value)">
-						<view>
-							<radio :value="item.value" :checked="statSetting.mode === item.value"  />
-						</view>
-						<view v-if="item.value !== 'auto'">{{item.text}}</view>
-						<view v-else class="flex">
-							<text>节能：若</text>
-							<uni-number-box v-model="statSetting.day" :min="1" :max="31" @blur="statModeChange('auto')" class="ml-s"></uni-number-box>
-							<text class="ml-s">天内无设备访问数据，则uni统计定时任务不再运行，若期间有设备访问数据，则uni统计定时任务会继续执行。</text>
-						</view>
-					</label> -->
 				</view>
 			</view>
+			-->
 
-			<uni-notice-bar v-if="!deviceTableData.length && !userTableData.length && !query.platform_id" showGetMore
-				showIcon class="mb-m pointer" text="暂无数据, 统计相关功能需开通 uni 统计后才能使用, 如未开通, 点击查看具体流程"
-				@click="navTo('https://uniapp.dcloud.io/uni-stat-v2.html')" />
+			<uni-notice-bar v-if="!deviceTableData.length && !userTableData.length && !query.platform_id && !loading" showGetMore showIcon class="mb-m pointer" text="暂无数据, 统计相关功能需开通 uni 统计后才能使用, 如未开通, 点击查看具体流程" @click="navTo('https://uniapp.dcloud.io/uni-stat-v2.html')" />
+
 			<view class="uni-stat--x mb-m">
 				<uni-stat-tabs label="平台选择" type="boldLine" mode="platform" v-model="query.platform_id" />
 			</view>
@@ -185,12 +176,12 @@
 		onReady() {
 			this.getApps(this.queryStr, deviceFeildsMap, 'device')
 			this.getApps(this.queryStr, userFeildsMap, 'user');
-			if (this.$hasRole("admin")) {
-				this.getStatSetting();
-				this.debounceSetStatSetting = debounce(() => {
-					this.setStatSetting();
-				}, 300);
-			}
+			// if (this.$hasRole("admin")) {
+			// 	this.getStatSetting();
+			// 	this.debounceSetStatSetting = debounce(() => {
+			// 		this.setStatSetting();
+			// 	}, 300);
+			// }
 		},
 		watch: {
 			query: {
@@ -215,37 +206,6 @@
 			}
 		},
 		methods: {
-			statModeChange(e){
-				let mode = e.detail.value;
-				this.statSetting.mode = mode;
-				this.setStatSetting();
-			},
-			statModeDayChange(){
-				this.debounceSetStatSetting();
-			},
-			// 获取统计配置
-			async getStatSetting(){
-				const db = uniCloud.database();
-				let res = await db.collection('opendb-tempdata').doc("uni-stat-setting").get({getOne:true});
-				let data = res.result.data;
-				if (!data) {
-					this.statSetting.mode = "open";
-					await db.collection('opendb-tempdata').add({
-						_id:"uni-stat-setting",
-						value: this.statSetting,
-						expired: 0
-					})
-				} else {
-					this.statSetting = data.value;
-				}
-			},
-			// 设置统计配置
-			async setStatSetting(){
-				const db = uniCloud.database();
-				let res = await db.collection('opendb-tempdata').doc("uni-stat-setting").update({
-					value: this.statSetting
-				});
-			},
 			tableFieldsMap(fieldsMap) {
 				let tableFields = []
 				const today = []
@@ -370,7 +330,45 @@
 						url
 					})
 				}
-			}
+			},
+			
+			toUrl(url){
+				// #ifdef H5
+				window.open(url,"_blank");
+				// #endif
+			},
+			statModeChange(e){
+				let mode = e.detail.value;
+				this.statSetting.mode = mode;
+				this.setStatSetting();
+			},
+			statModeDayChange(){
+				this.debounceSetStatSetting();
+			},
+			// 获取统计配置
+			async getStatSetting(){
+				const db = uniCloud.database();
+				let res = await db.collection('opendb-tempdata').doc("uni-stat-setting").get({getOne:true});
+				let data = res.result.data;
+				if (!data) {
+					this.statSetting.mode = "open";
+					await db.collection('opendb-tempdata').add({
+						_id:"uni-stat-setting",
+						value: this.statSetting,
+						expired: 0
+					})
+				} else {
+					this.statSetting = data.value;
+				}
+			},
+			// 设置统计配置
+			async setStatSetting(){
+				const db = uniCloud.database();
+				let res = await db.collection('opendb-tempdata').doc("uni-stat-setting").update({
+					value: this.statSetting
+				});
+			},
+			
 		}
 
 	}
@@ -405,5 +403,11 @@
 	.uni-stat-tooltip-s {
 		width: 400px;
 		white-space: normal;
+	}
+	.uni-a{
+		cursor: pointer;
+		text-decoration: underline;
+		color: #555;
+		font-size: 14px;
 	}
 </style>
