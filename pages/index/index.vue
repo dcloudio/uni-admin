@@ -174,8 +174,12 @@
 			}
 		},
 		onReady() {
-			this.getApps(this.queryStr, deviceFeildsMap, 'device')
-			this.getApps(this.queryStr, userFeildsMap, 'user');
+
+			this.debounceGet = debounce(() => {
+				this.getAllData(this.queryStr);
+			}, 300);
+
+			this.debounceGet();
 			// if (this.$hasRole("admin")) {
 			// 	this.getStatSetting();
 			// 	this.debounceSetStatSetting = debounce(() => {
@@ -187,8 +191,7 @@
 			query: {
 				deep: true,
 				handler(newVal) {
-					this.getApps(this.queryStr, deviceFeildsMap, 'device')
-					this.getApps(this.queryStr, userFeildsMap, 'user')
+					this.debounceGet(this.queryStr);
 				}
 			}
 		},
@@ -206,6 +209,10 @@
 			}
 		},
 		methods: {
+			getAllData(queryStr){
+				this.getApps(this.queryStr, deviceFeildsMap, 'device')
+				this.getApps(this.queryStr, userFeildsMap, 'user')
+			},
 			tableFieldsMap(fieldsMap) {
 				let tableFields = []
 				const today = []
@@ -239,11 +246,8 @@
 			getApps(query, fieldsMap, type = "device") {
 				this.loading = true
 				const db = uniCloud.database()
+				const appDaily = db.collection('uni-stat-result').where(query).getTemp();
 				const appList = db.collection('opendb-app-list').getTemp()
-				const appDaily = db.collection('uni-stat-result')
-					.where(query)
-					.getTemp()
-
 				db.collection(appDaily, appList)
 					.field(
 						`${stringifyField(fieldsMap, '', 'value')},stat_date,appid,dimension`
@@ -256,6 +260,7 @@
 						let {
 							data
 						} = res.result
+						//console.log('data: ', data)
 						this[`${type}TableData`] = []
 						if (!data.length) return
 						let appids = [],
@@ -296,8 +301,10 @@
 									rowData[key + '_contrast'] = format(contrast)
 								}
 							}
-							this[`${type}TableData`].push(rowData)
-
+							if (appid) {
+								rowData[`total_${type}s_value`] = "获取中...";
+							}
+							this[`${type}TableData`].push(rowData);
 							if (appid) {
 								// total_users 不准确，置空后由 getFieldTotal 处理, appid 不存在时暂不处理
 								t[`total_${type}s`] = 0
@@ -331,7 +338,7 @@
 					})
 				}
 			},
-			
+
 			toUrl(url){
 				// #ifdef H5
 				window.open(url,"_blank");
@@ -368,7 +375,7 @@
 					value: this.statSetting
 				});
 			},
-			
+
 		}
 
 	}

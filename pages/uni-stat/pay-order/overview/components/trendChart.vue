@@ -17,6 +17,7 @@
 <script>
 	import {
 		formatterData, // 格式化字段数据
+		fillTrendChartData,
 		stringifyQuery, // 对象转JQL查询字符串
 		parseDateTime, // 格式化时间
 		debounce, // 防抖函数
@@ -126,6 +127,7 @@
 					this.errorMessage = "请先选择应用";
 					return; // 如果appid为空，则不进行查询
 				}
+				this.errorMessage = "";
 				let insideQuery = this.getWhere();
 				let where = {
 					...query,
@@ -150,7 +152,7 @@
 							count,
 							data
 						} = res.result;
-						this.errorMessage = !data.length ? "暂无数据" : "";
+						data = fillTrendChartData(data, insideQuery, fieldsMap); // 补全数据
 						// 数据格式化
 						data = formatterData({
 							fieldsMap,

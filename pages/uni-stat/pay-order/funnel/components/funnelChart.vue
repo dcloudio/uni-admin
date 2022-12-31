@@ -117,7 +117,11 @@
 					.get()
 					.then(res => {
 						let data = res.result.data;
-						this.errorMessage = !data.length ? "暂无数据" : "";
+						if (!data.length) {
+							this.errorMessage = "暂无数据";
+							return;
+						}
+						this.errorMessage = "";
 						//console.log('data: ', data);
 						data.map((item) => {
 							for (let key in item) {
