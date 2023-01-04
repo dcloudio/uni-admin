@@ -9,28 +9,23 @@
 			</view>
 		</view>
 		<view class="uni-container">
+			<view class="uni-stat--x flex p-1015">
+				<uni-data-select collection="opendb-app-list" field="appid as value, name as text" orderby="text asc" :defItem="1" label="应用选择" v-model="query.appid" :clear="false" />
+				<uni-data-select collection="opendb-app-versions" :where="versionQuery" class="ml-m" field="_id as value, version as text" orderby="text asc" label="版本选择" v-model="query.version_id" />
+				<uni-stat-tabs label="平台选择" type="boldLine" :all="false" mode="platform-channel" v-model="query.platform_id" @change="changePlatform" />
+			</view>
 			<view class="uni-stat--x flex">
-				<uni-data-select collection="opendb-app-list" field="appid as value, name as text" orderby="text asc"
-					:defItem="1" label="应用选择" v-model="query.appid" :clear="false" />
-				<uni-data-select collection="opendb-app-versions" :where="versionQuery"
-					field="_id as value, version as text" orderby="text asc" label="版本选择" v-model="query.version_id" />
-				<uni-stat-tabs label="平台选择" type="boldLine" :all="false" mode="platform-channel"
-					v-model="query.platform_id" @change="changePlatform" />
-				<view class="flex">
-					<uni-stat-tabs label="日期选择" :current="currentDateTab" :yesterday="false" mode="date"
-						@change="changeTimeRange" />
-					<uni-datetime-picker type="daterange" :end="new Date().getTime()" v-model="query.start_time"
-						returnType="timestamp" :clearIcon="false" class="uni-stat-datetime-picker"
-						:class="{'uni-stat__actived': currentDateTab < 0 && !!query.start_time.length}"
-						@change="useDatetimePicker" />
-				</view>
+				<uni-stat-tabs label="日期选择" :current="currentDateTab" :yesterday="false" mode="date" @change="changeTimeRange" />
+				<uni-datetime-picker type="daterange" :end="new Date().getTime()" v-model="query.start_time"
+					returnType="timestamp" :clearIcon="false" class="uni-stat-datetime-picker"
+					:class="{'uni-stat__actived': currentDateTab < 0 && !!query.start_time.length}"
+					@change="useDatetimePicker" />
 			</view>
 			<view class="uni-stat--x" style="padding: 15px 0;">
 				<uni-stat-panel :items="panelData" class="uni-stat-panel" />
 				<uni-stat-tabs type="box" v-model="chartTab" :tabs="chartTabs" class="mb-l" />
 				<view class="uni-charts-box">
-					<qiun-data-charts type="area" :chartData="chartData" :eopts="{notMerge:true}" echartsH5 echartsApp
-						tooltipFormat="tooltipCustom" />
+					<qiun-data-charts type="area" :chartData="chartData" :eopts="{notMerge:true}" echartsH5 echartsApp tooltipFormat="tooltipCustom" :errorMessage="errorMessage"/>
 				</view>
 			</view>
 
@@ -55,7 +50,7 @@
 					<uni-table ref="table" :loading="loading" border stripe :emptyText="$t('common.empty')"
 						style="overflow-y: scroll;">
 						<uni-tr>
-							<template v-for="(mapper, index) in fieldsMap">
+							<block v-for="(mapper, index) in fieldsMap" :key="index">
 								<!-- todo: schema table -->
 								<!-- <uni-th v-if="mapper.title" :key="index" :filter-type="mapper.filter"
 									@filter-change="filterChange($event, mapper.field)" sortable
@@ -78,10 +73,10 @@
 									</uni-tooltip>
 									<!-- #endif -->
 								</uni-th>
-							</template>
+							</block>
 						</uni-tr>
 						<uni-tr v-for="(item ,i) in tableData" :key="i">
-							<template v-for="(mapper, index) in fieldsMap">
+							<block v-for="(mapper, index) in fieldsMap" :key="index">
 								<uni-td v-if="mapper.field === 'error_msg'" :key="mapper.field" align="left"
 									style="min-width: 500px;">
 									<!-- #ifdef MP -->
@@ -105,7 +100,7 @@
 								<uni-td v-else :key="mapper.field" align="center">
 									{{item[mapper.field] !== undefined ? item[mapper.field] : '-'}}
 								</uni-td>
-							</template>
+							</block>
 						</uni-tr>
 					</uni-table>
 					<view class="uni-pagination-box">
@@ -185,12 +180,6 @@
 					version_id: '',
 					start_time: [],
 				},
-				options: {
-					pageCurrent: 1, // 当前页
-					total: 0, // 数据总量
-					pageSizeIndex: 0, // 与 pageSizeRange 一起计算得出 pageSize
-					pageSizeRange: [10, 20, 50, 100],
-				},
 				loading: false,
 				popupLoading: false,
 				currentDateTab: 0,
@@ -215,11 +204,16 @@
 				orderByFieldName: "",
 				selectedIndexs: [],
 				options: {
+					pageCurrent: 1, // 当前页
+					total: 0, // 数据总量
+					pageSizeIndex: 0, // 与 pageSizeRange 一起计算得出 pageSize
+					pageSizeRange: [10, 20, 50, 100],
 					pageSize,
 					pageCurrent,
 					filterData: {},
 					...enumConverter
 				},
+				errorMessage: "",
 				exportExcel: {
 					"filename": "uni-stat-app-crash-logs.xls",
 					"type": "xls",
@@ -303,7 +297,8 @@
 				this.$nextTick(() => {
 					this.$refs.udb && this.$refs.udb.loadData()
 				}, 200)
-			})
+			},300);
+			this.debounceGet();
 		},
 		watch: {
 			query: {
@@ -388,15 +383,18 @@
 			},
 
 			getAllData(query) {
+				if (query.indexOf("appid") === -1) {
+					this.errorMessage = "请先选择应用";
+					return; // 如果appid为空，则不进行查询
+				}
+				this.errorMessage = "";
 				this.getPanelData(query)
 				this.getChartData(query)
 			},
 
 			getPanelData(query) {
-				// console.log(query);
 				let querystr = stringifyQuery(this.query, false, ['uni_platform'])
 				const db = uniCloud.database()
-				console.log('queryStr', querystr);
 				db.collection('uni-stat-error-result')
 					.where(querystr)
 					.field('count as temp_count, app_launch_count as temp_app_launch_count, appid')
@@ -414,10 +412,8 @@
 						// this.panelData = []
 						let queryTemp = Object.assign({}, this.query)
 						delete queryTemp.type
-						console.log('---- query ', queryTemp);
 						this.getTotalLaunch(stringifyQuery(queryTemp, false, ['uni_platform'])).then(res => {
 							const total = res.result.data[0]
-							console.log('result total---', total);
 							if (item) {
 								let launch_count = total && total.total_app_launch_count
 								item.app_launch_count = launch_count
@@ -462,7 +458,6 @@
 						let dataAll = []
 						timeAll.forEach(v => {
 							let item = data.find(item => item.start_time === v)
-							console.log(item);
 							if (item) {
 								dataAll.push(item)
 							} else {
@@ -529,7 +524,6 @@
 								} = item
 								let date = item.start_time
 								const x = formatDate(date, 'day')
-								console.log('---', x);
 								xAxis.push(x)
 								let y = count / app_launch_count
 								y = !y ? 0 : y.toFixed(2)

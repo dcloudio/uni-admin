@@ -27,8 +27,7 @@
 			<uni-forms-item name="version" label="版本号" required>
 				<uni-easyinput v-model="formData.version" placeholder="当前包版本号，必须大于当前线上发行版本号" />
 			</uni-forms-item>
-			<uni-forms-item v-if="isWGT" key="min_uni_version" name="min_uni_version" label="原生App最低版本"
-				:required="isWGT">
+			<uni-forms-item v-if="isWGT" name="min_uni_version" label="原生App最低版本" :required="isWGT">
 				<uni-easyinput placeholder="原生App最低版本" v-model="formData.min_uni_version" />
 				<show-info :content="minUniVersionContent"></show-info>
 			</uni-forms-item>
@@ -45,48 +44,18 @@
 				<text v-if="hasPackage"
 					style="padding-left: 20px;color: #a8a8a8;">{{Number(appFileList.size / 1024 / 1024).toFixed(2)}}M</text>
 			</uni-forms-item>
-			<uni-forms-item key="url" name="url" :label="isiOS ? 'AppStore' : '下载链接'" required>
-				<uni-easyinput placeholder="链接" v-model="formData.url" :maxlength="-1" />
-				<!-- <show-info :top="-80" :content="uploadFileContent"></show-info> -->
+			<uni-forms-item name="url" :label="isiOS ? 'AppStore' : '包地址'" required>
+				<uni-easyinput placeholder="可下载安装包地址" v-model="formData.url" :maxlength="-1" />
+				<show-info :top="-80" :content="uploadFileContent"></show-info>
 			</uni-forms-item>
 
-			<uni-forms-item v-if="!isiOS && !isWGT && formData.store_list.length" label="Android应用市场" labelWidth="125px"
-				key="store_list" name="store_list">
-				<view style="flex: 1;">
-					<view v-for="(item) in formData.store_list" :key="item.id">
-						<uni-card style="margin: 0px 0px 20px 0px;">
-							<view style="display: flex;">
-								<checkbox-group style="user-select: none;"
-									@change="({detail:{value}}) => {item.enable = !!value.length}">
-									<label class="title_padding">
-										<checkbox value="scheme" :checked="item.enable" />
-										<text>是否启用</text>
-									</label>
-								</checkbox-group>
-								<!-- <view style="padding-left: 10px;">
-									<button type="warn" size="mini"
-										@click="formData.store_list.splice(index,1)">删除</button>
-								</view> -->
-							</view>
-							<uni-forms-item label="商店名称">
-								<uni-easyinput disabled v-model="item.name" trim="both"></uni-easyinput>
-							</uni-forms-item>
-							<uni-forms-item label="Scheme">
-								<uni-easyinput disabled v-model="item.scheme" trim="both"></uni-easyinput>
-							</uni-forms-item>
-							<uni-forms-item label="优先级">
-								<uni-easyinput v-model="item.priority" type="number"></uni-easyinput>
-								<show-info :top="-100" :left="-180" :content="priorityContent"></show-info>
-							</uni-forms-item>
-						</uni-card>
-					</view>
-				</view>
-			</uni-forms-item>
-			<uni-forms-item v-if="isWGT" key="is_silently" name="is_silently" label="静默更新">
+			<!-- <uni-forms-item v-if="formData.store_list" name="store_list" style="height: 0px;"></uni-forms-item> -->
+
+			<uni-forms-item v-if="isWGT" name="is_silently" label="静默更新">
 				<switch @change="binddata('is_silently', $event.detail.value)" :checked="formData.is_silently" />
 				<show-info :top="-80" :content="silentlyContent"></show-info>
 			</uni-forms-item>
-			<uni-forms-item v-if="!isiOS" key="is_mandatory" name="is_mandatory" label="强制更新">
+			<uni-forms-item v-if="!isiOS" name="is_mandatory" label="强制更新">
 				<switch @change="binddata('is_mandatory', $event.detail.value)" :checked="formData.is_mandatory" />
 				<show-info :content="mandatoryContent"></show-info>
 			</uni-forms-item>
@@ -109,13 +78,14 @@
 	import {
 		validator,
 		enumConverter
-	} from '@/js_sdk/validator/opendb-app-versions.js';
+	} from '@/uni_modules/uni-upgrade-center/js_sdk/validator/opendb-app-versions.js';
 	import addAndDetail, {
 		fields
 	} from '../mixin/version_add_detail_mixin.js';
 	import {
 		appVersionListDbName
 	} from '../utils.js';
+	import showInfo from '../components/show-info.vue'
 
 	const db = uniCloud.database();
 	const dbCmd = db.command;
@@ -168,6 +138,9 @@
 	}
 
 	export default {
+		components: {
+			showInfo
+		},
 		mixins: [addAndDetail],
 		data() {
 			return {
@@ -181,14 +154,14 @@
 			type
 		}) {
 			if (appid && type && name) {
-				const store_list = await this.getStoreList(appid)
+				// const store_list = await this.getStoreList(appid)
 				this.formData = {
 					...this.formData,
 					...{
 						appid,
 						name,
 						type,
-						store_list
+						// store_list
 					}
 				}
 
@@ -207,14 +180,20 @@
 		},
 		watch: {
 			isiOS(val) {
-				if (!val && this.hasPackage) {
+				if (val) {
+					this.setFormData(platform_iOS)
+					return;
+				} else if (this.hasPackage) {
 					this.formData.url = this.appFileList.url
 					return;
 				}
 				this.formData.url = ''
 			},
 			"formData.platform"(val) {
-				this.setFormData(val)
+				// wgt热更新数据渲染
+				if (this.isWGT) {
+					this.setFormData(val)
+				}
 			}
 		},
 		methods: {
@@ -265,10 +244,19 @@
 			 * 触发表单提交
 			 */
 			submit() {
+				if (!this.formData.url && this.isiOS) {
+					uni.showToast({
+						icon: 'error',
+						title: 'AppStore 链接必填'
+					})
+					return
+				}
 				uni.showLoading({
 					mask: true
 				})
-				this.$refs.form.validate(['store_list']).then((res) => {
+				this.$refs.form.validate().then((res) => {
+					// TODO 兼容 uni-forms 的bug
+					res.url = this.formData.url
 					if (compare(this.latestVersion, res.version) >= 0) {
 						uni.showModal({
 							content: `版本号必须大于当前已上线版本（${this.latestVersion}）`,
@@ -385,13 +373,7 @@
 						if (res.confirm) {
 							// 若已上传包但取消发布，则自动将包删除
 							if (this.hasPackage) {
-								let fileList = [];
-								fileList.push(this.appFileList.url)
-								this.$request('deleteFile', {
-									fileList
-								}, {
-									functionName: 'upgrade-center'
-								})
+								this.deleteFile([this.appFileList.url])
 							}
 
 							uni.navigateBack()

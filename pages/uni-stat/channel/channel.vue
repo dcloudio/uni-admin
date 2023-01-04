@@ -11,27 +11,24 @@
 			</view>
 		</view>
 		<view class="uni-container">
+			<view class="uni-stat--x flex p-1015">
+				<uni-data-select collection="opendb-app-list" field="appid as value, name as text" orderby="text asc" :defItem="1" label="应用选择" v-model="query.appid" :clear="false" />
+				<uni-data-select collection="opendb-app-versions" :storage="false" :where="versionQuery" class="ml-m" field="_id as value, version as text" orderby="text asc" label="版本选择" v-model="query.version_id" />
+				<uni-stat-tabs label="平台选择" type="boldLine" mode="platform-channel" :all="false" v-model="query.platform_id" @change="changePlatform" />
+			</view>
 			<view class="uni-stat--x flex">
-				<uni-data-select collection="opendb-app-list" field="appid as value, name as text" orderby="text asc"
-					:defItem="1" label="应用选择" v-model="query.appid" :clear="false" />
-				<uni-data-select collection="opendb-app-versions" :storage="false" :where="versionQuery"
-					field="_id as value, version as text" orderby="text asc" label="版本选择" v-model="query.version_id" />
-				<uni-stat-tabs label="平台选择" type="boldLine" mode="platform-channel" :all="false"
-					v-model="query.platform_id" @change="changePlatform" />
-				<view class="flex">
-					<uni-stat-tabs label="日期选择" :current="currentDateTab" mode="date" @change="changeTimeRange" />
-					<uni-datetime-picker type="daterange" :end="new Date().getTime()" v-model="query.start_time"
-						returnType="timestamp" :clearIcon="false" class="uni-stat-datetime-picker"
-						:class="{'uni-stat__actived': currentDateTab < 0 && !!query.start_time.length}"
-						@change="useDatetimePicker" />
-				</view>
+				<uni-stat-tabs label="日期选择" :current="currentDateTab" mode="date" @change="changeTimeRange" />
+				<uni-datetime-picker type="daterange" :end="new Date().getTime()" v-model="query.start_time"
+					returnType="timestamp" :clearIcon="false" class="uni-stat-datetime-picker"
+					:class="{'uni-stat__actived': currentDateTab < 0 && !!query.start_time.length}"
+					@change="useDatetimePicker" />
 			</view>
 			<view class="uni-stat--x" style="padding: 15px 0;">
 				<uni-stat-panel :items="panelData" class="uni-stat-panel" />
 				<uni-stat-tabs type="box" v-model="chartTab" :tabs="chartTabs" class="mb-l" @change="changeChartTab" />
 				<view class="uni-charts-box">
 					<qiun-data-charts type="area" :chartData="chartData" echartsH5 echartsApp
-						tooltipFormat="tooltipCustom" />
+						tooltipFormat="tooltipCustom" :errorMessage="errorMessage"/>
 				</view>
 			</view>
 
@@ -41,14 +38,14 @@
 				</view>
 				<uni-table :loading="loading" border stripe :emptyText="$t('common.empty')">
 					<uni-tr>
-						<template v-for="(mapper, index) in fieldsMap.slice(0, fieldsMap.length-1)">
+						<block v-for="(mapper, index) in fieldsMap.slice(0, fieldsMap.length-1)" :key="index">
 							<uni-th v-if="mapper.title" :key="index" align="center">
 								{{mapper.title}}
 							</uni-th>
-						</template>
+						</block>
 					</uni-tr>
 					<uni-tr v-for="(item ,i) in tableData" :key="i">
-						<template v-for="(mapper, index) in fieldsMap.slice(0, fieldsMap.length-1)">
+						<block v-for="(mapper, index) in fieldsMap.slice(0, fieldsMap.length-1)" :key="index">
 							<uni-td v-if="mapper.title && index === 1" :key="mapper.field" class="uni-stat-edit--x">
 								{{item[mapper.field] ? item[mapper.field] : '-'}}
 								<uni-icons type="compose" color="#2979ff" size="25" class="uni-stat-edit--btn"
@@ -57,7 +54,7 @@
 							<uni-td v-else="mapper.title" :key="mapper.field" align="center">
 								{{item[mapper.field] !== undefined ? item[mapper.field] : '-'}}
 							</uni-td>
-						</template>
+						</block>
 					</uni-tr>
 				</uni-table>
 				<view class="uni-pagination-box">
@@ -130,7 +127,8 @@
 				chartData: {},
 				chartTab: 'new_device_count',
 				queryId: '',
-				updateValue: ''
+				updateValue: '',
+				errorMessage: ""
 			}
 		},
 		computed: {
@@ -175,7 +173,9 @@
 			}
 		},
 		created() {
-			this.debounceGet = debounce(() => this.getAllData())
+			this.debounceGet = debounce(() => {
+				this.getAllData(this.queryStr);
+			}, 300);
 		},
 		watch: {
 			query: {
@@ -192,7 +192,6 @@
 			},
 			changePlatform(id, index, name, item) {
 				this.query.version_id = 0
-				console.log(item.code);
 				this.query.uni_platform = item.code
 			},
 			changeTimeRange(id, index) {
@@ -224,9 +223,14 @@
 			},
 
 			getAllData(query) {
-				this.getPanelData()
-				this.getChartData()
-				this.getTableData()
+				if (query.indexOf("appid") === -1) {
+					this.errorMessage = "请先选择应用";
+					return; // 如果appid为空，则不进行查询
+				}
+				this.errorMessage = "";
+				this.getPanelData();
+				this.getChartData();
+				this.getTableData();
 			},
 
 			getChartData(field = this.chartTab) {
@@ -266,7 +270,6 @@
 							}
 						}
 						const hasChannels = []
-						console.log('data----', data);
 						data.forEach(item => {
 							if (hasChannels.indexOf(item.channel_id) < 0) {
 								hasChannels.push(item.channel_id)
@@ -313,7 +316,6 @@
 								}
 							})
 
-							console.log(options);
 							options.series = options.series.sort((a, b) => {
 								return a.name.localeCompare(b.name)
 							})
@@ -328,7 +330,6 @@
 
 			getChannels() {
 				const db = uniCloud.database()
-				console.log(this.query);
 				return db.collection('uni-stat-app-channels').where(stringifyQuery({
 					appid: this.query.appid,
 					platform_id: this.query.platform_id
@@ -403,7 +404,6 @@
 				query.dimension = 'day'
 				// let query = stringifyQuery(cloneQuery)
 				let querystr = stringifyQuery(query, false, ['uni_platform'])
-				console.log('channel --:', querystr);
 				const db = uniCloud.database()
 				const subTable = db.collection('uni-stat-result')
 					.where(querystr)

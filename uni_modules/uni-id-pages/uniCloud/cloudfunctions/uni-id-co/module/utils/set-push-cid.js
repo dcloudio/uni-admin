@@ -95,7 +95,6 @@ module.exports = async function (params = {}) {
   const getDeviceRes = await deviceCollection.where({
     device_id: deviceId
   }).get()
-  console.log(getDeviceRes)
   if (getDeviceRes.data.length > 1) {
     return {
       errCode: ERROR.SYSTEM_ERROR

@@ -2,6 +2,93 @@
  *  以下为 uni-stat 的工具方法
  */
 
+// 千分位
+function regexHandleNum(num) {
+  return String(num).replace(/\B(?=(\d{3})+(?!\d))/g, ','); // 3是千分位，4是万分位
+}
+
+// 新版格式化字段数据函数
+function formatterData(object) {
+	let {
+		fieldsMap,
+		data,
+		formatter = true
+	} = object;
+	let rows = JSON.parse(JSON.stringify(data));
+	rows.map((row) => {
+		for (let key in row) {
+			let fieldItem = fieldsMap.find((item) => {
+				return item.field == key;
+			});
+			if (typeof fieldItem === "object") {
+				let {
+					fix = 0,
+				} = fieldItem;
+				if (typeof fieldItem.multiple === "number" && typeof row[key] === "number") {
+					row[key] = Number((row[key] * fieldItem.multiple).toFixed(fix));
+				}
+				if (formatter && fieldItem.formatter && typeof row[key] === "number") {
+					if (fieldItem.formatter === ",") {
+						row[key] = regexHandleNum(row[key]);
+					} else if (fieldItem.formatter === "%") {
+						row[key] = `${(row[key] * 100).toFixed(fix)}%`
+					} else if (fieldItem.formatter === "-") {
+						// 时分秒格式
+						row[key] = parseDateTime(row[key]);
+					}
+				}
+			}
+		}
+	});
+	return rows;
+}
+
+// 补全趋势图的数据
+function fillTrendChartData(data, query, fieldsMap) {
+	let { start_time, dimension } = query;
+	if (["hour","day"].indexOf(dimension)>-1){
+		let timeArr = [];
+		let oneTime;
+		if (dimension === "hour"){
+			oneTime = 1000*3600;
+		} else if (dimension === "day"){
+			oneTime = 1000*3600*24;
+		}
+		let start = start_time[0];
+		let end = start_time[1];
+		let nowTime = start;
+		timeArr = [start];
+		while ((nowTime+oneTime)<=end){
+			nowTime += oneTime;
+			timeArr.push(nowTime);
+		}
+
+		let newData = [];
+		for (let i = 0; i < timeArr.length; i++) {
+			let time = timeArr[i];
+			let dataItem = data.find((item, index) => {
+				return item.start_time === time;
+			});
+			if (dataItem) {
+				newData.push(dataItem);
+			} else {
+				let obj = {
+					start_time: time
+				};
+				fieldsMap.map((item, index) => {
+					obj[item.field] = 0;
+				});
+
+				newData.push(obj);
+			}
+		}
+		return newData
+	} else {
+		return data;
+	}
+}
+
+
 // 将查询条件拼接为字符串
 function stringifyQuery(query, dimension = false, delArrs = []) {
 	const queryArr = []
@@ -376,6 +463,8 @@ function createUniStatQuery(object) {
 
 
 export {
+	formatterData,
+	fillTrendChartData,
 	stringifyQuery,
 	stringifyField,
 	stringifyGroupField,

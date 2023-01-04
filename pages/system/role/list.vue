@@ -17,8 +17,8 @@
 			</view>
 		</view>
 		<view class="uni-container">
-			<unicloud-db ref="udb" collection="uni-id-roles,uni-id-permissions"
-				field="role_id,role_name,permission{permission_name},comment,create_date" :where="where"
+			<unicloud-db ref="udb" :collection="collectionList"
+				:where="where"
 				page-data="replace" :orderby="orderby" :getcount="true" :page-size="options.pageSize"
 				:page-current="options.pageCurrent" v-slot:default="{data,pagination,loading,error,options}"
 				:options="options" loadtime="manual" @load="onqueryload">
@@ -88,6 +88,7 @@
 	export default {
 		data() {
 			return {
+				collectionList: [ db.collection('uni-id-roles').field('comment,permission,role_id,role_name,create_date').getTemp(),db.collection('uni-id-permissions').field('permission_name, permission_id').getTemp() ],
 				query: '',
 				where: '',
 				orderby: dbOrderBy,

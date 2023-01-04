@@ -56,7 +56,6 @@
 			}
 		},
 		async onLoad(e) {
-			console.log(e);
 			//获取通过url传递的参数type设置当前登录方式，如果没传递直接默认以配置的登录
 			let type = e.type || config.loginTypes[0]
 			this.type = type
@@ -111,12 +110,12 @@
 				this.$refs.uniFabLogin.login_before(this.type, true, options)
 			},
 			toSmsPage() {
-				console.log('toSmsPage',this.agree);
 				if (!this.isPhone) {
 					this.focusPhone = true
 					return uni.showToast({
 						title: "手机号码格式不正确",
-						icon: 'none'
+						icon: 'none',
+						duration: 3000
 					});
 				}
 				if (this.needAgreements && !this.agree) {
@@ -136,7 +135,8 @@
 			chooseArea() {
 				uni.showToast({
 					title: '暂不支持其他国家',
-					icon: 'none'
+					icon: 'none',
+					duration: 3000
 				});
 			},
 		}

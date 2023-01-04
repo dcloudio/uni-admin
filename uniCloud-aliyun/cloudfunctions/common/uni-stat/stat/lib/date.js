@@ -209,16 +209,14 @@ module.exports = class DateTime {
 	 * 根据设置的周数获取指定日期N周后（前）的时间戳
 	 * @param {Number} weeks 周数
 	 * @param {Date|Time} time 指定的日期或时间戳
-	 * @param {Boolean} getAll 是否获取完整时间戳，为 false 时返回指定日期初始时间戳（当天00:00:00的时间戳） 
+	 * @param {Boolean} getAll 是否获取完整时间戳，为 false 时返回指定日期初始时间戳（当天00:00:00的时间戳）
 	 */
 	getTimeBySetWeek(weeks, time, getAll = false) {
 		const date = this.getDateObj(time)
 		const dateInfo = this.getTimeInfo(time)
 		const day = dateInfo.nWeek
 		const offsetDays = 1 - day
-		if (weeks) {
-			weeks = weeks * 7 + offsetDays
-		}
+		weeks = weeks * 7 + offsetDays
 		date.setDate(date.getDate() + weeks)
 		let startTime = date.getTime()
 		if (!getAll) {
@@ -232,7 +230,7 @@ module.exports = class DateTime {
 	 * 根据设置的月数获取指定日期N月后（前）的时间戳
 	 * @param {Number} monthes 月数
 	 * @param {Date|Time} time 指定的日期或时间戳
-	 * @param {Boolean} getAll 是否获取完整时间戳，为 false 时返回指定日期初始时间戳（当天00:00:00的时间戳） 
+	 * @param {Boolean} getAll 是否获取完整时间戳，为 false 时返回指定日期初始时间戳（当天00:00:00的时间戳）
 	 */
 	getTimeBySetMonth(monthes, time, getAll = false) {
 		const date = this.getDateObj(time)
@@ -244,6 +242,59 @@ module.exports = class DateTime {
 		}
 		return startTime
 	}
+
+	/**
+	 * 根据设置的季度数获取指定日期N个季度后（前）的时间戳
+	 * @param {Number} quarter 季度
+	 * @param {Date|Time} time 指定的日期或时间戳
+	 * @param {Boolean} getAll 是否获取完整时间戳，为 false 时返回指定日期初始时间戳（当天00:00:00的时间戳）
+	 */
+	getTimeBySetQuarter(quarter, time, getAll = false) {
+		const date = this.getDateObj(time)
+		const dateInfo = this.getTimeInfo(time)
+		date.setMonth(date.getMonth() + quarter * 3)
+		const month = date.getMonth() + 1;
+		let quarterN;
+		let mm;
+		if ([1,2,3].indexOf(month) > -1) {
+			// 第1季度
+			mm = "01";
+		} else if ([4,5,6].indexOf(month) > -1) {
+			// 第2季度
+			mm = "04";
+		} else if ([7,8,9].indexOf(month) > -1) {
+			// 第3季度
+			mm = "07";
+		} else if ([10,11,12].indexOf(month) > -1) {
+			// 第4季度
+			mm = "10";
+		}
+		let yyyy = date.getFullYear();
+		let startTime = date.getTime()
+		if (!getAll) {
+			const realdate = this.getDate(`${yyyy}-${mm}-01 00:00:00`, startTime)
+			startTime = this.getTimeByDateAndTimezone(realdate)
+		}
+		return startTime
+	}
+
+	/**
+	 * 根据设置的年数获取指定日期N年后（前）的时间戳
+	 * @param {Number} year 月数
+	 * @param {Date|Time} time 指定的日期或时间戳
+	 * @param {Boolean} getAll 是否获取完整时间戳，为 false 时返回指定日期初始时间戳（当天00:00:00的时间戳）
+	 */
+	getTimeBySetYear(year, time, getAll = false) {
+		const date = this.getDateObj(time)
+		date.setFullYear(date.getFullYear() + year)
+		let startTime = date.getTime()
+		if (!getAll) {
+			const realdate = this.getDate('Y-01-01 00:00:00', startTime)
+			startTime = this.getTimeByDateAndTimezone(realdate)
+		}
+		return startTime
+	}
+
 
 	/**
 	 * 根据时区获取指定时间的偏移时间
@@ -266,7 +317,7 @@ module.exports = class DateTime {
 	 * @param {String} type 时间类型 hour:小时 day:天 week:周 month：月
 	 * @param {Number} offset 时间的偏移量
 	 * @param {Date|Time} thistime 指定的日期或时间戳
-	 * @param {Boolean} getAll 是否获取完整时间戳，为 false 时返回指定日期初始时间戳（当天00:00:00的时间戳） 
+	 * @param {Boolean} getAll 是否获取完整时间戳，为 false 时返回指定日期初始时间戳（当天00:00:00的时间戳）
 	 */
 	getTimeDimensionByType(type, offset = 0, thistime, getAll = false) {
 		let startTime = 0
@@ -293,6 +344,22 @@ module.exports = class DateTime {
 				const nextMonthFirstDayTime = new Date(date.getFullYear(), date.getMonth() + 1, 1).getTime()
 				endTime = getAll ? nextMonthFirstDayTime - 86400000 : this.getTimeByDateAndTimezone(
 					nextMonthFirstDayTime) - 1
+				break
+			}
+			case 'quarter': {
+				startTime = this.getTimeBySetQuarter(offset, thistime, getAll)
+				const date = this.getDateObj(this.getDate('Y-m-d H:i:s', startTime))
+				const nextMonthFirstDayTime = new Date(date.getFullYear(), date.getMonth() + 3, 1).getTime()
+				endTime = getAll ? nextMonthFirstDayTime - 86400000 : this.getTimeByDateAndTimezone(
+					nextMonthFirstDayTime) - 1
+				break
+			}
+			case 'year': {
+				startTime = this.getTimeBySetYear(offset, thistime, getAll)
+				const date = this.getDateObj(this.getDate('Y-m-d H:i:s', startTime))
+				const nextFirstDayTime = new Date(date.getFullYear() + 1, 0, 1).getTime()
+				endTime = getAll ? nextFirstDayTime - 86400000 : this.getTimeByDateAndTimezone(
+					nextFirstDayTime) - 1
 				break
 			}
 		}

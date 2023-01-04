@@ -69,7 +69,9 @@ module.exports = async function (params = {}) {
     tags,
     status
   } = params
-  const userMatched = await findUser({
+  const {
+    userMatched
+  } = await findUser({
     userQuery: {
       username,
       mobile,

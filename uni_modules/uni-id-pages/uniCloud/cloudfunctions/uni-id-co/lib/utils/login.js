@@ -18,11 +18,19 @@ async function realPreLogin (params = {}) {
     user
   } = params
   const appId = this.getUniversalClientInfo().appId
-  const userMatched = await findUser({
+  const {
+    total,
+    userMatched
+  } = await findUser({
     userQuery: user,
     authorizedApp: appId
   })
   if (userMatched.length === 0) {
+    if (total > 0) {
+      throw {
+        errCode: ERROR.ACCOUNT_NOT_EXISTS_IN_CURRENT_APP
+      }
+    }
     throw {
       errCode: ERROR.ACCOUNT_NOT_EXISTS
     }
@@ -177,9 +185,9 @@ async function postLogin (params = {}) {
     isThirdParty = false
   } = params
   const {
-    clientIP,
-    uniIdToken
+    clientIP
   } = this.getUniversalClientInfo()
+  const uniIdToken = this.getUniversalUniIdToken()
   const uid = user._id
   const updateData = {
     last_login_date: Date.now(),

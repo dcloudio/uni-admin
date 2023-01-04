@@ -27,7 +27,9 @@ const {
 	ErrorResult,
 	Loyalty,
 	RunErrors,
-	UserSessionLog
+	UserSessionLog,
+	uniPay,
+	Setting
 } = require('./mod')
 class UniStatDataStat {
 	/**
@@ -38,6 +40,26 @@ class UniStatDataStat {
 		const baseMod = new BaseMod()
 		const dateTime = new DateTime()
 		console.log('Cron start time: ', dateTime.getDate('Y-m-d H:i:s'))
+
+		// const setting = new Setting();
+		// let settingValue = await setting.getSetting()
+		// if (settingValue.mode === "close") {
+		// 	// 如果关闭了统计任务，则任务直接结束
+		// 	return {
+		// 		code: 0,
+		// 		msg: 'Task is close',
+		// 	}
+		// } else if (settingValue.mode === "auto") {
+		// 	// 如果开启了节能模式，则判断N天内是否有设备访问记录
+		// 	let runKey = await setting.checkAutoRun(settingValue);
+		// 	if (!runKey) {
+		// 		return {
+		// 			code: 0,
+		// 			msg: 'Task is auto close',
+		// 		}
+		// 	}
+		// }
+
 		//获取运行参数
 		const timeInfo = dateTime.getTimeInfo(null, false)
 		const cronConfig = baseMod.getConfig('cron')
@@ -47,8 +69,10 @@ class UniStatDataStat {
 		let res = null
 		if (cronConfig && cronConfig.length > 0) {
 			for (var mi in cronConfig) {
-				const cronType = cronConfig[mi].type
-				const cronTime = cronConfig[mi].time.split(' ')
+				const currCronConfig = cronConfig[mi]
+				const cronType = currCronConfig.type
+				const cronTime = currCronConfig.time.split(' ')
+				const cronDimension = currCronConfig.dimension
 
 				//未开启分钟级定时任务，则设置为小时级定时任务
 				if (cronTime.length === 4 && !cronMin) {
@@ -64,38 +88,46 @@ class UniStatDataStat {
 						//周统计任务
 						if (timeInfo.nWeek == cronTime[0] && timeInfo.nHour == cronTime[2] && timeInfo.nMinutes ==
 							cronTime[3]) {
-							console.log(cronType + '--week run')
+							let dimension = cronDimension || 'week';
+							console.log(cronType + `--${dimension} run`)
 							res = await this.stat({
 								type: cronType,
-								dimension: 'week'
+								dimension: cronDimension,
+								config: currCronConfig
 							})
 						}
 					} else if (cronTime[1] !== '*') {
-						//月统计任务
+						//月统计任务（包含季度统计任务和年统计任务）
 						if (timeInfo.nDay == cronTime[1] && timeInfo.nHour == cronTime[2] && timeInfo.nMinutes ==
 							cronTime[3]) {
-							console.log(cronType + '--month run')
+							let dimension = cronDimension || 'month';
+							console.log(cronType + `--${dimension} run`)
 							res = await this.stat({
 								type: cronType,
-								dimension: 'month'
+								dimension: dimension,
+								config: currCronConfig
 							})
 						}
 					} else if (cronTime[2] !== '*') {
 						//日统计任务
 						if (timeInfo.nHour == cronTime[2] && timeInfo.nMinutes == cronTime[3]) {
-							console.log(cronType + '--day run')
+							let dimension = cronDimension || 'day';
+							console.log(cronType + `--${dimension} run`)
 							res = await this.stat({
 								type: cronType,
-								dimension: 'day'
+								dimension: dimension,
+								config: currCronConfig
 							})
 						}
 					} else if (cronTime[3] !== '*') {
 						//实时统计任务
 						if (timeInfo.nMinutes == cronTime[3] && realtimeStat) {
-							console.log(cronType + '--hour run')
+							let dimension = cronDimension || 'hour';
+							console.log(cronType + `--${dimension} run`)
 							res = await this.stat({
 								type: cronType,
-								dimension: 'hour'
+								dimension: dimension,
+								config: currCronConfig
 							})
 						}
 					}
@@ -105,37 +137,45 @@ class UniStatDataStat {
 					if (cronTime[0] !== '*') {
 						//周统计任务
 						if (timeInfo.nWeek == cronTime[0] && timeInfo.nHour == cronTime[2]) {
-							console.log(cronType + '--week run')
+							let dimension = cronDimension || 'week';
+							console.log(cronType + `--${dimension} run`)
 							res = await this.stat({
 								type: cronType,
-								dimension: 'week'
+								dimension: dimension,
+								config: currCronConfig
 							})
 						}
 					} else if (cronTime[1] !== '*') {
-						//月统计任务
+						//月统计任务（包含季度统计任务和年统计任务）
 						if (timeInfo.nDay == cronTime[1] && timeInfo.nHour == cronTime[2]) {
-							console.log(cronType + '--month run')
+							let dimension = cronDimension || 'month';
+							console.log(cronType + `--${dimension} run`)
 							res = await this.stat({
 								type: cronType,
-								dimension: 'month'
+								dimension: dimension,
+								config: currCronConfig
 							})
 						}
 					} else if (cronTime[2] !== '*') {
 						//日统计任务
 						if (timeInfo.nHour == cronTime[2]) {
-							console.log(cronType + '--day run')
+							let dimension = cronDimension || 'day';
+							console.log(cronType + `--${dimension} run`)
 							res = await this.stat({
 								type: cronType,
-								dimension: 'day'
+								dimension: dimension,
+								config: currCronConfig
 							})
 						}
 					} else {
 						//实时统计任务
 						if (realtimeStat) {
-							console.log(cronType + '--hour run')
+							let dimension = cronDimension || 'hour';
+							console.log(cronType + `--${dimension} run`)
 							res = await this.stat({
 								type: cronType,
-								dimension: 'hour'
+								dimension: dimension,
+								config: currCronConfig
 							})
 						}
 					}
@@ -161,7 +201,8 @@ class UniStatDataStat {
 			type,
 			dimension,
 			date,
-			reset
+			reset,
+			config
 		} = params
 		let res = {
 			code: 0,
@@ -227,6 +268,12 @@ class UniStatDataStat {
 				// 日志清理
 				case 'clean': {
 					res = await this.cleanLog()
+				}
+				// 支付统计
+				case 'pay-result': {
+					const paymentResult = new uniPay.PayResult()
+					res = await paymentResult.stat(dimension, date, reset, config)
+					break
 				}
 			}
 		} catch (e) {

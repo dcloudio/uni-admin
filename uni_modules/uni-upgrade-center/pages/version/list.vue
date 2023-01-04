@@ -7,7 +7,7 @@
 					<view class="uni-title app-list">
 						<picker @change="(e) => showAppIndex = e.detail.value" :value="showAppIndex"
 							:range="appNameList">
-							<view class="uni-input" style="font-size: 14px;">
+							<view class="uni-input">
 								{{appNameList[showAppIndex]}}
 								<uni-icons type="bottom"></uni-icons>
 							</view>
@@ -24,7 +24,7 @@
 			</view>
 			<view class="uni-container">
 				<unicloud-db ref="udb" :collection="appVersionListDbName"
-					field="store_list,appid,contents,platform,type,version,min_uni_version,url,stable_publish,create_date,title,name"
+					field="appid,contents,platform,type,version,min_uni_version,url,stable_publish,create_date,title,name"
 					:where="where" page-data="replace" :orderby="orderby" :getcount="true" :page-size="options.pageSize"
 					:page-current="options.pageCurrent" v-slot:default="{data,pagination,loading,error,options}"
 					:options="options">
@@ -35,7 +35,7 @@
 							<uni-th align="center">更新标题</uni-th>
 							<uni-th align="center">安装包类型</uni-th>
 							<uni-th align="center">平台</uni-th>
-							<uni-th align="center">已上架应用市场</uni-th>
+							<!-- <uni-th align="center">已上架应用市场</uni-th> -->
 							<uni-th align="center">版本号</uni-th>
 							<uni-th align="center">安装包状态</uni-th>
 							<uni-th align="center">上传时间</uni-th>
@@ -57,9 +57,9 @@
 								<uni-data-picker :localdata="options.platform_valuetotext" :value="item.platform"
 									:border="false" :readonly="true" split="," />
 							</uni-td>
-							<uni-td align="center">
+							<!-- <uni-td align="center">
 								<text>{{store_list_key(item.store_list)}}</text>
-							</uni-td>
+							</uni-td> -->
 							<uni-td align="center"> {{item.version}} </uni-td>
 							<uni-td align="center"> {{item.stable_publish == true ? '已上线' : '已下线'}} </uni-td>
 							<uni-td align="center">
@@ -91,7 +91,7 @@
 <script>
 	import {
 		enumConverter
-	} from '@/js_sdk/validator/opendb-app-versions.js';
+	} from '@/uni_modules/uni-upgrade-center/js_sdk/validator/opendb-app-versions.js';
 	import {
 		appListDbName,
 		appVersionListDbName,
@@ -154,10 +154,7 @@
 			appid
 		}) {
 			await this.getAppList()
-			if (!this.appList.length) {
-				this.showModalToAppManager()
-				return
-			}
+			if (!this.appList.length) return
 			this.loaded = true
 
 			this.appList.forEach((item, index) => {

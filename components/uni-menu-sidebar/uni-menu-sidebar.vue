@@ -1,6 +1,6 @@
 <template>
 	<view class="pointer">
-		<template v-for="(item,index) in data">
+		<block v-for="(item,index) in data" :key="index">
 			<template v-if="!item.children || !item.children.length">
 				<uni-menu-item :index="item">
 					<view :class="item.icon"></view>
@@ -14,7 +14,7 @@
 				</template>
 				<uni-menu-sidebar class="item-bg"  :data="item.children" :key="item._id" />
 			</uni-sub-menu>
-		</template>
+		</block>
 	</view>
 </template>
 

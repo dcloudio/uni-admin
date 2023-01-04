@@ -151,28 +151,50 @@ if (process.env.NODE_ENV === 'development') {
 	})
 	// #endif
 	// #ifdef VUE3
-	const rootModules = import.meta.glob('../../../*-menu.json', {eager: true})
+	const rootModules = import.meta.glob('../../../*-menu.json', {eager: true});
 	for (const modulePath in rootModules) {
-		const json = modulePath.replace(/^..\/..\/..\//, '')
-		rootModules[modulePath]().then(module => {
-			module = module.default ? module.default : module
+		const json = modulePath.replace(/^..\/..\/..\//, '');
+		let moduleItem = rootModules[modulePath];
+		if (typeof moduleItem === "function") {
+			// 兼容 HBX3.6.5或以下版本
+			moduleItem().then(module => {
+				module = module.default ? module.default : module
+				module.forEach(item => {
+					item.json = json
+					pluginMenuJsons.push(item)
+				});
+			})
+		} else {
+			// 兼容 HBX3.6.13或以上版本
+			let module = moduleItem.default ? moduleItem.default : moduleItem;
 			module.forEach(item => {
 				item.json = json
 				pluginMenuJsons.push(item)
-			})
-		})
+			});
+		}
 	}
 
-	const pluginModules = import.meta.glob('../../../uni_modules/**/menu.json', {eager: true})
+	const pluginModules = import.meta.glob('../../../uni_modules/**/menu.json', {eager: true});
 	for (const modulePath in pluginModules) {
-		const json = modulePath.replace(/^..\/..\/..\//, '')
-		pluginModules[modulePath]().then(module => {
-			module = module.default ? module.default : module
+		const json = modulePath.replace(/^..\/..\/..\//, '');
+		let moduleItem = pluginModules[modulePath];
+		if (typeof moduleItem === "function") {
+			// 兼容 HBX3.6.5或以下版本
+			moduleItem().then(module => {
+				module = module.default ? module.default : module
+				module.forEach(item => {
+					item.json = json
+					pluginMenuJsons.push(item)
+				})
+			})
+		} else {
+			// 兼容 HBX3.6.13或以上版本
+			let module = moduleItem.default ? moduleItem.default : moduleItem;
 			module.forEach(item => {
 				item.json = json
 				pluginMenuJsons.push(item)
-			})
-		})
+			});
+		}
 	}
 	// #endif
 }

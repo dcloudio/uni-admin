@@ -26,8 +26,9 @@
 				return this.$uniIdPagesStore.store.userInfo
 			}
 		},
-		// #ifdef H5
+
 		watch: {
+			// #ifdef H5
 			$route: {
 				immediate: true,
 				handler(newRoute, oldRoute) {
@@ -37,6 +38,7 @@
 					}
 				}
 			},
+			// #endif
 			userInfo: {
 				// immediate: true,
 				handler(newVal, oldVal) {
@@ -49,7 +51,6 @@
 				}
 			}
 		},
-		// #endif
 		methods: {
 			...mapActions({
 				setRoutes: 'app/setRoutes'
@@ -111,11 +112,12 @@
 		background-color: $left-window-bg-color;
 		padding-bottom: 10px;
 	}
-
+	/* #ifdef H5 */
 	.sidebar ::-webkit-scrollbar {
 		display: none;
 		// scrollbar-width: thin;
 	}
+	/* #endif */
 
 	.title {
 		margin-left: 5px;

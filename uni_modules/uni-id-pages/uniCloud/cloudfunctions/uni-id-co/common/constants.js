@@ -41,7 +41,8 @@ const CAPTCHA_SCENE = {
   RESET_PWD_BY_EMAIL: 'reset-pwd-by-email',
   SEND_SMS_CODE: 'send-sms-code',
   SEND_EMAIL_CODE: 'send-email-code',
-  BIND_MOBILE_BY_SMS: 'bind-mobile-by-sms'
+  BIND_MOBILE_BY_SMS: 'bind-mobile-by-sms',
+  SET_PWD_BY_SMS: 'set-pwd-by-sms'
 }
 
 const LOG_TYPE = {
@@ -64,7 +65,8 @@ const LOG_TYPE = {
 const SMS_SCENE = {
   LOGIN_BY_SMS: 'login-by-sms',
   RESET_PWD_BY_SMS: 'reset-pwd-by-sms',
-  BIND_MOBILE_BY_SMS: 'bind-mobile-by-sms'
+  BIND_MOBILE_BY_SMS: 'bind-mobile-by-sms',
+  SET_PWD_BY_SMS: 'set-pwd-by-sms'
 }
 
 const EMAIL_SCENE = {

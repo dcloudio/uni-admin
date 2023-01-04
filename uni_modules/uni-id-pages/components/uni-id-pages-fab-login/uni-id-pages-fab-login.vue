@@ -49,7 +49,6 @@
 					return this.getParentComponent().agree
 				},
 				set(agree) {
-					console.log('setAgree', agree);
 					return this.getParentComponent().agree = agree
 				}
 			}
@@ -202,7 +201,7 @@
 				// #endif
 			},
 			setUserInfo(e) {
-				console.log('setUserInfo', e);
+				
 			},
 			getRoute(n = 0) {
 				let pages = getCurrentPages();
@@ -235,7 +234,6 @@
 				}
 			},
 			async login_before(type, navigateBack = true, options = {}) {
-				console.log(type);
 				//提示空实现
 				if (["qq",
 						"xiaomi",
@@ -248,7 +246,8 @@
 					].includes(type)) {
 					return uni.showToast({
 						title: '该登录方式暂未实现，欢迎提交pr',
-						icon: 'none'
+						icon: 'none',
+						duration: 3000
 					});
 				}
 
@@ -264,7 +263,8 @@
 						}else{
 							return uni.showToast({
 								title: '当前设备不支持此登录，请选择其他登录方式',
-								icon: 'none'
+								icon: 'none',
+								duration: 3000
 							});
 						}
 					}, err => {
@@ -286,20 +286,16 @@
 				) {
 					return uni.showToast({
 						title: '当前设备不支持此登录，请选择其他登录方式',
-						icon: 'none'
+						icon: 'none',
+						duration: 3000
 					});
 				}
 
 				//判断是否需要弹出隐私协议授权框
-				console.log(type, this.agree);
 				let needAgreements = (config?.agreements?.scope || []).includes('register')
-				console.log({
-					needAgreements
-				});
 				if (type != 'univerify' && needAgreements && !this.agree) {
 					let agreementsRef = this.getParentComponent().$refs.agreements
 					return agreementsRef.popup(() => {
-						console.log(type, navigateBack);
 						this.login_before(type, navigateBack, options)
 					})
 				}
@@ -311,7 +307,6 @@
 										document.domain +
 										(window.location.href.includes('#')?'/#':'') +
 										'/uni_modules/uni-id-pages/pages/login/login-withoutpwd?is_weixin_redirect=true&type=weixin'
-						console.log('redirectUrl----',redirectUrl);
 						let ua = window.navigator.userAgent.toLowerCase();
 						if (ua.match(/MicroMessenger/i) == 'micromessenger'){
 							// console.log('在微信公众号内');
@@ -337,7 +332,6 @@
 				if (type == 'univerify') {
 					let univerifyManager = uni.getUniverifyManager()
 					let onButtonsClickFn = async res => {
-						console.log('点击了第三方登录，provider：', res, res.provider, this.univerifyStyle.buttons.list);
 						//同步一键登录弹出层隐私协议框是否打勾
 						let agree = (await uni.getCheckBoxState())[1].state
 						//console.log('agree',agree);
@@ -359,7 +353,8 @@
 								//console.log("你未同意隐私政策协议");
 								uni.showToast({
 									title: "你未同意隐私政策协议",
-									icon: 'none'
+									icon: 'none',
+									duration: 3000
 								});
 							}
 						}
@@ -377,17 +372,16 @@
 					return univerifyManager.login({
 						"univerifyStyle": this.univerifyStyle,
 						success: res => {
-							console.log('login success', res)
 							this.login(res.authResult, 'univerify')
 						},
 						fail(err) {
 							uni.showToast({
 								title: JSON.stringify(err),
-								icon: 'none'
+								icon: 'none',
+								duration: 3000
 							});
 						},
 						complete: async e => {
-							console.log(e);
 							uni.hideLoading()
 							//同步一键登录弹出层隐私协议框是否打勾
 							this.agree = (await uni.getCheckBoxState())[1].state
@@ -410,7 +404,6 @@
 					"univerifyStyle": this.univerifyStyle,
 					// #endif
 					success: async e => {
-						console.log(e);
 						if (type == 'apple') {
 							let res = await this.getUserInfo({
 								provider: "apple"
@@ -429,21 +422,16 @@
 				})
 			},
 			login(params, type) { //联网验证登录
-				console.log('执行登录开始----');
-				console.log({
-					params,
-					type
-				});
 				//toLowerCase
 				let action = 'loginBy' + type.trim().replace(type[0], type[0].toUpperCase())
 				const uniIdCo = uniCloud.importObject("uni-id-co",{
 					customUI:true
 				})
 				uniIdCo[action](params).then(result => {
-					console.log("login-result", result);
 					uni.showToast({
 						title: '登录成功',
-						icon: 'none'
+						icon: 'none',
+						duration: 2000
 					});
 					// #ifdef MP-WEIXIN
 					//如果是微信小程序端的微信登录，且为首次登录，就弹出获取微信昵称+头像用于绑定资料

@@ -9,25 +9,22 @@
 			</view>
 		</view>
 		<view class="uni-container">
+			<view class="uni-stat--x flex p-1015">
+				<uni-data-select collection="opendb-app-list" field="appid as value, name as text" orderby="text asc" :defItem="1" label="应用选择" @change="changeAppid" v-model="query.appid" :clear="false" />
+				<uni-data-select collection="opendb-app-versions" :where="versionQuery" class="ml-m" field="_id as value, version as text" orderby="text asc" label="版本选择" v-model="query.version_id" />
+			</view>
 			<view class="uni-stat--x flex">
-				<uni-data-select collection="opendb-app-list" field="appid as value, name as text" orderby="text asc"
-					:defItem="1" label="应用选择" @change="changeAppid" v-model="query.appid" :clear="false" />
-				<uni-data-select collection="opendb-app-versions" :where="versionQuery"
-					field="_id as value, version as text" orderby="text asc" label="版本选择" v-model="query.version_id" />
-				<view class="flex">
-					<uni-stat-tabs label="日期选择" :current="currentDateTab" mode="date" :yesterday="false"
-						@change="changeTimeRange" />
-					<uni-datetime-picker type="daterange" :end="new Date().getTime()" v-model="query.start_time"
-						returnType="timestamp" :clearIcon="false" class="uni-stat-datetime-picker"
-						:class="{'uni-stat__actived': currentDateTab < 0 && !!query.start_time.length}"
-						@change="useDatetimePicker" />
-				</view>
+				<uni-stat-tabs label="日期选择" :current="currentDateTab" mode="date" :yesterday="false" @change="changeTimeRange" />
+				<uni-datetime-picker type="daterange" :end="new Date().getTime()" v-model="query.start_time"
+					returnType="timestamp" :clearIcon="false" class="uni-stat-datetime-picker"
+					:class="{'uni-stat__actived': currentDateTab < 0 && !!query.start_time.length}"
+					@change="useDatetimePicker" />
 			</view>
 			<view class="uni-stat--x">
-				<uni-stat-tabs label="平台选择" type="boldLine" mode="platform" v-model="query.platform_id"
-					@change="changePlatform" />
-				<uni-data-select v-if="query.platform_id && query.platform_id.indexOf('==') === -1"
-					:localdata="channelData" label="渠道/场景值选择" v-model="query.channel_id"></uni-data-select>
+				<uni-stat-tabs label="平台选择" type="boldLine" mode="platform" v-model="query.platform_id" @change="changePlatform" />
+				<uni-data-select ref="version-select" v-if="query.platform_id && query.platform_id.indexOf('==') === -1" collection="uni-stat-app-channels" :where="channelQuery" class="p-channel" field="_id as value, channel_name as text" orderby="text asc" label="渠道/场景值选择" v-model="query.channel_id" />
+				<!-- <uni-data-select v-if="query.platform_id && query.platform_id.indexOf('==') === -1"
+					:localdata="channelData" label="渠道/场景值选择" v-model="query.channel_id"></uni-data-select> -->
 			</view>
 			<view class="uni-stat--x mb-m" style="padding-top: 0;">
 				<view class="mb-m line-bottom">
@@ -38,7 +35,7 @@
 				<view class="p-m">
 					<view class="uni-charts-box">
 						<qiun-data-charts type="area" :chartData="chartData" echartsH5 echartsApp
-							tooltipFormat="tooltipCustom" />
+							tooltipFormat="tooltipCustom" :errorMessage="errorMessage"/>
 					</view>
 				</view>
 			</view>
@@ -49,17 +46,17 @@
 				</view>
 				<uni-table :loading="loading" stripe :emptyText="$t('common.empty')">
 					<uni-tr style="background-color: #eee;">
-						<template v-for="(mapper, index) in fieldsMap">
+						<block v-for="(mapper, index) in fieldsMap" :key="index">
 							<uni-th v-if="mapper.title" :key="index" align="center">{{mapper.title}}</uni-th>
-						</template>
+						</block>
 					</uni-tr>
 					<uni-tr v-for="(item ,i) in tableData" :key="i">
-						<template v-for="(mapper, index) in fieldsMap">
+						<block v-for="(mapper, index) in fieldsMap" :key="index">
 							<uni-td v-if="mapper.title" :key="index" align="center"
 								:class="/[d|w|m]_\d/.test(mapper.field)&&[item[mapper.field] ? 'uni-stat-table-bg' : '']">
 								{{item[mapper.field] ? item[mapper.field] : ''}}
 							</uni-td>
-						</template>
+						</block>
 					</uni-tr>
 				</uni-table>
 				<view class="uni-pagination-box">
@@ -121,7 +118,8 @@
 					tooltip: '指定时间活跃（即访问应用）用户，在之后的第N天，再次访问应用的用户数占比'
 				}],
 				key: 1,
-				channelData: []
+				channelData: [],
+				errorMessage: "",
 			}
 		},
 		computed: {
@@ -178,7 +176,9 @@
 			}
 		},
 		created() {
-			this.debounceGet = debounce(() => this.getAllData(this.query))
+			this.debounceGet = debounce(() => {
+				this.getAllData(this.query);
+			}, 300);
 			this.getChannelData()
 		},
 		watch: {
@@ -245,7 +245,7 @@
 				}).join()
 				return fields
 			},
-			
+
 			// 此处 util 中的 groupField 不满足需求，特殊处理 groupField
 			createStr(type = "device_count", vals, fields, tail) {
 				const value = vals || [1, 2, 3, 4, 5, 6, 7, 14, 30]
@@ -265,6 +265,11 @@
 			},
 
 			getAllData(query) {
+				if (!query.appid) {
+					this.errorMessage = "请先选择应用";
+					return; // 如果appid为空，则不进行查询
+				}
+				this.errorMessage = "";
 				this.getChartData(query, this.key, this.keyName)
 				this.getTabelData(query)
 			},

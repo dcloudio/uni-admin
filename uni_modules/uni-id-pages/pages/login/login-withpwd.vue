@@ -84,21 +84,24 @@
 					this.focusPassword = true
 					return uni.showToast({
 						title: '请输入密码',
-						icon: 'none'
+						icon: 'none',
+						duration: 3000
 					});
 				}
 				if (!this.username.length) {
 					this.focusUsername = true
 					return uni.showToast({
 						title: '请输入手机号/用户名/邮箱',
-						icon: 'none'
+						icon: 'none',
+						duration: 3000
 					});
 				}
 				if (this.needCaptcha && this.captcha.length != 4) {
 					this.$refs.captcha.getImageCaptcha()
 					return uni.showToast({
 						title: '请输入验证码',
-						icon: 'none'
+						icon: 'none',
+						duration: 3000
 					});
 				}
 

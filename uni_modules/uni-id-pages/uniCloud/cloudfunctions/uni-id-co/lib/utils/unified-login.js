@@ -18,12 +18,20 @@ async function realPreUnifiedLogin (params = {}) {
     type
   } = params
   const appId = this.getUniversalClientInfo().appId
-  const userMatched = await findUser({
+  const {
+    total,
+    userMatched
+  } = await findUser({
     userQuery: user,
     authorizedApp: appId
   })
   if (userMatched.length === 0) {
     if (type === 'login') {
+      if (total > 0) {
+        throw {
+          errCode: ERROR.ACCOUNT_NOT_EXISTS_IN_CURRENT_APP
+        }
+      }
       throw {
         errCode: ERROR.ACCOUNT_NOT_EXISTS
       }

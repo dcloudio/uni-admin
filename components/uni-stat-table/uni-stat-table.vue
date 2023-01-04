@@ -1,7 +1,7 @@
 <template>
 	<uni-table :loading="loading" border stripe emptyText="暂无数据">
 		<uni-tr>
-			<template v-for="(mapper, index) in filedsMap">
+			<block v-for="(mapper, index) in filedsMap" :key="index">
 				<uni-th v-if="mapper.title" :key="index" align="center">
 					<!-- #ifdef MP -->
 					{{mapper.title}}
@@ -18,14 +18,14 @@
 					</uni-tooltip>
 					<!-- #endif -->
 				</uni-th>
-			</template>
+			</block>
 		</uni-tr>
 		<uni-tr v-for="(item ,i) in data" :key="i">
-			<template v-for="(mapper, index) in filedsMap">
+			<block v-for="(mapper, index) in filedsMap" :key="index">
 				<uni-td v-if="mapper.title" :key="index" align="center">
 					{{item[mapper.field] !== undefined ? item[mapper.field] : '-'}}
 				</uni-td>
-			</template>
+			</block>
 		</uni-tr>
 	</uni-table>
 </template>

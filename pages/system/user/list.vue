@@ -13,8 +13,8 @@
 					@click="delTable">{{$t('common.button.batchDelete')}}</button>
 				<button class="uni-button" type="primary" size="mini" :disabled="!selectedIndexs.length"
 					@click="openTagsPopup">标签管理</button>
-				<button class="uni-button" type="primary" size="mini" @click="$refs.batchSms.open()">群发短信</button>
 				<!-- #ifdef H5 -->
+				<button class="uni-button" type="primary" size="mini" @click="$refs.batchSms.open()">群发短信</button>
 				<download-excel class="hide-on-phone" :fields="exportExcel.fields" :data="exportExcelData"
 					:type="exportExcel.type" :name="exportExcel.filename">
 					<button class="uni-button" type="primary" size="mini">{{$t('common.button.exportExcel')}}</button>
@@ -23,8 +23,7 @@
 			</view>
 		</view>
 		<view class="uni-container">
-			<unicloud-db ref="udb" collection="uni-id-users,uni-id-roles"
-				field="username,nickname,mobile,status,email,role{role_name},dcloud_appid,tags,last_login_date" :where="where"
+			<unicloud-db ref="udb" :collection="collectionList" :where="where"
 				page-data="replace" :orderby="orderby" :getcount="true" :page-size="options.pageSize"
 				:page-current="options.pageCurrent" v-slot:default="{ data, pagination, loading, error, options }"
 				:options="options" loadtime="manual" @load="onqueryload">
@@ -58,12 +57,11 @@
 						<uni-td align="center">
 							<uni-link :href="'mailto:' + item.email" :text="item.email"></uni-link>
 						</uni-td>
-						<uni-td align="center">{{ item.role }}</uni-td>
+						<uni-td align="center"> {{ item.role }}</uni-td>
 						<uni-td align="center">
-							<template v-if="item.tags" v-for="tag in item.tags">
-								<uni-tag type="primary" inverted size="small" :text="tag" style="margin: 0 5px;">
-								</uni-tag>
-							</template>
+							<block v-for="(tag,tagIndex) in item.tags" :key="tagIndex">
+								<uni-tag type="primary" inverted size="small" :text="tag" v-if="item.tags" style="margin: 0 5px;"></uni-tag>
+							</block>
 						</uni-td>
 						<uni-td align="center">
 							<uni-link v-if="item.dcloud_appid === undefined" :href="noAppidWhatShouldIDoLink">
@@ -104,8 +102,10 @@
 				</view>
 			</view>
 		</uni-popup>
+		<!-- #ifdef H5 -->
 		{{smsReceiver}}
 		<batch-sms ref="batchSms" toType="user" :receiver="smsReceiver"></batch-sms>
+		<!-- #endif -->
 	</view>
 </template>
 
@@ -133,6 +133,7 @@
 	export default {
 		data() {
 			return {
+				collectionList: [ db.collection('uni-id-users').field('ali_openid,apple_openid,avatar,avatar_file,comment,dcloud_appid,department_id,email,email_confirmed,gender,invite_time,inviter_uid,last_login_date,last_login_ip,mobile,mobile_confirmed,my_invite_code,nickname,role,score,status,token,username,wx_unionid,qq_unionid,tags').getTemp(),db.collection('uni-id-roles').field('role_id, role_name').getTemp() ],
 				query: '',
 				where: '',
 				orderby: dbOrderBy,
@@ -233,10 +234,12 @@
 				}
 				return dynamic_data
 			},
-			smsReceiver () {
+			smsReceiver() {
 				if (this.selectedIndexs.length) {
 					var dataList = this.$refs.udb.dataList
 					return this.selectedIndexs.map(i => dataList[i]._id)
+				} else {
+					return undefined;
 				}
 			}
 		},
