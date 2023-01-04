@@ -236,11 +236,11 @@ class UniStatDataStat {
 			} else {
 				this.tryTimes++
 			}
-			
+
 			//报错则重新尝试2次, 解决部分云服务器偶现连接超时问题
 			if (this.tryTimes <= maxTryTimes) {
 				//休眠1秒后重新调用
-				sleep(1000)
+				await sleep(1000)
 				params.reset = true
 				res = await this.stat(params)
 			} else {
@@ -287,7 +287,7 @@ class UniStatDataStat {
 			const sessionLog = new SessionLog()
 			res.data.sessionLog = await sessionLog.clean(cleanLog.reserveDays.sessionLog)
 		}
-		
+
 		// 用户会话日志
 		if (cleanLog.reserveDays.userSessionLog > 0) {
 			const userSessionLog = new UserSessionLog()
