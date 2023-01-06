@@ -14,8 +14,23 @@ exports.main = async (event, context) => {
 	const appListDBName = 'opendb-app-list'
 	const appVersionDBName = 'opendb-app-versions'
 	let res = {};
-	let params = event.data || event.params;
 
+	if (event.headers) {
+		try {
+			if (event.httpMethod.toLocaleLowerCase() === 'get') {
+				event = event.queryStringParameters;
+			} else {
+				event = JSON.parse(event.body);
+			}
+		} catch (e) {
+			return {
+				code: 500,
+				msg: '请求错误'
+			};
+		}
+	}
+
+	let params = event.data || event.params;
 	switch (event.action) {
 		case 'checkVersion':
 			res = await checkVersion(event, context)
