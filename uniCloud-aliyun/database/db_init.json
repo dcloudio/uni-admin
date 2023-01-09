@@ -529,5 +529,17 @@
 	"uni-stat-user-session-logs": {},
 	"uni-pay-orders": {},
 	"uni-stat-pay-result": {},
-	"opendb-tempdata":{}
+	"opendb-tempdata":{},
+
+	"opendb-banner": {},
+	"opendb-feedback": {},
+	"opendb-news-articles": {},
+	"opendb-news-categories": {},
+	"opendb-news-comments": {},
+	"opendb-news-favorite": {},
+	"opendb-search-hot": {},
+	"opendb-search-log": {},
+	"opendb-sign-in":{},
+	"read-news-log": {},
+	"uni-id-scores": {}
 }
