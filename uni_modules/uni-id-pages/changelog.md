@@ -1,5 +1,14 @@
+## 1.0.39（2022-12-28）
+- uni-id-co 修复 URL化时第三方登录无法获取 uniPlatform 参数
+- uni-id-co 修复 validator error
+## 1.0.38（2022-12-26）
+- uni-id-co 优化 手机号与邮箱验证规则为空字符串时不校验
+## 1.0.37（2022-12-09）
+- 优化admin端样式
+## 1.0.36（2022-12-08）
+- uni-id-co 修复 `updateUser` 接口部分参数为空时数据修改异常
 ## 1.0.35（2022-11-30）
-- uni-id-co 新增匹配到的用户不可在当前应用登录时的错误码 `uni-id-account-not-exists-in-current-app` [错误码说明](https://uniapp.dcloud.net.cn/uniCloud/uni-id-summary.html#errcode)
+- uni-id-co 新增 匹配到的用户不可在当前应用登录时的错误码 `uni-id-account-not-exists-in-current-app` [错误码说明](https://uniapp.dcloud.net.cn/uniCloud/uni-id-summary.html#errcode)
 ## 1.0.34（2022-11-29）
 - 优化 toast 错误提示时间为3秒
 - uni-id-co 修复 无法从 clientInfo 中获取 uniIdToken

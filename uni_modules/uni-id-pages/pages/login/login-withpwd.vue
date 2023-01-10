@@ -152,7 +152,7 @@
 
 	@media screen and (min-width: 690px) {
 		.uni-content {
-			max-height: 650px;
+			height: 600px;
 		}
 	}
 

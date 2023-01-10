@@ -420,7 +420,8 @@ const cfu = {
 				"gridColor": "#CCCCCC",
 				"gridCount": 3,
 				"opacity": 0.2,
-				"max": 200
+				"max": 200,
+				"labelShow": true
 			},
 		}
 	},

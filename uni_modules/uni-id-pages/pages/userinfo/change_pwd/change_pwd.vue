@@ -82,6 +82,8 @@
 			 * 完成并提交
 			 */
 			submit() {
+				// console.log("formData", this.formData);
+				// console.log('rules', this.rules);
 				this.$refs.form.validate()
 					.then(res => {
 						let {
@@ -92,6 +94,7 @@
 								oldPassword,
 								newPassword
 							}).then(e => {
+								// console.log(e);
 								uni.removeStorageSync('uni_id_token');
 								uni.setStorageSync('uni_id_token_expired', 0)
 								uni.redirectTo({
@@ -106,6 +109,7 @@
 					}).catch(errors => {
 						let key = errors[0].key
 						key = key.replace(key[0], key[0].toUpperCase())
+						// console.log(key, 'focus' + key);
 						this['focus' + key] = true
 					})
 			}

@@ -38,6 +38,7 @@
 			this.phone = phoneNumber;
 		},
 		onShow() {
+			// console.log('onShow');
 			// #ifdef H5
 			document.onkeydown = event => {
 				var e = event || window.event;
@@ -67,13 +68,14 @@
 					"code": this.code,
 					"captcha": this.captcha
 				}).then(e => {
+					// console.log(e);
 					this.loginSuccess(e)
 				}).catch(e => {
 					if (e.errCode == 'uni-id-captcha-required') {
 						this.$refs.popup.open()
 					} else {
 						console.log(e.errMsg);
-						console.log(e.errCode);
+						// console.log(e.errCode);
 					}
 				}).finally(e => {
 					this.captcha = ''

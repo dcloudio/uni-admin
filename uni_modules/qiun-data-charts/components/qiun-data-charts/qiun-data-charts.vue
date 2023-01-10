@@ -97,7 +97,7 @@
     </block>
     <!-- #endif -->
     <!-- 其他小程序通过vue渲染图表 -->
-    <!-- #ifdef MP-360 || MP-BAIDU || MP-QQ || MP-TOUTIAO || MP-WEIXIN || MP-KUAISHOU || MP-LARK || MP-JD -->
+    <!-- #ifdef MP-WEIXIN || MP-BAIDU || MP-QQ || MP-TOUTIAO || MP-KUAISHOU || MP-LARK || MP-JD || MP-360 -->
     <block v-if="type2d">
       <view v-if="ontouch" @tap="_tap">
         <canvas
@@ -608,7 +608,7 @@ export default {
       if (val) {
         this.emitMsg({name: 'error', params: {type:"error", errorShow: this.errorShow, msg: val, id: this.cid}});
         if(this.errorShow){
-          //console.log('[秋云图表组件]' + val);
+          console.log('[秋云图表组件]' + val);
         }
       }
     },
@@ -1309,9 +1309,9 @@ export default {
         script.src = './uni_modules/qiun-data-charts/static/app-plus/echarts.min.js'
         // #endif
         // #ifdef H5
-        const { origin } = window.location
-        const rooturl = origin + process.env.BASE_URL
-        script.src = rooturl + 'uni_modules/qiun-data-charts/static/h5/echarts.min.js'
+        const rooturl = window.location.origin
+        const directory = instance.getDataset().directory
+        script.src = rooturl + directory + 'uni_modules/qiun-data-charts/static/h5/echarts.min.js'
         // #endif
         script.onload = this.newEChart
         document.head.appendChild(script)

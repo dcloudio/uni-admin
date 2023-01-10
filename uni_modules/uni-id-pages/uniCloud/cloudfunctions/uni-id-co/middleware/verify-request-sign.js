@@ -7,7 +7,7 @@ const needSignFunctions = new Set([
 
 module.exports = function () {
   const methodName = this.getMethodName()
-  const { source } = this.getClientInfo()
+  const { source } = this.getUniversalClientInfo()
   // 非 HTTP 方式请求不需要鉴权
   if (source !== 'http') return
   // 指定接口需要鉴权

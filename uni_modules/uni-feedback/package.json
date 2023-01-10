@@ -1,22 +1,20 @@
 {
-  "id": "uni-file-picker",
-  "displayName": "uni-file-picker 文件选择上传",
-  "version": "1.0.3",
-  "description": "文件选择上传组件，可以选择图片、视频等任意文件并上传到当前绑定的服务空间",
+  "id": "uni-feedback",
+  "displayName": "问题反馈页面模板",
+  "version": "1.1.0",
+  "description": "问题反馈页面模板，方便开发者快速搭建问题反馈界面",
   "keywords": [
-    "uni-ui",
-    "uniui",
-    "图片上传",
-    "文件上传"
+    "问题反馈页面模板"
 ],
-  "repository": "https://github.com/dcloudio/uni-ui",
+  "repository": "",
   "engines": {
-    "HBuilderX": ""
+    "HBuilderX": "^3.1.0"
   },
-  "directories": {
-    "example": "../../temps/example_temps"
-  },
-"dcloudext": {
+  "dcloudext": {
+    "category": [
+        "uniCloud",
+        "云端一体页面模板"
+    ],
     "sale": {
       "regular": {
         "price": "0.00"
@@ -33,11 +31,18 @@
       "data": "无",
       "permissions": "无"
     },
-    "npmurl": "https://www.npmjs.com/package/@dcloudio/uni-ui",
-    "type": "component-vue"
+    "npmurl": ""
   },
   "uni_modules": {
-    "dependencies": ["uni-scss"],
+    "dependencies": [
+      "uni-forms",
+      "uni-file-picker",
+      "uni-easyinput",
+      "uni-load-more",
+      "uni-list",
+      "uni-fab",
+      "uni-link"
+    ],
     "encrypt": [],
     "platforms": {
       "cloud": {
@@ -47,7 +52,7 @@
       "client": {
         "App": {
           "app-vue": "y",
-          "app-nvue": "n"
+          "app-nvue": "u"
         },
         "H5-mobile": {
           "Safari": "y",
@@ -57,7 +62,7 @@
         },
         "H5-pc": {
           "Chrome": "y",
-          "IE": "y",
+          "IE": "u",
           "Edge": "y",
           "Firefox": "y",
           "Safari": "y"
@@ -67,7 +72,11 @@
           "阿里": "y",
           "百度": "y",
           "字节跳动": "y",
-          "QQ": "y"
+        "QQ": "y",
+        "钉钉": "u",
+        "快手": "u",
+        "飞书": "u",
+        "京东": "u"
         },
         "快应用": {
           "华为": "u",

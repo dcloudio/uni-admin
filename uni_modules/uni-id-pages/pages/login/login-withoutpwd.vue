@@ -11,8 +11,8 @@
 			<text class="tip">将根据第三方账号服务平台的授权范围获取你的信息</text>
 			<view class="quickLogin">
 				<image v-if="type !== 'weixinMobile'" @click="quickLogin" :src="imgSrc" mode="widthFix" class="quickLoginBtn"></image>
-        <button v-else type="primary" open-type="getPhoneNumber" @getphonenumber="quickLogin">微信授权手机号登录</button>
-        <uni-id-pages-agreements scope="register" ref="agreements"></uni-id-pages-agreements>
+				<button v-else type="primary" open-type="getPhoneNumber" @getphonenumber="quickLogin" class="uni-btn">微信授权手机号登录</button>
+				<uni-id-pages-agreements scope="register" ref="agreements"></uni-id-pages-agreements>
 			</view>
 		</template>
 		<template v-else>
@@ -56,6 +56,7 @@
 			}
 		},
 		async onLoad(e) {
+			// console.log(e);
 			//获取通过url传递的参数type设置当前登录方式，如果没传递直接默认以配置的登录
 			let type = e.type || config.loginTypes[0]
 			this.type = type
@@ -110,6 +111,7 @@
 				this.$refs.uniFabLogin.login_before(this.type, true, options)
 			},
 			toSmsPage() {
+				// console.log('toSmsPage',this.agree);
 				if (!this.isPhone) {
 					this.focusPhone = true
 					return uni.showToast({
@@ -145,7 +147,13 @@
 
 <style lang="scss" scoped>
 	@import "@/uni_modules/uni-id-pages/common/login-page.scss";
-
+	
+	@media screen and (min-width: 690px) {
+		.uni-content{
+			height: 350px;
+		}
+	}
+	
 	.uni-content,
 	.quickLogin {
 		/* #ifndef APP-NVUE */

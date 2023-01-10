@@ -78,7 +78,7 @@
 				uni.navigateTo({
 					url: '/uni_modules/uni-id-pages/pages/login/login-withoutpwd',
 					complete: (e) => {
-						console.log(e);
+						// console.log(e);
 					}
 				})
 			},
@@ -92,7 +92,7 @@
 				uni.navigateTo({
 					url: '/uni_modules/uni-id-pages/pages/userinfo/change_pwd/change_pwd',
 					complete: (e) => {
-						console.log(e);
+						// console.log(e);
 					}
 				})
 			},
@@ -123,14 +123,14 @@
 					"provider": 'univerify',
 					"univerifyStyle": this.univerifyStyle,
 					success: async e => {
-						console.log(e.authResult);
+						// console.log(e.authResult);
 						uniIdCo.bindMobileByUniverify(e.authResult).then(res => {
-							console.log(res);
-              mutations.updateUserInfo()
+							// console.log(res);
+							mutations.updateUserInfo()
 						}).catch(e => {
 							console.log(e);
 						}).finally(e=>{
-							console.log(e);
+							// console.log(e);
 							uni.closeAuthView()
 						})
 					},
@@ -143,60 +143,57 @@
 				})
 			},
 			bindMobileBySmsCode() {
-        uni.navigateTo({
-          url: './bind-mobile/bind-mobile'
-        })
+				uni.navigateTo({
+					url: './bind-mobile/bind-mobile'
+				})
 			},
 			setNickname(nickname) {
-				console.log(nickname);
-        if (nickname) {
-          mutations.updateUserInfo({nickname})
-          this.$refs.dialog.close()
-        } else {
-          this.$refs.dialog.open()
-        }
+				// console.log(nickname);
+				if (nickname) {
+					mutations.updateUserInfo({nickname})
+					this.$refs.dialog.close()
+				} else {
+					this.$refs.dialog.open()
+				}
 			},
 			deactivate(){
 				uni.navigateTo({
 					url:"/uni_modules/uni-id-pages/pages/userinfo/deactivate/deactivate"
 				})
 			},
-      async bindThirdAccount(provider) {
-        const uniIdCo = uniCloud.importObject("uni-id-co")
-        const bindField = {
-          weixin: 'wx_openid',
-          alipay: 'ali_openid',
-          apple: 'apple_openid',
-          qq: 'qq_openid'
-        }[provider.toLowerCase()]
+			async bindThirdAccount(provider) {
+				const uniIdCo = uniCloud.importObject("uni-id-co")
+				const bindField = {
+					weixin: 'wx_openid',
+					alipay: 'ali_openid',
+					apple: 'apple_openid',
+					qq: 'qq_openid'
+				}[provider.toLowerCase()]
 
-        if (this.userInfo[bindField]) {
-          await uniIdCo['unbind' + provider]()
-          await mutations.updateUserInfo()
-        } else {
-          uni.login({
-            provider: provider.toLowerCase(),
-            onlyAuthorize: true,
-            success: async e => {
-              const res = await uniIdCo['bind' + provider]({
-                code: e.code
-              })
-              if (res.errCode) {
-                uni.showToast({
-                  title: res.errMsg || '绑定失败',
-				  duration: 3000
-                })
-              }
-              await mutations.updateUserInfo()
-            },
-            fail: async (err) => {
-              console.log(err);
-              uni.hideLoading()
-            }
-          })
-        }
-
-      }
+				if (this.userInfo[bindField]) {
+					await uniIdCo['unbind' + provider]()
+					await mutations.updateUserInfo()
+				} else {
+					uni.login({
+						provider: provider.toLowerCase(),
+						onlyAuthorize: true,
+						success: async e => {
+							const res = await uniIdCo['bind' + provider]({code: e.code})
+							if (res.errCode) {
+								uni.showToast({
+									title: res.errMsg || '绑定失败',
+									duration: 3000
+								})
+							}
+							await mutations.updateUserInfo()
+						},
+						fail: async (err) => {
+							console.log(err);
+							uni.hideLoading()
+						}
+					})
+				}
+			}
 		}
 	}
 </script>
