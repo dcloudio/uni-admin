@@ -92,7 +92,7 @@ module.exports = async function (params = {}) {
 
   const realData = Object.keys(data).reduce((res, key) => {
     const item = data[key]
-    if (item) {
+    if (item !== undefined) {
       res[key] = item
     }
     return res
@@ -114,7 +114,6 @@ module.exports = async function (params = {}) {
       }
     }
   }
-
   if (password) {
     const passwordUtils = new PasswordUtils({
       clientInfo: this.getUniversalClientInfo(),
@@ -127,11 +126,12 @@ module.exports = async function (params = {}) {
       password
     })
 
-    data.password = passwordHash
-    data.password_secret_version = version
+    realData.password = passwordHash
+    realData.password_secret_version = version
   }
 
   await userCollection.doc(uid).update(realData)
+
 
   return {
     errCode: 0

@@ -366,7 +366,7 @@ class Validator {
             schemaKey
           }
         } else {
-          delete value[schemaKey]
+          //delete value[schemaKey]
           continue
         }
       }
