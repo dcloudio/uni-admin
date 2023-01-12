@@ -330,6 +330,15 @@
 			},
 			"title": "角色"
 		},
+		"tags":{
+			"bsonType": "array",
+			"description": "用户标签",
+			"permission": {
+				"read": "doc._id == auth.uid || 'READ_UNI_ID_USERS' in auth.permission",
+				"write": "'CREATE_UNI_ID_USERS' in auth.permission || 'UPDATE_UNI_ID_USERS' in auth.permission"
+			},
+			"title": "标签"
+		},
 		"score": {
 			"bsonType": "int",
 			"description": "用户积分，积分变更记录可参考：uni-id-scores表定义",
