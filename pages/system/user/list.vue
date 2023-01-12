@@ -133,7 +133,7 @@
 	export default {
 		data() {
 			return {
-				collectionList: [ db.collection('uni-id-users').field('ali_openid,apple_openid,avatar,avatar_file,comment,dcloud_appid,department_id,email,email_confirmed,gender,invite_time,inviter_uid,last_login_date,last_login_ip,mobile,mobile_confirmed,my_invite_code,nickname,role,score,status,token,username,wx_unionid,qq_unionid,tags').getTemp(),db.collection('uni-id-roles').field('role_id, role_name').getTemp() ],
+				collectionList: [ db.collection('uni-id-users').field('ali_openid,apple_openid,avatar,avatar_file,comment,dcloud_appid,department_id,email,email_confirmed,gender,invite_time,inviter_uid,last_login_date,last_login_ip,mobile,mobile_confirmed,my_invite_code,nickname,role,score,status,username,wx_unionid,qq_unionid,tags').getTemp(),db.collection('uni-id-roles').field('role_id, role_name').getTemp() ],
 				query: '',
 				where: '',
 				orderby: dbOrderBy,

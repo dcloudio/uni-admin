@@ -378,7 +378,7 @@
 			"bsonType": "array",
 			"description": "用户token",
 			"permission": {
-				"read": "'READ_UNI_ID_USERS' in auth.permission",
+				"read": false,
 				"write": "'CREATE_UNI_ID_USERS' in auth.permission || 'UPDATE_UNI_ID_USERS' in auth.permission"
 			}
 		},
