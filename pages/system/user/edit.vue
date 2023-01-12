@@ -19,7 +19,7 @@
 				<uni-data-checkbox multiple :localdata="roles" v-model="formData.role" />
 			</uni-forms-item>
 			<uni-forms-item name="tags" label="用户标签" labelWidth="100" class="flex-center-x">
-				<uni-data-checkbox :multiple="true" v-model="formData.tags" collection="uni-id-tag"
+				<uni-data-checkbox ref="checkboxTags" :multiple="true" v-model="formData.tags" collection="uni-id-tag"
 					field="tagid as value, name as text"></uni-data-checkbox>
 				<span class="link-btn" @click="gotoTagAdd">新增</span>
 				<span class="link-btn" @click="gotoTagList" style="margin-left: 10px;">管理</span>
@@ -76,6 +76,7 @@
 					"nickname": "",
 					"password": undefined,
 					"role": [],
+					"tags": [],
 					"authorizedApp": [],
 					"mobile": undefined,
 					"email": undefined,
@@ -122,7 +123,7 @@
 					url: '../tag/add',
 					events: {
 						refreshCheckboxData: () => {
-							this.$refs.checkbox.loadData()
+							this.$refs.checkboxTags.loadData()
 						}
 					}
 				})
