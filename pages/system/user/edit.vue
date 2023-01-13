@@ -123,7 +123,7 @@
 					url: '../tag/add',
 					events: {
 						refreshCheckboxData: () => {
-							this.$refs.checkboxTags.loadData()
+							this.$refs.checkboxTags.loadData();
 						}
 					}
 				})
@@ -170,7 +170,8 @@
 					uni.showToast({
 						title: '修改成功'
 					})
-					this.getOpenerEventChannel().emit('refreshData')
+					const eventChannel = this.getOpenerEventChannel();
+					if (eventChannel.emit) eventChannel.emit('refreshData');
 					setTimeout(() => uni.navigateBack(), 500)
 				}).catch(err => {
 					uni.showModal({

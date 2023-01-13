@@ -1309,14 +1309,15 @@ export default {
         script.src = './uni_modules/qiun-data-charts/static/app-plus/echarts.min.js'
         // #endif
         // #ifdef H5
-				
-				// const rooturl = window.location.origin
-				// const directory = instance.getDataset().directory
-				// script.src = rooturl + directory + 'uni_modules/qiun-data-charts/static/h5/echarts.min.js'
-
+					
+				// #ifdef VUE2
 				const { origin } = window.location
 				const rooturl = origin + process.env.BASE_URL
 				script.src = rooturl + 'uni_modules/qiun-data-charts/static/h5/echarts.min.js'
+				// #endif
+				// #ifdef VUE3
+				script.src = './uni_modules/qiun-data-charts/static/h5/echarts.min.js'
+				// #endif
 
         // #endif
         script.onload = this.newEChart
