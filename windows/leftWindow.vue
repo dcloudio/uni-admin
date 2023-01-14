@@ -79,6 +79,11 @@
 				if (url[0] !== '/' && url.indexOf('http') !== 0) {
 					url = '/' + url
 				}
+				// #ifndef H5
+				if (url === "/") {
+					url = config.index.url;
+				}
+				// #endif
 				// TODO 后续要调整
 				uni.redirectTo({
 					url: url,
