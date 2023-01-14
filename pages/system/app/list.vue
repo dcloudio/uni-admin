@@ -159,8 +159,7 @@
 					this.addCurrentAppid({
 						appid: this.appid,
 						name: this.appName,
-						description: "admin 管理后台",
-						create_date: Date.now()
+						description: "admin 管理后台"
 					})
 				} else {
 					this.addAppidLoading = false
