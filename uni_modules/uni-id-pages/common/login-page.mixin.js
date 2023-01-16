@@ -36,6 +36,7 @@ let mixin = {
 				})
 			}
 			this.$nextTick(n => {
+				// console.log(this.$refs.uniFabLogin);
 				this.$refs.uniFabLogin.login({
 					code:e.code
 				}, 'weixin')

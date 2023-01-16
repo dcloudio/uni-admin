@@ -1,3 +1,7 @@
+## 1.0.40（2023-01-16）
+- 更新依赖的 验证码插件`uni-captcha`版本的版本为 0.6.4 修复 部分情况下APP端无法获取验证码的问题 [详情参考](https://ext.dcloud.net.cn/plugin?id=4048)
+- 修复 客户端token过期后，点击退出登录按钮报错的问题
+- uni-id-co 修复 updateUser 接口`手机号`和`邮箱`参数值为空字符串时，修改无效的问题
 ## 1.0.39（2022-12-28）
 - uni-id-co 修复 URL化时第三方登录无法获取 uniPlatform 参数
 - uni-id-co 修复 validator error

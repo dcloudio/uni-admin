@@ -136,11 +136,17 @@
 				const uniIdCo = uniCloud.importObject("uni-id-co", {
 					customUI: true
 				})
+				console.log('sendSmsCode',{
+					"mobile": this.phone,
+					"scene": this.type,
+					"captcha": this.captcha
+				});
 				uniIdCo.sendSmsCode({
 					"mobile": this.phone,
 					"scene": this.type,
 					"captcha": this.captcha
 				}).then(result => {
+					// console.log(result.code);
 					uni.showToast({
 						title: "短信验证码发送成功",
 						icon: 'none',
@@ -149,6 +155,7 @@
 					this.reverseNumber = Number(this.count);
 					this.getCode();
 				}).catch(e => {
+					// console.log(JSON.stringify(e));
 					if (e.code == "uni-id-invalid-sms-template-id") {
 						this.modelValue = "123456"
 						uni.showToast({
