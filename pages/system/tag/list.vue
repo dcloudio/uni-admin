@@ -66,7 +66,10 @@
 		<fix-window />
 		<!-- #endif -->
 
+		<!-- #ifdef H5 -->
 		<batch-sms ref="batchSms" toType="userTags" :receiver="smsReceiver"></batch-sms>
+		<!-- #endif -->
+
 	</view>
 </template>
 
