@@ -7,10 +7,11 @@
 		<!-- 顶部文字 -->
 		<text class="title">请选择登录方式</text>
 		<!-- 快捷登录框 当url带参数时有效 -->
-		<template v-if="['apple','weixin'].includes(type)">
+		<template v-if="['apple','weixin', 'weixinMobile'].includes(type)">
 			<text class="tip">将根据第三方账号服务平台的授权范围获取你的信息</text>
 			<view class="quickLogin">
-				<image @click="quickLogin" :src="imgSrc" mode="widthFix" class="quickLoginBtn"></image>
+				<image v-if="type !== 'weixinMobile'" @click="quickLogin" :src="imgSrc" mode="widthFix" class="quickLoginBtn"></image>
+				<button v-else type="primary" open-type="getPhoneNumber" @getphonenumber="quickLogin" class="uni-btn">微信授权手机号登录</button>
 				<uni-id-pages-agreements scope="register" ref="agreements"></uni-id-pages-agreements>
 			</view>
 		</template>
@@ -55,7 +56,7 @@
 			}
 		},
 		async onLoad(e) {
-			console.log(e);
+			// console.log(e);
 			//获取通过url传递的参数type设置当前登录方式，如果没传递直接默认以配置的登录
 			let type = e.type || config.loginTypes[0]
 			this.type = type
@@ -98,16 +99,25 @@
 			//#endif
 		},
 		methods: {
-			quickLogin() {
-				this.$refs.uniFabLogin.login_before(this.type)
+			quickLogin(e) {
+        let options = {}
+
+        if (e.detail?.code) {
+          options.phoneNumberCode = e.detail.code
+        }
+
+        if (this.type === 'weixinMobile' && !e.detail?.code) return
+
+				this.$refs.uniFabLogin.login_before(this.type, true, options)
 			},
 			toSmsPage() {
-				console.log('toSmsPage',this.agree);
+				// console.log('toSmsPage',this.agree);
 				if (!this.isPhone) {
 					this.focusPhone = true
 					return uni.showToast({
 						title: "手机号码格式不正确",
-						icon: 'none'
+						icon: 'none',
+						duration: 3000
 					});
 				}
 				if (this.needAgreements && !this.agree) {
@@ -127,7 +137,8 @@
 			chooseArea() {
 				uni.showToast({
 					title: '暂不支持其他国家',
-					icon: 'none'
+					icon: 'none',
+					duration: 3000
 				});
 			},
 		}
@@ -136,7 +147,13 @@
 
 <style lang="scss" scoped>
 	@import "@/uni_modules/uni-id-pages/common/login-page.scss";
-
+	
+	@media screen and (min-width: 690px) {
+		.uni-content{
+			height: 350px;
+		}
+	}
+	
 	.uni-content,
 	.quickLogin {
 		/* #ifndef APP-NVUE */
@@ -203,7 +220,7 @@
 		margin-top: -15px;
 		margin-bottom: 20px;
 	}
-	
+
 	@media screen and (min-width: 690px) {
 		.quickLogin{
 			height: auto;

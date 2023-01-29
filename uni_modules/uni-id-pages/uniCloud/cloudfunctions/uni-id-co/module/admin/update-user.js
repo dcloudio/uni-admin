@@ -81,18 +81,28 @@ module.exports = async function (params = {}) {
   // 更新的用户数据字段
   const data = {
     username,
-    dcloud_appid: authorizedApp || [],
+    dcloud_appid: authorizedApp,
     nickname,
-    role: role || [],
+    role: role,
     mobile,
     email,
-    tags: tags || [],
+    tags: tags,
     status
   }
 
+  const realData = Object.keys(data).reduce((res, key) => {
+    const item = data[key]
+    if (item !== undefined) {
+      res[key] = item
+    }
+    return res
+  }, {})
+
   // 更新用户名时验证用户名是否重新
   if (username) {
-    const userMatched = await findUser({
+    const {
+      userMatched
+    } = await findUser({
       userQuery: {
         username
       },
@@ -104,9 +114,9 @@ module.exports = async function (params = {}) {
       }
     }
   }
-
   if (password) {
     const passwordUtils = new PasswordUtils({
+      clientInfo: this.getUniversalClientInfo(),
       passwordSecret: this.config.passwordSecret
     })
     const {
@@ -116,11 +126,12 @@ module.exports = async function (params = {}) {
       password
     })
 
-    data.password = passwordHash
-    data.password_secret_version = version
+    realData.password = passwordHash
+    realData.password_secret_version = version
   }
 
-  await userCollection.doc(uid).update(data)
+  await userCollection.doc(uid).update(realData)
+
 
   return {
     errCode: 0

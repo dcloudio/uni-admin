@@ -123,22 +123,25 @@
 					this.$refs.captcha.focusCaptchaInput = true
 					return uni.showToast({
 						title: '请先输入图形验证码',
-						icon: 'none'
+						icon: 'none',
+						duration: 3000
 					});
 				}
 				if(!this.email) return uni.showToast({
 					title: "请输入邮箱",
-					icon: 'none'
+					icon: 'none',
+					duration: 3000
 				});
 				let reg_email = /@/;
 				if (!reg_email.test(this.email)) return uni.showToast({
 					title: "邮箱格式错误",
-					icon: 'none'
+					icon: 'none',
+					duration: 3000
 				});
 				const uniIdCo = uniCloud.importObject("uni-id-co", {
 					customUI: true
 				})
-				console.log('uniIdCo', uniIdCo)
+				// console.log('uniIdCo', uniIdCo)
 				console.log('sendEmailCode',{
 					"email": this.email,
 					"scene": this.type,
@@ -149,15 +152,16 @@
 					"scene": this.type,
 					"captcha": this.captcha
 				}).then(result => {
-					console.log(result.code);
+					// console.log(result.code);
 					uni.showToast({
 						title: "邮箱验证码发送成功",
-						icon: 'none'
+						icon: 'none',
+						duration: 3000
 					});
 					this.reverseNumber = Number(this.count);
 					this.getCode();
 				}).catch(e => {
-					console.log(JSON.stringify(e));
+					// console.log(JSON.stringify(e));
 					if (e.code == "uni-id-invalid-mail-template") {
 						this.modelValue = "123456"
 						uni.showToast({
@@ -171,7 +175,8 @@
 						this.captcha = ""
 						uni.showToast({
 							title: e.message,
-							icon: 'none'
+							icon: 'none',
+							duration: 3000
 						});
 					}
 				})

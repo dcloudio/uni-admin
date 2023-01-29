@@ -7,8 +7,10 @@ const {
 } = require('../../common/constants')
 const {
   decryptWeixinData,
-  getWeixinCache
+  getWeixinCache, getWeixinAccessToken
 } = require('../../lib/utils/weixin')
+const { initWeixin } = require('../../lib/third-party')
+const { ERROR } = require('../../common/error')
 
 /**
  * 通过微信绑定手机号
@@ -16,6 +18,7 @@ const {
  * @param {Object} params
  * @param {String} params.encryptedData   微信获取手机号返回的加密信息
  * @param {String} params.iv              微信获取手机号返回的初始向量
+ * @param {String} params.code            微信获取手机号返回的code
  * @returns
  */
 module.exports = async function (params = {}) {
@@ -26,30 +29,58 @@ module.exports = async function (params = {}) {
    * 因此此接口不应直接使用客户端login获取的code，只能使用缓存的sessionKey
    */
   const schema = {
-    encryptedData: 'string',
-    iv: 'string'
+    encryptedData: {
+      required: false,
+      type: 'string'
+    },
+    iv: {
+      required: false,
+      type: 'string'
+    },
+    code: {
+      required: false,
+      type: 'string'
+    }
   }
   const {
     encryptedData,
-    iv
+    iv,
+    code
   } = params
   this.middleware.validate(params, schema)
+
+  if ((!encryptedData && !iv) && !code) {
+    return {
+      errCode: ERROR.INVALID_PARAM
+    }
+  }
+
   const uid = this.authInfo.uid
 
-  const sessionKey = await getWeixinCache.call(this, {
-    uid,
-    key: 'session_key'
-  })
-  if (!sessionKey) {
-    throw new Error('Session key not found')
+  let mobile
+  if (code) {
+    // 区分客户端类型 小程序还是App
+    const accessToken = await getWeixinAccessToken.call(this)
+    const weixinApi = initWeixin.call(this)
+    const res = await weixinApi.getPhoneNumber(accessToken, code)
+
+    mobile = res.purePhoneNumber
+  } else {
+    const sessionKey = await getWeixinCache.call(this, {
+      uid,
+      key: 'session_key'
+    })
+    if (!sessionKey) {
+      throw new Error('Session key not found')
+    }
+    const res = decryptWeixinData.call(this, {
+      encryptedData,
+      sessionKey,
+      iv
+    })
+
+    mobile = res.purePhoneNumber
   }
-  const {
-    purePhoneNumber: mobile
-  } = decryptWeixinData.call(this, {
-    encryptedData,
-    sessionKey,
-    iv
-  })
 
   const bindAccount = {
     mobile

@@ -369,6 +369,28 @@ module.exports = class StatResult extends BaseMod {
 			avgUserSessionTime = Math.round(data.total_user_duration / data.total_user_session_times)
 		}
 
+		//安卓平台活跃设备数需要减去sdk更新后device_id发生变更的设备数
+		if(platformInfo.code === 'android') {
+			try{
+				const statVisitOldDeviceRes = await this.getCollection(this.activeDevices.tableName).where({
+					...data._id,
+					create_time: {
+						$gte: this.startTime,
+						$lte: this.endTime
+					},
+					dimension: this.fillType + '-old'
+				}).count()
+				if (statVisitOldDeviceRes && statVisitOldDeviceRes.total > 0) {
+					// 活跃设备留存数
+					activeDeviceCount -= statVisitOldDeviceRes.total
+					//平均设备停留时长
+					avgDeviceTime = Math.round(data.total_duration / activeDeviceCount)
+				}
+			}  catch (e) {
+				console.log('server error: ' + e)
+			}
+		}
+
 		const insertParam = {
 			appid: data._id.appid,
 			platform_id: data._id.platform_id,
@@ -506,6 +528,80 @@ module.exports = class StatResult extends BaseMod {
 		let activeDeviceCount = 0
 		if (statVisitDeviceRes.data.length > 0) {
 			activeDeviceCount = statVisitDeviceRes.data[0].total_devices
+		}
+
+		//安卓平台活跃设备数需要减去sdk更新后device_id发生变更的设备数
+		if(platformInfo.code === 'android') {
+			const oldDeviceRes = await this.aggregate(this.sessionLog.tableName, {
+				project: {
+					appid: 1,
+					version: 1,
+					platform: 1,
+					channel: 1,
+					old_device_id: 1,
+					create_time: 1
+				},
+				match: matchCondition,
+				group: {
+					_id: {
+						device_id: '$old_device_id'
+					},
+					create_time: {
+						$min: '$create_time'
+					},
+					sessionCount: {
+						$sum: 1
+					}
+				},
+				sort: {
+					create_time: 1,
+					sessionCount: 1
+				},
+				getAll: true
+			})
+
+			if(oldDeviceRes.data.length) {
+				const thisOldDeviceIds = []
+				for (const tau in oldDeviceRes.data) {
+					if(oldDeviceRes.data[tau]._id.device_id) {
+						thisOldDeviceIds.push(oldDeviceRes.data[tau]._id.device_id)
+					}
+				}
+				const statVisitOldDeviceRes = await this.aggregate(this.sessionLog.tableName, {
+					project: {
+						appid: 1,
+						version: 1,
+						platform: 1,
+						channel: 1,
+						device_id: 1,
+						create_time: 1
+					},
+					match: {
+						...matchCondition,
+						device_id: {
+							$in: thisOldDeviceIds
+						}
+					},
+					group: [{
+						_id: {
+							device_id: '$device_id'
+						}
+					}, {
+						_id: {},
+						total_devices: {
+							$sum: 1
+						}
+					}]
+				})
+
+				if (this.debug) {
+					console.log('statVisitOldDeviceRes', JSON.stringify(statVisitOldDeviceRes))
+				}
+				if (statVisitOldDeviceRes && statVisitOldDeviceRes.data.length > 0) {
+					// 活跃设备留存数
+					activeDeviceCount -= statVisitOldDeviceRes.data[0].total_devices
+				}
+			}
 		}
 
 		// 错误数量统计
@@ -989,7 +1085,6 @@ module.exports = class StatResult extends BaseMod {
 				for (const tau in activeDeviceRes.data) {
 					thisDayActiveDeviceIds.push(activeDeviceRes.data[tau]._id.device_id)
 				}
-
 				if (this.debug) {
 					console.log('thisDayActiveDeviceIds', JSON.stringify(thisDayActiveDeviceIds))
 				}
@@ -1037,6 +1132,53 @@ module.exports = class StatResult extends BaseMod {
 					activeDevices = retentionActiveDeviceRes.data[0].total_devices
 					// 活跃设备留存率
 					activeDeviceRate = parseFloat((activeDevices * 100 / thisDayActiveDevices).toFixed(2))
+				}
+
+				//安卓平台留存需要增加sdk更新后device_id发生变更的设备数
+				if(platformInfo.code === 'android') {
+					const retentionActiveOldDeviceRes = await this.aggregate(sessionLog.tableName, {
+						project: {
+							appid: 1,
+							version: 1,
+							platform: 1,
+							channel: 1,
+							old_device_id: 1,
+							create_time: 1
+						},
+						match: {
+							appid: resultLog.appid,
+							version: versionInfo.version,
+							platform: platformInfo.code,
+							channel: channelInfo.channel_code,
+							old_device_id: {
+								$in: thisDayActiveDeviceIds
+							},
+							create_time: {
+								$gte: lastTimeInfo.startTime,
+								$lte: lastTimeInfo.endTime
+							}
+						},
+						group: [{
+							_id: {
+								device_id: '$old_device_id'
+							}
+						}, {
+							_id: {},
+							total_devices: {
+								$sum: 1
+							}
+						}]
+					})
+
+					if (this.debug) {
+						console.log('retentionActiveOldDeviceRes', JSON.stringify(retentionActiveOldDeviceRes))
+					}
+					if (retentionActiveOldDeviceRes && retentionActiveOldDeviceRes.data.length > 0) {
+						// 活跃设备留存数
+						activeDevices += retentionActiveOldDeviceRes.data[0].total_devices
+						// 活跃设备留存率
+						activeDeviceRate = parseFloat((activeDevices * 100 / thisDayActiveDevices).toFixed(2))
+					}
 				}
 			}
 
@@ -1133,6 +1275,54 @@ module.exports = class StatResult extends BaseMod {
 					newDevices = retentionNewDeviceRes.data[0].total_devices
 					// 新增设备留存率
 					newDeviceRate = parseFloat((newDevices * 100 / thisDayNewDevices).toFixed(2))
+				}
+
+				//安卓平台留存需要增加sdk更新后device_id发生变更的设备数
+				if(platformInfo.code === 'android') {
+					const retentionNewOldDeviceRes = await this.aggregate(sessionLog.tableName, {
+						project: {
+							appid: 1,
+							version: 1,
+							platform: 1,
+							channel: 1,
+							old_device_id: 1,
+							create_time: 1
+						},
+						match: {
+							appid: resultLog.appid,
+							version: versionInfo.version,
+							platform: platformInfo.code,
+							channel: channelInfo.channel_code,
+							old_device_id: {
+								$in: thisDayNewDeviceIds
+							},
+							create_time: {
+								$gte: lastTimeInfo.startTime,
+								$lte: lastTimeInfo.endTime
+							}
+						},
+						group: [{
+							_id: {
+								device_id: '$old_device_id'
+							}
+						}, {
+							_id: {},
+							total_devices: {
+								$sum: 1
+							}
+						}]
+					})
+
+					if (this.debug) {
+						console.log('retentionNewOldDeviceRes', JSON.stringify(retentionNewOldDeviceRes))
+					}
+
+					if (retentionNewOldDeviceRes && retentionNewOldDeviceRes.data.length > 0) {
+						// 新增设备留存数
+						newDevices += retentionNewOldDeviceRes.data[0].total_devices
+						// 新增设备留存率
+						newDeviceRate = parseFloat((newDevices * 100 / thisDayNewDevices).toFixed(2))
+					}
 				}
 			}
 

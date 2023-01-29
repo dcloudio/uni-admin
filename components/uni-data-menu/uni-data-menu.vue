@@ -53,12 +53,12 @@
 				handler(newval) {
 					if (this.hasLocalData(newval)) {
 						this.userMenu = newval
-						console.log('this.userMenu',this.userMenu);
 					}
 				},
 				immediate: true
 			},
 			// TODO 暂时无需监听，需要看后面会出现什么问题
+			// #ifdef H5
 			menus: {
 				immediate: true,
 				handler(newVal,oldVal) {
@@ -70,6 +70,7 @@
 					}
 				}
 			},
+			// #endif
 			$route: {
 				immediate: false,
 				handler(val, old) {
@@ -85,7 +86,9 @@
 		},
 		created() {
 			if (this.hasLocalData(this.localdata)) return
-			// this.load()
+			// #ifndef H5
+			this.load()
+			// #endif
 		},
 		// computed:{
 		// 	userMenu() {
@@ -148,7 +151,6 @@
 					} = res.result
 					this.menus = data
 					this.userMenu = this.getUserMenu(this.menus)
-					console.log('this.userMenu',this.userMenu);
 				}).catch((err) => {
 					this.mixinDatacomLoading = false
 					this.mixinDatacomErrorMessage = err

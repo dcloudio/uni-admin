@@ -1,6 +1,6 @@
 <template>
 	<view>
-		<template v-for="fileTask in uploadTasks">
+		<block v-for="fileTask in uploadTasks" :key="index">
 			<view class="upload-task-body">
 				<view class="upload-task-item">
 					<text class="upload-task-item-name">{{fileTask.name}}</text>
@@ -13,7 +13,7 @@
 					</view>
 				</view>
 			</view>
-		</template>
+		</block>
 	</view>
 </template>
 

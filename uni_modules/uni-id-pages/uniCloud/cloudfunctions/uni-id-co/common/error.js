@@ -1,6 +1,7 @@
 const ERROR = {
   ACCOUNT_EXISTS: 'uni-id-account-exists',
   ACCOUNT_NOT_EXISTS: 'uni-id-account-not-exists',
+  ACCOUNT_NOT_EXISTS_IN_CURRENT_APP: 'uni-id-account-not-exists-in-current-app',
   ACCOUNT_CONFLICT: 'uni-id-account-conflict',
   ACCOUNT_BANNED: 'uni-id-account-banned',
   ACCOUNT_AUDITING: 'uni-id-account-auditing',
@@ -30,7 +31,14 @@ const ERROR = {
   SET_INVITE_CODE_FAILED: 'uni-id-set-invite-code-failed',
   INVALID_INVITE_CODE: 'uni-id-invalid-invite-code',
   CHANGE_INVITER_FORBIDDEN: 'uni-id-change-inviter-forbidden',
-  BIND_CONFLICT: 'uni-id-bind-conflict'
+  BIND_CONFLICT: 'uni-id-bind-conflict',
+  UNBIND_FAIL: 'uni-id-unbind-failed',
+  UNBIND_NOT_SUPPORTED: 'uni-id-unbind-not-supported',
+  UNBIND_UNIQUE_LOGIN: 'uni-id-unbind-unique-login',
+  UNBIND_PASSWORD_NOT_EXISTS: 'uni-id-unbind-password-not-exists',
+  UNBIND_MOBILE_NOT_EXISTS: 'uni-id-unbind-mobile-not-exists',
+  UNSUPPORTED_REQUEST: 'uni-id-unsupported-request',
+  ILLEGAL_REQUEST: 'uni-id-illegal-request'
 }
 
 function isUniIdError (errCode) {

@@ -12,7 +12,7 @@ export default {
 	data() {return {path: '',options:{"width":600,"height":600}}},
 	onLoad({path,options}) {
 		this.path = path
-		console.log('path-path-path-path',path);
+		// console.log('path-path-path-path',path);
 		if(options){
 			this.options = JSON.parse(options)
 		}

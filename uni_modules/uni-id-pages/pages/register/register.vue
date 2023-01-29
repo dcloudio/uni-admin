@@ -53,9 +53,6 @@
 		mutations
 	} from '@/uni_modules/uni-id-pages/common/store.js'
 
-	const {
-		loginSuccess
-	} = mutations
 	const uniIdCo = uniCloud.importObject("uni-id-co")
 	export default {
 		mixins: [mixin],
@@ -99,7 +96,8 @@
 						this.$refs.captcha.focusCaptchaInput = true
 						return uni.showToast({
 							title: '请输入验证码',
-							icon: 'none'
+							icon: 'none',
+							duration: 3000
 						});
 					}
 					if (this.needAgreements && !this.agree) {
@@ -111,17 +109,17 @@
 				}).catch((errors) => {
 					let key = errors[0].key
 					key = key.replace(key[0], key[0].toUpperCase())
-					console.log(key);
+					// console.log(key);
 					this['focus' + key] = true
 				})
 			},
 			submitForm(params) {
 				uniIdCo.registerUser(this.formData).then(e => {
-						console.log(e);
-						loginSuccess()
+						// console.log(e);
+						this.loginSuccess(e)
 					})
 					.catch(e => {
-						console.log(e);
+						// console.log(e);
 						console.log(e.message);
 						//更好的体验：登录错误，直接刷新验证码
 						this.$refs.captcha.getImageCaptcha()

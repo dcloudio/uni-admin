@@ -19,7 +19,7 @@ module.exports = async function ({
     clientIP,
     deviceId,
     userAgent
-  } = this.getClientInfo()
+  } = this.getUniversalClientInfo()
   const logData = {
     appid: appId,
     device_id: deviceId,

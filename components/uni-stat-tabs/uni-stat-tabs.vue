@@ -104,8 +104,11 @@
 			this.init()
 		},
 		watch: {
-			current(val) {
-				this.currentTab = val
+			current: {
+				immediate: true,
+				handler(val) {
+					this.currentTab = val
+				}
 			},
 
 			// value(val) {
@@ -322,10 +325,11 @@
 			flex-wrap: unset;
 			overflow-x: auto !important;
 		}
-
+		/* #ifdef H5 */
 		::-webkit-scrollbar {
 			display: none;
 		}
+		/* #endif */
 	}
 
 	/* #endif */

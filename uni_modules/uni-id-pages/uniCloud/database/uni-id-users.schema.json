@@ -1,6 +1,5 @@
 {
 	"bsonType": "object",
-	"required": ["username", "password"],
 	"permission": {
 		"read": "'READ_UNI_ID_USERS' in auth.permission",
 		"create": "'CREATE_UNI_ID_USERS' in auth.permission",
@@ -15,28 +14,36 @@
 			"bsonType": "string",
 			"description": "支付宝平台openid",
 			"permission": {
-				"write": false,
-				"read": "doc._id == auth.uid"
+				"read": "'READ_UNI_ID_USERS' in auth.permission",
+				"write": "'CREATE_UNI_ID_USERS' in auth.permission || 'UPDATE_UNI_ID_USERS' in auth.permission"
 			}
 		},
 		"apple_openid": {
 			"bsonType": "string",
 			"description": "苹果登录openid",
 			"permission": {
-				"write": false,
-				"read": "doc._id == auth.uid"
+				"read": "'READ_UNI_ID_USERS' in auth.permission",
+				"write": "'CREATE_UNI_ID_USERS' in auth.permission || 'UPDATE_UNI_ID_USERS' in auth.permission"
 			}
 		},
 		"avatar": {
 			"bsonType": "string",
 			"description": "头像地址",
 			"title": "头像地址",
-			"trim": "both"
+			"trim": "both",
+			"permission": {
+				"read": "doc._id == auth.uid || 'READ_UNI_ID_USERS' in auth.permission",
+				"write": "doc._id == auth.uid || 'CREATE_UNI_ID_USERS' in auth.permission || 'UPDATE_UNI_ID_USERS' in auth.permission"
+			}
 		},
 		"avatar_file": {
 			"bsonType": "file",
 			"description": "用file类型方便使用uni-file-picker组件",
-			"title": "头像文件"
+			"title": "头像文件",
+			"permission": {
+				"read": "doc._id == auth.uid || 'READ_UNI_ID_USERS' in auth.permission",
+				"write": "doc._id == auth.uid || 'CREATE_UNI_ID_USERS' in auth.permission || 'UPDATE_UNI_ID_USERS' in auth.permission"
+			}
 		},
 		"comment": {
 			"bsonType": "string",
@@ -44,8 +51,8 @@
 			"title": "备注",
 			"trim": "both",
 			"permission": {
-				"write": false,
-				"read": false
+				"read": "'READ_UNI_ID_USERS' in auth.permission",
+				"write": "'CREATE_UNI_ID_USERS' in auth.permission || 'UPDATE_UNI_ID_USERS' in auth.permission"
 			}
 		},
 		"dcloud_appid": {
@@ -67,8 +74,8 @@
 			"enumType": "tree",
 			"title": "部门",
 			"permission": {
-				"write": false,
-				"read": "doc._id == auth.uid"
+				"read": "doc._id == auth.uid || 'READ_UNI_ID_USERS' in auth.permission",
+				"write": "'CREATE_UNI_ID_USERS' in auth.permission || 'UPDATE_UNI_ID_USERS' in auth.permission"
 			}
 		},
 		"email": {
@@ -96,8 +103,8 @@
 			],
 			"title": "邮箱验证状态",
 			"permission": {
-				"write": false,
-				"read": "doc._id == auth.uid"
+				"read": "doc._id == auth.uid || 'READ_UNI_ID_USERS' in auth.permission",
+				"write": "'CREATE_UNI_ID_USERS' in auth.permission || 'UPDATE_UNI_ID_USERS' in auth.permission"
 			}
 		},
 		"gender": {
@@ -119,16 +126,16 @@
 			],
 			"title": "性别",
 			"permission": {
-				"write": false,
-				"read": "doc._id == auth.uid"
+				"read": "doc._id == auth.uid || 'READ_UNI_ID_USERS' in auth.permission",
+				"write": "'CREATE_UNI_ID_USERS' in auth.permission || 'UPDATE_UNI_ID_USERS' in auth.permission"
 			}
 		},
 		"invite_time": {
 			"bsonType": "timestamp",
 			"description": "受邀时间",
 			"permission": {
-				"write": false,
-				"read": "doc._id == auth.uid"
+				"read": "doc._id == auth.uid || 'READ_UNI_ID_USERS' in auth.permission",
+				"write": "'CREATE_UNI_ID_USERS' in auth.permission || 'UPDATE_UNI_ID_USERS' in auth.permission"
 			}
 		},
 		"inviter_uid": {
@@ -136,8 +143,8 @@
 			"description": "用户全部上级邀请者",
 			"trim": "both",
 			"permission": {
-				"write": false,
-				"read": "doc._id == auth.uid"
+				"read": "doc._id == auth.uid || 'READ_UNI_ID_USERS' in auth.permission",
+				"write": "'CREATE_UNI_ID_USERS' in auth.permission || 'UPDATE_UNI_ID_USERS' in auth.permission"
 			}
 		},
 		"last_login_date": {
@@ -186,41 +193,41 @@
 			"bsonType": "string",
 			"description": "用户自身邀请码",
 			"permission": {
-				"write": false,
-				"read": "doc._id == auth.uid"
+				"read": "doc._id == auth.uid || 'READ_UNI_ID_USERS' in auth.permission",
+				"write": "'CREATE_UNI_ID_USERS' in auth.permission || 'UPDATE_UNI_ID_USERS' in auth.permission"
 			}
 		},
 		"nickname": {
 			"bsonType": "string",
 			"description": "用户昵称",
 			"title": "昵称",
-			"trim": "both"
+			"trim": "both",
+			"permission": {
+				"read": true,
+				"write": "doc._id == auth.uid || 'CREATE_UNI_ID_USERS' in auth.permission || 'UPDATE_UNI_ID_USERS' in auth.permission"
+			}
 		},
 		"password": {
 			"bsonType": "password",
 			"description": "密码，加密存储",
 			"title": "密码",
-			"trim": "both",
-			"permission": {
-				"write": false,
-				"read": false
-			}
+			"trim": "both"
 		},
 		"password_secret_version": {
 			"bsonType": "int",
 			"description": "密码使用的passwordSecret版本",
 			"title": "passwordSecret",
 			"permission": {
-				"write": false,
-				"read": false
+				"read": false,
+				"write": false
 			}
 		},
 		"realname_auth": {
 			"bsonType": "object",
 			"description": "实名认证信息",
 			"permission": {
-				"write": false,
-				"read": "doc._id == auth.uid"
+				"read": "doc._id == auth.uid || 'READ_UNI_ID_USERS' in auth.permission",
+				"write": "'CREATE_UNI_ID_USERS' in auth.permission || 'UPDATE_UNI_ID_USERS' in auth.permission"
 			},
 			"properties": {
 				"auth_date": {
@@ -286,14 +293,20 @@
 			"description": "注册时间",
 			"forceDefaultValue": {
 				"$env": "now"
+			},
+			"permission": {
+				"write": false
 			}
 		},
 		"register_ip": {
 			"bsonType": "string",
 			"description": "注册时 IP 地址",
 			"forceDefaultValue": {
-				"$env": "clientIP",
-				"read": "doc._id == auth.uid"
+				"$env": "clientIP"
+			},
+			"permission": {
+				"read": "doc._id == auth.uid || 'READ_UNI_ID_USERS' in auth.permission",
+				"write": "'CREATE_UNI_ID_USERS' in auth.permission || 'UPDATE_UNI_ID_USERS' in auth.permission"
 			}
 		},
 		"role": {
@@ -309,12 +322,21 @@
 			},
 			"title": "角色"
 		},
+		"tags":{
+			"bsonType": "array",
+			"description": "用户标签",
+			"permission": {
+				"read": "doc._id == auth.uid || 'READ_UNI_ID_USERS' in auth.permission",
+				"write": "'CREATE_UNI_ID_USERS' in auth.permission || 'UPDATE_UNI_ID_USERS' in auth.permission"
+			},
+			"title": "标签"
+		},
 		"score": {
 			"bsonType": "int",
 			"description": "用户积分，积分变更记录可参考：uni-id-scores表定义",
 			"permission": {
-				"write": false,
-				"read": "doc._id == auth.uid"
+				"read": "doc._id == auth.uid || 'READ_UNI_ID_USERS' in auth.permission",
+				"write": "'CREATE_UNI_ID_USERS' in auth.permission || 'UPDATE_UNI_ID_USERS' in auth.permission"
 			}
 		},
 		"status": {
@@ -347,7 +369,8 @@
 			"bsonType": "array",
 			"description": "用户token",
 			"permission": {
-				"read": "doc._id == auth.uid"
+				"read": false,
+				"write": "'CREATE_UNI_ID_USERS' in auth.permission || 'UPDATE_UNI_ID_USERS' in auth.permission"
 			}
 		},
 		"username": {
@@ -356,7 +379,8 @@
 			"title": "用户名",
 			"trim": "both",
 			"permission": {
-				"write": false
+				"read": "doc._id == auth.uid || 'READ_UNI_ID_USERS' in auth.permission",
+				"write": "'CREATE_UNI_ID_USERS' in auth.permission || 'UPDATE_UNI_ID_USERS' in auth.permission"
 			}
 		},
 		"wx_openid": {
@@ -381,16 +405,16 @@
 				}
 			},
 			"permission": {
-				"write": false,
-				"read": "doc._id == auth.uid"
+				"read": "'READ_UNI_ID_USERS' in auth.permission",
+				"write": "'CREATE_UNI_ID_USERS' in auth.permission || 'UPDATE_UNI_ID_USERS' in auth.permission"
 			}
 		},
 		"wx_unionid": {
 			"bsonType": "string",
 			"description": "微信unionid",
 			"permission": {
-				"write": false,
-				"read": "doc._id == auth.uid"
+				"read": "'READ_UNI_ID_USERS' in auth.permission",
+				"write": "'CREATE_UNI_ID_USERS' in auth.permission || 'UPDATE_UNI_ID_USERS' in auth.permission"
 			}
 		},
 		"qq_openid": {
@@ -407,17 +431,26 @@
 				}
 			},
 			"permission": {
-				"write": false,
-				"read": "doc._id == auth.uid"
+				"read": "'READ_UNI_ID_USERS' in auth.permission",
+				"write": "'CREATE_UNI_ID_USERS' in auth.permission || 'UPDATE_UNI_ID_USERS' in auth.permission"
 			}
 		},
 		"qq_unionid": {
 			"bsonType": "string",
 			"description": "QQ unionid",
 			"permission": {
-				"write": false,
-				"read": "doc._id == auth.uid"
+				"read": "'READ_UNI_ID_USERS' in auth.permission",
+				"write": "'CREATE_UNI_ID_USERS' in auth.permission || 'UPDATE_UNI_ID_USERS' in auth.permission"
+			}
+		},
+		"third_party": {
+			"bsonType": "object",
+			"description": "三方平台凭证",
+			"permission": {
+				"read": false,
+				"write": false
 			}
 		}
-	}
+	},
+	"required": []
 }

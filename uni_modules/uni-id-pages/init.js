@@ -19,7 +19,7 @@ export default async function() {
 		let {
 			supportedLoginType
 		} = await uniIdCo.getSupportedLoginType()
-		console.log("supportedLoginType: " + JSON.stringify(supportedLoginType));
+		//console.log("supportedLoginType: " + JSON.stringify(supportedLoginType));
 		//登录方式，服务端和客户端的映射关系
 		let data = {
 			smsCode: 'mobile-code',
@@ -50,7 +50,7 @@ export default async function() {
 		uni.preLogin({
 			provider: 'univerify',
 			complete: e => {
-				console.log(e);
+				// console.log(e);
 			}
 		})
 	}
@@ -65,10 +65,7 @@ export default async function() {
 		code, // 错误码详见https://uniapp.dcloud.net.cn/uniCloud/clientdb?id=returnvalue
 		message
 	}) {
-		console.error('onDBError', {
-			code,
-			message
-		});
+		// console.error('onDBError', {code,message});
 	}
 	// 解绑clientDB错误事件
 	//db.off('error', onDBError)
@@ -77,17 +74,17 @@ export default async function() {
 	//4. 同步客户端push_clientid至device表
 	if (uniCloud.onRefreshToken) {
 		uniCloud.onRefreshToken(() => {
-			console.log('onRefreshToken');
+			// console.log('onRefreshToken');
 			if (uni.getPushClientId) {
 				uni.getPushClientId({
 					success: async function(e) {
-						console.log(e)
+						// console.log(e)
 						let pushClientId = e.cid
-						console.log(pushClientId);
+						// console.log(pushClientId);
 						let res = await uniIdCo.setPushCid({
 							pushClientId
 						})
-						console.log('getPushClientId', res);
+						// console.log('getPushClientId', res);
 					},
 					fail(e) {
 						console.log(e)

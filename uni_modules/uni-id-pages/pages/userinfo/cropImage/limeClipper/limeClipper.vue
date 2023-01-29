@@ -30,11 +30,11 @@
 				</view>
 				<view v-if="isShowPhotoBtn" @tap="uploadImage">
 					<slot name="photo" v-if="$slots.photo" />
-					<image v-else src="uni_modules/uni-id-pages/static/limeClipper/photo.svg" />
+					<image v-else src="./images/photo.svg" />
 				</view>
 				<view v-if="isShowRotateBtn" @tap="rotate">
 					<slot name="rotate" v-if="$slots.rotate" />
-					<image v-else src="uni_modules/uni-id-pages/static/limeClipper/rotate.svg" data-type="inverse" />
+					<image v-else src="./images/rotate.svg" data-type="inverse" />
 				</view>
 				<view v-if="isShowConfirmBtn" @tap="confirm">
 					<slot name="confirm" v-if="$slots.confirm" />
@@ -506,7 +506,8 @@ export default {
 			if (!this.image) {
 				uni.showToast({
 					title: '请选择图片',
-					icon: 'none'
+					icon: 'none',
+					duration: 3000
 				});
 				return;
 			}
@@ -536,7 +537,8 @@ export default {
 			if (!this.image) {
 				uni.showToast({
 					title: '请选择图片',
-					icon: 'none'
+					icon: 'none',
+					duration: 3000
 				});
 				return;
 			}
@@ -721,7 +723,8 @@ export default {
 			if (!this.image) {
 				uni.showToast({
 					title: '请选择图片',
-					icon: 'none'
+					icon: 'none',
+					duration: 3000
 				});
 				return;
 			}
@@ -739,7 +742,8 @@ export default {
 			if (!this.image) {
 				uni.showToast({
 					title: '请选择图片',
-					icon: 'none'
+					icon: 'none',
+					duration: 3000
 				});
 				return;
 			}

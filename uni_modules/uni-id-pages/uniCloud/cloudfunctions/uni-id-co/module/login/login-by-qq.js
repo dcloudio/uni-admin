@@ -56,7 +56,7 @@ module.exports = async function (params = {}) {
   } = params
   const {
     appId
-  } = this.getClientInfo()
+  } = this.getUniversalClientInfo()
   const qqApi = initQQ.call(this)
   const qqPlatform = getQQPlatform.call(this)
   let apiName

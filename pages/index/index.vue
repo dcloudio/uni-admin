@@ -7,9 +7,10 @@
 			</view>
 		</view>
 		<view class="uni-container">
-			<uni-notice-bar v-if="!deviceTableData.length && !userTableData.length && !query.platform_id" showGetMore
-				showIcon class="mb-m pointer" text="暂无数据, 统计相关功能需开通 uni 统计后才能使用, 如未开通, 点击查看具体流程"
-				@click="navTo('https://uniapp.dcloud.io/uni-stat-v2.html')" />
+
+			<uni-notice-bar v-if="showAddAppId" showGetMore showIcon class="mb-m pointer" text="检测到您还未添加应用，点击前往应用管理添加" @click="toAddAppId" />
+			<uni-notice-bar v-if="!deviceTableData.length && !userTableData.length && !query.platform_id && complete" showGetMore showIcon class="mb-m pointer" text="暂无数据, 统计相关功能需开通 uni 统计后才能使用, 如未开通, 点击查看具体流程" @click="navTo('https://uniapp.dcloud.io/uni-stat-v2.html')" />
+
 			<view class="uni-stat--x mb-m">
 				<uni-stat-tabs label="平台选择" type="boldLine" mode="platform" v-model="query.platform_id" />
 			</view>
@@ -19,14 +20,14 @@
 				<uni-table :loading="loading" border stripe emptyText="暂无数据">
 					<uni-tr>
 						<!-- <uni-th align="center">操作</uni-th> -->
-						<template v-for="(mapper, index) in deviceTableFields">
+						<block v-for="(mapper, index) in deviceTableFields" :key="index">
 							<uni-th v-if="mapper.title" :key="index" align="center">
 								{{mapper.title}}
 							</uni-th>
-						</template>
+						</block>
 					</uni-tr>
 					<uni-tr v-for="(item ,i) in deviceTableData" :key="i">
-						<template v-for="(mapper, index) in deviceTableFields">
+						<block v-for="(mapper, index) in deviceTableFields" :key="index">
 							<uni-td v-if="mapper.field === 'appid'" align="center">
 								<view v-if="item.appid" @click="navTo('/pages/uni-stat/device/overview/overview', item.appid)"
 									class="link-btn-color">
@@ -39,7 +40,7 @@
 							<uni-td v-else :key="index" align="center">
 								{{item[mapper.field] !== undefined ? item[mapper.field] : '-'}}
 							</uni-td>
-						</template>
+						</block>
 					</uni-tr>
 				</uni-table>
 			</view>
@@ -47,14 +48,14 @@
 				<view class="uni-stat-card-header">注册用户概览</view>
 				<uni-table :loading="loading" border stripe emptyText="暂无数据">
 					<uni-tr>
-						<template v-for="(mapper, index) in userTableFields">
+						<block v-for="(mapper, index) in userTableFields" :key="index">
 							<uni-th v-if="mapper.title" :key="index" align="center">
 								{{mapper.title}}
 							</uni-th>
-						</template>
+						</block>
 					</uni-tr>
 					<uni-tr v-for="(item ,i) in userTableData" :key="i">
-						<template v-for="(mapper, index) in userTableFields">
+						<block v-for="(mapper, index) in userTableFields" :key="index">
 							<uni-td v-if="mapper.field === 'appid'" align="center">
 								<view v-if="item.appid" @click="navTo('/pages/uni-stat/user/overview/overview', item.appid)"
 									class="link-btn-color">
@@ -67,7 +68,7 @@
 							<uni-td v-else :key="index" align="center">
 								{{item[mapper.field] !== undefined ? item[mapper.field] : '-'}}
 							</uni-td>
-						</template>
+						</block>
 					</uni-tr>
 				</uni-table>
 			</view>
@@ -91,7 +92,8 @@
 		division,
 		format,
 		parseDateTime,
-		getFieldTotal
+		getFieldTotal,
+		debounce
 	} from '@/js_sdk/uni-stat/util.js'
 
 	import {
@@ -116,19 +118,33 @@
 				// 数据总量
 				total: 0,
 				loading: false,
-				// fieldsMap,
+				complete: false,
+				statSetting:{
+					mode:"",
+					day:7
+				},
+				statModeList:[
+					{"value": "open","text": "开启"	},
+					{"value": "close","text": "关闭"	},
+					{"value": "auto","text": "节能" },
+				],
+				showAddAppId:false
 			}
 		},
 		onReady() {
-			this.getApps(this.queryStr, deviceFeildsMap, 'device')
-			this.getApps(this.queryStr, userFeildsMap, 'user')
+
+			this.debounceGet = debounce(() => {
+				this.getAllData(this.queryStr);
+			}, 300);
+
+			this.debounceGet();
+			this.checkAppId();
 		},
 		watch: {
 			query: {
 				deep: true,
 				handler(newVal) {
-					this.getApps(this.queryStr, deviceFeildsMap, 'device')
-					this.getApps(this.queryStr, userFeildsMap, 'user')
+					this.debounceGet(this.queryStr);
 				}
 			}
 		},
@@ -146,6 +162,10 @@
 			}
 		},
 		methods: {
+			getAllData(queryStr){
+				this.getApps(this.queryStr, deviceFeildsMap, 'device')
+				this.getApps(this.queryStr, userFeildsMap, 'user')
+			},
 			tableFieldsMap(fieldsMap) {
 				let tableFields = []
 				const today = []
@@ -179,11 +199,8 @@
 			getApps(query, fieldsMap, type = "device") {
 				this.loading = true
 				const db = uniCloud.database()
+				const appDaily = db.collection('uni-stat-result').where(query).getTemp();
 				const appList = db.collection('opendb-app-list').getTemp()
-				const appDaily = db.collection('uni-stat-result')
-					.where(query)
-					.getTemp()
-
 				db.collection(appDaily, appList)
 					.field(
 						`${stringifyField(fieldsMap, '', 'value')},stat_date,appid,dimension`
@@ -196,6 +213,7 @@
 						let {
 							data
 						} = res.result
+						//console.log('data: ', data)
 						this[`${type}TableData`] = []
 						if (!data.length) return
 						let appids = [],
@@ -236,8 +254,10 @@
 									rowData[key + '_contrast'] = format(contrast)
 								}
 							}
-							this[`${type}TableData`].push(rowData)
-
+							if (appid) {
+								rowData[`total_${type}s_value`] = "获取中...";
+							}
+							this[`${type}TableData`].push(rowData);
 							if (appid) {
 								// total_users 不准确，置空后由 getFieldTotal 处理, appid 不存在时暂不处理
 								t[`total_${type}s`] = 0
@@ -255,7 +275,8 @@
 						// err.message 错误信息
 						// err.code 错误码
 					}).finally(() => {
-						this.loading = false
+						this.loading = false;
+						this.complete = true;
 					})
 			},
 
@@ -270,7 +291,32 @@
 						url
 					})
 				}
+			},
+
+			toUrl(url){
+				// #ifdef H5
+				window.open(url,"_blank");
+				// #endif
+			},
+
+			toAddAppId(){
+				this.showAddAppId = false;
+				uni.navigateTo({
+					url:"/pages/system/app/list",
+					events:{
+						refreshData:()=>{
+							this.checkAppId();
+						}
+					}
+				})
+			},
+
+			async checkAppId(){
+				const db = uniCloud.database();
+				let res = await db.collection('opendb-app-list').count();
+				this.showAddAppId = (!res.result || res.result.total === 0) ? true : false;
 			}
+
 		}
 
 	}
@@ -292,5 +338,24 @@
 	.link-btn-color {
 		color: #007AFF;
 		cursor: pointer;
+	}
+	.uni-stat-text{
+		color: #606266;
+	}
+	.mt10{
+		margin-top: 10px;
+	}
+	.uni-radio-cell{
+		margin: 0 10px;
+	}
+	.uni-stat-tooltip-s {
+		width: 400px;
+		white-space: normal;
+	}
+	.uni-a{
+		cursor: pointer;
+		text-decoration: underline;
+		color: #555;
+		font-size: 14px;
 	}
 </style>

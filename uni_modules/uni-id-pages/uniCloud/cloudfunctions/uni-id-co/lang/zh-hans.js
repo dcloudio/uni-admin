@@ -6,6 +6,7 @@ const word = {
 const sentence = {
   'uni-id-account-exists': '此账号已注册',
   'uni-id-account-not-exists': '此账号未注册',
+  'uni-id-account-not-exists-in-current-app': '此账号未在该应用注册',
   'uni-id-account-conflict': '用户账号冲突',
   'uni-id-account-banned': '此账号已封禁',
   'uni-id-account-auditing': '此账号正在审核中',
@@ -35,7 +36,14 @@ const sentence = {
   'uni-id-set-invite-code-failed': '设置邀请码失败',
   'uni-id-invalid-invite-code': '邀请码不可用',
   'uni-id-change-inviter-forbidden': '禁止修改邀请人',
-  'uni-id-bind-conflict': '此账号已被绑定'
+  'uni-id-bind-conflict': '此账号已被绑定',
+  'uni-id-admin-exist-in-other-apps': '超级管理员已在其他控制台注册',
+  'uni-id-unbind-failed': '请先绑定后再解绑',
+  'uni-id-unbind-not-supported': '不支持解绑',
+  'uni-id-unbind-mobile-not-exists': '这是当前唯一登录方式，请绑定手机号后再尝试解绑',
+  'uni-id-unbind-password-not-exists': '请先设置密码在尝试解绑',
+  'uni-id-unsupported-request': '不支持的请求方式',
+  'uni-id-illegal-request': '非法请求'
 }
 
 module.exports = {

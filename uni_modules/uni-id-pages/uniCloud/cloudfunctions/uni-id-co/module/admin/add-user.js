@@ -69,7 +69,9 @@ module.exports = async function (params = {}) {
     tags,
     status
   } = params
-  const userMatched = await findUser({
+  const {
+    userMatched
+  } = await findUser({
     userQuery: {
       username,
       mobile,
@@ -83,6 +85,7 @@ module.exports = async function (params = {}) {
     }
   }
   const passwordUtils = new PasswordUtils({
+    clientInfo: this.getUniversalClientInfo(),
     passwordSecret: this.config.passwordSecret
   })
   const {

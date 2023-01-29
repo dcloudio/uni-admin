@@ -62,5 +62,20 @@ module.exports = {
   },
   getAccountInfo: {
     auth: true
+  },
+  unbindWeixin: {
+    auth: true
+  },
+  unbindAlipay: {
+    auth: true
+  },
+  unbindQQ: {
+    auth: true
+  },
+  unbindApple: {
+    auth: true
+  },
+  setPwd: {
+    auth: true
   }
 }

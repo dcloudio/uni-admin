@@ -1,3 +1,11 @@
+## 2.2.13（2023-01-10）
+- 修复 多次加载组件造成内存占用的 bug
+## 2.2.12（2022-12-01）
+- 修复 vue3 下 i18n 国际化初始值不正确的 bug
+## 2.2.11（2022-09-19）
+- 修复，支付宝小程序样式错乱，[详情](https://github.com/dcloudio/uni-app/issues/3861)
+## 2.2.10（2022-09-19）
+- 修复，反向选择日期范围，日期显示异常，[详情](https://ask.dcloud.net.cn/question/153401?item_id=212892&rf=false)
 ## 2.2.9（2022-09-16）
 - 可以使用 uni-scss 控制主题色
 ## 2.2.8（2022-09-08）
@@ -19,7 +27,7 @@
 ## 2.2.0（2021-11-19）
 - 优化 组件UI，并提供设计资源，详见:[https://uniapp.dcloud.io/component/uniui/resource](https://uniapp.dcloud.io/component/uniui/resource)
 - 文档迁移，详见:[https://uniapp.dcloud.io/component/uniui/uni-datetime-picker](https://uniapp.dcloud.io/component/uniui/uni-datetime-picker)
-## 2.1.5（2021-11-09） 
+## 2.1.5（2021-11-09）
 - 新增 提供组件设计资源，组件样式调整
 ## 2.1.4（2021-09-10）
 - 修复 hide-second 在移动端的 bug

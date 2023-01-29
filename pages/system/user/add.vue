@@ -72,8 +72,8 @@
 					"role": [],
 					"authorizedApp": [],
 					"tags": [],
-					"mobile": "",
-					"email": "",
+					"mobile": undefined,
+					"email": undefined,
 					"status": true //默认启用
 				},
 				rules: {

@@ -19,15 +19,17 @@
 				<uni-data-checkbox multiple :localdata="roles" v-model="formData.role" />
 			</uni-forms-item>
 			<uni-forms-item name="tags" label="用户标签" labelWidth="100" class="flex-center-x">
-				<uni-data-checkbox :multiple="true" v-model="formData.tags" collection="uni-id-tag"
+				<uni-data-checkbox ref="checkboxTags" :multiple="true" v-model="formData.tags" collection="uni-id-tag"
 					field="tagid as value, name as text"></uni-data-checkbox>
 				<span class="link-btn" @click="gotoTagAdd">新增</span>
 				<span class="link-btn" @click="gotoTagList" style="margin-left: 10px;">管理</span>
 			</uni-forms-item>
-			<uni-forms-item name="authorizedApp" label="可登录应用" class="flex-center-x">
-				<uni-data-checkbox :multiple="true" v-model="formData.authorizedApp" collection="opendb-app-list"
-					field="appid as value, name as text"></uni-data-checkbox>
-				<span class="link-btn" @click="gotoAppList">管理</span>
+			<uni-forms-item name="authorizedApp" label="可登录应用">
+				<view class="uni-forms-item-flex-center-x">
+					<uni-data-checkbox :multiple="true" v-model="formData.authorizedApp" :localdata="appList"></uni-data-checkbox>
+					<span class="link-btn" @click="gotoAppList">管理</span>
+				</view>
+				<view v-if="formDataId === userId" class="uni-form-item-tips">当前有未添加的应用{{ unknownAppidsCom }}，建议点击右侧管理进行添加</view>
 			</uni-forms-item>
 			<uni-forms-item name="mobile" label="手机号">
 				<uni-easyinput v-model="formData.mobile" :clearable="false" placeholder="请输入手机号" />
@@ -36,8 +38,9 @@
 				<uni-easyinput v-model="formData.email" :clearable="false" placeholder="请输入邮箱" />
 			</uni-forms-item>
 			<uni-forms-item name="status" label="用户状态">
-				<switch v-if="Number(formData.status) < 2" @change="binddata('status', $event.detail.value)" :checked="formData.status" />
+				<switch v-if="Number(formData.status) < 2" @change="binddata('status', $event.detail.value)" :checked="formData.status" :disabled="formDataId === userId" />
 				<view v-else class="uni-form-item-empty">{{parseUserStatus(formData.status)}}</view>
+				<view v-if="formDataId === userId" class="uni-form-item-tips">请勿禁用当前登录的账号</view>
 			</uni-forms-item>
 			<view class="uni-button-group">
 				<button style="width: 100px;" type="primary" class="uni-button" @click="submitForm">{{$t('common.button.submit')}}</button>
@@ -71,11 +74,12 @@
 				formData: {
 					"username": "",
 					"nickname": "",
-					"password": "",
+					"password": undefined,
 					"role": [],
+					"tags": [],
 					"authorizedApp": [],
-					"mobile": "",
-					"email": "",
+					"mobile": undefined,
+					"email": undefined,
 					"status": false //默认禁用
 				},
 				rules: {
@@ -86,14 +90,19 @@
 						}]
 					}
 				},
-				roles: []
+				roles: [],
+				userId:"",
+				appList:[],
+				unknownAppids:[]
 			}
 		},
 		onLoad(e) {
 			const id = e.id
 			this.formDataId = id
+			let userInfo = uni.getStorageSync("uni-id-pages-userInfo") || {};
+			this.userId = userInfo._id;
 			this.getDetail(id)
-			this.loadroles()
+			this.loadroles();
 		},
 		methods: {
 			/**
@@ -114,7 +123,7 @@
 					url: '../tag/add',
 					events: {
 						refreshCheckboxData: () => {
-							this.$refs.checkbox.loadData()
+							this.$refs.checkboxTags.loadData();
 						}
 					}
 				})
@@ -142,7 +151,6 @@
 					value,
 					errors
 				} = event.detail
-				console.log(event)
 				// 表单校验失败页面会提示报错 ，要停止表单提交逻辑
 				if (errors) {
 					return
@@ -162,7 +170,8 @@
 					uni.showToast({
 						title: '修改成功'
 					})
-					this.getOpenerEventChannel().emit('refreshData')
+					const eventChannel = this.getOpenerEventChannel();
+					if (eventChannel.emit) eventChannel.emit('refreshData');
 					setTimeout(() => uni.navigateBack(), 500)
 				}).catch(err => {
 					uni.showModal({
@@ -207,7 +216,8 @@
 							if (data.status === 1) {
 								data.status = false
 							}
-							this.formData = Object.assign(this.formData, data)
+							this.formData = Object.assign(this.formData, data);
+							this.loadAppList(this.formData.authorizedApp);
 						}
 					}).catch((err) => {
 						uni.showModal({
@@ -242,6 +252,36 @@
 					})
 				})
 			},
+			loadAppList(authorizedApp){
+				db.collection('opendb-app-list').limit(500).get().then(res => {
+					let list = res.result.data.map((item, index) => {
+						return {
+							value: item.appid,
+							text: item.name
+						}
+					});
+					if (!list) list = [];
+					authorizedApp.map((appid) => {
+						let info = list.find((item) => {
+							return item.value === appid;
+						});
+						if (!info) {
+							this.unknownAppids.push(appid);
+							list.push({
+								value: appid,
+								text: `未知应用${appid}`
+							});
+						}
+					});
+					this.appList = list;
+				}).catch(err => {
+					uni.showModal({
+						title: '提示',
+						content: err.message,
+						showCancel: false
+					})
+				})
+			},
 			// status 对应文字显示
 			parseUserStatus(status) {
 				if (status === 0) {
@@ -255,6 +295,18 @@
 				} else {
 					return '启用'
 				}
+			}
+		},
+		computed:{
+			unknownAppidsCom(){
+				let str = "";
+				this.unknownAppids.map((item, index) => {
+					str += item;
+					if (index !== this.unknownAppids.length-1){
+						str += "、";
+					}
+				});
+				return str;
 			}
 		}
 	}
@@ -276,5 +328,11 @@
 	}
 	::v-deep .uni-forms-item__label {
 		width: 90px !important;
+	}
+
+	.uni-forms-item-flex-center-x {
+		display: flex;
+		align-items: center;
+		flex-wrap: wrap;
 	}
 </style>

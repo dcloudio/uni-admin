@@ -8,7 +8,8 @@ const {
 } = require('../../common/constants')
 const {
   batchFindObjctValue,
-  getType
+  getType,
+  isMatchUserApp
 } = require('../../common/utils')
 
 /**
@@ -28,58 +29,24 @@ async function findUser (params = {}) {
     throw new Error('Invalid user query')
   }
   const authorizedAppType = getType(authorizedApp)
-  let appQuery = null
-  if (authorizedAppType === 'string') {
-    // 传入authorizedApp为单个appId时
-    appQuery = dbCmd.or(
-      {
-        dcloud_appid: authorizedApp
-      },
-      {
-        dcloud_appid: dbCmd.exists(false)
-      }
-    )
-  } else if (authorizedAppType === 'array') {
-    if (authorizedApp.length === 0) {
-      // 传入空数组表示希望获取不能登录任一客户端的用户
-      appQuery = {
-        dcloud_appid: []
-      }
-    } else if (authorizedApp.length === 1) {
-      appQuery = dbCmd.or(
-        {
-          dcloud_appid: authorizedApp[0]
-        },
-        {
-          dcloud_appid: dbCmd.exists(false)
-        }
-      )
-    } else {
-      appQuery = dbCmd.or(
-        {
-          dcloud_appid: db.command.in(authorizedApp)
-        },
-        {
-          dcloud_appid: dbCmd.exists(false)
-        }
-      )
-    }
-  } else {
+  if (authorizedAppType !== 'string' && authorizedAppType !== 'array') {
     throw new Error('Invalid authorized app')
   }
 
   let finalQuery
 
   if (condition.length === 1) {
-    finalQuery = dbCmd.and(condition[0], appQuery)
+    finalQuery = condition[0]
   } else {
-    finalQuery = dbCmd.and(
-      dbCmd.or(condition),
-      appQuery
-    )
+    finalQuery = dbCmd.or(condition)
   }
   const userQueryRes = await userCollection.where(finalQuery).get()
-  return userQueryRes.data
+  return {
+    total: userQueryRes.data.length,
+    userMatched: userQueryRes.data.filter(item => {
+      return isMatchUserApp(item.dcloud_appid, authorizedApp)
+    })
+  }
 }
 
 function getUserIdentifier (userRecord = {}) {

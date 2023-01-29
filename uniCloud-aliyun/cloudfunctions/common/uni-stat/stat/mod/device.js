@@ -107,7 +107,12 @@ module.exports = class Device extends BaseMod {
 			}
 		}
 	}
-
+	
+	/**
+	 * 修改设备信息
+	 * @param {Object} params
+	 * @param {Object} deviceData
+	 */
 	async updateDevice(params, deviceData) {
 		//最新的参数
 		const dateTime = new DateTime()
@@ -147,7 +152,7 @@ module.exports = class Device extends BaseMod {
 				updateData[key] = newDeviceParams[key]
 			}
 		}
-		console.log('Device need to update', updateData)
+		
 		if(Object.keys(updateData).length) {
 			if(this.debug) {
 				console.log('Device need to update', updateData)

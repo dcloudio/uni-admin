@@ -2,7 +2,9 @@
 // jsdoc语法提示教程：https://ask.dcloud.net.cn/docs/#//ask.dcloud.net.cn/article/129
 const createConfig = require('uni-config-center')
 const buildTemplateData = require('./build-template-data')
-const { parserDynamicField, checkIsStaticTemplate } = require('./utils')
+const { parserDynamicField } = require('./utils')
+const schemaNameAdapter = require('./schema-name-adapter')
+const {presetCondition, conditionConvert} = require("./preset-condition")
 
 const uniSmsCo = uniCloud.importObject('uni-sms-co')
 const db = uniCloud.database()
@@ -12,6 +14,12 @@ const smsConfig = createConfig({
 
 function errCode(code) {
   return 'uni-sms-co-' + code
+}
+
+const tableNames = {
+	template: 'opendb-sms-template',
+	task: 'opendb-sms-task',
+	log: 'opendb-sms-log'
 }
 
 module.exports = {
@@ -26,32 +34,34 @@ module.exports = {
   },
   _after: function (error, result) {
 	  if (error) {
-		if (error instanceof Error) {
-			return {
-				errCode: 'error',
-				errMsg: error.message
+			console.error(error)
+			if (error instanceof Error) {
+				return {
+					errCode: 'error',
+					errMsg: error.message
+				}
 			}
-		}
 
-		if (error.errCode) {
-			return error
-		}
+			if (error.errCode) {
+				return error
+			}
 
-		throw error
+			throw error
 	  }
 
 	  return result
   },
   /**
- * 创建短信任务
- * @param {Object} to
- * @param {Boolean} to.all=false 全部用户发送
- * @param {String} to.type=user to.all=true时用来区分发送类型
- * @param {Array} to.receiver 用户ID's / 用户标签ID's
- * @param {String} templateId 短信模板ID
- * @param {Array} templateData 短信模板数据
- * @param {String} options.taskName 任务名称
- */
+	 * 创建短信任务
+	 * @param {{receiver: *[], type: string}} to
+	 * @param {String} to.type=user to.all=true时用来区分发送类型
+	 * @param {Array} to.receiver 用户ID's / 用户标签ID's
+	 * @param {Object} to.condition 用户筛选条件
+	 * @param {String} templateId 短信模板ID
+	 * @param {Array} templateData 短信模板数据
+	 * @param {Object} options
+	 * @param {String} options.taskName 任务名称
+	 */
   async createSmsTask(to, templateId, templateData, options = {}) {
 	return {
 	  errCode: 'demo-not-supported',
@@ -64,7 +74,7 @@ module.exports = {
       }
     }
 
-    if (!to.all && (!to.receiver || to.receiver.length <= 0)) {
+    if (!to.condition && (!to.receiver || to.receiver.length <= 0)) {
       return {
         errCode: errCode('send-users-is-null'),
         errMsg: '请选择要发送的用户'
@@ -73,7 +83,7 @@ module.exports = {
 
     const clientInfo = this.getClientInfo()
 
-    const {data: templates} = await db.collection('batch-sms-template').where({_id: templateId}).get()
+    const {data: templates} = await db.collection(this.tableNames.template).where({_id: templateId}).get()
     if (templates.length <= 0) {
       return {
         errCode: errCode('template-not-found'),
@@ -82,12 +92,17 @@ module.exports = {
     }
     const [template] = templates
 
+		// 预设条件
+		if (presetCondition[to.condition]) {
+			to.condition = typeof presetCondition[to.condition] === "function" ? presetCondition[to.condition]() : presetCondition[to.condition]
+		}
+
     // 创建短信任务
-    const task = await db.collection('batch-sms-task').add({
+    const task = await db.collection(this.tableNames.task).add({
       app_id: clientInfo.appId,
       name: options.taskName,
       template_id: templateId,
-      template_contnet: template.content,
+			template_content: template.content,
       vars: templateData,
       to,
       send_qty: 0,
@@ -107,7 +122,7 @@ module.exports = {
   async createUserSmsMessage(taskId, execData = {}) {
     const parallel = 100
     let beforeId
-    const { data: tasks } = await db.collection('batch-sms-task').where({ _id: taskId }).get()
+    const { data: tasks } = await db.collection(this.tableNames.task).where({ _id: taskId }).get()
 
     if (tasks.length <= 0) {
       return {
@@ -117,12 +132,12 @@ module.exports = {
     }
 
     const [task] = tasks
-    const query = {
+    let query = {
       mobile: db.command.exists(true)
     }
 
     // 指定用户发送
-    if (!task.to.all && task.to.type === 'user') {
+    if (task.to.type === 'user' && task.to.receiver.length > 0 && !task.to.condition) {
       let index = 0
       if (execData.beforeId) {
         const i = task.to.receiver.findIndex(id => id === execData.beforeId)
@@ -139,10 +154,19 @@ module.exports = {
       query.tags = db.command.in(task.to.receiver)
     }
 
-    // 全部用户
-    if (task.to.all && execData.beforeId) {
-      query._id = db.command.gt(execData.beforeId)
-    }
+		// 自定义条件
+		if (task.to.condition) {
+			const condition = conditionConvert(task.to.condition, db.command)
+
+			query = {
+				...query,
+				...condition
+			}
+		}
+
+		if ((task.to.condition || task.to.type === "userTags") && execData.beforeId) {
+			query._id = db.command.gt(execData.beforeId)
+		}
 
     // 动态数据仅支持uni-id-users表字段
     const dynamicField = parserDynamicField(task.vars)
@@ -150,6 +174,7 @@ module.exports = {
       res[field] = true
       return res
     }, {}): {}
+
     const { data: users } = await db.collection('uni-id-users')
       .where(query)
       .field({
@@ -162,8 +187,8 @@ module.exports = {
 
     if (users.length <= 0) {
       // 更新要发送的短信数量
-      const count = await db.collection('batch-sms-result').where({ task_id: taskId }).count()
-      await db.collection('batch-sms-task').where({ _id: taskId }).update({
+      const count = await db.collection(this.tableNames.log).where({ task_id: taskId }).count()
+      await db.collection(this.tableNames.task).where({ _id: taskId }).update({
         send_qty: count.total
       })
 
@@ -193,14 +218,14 @@ module.exports = {
       })
     }
 
-    await db.collection('batch-sms-result').add(docs)
+    await db.collection(this.tableNames.log).add(docs)
 
     uniSmsCo.createUserSmsMessage(taskId, { beforeId })
 
     return new Promise(resolve => setTimeout(() => resolve(), 500))
   },
   async sendSms(taskId) {
-    const { data: tasks } = await db.collection('batch-sms-task').where({ _id: taskId }).get()
+    const { data: tasks } = await db.collection(this.tableNames.task).where({ _id: taskId }).get()
     if (tasks.length <= 0) {
       console.warn(`task [${taskId}] not found`)
       return
@@ -217,7 +242,7 @@ module.exports = {
       data: {}
     }
 
-    const { data: records } = await db.collection('batch-sms-result')
+    const { data: records } = await db.collection(this.tableNames.log)
       .where({ task_id: taskId, status: 0 })
       .limit(isStaticTemplate ? 50 : 1)
       .field({ mobile: true, var_data: true })
@@ -242,24 +267,24 @@ module.exports = {
     }
 
     try {
-      //   await sendSms(sendData)
+        // await sendSms(sendData)
       await uniCloud.sendSms(sendData)
       // 修改发送状态为已发送
-      await db.collection('batch-sms-result').where({
+      await db.collection(this.tableNames.log).where({
         _id: db.command.in(records.map(record => record._id))
       }).update({
         status: 1,
         send_date: Date.now()
       })
       // 更新任务的短信成功数
-      await db.collection('batch-sms-task').where({ _id: taskId })
+      await db.collection(this.tableNames.task).where({ _id: taskId })
         .update({
           success_qty: db.command.inc(records.length)
         })
     } catch (e) {
       console.error('[sendSms Fail]', e)
       // 修改发送状态为发送失败
-      await db.collection('batch-sms-result').where({
+      await db.collection(this.tableNames.log).where({
         _id: db.command.in(records.map(record => record._id))
       }).update({
         status: 2,
@@ -267,7 +292,7 @@ module.exports = {
         send_date: Date.now()
       })
       // 更新任务的短信失败数
-      await db.collection('batch-sms-task').where({ _id: taskId })
+      await db.collection(this.tableNames.task).where({ _id: taskId })
         .update({
           fail_qty: db.command.inc(records.length)
         })
@@ -278,11 +303,11 @@ module.exports = {
     return new Promise(resolve => setTimeout(() => resolve(), 500))
   },
   async template() {
-    const {data: templates} = db.collection('batch-sms-template').get()
+    const {data: templates = []} = await db.collection(this.tableNames.template).get()
     return templates
   },
   async task (id) {
-    const {data: tasks} = await db.collection('batch-sms-task').where({_id: id}).get()
+    const {data: tasks} = await db.collection(this.tableNames.task).where({_id: id}).get()
     if (tasks.length <= 0) {
       return null
     }
@@ -300,7 +325,7 @@ module.exports = {
     let group = []
     for (const template of templates) {
       group.push(
-        db.collection('batch-sms-template').doc(String(template.templateId)).set({
+        db.collection(this.tableNames.template).doc(String(template.templateId)).set({
           name: template.templateName,
           content: template.templateContent,
           type: template.templateType,
@@ -316,16 +341,23 @@ module.exports = {
       errMsg: '更新成功'
     }
   },
-  async preview (to, templateId, templateData) {
+	/**
+	 * @param to
+	 * @param templateId
+	 * @param templateData
+	 * @param options {Object}
+	 * @param options.condition 群发条件
+	 * */
+  async preview (to, templateId, templateData, options = {}) {
     const count  = 1
     let query = {
       mobile: db.command.exists(true)
     }
 
     // 指定用户发送
-    if (!to.all && to.type === 'user') {
-      const receiver = to.receiver.slice(0, 10)
-      query._id = db.command.in(receiver)
+    if (to.type === 'user' && to.receiver.length > 0 && !to.condition) {
+      // const receiver = to.receiver.slice(0, 10)
+      query._id = db.command.in(to.receiver)
     }
 
     // 指定用户标签
@@ -333,7 +365,22 @@ module.exports = {
       query.tags = db.command.in(to.receiver)
     }
 
-    const {data: users} = await db.collection('uni-id-users').where(query).limit(count).get()
+		// 自定义条件
+		let condition = to.condition
+		if (presetCondition[to.condition]) {
+			condition = typeof presetCondition[to.condition] === "function" ? presetCondition[to.condition]() : presetCondition[to.condition]
+		}
+
+		if (condition) {
+			query = {
+				...query,
+				...conditionConvert(condition, db.command)
+			}
+		}
+
+		const {data: users} = await db.collection('uni-id-users').where(query).limit(count).get()
+		const {total} = await db.collection('uni-id-users').where(query).count()
+
     if (users.length <= 0) {
       return {
         errCode: errCode('users-is-null'),
@@ -341,7 +388,7 @@ module.exports = {
       }
     }
 
-    const {data: templates} = await db.collection('batch-sms-template').where({_id: templateId}).get()
+    const {data: templates} = await db.collection(this.tableNames.template).where({_id: templateId}).get()
     if (templates.length <= 0) {
       return {
         errCode: errCode('template-not-found'),
@@ -352,7 +399,7 @@ module.exports = {
 
     let docs = []
     for (const user of users) {
-      const varData = await buildTemplateData(templateData, user)
+      const varData = buildTemplateData(templateData, user)
       const content = template.content.replace(/\$\{(.*?)\}/g, ($1, param) => varData[param] || $1)
       docs.push(`【${template.sign}】${content}`)
     }
@@ -360,7 +407,8 @@ module.exports = {
     return {
       errCode: 0,
       errMsg: '',
-      list: docs
+      list: docs,
+			total
     }
   }
 }

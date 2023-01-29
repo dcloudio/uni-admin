@@ -13,8 +13,8 @@
 					@click="delTable">{{$t('common.button.batchDelete')}}</button>
 				<button class="uni-button" type="primary" size="mini" :disabled="!selectedIndexs.length"
 					@click="openTagsPopup">标签管理</button>
-				<button class="uni-button" type="primary" size="mini" @click="$refs.batchSms.open()">群发短信</button>
 				<!-- #ifdef H5 -->
+				<button class="uni-button" type="primary" size="mini" @click="$refs.batchSms.open()">群发短信</button>
 				<download-excel class="hide-on-phone" :fields="exportExcel.fields" :data="exportExcelData"
 					:type="exportExcel.type" :name="exportExcel.filename">
 					<button class="uni-button" type="primary" size="mini">{{$t('common.button.exportExcel')}}</button>
@@ -23,8 +23,7 @@
 			</view>
 		</view>
 		<view class="uni-container">
-			<unicloud-db ref="udb" collection="uni-id-users,uni-id-roles"
-				field="username,nickname,mobile,status,email,role{role_name},dcloud_appid,tags,last_login_date" :where="where"
+			<unicloud-db ref="udb" :collection="collectionList" :where="where"
 				page-data="replace" :orderby="orderby" :getcount="true" :page-size="options.pageSize"
 				:page-current="options.pageCurrent" v-slot:default="{ data, pagination, loading, error, options }"
 				:options="options" loadtime="manual" @load="onqueryload">
@@ -58,12 +57,11 @@
 						<uni-td align="center">
 							<uni-link :href="'mailto:' + item.email" :text="item.email"></uni-link>
 						</uni-td>
-						<uni-td align="center">{{ item.role }}</uni-td>
+						<uni-td align="center"> {{ item.role }}</uni-td>
 						<uni-td align="center">
-							<template v-if="item.tags" v-for="tag in item.tags">
-								<uni-tag type="primary" inverted size="small" :text="tag" style="margin: 0 5px;">
-								</uni-tag>
-							</template>
+							<block v-for="(tag,tagIndex) in item.tags" :key="tagIndex">
+								<uni-tag type="primary" inverted size="small" :text="tag" v-if="item.tags" style="margin: 0 5px;"></uni-tag>
+							</block>
 						</uni-td>
 						<uni-td align="center">
 							<uni-link v-if="item.dcloud_appid === undefined" :href="noAppidWhatShouldIDoLink">
@@ -104,8 +102,9 @@
 				</view>
 			</view>
 		</uni-popup>
-		{{smsReceiver}}
-		<batch-sms ref="batchSms" toType="user" :receiver="smsReceiver"></batch-sms>
+		<!-- #ifdef H5 -->
+		<batch-sms ref="batchSms" toType="user" :receiver="smsReceiver" :condition="smsCondition"></batch-sms>
+		<!-- #endif -->
 	</view>
 </template>
 
@@ -117,6 +116,7 @@
 	import UniForms from "@/uni_modules/uni-forms/components/uni-forms/uni-forms";
 	import UniFormsItem from "@/uni_modules/uni-forms/components/uni-forms-item/uni-forms-item";
 	import UniEasyinput from "@/uni_modules/uni-easyinput/components/uni-easyinput/uni-easyinput";
+
 	const db = uniCloud.database()
 	// 表查询配置
 	const dbOrderBy = 'last_login_date desc' // 排序字段
@@ -133,6 +133,7 @@
 	export default {
 		data() {
 			return {
+				collectionList: [ db.collection('uni-id-users').field('ali_openid,apple_openid,avatar,avatar_file,comment,dcloud_appid,department_id,email,email_confirmed,gender,invite_time,inviter_uid,last_login_date,last_login_ip,mobile,mobile_confirmed,my_invite_code,nickname,role,score,status,username,wx_unionid,qq_unionid,tags').getTemp(),db.collection('uni-id-roles').field('role_id, role_name').getTemp() ],
 				query: '',
 				where: '',
 				orderby: dbOrderBy,
@@ -143,6 +144,7 @@
 				tags: {},
 				managerTags: [],
 				queryTagid: '',
+				queryUserId: '',
 				options: {
 					pageSize,
 					pageCurrent,
@@ -185,12 +187,15 @@
 					}
 				},
 				exportExcelData: [],
-				noAppidWhatShouldIDoLink: 'https://uniapp.dcloud.net.cn/uniCloud/uni-id?id=makeup-dcloud-appid'
+				noAppidWhatShouldIDoLink: 'https://uniapp.dcloud.net.cn/uniCloud/uni-id?id=makeup-dcloud-appid',
+				smsCondition: {}
 			}
 		},
 		onLoad(e) {
 			this._filter = {}
 			const tagid = e.tagid
+			const userId = e.id
+
 			if (tagid) {
 				this.queryTagid = tagid
 				const options = {
@@ -199,10 +204,19 @@
 				}
 				this.filterChange(options, "tags")
 			}
+
+			if (userId) {
+				this.queryUserId = userId
+				const options = {
+					filterType: "select",
+					filter: [userId]
+				}
+				this.filterChange(options, "_id")
+			}
 		},
 		onReady() {
 			this.loadTags()
-			if (!this.queryTagid) {
+			if (!this.queryTagid && !this.queryUserId) {
 				this.$refs.udb.loadData()
 			}
 		},
@@ -221,10 +235,12 @@
 				}
 				return dynamic_data
 			},
-			smsReceiver () {
+			smsReceiver() {
 				if (this.selectedIndexs.length) {
 					var dataList = this.$refs.udb.dataList
 					return this.selectedIndexs.map(i => dataList[i]._id)
+				} else {
+					return undefined;
 				}
 			}
 		},
@@ -262,10 +278,31 @@
 					return ''
 				}
 				const queryRe = new RegExp(query, 'i')
+
+				console.log(
+					JSON.stringify(
+						db.command.or(
+							dbSearchFields.map(name => {
+								return {
+									[name]: queryRe
+								}
+							})
+						)
+					)
+				)
+
+				return db.command.or(
+					dbSearchFields.map(name => {
+						return {
+							[name]: queryRe
+						}
+					})
+				)
 				return dbSearchFields.map(name => queryRe + '.test(' + name + ')').join(' || ')
 			},
 			search() {
 				const newWhere = this.getWhere()
+
 				this.where = newWhere
 				// 下一帧拿到查询条件
 				this.$nextTick(() => {
@@ -338,11 +375,20 @@
 					value: e.filter
 				}
 				let newWhere = filterToWhere(this._filter, db.command)
+
 				if (Object.keys(newWhere).length) {
 					this.where = newWhere
 				} else {
 					this.where = ''
 				}
+
+				// uni-sms-co
+				if (Object.keys(this._filter).length) {
+					this.smsCondition = this._filter
+				} else {
+					this.smsCondition = {}
+				}
+
 				this.$nextTick(() => {
 					this.$refs.udb.loadData()
 				})
@@ -350,7 +396,7 @@
 			loadTags() {
 				db.collection('uni-id-tag').limit(500).get().then(res => {
 					res.result.data.map(item => {
-						this.tags[item.tagid] = item.name
+						this.$set(this.tags, item.tagid, item.name)
 					})
 				}).catch(err => {
 					uni.showModal({

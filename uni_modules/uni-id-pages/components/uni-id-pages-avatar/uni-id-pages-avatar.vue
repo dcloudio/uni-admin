@@ -48,7 +48,7 @@
 		async mounted() {
 			// #ifdef H5
 			this.isPC = !['ios', 'android'].includes(uni.getSystemInfoSync().platform);
-			console.log(' this.isPC', this.isPC, uni.getSystemInfoSync().platform);
+			// console.log(' this.isPC', this.isPC, uni.getSystemInfoSync().platform);
 			// #endif
 		},
 		computed: {
@@ -68,7 +68,7 @@
 				mutations.updateUserInfo({avatar_file})
 			},
 			uploadAvatarImg(res) {
-				console.log(this.hasLogin);
+				// console.log(this.hasLogin);
 				if(!this.hasLogin){
 					return uni.navigateTo({
 						url:'/uni_modules/uni-id-pages/pages/login/login-withoutpwd'
@@ -84,7 +84,7 @@
 					count: 1,
 					crop,
 					success: async (res) => {
-						console.log(res);
+						// console.log(res);
 						let tempFile = res.tempFiles[0],
 							avatar_file = {
 								// #ifdef H5
@@ -109,13 +109,13 @@
 										}
 									},
 									complete(e) {
-										console.log(e);
+										// console.log(e);
 									}
 								});
 							})
 						}
 						// #endif
-						console.log(this.userInfo);
+						// console.log(this.userInfo);
 						let cloudPath = this.userInfo._id + '' + Date.now()
 						avatar_file.name = cloudPath
 						uni.showLoading({
@@ -131,9 +131,7 @@
 						});
 						// console.log(result)
 						avatar_file.url = fileID
-						console.log({
-							avatar_file
-						});
+						// console.log({avatar_file});
 						uni.hideLoading()
 						this.setAvatarFile(avatar_file)
 					}

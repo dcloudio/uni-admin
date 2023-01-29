@@ -86,4 +86,26 @@ module.exports = class Auth {
       avatar
     }
   }
+
+  async getPhoneNumber (accessToken, code) {
+    const url = `/wxa/business/getuserphonenumber?access_token=${accessToken}`
+    const { phoneInfo } = await this._requestWxOpenapi({
+      name: 'getPhoneNumber',
+      url,
+      data: {
+        code
+      },
+      options: {
+        method: 'POST',
+        dataAsQueryString: false,
+        headers: {
+          'content-type': 'application/json'
+        }
+      }
+    })
+
+    return {
+      purePhoneNumber: phoneInfo.purePhoneNumber
+    }
+  }
 }

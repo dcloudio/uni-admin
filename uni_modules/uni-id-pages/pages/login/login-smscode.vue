@@ -38,7 +38,7 @@
 			this.phone = phoneNumber;
 		},
 		onShow() {
-			console.log('onShow');
+			// console.log('onShow');
 			// #ifdef H5
 			document.onkeydown = event => {
 				var e = event || window.event;
@@ -59,7 +59,8 @@
 					this.$refs.smsCode.focusSmsCodeInput = true
 					return uni.showToast({
 						title: '验证码不能为空',
-						icon: 'none'
+						icon: 'none',
+						duration: 3000
 					});
 				}
 				uniIdCo.loginBySms({
@@ -67,14 +68,14 @@
 					"code": this.code,
 					"captcha": this.captcha
 				}).then(e => {
-					console.log(e);
+					// console.log(e);
 					this.loginSuccess(e)
 				}).catch(e => {
 					if (e.errCode == 'uni-id-captcha-required') {
 						this.$refs.popup.open()
 					} else {
 						console.log(e.errMsg);
-						console.log(e.errCode);
+						// console.log(e.errCode);
 					}
 				}).finally(e => {
 					this.captcha = ''

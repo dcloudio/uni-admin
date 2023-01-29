@@ -89,7 +89,8 @@
 						this.$refs.captcha.focusCaptchaInput = true
 						return uni.showToast({
 							title: '请输入验证码',
-							icon: 'none'
+							icon: 'none',
+							duration: 3000
 						});
 					}
 					if (this.needAgreements && !this.agree) {
@@ -101,18 +102,18 @@
 				}).catch((errors) => {
 					let key = errors[0].key
 					key = key.replace(key[0], key[0].toUpperCase())
-					console.log(key);
+					// console.log(key);
 					this['focus'+key] = true
 				})
 			},
 			submitForm(params) {
 				uniIdCo.registerAdmin(this.formData).then(e => {
-					console.log(e);
+					// console.log(e);
 					uni.navigateBack()
 				})
 				.catch(e => {
-					console.log(e);
-					console.log(e.message);
+					// console.log(e);
+					// console.log(e.message);
 					//更好的体验：登录错误，直接刷新验证码
 					this.$refs.captcha.getImageCaptcha()
 					uni.showModal({
@@ -152,6 +153,7 @@
 	@media screen and (min-width: 690px) {
 		.uni-content{
 			padding: 30px 40px 60px;
+			max-height: 520px;
 		}
 		
 		.link-box {

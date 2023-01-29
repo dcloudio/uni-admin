@@ -39,7 +39,7 @@ async function getNeedCaptcha ({
   const {
     data: recentRecord
   } = await uniIdLogCollection.where({
-    ip: this.getClientInfo().clientIP,
+    ip: this.getUniversalClientInfo().clientIP,
     ...userIdentifier,
     type,
     create_date: dbCmd.gt(now - limitDuration)
@@ -61,7 +61,7 @@ async function verifyCaptcha (params = {}) {
     }
   }
   const payload = await this.uniCaptcha.verify({
-    deviceId: this.getClientInfo().deviceId,
+    deviceId: this.getUniversalClientInfo().deviceId,
     captcha,
     scene
   })

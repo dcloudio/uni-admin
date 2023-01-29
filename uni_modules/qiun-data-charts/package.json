@@ -1,8 +1,8 @@
 {
   "id": "qiun-data-charts",
   "displayName": "秋云 ucharts echarts 高性能跨全端图表组件",
-  "version": "2.3.7-20220122",
-  "description": "uCharts v2.3.7支持Vue3！全新官方图表组件，支持H5及APP用ECharts渲染图表，uniapp可视化首选组件",
+  "version": "2.5.0-20230101",
+  "description": "uCharts 新增正负柱状图！支持H5及APP用 ucharts echarts 渲染图表，uniapp可视化首选组件",
   "keywords": [
     "ucharts",
     "echarts",
@@ -14,11 +14,7 @@
   "engines": {
     "HBuilderX": "^3.3.8"
   },
-  "dcloudext": {
-    "category": [
-        "前端组件",
-        "通用组件"
-    ],
+"dcloudext": {
     "sale": {
       "regular": {
         "price": "0.00"
@@ -35,7 +31,8 @@
       "data": "插件不采集任何数据",
       "permissions": "无"
     },
-    "npmurl": "https://www.npmjs.com/package/@qiun/ucharts"
+    "npmurl": "https://www.npmjs.com/~qiun",
+    "type": "component-vue"
   },
   "uni_modules": {
     "dependencies": [],

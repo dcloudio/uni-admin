@@ -31,7 +31,7 @@
 					uni.getUserProfile({
 						desc: "用于设置账户昵称和头像",
 						complete: (e) => {
-							console.log("getUserProfile:", e);
+							// console.log("getUserProfile:", e);
 							callBack(e)
 						}
 					})

@@ -7,7 +7,7 @@ module.exports = async function () {
     token,
     tokenExpired
   } = await this.uniIdCommon.refreshToken({
-    token: this.getUniIdToken()
+    token: this.getUniversalUniIdToken()
   })
   return {
     errCode: 0,

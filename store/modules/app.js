@@ -1,3 +1,7 @@
+import {
+	UNI_ADMIN_THEME
+} from '../constants.js'
+
 // #ifndef VUE3
 const statConfig = require('uni-stat-config').default || require('uni-stat-config');
 // #endif
@@ -8,11 +12,13 @@ export default {
 		inited: false,
 		navMenu: [],
 		routes: [],
-		appName: process.env.VUE_APP_NAME || process.env.UNI_APP_NAME || '',
+		theme: uni.getStorageSync(UNI_ADMIN_THEME) || 'default',
 		// #ifndef VUE3
-		appid: statConfig && statConfig.appid || ''
+		appName: process.env.VUE_APP_NAME || '',
+		appid: statConfig && statConfig.appid || '',
 		// #endif
 		// #ifdef VUE3
+		appName: process.env.UNI_APP_NAME || '',
 		appid: process.env.UNI_APP_ID || ''
 		// #endif
 	},
@@ -26,13 +32,22 @@ export default {
 		},
 		SET_ROUTES: (state, routes) => {
 			state.routes = routes
+		},
+		SET_THEME: (state, theme) => {
+			// #ifdef H5
+			document
+				.getElementsByTagName('body')[0]
+				.setAttribute('data-theme', theme)
+			// #endif
+			uni.setStorageSync(UNI_ADMIN_THEME, theme)
+			state.theme = theme
 		}
 	},
 	actions: {
 		init({
 			commit,
-		 	dispatch
-		 }) {
+			dispatch
+		}) {
 			// 初始化获取用户信息
 			dispatch('user/getUserInfo', null, {
 				root: true

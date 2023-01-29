@@ -46,12 +46,12 @@ baseValidator.password = function (password) {
 
 baseValidator.mobile = function (mobile) {
   const errCode = ERROR.INVALID_MOBILE
-  if (!isValidString(mobile)) {
+  if (getType(mobile) !== 'string') {
     return {
       errCode
     }
   }
-  if (!/^1\d{10}$/.test(mobile)) {
+  if (mobile && !/^1\d{10}$/.test(mobile)) {
     return {
       errCode
     }
@@ -60,12 +60,12 @@ baseValidator.mobile = function (mobile) {
 
 baseValidator.email = function (email) {
   const errCode = ERROR.INVALID_EMAIL
-  if (!isValidString(email)) {
+  if (getType(email) !== 'string') {
     return {
       errCode
     }
   }
-  if (!/@/.test(email)) {
+  if (email && !/@/.test(email)) {
     return {
       errCode
     }
@@ -290,6 +290,12 @@ function createPasswordVerifier({
   }
 }
 
+function isEmpty(value) {
+  return value === undefined || 
+  value === null ||
+  (typeof value === 'string' && value.trim() === '')
+}
+
 class Validator {
   constructor({
     passwordStrength = ''
@@ -350,7 +356,7 @@ class Validator {
         type
       } = schemaValue
       // value内未传入了schemaKey或对应值为undefined
-      if (value[schemaKey] === undefined) {
+      if (isEmpty(value[schemaKey])) {
         if (required) {
           return {
             errCode: ERROR.PARAM_REQUIRED,
@@ -360,6 +366,7 @@ class Validator {
             schemaKey
           }
         } else {
+          //delete value[schemaKey]
           continue
         }
       }

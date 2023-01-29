@@ -20,6 +20,13 @@ export default {
 			text: 'English',
 			lang: 'en'
 		}],
+		themes: [{
+			text: '默认',
+			value: 'default'
+		}, {
+			text: '绿柔',
+			value: 'green'
+		}],
 		debug: {
 			enable: process.env.NODE_ENV !== 'production', //是否显示错误信息
 			engine: [{ // 搜索引擎配置（每条错误信息后，会自动生成搜索链接，点击后跳转至搜索引擎）

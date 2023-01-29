@@ -45,7 +45,7 @@ async function sendSmsCode ({
       action = this.t('verify-mobile')
       break
   }
-  const sceneConfig = smsConfig.scene || {}
+  const sceneConfig = (smsConfig.scene || {})[scene] || {}
   if (!templateId) {
     templateId = sceneConfig.templateId
   }

@@ -9,30 +9,27 @@
 			</view>
 		</view>
 		<view class="uni-container">
+			<view class="uni-stat--x flex p-1015">
+				<uni-data-select collection="opendb-app-list" field="appid as value, name as text" orderby="text asc" :defItem="1" label="应用选择" v-model="query.appid" :clear="false" />
+				<uni-data-select collection="opendb-app-versions" :where="versionQuery" class="ml-m" field="_id as value, version as text, uni_platform as label, create_date as date" format="{label} - {text}" orderby="date desc" label="版本选择" v-model="query.version_id" />
+			</view>
 			<view class="uni-stat--x flex">
-				<uni-data-select collection="opendb-app-list" field="appid as value, name as text" orderby="text asc"
-					:defItem="1" label="应用选择" v-model="query.appid" :clear="false" />
-				<uni-data-select collection="opendb-app-versions" :where="versionQuery"
-					field="_id as value, version as text" orderby="text desc" label="版本选择" v-model="query.version_id" />
-				<view class="flex">
-					<uni-stat-tabs label="日期选择" :current="currentDateTab" :yesterday="false" mode="date"
-						@change="changeTimeRange" />
-					<uni-datetime-picker type="daterange" :end="new Date().getTime()" v-model="query.start_time"
-						returnType="timestamp" :clearIcon="false" class="uni-stat-datetime-picker"
-						:class="{'uni-stat__actived': currentDateTab < 0 && !!query.start_time.length}"
-						@change="useDatetimePicker" />
-				</view>
+				<uni-stat-tabs label="日期选择" :current="currentDateTab" :yesterday="false" mode="date"
+					@change="changeTimeRange" />
+				<uni-datetime-picker type="daterange" :end="new Date().getTime()" v-model="query.start_time"
+					returnType="timestamp" :clearIcon="false" class="uni-stat-datetime-picker"
+					:class="{'uni-stat__actived': currentDateTab < 0 && !!query.start_time.length}"
+					@change="useDatetimePicker" />
 			</view>
 			<view class="uni-stat--x">
-				<uni-stat-tabs label="平台选择" type="boldLine" mode="platform" v-model="query.platform_id"
-					@change="changePlatform" />
+				<uni-stat-tabs label="平台选择" type="boldLine" mode="platform" v-model="query.platform_id" @change="changePlatform"/>
+				<uni-data-select ref="version-select" v-if="query.platform_id && query.platform_id.indexOf('==') === -1" collection="uni-stat-app-channels" :where="channelQuery" class="p-channel" field="_id as value, channel_name as text" orderby="text asc" label="渠道/场景值选择" v-model="query.channel_id" />
 			</view>
 			<view class="uni-stat--x" style="padding: 15px 0;">
 				<uni-stat-panel :items="panelData" class="uni-stat-panel" />
 				<uni-stat-tabs type="box" v-model="chartTab" :tabs="chartTabs" class="mb-l" />
 				<view class="uni-charts-box">
-					<qiun-data-charts type="area" :chartData="chartData" :eopts="{notMerge:true}" echartsH5 echartsApp
-						tooltipFormat="tooltipCustom" />
+					<qiun-data-charts type="area" :chartData="chartData" :eopts="{notMerge:true}" echartsH5 echartsApp tooltipFormat="tooltipCustom" :errorMessage="errorMessage"/>
 				</view>
 			</view>
 
@@ -49,7 +46,7 @@
 				</view>
 				<uni-table :loading="loading" border stripe :emptyText="$t('common.empty')">
 					<uni-tr>
-						<template v-for="(mapper, index) in fieldsMap">
+						<block v-for="(mapper, index) in fieldsMap" :key="index">
 							<uni-th v-if="mapper.title" :key="index" align="center">
 								<!-- #ifdef MP -->
 								{{mapper.title}}
@@ -66,13 +63,13 @@
 								</uni-tooltip>
 								<!-- #endif -->
 							</uni-th>
-						</template>
+						</block>
 						<uni-th align="center" v-if="sourceMapEnabled">
 							操作
 						</uni-th>
 					</uni-tr>
 					<uni-tr v-for="(item ,i) in tableData" :key="i">
-						<template v-for="(mapper, index) in fieldsMap">
+						<block v-for="(mapper, index) in fieldsMap" :key="index">
 							<uni-td v-if="mapper.field === 'count'" :key="mapper.field" align="center">
 								<text class="link-btn" @click="navTo('detail', item)">
 									{{item[mapper.field] !== undefined ? item[mapper.field] : '-'}}
@@ -81,7 +78,7 @@
 							<uni-td v-else :key="mapper.field" align="center">
 								{{item[mapper.field] !== undefined ? item[mapper.field] : '-'}}
 							</uni-td>
-						</template>
+						</block>
 						<uni-td v-if="sourceMapEnabled">
 							<button size="mini" type="primary" style="white-space: nowrap;"
 								@click="openErrPopup(item)">详 情</button>
@@ -260,7 +257,8 @@
 					}
 				},
 				uploadSuccessTaskNames: [],
-				errorItem: ''
+				errorItem: '',
+				errorMessage: "",
 			}
 		},
 		components: {
@@ -308,7 +306,13 @@
 			},
 			sourceMapEnabled() {
 				return !!this.uniStat.uploadSourceMapCloudSpaceId
-			}
+			},
+			channelQuery() {
+				const platform_id = this.query.platform_id
+				return stringifyQuery({
+					platform_id
+				})
+			},
 		},
 		created() {
 			this.parsedErrors = {}
@@ -320,13 +324,18 @@
 					spaceId: this.uniStat.uploadSourceMapCloudSpaceId
 				})
 			}
+
+			this.getCloudDataDebounce = debounce(() => {
+				this.getAllData(this.queryStr)
+			}, 300);
+			this.getCloudDataDebounce();
 		},
 		watch: {
 			query: {
 				deep: true,
 				handler(val, old) {
 					this.options.pageCurrent = 1 // 重置分页
-					this.debounceGet()
+					this.getCloudDataDebounce()
 				}
 			},
 			chartTab(val) {
@@ -334,9 +343,6 @@
 			}
 		},
 		methods: {
-			debounceGet: debounce(function() {
-				this.getAllData(this.queryStr)
-			}),
 			useDatetimePicker(res) {
 				this.currentDateTab = -1
 			},
@@ -363,8 +369,13 @@
 			},
 
 			getAllData(query) {
-				this.getChartData(query)
-				this.getTableData(query)
+				if (query.indexOf("appid") === -1) {
+					this.errorMessage = "请先选择应用";
+					return; // 如果appid为空，则不进行查询
+				}
+				this.errorMessage = "";
+				this.getChartData(query);
+				this.getTableData(query);
 			},
 
 			getChartData(query, field = 'day_count') {
@@ -389,12 +400,9 @@
 						const resData = res.result.data
 						let data = []
 
-						console.log("timeAll: ", timeAll);
-						console.log("resData: ", resData);
 
 						timeAll.forEach(v => {
 							let item = resData.find(item => item.start_time === v)
-							console.log(item);
 							if (item) {
 								data.push(item)
 							} else {
@@ -405,7 +413,6 @@
 							}
 						})
 
-						console.log('----data', data);
 						const options = {
 							categories: [],
 							series: [{
@@ -429,7 +436,6 @@
 							this.chartData = options
 						} else {
 							let dayAppLaunchs = await this.getDayLaunch(querystr)
-							console.log('++++', dayAppLaunchs);
 							const rateLine = options.series[0] = {
 								name: '错误率(%)',
 								data: [],
@@ -505,7 +511,6 @@
 			 * @param {Object} query
 			 */
 			async getDayLaunch(query) {
-				console.log(query);
 				const db = uniCloud.database()
 				const res = await db.collection('uni-stat-result')
 					.where(query)
@@ -722,7 +727,6 @@
 				} = this.uploadOptions
 
 				const prefix = `__UNI__/uni-stat/sourcemap/${appid}/${uni_platform}/${version}/`
-				console.log('...........prefix', prefix);
 
 				// 原生 input 上传逻辑
 				const inputEl = document.createElement('input')

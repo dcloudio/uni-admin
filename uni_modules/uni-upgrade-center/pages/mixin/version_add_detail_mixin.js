@@ -1,7 +1,7 @@
 import {
 	validator,
 	enumConverter
-} from '@/js_sdk/validator/opendb-app-versions.js';
+} from '@/uni_modules/uni-upgrade-center/js_sdk/validator/opendb-app-versions.js';
 
 const platform_iOS = 'iOS';
 const platform_Android = 'Android';
@@ -17,7 +17,7 @@ function getValidator(fields) {
 }
 
 export const fields =
-	'appid,name,title,contents,platform,type,version,min_uni_version,url,stable_publish,is_silently,is_mandatory,create_date,store_list'
+	'appid,name,title,contents,platform,type,version,min_uni_version,url,stable_publish,is_silently,is_mandatory,create_date'
 
 export default {
 	data() {
@@ -41,7 +41,6 @@ export default {
 				"title": "",
 				"contents": "",
 				"platform": [],
-				"store_list": [],
 				"type": "",
 				"version": "",
 				"min_uni_version": "",
@@ -50,7 +49,8 @@ export default {
 				"create_date": null
 			},
 			formOptions: {
-				"platform_localdata": [{
+				"platform_localdata": [
+					{
 						"value": "Android",
 						"text": "安卓"
 					},
@@ -59,7 +59,8 @@ export default {
 						"text": "苹果"
 					}
 				],
-				"type_localdata": [{
+				"type_localdata": [
+					{
 						"value": "native_app",
 						"text": "原生App安装包"
 					},
@@ -70,9 +71,10 @@ export default {
 				]
 			},
 			rules: {
-				...getValidator(["appid", "contents", "platform", "type", "version", "min_uni_version", "url",
-					"stable_publish",
-					"title", "name", "is_silently", "is_mandatory", "store_list"
+				...getValidator([
+					"appid", "contents", "platform", "type",
+					"version", "min_uni_version", "url", "stable_publish",
+					"title", "name", "is_silently", "is_mandatory"
 				])
 			}
 		}
@@ -111,13 +113,16 @@ export default {
 			this.preUrl = this.formData.url
 			this.formData.url = res.tempFilePaths[0]
 		},
+		deleteFile(fileList) {
+			return this.$request('deleteFile', {
+				fileList
+			}, {
+				functionName: 'uni-upgrade-center'
+			})
+		},
 		async packageDelete(res) {
 			if (!this.hasPackage) return;
-			let [deleteRes] = await this.$request('deleteFile', {
-				fileList: [res.tempFilePath]
-			}, {
-				functionName: 'uni-app-manager'
-			})
+			let [deleteRes] = await this.deleteFile([res.tempFilePath])
 			if (deleteRes.success) {
 				uni.showToast({
 					icon: 'success',
