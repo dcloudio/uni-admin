@@ -11,3 +11,4 @@ manifest.json
 .vscode
 test-cron/
 uni-stat-receiver.param.js
+.uni-devtools

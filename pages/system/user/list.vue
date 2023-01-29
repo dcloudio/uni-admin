@@ -103,8 +103,7 @@
 			</view>
 		</uni-popup>
 		<!-- #ifdef H5 -->
-		{{smsReceiver}}
-		<batch-sms ref="batchSms" toType="user" :receiver="smsReceiver"></batch-sms>
+		<batch-sms ref="batchSms" toType="user" :receiver="smsReceiver" :condition="smsCondition"></batch-sms>
 		<!-- #endif -->
 	</view>
 </template>
@@ -117,6 +116,7 @@
 	import UniForms from "@/uni_modules/uni-forms/components/uni-forms/uni-forms";
 	import UniFormsItem from "@/uni_modules/uni-forms/components/uni-forms-item/uni-forms-item";
 	import UniEasyinput from "@/uni_modules/uni-easyinput/components/uni-easyinput/uni-easyinput";
+
 	const db = uniCloud.database()
 	// 表查询配置
 	const dbOrderBy = 'last_login_date desc' // 排序字段
@@ -187,7 +187,8 @@
 					}
 				},
 				exportExcelData: [],
-				noAppidWhatShouldIDoLink: 'https://uniapp.dcloud.net.cn/uniCloud/uni-id?id=makeup-dcloud-appid'
+				noAppidWhatShouldIDoLink: 'https://uniapp.dcloud.net.cn/uniCloud/uni-id?id=makeup-dcloud-appid',
+				smsCondition: {}
 			}
 		},
 		onLoad(e) {
@@ -277,10 +278,31 @@
 					return ''
 				}
 				const queryRe = new RegExp(query, 'i')
+
+				console.log(
+					JSON.stringify(
+						db.command.or(
+							dbSearchFields.map(name => {
+								return {
+									[name]: queryRe
+								}
+							})
+						)
+					)
+				)
+
+				return db.command.or(
+					dbSearchFields.map(name => {
+						return {
+							[name]: queryRe
+						}
+					})
+				)
 				return dbSearchFields.map(name => queryRe + '.test(' + name + ')').join(' || ')
 			},
 			search() {
 				const newWhere = this.getWhere()
+
 				this.where = newWhere
 				// 下一帧拿到查询条件
 				this.$nextTick(() => {
@@ -353,11 +375,20 @@
 					value: e.filter
 				}
 				let newWhere = filterToWhere(this._filter, db.command)
+
 				if (Object.keys(newWhere).length) {
 					this.where = newWhere
 				} else {
 					this.where = ''
 				}
+
+				// uni-sms-co
+				if (Object.keys(this._filter).length) {
+					this.smsCondition = this._filter
+				} else {
+					this.smsCondition = {}
+				}
+
 				this.$nextTick(() => {
 					this.$refs.udb.loadData()
 				})
@@ -365,7 +396,7 @@
 			loadTags() {
 				db.collection('uni-id-tag').limit(500).get().then(res => {
 					res.result.data.map(item => {
-						this.tags[item.tagid] = item.name
+						this.$set(this.tags, item.tagid, item.name)
 					})
 				}).catch(err => {
 					uni.showModal({
