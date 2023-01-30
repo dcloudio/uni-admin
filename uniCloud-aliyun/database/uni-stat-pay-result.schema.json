@@ -3,7 +3,7 @@
 	"description": "存储统计汇总的支付数据",
 	"required": [],
 	"permission": {
-		"read": false,
+		"read": "'READ_UNI_STAT_PAY' in auth.permission",
 		"create": false,
 		"update": false,
 		"delete": false
