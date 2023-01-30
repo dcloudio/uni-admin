@@ -1,0 +1,24 @@
+{
+  "name": "visitor-uni-admin-reset",
+  "main": "index.js",
+  "version": "1.0.0",
+  "description": "",
+  "cloudfunction-config": {
+    "concurrency": 1,
+    "memorySize": 512,
+    "path": "",
+    "timeout": 600,
+    "triggers": [
+      {
+        "config": "0 0 2 * * * *",
+        "name": "visitor-uni-admin-reset",
+        "type": "timer"
+      }
+    ],
+    "runtime": "Nodejs8"
+  },
+  "dependencies": {
+
+  },
+  "extensions": {}
+}

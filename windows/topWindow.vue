@@ -48,10 +48,11 @@
 					<view class="uni-mask" @click="togglePopupMenu" />
 					<view class="navbar-menu">
 						<template v-if="userInfo.nickname || userInfo.username || userInfo.mobile || userInfo.email">
-<!--							演示站点隐藏-->
-<!--							<view class="menu-item hover-highlight" @click="changePassword">-->
-<!--								<text>{{ $t("topwindow.text.changePwd") }}</text>-->
-<!--							</view>-->
+							<!-- 演示站点隐藏修改密码
+							<view class="menu-item hover-highlight" @click="changePassword">
+								<text>{{ $t("topwindow.text.changePwd") }}</text>
+							</view> 
+							-->
 							<view class="menu-item hover-highlight">
 								<text class="logout pointer" @click="logout">{{ $t("topwindow.text.signOut") }}</text>
 							</view>

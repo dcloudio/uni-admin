@@ -22,10 +22,10 @@ module.exports = {
 
   // 用户接口
   closeAccount: {
-    auth: true
+    role: ['admin'] // 演示站点仅限admin可执行
   },
   updatePwd: {
-    auth: true
+    role: ['admin'] // 演示站点仅限admin可执行
   },
   logout: {
     auth: true
