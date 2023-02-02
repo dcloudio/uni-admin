@@ -90,7 +90,8 @@
 		},
 		"button": {
 			"addFirstLevelMenu": "新增一級菜單",
-			"addChildMenu": "子菜單"
+			"addChildMenu": "子菜單",
+			"updateBuiltInMenu": "更新內寘選單"
 		}
 	},
 	"demo": {

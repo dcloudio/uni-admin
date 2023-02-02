@@ -90,7 +90,8 @@
 		},
 		"button": {
 			"addFirstLevelMenu": "Add First-level Menu",
-			"addChildMenu": "Submenu"
+			"addChildMenu": "Submenu",
+			"updateBuiltInMenu": "Update built-in Menu"
 		}
 	},
 	"demo": {
