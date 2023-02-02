@@ -612,20 +612,6 @@
 				}
 			},
 
-			getPlatform(platform_id) {
-				const platforms = uni.getStorageSync('platform_last_data')
-				let platform = Array.isArray(platforms) && platforms.find(p => p._id === platform_id).code
-
-				// if (appPlatforms.indexOf(platform) !== -1) platform = 'app'
-
-				return platform
-			},
-
-			getVersion(version_id) {
-				const versions = uni.getStorageSync('uni-stat-app-versions_last_data')
-				const version = Array.isArray(versions) && versions.find(v => v._id === version_id).text
-				return version
-			},
 			closeErrPopup() {
 				this.$refs.errMsg.close()
 			},

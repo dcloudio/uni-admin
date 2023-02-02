@@ -7,7 +7,7 @@
 	import {
 		version
 	} from './package.json'
-	import { UNI_ADMIN_THEME, UNI_ID_TOKEN_EXPIRED } from './store/constants.js'
+	import { uniAdminCacheKey } from './store/constants.js'
 	export default {
 		created() {
 			this.clear = undefined
@@ -37,7 +37,7 @@
 			// #endif
 			// #ifdef H5
 			// 此处为强制用户必须登录才能访问其他页面，如果需要部分页面不登录也能访问，需要在此过滤这些页面不执行下面的代码或直接注释掉此代码
-			// let uni_id_token_expired = uni.getStorageSync(UNI_ID_TOKEN_EXPIRED);
+			// let uni_id_token_expired = uni.getStorageSync("uni_id_token_expired");
 			// if (!uni_id_token_expired || uni_id_token_expired < Date.now()) {
 			// 	uni.reLaunch({
 			// 		url: config.login.url
@@ -57,7 +57,7 @@
 			})
 
 			// theme
-			this.SET_THEME(uni.getStorageSync(UNI_ADMIN_THEME) || 'default')
+			this.SET_THEME(uni.getStorageSync(uniAdminCacheKey.theme) || 'default')
 		},
 		onShow: function() {
 			console.log('App Show')
