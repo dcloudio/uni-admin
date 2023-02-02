@@ -14,9 +14,11 @@
 			<uni-list-item v-if="hasPwd" class="item" @click="changePassword" title="修改密码" link>
 			</uni-list-item>
 		</uni-list>
+		<!-- #ifndef MP -->
 		<uni-list class="mt10">
 			<uni-list-item @click="deactivate" title="注销账号" link="navigateTo"></uni-list-item>
 		</uni-list>
+		<!-- #endif -->
 		<uni-popup ref="dialog" type="dialog">
 			<uni-popup-dialog mode="input" :value="userInfo.nickname" @confirm="setNickname" title="设置昵称"
 				placeholder="请输入要设置的昵称">
@@ -30,8 +32,6 @@
 	</view>
 </template>
 <script>
-	const db = uniCloud.database();
-	const usersTable = db.collection('uni-id-users')
 	const uniIdCo = uniCloud.importObject("uni-id-co")
   import {
     store,
@@ -82,12 +82,12 @@
 					}
 				})
 			},
-      logout(){
-        mutations.logout()
-      },
-      bindMobileSuccess(){
-        mutations.updateUserInfo()
-      },
+			logout(){
+			  mutations.logout()
+			},
+			bindMobileSuccess(){
+			  mutations.updateUserInfo()
+			},
 			changePassword(){
 				uni.navigateTo({
 					url: '/uni_modules/uni-id-pages/pages/userinfo/change_pwd/change_pwd',
@@ -123,9 +123,7 @@
 					"provider": 'univerify',
 					"univerifyStyle": this.univerifyStyle,
 					success: async e => {
-						// console.log(e.authResult);
 						uniIdCo.bindMobileByUniverify(e.authResult).then(res => {
-							// console.log(res);
 							mutations.updateUserInfo()
 						}).catch(e => {
 							console.log(e);
@@ -148,7 +146,6 @@
 				})
 			},
 			setNickname(nickname) {
-				// console.log(nickname);
 				if (nickname) {
 					mutations.updateUserInfo({nickname})
 					this.$refs.dialog.close()

@@ -108,12 +108,9 @@
 			},
 			submitForm(params) {
 				uniIdCo.registerAdmin(this.formData).then(e => {
-					// console.log(e);
 					uni.navigateBack()
 				})
 				.catch(e => {
-					// console.log(e);
-					// console.log(e.message);
 					//更好的体验：登录错误，直接刷新验证码
 					this.$refs.captcha.getImageCaptcha()
 					uni.showModal({

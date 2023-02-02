@@ -154,6 +154,7 @@
 								uni.navigateTo({
 									url: '/uni_modules/uni-id-pages/pages/login/login-withpwd',
 									complete: (e) => {
+										// console.log(e);
 									}
 								})
 							})
@@ -178,11 +179,11 @@
 					url: '/uni_modules/uni-id-pages/pages/retrieve/retrieve'
 				})
 			},
-      backLogin () {
-        uni.redirectTo({
-          url: '/uni_modules/uni-id-pages/pages/login/login-withpwd'
-        })
-      }
+			backLogin () {
+				uni.redirectTo({
+					url: '/uni_modules/uni-id-pages/pages/login/login-withpwd'
+				})
+			}
 		}
 	}
 </script>
