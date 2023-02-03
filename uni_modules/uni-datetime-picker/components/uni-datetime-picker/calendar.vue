@@ -249,7 +249,6 @@
 					if (!this.range) {
 						this.time = newVal
 					} else {
-						// console.log('-----', newVal);
 						this.timeRange.startTime = newVal.start
 						this.timeRange.endTime = newVal.end
 					}
@@ -271,7 +270,11 @@
 			},
 			pleStatus: {
 				immediate: true,
-				handler(newVal, oldVal) {
+				handler(newVal) {
+          // 字节小程序 watch 早于 created
+          if(!this.cale){
+            return
+          }
 					const {
 						before,
 						after,
