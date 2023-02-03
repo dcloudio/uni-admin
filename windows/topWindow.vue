@@ -67,7 +67,7 @@
 				</scroll-view>
 			</view>
 		</uni-popup>
-		<!-- 沉余代码，临时处理 uni-datetime-picker 国际化不生效的问题 -->
+		<!-- 冗余代码，临时处理 uni-datetime-picker 国际化不生效的问题 -->
 		<!-- #ifdef H5 -->
 		<uni-datetime-picker type="date" v-show="false"></uni-datetime-picker>
 		<!-- #endif -->
@@ -125,7 +125,7 @@
 			this.mpCapsule = menuButtonInfo.width
 			// #endif
 
-			// 沉余代码，临时处理 uni-datetime-picker 国际化不生效的问题
+			// 冗余代码，临时处理 uni-datetime-picker 国际化不生效的问题
 			// #ifdef H5
 			uni.setLocale('en')
 			this.$nextTick(() => {
