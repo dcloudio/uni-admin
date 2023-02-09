@@ -117,18 +117,20 @@
 
 		<!-- #ifdef H5 -->
 		<uni-drawer class="sourcemap-drawser" ref="upload" mode="right" :mask-click="true" :width="340">
-			<view class="modal" style="max-width: none; min-width: auto;">
+			<view class="modal" style="max-width: none; min-width: auto;padding: 0 10px;">
 				<view class="modal-header">
 					上传 sourceMap
 				</view>
 				<view class="modal-content" style="height: 300px;padding: 0;">
-					<uni-data-select collection="opendb-app-list" field="appid as value, name as text"
-						orderby="text asc" label="应用" v-model="uploadOptions.appid" />
-					<uni-data-select collection="uni-stat-app-platforms" field="code as value, name as text"
-						orderby="text asc" label="平台" v-model="uploadOptions.uni_platform" />
-					<uni-data-select collection="opendb-app-versions" :where="uploadVersionQuery"
-						field="version as value, version as text" orderby="text desc" label="版本"
-						v-model="uploadOptions.version" />
+					<view style="margin-top: 10px;">
+						<uni-data-select collection="opendb-app-list" field="appid as value, name as text" orderby="text asc" label="应用" v-model="uploadOptions.appid" />
+					</view>
+					<view style="margin-top: 10px;">
+						<uni-data-select collection="uni-stat-app-platforms" field="code as value, name as text" orderby="text asc" label="平台" v-model="uploadOptions.uni_platform" />
+					</view>
+					<view style="margin-top: 10px;">
+						<uni-data-select collection="opendb-app-versions" :where="uploadVersionQuery" field="version as value, version as text" orderby="text desc" label="版本" v-model="uploadOptions.version" />
+					</view>
 					<view class="flex m-m">
 						<view class="label-text">选择文件:</view>
 						<button class="uni-button ml-m" type="primary" @click="choosefile">选择文件并上传</button>
@@ -194,8 +196,6 @@
 	} from '@dcloudio/uni-stacktracey';
 	import adminConfig from '@/admin.config.js'
 
-	const appPlatforms = ['ios', 'android', 'app']
-
 	const panelOption = [{
 		title: '错误总数',
 		value: 0,
@@ -205,6 +205,13 @@
 		value: 0,
 		tooltip: '时间范围内的总错误数/应用启动次数，如果小于0.01%，默认显示为0'
 	}]
+
+	const db = uniCloud.database(); // 初始化数据库实例
+	const _ = db.command; // 定义数据库操作符
+
+	const dbNameSourceMap = `uni-stat-error-source-map`; // sourceMap资源存放的表名
+	const sourcemapPrefix = `__UNI__/uni-stat/sourcemap`;
+	var sourcemapFileCache = {};
 
 	export default {
 		data() {
@@ -305,7 +312,8 @@
 				return this.uploadFile.tempFileTasks.filter(task => task.state !== 1).sort((a, b) => a.state - b.state)
 			},
 			sourceMapEnabled() {
-				return !!this.uniStat.uploadSourceMapCloudSpaceId
+				//return !!this.uniStat.uploadSourceMapCloudSpaceId
+				return true;
 			},
 			channelQuery() {
 				const platform_id = this.query.platform_id
@@ -319,10 +327,27 @@
 
 			if (this.sourceMapEnabled) {
 				// sourceMap 功能需初始化上传的目标云空间
-				this.uploadSourcemapCloud = uniCloud.init({
-					provider: 'tencent',
-					spaceId: this.uniStat.uploadSourceMapCloudSpaceId
-				})
+				if (this.uniStat.uploadSourceMapCloudSpaceId) {
+					if (this.uniStat.uploadSourceMapCloudPlatform === "aliyun") {
+						// 使用阿里云服务空间
+						let endpoint = this.uniStat.uploadSourceMapCloudSpaceId.indexOf("mp-") === 0 ? 'https://api.next.bspapp.com':'https://api.bspapp.com';
+						this.uploadSourcemapCloud = uniCloud.init({
+							provider: 'aliyun',
+							spaceId: this.uniStat.uploadSourceMapCloudSpaceId,
+							clientSecret: this.uniStat.uploadSourceMapCloudClientSecret,
+							endpoint
+						})
+					} else {
+						// 使用腾讯云服务空间
+						this.uploadSourcemapCloud = uniCloud.init({
+							provider: 'tencent',
+							spaceId: this.uniStat.uploadSourceMapCloudSpaceId
+						})
+					}
+				} else {
+					// 使用本项目绑定的服务空间
+					this.uploadSourcemapCloud = uniCloud;
+				}
 			}
 
 			this.getCloudDataDebounce = debounce(() => {
@@ -641,28 +666,94 @@
 					this.msgLoading = false
 				}
 			},
-			parseError(item) {
+			async parseError(item) {
 				let {
 					msgTooltip: err,
 					appid,
 					platform_code,
 					version
 				} = item
-
-				let base = this.uniStat.cloudSourceMapUrl + `/${appid}/${platform_code}/${version}/`
+				//console.log('item: ', item)
+				let base = `/${appid}/${platform_code}/${version}/`
+				let fileList;
+				if (sourcemapFileCache[base] && sourcemapFileCache[base].length > 0) {
+					fileList = sourcemapFileCache[base];
+				} else {
+					fileList = await this.getSourceMapFileList({
+						base
+					});
+					if (fileList && fileList.length > 0) {
+						sourcemapFileCache[base] = fileList;
+					} else {
+						console.error(`缺少${base}对应的sourceMap，请先上传sourceMap`)
+					}
+				}
+				//console.log('fileList: ', fileList)
 
 				try {
 					err = JSON.parse(err)
 				} catch (e) {}
 
-				console.log("originalErrMsg: ", err);
+				// console.log("originalErrMsg: ", err);
 
-				stacktracey(err, {
-					preset: uniStracktraceyPreset({
+				const stacktraceyOptions = {
 						base,
 						uniPlatform: platform_code,
 						splitThirdParty: true
-					})
+					}
+				if (['ios', 'android', 'app'].indexOf(platform_code)>-1) {
+					stacktraceyOptions.lineOffset = -1
+				}
+				stacktracey(err, {
+					preset: {
+						...uniStracktraceyPreset(stacktraceyOptions),
+						/**
+						 *
+						 * 微信特殊处理
+						 * 微信解析步骤：
+						 * 	1. //usr/app-service.js -> 'weixin/__APP__/app-service.map.map'
+						 *  2. //usr/pages/API/app-service.js -> 'weixin/pages/API/app-service.map.map'
+						 *  3. uni-list-item/uni-list-item.js -> ${base}/uni-list-item/uni-list-item.js.map
+						 */
+						parseSourceMapUrl(file, fileName, fileRelative){
+							// 组合 sourceMapUrl
+							if (fileRelative.indexOf('(') !== -1){
+								let fileRelativeMatch = fileRelative.match(/\((.*)/);
+								fileRelative = fileRelativeMatch && fileRelativeMatch[1];
+							}
+							if (!base || !fileRelative) return ''
+							if (typeof sourceRoot !== "undefined") {
+								return `${fileRelative.replace(sourceRoot, base + '/')}.map`
+							}
+							let baseAfter = ''
+							if (platform_code.indexOf("mp-")>-1) {
+								if (fileRelative.indexOf('app-service.js') !== -1) {
+									baseAfter = (base.match(/\w$/) ? '/' : '') + '__WEIXIN__'
+									if (fileRelative === fileName) {
+										baseAfter += '/__APP__'
+									}
+									// fileRelative = fileRelative.replace('.js', '.map')
+								}
+							}
+							if (baseAfter && !!fileRelative.match(/^\w/)) baseAfter += '/'
+							let path = `${base}${baseAfter}${fileRelative}.map`;
+							let cloud_path = `${sourcemapPrefix}${path}`;
+
+							let cloud_path_web;
+							if (platform_code === "web") {
+								// 尝试去掉第一级的项目名（web端可能会设置h5基础运行路径）
+								let fileRelativeWeb = fileRelative.substring(fileRelative.indexOf("/")+1);
+								let pathWeb = `${base}${baseAfter}${fileRelativeWeb}.map`;
+								cloud_path_web = `${sourcemapPrefix}${pathWeb}`;
+							}
+
+							let fileItem = fileList.find((item) => {
+								return [cloud_path, cloud_path_web].indexOf(item.cloud_path) > -1;
+							});
+							//console.log('cloud_path: ', cloud_path, fileItem.url)
+							return fileItem ? fileItem.url : cloud_path;
+						}
+					}
 				}).then(res => {
 					const {
 						userError,
@@ -701,7 +792,7 @@
 					onUploadProgress
 				})
 			},
-			choosefile() {
+			async choosefile() {
 				if (!this.vaildate) {
 					this.uploadMsg = '请先将应用、平台、版本填写完整'
 					return
@@ -712,7 +803,9 @@
 					version
 				} = this.uploadOptions
 
-				const prefix = `__UNI__/uni-stat/sourcemap/${appid}/${uni_platform}/${version}/`
+				const base = `/${appid}/${uni_platform}/${version}/`;
+				const prefix = `${sourcemapPrefix}${base}`
+
 
 				// 原生 input 上传逻辑
 				const inputEl = document.createElement('input')
@@ -720,7 +813,7 @@
 				inputEl.directory = true
 				inputEl.webkitdirectory = true
 				inputEl.click()
-				inputEl.addEventListener('change', () => {
+				inputEl.addEventListener('change', async () => {
 					this.uploadFile.clear()
 
 					const fileList = inputEl.files; /* now you can work with the file list */
@@ -734,7 +827,8 @@
 							size: `${(file.size / 1024).toFixed(2)}kb`,
 							name: file.name,
 							state: 0,
-							progress: 0
+							progress: 0,
+							file
 						})
 						Object.defineProperty(file, 'path', {
 							get() {
@@ -743,47 +837,68 @@
 						})
 						this.uploadFile.tempFiles.push(file)
 					})
-
-					this.uploadFile.tempFileTasks.reduce((_uploadFilePromise, cur, curIndex) => {
-						return _uploadFilePromise
-							.then((msg) => {
-								return new Promise((resolve, reject) => {
-									// 已上传的文件
-									if (this.uploadSuccessTaskNames.indexOf(cur.name) !== -1) {
-										cur.progress = 1
-										setTimeout(() => {
-											cur.state = 1
-											resolve()
-										}, 200)
-									} else {
-										this.createUploadFileTask(
-											prefix,
-											cur.fileDiskPath,
-											cur.path,
-											(OnUploadProgressRes) => {
-												const {
-													loaded,
-													total
-												} = OnUploadProgressRes
-
-												cur.progress = loaded / total
-											}
-										).then(() => {
-											setTimeout(() => {
-												this.uploadSuccessTaskNames
-													.push(cur.name)
-												cur.state = 1
-												resolve()
-											}, 500)
-										}).catch((err) => {
-											cur.state = -1
-											reject(`${cur.name} 上传失败：` + JSON
-												.stringify(err))
-										})
+					// 因为上传有并发限制，故还是一个一个上传靠谱
+					let dataArr = [];
+					for (let i = 0; i < this.uploadFile.tempFileTasks.length; i++) {
+						let cur = this.uploadFile.tempFileTasks[i];
+						let res = await new Promise((resolve, reject) => {
+							// 已上传的文件
+							if (this.uploadSuccessTaskNames.indexOf(cur.name) !== -1) {
+								cur.progress = 1
+								setTimeout(() => {
+									cur.state = 1
+									resolve()
+								}, 200)
+							} else {
+								this.createUploadFileTask(
+									prefix,
+									cur.fileDiskPath,
+									cur.path,
+									(OnUploadProgressRes) => {
+										const {
+											loaded,
+											total
+										} = OnUploadProgressRes
+										cur.progress = loaded / total
 									}
+								).then((uploadRes) => {
+									const cloudPath = prefix + cur.fileDiskPath
+									let fileID = uploadRes.fileID;
+									uniCloud.getTempFileURL({
+										fileList: [fileID]
+									})
+									.then(res => {
+										let url = res.fileList[0].tempFileURL;
+										let file = {
+											appid,
+											uni_platform,
+											version,
+											file_id: fileID,
+											url,
+											name: cur.name,
+											size: cur.file.size,
+											cloud_path: cloudPath,
+											base
+										};
+										setTimeout(() => {
+											this.uploadSuccessTaskNames.push(name)
+											cur.state = 1
+											resolve(file)
+										}, 100)
+									});
+								}).catch((err) => {
+									cur.state = -1
+									reject(`${cur.name} 上传失败：` + JSON.stringify(err))
 								})
-							})
-					}, Promise.resolve())
+							}
+						})
+						if (res) dataArr.push(res);
+					}
+
+					if (dataArr && dataArr.length>0){
+						// 将sourceMap资源文件写入数据库
+						await this.addSourceMapFile(dataArr);
+					}
 				})
 			},
 			createStr(maps, fn, prefix = 'total_') {
@@ -799,7 +914,32 @@
 			openErrPopup(item) {
 				this.errorItem = item
 				this.$refs.errMsg.open()
-			}
+			},
+
+			// 将sourceMap资源文件写入数据库
+			async addSourceMapFile(dataArr){
+				let cloud_path_arr = [];
+				dataArr.map((item, index) => {
+					cloud_path_arr.push(item.cloud_path);
+				});
+				// 先删除同版本的文件（避免重复上传时出现错误）
+				await db.collection(dbNameSourceMap).where({
+					cloud_path: _.in(cloud_path_arr)
+				}).remove();
+				// 再添加
+				await db.collection(dbNameSourceMap).add(dataArr);
+			},
+			// 从数据库中获取sourceMap资源文件
+			async getSourceMapFileList(obj){
+				let {
+					base
+				} = obj;
+				let fileListRes = await db.collection(dbNameSourceMap).where({
+					base
+				}).limit(1000).get();
+				return fileListRes.result.data || [];
+			},
+
 		}
 	}
 </script>
