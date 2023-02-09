@@ -1,3 +1,5 @@
+## 2.3.4（2023-02-09）
+- 重要 阿里云空间支持上传sourceMap用以分析js错误统计 [详情](https://uniapp.dcloud.net.cn/uni-stat-v2.html#sourcemap-parse-error)
 ## 2.3.3（2023-02-02）
 - 新增 菜单管理新增【更新内置菜单】功能，方便旧版本uni-admin升级至新版本uni-admin后一键同步内置菜单
 - 升级 uni-id-pages 至 1.1.0
