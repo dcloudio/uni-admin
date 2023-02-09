@@ -1,5 +1,7 @@
-## 1.2.10（2022-11-23）
-修复 uni-list-item 组件 keep-scroll-position 属性 无法设置为false的错误
+## 1.2.12（2023-02-01）
+- 新增 列表图标新增 customPrefix 属性 ，用法 [详见](https://uniapp.dcloud.net.cn/component/uniui/uni-icons.html#icons-props)
+## 1.2.11（2023-01-31）
+- 修复 无反馈效果呈现的bug
 ## 1.2.9（2022-11-22）
 - 修复 uni-list-chat 在vue3下跳转报错的bug
 ## 1.2.8（2022-11-21）

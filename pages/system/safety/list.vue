@@ -10,7 +10,7 @@
 			</view>
 		</view>
 		<view class="uni-container">
-			<unicloud-db ref="udb" :collection="collectionList" orderby="create_date desc" :options="options" :where="where" page-data="replace" :orderby="orderby"
+			<unicloud-db ref="udb" :collection="collectionList" :options="options" :where="where" page-data="replace" :orderby="orderby"
 			 :getcount="true" :page-size="options.pageSize" :page-current="options.pageCurrent" v-slot:default="{data,pagination,loading,error}">
 				<uni-table :loading="loading" :emptyText="error.message || '没有更多数据'" border stripe >
 					<uni-tr>
@@ -44,7 +44,7 @@
 <script>
 	const db = uniCloud.database()
 	// 表查询配置
-	const dbOrderBy = 'create_date' // 排序字段
+	const dbOrderBy = 'create_date desc' // 排序字段
 	const dbSearchFields = ["user_id.username","user_id.nickname","type", "ip"] // 支持模糊搜索的字段列表
 	// 分页配置
 	const pageSize = 20

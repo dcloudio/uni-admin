@@ -115,7 +115,6 @@ export default {
               this.$refs.popup.open()
             } else {
               console.log(e.errMsg);
-              // console.log(e.errCode);
             }
           }).finally(e => {
             this.formData.captcha = ''

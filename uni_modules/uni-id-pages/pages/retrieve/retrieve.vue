@@ -106,6 +106,7 @@
 							},
 							{
 								validateFunction: function(rule, value, data, callback) {
+									// console.log(value);
 									if (value != data.password) {
 										callback('两次输入密码不一致')
 									};
@@ -202,11 +203,11 @@
 					url: '/uni_modules/uni-id-pages/pages/retrieve/retrieve-by-email'
 				})
 			},
-      backLogin () {
-        uni.redirectTo({
-          url: '/uni_modules/uni-id-pages/pages/login/login-withpwd'
-        })
-      }
+			backLogin () {
+				uni.redirectTo({
+					url: '/uni_modules/uni-id-pages/pages/login/login-withpwd'
+				})
+			}
 		}
 	}
 </script>

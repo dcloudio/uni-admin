@@ -1,5 +1,5 @@
 import {
-	UNI_ADMIN_THEME
+	uniAdminCacheKey
 } from '../constants.js'
 
 // #ifndef VUE3
@@ -12,7 +12,7 @@ export default {
 		inited: false,
 		navMenu: [],
 		routes: [],
-		theme: uni.getStorageSync(UNI_ADMIN_THEME) || 'default',
+		theme: uni.getStorageSync(uniAdminCacheKey.theme) || 'default',
 		// #ifndef VUE3
 		appName: process.env.VUE_APP_NAME || '',
 		appid: statConfig && statConfig.appid || '',
@@ -39,7 +39,7 @@ export default {
 				.getElementsByTagName('body')[0]
 				.setAttribute('data-theme', theme)
 			// #endif
-			uni.setStorageSync(UNI_ADMIN_THEME, theme)
+			uni.setStorageSync(uniAdminCacheKey.theme, theme)
 			state.theme = theme
 		}
 	},

@@ -39,11 +39,8 @@
 					content: '已经仔细阅读注销提示，知晓可能带来的后果，并确认要注销',
 					complete: (e) => {
 						if (e.confirm) {
-							const db = uniCloud.database();
-							
 							const uniIdco = uniCloud.importObject("uni-id-co");
 							uniIdco.closeAccount().then((e) => {
-								// console.log(e);
 								uni.showToast({
 									title: '注销成功',
 									duration: 3000

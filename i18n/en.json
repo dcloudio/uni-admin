@@ -57,7 +57,8 @@
 			"back": "Back",
 			"tagManager": "Tag Manager",
 			"publish": "Publish page management",
-			"version": "version manager"
+			"version": "version manager",
+			"sendSMS": "Send SMS"
 		},
 		"empty": "No more data",
 		"piecePerPage": "piece/page"
@@ -90,7 +91,8 @@
 		},
 		"button": {
 			"addFirstLevelMenu": "Add First-level Menu",
-			"addChildMenu": "Submenu"
+			"addChildMenu": "Submenu",
+			"updateBuiltInMenu": "Update built-in Menu"
 		}
 	},
 	"demo": {

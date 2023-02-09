@@ -11,7 +11,7 @@
 		<view class="uni-container">
 			<view class="uni-stat--x flex p-1015">
 				<uni-data-select collection="opendb-app-list" field="appid as value, name as text" orderby="text asc" :defItem="1" label="应用选择" v-model="query.appid" :clear="false" />
-				<uni-data-select collection="opendb-app-versions" :where="versionQuery" class="ml-m" field="_id as value, version as text, uni_platform as label, create_date as date" format="{label} - {text}" orderby="date desc" label="版本选择" v-model="query.version_id" />
+				<uni-data-select ref="app-versions" collection="opendb-app-versions" :where="versionQuery" class="ml-m" field="_id as value, version as text, uni_platform as label, create_date as date" format="{label} - {text}" orderby="date desc" label="版本选择" v-model="query.version_id" />
 				<uni-stat-tabs label="平台选择" type="boldLine" :all="false" mode="platform-channel" v-model="query.platform_id" @change="changePlatform" />
 			</view>
 			<view class="uni-stat--x flex">
@@ -264,17 +264,18 @@
 					version_id,
 					start_time
 				} = this.query
+
 				// 从本地存储中取到数据做过滤
-				const platforms = uni.getStorageSync('platform_channel_last_data')
-				const versions = uni.getStorageSync('uni-stat-app-versions_last_data')
-				const p = Array.isArray(platforms) && platforms.find(p => p._id === platform_id)
-				const v = Array.isArray(versions) && versions.find(v => v._id === version_id)
+				const platform = this.getPlatform(platform_id);
+				const version = this.getVersion(version_id);
+
 				const query = stringifyQuery({
 					appid,
 					create_time: start_time,
-					platform: p && p.code || '',
-					version: v && v.text || ''
+					platform: platform,
+					version: version
 				})
+				//console.log('query: ', query)
 				return query
 			},
 			versionQuery() {
@@ -287,6 +288,7 @@
 					uni_platform,
 					type: 'native_app'
 				})
+				//console.log('query: ', query)
 				return query
 			}
 		},
@@ -382,6 +384,21 @@
 				this.query.start_time = [start, end]
 			},
 
+			getPlatform(platform_id){
+				const statTabsData = uni.getStorageSync('uni-admin-statTabsData');
+				const platforms = statTabsData["platform-channel"];
+				const p = Array.isArray(platforms) && platforms.find(p => p._id === platform_id)
+				return p && p.code || '';
+			},
+			getVersion(version_id){
+				let versions = [];
+				if (this.$refs["app-versions"] && typeof this.$refs["app-versions"].getLoadData === "function") {
+					versions = this.$refs["app-versions"].getLoadData();
+				}
+				const v = Array.isArray(versions) && versions.find(v => v._id === version_id);
+				return v && v.text || '';
+			},
+
 			getAllData(query) {
 				if (query.indexOf("appid") === -1) {
 					this.errorMessage = "请先选择应用";
@@ -408,7 +425,7 @@
 							count,
 							data
 						} = res.result
-						const item = res.result.data[0]
+						const item = res.result.data[0] || {count:0,app_launch_count:0}
 						// this.panelData = []
 						let queryTemp = Object.assign({}, this.query)
 						delete queryTemp.type

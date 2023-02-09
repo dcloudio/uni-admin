@@ -41,13 +41,11 @@
 									uniCloud.importObject("uni-id-co",{
 										customUI:true
 									}).loginByWeixin({code}).then(e=>{
-										// console.log(e);
 										resolve()
 									}).catch(e=>{
 										console.log(e);
 										reject()
 									}).finally(e=>{
-										// console.log(e);
 										uni.hideLoading()
 									})
 								},
@@ -61,13 +59,10 @@
 				})
 			},
 			async bindMobileByMpWeixin(e) {
-				// console.log(e);
 				if (e.detail.errMsg == "getPhoneNumber:ok") {
-					// console.log(e.detail);
 					//检查登录信息是否过期，否则通过重新登录刷新session_key
 					await this.beforeGetphonenumber()
 					uniIdCo.bindMobileByMpWeixin(e.detail).then(e => {
-						// console.log(e);
 						this.$emit('success')
 					}).finally(e => {
 						this.closeMe()
@@ -157,8 +152,8 @@
 	.agree::after {
 		border: none;
 	}
-
 	/* #endif */
+	
 	.agree:active {
 		background-color: #F5F5F6;
 	}

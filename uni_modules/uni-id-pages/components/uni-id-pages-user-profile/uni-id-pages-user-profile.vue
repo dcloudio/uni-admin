@@ -31,12 +31,10 @@
 					uni.getUserProfile({
 						desc: "用于设置账户昵称和头像",
 						complete: (e) => {
-							// console.log("getUserProfile:", e);
 							callBack(e)
 						}
 					})
 				})
-				// console.log("userInfo", res.userInfo);
 				if(res.errMsg != "getUserProfile:ok"){
 					return this.closeMe()
 				}
@@ -46,10 +44,10 @@
 					uni.downloadFile({
 					    url: avatarUrl,
 					    success: (res) => {
-					        if (res.statusCode === 200) {
+								if (res.statusCode === 200) {
 					            // console.log('下载成功');
-								callBack(res.tempFilePath)
-					        }
+									callBack(res.tempFilePath)
+								}
 							callBack()
 					    },
 						fail: (err) => {
@@ -62,13 +60,11 @@
 				})
 				const extName = tempFilePath.split('.').pop() || 'jpg'
 				const cloudPath = 'user/avatar/'+ userId+'/'+Date.now()+'-avatar.'+extName;
-				// console.log(tempFilePath);
 				const result = await uniCloud.uploadFile({
 					filePath: tempFilePath,
 					cloudPath,
 					fileType:'image'
 				});
-				// console.log("上传成功",{result});
 				let userInfo = {
 					"nickname":nickName,
 					"avatar_file":{
@@ -89,7 +85,6 @@
 				})
 			},
 			doUpdate(data,callback){
-				// console.log('dododo',data);
 				// 使用 clientDB 提交数据
 				usersTable.where('_id==$env.uid').update(data).then((res) => {
 					callback(res)

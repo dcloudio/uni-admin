@@ -1,5 +1,5 @@
 <template>
-	<view @click="onClick" :style="{width,height}">
+	<view @click="onClick" :style="{width,height}" style="justify-content: center;">
 		<image v-if="cSrc" :style="{width,height}" :src="cSrc" :mode="mode"></image>
 	</view>
 </template>
@@ -46,13 +46,10 @@
 		watch: {
 			src:{
 				handler(src) {
-					// console.log(src);
-					// console.log(src.substring(0, 8));
 					if (src&&src.substring(0, 8) == "cloud://") {
 						uniCloud.getTempFileURL({
 							fileList: [src]
 						}).then(res=>{
-							// console.log(res);
 							this.cSrc = res.fileList[0].tempFileURL
 						})
 					}else{
@@ -61,9 +58,6 @@
 				},
 				immediate: true
 			}
-		},
-		async mounted() {
-
 		},
 		methods:{
 			onClick(){

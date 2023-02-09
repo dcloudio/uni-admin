@@ -26,6 +26,9 @@
 					<button @click="navigateTo('./add')" size="mini" plain="true"
 							type="primary">{{ $t('menu.button.addFirstLevelMenu') }}
 					</button>
+					<button @click="updateBuiltInMenu" size="mini" plain="true" style="margin-left: 10px;"
+							type="warn">{{ $t('menu.button.updateBuiltInMenu') }}
+					</button>
 				</view>
 				<view class="uni-group">
 
@@ -112,6 +115,8 @@
 import {
 	buildMenus
 } from '../../../components/uni-data-menu/util.js'
+
+import originalMenuList from './originalMenuList.json'
 
 const db = uniCloud.database()
 // 表查询配置
@@ -395,6 +400,70 @@ export default {
 					})
 				}
 			})
+		},
+		// 更新内置菜单
+		async updateBuiltInMenu(){
+			uni.showModal({
+				title: '提示',
+				content: '确定更新内置菜单吗？\n（该操作不会影响现有的菜单）',
+				success: async (res) => {
+					if (res.confirm) {
+						const db = uniCloud.database();
+						const _ = db.command;
+						let menu_ids = originalMenuList.map((item, index) => {
+							return item.menu_id;
+						});
+						uni.showLoading({
+							title:"更新中...",
+							mask:true
+						});
+						try {
+							let addMenuList = [];
+							// 读取菜单
+							let oldMenuListRes = await db.collection("opendb-admin-menus").where({
+								menu_id: _.in[menu_ids]
+							}).limit(500).get();
+							let oldMenuList = oldMenuListRes.result.data;
+							originalMenuList.map((item, index) => {
+								let oldMenuItem = oldMenuList.find((item2, index2, arr2) => {
+									return item2.menu_id === item.menu_id;
+								});
+								if (!oldMenuItem) {
+									addMenuList.push({
+										...item,
+										create_date: undefined
+									});
+								}
+							});
+							if (addMenuList && addMenuList.length > 0) {
+								// 添加没有的菜单
+								let addRes = await db.collection("opendb-admin-menus").add(addMenuList);
+								uni.showToast({
+									title:`新增了${addRes.result.inserted}个菜单，即将刷新`,
+									icon:"none"
+								})
+								setTimeout(() => {
+									// #ifdef H5
+									window.location.reload();
+									// #endif
+									// #ifndef H5
+									this.loadData(true);
+									// #endif
+								}, 300);
+							} else {
+								uni.showToast({
+									title:"菜单无变动",
+									icon:"none"
+								})
+							}
+						} catch(err) {
+							console.error(err)
+						} finally {
+							uni.hideLoading();
+						}
+					}
+				}
+			});
 		}
 	}
 }

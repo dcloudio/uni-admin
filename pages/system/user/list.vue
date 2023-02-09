@@ -12,9 +12,9 @@
 				<button class="uni-button" type="warn" size="mini" :disabled="!selectedIndexs.length"
 					@click="delTable">{{$t('common.button.batchDelete')}}</button>
 				<button class="uni-button" type="primary" size="mini" :disabled="!selectedIndexs.length"
-					@click="openTagsPopup">标签管理</button>
+					@click="openTagsPopup">{{$t('common.button.tagManager')}}</button>
 				<!-- #ifdef H5 -->
-				<button class="uni-button" type="primary" size="mini" @click="$refs.batchSms.open()">群发短信</button>
+				<button class="uni-button" type="primary" size="mini" @click="$refs.batchSms.open()">{{$t('common.button.sendSMS')}}</button>
 				<download-excel class="hide-on-phone" :fields="exportExcel.fields" :data="exportExcelData"
 					:type="exportExcel.type" :name="exportExcel.filename">
 					<button class="uni-button" type="primary" size="mini">{{$t('common.button.exportExcel')}}</button>

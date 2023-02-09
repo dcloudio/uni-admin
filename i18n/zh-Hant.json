@@ -47,7 +47,7 @@
 			"query": "請輸入搜索內容"
 		},
 		"button": {
-			"search": "搜索",
+			"search": "檢索",
 			"add": "新增",
 			"edit": "修改",
 			"delete": "刪除",
@@ -57,7 +57,8 @@
 			"back": "返回",
 			"tagManager": "標簽管理",
 			"publish": "發布頁管理",
-			"version": "版本管理"
+			"version": "版本管理",
+			"sendSMS": "群發短信"
 		},
 		"empty": "沒有更多數據",
 		"piecePerPage": "條/頁"
@@ -90,7 +91,8 @@
 		},
 		"button": {
 			"addFirstLevelMenu": "新增一級菜單",
-			"addChildMenu": "子菜單"
+			"addChildMenu": "子菜單",
+			"updateBuiltInMenu": "更新內寘選單"
 		}
 	},
 	"demo": {
