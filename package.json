@@ -2,7 +2,7 @@
 	"name": "uni-admin 基础框架（原名 uniCloud admin）",
 	"id": "uni-template-admin",
 	"displayName": "uni-admin 基础框架",
-	"version": "2.3.4",
+	"version": "2.3.5",
 	"description": "基于uni-app & uniCloud的后台管理项目模板（管理后台开发必备神器）",
 	"main": "main.js",
 	"scripts": {
@@ -10,12 +10,12 @@
 	},
 	"repository": "https://github.com/dcloudio/uni-admin.git",
 	"keywords": [
-        "admin",
-        "uniCloud",
-        "管理后台",
-        "云后台",
-        "uni-admin"
-    ],
+		"admin",
+		"uniCloud",
+		"管理后台",
+		"云后台",
+		"uni-admin"
+	],
 	"engines": {
 		"HBuilderX": "^3.6.0"
 	},
@@ -25,8 +25,8 @@
 		"url": "https://github.com/dcloudio/uni-admin/issues"
 	},
 	"homepage": "https://github.com/dcloudio/uni-admin#readme",
-    "dcloudext": {
-        "sale": {
+	"dcloudext": {
+		"sale": {
 			"regular": {
 				"price": "0.00"
 			},
@@ -42,8 +42,8 @@
 			"data": "无",
 			"permissions": "无"
 		},
-        "npmurl": "",
-        "type": "unicloud-template-project"
+		"npmurl": "",
+		"type": "unicloud-template-project"
 	},
 	"uni_modules": {
 		"dependencies": [],
@@ -76,17 +76,17 @@
 					"阿里": "y",
 					"百度": "y",
 					"字节跳动": "y",
-                    "QQ": "y",
-                    "京东": "u"
+					"QQ": "y",
+					"京东": "u"
 				},
 				"快应用": {
 					"华为": "u",
 					"联盟": "u"
-                },
-                "Vue": {
-                    "vue2": "y",
-                    "vue3": "y"
-                }
+				},
+				"Vue": {
+					"vue2": "y",
+					"vue3": "y"
+				}
 			}
 		}
 	}
