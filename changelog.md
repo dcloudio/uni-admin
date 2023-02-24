@@ -1,3 +1,5 @@
+## 2.3.5（2023-02-24）
+- 修复 升级中心安卓应用商店不显示的Bug
 ## 2.3.4（2023-02-09）
 - 重要 阿里云空间支持上传sourceMap用以分析js错误统计 [详情](https://uniapp.dcloud.net.cn/uni-stat-v2.html#sourcemap-parse-error)
 ## 2.3.3（2023-02-02）
