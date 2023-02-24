@@ -1,10 +1,11 @@
 import {
 	validator,
 	enumConverter
-} from '@/uni_modules/uni-upgrade-center/js_sdk/validator/opendb-app-versions.js';
+} from '@/js_sdk/validator/opendb-app-versions.js';
 
 const platform_iOS = 'iOS';
 const platform_Android = 'Android';
+const db = uniCloud.database();
 
 function getValidator(fields) {
 	let reuslt = {}
@@ -17,7 +18,7 @@ function getValidator(fields) {
 }
 
 export const fields =
-	'appid,name,title,contents,platform,type,version,min_uni_version,url,stable_publish,is_silently,is_mandatory,create_date'
+	'appid,name,title,contents,platform,type,version,min_uni_version,url,stable_publish,is_silently,is_mandatory,create_date,store_list'
 
 export default {
 	data() {
@@ -41,6 +42,7 @@ export default {
 				"title": "",
 				"contents": "",
 				"platform": [],
+				"store_list": [],
 				"type": "",
 				"version": "",
 				"min_uni_version": "",
@@ -49,8 +51,7 @@ export default {
 				"create_date": null
 			},
 			formOptions: {
-				"platform_localdata": [
-					{
+				"platform_localdata": [{
 						"value": "Android",
 						"text": "安卓"
 					},
@@ -59,8 +60,7 @@ export default {
 						"text": "苹果"
 					}
 				],
-				"type_localdata": [
-					{
+				"type_localdata": [{
 						"value": "native_app",
 						"text": "原生App安装包"
 					},
@@ -74,7 +74,7 @@ export default {
 				...getValidator([
 					"appid", "contents", "platform", "type",
 					"version", "min_uni_version", "url", "stable_publish",
-					"title", "name", "is_silently", "is_mandatory"
+					"title", "name", "is_silently", "is_mandatory", "store_list"
 				])
 			}
 		}
@@ -104,6 +104,17 @@ export default {
 		}
 	},
 	methods: {
+		getStoreList(appid) {
+			return db.collection('opendb-app-list')
+				.where({
+					appid
+				})
+				.get()
+				.then(res => {
+					const data = res.result.data[0]
+					return data.store_list || []
+				})
+		},
 		packageUploadSuccess(res) {
 			uni.showToast({
 				icon: 'success',
