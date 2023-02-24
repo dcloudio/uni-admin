@@ -12,13 +12,9 @@
 ],
   "repository": "https://gitee.com/dcloud/uni-upgrade-center/tree/master/uni_modules/uni-upgrade-center",
   "engines": {
-    "HBuilderX": "^3.1.0"
+    "HBuilderX": "^3.3.10"
   },
-  "dcloudext": {
-    "category": [
-        "uniCloud",
-        "Admin插件"
-    ],
+"dcloudext": {
     "sale": {
       "regular": {
         "price": "0.00"
@@ -35,7 +31,8 @@
       "data": "插件不采集任何数据",
       "permissions": "无"
     },
-    "npmurl": ""
+    "npmurl": "",
+    "type": "unicloud-admin"
   },
   "uni_modules": {
     "dependencies": [
