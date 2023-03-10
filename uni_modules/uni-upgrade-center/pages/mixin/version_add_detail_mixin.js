@@ -52,22 +52,22 @@ export default {
 			},
 			formOptions: {
 				"platform_localdata": [{
-						"value": "Android",
-						"text": "安卓"
-					},
-					{
-						"value": "iOS",
-						"text": "苹果"
-					}
+					"value": "Android",
+					"text": "安卓"
+				},
+				{
+					"value": "iOS",
+					"text": "苹果"
+				}
 				],
 				"type_localdata": [{
-						"value": "native_app",
-						"text": "原生App安装包"
-					},
-					{
-						"value": "wgt",
-						"text": "App资源包"
-					}
+					"value": "native_app",
+					"text": "原生App安装包"
+				},
+				{
+					"value": "wgt",
+					"text": "App资源包"
+				}
 				]
 			},
 			rules: {
@@ -133,16 +133,14 @@ export default {
 		},
 		async packageDelete(res) {
 			if (!this.hasPackage) return;
-			let [deleteRes] = await this.deleteFile([res.tempFilePath])
-			if (deleteRes.success) {
-				uni.showToast({
-					icon: 'success',
-					title: '删除成功',
-					duration: 800
-				})
-				this.formData.url = this.preUrl
-				this.$refs.form.clearValidate('url')
-			}
+			await this.deleteFile([res.tempFilePath])
+			uni.showToast({
+				icon: 'success',
+				title: '删除成功',
+				duration: 800
+			})
+			this.formData.url = this.preUrl
+			this.$refs.form.clearValidate('url')
 		},
 		selectFile() {
 			if (this.hasPackage) {

@@ -40,6 +40,7 @@
 						<button type="primary" size="mini" @click="selectFile" style="margin: 0;">选择文件</button>
 						<text
 							style="padding: 10px;font-size: 12px;color: #666;">上传apk到当前服务空间的云存储中，上传成功后，会自动使用云存储地址填充下载链接</text>
+						<text class="uni-sub-title" style="font-size: 12px;">上传文件后同步到各地cdn缓存节点有延迟。请适当等候再提交新版信息入库，触发客户端更新提示。</text>
 					</view>
 				</uni-file-picker>
 				<text v-if="hasPackage"
