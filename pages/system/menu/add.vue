@@ -17,7 +17,7 @@
 				 class="uni-form-item-tips"></uni-link>
 			</uni-forms-item>
 			<uni-forms-item name="url" label="页面URL">
-				<uni-easyinput v-model="formData.url" :clearable="false" placeholder="URL为空代表是目录而不是叶子节点" />
+				<uni-easyinput v-model="formData.url" :clearable="false" placeholder="URL必须是/开头，若URL为空代表是目录而不是叶子节点" />
 			</uni-forms-item>
 			<uni-forms-item name="sort" label="序号">
 				<uni-easyinput v-model="formData.sort" :clearable="false" placeholder="请输入菜单序号（越大越靠后）" />
@@ -156,9 +156,9 @@
 			width: 600px;
 		}
 	}
-	
+
 	::v-deep .uni-forms-item__label {
 		width: 90px !important;
 	}
-	
+
 </style>
