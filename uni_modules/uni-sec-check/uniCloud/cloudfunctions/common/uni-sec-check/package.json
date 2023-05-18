@@ -1,0 +1,16 @@
+{
+  "name": "uni-sec-check",
+  "version": "2.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "uni-config-center": "file:../../../../../uni-config-center/uniCloud/cloudfunctions/common/uni-config-center",
+    "uni-open-bridge-common": "file:../../../../../uni-open-bridge-common/uniCloud/cloudfunctions/common/uni-open-bridge-common"
+  }
+}

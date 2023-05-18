@@ -1,0 +1,20 @@
+.ql-unlock-content {
+	width: 100%;
+	padding: 20px 0;
+	font-size: 17px;
+	font-weight: bold;
+	text-align: center;
+	box-sizing: border-box;
+	cursor: default;
+	margin-bottom: 10px;
+	background: #f8f8f8;
+	border-radius: 5px;
+	color: #888;
+}
+.ql-unlock-content span {
+	user-select: none;
+}
+.ql-unlock-content a {
+	color: #269939;
+	margin-left: 5px;
+}

@@ -1,0 +1,10 @@
+{
+  "name": "uni-cms-co",
+  "dependencies": {
+    "uni-config-center": "file:../../../../uni-config-center/uniCloud/cloudfunctions/common/uni-config-center",
+    "uni-sec-check": "file:../../../../uni-sec-check/uniCloud/cloudfunctions/common/uni-sec-check"
+  },
+  "extensions": {
+    "uni-cloud-jql": {}
+  }
+}

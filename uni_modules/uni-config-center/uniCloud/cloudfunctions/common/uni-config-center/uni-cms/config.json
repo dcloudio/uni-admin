@@ -1,0 +1,10 @@
+{
+	"clientAppIds": ["__UNI__StarterWithCMS"],
+	"contentSecurity": {
+		"allowCheckType": ["content", "image"]
+	},
+	"adConfig": {
+		"securityKey": "21f5ae09f0e7e2f27387863b8d5ffab719a9095f7d3b39b22235cd0c506ef019",
+		"watchAdUniqueType": "device"
+	}
+}

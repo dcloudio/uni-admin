@@ -73,13 +73,6 @@
 		{
 			"type": "retention-user",
 			"time": "1 * 6 30"
-		},
-		{
-			"type": "pay-result",
-			"time": "* * * 10",
-			"dimension": "hour",
-			"description": "每小时执行统计（会自动统计小时、天、周、月、季度、年度）",
-			"timely": true
 		}
 	],
 	"batchInsertNum": 5000,

@@ -8,6 +8,10 @@
 		version
 	} from './package.json'
 	import { uniAdminCacheKey } from './store/constants.js'
+
+		//1. 导入统一身份信息管理模块
+		import uniIdPagesInit from '@/uni_modules/uni-id-pages/init.js';
+
 	export default {
 		created() {
 			this.clear = undefined
@@ -28,6 +32,9 @@
 			})
 		},
 		onLaunch: function() {
+			//3. 初始化uni身份信息管理模块
+			uniIdPagesInit();
+						
 			// #ifdef H5
 			console.log(
 				`%c uni-admin %c v${version} `,

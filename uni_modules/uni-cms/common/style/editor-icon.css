@@ -1,0 +1,173 @@
+@font-face {
+  font-family: "editor-icon"; /* Project id 3949138 */
+  src: url('@/uni_modules/uni-cms/common/font/editor-iconfont.ttf') format('truetype');
+	font-weight: 400;
+	font-display: "auto";
+	font-style: normal
+}
+
+.editor-icon {
+  font-family: "editor-icon" !important;
+  font-size: 16px;
+  font-style: normal;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+
+.icon-code:before {
+	content: "\e654";
+}
+
+.icon-quote:before {
+	content: "\e60c";
+}
+
+.icon-ai:before {
+	content: "\e69d";
+}
+
+.icon-unlock:before {
+	content: "\e69b";
+}
+
+.icon-jianpan:before {
+	content: "\e69a";
+}
+
+.icon-header4:before {
+	content: "\e695";
+}
+
+.icon-header3:before {
+	content: "\e696";
+}
+
+.icon-header6:before {
+	content: "\e697";
+}
+
+.icon-header5:before {
+	content: "\e698";
+}
+
+.icon-header2:before {
+	content: "\e693";
+}
+
+.icon-header1:before {
+	content: "\e694";
+}
+
+.icon-attr-group:before {
+	content: "\e690";
+}
+
+.icon-text-group:before {
+	content: "\e68e";
+}
+
+.icon-ul:before {
+	content: "\e68a";
+}
+
+.icon-underline:before {
+	content: "\e68b";
+}
+
+.icon-undo:before {
+	content: "\e68c";
+}
+
+.icon-unlock-content:before {
+	content: "\e68d";
+}
+
+.icon-align-center:before {
+	content: "\e673";
+}
+
+.icon-bold:before {
+	content: "\e674";
+}
+
+.icon-align-justify:before {
+	content: "\e675";
+}
+
+.icon-align-left:before {
+	content: "\e676";
+}
+
+.icon-align-right:before {
+	content: "\e677";
+}
+
+.icon-background:before {
+	content: "\e678";
+}
+
+.icon-color:before {
+	content: "\e679";
+}
+
+.icon-format-clear:before {
+	content: "\e67a";
+}
+
+.icon-header:before {
+	content: "\e67b";
+}
+
+.icon-hr:before {
+	content: "\e67c";
+}
+
+.icon-image:before {
+	content: "\e67d";
+}
+
+.icon-italic:before {
+	content: "\e67e";
+}
+
+.icon-letter-space:before {
+	content: "\e67f";
+}
+
+.icon-line-height:before {
+	content: "\e680";
+}
+
+.icon-line-indent:before {
+	content: "\e681";
+}
+
+.icon-link:before {
+	content: "\e682";
+}
+
+.icon-ol:before {
+	content: "\e683";
+}
+
+.icon-redo:before {
+	content: "\e684";
+}
+
+.icon-space-after:before {
+	content: "\e685";
+}
+
+.icon-space-before:before {
+	content: "\e686";
+}
+
+.icon-space-both:before {
+	content: "\e687";
+}
+
+.icon-strike:before {
+	content: "\e688";
+}
+

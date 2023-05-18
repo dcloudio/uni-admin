@@ -1,0 +1,11 @@
+{
+    "name": "database",
+    "version": "1.0.0",
+    "description": "",
+    "author": "",
+    "license": "ISC",
+    "dependencies": {
+        "uni-sec-check": "file:../../uni_modules/uni-sec-check/uniCloud/cloudfunctions/common/uni-sec-check"
+    },
+    "extensions": {}
+}

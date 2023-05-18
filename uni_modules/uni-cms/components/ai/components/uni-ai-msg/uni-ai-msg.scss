@@ -1,0 +1,63 @@
+@import "../../static/github-dark.min.css";
+
+/* #ifndef APP-NVUE */
+.rich-text-box ::v-deep pre.hljs {
+	padding: 5px 8px;
+	margin: 5px 0;
+	overflow: auto;
+}
+
+.cursor {
+	display: none;
+}
+
+.show-cursor .cursor {
+	display: inline-block;
+	color: blue;
+	font-weight: bold;
+	animation: blinking 1s infinite;
+}
+
+@keyframes blinking {
+	from {
+		opacity: 1.0;
+	}
+
+	to {
+		opacity: 0.0;
+	}
+}
+
+/* #endif */
+
+/* #ifdef H5 */
+.copy-box {
+	position: fixed;
+}
+
+// .copy-mask{
+// 	background-color: rgba(255,255,255,0.5);
+// 	width: 100vw;
+// 	height: 100vh;
+// 	position: fixed;
+// 	top: 0;
+// 	left: 0;
+// 	z-index: 9;
+// }
+.copy {
+	position: fixed;
+	background-color: #fff;
+	box-shadow: 0 0 3px #aaa;
+	padding: 5px;
+	border-radius: 5px;
+	z-index: 999;
+	cursor: pointer;
+	font-size: 14px;
+	color: #222;
+}
+
+.copy:hover {
+	color: #00a953;
+}
+
+/* #endif */

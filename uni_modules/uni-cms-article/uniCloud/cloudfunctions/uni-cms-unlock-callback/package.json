@@ -1,0 +1,7 @@
+{
+  "name": "uni-cms-unlock-callback",
+  "dependencies": {
+    "uni-config-center": "file:../../../../uni-config-center/uniCloud/cloudfunctions/common/uni-config-center"
+  },
+  "extensions": {}
+}
