@@ -1,0 +1,31 @@
+[
+	{
+		"menu_id": "uni-cms",
+		"name": "内容管理",
+		"icon": "uni-icons-list",
+		"sort": 400,
+		"parent_id": "",
+		"permission": [],
+		"enable": true
+	},
+	{
+		"menu_id": "uni-cms-article",
+		"name": "文章列表",
+		"icon": "uni-icons-list",
+		"url": "/uni_modules/uni-cms/pages/article/list/list",
+		"sort": 401,
+		"parent_id": "uni-cms",
+		"permission": [],
+		"enable": true
+	},
+	{
+		"menu_id": "uni-cms-categories",
+		"name": "分类管理",
+		"icon": "uni-icons-list",
+		"url": "/uni_modules/uni-cms/pages/categories/list/list",
+		"sort": 402,
+		"parent_id": "uni-cms",
+		"permission": [],
+		"enable": true
+	}
+]

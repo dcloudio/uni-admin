@@ -1,0 +1,38 @@
+.editor {
+	padding-top: 24px;
+	::v-deep .ql-container {
+		min-height: 500px;
+		height: auto;
+		overflow-y: auto;
+	}
+}
+
+.editor-toolbar {
+	background: #fafafa;
+	position: fixed;
+	top: 60px;
+	left: 0;
+	right: 0;
+	z-index: 1;
+	height: 54px;
+	border-bottom: #ebebeb solid 1px;
+	&.pc {
+		display: block;
+	}
+	&.m {
+		display: none;
+	}
+	&-box {
+		width: 900px;
+		margin: 0 auto;
+		display: flex;
+		align-items: center;
+		height: 100%;
+	}
+
+	&-divider {
+		height: 20px;
+		border-left: #d8d8d8 solid 1px;
+		margin: 0 3px;
+	}
+}

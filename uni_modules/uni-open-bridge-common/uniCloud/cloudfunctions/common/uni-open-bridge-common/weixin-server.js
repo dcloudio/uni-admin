@@ -20,7 +20,8 @@ class WeixinServer {
   getAccessToken() {
     return uniCloud.httpclient.request(WeixinServer.AccessToken_Url, {
       dataType: 'json',
-      method: 'POST',
+      method: 'GET',
+      dataAsQueryString: true,
       data: {
         appid: this._appid,
         secret: this._secret,

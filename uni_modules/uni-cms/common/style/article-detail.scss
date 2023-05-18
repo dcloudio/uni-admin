@@ -1,0 +1,138 @@
+@import '@/uni.scss';
+
+$editorWidth: 950px;
+
+::v-deep {
+  *[contenteditable] {
+    outline: none;
+  }
+  .ql-clipboard {
+    position: fixed;
+    top: -1000px;
+    left: -1000px;
+  }
+}
+
+.uni-container {
+	background: #f8f8f8;
+	padding-bottom: 66px;
+	margin-top: 54px;
+	.header {
+		width: $editorWidth;
+		position: fixed;
+		top: 0;
+		left: 0;
+		right: 0;
+		margin: 0 auto;
+		z-index: 1000;
+		height: 60px;
+		display: flex;
+		align-items: center;
+		.back {
+			cursor:pointer;
+			color: #333;
+		}
+	}
+	.footer {
+		background: #fff;
+		height: 56px;
+		position: fixed;
+		bottom: 0;
+		left: 0;
+		right: 0;
+		border-top: #ebebeb solid 1px;
+		z-index: 1000;
+		.wrap {
+			width: $editorWidth;
+			margin: 0 auto;
+			display: flex;
+			align-items: center;
+			height: 100%;
+			.left {
+				flex: 1;
+				display: flex;
+				align-items: center;
+				.word-count {
+					font-size: 12px;
+					color: #666;
+				}
+			}
+			.right {
+				display: flex;
+				align-items: center;
+				.uni-button-group {
+					margin: 0;
+				}
+			}
+		}
+	}
+	.edit-box {
+		width: $editorWidth;
+		padding: 32px 64px;
+		box-sizing: border-box;
+		margin: 0 auto;
+		background: #fff;
+		border-radius: $uni-border-radius-sm;
+	}
+
+	.title, .editor {
+		border-bottom: #f2f2f2 solid 1px;
+		padding-bottom: 24px;
+	}
+	.editor {
+		padding-top: 24px;
+	}
+	.title {
+		.uni-input {
+			font-size: 23px;
+			font-weight: bold;
+			width: 100%;
+			min-height: 0;
+		}
+	}
+
+	.settings {
+		margin-top: 24px;
+		.excerpt {
+			border-radius: $uni-border-radius-sm;
+			border: #e5e5e5 solid 1px;
+			width: 100%;
+			padding: 10px;
+			font-size: 14px;
+		}
+	}
+}
+
+@media (max-width: 768px) {
+	.uni-container{
+		margin-top: 0;
+		padding: 0;
+		.header {
+			display: none;
+		}
+		.title, .editor {
+			border-bottom: #f2f2f2 solid 1px;
+			padding-bottom: 12px;
+		}
+		.edit-box {
+			width: 100%;
+			padding: 10px;
+		}
+		.settings {
+			.excerpt {
+				width: auto;
+			}
+		}
+		.footer {
+			display: none;
+		}
+	}
+}
+
+@media (min-width: 768px) {
+	.uni-container{
+		.uni-button-group.m {
+			display: none;
+		}
+	}
+}

@@ -1,42 +1,63 @@
 'use strict';
 
 const {
-  PlatformType
+  ProviderType
 } = require('./consts.js')
 
 const configCenter = require('uni-config-center')
 
+// 多维数据为兼容uni-id以前版本配置
 const OauthConfig = {
-  'weixin-mp': ['mp-weixin', 'oauth', 'weixin'],
-  'weixin-h5': ['web', 'oauth', 'weixin-h5']
+  'weixin-app': [
+    ['app', 'oauth', 'weixin'],
+    ['app-plus', 'oauth', 'weixin']
+  ],
+  'weixin-mp': [
+    ['mp-weixin', 'oauth', 'weixin']
+  ],
+  'weixin-h5': [
+    ['web', 'oauth', 'weixin-h5'],
+    ['h5-weixin', 'oauth', 'weixin'],
+    ['h5', 'oauth', 'weixin']
+  ],
+  'weixin-web': [
+    ['web', 'oauth', 'weixin-web']
+  ],
+  'qq-app': [
+    ['app', 'oauth', 'qq'],
+    ['app-plus', 'oauth', 'qq']
+  ],
+  'qq-mp': [
+    ['mp-qq', 'oauth', 'qq']
+  ]
 }
+
+const Support_Platforms = [
+  ProviderType.WEIXIN_MP,
+  ProviderType.WEIXIN_H5,
+  ProviderType.WEIXIN_APP,
+  ProviderType.WEIXIN_WEB,
+  ProviderType.QQ_MP,
+  ProviderType.QQ_APP
+]
 
 class ConfigBase {
 
   constructor() {
-    this._ready = false
-    this._uniId = null
-
-    const uniIdConfig = configCenter({
+    const uniIdConfigCenter = configCenter({
       pluginId: 'uni-id'
     })
 
-    this._uniId = uniIdConfig.config()
-
-    this._ready = true
+    this._uniIdConfig = uniIdConfigCenter.config()
   }
 
   getAppConfig(appid) {
-    if (Array.isArray(this._uniId)) {
-      return this._uniId.find((item) => {
+    if (Array.isArray(this._uniIdConfig)) {
+      return this._uniIdConfig.find((item) => {
         return (item.dcloudAppid === appid)
       })
     }
-    return this._uniId
-  }
-
-  get ready() {
-    return this._ready
+    return this._uniIdConfig
   }
 }
 
@@ -60,34 +81,42 @@ class AppConfig extends ConfigBase {
   }
 
   isSupport(platformName) {
-    return (AppConfig.Support_Platforms.indexOf(platformName) >= 0)
+    return (Support_Platforms.indexOf(platformName) >= 0)
   }
 
   getOauthConfig(appConfig, platformName) {
-    let tree = OauthConfig[platformName]
-    let node = appConfig
-    for (let i = 0; i < tree.length; i++) {
-      let nodeName = tree[i]
-      if (node[nodeName]) {
-        node = node[nodeName]
-      } else {
-        node = null
-        break
-      }
-    }
-
+    let treePath = OauthConfig[platformName]
+    let node = this.findNode(appConfig, treePath)
     if (node && node.appid && node.appsecret) {
       return {
         appid: node.appid,
         secret: node.appsecret
       }
     }
-
     return null
   }
-}
 
-AppConfig.Support_Platforms = [PlatformType.WEIXIN_MP, PlatformType.WEIXIN_H5]
+  findNode(treeNode, arrayPath) {
+    let node = treeNode
+    for (let treePath of arrayPath) {
+      for (let name of treePath) {
+        const currentNode = node[name]
+        if (currentNode) {
+          node = currentNode
+        } else {
+          node = null
+          break
+        }
+      }
+      if (node === null) {
+        node = treeNode
+      } else {
+        break
+      }
+    }
+    return node
+  }
+}
 
 
 module.exports = {

@@ -1,0 +1,15 @@
+{
+  "name": "uni-ai-chat",
+  "dependencies": {
+    "uni-sec-check": "file:../../../../uni-sec-check/uniCloud/cloudfunctions/common/uni-sec-check",
+    "uni-config-center": "file:../../../../uni-config-center/uniCloud/cloudfunctions/common/uni-config-center"
+  },
+  "extensions": {
+    "uni-cloud-jql": {},
+    "uni-cloud-push": {},
+    "uni-cloud-ai": {}
+  },
+  "cloudfunction-config": {
+    "timeout": 60
+  }
+}

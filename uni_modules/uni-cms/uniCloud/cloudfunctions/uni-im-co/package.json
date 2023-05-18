@@ -1,0 +1,32 @@
+{
+    "name": "uni-im-co",
+    "dependencies": {
+        "jsonwebtoken": "^8.5.1",
+        "md5": "^2.3.0",
+        "uni-config-center": "file:../../../../uni-config-center/uniCloud/cloudfunctions/common/uni-config-center",
+        "uni-id-common": "file:../../../../uni-id-common/uniCloud/cloudfunctions/common/uni-id-common"
+    },
+    "extensions": {
+        "uni-cloud-jql": [],
+        "uni-cloud-push": [],
+        "uni-cloud-ai": []
+    },
+    "version": "1.0.0",
+    "main": "index.obj.js",
+    "devDependencies": [],
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "keywords": [],
+    "author": "",
+    "license": "ISC",
+    "description": "",
+    "cloudfunction-config": {
+        "memorySize": 512,
+        "timeout": 30,
+        "triggers": [],
+        "path": "",
+        "runtime": "Nodejs8",
+        "concurrency": 1
+    }
+}

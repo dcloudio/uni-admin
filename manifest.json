@@ -50,7 +50,7 @@
     "quickapp" : {},
     /* 小程序特有相关 */
     "mp-weixin" : {
-        "appid" : "",
+        "appid" : "wx999bf02c8e05dfc9",
         "setting" : {
             "urlCheck" : false
         },
@@ -65,14 +65,14 @@
     "mp-toutiao" : {
         "usingComponents" : true
     },
-    "uniStatistics" : {
-        "enable" : false
-    },
     "h5" : {
         "template" : "template.h5.html",
         "router" : {
             "mode" : "hash",
             "base" : "/admin/"
+        },
+        "unipush" : {
+            "enable" : true
         }
     },
     "vueVersion" : "2",

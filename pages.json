@@ -1,26 +1,13 @@
 {
-	"pages": [ //pages数组中第一项表示应用启动页，参考：https://uniapp.dcloud.io/collocation/pages
+	"pages": [
+		//pages数组中第一项表示应用启动页，参考：https://uniapp.dcloud.io/collocation/pages
 		{
 			"path": "pages/index/index"
-		},
-		{
-			"path": "uni_modules/uni-id-pages/pages/login/login-withpwd",
-			"style": {
-				"topWindow": false,
-				"leftWindow": false,
-				"navigationBarTitleText": "登录"
-			}
 		},
 		{
 			"path": "pages/error/404",
 			"style": {
 				"navigationBarTitleText": "Not Found"
-			}
-		},
-		{
-			"path": "uni_modules/uni-id-pages/pages/userinfo/change_pwd/change_pwd",
-			"style": {
-				"navigationBarTitleText": "修改密码"
 			}
 		},
 		{
@@ -40,106 +27,13 @@
 			"style": {
 				"navigationBarTitleText": "版本信息查看"
 			}
-		},
-		{
-			"path": "uni_modules/uni-id-pages/pages/userinfo/deactivate/deactivate",
-			"style": {
-				"navigationBarTitleText": "注销账号"
-			}
-		},
-		{
-			"path": "uni_modules/uni-id-pages/pages/userinfo/userinfo",
-			"style": {
-				"navigationBarTitleText": "个人资料"
-			}
-		},
-		{
-			"path": "uni_modules/uni-id-pages/pages/userinfo/bind-mobile/bind-mobile",
-			"style": {
-				"navigationBarTitleText": "绑定手机号码"
-			}
-		}, {
-			"path": "uni_modules/uni-id-pages/pages/userinfo/cropImage/cropImage",
-			"style": {
-				"navigationBarTitleText": ""
-			}
-		},
-		{
-			"path": "uni_modules/uni-id-pages/pages/login/login-smscode",
-			"style": {
-				"topWindow": false,
-				"leftWindow": false,
-				"navigationBarTitleText": "手机验证码登录"
-			}
-		},
-		{
-			"path": "uni_modules/uni-id-pages/pages/login/login-withoutpwd",
-			"style": {
-				"topWindow": false,
-				"leftWindow": false,
-				"navigationBarTitleText": "免密登录页"
-			}
-		},
-		{
-			"path": "uni_modules/uni-id-pages/pages/register/register",
-			"style": {
-				"topWindow": false,
-				"leftWindow": false,
-				"navigationBarTitleText": "注册"
-			}
-		},
-		{
-			"path": "uni_modules/uni-id-pages/pages/register/register-admin",
-			"style": {
-				"topWindow": false,
-				"leftWindow": false,
-				"navigationBarTitleText": "创建超级管理员"
-			}
-		},
-		{
-			"path": "uni_modules/uni-id-pages/pages/register/register-by-email",
-			"style": {
-				"topWindow": false,
-				"leftWindow": false,
-				"navigationBarTitleText": "邮箱验证码注册"
-			}
-		},
-		{
-			"path": "uni_modules/uni-id-pages/pages/retrieve/retrieve",
-			"style": {
-				"topWindow": false,
-				"leftWindow": false,
-				"navigationBarTitleText": "重置密码"
-			}
-		},
-		{
-			"path": "uni_modules/uni-id-pages/pages/retrieve/retrieve-by-email",
-			"style": {
-				"topWindow": false,
-				"leftWindow": false,
-				"navigationBarTitleText": "通过邮箱重置密码"
-			}
-		},
-		{
-			"path": "uni_modules/uni-id-pages/pages/common/webview/webview",
-			"style": {
-				"topWindow": false,
-				"leftWindow": false,
-				"enablePullDownRefresh": false,
-				"navigationBarTitleText": ""
-			}
-		},
-		{
-			"path": "uni_modules/uni-id-pages/pages/userinfo/set-pwd/set-pwd",
-			"style": {
-				"enablePullDownRefresh": false,
-				"navigationBarTitleText": "设置密码"
-			}
 		}
 	],
-	"subPackages": [{
+	"subPackages": [
+		{
 			"root": "pages/system",
-			"pages": [{
+			"pages": [
+				{
 					"path": "menu/list",
 					"style": {
 						"navigationBarTitleText": "菜单管理"
@@ -267,7 +161,8 @@
 		},
 		{
 			"root": "pages/demo",
-			"pages": [{
+			"pages": [
+				{
 					"path": "icons/icons",
 					"style": {
 						"navigationBarTitleText": "图标"
@@ -283,7 +178,8 @@
 		},
 		{
 			"root": "pages/uni-stat",
-			"pages": [{
+			"pages": [
+				{
 					"path": "page-res/page-res",
 					"style": {
 						"navigationBarTitleText": "受访页",
@@ -452,6 +348,166 @@
 					"style": {
 						"navigationBarTitleText": "用户价值排行",
 						"enablePullDownRefresh": false
+					}
+				}
+			]
+		},
+		{
+			"root": "uni_modules/uni-cms",
+			"pages": [
+				{
+					"path": "pages/article/add/add",
+					"style": {
+						"navigationBarTitleText": "新增文章",
+						"topWindow": true,
+						"leftWindow": false
+					}
+				},
+				{
+					"path": "pages/article/edit/edit",
+					"style": {
+						"navigationBarTitleText": "编辑文章",
+						"topWindow": true,
+						"leftWindow": false
+					}
+				},
+				{
+					"path": "pages/article/list/list",
+					"style": {
+						"navigationBarTitleText": "文章列表"
+					}
+				},
+				{
+					"path": "pages/categories/add/add",
+					"style": {
+						"navigationBarTitleText": "新增分类"
+					}
+				},
+				{
+					"path": "pages/categories/edit/edit",
+					"style": {
+						"navigationBarTitleText": "编辑分类"
+					}
+				},
+				{
+					"path": "pages/categories/list/list",
+					"style": {
+						"navigationBarTitleText": "分类列表"
+					}
+				}
+			]
+		},
+		{
+			"root": "uni_modules/uni-id-pages",
+			"pages": [
+				{
+					"path": "pages/login/login-withpwd",
+					"style": {
+						"topWindow": false,
+						"leftWindow": false,
+						"navigationBarTitleText": "登录"
+					}
+				},
+				{
+					"path": "pages/userinfo/change_pwd/change_pwd",
+					"style": {
+						"navigationBarTitleText": "修改密码"
+					}
+				},
+				{
+					"path": "pages/userinfo/deactivate/deactivate",
+					"style": {
+						"navigationBarTitleText": "注销账号"
+					}
+				},
+				{
+					"path": "pages/userinfo/userinfo",
+					"style": {
+						"navigationBarTitleText": "个人资料"
+					}
+				},
+				{
+					"path": "pages/userinfo/bind-mobile/bind-mobile",
+					"style": {
+						"navigationBarTitleText": "绑定手机号码"
+					}
+				},
+				{
+					"path": "pages/userinfo/cropImage/cropImage",
+					"style": {
+						"navigationBarTitleText": ""
+					}
+				},
+				{
+					"path": "pages/login/login-smscode",
+					"style": {
+						"topWindow": false,
+						"leftWindow": false,
+						"navigationBarTitleText": "手机验证码登录"
+					}
+				},
+				{
+					"path": "pages/login/login-withoutpwd",
+					"style": {
+						"topWindow": false,
+						"leftWindow": false,
+						"navigationBarTitleText": "免密登录页"
+					}
+				},
+				{
+					"path": "pages/register/register",
+					"style": {
+						"topWindow": false,
+						"leftWindow": false,
+						"navigationBarTitleText": "注册"
+					}
+				},
+				{
+					"path": "pages/register/register-admin",
+					"style": {
+						"topWindow": false,
+						"leftWindow": false,
+						"navigationBarTitleText": "创建超级管理员"
+					}
+				},
+				{
+					"path": "pages/register/register-by-email",
+					"style": {
+						"topWindow": false,
+						"leftWindow": false,
+						"navigationBarTitleText": "邮箱验证码注册"
+					}
+				},
+				{
+					"path": "pages/retrieve/retrieve",
+					"style": {
+						"topWindow": false,
+						"leftWindow": false,
+						"navigationBarTitleText": "重置密码"
+					}
+				},
+				{
+					"path": "pages/retrieve/retrieve-by-email",
+					"style": {
+						"topWindow": false,
+						"leftWindow": false,
+						"navigationBarTitleText": "通过邮箱重置密码"
+					}
+				},
+				{
+					"path": "pages/common/webview/webview",
+					"style": {
+						"topWindow": false,
+						"leftWindow": false,
+						"enablePullDownRefresh": false,
+						"navigationBarTitleText": ""
+					}
+				},
+				{
+					"path": "pages/userinfo/set-pwd/set-pwd",
+					"style": {
+						"enablePullDownRefresh": false,
+						"navigationBarTitleText": "设置密码"
 					}
 				}
 			]

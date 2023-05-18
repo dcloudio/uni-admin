@@ -8,6 +8,10 @@ const {
   CacheKeyCascade
 } = require('./uni-cloud-cache.js')
 
+const {
+  BridgeError
+} = require('./bridge-error.js')
+
 class Storage {
 
   constructor(type, keys) {
@@ -35,10 +39,17 @@ class Storage {
     await this.create(key).remove()
   }
 
+  // virtual
+  async update(key) {
+    this.validateKey(key)
+  }
+
   async ttl(key) {
     this.validateKey(key)
     // 后续考虑支持
   }
+
+  async fallback(key) {}
 
   getKeyString(key) {
     const keyArray = [Storage.Prefix]
@@ -79,39 +90,22 @@ class Storage {
         key: keyString
       }]
     }
-    if (fallback !== null) {
-      const fallbackFunction = fallback || this.fallback
-      if (fallbackFunction) {
-        options.fallback = async () => {
-          return await fallbackFunction(key)
+
+    const _this = this
+    return new CacheKeyCascade({
+      ...options,
+      fallback: async function() {
+        if (fallback) {
+          return fallback(key)
+        } else if (_this.fallback) {
+          return _this.fallback(key)
         }
       }
-    }
-    return new CacheKeyCascade(options)
+    })
   }
 }
 Storage.Prefix = "uni-id"
 
-const Factory = {
-
-  async Get(T, key, fallback) {
-    return await Factory.MakeUnique(T).get(key, fallback)
-  },
-
-  async Set(T, key, value, expiresIn) {
-    await Factory.MakeUnique(T).set(key, value, expiresIn)
-  },
-
-  async Remove(T, key) {
-    await Factory.MakeUnique(T).remove(key)
-  },
-
-  MakeUnique(T) {
-    return new T()
-  }
-}
-
 module.exports = {
-  Storage,
-  Factory
+  Storage
 };
