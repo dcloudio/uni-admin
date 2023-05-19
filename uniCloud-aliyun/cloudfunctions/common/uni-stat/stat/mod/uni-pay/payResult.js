@@ -1,29 +1,48 @@
 /**
  * @class ActiveDevices 活跃设备模型 - 每日跑批合并，仅添加本周/本月首次访问的设备。
  */
+// 导入BaseMod模块
 const BaseMod = require('../base')
+
+// 导入Platform模块
 const Platform = require('../platform')
+
+// 导入Channel模块
 const Channel = require('../channel')
+
+// 导入Version模块
 const Version = require('../version')
+
 
 const {
 	DateTime,
 	UniCrypto
 } = require('../../lib')
 
+// 导入dao模块
 const dao = require('./dao')
 
+// 获取uniCloud数据库实例
 let db = uniCloud.database();
+// 获取uniCloud数据库操作符command
 let _ = db.command;
+// 获取uniCloud数据库操作符aggregate
 let $ = _.aggregate;
 
+
 module.exports = class PayResult extends BaseMod {
+	// 构造函数
 	constructor() {
+		// 调用父类的构造函数
 		super()
+		// 初始化平台数组
 		this.platforms = []
+		// 初始化渠道数组
 		this.channels = []
+		// 初始化版本数组
 		this.versions = []
 	}
+
 
 	/**
 		支付金额：统计时间内，成功支付的订单金额之和（不剔除退款订单）。
@@ -81,14 +100,19 @@ module.exports = class PayResult extends BaseMod {
 	 * @param {bool} reset 如果统计数据已存在，是否需要重新统计
 	 */
 	async run(type, date, reset, offset = -1) {
+		// 定义变量 dimension，赋值为 type
 		let dimension = type;
+		// 创建一个 DateTime 实例
 		const dateTime = new DateTime();
-		// 获取统计的起始时间和截止时间
+		// 根据 dimension、offset 和 date 获取时间维度
 		const dateDimension = dateTime.getTimeDimensionByType(dimension, offset, date);
+		// 获取时间维度的起始时间，赋值给 start_time
 		let start_time = dateDimension.startTime;
+		// 获取时间维度的结束时间，赋值给 end_time
 		let end_time = dateDimension.endTime;
-
+		// 获取当前时间的时间戳，赋值给 runStartTime
 		let runStartTime = Date.now();
+		// 定义变量 debug，赋值为 true
 		let debug = true;
 		if (debug) {
 			console.log(`-----------------支付统计开始（${dimension}）-----------------`);
@@ -100,36 +124,45 @@ module.exports = class PayResult extends BaseMod {
 			start_time,
 			end_time
 		};
+
 		// 查看当前时间段数据是否已存在,防止重复生成
 
 		if (!reset) {
+			// 如果 reset 为 false
+			// 调用 dao.uniStatPayResult.list 方法获取列表
 			let list = await dao.uniStatPayResult.list({
 				whereJson: {
-					...pubWhere,
-					dimension
+					...pubWhere,  // 使用 pubWhere 对象的属性作为查询条件
+					dimension  // 使用 dimension 变量作为查询条件
 				}
 			});
+			// 如果列表长度大于0
 			if (list.length > 0) {
-				console.log('data have exists')
+				console.log('data have exists');  // 输出数据已存在的提示信息
+				// 如果 debug 为 true
 				if (debug) {
 					let runEndTime = Date.now();
-					console.log(`耗时：${((runEndTime - runStartTime ) / 1000).toFixed(3)} 秒`)
-					console.log(`-----------------支付统计结束（${dimension}）-----------------`);
+					console.log(`耗时：${((runEndTime - runStartTime ) / 1000).toFixed(3)} 秒`);  // 输出耗时信息
+					console.log(`-----------------支付统计结束（${dimension}）-----------------`);  // 输出支付统计结束信息
 				}
+				// 返回一个对象，包含 code 和 msg 属性
 				return {
 					code: 1003,
 					msg: 'Pay data in this time have already existed'
-				}
+				};
 			}
 		} else {
+			// 如果 reset 为 true
+			// 调用 dao.uniStatPayResult.del 方法删除数据
 			let delRes = await dao.uniStatPayResult.del({
 				whereJson: {
-					...pubWhere,
-					dimension
+					...pubWhere,  // 使用 pubWhere 对象的属性作为删除条件
+					dimension  // 使用 dimension 变量作为删除条件
 				}
 			});
-			console.log('Delete old data result:', JSON.stringify(delRes))
+			console.log('Delete old data result:', JSON.stringify(delRes));  // 输出删除数据的结果
 		}
+
 		// 支付订单分组（已下单）
 		let statPayOrdersList1 = await dao.uniPayOrders.group({
 			...pubWhere,
@@ -145,7 +178,7 @@ module.exports = class PayResult extends BaseMod {
 			...pubWhere,
 			status: "已退款"
 		});
-		let statPayOrdersList = statPayOrdersList1.concat(statPayOrdersList2).concat(statPayOrdersList3)
+		let statPayOrdersList = statPayOrdersList1.concat(statPayOrdersList2).concat(statPayOrdersList3);
 		let res = {
 			code: 0,
 			msg: 'success'
@@ -153,32 +186,37 @@ module.exports = class PayResult extends BaseMod {
 		// 将支付订单分组查询结果组装
 		let statDta = {};
 		if (statPayOrdersList.length > 0) {
+			// 如果 statPayOrdersList 的长度大于0
+			// 遍历 statPayOrdersList 列表
 			for (let i = 0; i < statPayOrdersList.length; i++) {
-				let item = statPayOrdersList[i];
+				let item = statPayOrdersList[i];  // 获取当前遍历到的元素
 				let {
 					appid,
 					version,
 					platform,
 					channel,
-				} = item._id;
+				} = item._id;  // 从 _id 属性中解构出 appid、version、platform 和 channel 属性
 				let {
 					status_str
-				} = item;
-				let key = `${appid}-${version}-${platform}-${channel}`;
+				} = item;  // 解构出 status_str 属性
+				let key = `${appid}-${version}-${platform}-${channel}`;  // 拼接 key 字符串
 				if (!statDta[key]) {
-					statDta[key] = {
+					// 如果 statDta 对应的 key 不存在
+
+					statDta[key] = {  // 创建一个新的对象，赋值给 statDta[key]
 						appid,
 						version,
 						platform,
 						channel,
-						status: {}
+						status: {}  // 创建一个空的 status 对象
 					};
 				}
-				let newItem = JSON.parse(JSON.stringify(item));
-				delete newItem._id;
-				statDta[key].status[status_str] = newItem;
+				let newItem = JSON.parse(JSON.stringify(item));  // 复制 item 对象，赋值给 newItem
+				delete newItem._id;  // 删除 newItem 中的 _id 属性
+				statDta[key].status[status_str] = newItem;  // 将 newItem 添加到 statDta[key].status 对象中
 			}
 		}
+
 		if (this.debug) console.log('statDta: ', statDta)
 
 		let saveList = [];
@@ -364,7 +402,7 @@ module.exports = class PayResult extends BaseMod {
 
 }
 
-
+// 获取平台
 function getUniPlatform(platform) {
 	let list = [];
 	if (["h5", "web"].indexOf(platform) > -1) {
@@ -376,7 +414,7 @@ function getUniPlatform(platform) {
 	}
 	return list;
 }
-
+// 获取当前时间
 function getNowDate(date = new Date(), targetTimezone = 8, dimension) {
 	if (typeof date === "string" && !isNaN(date)) date = Number(date);
 	if (typeof date == "number") {
@@ -412,7 +450,7 @@ function getNowDate(date = new Date(), targetTimezone = 8, dimension) {
 		//second,
 	};
 }
-
+// 获取完整的时间对象参数
 function getFullTime(date = new Date(), targetTimezone = 8) {
 	if (!date) {
 		return "";

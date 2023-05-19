@@ -7,16 +7,17 @@ const dbName = require("./config");
 class Dao extends BaseMod {
 
 	constructor() {
-		super()
+		super();
 		this.tablePrefix = false; // 不使用表前缀
 	}
 
+	// 分组查询
 	async group(data) {
 		let {
 			whereJson
 		} = data;
 		const dbRes = await this.aggregate(dbName.uniStatUserSessionLogs, {
-			match: whereJson,
+			match: whereJson, // 匹配查询条件
 			group: {
 				_id: {
 					appid: '$appid',
@@ -28,7 +29,6 @@ class Dao extends BaseMod {
 				user_count: {
 					$addToSet: '$uid'
 				},
-
 				create_time: {
 					$min: '$create_time'
 				}
@@ -49,12 +49,13 @@ class Dao extends BaseMod {
 		return list;
 	}
 
+	// 分组统计数量
 	async groupCount(whereJson) {
 		const dbRes = await this.aggregate(dbName.uniStatUserSessionLogs, {
-			match: whereJson,
+			match: whereJson, // 匹配查询条件
 			group: {
 				_id: null,
-				// 设备数（去重复）
+				// 用户数（去重复）
 				count: {
 					$addToSet: '$uid'
 				},
@@ -73,6 +74,5 @@ class Dao extends BaseMod {
 		}
 	}
 }
-
 
 module.exports = new Dao();
