@@ -4,6 +4,8 @@ const word = {
 }
 
 const sentence = {
+  'uni-id-token-expired': '登录状态失效，token已过期',
+  'uni-id-check-token-failed': 'token校验未通过',
   'uni-id-account-exists': '此账号已注册',
   'uni-id-account-not-exists': '此账号未注册',
   'uni-id-account-not-exists-in-current-app': '此账号未在该应用注册',
@@ -43,7 +45,17 @@ const sentence = {
   'uni-id-unbind-mobile-not-exists': '这是当前唯一登录方式，请绑定手机号后再尝试解绑',
   'uni-id-unbind-password-not-exists': '请先设置密码在尝试解绑',
   'uni-id-unsupported-request': '不支持的请求方式',
-  'uni-id-illegal-request': '非法请求'
+  'uni-id-illegal-request': '非法请求',
+  'uni-id-frv-fail': '实名认证失败',
+  'uni-id-frv-processing': '等待人脸识别',
+  'uni-id-realname-verified': '该账号已实名认证',
+  'uni-id-idcard-exists': '该证件号码已绑定账号',
+  'uni-id-invalid-idcard': '身份证号码不合法',
+  'uni-id-invalid-realname': '姓名只能是汉字',
+  'uni-id-unknown-error': '未知错误',
+  'uni-id-realname-verify-upper-limit': '当日实名认证次数已达上限',
+  'uni-id-config-field-required': '缺少配置项: {field}',
+  'uni-id-config-field-invalid': '配置项: {field}无效'
 }
 
 module.exports = {

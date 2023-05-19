@@ -121,7 +121,9 @@ export default {
           })
     },
     skip () {
-      mutations.loginBack(this.uniIdRedirectUrl)
+      mutations.loginBack({
+		uniIdRedirectUrl: this.uniIdRedirectUrl,
+	  })
     }
   }
 }

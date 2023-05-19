@@ -83,10 +83,10 @@ module.exports = async function (params = {}) {
     username,
     dcloud_appid: authorizedApp,
     nickname,
-    role: role,
+    role,
     mobile,
     email,
-    tags: tags,
+    tags,
     status
   }
 
@@ -131,7 +131,6 @@ module.exports = async function (params = {}) {
   }
 
   await userCollection.doc(uid).update(realData)
-
 
   return {
     errCode: 0

@@ -114,11 +114,11 @@
 				}
 
 				this.inputValue = (value / scale).toFixed(String(scale).length - 1);
-				this.$emit("change", +this.inputValue);
 				// TODO vue2 兼容
 				this.$emit("input", +this.inputValue);
 				// TODO vue3 兼容
 				this.$emit("update:modelValue", +this.inputValue);
+				this.$emit("change", +this.inputValue);
 			},
 			_getDecimalScale() {
 
@@ -132,8 +132,8 @@
 			_onBlur(event) {
 				this.$emit('blur', event)
 				let value = event.detail.value;
-				if (!value) {
-					// this.inputValue = 0;
+				if (isNaN(value)) {
+					this.inputValue = this.min;
 					return;
 				}
 				value = +value;
@@ -144,8 +144,9 @@
 				}
 				const scale = this._getDecimalScale();
 				this.inputValue = value.toFixed(String(scale).length - 1);
-				this.$emit("change", +this.inputValue);
 				this.$emit("input", +this.inputValue);
+				this.$emit("update:modelValue", +this.inputValue);
+				this.$emit("change", +this.inputValue);
 			},
 			_onFocus(event) {
 				this.$emit('focus', event)
@@ -153,7 +154,7 @@
 		}
 	};
 </script>
-<style lang="scss" scoped>
+<style lang="scss" >
 	$box-height: 26px;
 	$bg: #f5f5f5;
 	$br: 2px;

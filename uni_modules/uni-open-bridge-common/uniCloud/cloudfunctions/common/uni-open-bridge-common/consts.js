@@ -6,7 +6,7 @@ const HTTP_STATUS = {
   SUCCESS: 200
 }
 
-const PlatformType = {
+const ProviderType = {
   WEIXIN_MP: 'weixin-mp',
   WEIXIN_H5: 'weixin-h5',
   WEIXIN_APP: 'weixin-app',
@@ -15,12 +15,16 @@ const PlatformType = {
   QQ_APP: 'qq-app'
 }
 
+// old
+const PlatformType = ProviderType
+
 const ErrorCodeType = {
   SYSTEM_ERROR: TAG + "_SYSTEM_ERROR"
 }
 
 module.exports = {
   HTTP_STATUS,
+  ProviderType,
   PlatformType,
   ErrorCodeType
 }

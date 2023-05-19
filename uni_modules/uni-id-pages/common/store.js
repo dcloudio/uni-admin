@@ -37,12 +37,21 @@ export const mutations = {
 			})
 
 		} else {
+			const uniIdCo = uniCloud.importObject("uni-id-co", {
+				customUI: true
+			})
 			try {
 				let res = await usersTable.where("'_id' == $cloudEnv_uid")
-						.field('mobile,nickname,username,email,avatar_file')
-						.get()
+					.field('mobile,nickname,username,email,avatar_file')
+					.get()
+
+				const realNameRes = await uniIdCo.getRealNameInfo()
+
 				// console.log('fromDbData',res.result.data);
-				this.setUserInfo(res.result.data[0])
+				this.setUserInfo({
+					...res.result.data[0],
+					realNameAuth: realNameRes
+				})
 			} catch (e) {
 				this.setUserInfo({},{cover:true})
 				console.error(e.message, e.errCode);
@@ -55,10 +64,7 @@ export const mutations = {
 		store.userInfo = Object.assign({},userInfo)
 		store.hasLogin = Object.keys(store.userInfo).length != 0
 		// console.log('store.userInfo', store.userInfo);
-		uni.setStorage({
-			key: "uni-id-pages-userInfo",
-			data:store.userInfo
-		})
+		uni.setStorageSync('uni-id-pages-userInfo', store.userInfo)
 		return data
 	},
 	async logout() {
@@ -73,7 +79,7 @@ export const mutations = {
 		uni.removeStorageSync('uni_id_token');
 		uni.setStorageSync('uni_id_token_expired', 0)
 		uni.redirectTo({
-			url: `/${pagesJson.uniIdRouter?.loginPage ?? 'uni_modules/uni-id-pages/pages/login/login-withoutpwd'}`,
+			url: `/${pagesJson.uniIdRouter && pagesJson.uniIdRouter.loginPage ? pagesJson.uniIdRouter.loginPage: 'uni_modules/uni-id-pages/pages/login/login-withoutpwd'}`,
 		});
 		uni.$emit('uni-id-pages-logout')
 		this.setUserInfo({},{cover:true})
@@ -91,8 +97,16 @@ export const mutations = {
 		})
 		// console.log('判断需要返回几层:', delta);
 		if (uniIdRedirectUrl) {
-			return uni.reLaunch({
-				url: uniIdRedirectUrl
+			return uni.redirectTo({
+				url: uniIdRedirectUrl,
+				fail: (err1) => {
+					uni.switchTab({
+						url:uniIdRedirectUrl,
+						fail: (err2) => {
+							console.log(err1,err2)
+						}
+					})
+				}
 			})
 		}
 		// #ifdef H5
@@ -139,7 +153,7 @@ export const mutations = {
 		}
 
 		if (autoBack) {
-			this.loginBack(uniIdRedirectUrl)
+			this.loginBack({uniIdRedirectUrl})
 		}
 	}
 

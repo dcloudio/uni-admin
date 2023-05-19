@@ -1,9 +1,8 @@
 import {
-		store,
-		mutations
-	} from '@/uni_modules/uni-id-pages/common/store.js'
+	mutations
+} from '@/uni_modules/uni-id-pages/common/store.js'
 import config from '@/uni_modules/uni-id-pages/config.js'
-let mixin = {
+const mixin = {
 	data() {
 		return {
 			config,
@@ -17,7 +16,7 @@ let mixin = {
 		// #endif
 	},
 	mounted() {
-		this.isMounted = true;
+		this.isMounted = true
 	},
 	onLoad(e) {
 		if (e.is_weixin_redirect) {
@@ -25,12 +24,12 @@ let mixin = {
 				mask: true
 			})
 
-			if( window.location.href.includes('#') ){
+			if (window.location.href.includes('#')) {
 				// 将url通过 ? 分割获取后面的参数字符串 再通过 & 将每一个参数单独分割出来
-				let paramsArr = window.location.href.split('?')[1].split('&')
-				paramsArr.forEach(item=>{
-					let arr = item.split('=')
-					if(arr[0] == 'code'){
+				const paramsArr = window.location.href.split('?')[1].split('&')
+				paramsArr.forEach(item => {
+					const arr = item.split('=')
+					if (arr[0] == 'code') {
 						e.code = arr[1]
 					}
 				})
@@ -38,7 +37,7 @@ let mixin = {
 			this.$nextTick(n => {
 				// console.log(this.$refs.uniFabLogin);
 				this.$refs.uniFabLogin.login({
-					code:e.code
+					code: e.code
 				}, 'weixin')
 			})
 		}
@@ -46,6 +45,13 @@ let mixin = {
 		if (e.uniIdRedirectUrl) {
 			this.uniIdRedirectUrl = decodeURIComponent(e.uniIdRedirectUrl)
 		}
+
+		// #ifdef MP-WEIXIN
+		if (getCurrentPages().length === 1) {
+			uni.hideHomeButton()
+			console.log('已隐藏：返回首页按钮');
+		}
+		// #endif
 	},
 	computed: {
 		needAgreements() {
@@ -85,4 +91,5 @@ let mixin = {
 		}
 	}
 }
+
 export default mixin

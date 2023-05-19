@@ -1,7 +1,8 @@
 const uniIdCommon = require('uni-id-common')
 const uniCaptcha = require('uni-captcha')
 const {
-  getType
+  getType,
+  checkIdCard
 } = require('./common/utils')
 const {
   checkClientInfo,
@@ -9,7 +10,8 @@ const {
 } = require('./common/validator')
 const ConfigUtils = require('./lib/utils/config')
 const {
-  isUniIdError
+  isUniIdError,
+  ERROR
 } = require('./common/error')
 const middleware = require('./middleware/index')
 const universal = require('./common/universal')
@@ -55,7 +57,8 @@ const {
   resetPwdBySms,
   resetPwdByEmail,
   closeAccount,
-  getAccountInfo
+  getAccountInfo,
+  getRealNameInfo
 } = require('./module/account/index')
 const {
   createCaptcha,
@@ -80,11 +83,15 @@ const {
 const {
   getSupportedLoginType
 } = require('./module/dev/index')
-
 const {
   externalRegister,
-  externalLogin
+  externalLogin,
+  updateUserInfoByExternal
 } = require('./module/external')
+const {
+  getFrvCertifyId,
+  getFrvAuthResult
+} = require('./module/facial-recognition-verify')
 
 module.exports = {
   async _before () {
@@ -130,6 +137,26 @@ module.exports = {
 
     this.validator = new Validator({
       passwordStrength: this.config.passwordStrength
+    })
+
+    // 扩展 validator 增加 验证身份证号码合法性
+    this.validator.mixin('idCard', function (idCard) {
+      if (!checkIdCard(idCard)) {
+        return {
+          errCode: ERROR.INVALID_ID_CARD
+        }
+      }
+    })
+    this.validator.mixin('realName', function (realName) {
+      if (
+        typeof realName !== 'string' ||
+        realName.length < 2 ||
+        !/^[\u4e00-\u9fa5]{1,10}(·?[\u4e00-\u9fa5]{1,10}){0,5}$/.test(realName)
+      ) {
+        return {
+          errCode: ERROR.INVALID_REAL_NAME
+        }
+      }
     })
     /**
      * 示例：覆盖密码验证规则
@@ -185,11 +212,16 @@ module.exports = {
     }
 
     // 国际化
+    const messages = require('./lang/index')
+    const fallbackLocale = 'zh-Hans'
     const i18n = uniCloud.initI18n({
       locale: clientInfo.locale,
-      fallbackLocale: 'zh-Hans',
-      messages: require('./lang/index')
+      fallbackLocale,
+      messages: JSON.parse(JSON.stringify(messages))
     })
+    if (!messages[i18n.locale]) {
+      i18n.setLocale(fallbackLocale)      
+    }
     this.t = i18n.t.bind(i18n)
 
     this.response = {}
@@ -602,15 +634,61 @@ module.exports = {
    */
   setPwd,
   /**
-   * 外部用户注册，将自身系统的用户账号导入uniId，为其创建一个对应uniId的账号(unieid)，使得该账号可以使用依赖uniId的系统及功能。
+   * 外部注册用户
    * @tutorial https://uniapp.dcloud.net.cn/uniCloud/uni-id-pages.html#external-register
-   * @returns
+   * @param {object} params
+   * @param {string} params.externalUid   业务系统的用户id
+   * @param {string} params.nickname  昵称
+   * @param {string} params.gender  性别
+   * @param {string} params.avatar  头像
+   * @returns {object}
    */
   externalRegister,
   /**
-   * 外部用户登录，使用unieid即可登录
+   * 外部用户登录
    * @tutorial https://uniapp.dcloud.net.cn/uniCloud/uni-id-pages.html#external-login
+   * @param {object} params
+   * @param {string} params.userId  uni-id体系用户id
+   * @param {string} params.externalUid   业务系统的用户id
+   * @returns {object}
+   */
+  externalLogin,
+  /**
+   * 使用 userId 或 externalUid 获取用户信息
+   * @tutorial https://uniapp.dcloud.net.cn/uniCloud/uni-id-pages.html#external-update-userinfo
+   * @param {object} params
+   * @param {string} params.userId   uni-id体系的用户id
+   * @param {string} params.externalUid   业务系统的用户id
+   * @param {string} params.nickname  昵称
+   * @param {string} params.gender  性别
+   * @param {string} params.avatar  头像
+   * @returns {object}
+   */
+  updateUserInfoByExternal,
+  /**
+   * 获取认证ID
+   * @tutorial https://uniapp.dcloud.net.cn/uniCloud/uni-id-pages.html#get-frv-certify-id
+   * @param {Object} params
+   * @param {String} params.realName  真实姓名
+   * @param {String} params.idCard    身份证号码
    * @returns
-   * */
-  externalLogin
+   */
+  getFrvCertifyId,
+  /**
+   * 查询认证结果
+   * @tutorial https://uniapp.dcloud.net.cn/uniCloud/uni-id-pages.html#get-frv-auth-result
+   * @param {Object} params
+   * @param {String} params.certifyId       认证ID
+   * @param {String} params.needAlivePhoto  是否获取认证照片，Y_O （原始图片）、Y_M（虚化，背景马赛克）、N（不返图）
+   * @returns
+   */
+  getFrvAuthResult,
+  /**
+   * 获取实名信息
+   * @tutorial https://uniapp.dcloud.net.cn/uniCloud/uni-id-pages.html#get-realname-info
+   * @param {Object} params
+   * @param {Boolean} params.decryptData 是否解密数据
+   * @returns
+   */
+  getRealNameInfo
 }
