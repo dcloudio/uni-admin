@@ -24,7 +24,7 @@
 			<!-- 时间纬度 -->
 			<view class="flex">
 				<uni-stat-tabs type="box" :current="dateTabs.index" :tabs="dateTabs.list" @change="dateTabsChange" />
-				<uni-datetime-picker type="daterange" v-model="query.pay_date" :end="Date.now()" return-type="timestamp" :clear-icon="true" class="uni-stat-datetime-picker" @change="dateTabs.index=null"/>
+				<uni-datetime-picker type="datetimerange" v-model="query.pay_date" :end="Date.now()" return-type="timestamp" :clear-icon="true" class="uni-stat-datetime-picker" @change="dateTabs.index=null"/>
 			</view>
 
 			<unicloud-db ref="udb" :collection="collectionList" field="user_id,nickname,uni_platform,status,total_fee,refund_fee,appid,pay_date"
