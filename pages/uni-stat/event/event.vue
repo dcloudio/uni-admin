@@ -28,6 +28,16 @@
 				<!-- <uni-data-select v-if="query.platform_id && query.platform_id.indexOf('==') === -1"
 					:localdata="channelData" label="渠道/场景值选择" v-model="query.channel_id"></uni-data-select> -->
 			</view>
+			<view class="uni-stat--x" style="display: flex;align-items: center;padding: 10px;">
+				<text style="width: 80px;">事件ID</text>
+				<view style="width: 300px;">
+					<uni-easyinput v-model="formData.event_key" placeholder="事件ID" @change="changeFormData($event,'event_key')" @clear="changeFormData('','event_key')"></uni-easyinput>
+				</view>
+				<text style="width: 80px;margin-left: 10px;">设备标识</text>
+				<view style="width: 300px;">
+					<uni-easyinput v-model="formData.device_id" placeholder="设备标识" @change="changeFormData($event,'device_id')" @clear="changeFormData('','device_id')"></uni-easyinput>
+				</view>
+			</view>
 			<view class="uni-stat--x p-m">
 				<uni-table :loading="loading" border stripe :emptyText="$t('common.empty')">
 					<uni-tr>
@@ -78,6 +88,10 @@
 		data() {
 			return {
 				fieldsMap,
+				formData:{
+					event_key: '',
+					device_id: ''
+				},
 				query: {
 					appid: '',
 					platform_id: '',
@@ -88,6 +102,8 @@
 					version_id: '',
 					version:'',
 					create_time: [],
+					event_key: '',
+					device_id: ''
 				},
 				options: {
 					pageSize: 20,
@@ -136,6 +152,9 @@
 			}
 		},
 		methods: {
+			changeFormData(val,key){
+				this.query[key] = val;
+			},
 			useDatetimePicker() {
 				this.currentDateTab = -1
 			},
