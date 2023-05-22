@@ -13,7 +13,7 @@
 		<view class="uni-container">
 			<view class="uni-stat--x flex p-1015">
 				<uni-data-select collection="opendb-app-list" field="appid as value, name as text" orderby="text asc" :defItem="1" label="应用选择" v-model="query.appid" :clear="false" />
-				<uni-data-select collection="opendb-app-versions" :where="versionQuery" class="ml-m" field="_id as value, version as text, uni_platform as label, create_date as date" format="{label} - {text}" orderby="date desc" label="版本选择" v-model="query.version_id" />
+				<uni-data-select collection="opendb-app-versions" :where="versionQuery" class="ml-m" field="concat(version, '---',uni_platform) as value, version as text, uni_platform as label, create_date as date" format="{label} - {text}" orderby="date desc" label="版本选择" v-model="query.version_id" @change="changeVersion"/>
 			</view>
 			<view class="uni-stat--x flex">
 				<uni-stat-tabs label="日期选择" :current="currentDateTab" mode="date" @change="changeTimeRange" />
@@ -23,9 +23,8 @@
 					@change="useDatetimePicker" />
 			</view>
 			<view class="uni-stat--x">
-				<uni-stat-tabs label="平台选择" type="boldLine" mode="platform" v-model="query.platform_id"
-					@change="changePlatform" />
-				<uni-data-select ref="version-select" v-if="query.platform_id && query.platform_id.indexOf('==') === -1" collection="uni-stat-app-channels" :where="channelQuery" class="p-channel" field="_id as value, channel_name as text" orderby="text asc" label="渠道/场景值选择" v-model="query.channel_id" />
+				<uni-stat-tabs label="平台选择" type="boldLine" mode="platform" v-model="query.platform_id" @change="changePlatform" />
+				<uni-data-select ref="version-select" v-if="query.platform_id && query.platform_id.indexOf('==') === -1" collection="uni-stat-app-channels" :where="channelQuery" class="p-channel" field="concat(channel_code, '---',channel_name) as value,  channel_name as text" orderby="text asc" label="渠道/场景值选择" v-model="query.channel_id" @change="changeChannel"/>
 				<!-- <uni-data-select v-if="query.platform_id && query.platform_id.indexOf('==') === -1"
 					:localdata="channelData" label="渠道/场景值选择" v-model="query.channel_id"></uni-data-select> -->
 			</view>
@@ -83,8 +82,11 @@
 					appid: '',
 					platform_id: '',
 					uni_platform: '',
+					platform: '',
 					channel_id: '',
+					channel: '',
 					version_id: '',
+					version:'',
 					create_time: [],
 				},
 				options: {
@@ -140,11 +142,6 @@
 			changeAppid(id) {
 				this.getChannelData(id, false)
 			},
-			changePlatform(id, index, name, item) {
-				this.getChannelData(null, id)
-				this.query.version_id = 0
-				this.query.uni_platform = item.code
-			},
 			changeTimeRange(id, index) {
 				this.currentDateTab = index
 				const start = getTimeOfSomeDayAgo(id),
@@ -165,15 +162,37 @@
 			getAllData(query) {
 				this.getTableData(query)
 			},
-
-			getTableData(query = stringifyQuery(this.query, null, ['uni_platform'])) {
+			changePlatform(id, index, name, item) {
+				this.getChannelData(null, id)
+				this.query.version_id = 0
+				this.query.uni_platform = item.code
+				this.query.platform = item.code
+			},
+			changeVersion(version){
+				if (!version) version = "";
+				let versionArr = version.split("---");
+				this.query.version = version.split("---")[0];
+				this.query.platform = version.split("---")[1];
+			},
+			changeChannel(channel){
+				if (!channel) channel = "";
+				let channelArr = channel.split("---");
+				this.query.channel = channel.split("---")[0];
+				//this.query.platform = channel.split("---")[1];
+			},
+			getTableData(query = stringifyQuery(this.query, null, ['uni_platform','platform_id','version_id', 'channel_id'])) {
 				const {
 					pageCurrent
 				} = this.options
 				this.loading = true
 				const db = uniCloud.database()
-				db.collection('uni-stat-event-logs', 'uni-stat-app-platforms')
-					.where(query)
+
+				let collectionList = [
+					db.collection('uni-stat-event-logs').where(query).getTemp(),
+					db.collection('uni-stat-app-platforms').getTemp()
+				];
+				db.collection(...collectionList)
+					//.where(query)
 					.orderBy('create_time', 'desc')
 					.skip((pageCurrent - 1) * this.options.pageSize)
 					.limit(this.options.pageSize)
