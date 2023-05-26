@@ -26,7 +26,7 @@
 				<text class="forget">忘记了？</text>
 				<text class="link" @click="toRetrievePwd">找回密码</text>
 			</view>
-			<text class="link" @click="toRegister">{{config.isAdmin ? '注册管理员账号': '注册账号'}}</text>
+			<text v-if="!existAdmin" class="link" @click="toRegister">{{config.isAdmin ? '注册管理员账号': '注册账号'}}</text>
 			<!-- <text class="link" @click="toRegister" v-if="!config.isAdmin">注册账号</text> -->
 		</view>
 		<!-- 悬浮登录方式组件 -->
@@ -51,7 +51,8 @@
 				"needCaptcha": false,
 				"focusUsername": false,
 				"focusPassword": false,
-				"logo": "/static/logo.png"
+				"logo": "/static/logo.png",
+				"existAdmin": true
 			}
 		},
 		onShow() {
@@ -63,6 +64,17 @@
 				}
 			};
 			// #endif
+		},
+		async onLoad() {
+			// 查询是否已经有管理员注册了，如果有，则隐藏注册管理员的入口
+			try {
+				const db = uniCloud.database();
+				let countRes = await db.collection("uni-id-users").where({role:"admin"}).count();
+				let count = countRes.result.total;
+				this.existAdmin = count > 0 ? true : false;
+			} catch(err){
+				this.existAdmin = false;
+			}
 		},
 		methods: {
 			// 页面跳转，找回密码
