@@ -4,7 +4,7 @@
 		<view :style="{background: clearColor}" class="color" @click="change(null)">
 			<text class="reset"></text>
 		</view>
-		<view v-for="color in colors" :style="{background: color}" class="color" @click="change(color)"></view>
+		<view v-for="(color,index) in colors"  :key="index" :style="{background: color}" class="color" @click="change(color)"></view>
 	</view>
 	<view class="custom">
 		<view class="color-preview" :style="{background: customColor}"></view>
