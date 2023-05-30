@@ -204,6 +204,11 @@
 			"bsonType": "timestamp",
 			"description": "订单取消时间"
 		},
+		"refund_date": {
+			"title": "最近退款时间",
+			"bsonType": "timestamp",
+			"description": "最近退款时间"
+		},
 		"stat_data": {
 			"title": "uni统计相关数据",
 			"bsonType": "object",
