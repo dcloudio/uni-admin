@@ -275,16 +275,23 @@
 				const db = uniCloud.database()
 				db.collection('uni-stat-pages')
 					.where({
-						url: this.queryId
+						path: this.queryId
 					})
 					.update({
 						title: value
 					})
 					.then((res) => {
-						uni.showToast({
-							title: '修改成功'
-						})
-						this.getTableData()
+						if (res.result.updated) {
+							uni.showToast({
+								title: '修改成功'
+							})
+							this.getTableData()
+						} else {
+							uni.showToast({
+								title: '修改失败',
+								icon: "none"
+							})
+						}
 					}).catch((err) => {
 						uni.showModal({
 							content: err.message || '请求服务失败',
