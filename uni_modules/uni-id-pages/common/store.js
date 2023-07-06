@@ -44,9 +44,10 @@ export const mutations = {
 				let res = await usersTable.where("'_id' == $cloudEnv_uid")
 					.field('mobile,nickname,username,email,avatar_file')
 					.get()
-
-				const realNameRes = await uniIdCo.getRealNameInfo()
-
+				let realNameRes
+				try {
+					realNameRes = await uniIdCo.getRealNameInfo()
+				} catch(err){}
 				// console.log('fromDbData',res.result.data);
 				this.setUserInfo({
 					...res.result.data[0],
