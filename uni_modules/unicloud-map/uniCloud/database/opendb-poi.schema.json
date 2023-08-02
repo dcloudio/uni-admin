@@ -1,0 +1,88 @@
+{
+	"bsonType": "object",
+	"required": ["location", "title"],
+	"permission": {
+		"read": "doc.visible == true",
+		"create": false,
+		"update": false,
+		"delete": false
+	},
+	"properties": {
+		"_id": {
+			"description": "ID，系统自动生成"
+		},
+		"visible": {
+			"title": "是否显示",
+			"bsonType": "bool",
+			"description": "为true代表前端clientDB可直接查询 false则clientDB不可以查询"
+		},
+		"category": {
+			"bsonType": "string",
+			"title": "分类",
+			"description": "用于区分显示在不同的场景地图下"
+		},
+		"type": {
+			"bsonType": "string",
+			"title": "类型",
+			"description": "POI类型，可根据type自动匹配对应的icon，支持直接输入中文"
+		},
+		"icon": {
+			"bsonType": "string",
+			"title": "图标",
+			"description": "支持https网络路径或本地绝对路径，如果传了icon则不再根据type去匹配icon"
+		},
+		"rotate": {
+			"bsonType": "number",
+			"title": "图标角度",
+			"description": "POI图标的角度，需保证0°的图片方向应朝左(西) 故可得90° 朝上(北) 180° 朝右(东) 270° 朝下(南)"
+		},
+		"level": {
+			"bsonType": "number",
+			"title": "图标显示的层级",
+			"description": "POI图标显示的层级，越高越现在在上面"
+		},
+		"location": {
+			"title": "地理位置",
+			"bsonType": "object",
+			"description": "地理位置（包含经纬度）"
+		},
+		"title": {
+			"bsonType": "string",
+			"title": "名称",
+			"description": "名称"
+		},
+		"address": {
+			"bsonType": "string",
+			"title": "地址",
+			"description": "地址"
+		},
+		"tel": {
+			"bsonType": "string",
+			"title": "电话",
+			"description": "电话"
+		},
+		"province": {
+			"bsonType": "string",
+			"title": "省",
+			"description": "省"
+		},
+		"city": {
+			"bsonType": "string",
+			"title": "市",
+			"description": "市"
+		},
+		"district": {
+			"bsonType": "string",
+			"title": "区/县",
+			"description": "区/县"
+		},
+		"create_date": {
+			"title": "创建时间",
+			"bsonType": "timestamp",
+			"description": "创建时间",
+			"forceDefaultValue": {
+				"$env": "now"
+			}
+		}
+	}
+}

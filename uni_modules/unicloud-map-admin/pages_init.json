@@ -1,0 +1,18 @@
+{
+	"pages": [{
+		"path": "uni_modules/unicloud-map-admin/pages/opendb-poi/list",
+		"style": {
+			"navigationBarTitleText": "POI列表"
+		}
+	}, {
+		"path": "uni_modules/unicloud-map-admin/pages/opendb-poi/add",
+		"style": {
+			"navigationBarTitleText": "POI新增"
+		}
+	}, {
+		"path": "uni_modules/unicloud-map-admin/pages/opendb-poi/edit",
+		"style": {
+			"navigationBarTitleText": "POI编辑"
+		}
+	}]
+}

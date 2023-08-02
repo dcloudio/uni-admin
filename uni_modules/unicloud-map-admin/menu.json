@@ -1,0 +1,20 @@
+[
+	{
+		"menu_id": "unicloud-map-admin",
+		"name": "地图管理",
+		"icon": "uni-icons-map",
+		"url": "",
+		"sort": 200,
+		"parent_id": "",
+		"permission": []
+	},
+	{
+		"menu_id": "unicloud-map-admin-opendb-poi",
+		"name": "POI管理",
+		"icon": "",
+		"url": "/uni_modules/unicloud-map-admin/pages/opendb-poi/list",
+		"sort": 201,
+		"parent_id": "unicloud-map-admin",
+		"permission": []
+	}
+]
