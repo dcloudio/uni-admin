@@ -615,3 +615,14 @@ button:after {
 	margin-top: 85px;
 }
 /* #endif */
+
+/* 地图选择top需要大于topWindow的高度 */
+.uni-system-choose-location{
+	display: block;
+	position: fixed;
+	left: 0;
+	top: 60px;
+	width: 100%;
+	height: calc(100% - 60px);
+	background: #f8f8f8;
+}
