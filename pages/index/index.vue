@@ -8,9 +8,11 @@
 			</view>
 		</view>
 		<view class="uni-container">
-			<!-- 提示条1：添加应用 -->
+			<!-- 提示条1：初始化db_init.json -->
+			<uni-notice-bar v-if="showdbInit" showGetMore showIcon class="mb-m pointer" text="检测到您未初始化db_init.json，请先右键uniCloud/database/db_init.json文件，执行初始化云数据库，否则左侧无法显示菜单等数据" background-color="#fef0f0" color="#f56c6c" @click="toAddAppId" />
+			<!-- 提示条2：添加应用 -->
 			<uni-notice-bar v-if="showAddAppId" showGetMore showIcon class="mb-m pointer" text="检测到您还未添加应用，点击前往应用管理添加" @click="toAddAppId" />
-			<!-- 提示条2：暂无数据，需开通统计功能 -->
+			<!-- 提示条3：暂无数据，需开通统计功能 -->
 			<uni-notice-bar v-if="!deviceTableData.length && !userTableData.length && !query.platform_id && complete" showGetMore showIcon class="mb-m pointer"
 				text="暂无数据, 统计相关功能需开通 uni 统计后才能使用, 如未开通, 点击查看具体流程" @click="navTo('https://uniapp.dcloud.io/uni-stat-v2.html')" />
 
@@ -128,7 +130,8 @@
 					{ "value": "close", "text": "关闭" },
 					{ "value": "auto", "text": "节能" },
 				],
-				showAddAppId: false
+				showAddAppId: false,
+				showdbInit: false
 			}
 		},
 		onReady() {
@@ -142,6 +145,8 @@
 
 			// 检查appId
 			this.checkAppId();
+
+			this.checkdbInit();
 		},
 
 		watch: {
@@ -349,6 +354,23 @@
 				let res = await db.collection('opendb-app-list').count();
 				// 如果查询结果为空或total为0，则显示添加App ID的标识
 				this.showAddAppId = (!res.result || res.result.total === 0) ? true : false;
+			},
+
+			async checkdbInit(){
+				// 获取uniCloud数据库的实例
+				const db = uniCloud.database();
+				// 查询'opendb-app-list'集合的数据数量
+				let res = await db.collection('opendb-admin-menus').count();
+				// 如果查询结果为空或total为0，则显示添加App ID的标识
+				this.showdbInit = (!res.result || res.result.total === 0) ? true : false;
+				if (this.showdbInit) {
+					uni.showModal({
+						title: "重要提示",
+						content: `检测到您未初始化db_init.json，请先右键uniCloud/database/db_init.json文件，执行初始化云数据库，否则左侧无法显示菜单等数据`,
+						showCancel: false,
+						confirmText: "我知道了"
+					});
+				}
 			}
 
 		}
