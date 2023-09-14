@@ -107,19 +107,23 @@
 					data.longitude = this.formData.location.coordinates[0];
 					data.latitude = this.formData.location.coordinates[1];
 				}
+				this.formData.location = {};
 				uni.chooseLocation({
 					...data,
 					success: (res) => {
-						this.formData.location = {
-							type: "Point",
-							coordinates: [
-									res.longitude,
-									res.latitude
-							]
-						};
-						this.formData.title = res.name;
-						this.formData.address = res.address;
-						console.log('res: ', res)
+						// 高德地图需要强制延迟下
+						setTimeout(() => {
+							this.formData.location = {
+								type: "Point",
+								coordinates: [
+										res.longitude,
+										res.latitude
+								]
+							};
+							this.formData.title = res.name;
+							this.formData.address = res.address;
+							console.log('res: ', res)
+						}, 300);
 					}
 				});
 			},
