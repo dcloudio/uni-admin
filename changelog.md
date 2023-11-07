@@ -1,3 +1,9 @@
+## 2.3.12（2023-11-07）
+- 修复 uni统计兼容 skd 未上报 ut 参数的Bug
+- 优化 uni统计配置增加cronMinTips，用于对cronMin参数进行解释
+- 更新 uni-captcha模块至0.7.0
+- 更新 升级中心升级至 0.6.1
+- 新增 升级中心 uni-upgrade-center 云函数 checkVersion.js 支持传递 is_uniapp_x 参数（uni-app x 项目安卓端无 wgt 更新）
 ## 2.3.11（2023-08-07）
 - 优化 当菜单表无数据时，提示请先初始化云数据库
 ## 2.3.10（2023-08-04）
