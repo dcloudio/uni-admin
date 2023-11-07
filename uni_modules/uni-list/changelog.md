@@ -1,5 +1,11 @@
-## 1.2.10（2022-11-23）
-修复 uni-list-item 组件 keep-scroll-position 属性 无法设置为false的错误
+## 1.2.14（2023-04-14）
+- 优化 uni-list-chat 具名插槽`header` 非app端套一层元素，方便使用时通过外层元素定位实现样式修改
+## 1.2.13（2023-03-03）
+- uni-list-chat 新增 支持具名插槽`header`
+## 1.2.12（2023-02-01）
+- 新增 列表图标新增 customPrefix 属性 ，用法 [详见](https://uniapp.dcloud.net.cn/component/uniui/uni-icons.html#icons-props)
+## 1.2.11（2023-01-31）
+- 修复 无反馈效果呈现的bug
 ## 1.2.9（2022-11-22）
 - 修复 uni-list-chat 在vue3下跳转报错的bug
 ## 1.2.8（2022-11-21）

@@ -32,7 +32,7 @@
 			"title": "头像地址",
 			"trim": "both",
 			"permission": {
-				"read": "doc._id == auth.uid || 'READ_UNI_ID_USERS' in auth.permission",
+				"read": true,
 				"write": "doc._id == auth.uid || 'CREATE_UNI_ID_USERS' in auth.permission || 'UPDATE_UNI_ID_USERS' in auth.permission"
 			}
 		},
@@ -41,7 +41,7 @@
 			"description": "用file类型方便使用uni-file-picker组件",
 			"title": "头像文件",
 			"permission": {
-				"read": "doc._id == auth.uid || 'READ_UNI_ID_USERS' in auth.permission",
+				"read": true,
 				"write": "doc._id == auth.uid || 'CREATE_UNI_ID_USERS' in auth.permission || 'UPDATE_UNI_ID_USERS' in auth.permission"
 			}
 		},
@@ -209,7 +209,7 @@
 			"title": "昵称",
 			"trim": "both",
 			"permission": {
-				"read": "doc._id == auth.uid || 'READ_UNI_ID_USERS' in auth.permission",
+				"read": true,
 				"write": "doc._id == auth.uid || 'CREATE_UNI_ID_USERS' in auth.permission || 'UPDATE_UNI_ID_USERS' in auth.permission"
 			}
 		},
@@ -330,6 +330,15 @@
 			},
 			"title": "角色"
 		},
+		"tags":{
+			"bsonType": "array",
+			"description": "用户标签",
+			"permission": {
+				"read": "doc._id == auth.uid || 'READ_UNI_ID_USERS' in auth.permission",
+				"write": "'CREATE_UNI_ID_USERS' in auth.permission || 'UPDATE_UNI_ID_USERS' in auth.permission"
+			},
+			"title": "标签"
+		},
 		"score": {
 			"bsonType": "int",
 			"description": "用户积分，积分变更记录可参考：uni-id-scores表定义",
@@ -341,7 +350,7 @@
 		"status": {
 			"bsonType": "int",
 			"defaultValue": 0,
-			"description": "用户状态：0 正常 1 禁用 2 审核中 3 审核拒绝",
+			"description": "用户状态：0 正常 1 禁用 2 审核中 3 审核拒绝 4 已注销",
 			"permission": {
 				"read": "doc._id == auth.uid || 'READ_UNI_ID_USERS' in auth.permission",
 				"write": "'CREATE_UNI_ID_USERS' in auth.permission || 'UPDATE_UNI_ID_USERS' in auth.permission"
@@ -361,6 +370,10 @@
 				{
 					"text": "审核拒绝",
 					"value": 3
+				},
+				{
+					"text": "已注销",
+					"value": 4
 				}
 			],
 			"title": "用户状态"
@@ -369,7 +382,7 @@
 			"bsonType": "array",
 			"description": "用户token",
 			"permission": {
-				"read": "'READ_UNI_ID_USERS' in auth.permission",
+				"read": false,
 				"write": "'CREATE_UNI_ID_USERS' in auth.permission || 'UPDATE_UNI_ID_USERS' in auth.permission"
 			}
 		},
@@ -449,6 +462,14 @@
 			"permission": {
 				"read": false,
 				"write": false
+			}
+		},
+		"identities": {
+			"bsonType": "array",
+			"description": "三方平台身份信息；一个对象代表一个身份，参数支持: provider 身份源, userInfo 三方用户信息, openid 三方openid, unionid 三方unionid, uid 三方uid",
+			"permission": {
+				"read": "'READ_UNI_ID_USERS' in auth.permission",
+				"write": "'CREATE_UNI_ID_USERS' in auth.permission || 'UPDATE_UNI_ID_USERS' in auth.permission"
 			}
 		}
 	},

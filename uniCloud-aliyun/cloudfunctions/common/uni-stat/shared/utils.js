@@ -115,6 +115,8 @@ function parseUrlParams(primitiveParams, context) {
 		sw: 'screenWidth',
 		//屏幕高度
 		sh: 'screenHeight',
+		//兼容前端sdk未上报ut参数的问题
+		ut: 'uniPlatform'
 	}
 	context = context ? context : {}
 	for (let key in convertParams) {

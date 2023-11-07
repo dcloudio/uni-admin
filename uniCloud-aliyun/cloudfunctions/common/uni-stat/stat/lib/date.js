@@ -104,22 +104,22 @@ module.exports = class DateTime {
 		const timeInfo = this.getTimeInfo(time)
 		format = format || this.defaultDateFormat
 		let date = format
-		if (format) {
+		if (format.indexOf('Y') > -1) {
 			date = date.replace(/Y/, timeInfo.nYear)
 		}
-		if (format.indexOf('m') !== false) {
+		if (format.indexOf('m') > -1) {
 			date = date.replace(/m/, timeInfo.nMonth)
 		}
-		if (format.indexOf('d') !== false) {
+		if (format.indexOf('d') > -1) {
 			date = date.replace(/d/, timeInfo.nDay)
 		}
-		if (format.indexOf('H') !== false) {
+		if (format.indexOf('H') > -1) {
 			date = date.replace(/H/, timeInfo.nHour)
 		}
-		if (format.indexOf('i') !== false) {
+		if (format.indexOf('i') > -1) {
 			date = date.replace(/i/, timeInfo.nMinutes)
 		}
-		if (format.indexOf('s') !== false) {
+		if (format.indexOf('s') > -1) {
 			date = date.replace(/s/, timeInfo.nSeconds)
 		}
 		return date

@@ -263,8 +263,13 @@ function filterToWhere(filter, command) {
     switch (type) {
       case "search":
         if (typeof value === 'string' && value.length) {
-          where[field] = new RegExp(value)
+          //where[field] = new RegExp(value)
+					where[field] = value
         }
+        // if (typeof value === 'string' && value.length) {
+        // 	str += `(${field} == '${value}' || /${value}/.test(${field}))`
+        // 	where[field] = new RegExp(value)
+        // }
         break;
       case "select":
         if (value.length) {

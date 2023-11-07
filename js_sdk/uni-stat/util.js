@@ -43,6 +43,52 @@ function formatterData(object) {
 	return rows;
 }
 
+// 补全趋势图的数据
+function fillTrendChartData(data, query, fieldsMap) {
+	let { start_time, dimension } = query;
+	if (["hour","day"].indexOf(dimension)>-1){
+		let timeArr = [];
+		let oneTime;
+		if (dimension === "hour"){
+			oneTime = 1000*3600;
+		} else if (dimension === "day"){
+			oneTime = 1000*3600*24;
+		}
+		let start = start_time[0];
+		let end = start_time[1];
+		let nowTime = start;
+		timeArr = [start];
+		while ((nowTime+oneTime)<=end){
+			nowTime += oneTime;
+			timeArr.push(nowTime);
+		}
+
+		let newData = [];
+		for (let i = 0; i < timeArr.length; i++) {
+			let time = timeArr[i];
+			let dataItem = data.find((item, index) => {
+				return item.start_time === time;
+			});
+			if (dataItem) {
+				newData.push(dataItem);
+			} else {
+				let obj = {
+					start_time: time
+				};
+				fieldsMap.map((item, index) => {
+					obj[item.field] = 0;
+				});
+
+				newData.push(obj);
+			}
+		}
+		return newData
+	} else {
+		return data;
+	}
+}
+
+
 // 将查询条件拼接为字符串
 function stringifyQuery(query, dimension = false, delArrs = []) {
 	const queryArr = []
@@ -418,6 +464,7 @@ function createUniStatQuery(object) {
 
 export {
 	formatterData,
+	fillTrendChartData,
 	stringifyQuery,
 	stringifyField,
 	stringifyGroupField,

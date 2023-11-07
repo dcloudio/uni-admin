@@ -19,4 +19,5 @@ module.exports = {
 	Loyalty: require('./loyalty'),
 	RunErrors: require('./runErrors'),
 	uniPay: require('./uni-pay'),
+	Setting: require('./setting'),
 }

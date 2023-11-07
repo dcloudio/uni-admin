@@ -5,7 +5,7 @@
   "properties": {
     "_id": {
       "bsonType": "string",
-      "description": "key，格式：uni-id:[dcloudAppid]:[platform]:[openid]:[access-token|user-access-token|session-key|encrypt-key-version|ticket]"
+      "description": "key，格式：uni-id:[provider]:[appid]:[openid]:[access-token|user-access-token|session-key|encrypt-key-version|ticket]"
     },
     "value": {
       "bsonType": "object",

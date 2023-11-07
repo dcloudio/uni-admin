@@ -1,5 +1,5 @@
 <template>
-	<view @click="onClick" :style="{width,height}">
+	<view @click="onClick" :style="{width,height}" style="justify-content: center;">
 		<image v-if="cSrc" :style="{width,height}" :src="cSrc" :mode="mode"></image>
 	</view>
 </template>
@@ -58,9 +58,6 @@
 				},
 				immediate: true
 			}
-		},
-		async mounted() {
-
 		},
 		methods:{
 			onClick(){

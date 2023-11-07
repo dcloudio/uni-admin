@@ -15,7 +15,7 @@
 							<image :src="thumb" class="uni-list-item__icon-img" :class="['uni-list--' + thumbSize]" />
 						</view>
 						<view v-else-if="showExtraIcon" class="uni-list-item__icon">
-							<uni-icons :color="extraIcon.color" :size="extraIcon.size" :type="extraIcon.type" />
+							<uni-icons :customPrefix="extraIcon.customPrefix" :color="extraIcon.color" :size="extraIcon.size" :type="extraIcon.type" />
 						</view>
 					</view>
 				</slot>
@@ -167,7 +167,8 @@
 					return {
 						type: '',
 						color: '#000000',
-						size: 20
+						size: 20,
+						customPrefix: ''
 					};
 				}
 			},
@@ -197,26 +198,29 @@
 					}
 					let paddingArr = padding.split(' ')
 					if (paddingArr.length === 1) {
+						const allPadding = paddingArr[0]
 						this.padding = {
-							"top": padding,
-							"right": padding,
-							"bottom": padding,
-							"left": padding
+							"top": allPadding,
+							"right": allPadding,
+							"bottom": allPadding,
+							"left": allPadding
 						}
 					} else if (paddingArr.length === 2) {
+						const [verticalPadding, horizontalPadding] = paddingArr;
 						this.padding = {
-							"top": padding[0],
-							"right": padding[1],
-							"bottom": padding[0],
-							"left": padding[1]
+							"top": verticalPadding,
+							"right": horizontalPadding,
+							"bottom": verticalPadding,
+							"left": horizontalPadding
 						}
 					} else if (paddingArr.length === 4) {
-						this.padding = {
-							"top": padding[0],
-							"right": padding[1],
-							"bottom": padding[2],
-							"left": padding[3]
-						}
+							const [topPadding, rightPadding, bottomPadding, leftPadding] = paddingArr;
+							this.padding = {
+								"top": topPadding,
+								"right": rightPadding,
+								"bottom": bottomPadding,
+								"left": leftPadding
+							}
 					}
 				},
 				immediate: true
@@ -348,7 +352,7 @@
 	}
 
 	.uni-list-item--hover {
-		background-color: $uni-bg-color-hover;
+		background-color: $uni-bg-color-hover !important;
 	}
 
 	.uni-list-item__container {

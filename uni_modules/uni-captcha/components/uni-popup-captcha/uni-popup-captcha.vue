@@ -66,7 +66,7 @@
 				this.$refs.popup.close()
 			},
 			confirm() {
-				if(!this.val||this.val.length < 4){
+				if(!this.val){
 					return uni.showToast({
 						title: '请填写验证码',
 						icon: 'none'

@@ -144,19 +144,22 @@
 				}).catch((errors) => {
 					let key = errors[0].key
 					key = key.replace(key[0], key[0].toUpperCase())
+					// console.log(key);
 					this['focus'+key] = true
 				})
 			},
 			submitForm(params) {
 				uniIdCo.registerUserByEmail(this.formData).then(e => {
+					// console.log(e);
 					uni.navigateTo({
 						url: '/uni_modules/uni-id-pages/pages/login/login-withpwd',
 						complete: (e) => {
+							// console.log(e);
 						}
 					})
 				})
 				.catch(e => {
-					console.log(e);
+					// console.log(e);
 					console.log(e.message);
 				})
 			},

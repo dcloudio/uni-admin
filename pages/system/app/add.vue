@@ -172,14 +172,22 @@
 </template>
 
 <script>
+	// 导入 mixin 文件
 	import mixin from './mixin/publish_add_detail_mixin.js';
-
+	// 获取数据库实例
 	const db = uniCloud.database();
+	// 获取数据库命令实例
 	const dbCmd = db.command;
+	// 定义数据库集合名称
 	const dbCollectionName = 'opendb-app-list';
 
+	/**
+	 * 生成指定长度的随机字符串
+	 * @param {number} len - 随机字符串的长度
+	 * @returns {string} - 生成的随机字符串
+	 */
 	function randomString(len) {
-		//设定要生成的字符串包含的字符
+		// 设定要生成的字符串包含的字符
 		var array = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T',
 			'U', 'V', 'W', 'X', 'Y', 'Z'
 		];
@@ -190,31 +198,42 @@
 		return result;
 	}
 
+
 	export default {
+		// mixins 导入 mixin
 		mixins: [mixin],
+		// 组件的数据对象
 		data() {
 			return {
+				// 额外数据，初始化为空字符串
 				mpExtra: ' ',
+				// 手风琴状态，默认为1
 				mpAccordionStatus: 1,
+				// 标签宽度，默认为'80px'
 				labelWidth: '80px'
 			}
 		},
+		/**
+		 * 页面加载时的处理函数
+		 * @param {object} e - 传入的参数对象
+		 */
 		onLoad(e) {
 			if (e.id) {
-				this.isEdit = true
+				// 标记为编辑状态
+				this.isEdit = true;
+				// 设置导航栏标题为'修改应用'
 				uni.setNavigationBarTitle({
 					title: '修改应用'
-				})
-				// this.formDataId = e.id
-				this.setFormData('appid', e.id)
-				this.getDetail(e.id)
+				});
+				this.setFormData('appid', e.id);
+				this.getDetail(e.id);
 			} else {
 				// 填写应用名称后，给各平台设置相同的名称
 				this.$watch('formData.name', (name) => {
 					this.platFormKeys.forEach(key => {
-						this.setFormData(`${key}.name`, name)
-					})
-				})
+						this.setFormData(`${key}.name`, name);
+					});
+				});
 			}
 		},
 		onReady() {
@@ -271,23 +290,26 @@
 					})
 			},
 			updateAppVersion(id, value) {
+				// 更新应用版本
 				return db.collection('opendb-app-versions').doc(id).update(value)
 			},
 			/**
 			 * 验证表单并提交
 			 */
 			submit() {
+				// 显示遮罩
 				uni.showLoading({
 					mask: true
 				})
-
 				this.formatFormData()
-
+				// 表单验证
 				this.$refs.form.validate(this.keepItems).then((res) => {
+					// 表单提交
 					return this.submitForm(res)
 				}).catch((err) => {
 					console.error(err)
 				}).finally(() => {
+					// 关闭遮罩
 					uni.hideLoading()
 				})
 			},
@@ -295,7 +317,6 @@
 			 * 提交表单
 			 */
 			submitForm(value) {
-				// 使用 clientDB 提交数据
 				(
 					this.isEdit ?
 					this.requestCloudFunction('setNewAppData', {
@@ -349,6 +370,7 @@
 					uni.hideLoading()
 				})
 			},
+			 // 切换手风琴状态
 			mpAccordion() {
 				if (this.mpAccordionStatus) {
 					this.mpExtra = '展开'

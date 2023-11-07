@@ -15,7 +15,7 @@
 
 			<view class="uni-stat--x flex p-1015">
 				<uni-data-select collection="opendb-app-list" field="appid as value, name as text" orderby="text asc" :defItem="1" label="应用选择" v-model="query.appid" :clear="false" />
-				<uni-data-select collection="opendb-app-versions" :where="versionQuery" class="ml-m" field="version as value, version as text" orderby="text asc" label="版本选择" v-model="query.version" />
+				<uni-data-select collection="opendb-app-versions" :where="versionQuery" class="ml-m" field="_id as value, version as text, uni_platform as label, create_date as date" format="{label} - {text}" orderby="date desc" label="版本选择" v-model="query.version_id" />
 			</view>
 			<view class="uni-stat--x" style="margin-bottom: 0;">
 				<uni-stat-tabs label="平台选择" type="boldLine" mode="platform" v-model="query.platform_id" @change="platformChange" />
@@ -24,27 +24,32 @@
 			<!-- 时间纬度 -->
 			<view class="flex">
 				<uni-stat-tabs type="box" :current="dateTabs.index" :tabs="dateTabs.list" @change="dateTabsChange" />
-				<uni-datetime-picker type="daterange" v-model="query.pay_date" :end="Date.now()" return-type="timestamp" :clear-icon="true" class="uni-stat-datetime-picker" @change="dateTabs.index=null"/>
+				<uni-datetime-picker type="datetimerange" v-model="query.pay_date" :end="Date.now()" return-type="timestamp" :clear-icon="true" class="uni-stat-datetime-picker" @change="dateTabs.index=null"/>
 			</view>
 
-			<unicloud-db ref="udb" :collection="collectionList" field="user_id,nickname,uni_platform,status,total_fee,appid,pay_date"
+			<unicloud-db ref="udb" :collection="collectionList" field="user_id,nickname,uni_platform,status,total_fee,refund_fee,appid,pay_date"
 				:where="where" page-data="replace" :orderby="orderby" :getcount="true" :page-size="options.pageSize"
 				:page-current="options.pageCurrent" groupby="user_id"
-				group-field="sum(total_fee) as total_fee,sum(1) as count,last(nickname) as nickname"
+				group-field="sum(total_fee) as total_fee,sum(refund_fee) as refund_fee, sum(subtract(total_fee,refund_fee)) as reality_fee, sum(1) as count,last(nickname) as nickname"
 				v-slot:default="{data,pagination,loading,error,options}" :options="options" loadtime="manual" @load="onqueryload">
 				<uni-table ref="table" :loading="loading" :emptyText="error.message || loading ? '请求中...' : '没有更多数据'" border stripe type="" style="min-height: 900px;"
 					@selection-change="selectionChange">
 					<uni-tr>
 						<uni-th align="center">排名</uni-th>
 						<uni-th align="center" sortable @sort-change="sortChange($event, 'user_id')">用户</uni-th>
-						<uni-th align="center" sortable @sort-change="sortChange($event, 'total_fee')">支付金额</uni-th>
+						<uni-th align="center" sortable @sort-change="sortChange($event, 'reality_fee')">支付金额（不含退款）</uni-th>
+						<!-- <uni-th align="center" sortable @sort-change="sortChange($event, 'total_fee')">支付金额（含退款）</uni-th>
+						<uni-th align="center" sortable @sort-change="sortChange($event, 'refund_fee')">退款金额</uni-th> -->
 						<uni-th align="center" sortable @sort-change="sortChange($event, 'count')">订单数量</uni-th>
 						<!-- <uni-th align="center">操作</uni-th> -->
 					</uni-tr>
 					<uni-tr v-for="(item,index) in data" :key="index">
 						<uni-td align="center">{{ parseInt((index+1) + (pagination.current-1) * pagination.size) }} </uni-td>
 						<uni-td align="center"><text class="text-btn" @click="pageToUser(item)">{{ nameFormat(item) }}</text> </uni-td>
-						<uni-td align="center">{{ (item.total_fee / 100).toFixed(2) }}</uni-td>
+						<!-- reality_fee字段是计算出来的，并非数据库里的字段（total_fee-refund_fee） -->
+						<uni-td align="center">{{ (item.reality_fee / 100).toFixed(2) }}</uni-td>
+						<!-- <uni-td align="center">{{ (item.total_fee / 100).toFixed(2) }}</uni-td>
+						<uni-td align="center">{{ (item.refund_fee / 100).toFixed(2) }}</uni-td> -->
 						<uni-td align="center"> <text class="text-btn" @click="pageToOrder(item)"> {{ item.count }} </text> </uni-td>
 					</uni-tr>
 				</uni-table>
@@ -159,7 +164,7 @@
 				this.exportExcelData = data
 			},
 			getWhere() {
-				let where = "";
+				let where = "status>0";
 				let {
 					pay_date,
 					appid,
@@ -182,7 +187,9 @@
 				if (channel_code) {
 					where += ` && stat_data.channel=='${channel_code}'`;
 				}
-				where = where.substring(3).trim();
+				//where = where.substring(3).trim();
+				where = where.trim();
+				console.log('where: ', where)
 				return where;
 			},
 			search() {

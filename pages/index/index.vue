@@ -1,25 +1,32 @@
 <template>
 	<view class="fix-top-window">
 		<view class="uni-header">
+			<!-- 统计面包屑 -->
 			<uni-stat-breadcrumb class="uni-stat-breadcrumb-on-phone" />
 			<view class="uni-group">
 				<view class="uni-sub-title hide-on-phone"></view>
 			</view>
 		</view>
 		<view class="uni-container">
-			<uni-notice-bar v-if="!deviceTableData.length && !userTableData.length && !query.platform_id" showGetMore
-				showIcon class="mb-m pointer" text="暂无数据, 统计相关功能需开通 uni 统计后才能使用, 如未开通, 点击查看具体流程"
-				@click="navTo('https://uniapp.dcloud.io/uni-stat-v2.html')" />
+			<!-- 提示条1：初始化db_init.json -->
+			<uni-notice-bar v-if="showdbInit" showGetMore showIcon class="mb-m pointer" text="检测到您未初始化db_init.json，请先右键uniCloud/database/db_init.json文件，执行初始化云数据库，否则左侧无法显示菜单等数据" background-color="#fef0f0" color="#f56c6c" @click="toAddAppId" />
+			<!-- 提示条2：添加应用 -->
+			<uni-notice-bar v-if="showAddAppId" showGetMore showIcon class="mb-m pointer" text="检测到您还未添加应用，点击前往应用管理添加" @click="toAddAppId" />
+			<!-- 提示条3：暂无数据，需开通统计功能 -->
+			<uni-notice-bar v-if="!deviceTableData.length && !userTableData.length && !query.platform_id && complete" showGetMore showIcon class="mb-m pointer"
+				text="暂无数据, 统计相关功能需开通 uni 统计后才能使用, 如未开通, 点击查看具体流程" @click="navTo('https://uniapp.dcloud.io/uni-stat-v2.html')" />
+
 			<view class="uni-stat--x mb-m">
+				<!-- 平台选择标签 -->
 				<uni-stat-tabs label="平台选择" type="boldLine" mode="platform" v-model="query.platform_id" />
 			</view>
-			<!-- <uni-stat-panel :items="panelData" :contrast="true" /> -->
 			<view class="uni-stat--x p-m">
 				<view class="uni-stat-card-header">设备概览</view>
+				<!-- 设备概览表格 -->
 				<uni-table :loading="loading" border stripe emptyText="暂无数据">
 					<uni-tr>
-						<!-- <uni-th align="center">操作</uni-th> -->
 						<block v-for="(mapper, index) in deviceTableFields" :key="index">
+							<!-- 表头列 -->
 							<uni-th v-if="mapper.title" :key="index" align="center">
 								{{mapper.title}}
 							</uni-th>
@@ -28,8 +35,7 @@
 					<uni-tr v-for="(item ,i) in deviceTableData" :key="i">
 						<block v-for="(mapper, index) in deviceTableFields" :key="index">
 							<uni-td v-if="mapper.field === 'appid'" align="center">
-								<view v-if="item.appid" @click="navTo('/pages/uni-stat/device/overview/overview', item.appid)"
-									class="link-btn-color">
+								<view v-if="item.appid" @click="navTo('/pages/uni-stat/device/overview/overview', item.appid)" class="link-btn-color">
 									{{item[mapper.field] !== undefined ? item[mapper.field] : '-'}}
 								</view>
 								<view v-else @click="navTo('/pages/system/app/add')" class="link-btn-color">
@@ -45,6 +51,7 @@
 			</view>
 			<view class="uni-stat--x p-m">
 				<view class="uni-stat-card-header">注册用户概览</view>
+				<!-- 注册用户概览表格 -->
 				<uni-table :loading="loading" border stripe emptyText="暂无数据">
 					<uni-tr>
 						<block v-for="(mapper, index) in userTableFields" :key="index">
@@ -56,8 +63,7 @@
 					<uni-tr v-for="(item ,i) in userTableData" :key="i">
 						<block v-for="(mapper, index) in userTableFields" :key="index">
 							<uni-td v-if="mapper.field === 'appid'" align="center">
-								<view v-if="item.appid" @click="navTo('/pages/uni-stat/user/overview/overview', item.appid)"
-									class="link-btn-color">
+								<view v-if="item.appid" @click="navTo('/pages/uni-stat/user/overview/overview', item.appid)" class="link-btn-color">
 									{{item[mapper.field] !== undefined ? item[mapper.field] : '-'}}
 								</view>
 								<view v-else @click="navTo('/pages/system/app/add')" class="link-btn-color">
@@ -71,9 +77,6 @@
 					</uni-tr>
 				</uni-table>
 			</view>
-			<!-- <view class="uni-pagination-box">
-				<uni-pagination show-icon :page-size="pageSize" :current="pageCurrent" :total="tableData.length" />
-			</view> -->
 		</view>
 
 		<!-- #ifndef H5 -->
@@ -91,7 +94,8 @@
 		division,
 		format,
 		parseDateTime,
-		getFieldTotal
+		getFieldTotal,
+		debounce
 	} from '@/js_sdk/uni-stat/util.js'
 
 	import {
@@ -116,74 +120,116 @@
 				// 数据总量
 				total: 0,
 				loading: false,
-				// fieldsMap,
+				complete: false,
+				statSetting: {
+					mode: "",
+					day: 7
+				},
+				statModeList: [
+					{ "value": "open", "text": "开启" },
+					{ "value": "close", "text": "关闭" },
+					{ "value": "auto", "text": "节能" },
+				],
+				showAddAppId: false,
+				showdbInit: false
 			}
 		},
 		onReady() {
-			this.getApps(this.queryStr, deviceFeildsMap, 'device')
-			this.getApps(this.queryStr, userFeildsMap, 'user')
+			// 创建一个防抖函数，延迟执行getAllData方法
+			this.debounceGet = debounce(() => {
+				this.getAllData(this.queryStr);
+			}, 300);
+
+			// 执行防抖函数
+			this.debounceGet();
+
+			// 检查appId
+			this.checkAppId();
+
+			this.checkdbInit();
 		},
+
 		watch: {
 			query: {
 				deep: true,
 				handler(newVal) {
-					this.getApps(this.queryStr, deviceFeildsMap, 'device')
-					this.getApps(this.queryStr, userFeildsMap, 'user')
+					// 监听query对象的变化，并在变化时执行防抖函数
+					this.debounceGet(this.queryStr);
 				}
 			}
 		},
+
 		computed: {
 			queryStr() {
-				const defQuery = `(dimension == "hour" || dimension == "day")`
-				return stringifyQuery(this.query) + ' && ' + defQuery
+				// 默认查询条件
+				const defQuery = `(dimension == "hour" || dimension == "day")`;
+				// 将query对象转换为查询字符串并与默认查询条件合并
+				return stringifyQuery(this.query) + ' && ' + defQuery;
 			},
 
 			deviceTableFields() {
-				return this.tableFieldsMap(deviceFeildsMap)
+				// 返回设备表格的字段映射
+				return this.tableFieldsMap(deviceFeildsMap);
 			},
+
 			userTableFields() {
-				return this.tableFieldsMap(userFeildsMap)
+				// 返回用户表格的字段映射
+				return this.tableFieldsMap(userFeildsMap);
 			}
 		},
+
 		methods: {
+			getAllData(queryStr) {
+				// 获取设备数据
+				this.getApps(this.queryStr, deviceFeildsMap, 'device');
+				// 获取用户数据
+				this.getApps(this.queryStr, userFeildsMap, 'user');
+			},
+
 			tableFieldsMap(fieldsMap) {
-				let tableFields = []
-				const today = []
-				const yesterday = []
-				const other = []
+				let tableFields = [];
+				const today = [];
+				const yesterday = [];
+				const other = [];
+
 				for (const mapper of fieldsMap) {
 					if (mapper.field) {
 						if (mapper.hasOwnProperty('value')) {
-							const t = JSON.parse(JSON.stringify(mapper))
-							const y = JSON.parse(JSON.stringify(mapper))
+							// 如果字段映射中有'value'属性，则根据映射生成今天和昨天的字段
+							const t = JSON.parse(JSON.stringify(mapper));
+							const y = JSON.parse(JSON.stringify(mapper));
+
 							if (mapper.field !== 'total_users' && mapper.field !== 'total_devices') {
-								t.title = '今日' + mapper.title
-								t.field = mapper.field + '_value'
-								y.title = '昨日' + mapper.title
-								y.field = mapper.field + '_contrast'
-								today.push(t)
-								yesterday.push(y)
+								t.title = '今日' + mapper.title;
+								t.field = mapper.field + '_value';
+								y.title = '昨日' + mapper.title;
+								y.field = mapper.field + '_contrast';
+
+								today.push(t);
+								yesterday.push(y);
 							} else {
-								t.field = mapper.field + '_value'
-								other.push(t)
+								t.field = mapper.field + '_value';
+								other.push(t);
 							}
 						} else {
-							tableFields.push(mapper)
+							// 将其他字段直接添加到tableFields中
+							tableFields.push(mapper);
 						}
 					}
 				}
-				tableFields = [...tableFields, ...today, ...yesterday, ...other]
-				return tableFields
+
+				// 按顺序合并所有的字段
+				tableFields = [...tableFields, ...today, ...yesterday, ...other];
+
+				return tableFields;
 			},
+
 
 			getApps(query, fieldsMap, type = "device") {
 				this.loading = true
 				const db = uniCloud.database()
+				const appDaily = db.collection('uni-stat-result').where(query).getTemp();
 				const appList = db.collection('opendb-app-list').getTemp()
-				const appDaily = db.collection('uni-stat-result')
-					.where(query)
-					.getTemp()
-
 				db.collection(appDaily, appList)
 					.field(
 						`${stringifyField(fieldsMap, '', 'value')},stat_date,appid,dimension`
@@ -196,6 +242,7 @@
 						let {
 							data
 						} = res.result
+						//console.log('data: ', data)
 						this[`${type}TableData`] = []
 						if (!data.length) return
 						let appids = [],
@@ -236,8 +283,10 @@
 									rowData[key + '_contrast'] = format(contrast)
 								}
 							}
-							this[`${type}TableData`].push(rowData)
-
+							if (appid) {
+								rowData[`total_${type}s_value`] = "获取中...";
+							}
+							this[`${type}TableData`].push(rowData);
 							if (appid) {
 								// total_users 不准确，置空后由 getFieldTotal 处理, appid 不存在时暂不处理
 								t[`total_${type}s`] = 0
@@ -255,22 +304,75 @@
 						// err.message 错误信息
 						// err.code 错误码
 					}).finally(() => {
-						this.loading = false
+						this.loading = false;
+						this.complete = true;
 					})
 			},
 
 			navTo(url, id) {
 				if (url.indexOf('http') > -1) {
-					window.open(url)
+					// 如果url中包含'http'，则在新窗口中打开该链接
+					window.open(url);
 				} else {
 					if (id) {
-						url = `${url}?appid=${id}`
+						// 如果有提供id参数，则将其添加到url中作为查询参数
+						url = `${url}?appid=${id}`;
 					}
+					// 使用uni.navigateTo方法进行页面跳转
 					uni.navigateTo({
 						url
-					})
+					});
+				}
+			},
+
+			toUrl(url) {
+				// #ifdef H5
+				// 在新窗口中打开url链接（仅适用于H5平台）
+				window.open(url, "_blank");
+				// #endif
+			},
+
+			toAddAppId() {
+				// 隐藏添加App ID的标识
+				this.showAddAppId = false;
+				// 使用uni.navigateTo方法进行页面跳转到指定路径
+				uni.navigateTo({
+					url: "/pages/system/app/list",
+					events: {
+						// 注册事件，用于在目标页面刷新数据后执行回调
+						refreshData: () => {
+							this.checkAppId();
+						}
+					}
+				});
+			},
+
+			async checkAppId() {
+				// 获取uniCloud数据库的实例
+				const db = uniCloud.database();
+				// 查询'opendb-app-list'集合的数据数量
+				let res = await db.collection('opendb-app-list').count();
+				// 如果查询结果为空或total为0，则显示添加App ID的标识
+				this.showAddAppId = (!res.result || res.result.total === 0) ? true : false;
+			},
+
+			async checkdbInit(){
+				// 获取uniCloud数据库的实例
+				const db = uniCloud.database();
+				// 查询'opendb-app-list'集合的数据数量
+				let res = await db.collection('opendb-admin-menus').count();
+				// 如果查询结果为空或total为0，则显示添加App ID的标识
+				this.showdbInit = (!res.result || res.result.total === 0) ? true : false;
+				if (this.showdbInit) {
+					uni.showModal({
+						title: "重要提示",
+						content: `检测到您未初始化db_init.json，请先右键uniCloud/database/db_init.json文件，执行初始化云数据库，否则左侧无法显示菜单等数据`,
+						showCancel: false,
+						confirmText: "我知道了"
+					});
 				}
 			}
+
 		}
 
 	}
@@ -286,11 +388,37 @@
 		padding: 10px 0;
 		margin-bottom: 15px;
 	}
+
 	.uni-table-scroll {
 		min-height: auto;
 	}
+
 	.link-btn-color {
 		color: #007AFF;
 		cursor: pointer;
+	}
+
+	.uni-stat-text {
+		color: #606266;
+	}
+
+	.mt10 {
+		margin-top: 10px;
+	}
+
+	.uni-radio-cell {
+		margin: 0 10px;
+	}
+
+	.uni-stat-tooltip-s {
+		width: 400px;
+		white-space: normal;
+	}
+
+	.uni-a {
+		cursor: pointer;
+		text-decoration: underline;
+		color: #555;
+		font-size: 14px;
 	}
 </style>

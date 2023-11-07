@@ -106,8 +106,8 @@ async function saveSecureNetworkCache ({
     unionid,
     session_key: sessionKey
   })
-  // 此处存储的是code的缓存，有效期两天即可
-  const expiredSeconds = 2 * 24 * 60 * 60
+  // 此处存储的是code的缓存，设置有效期和token一致
+  const expiredSeconds = this.config.tokenExpiresIn || 3 * 24 * 60 * 60
 
   await openDataCollection.doc(key).set({
     value,

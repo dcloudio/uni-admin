@@ -141,6 +141,11 @@
 				const uniIdCo = uniCloud.importObject("uni-id-co", {
 					customUI: true
 				})
+				console.log('sendEmailCode',{
+					"email": this.email,
+					"scene": this.type,
+					"captcha": this.captcha
+				});
 				uniIdCo.sendEmailCode({
 					"email": this.email,
 					"scene": this.type,
@@ -154,7 +159,6 @@
 					this.reverseNumber = Number(this.count);
 					this.getCode();
 				}).catch(e => {
-					console.log(JSON.stringify(e));
 					if (e.code == "uni-id-invalid-mail-template") {
 						this.modelValue = "123456"
 						uni.showToast({

@@ -115,14 +115,15 @@ export default {
               this.$refs.popup.open()
             } else {
               console.log(e.errMsg);
-              console.log(e.errCode);
             }
           }).finally(e => {
             this.formData.captcha = ''
           })
     },
     skip () {
-      mutations.loginBack(this.uniIdRedirectUrl)
+      mutations.loginBack({
+		uniIdRedirectUrl: this.uniIdRedirectUrl,
+	  })
     }
   }
 }

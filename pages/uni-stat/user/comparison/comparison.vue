@@ -10,7 +10,7 @@
 		<view class="uni-container">
 			<view class="uni-stat--x flex mb-m" style="padding: 0 15px;">
 				<uni-data-select collection="opendb-app-list" field="appid as value, name as text" orderby="text asc" :defItem="1" label="应用选择" v-model="query.appid" :clear="false" />
-				<uni-data-select collection="opendb-app-versions" :where="versionQuery" field="_id as value, version as text" class="ml-m" orderby="text asc" label="版本选择" v-model="query.version_id" />
+				<uni-data-select collection="opendb-app-versions" :where="versionQuery" class="ml-m" field="_id as value, version as text, uni_platform as label, create_date as date" format="{label} - {text}" orderby="date desc" label="版本选择" v-model="query.version_id" />
 				<view class="flex">
 					<view class="ml-m label-text hide-on-phone">日期选择:</view>
 					<uni-datetime-picker type="date" v-model="query.start_time" returnType="timestamp" :clearIcon="false" class="uni-stat-datetime-picker" :class="{'uni-stat__actived': !!query.start_time}" />
@@ -59,7 +59,7 @@
 			this.debounceGet = debounce(() => {
 				this.getChartData(this.query)
 				this.getRangeCountData(this.query, 'month')
-			})
+			}, 300);
 		},
 		watch: {
 			query: {

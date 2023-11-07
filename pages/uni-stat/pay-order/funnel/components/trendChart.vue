@@ -4,7 +4,7 @@
 		<!-- 时间纬度 -->
 		<view class="flex">
 			<uni-stat-tabs type="box" :current="dateTabs.index" :tabs="dateTabs.list" @change="dateTabsChange" />
-			<uni-datetime-picker type="daterange" v-model="dateTabs.time" :end="Date.now()" return-type="timestamp" :clear-icon="false" class="uni-stat-datetime-picker" @change="datePickerChange" />
+			<uni-datetime-picker type="datetimerange" v-model="dateTabs.time" :end="Date.now()" return-type="timestamp" :clear-icon="false" class="uni-stat-datetime-picker" @change="datePickerChange" />
 			<view class="uni-stat--tips" v-if="dateTabs.timeStr">当前时间范围：{{ dateTabs.timeStr }}</view>
 		</view>
 		<uni-stat-tabs type="box" :current="statTabs.index" :tabs="statTabs.list" class="mb-l" @change="statTabsChange" />
@@ -17,6 +17,7 @@
 <script>
 	import {
 		formatterData, // 格式化字段数据
+		fillTrendChartData,
 		stringifyQuery, // 对象转JQL查询字符串
 		parseDateTime, // 格式化时间
 		debounce, // 防抖函数
@@ -112,6 +113,7 @@
 					this.errorMessage = "请先选择应用";
 					return;
 				}
+				this.errorMessage = "";
 				let insideQuery = this.getWhere();
 				let where = {
 					...query,
@@ -135,11 +137,12 @@
 							count,
 							data
 						} = res.result;
+						data = fillTrendChartData(data, insideQuery, fieldsMap); // 补全数据
 						//console.log('data: ', data)
-						this.errorMessage = !data.length ? "暂无数据" : "";
 						// 数据格式化
 						data.map((item, index) => {
 							item.value = Number((item.pay_user_count / item.activity_user_count * 100).toFixed(2));
+							if (isNaN(item.value)) item.value = 0;
 						});
 						this.setChartData(data, insideQuery.dimension);
 					}).catch((err) => {

@@ -18,6 +18,13 @@
 						</view>
 					</view>
 				</view>
+				<!-- #ifndef APP -->
+				<view class="slot-header">
+				<!-- #endif -->
+					<slot name="header"></slot>
+				<!-- #ifndef APP -->
+				</view>
+				<!-- #endif -->
 				<view v-if="badgeText && badgePositon === 'left'" class="uni-list-chat__badge uni-list-chat__badge-pos" :class="[isSingle]">
 					<text class="uni-list-chat__badge-text">{{ badgeText === 'dot' ? '' : badgeText }}</text>
 				</view>
@@ -224,7 +231,7 @@
 				}
 			},
 			pageApi(api) {
-				uni[api]({
+				let callback = {
 					url: this.to,
 					success: res => {
 						this.$emit('click', {
@@ -235,9 +242,24 @@
 						this.$emit('click', {
 							data: err
 						});
-						console.error(err.errMsg);
 					}
-				});
+				}
+				switch (api) {
+					case 'navigateTo':
+						uni.navigateTo(callback)
+						break
+					case 'redirectTo':
+						uni.redirectTo(callback)
+						break
+					case 'reLaunch':
+						uni.reLaunch(callback)
+						break
+					case 'switchTab':
+						uni.switchTab(callback)
+						break
+					default:
+					uni.navigateTo(callback)
+				}
 			}
 		}
 	};

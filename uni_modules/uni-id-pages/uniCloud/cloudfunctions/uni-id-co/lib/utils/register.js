@@ -129,10 +129,17 @@ async function postRegister (params = {}) {
 
   const {
     autoSetInviteCode, // 注册时自动设置邀请码
-    forceInviteCode // 必须有邀请码才允许注册，注意此逻辑不可对admin生效
+    forceInviteCode, // 必须有邀请码才允许注册，注意此逻辑不可对admin生效
+    userRegisterDefaultRole // 用户注册时配置的默认角色
   } = this.config
   if (autoSetInviteCode) {
     user.my_invite_code = await getValidInviteCode()
+  }
+
+  // 如果用户注册默认角色配置存在且不为空数组
+  if (userRegisterDefaultRole && userRegisterDefaultRole.length) {
+    // 将用户已有的角色和配置的默认角色合并成一个数组，并去重
+    user.role = Array.from(new Set([...(user.role || []), ...userRegisterDefaultRole]))
   }
 
   const isAdmin = user.role && user.role.includes('admin')
@@ -157,7 +164,7 @@ async function postRegister (params = {}) {
   if (uniIdToken) {
     try {
       await logout.call(this)
-    } catch (error) {}
+    } catch (error) { }
   }
 
   const beforeRegister = this.hooks.beforeRegister
@@ -173,12 +180,19 @@ async function postRegister (params = {}) {
     id: uid
   } = await userCollection.add(userRecord)
 
-  const {
-    token,
-    tokenExpired
-  } = await this.uniIdCommon.createToken({
+  const createTokenRes = await this.uniIdCommon.createToken({
     uid
   })
+
+  const {
+    errCode,
+    token,
+    tokenExpired
+  } = createTokenRes
+
+  if (errCode) {
+    throw createTokenRes
+  }
 
   await this.middleware.uniIdLog({
     data: {

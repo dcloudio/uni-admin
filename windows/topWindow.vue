@@ -34,8 +34,7 @@
 				<picker class="navbar-right-item-gap" mode="selector" :range="themes" range-key="text" :value="themeIndex" @change="changeTheme">
 					<uni-icons type="color-filled" size="24" color="#999" />
 				</picker>
-
-				<picker class="navbar-right-item-gap" mode="selector" :range="langs" range-key="text" @change="changeLanguage">
+				<picker class="navbar-right-item-gap" mode="selector" :range="langs" range-key="text" @change="changeLanguage" :value="langIndex">
 					<view class="admin-icons-lang" />
 				</picker>
 
@@ -67,7 +66,7 @@
 				</scroll-view>
 			</view>
 		</uni-popup>
-		<!-- 沉余代码，临时处理 uni-datetime-picker 国际化不生效的问题 -->
+		<!-- 冗余代码，临时处理 uni-datetime-picker 国际化不生效的问题 -->
 		<!-- #ifdef H5 -->
 		<uni-datetime-picker type="date" v-show="false"></uni-datetime-picker>
 		<!-- #endif -->
@@ -102,7 +101,8 @@
 			return {
 				...config.navBar,
 				popupMenuOpened: false,
-				mpCapsule: 0
+				mpCapsule: 0,
+				langIndex:0
 			}
 		},
 		computed: {
@@ -125,12 +125,13 @@
 			this.mpCapsule = menuButtonInfo.width
 			// #endif
 
-			// 沉余代码，临时处理 uni-datetime-picker 国际化不生效的问题
 			// #ifdef H5
-			uni.setLocale('en')
+			let locale = uni.getLocale();
 			this.$nextTick(() => {
-				// 设置简体中文
-				this.changeLanguage(0)
+				let index = this.langs.findIndex((item) => {
+					return item.lang === locale;
+				});
+				this.changeLanguage(index)
 			})
 			// #endif
 		},
@@ -171,7 +172,8 @@
 				})
 			},
 			changeLanguage(e) {
-				const index = typeof e === 'object' ? e.detail.value : e
+				let index = typeof e === 'object' ? e.detail.value : e
+				if (!index || index < 0) index = 0;
 				const lang = this.langs[index].lang || 'zh-Hans'
 				const platform = uni.getSystemInfoSync().platform
 				if (platform === 'android') {
@@ -183,6 +185,7 @@
 					return
 				}
 				this.$i18n.locale = lang
+				this.langIndex = index;
 				uni.setLocale(lang)
 			},
 			linkTo() {

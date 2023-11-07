@@ -32,7 +32,7 @@
 	top: 100px;
 	padding: 30px 40px 80px 40px;
 	max-width: 450px;
-	max-height: 550px;
+	max-height: 450px;
 	border-radius: 10px;
 	box-shadow: 0 0 20px #efefef;
 	background-color: #FFF;
@@ -115,9 +115,10 @@
 	text-align: center;
 	height: 40px;
 	line-height: 40px;
-	margin: 15px 0 0 0;
+	margin: 15px 0 10px 0;
 	color: #FFF !important;
 	border-radius: 5px;
+	font-size: 16px;
 }
 
 .uni-body.uni_modules-uni-id-pages-pages-login-login-withoutpwd{

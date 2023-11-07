@@ -1,7 +1,7 @@
 <template>
 	<scroll-view class="sidebar" scroll-y="true">
 		<uni-data-menu ref="menu" :value="currentMenu" :staticMenu="staticMenu" collection="opendb-admin-menus"
-			:page-size="500" :field="field" orderby="sort asc" active-text-color="#409eff" @select="select">
+			:page-size="500" :field="field" where="enable==true" orderby="sort asc" active-text-color="#409eff" @select="select">
 		</uni-data-menu>
 	</scroll-view>
 </template>
@@ -79,6 +79,11 @@
 				if (url[0] !== '/' && url.indexOf('http') !== 0) {
 					url = '/' + url
 				}
+				// #ifndef H5
+				if (url === "/") {
+					url = config.index.url;
+				}
+				// #endif
 				// TODO 后续要调整
 				uni.redirectTo({
 					url: url,

@@ -38,7 +38,17 @@ const ERROR = {
   UNBIND_PASSWORD_NOT_EXISTS: 'uni-id-unbind-password-not-exists',
   UNBIND_MOBILE_NOT_EXISTS: 'uni-id-unbind-mobile-not-exists',
   UNSUPPORTED_REQUEST: 'uni-id-unsupported-request',
-  ILLEGAL_REQUEST: 'uni-id-illegal-request'
+  ILLEGAL_REQUEST: 'uni-id-illegal-request',
+  CONFIG_FIELD_REQUIRED: 'uni-id-config-field-required',
+  CONFIG_FIELD_INVALID: 'uni-id-config-field-invalid',
+  FRV_FAIL: 'uni-id-frv-fail',
+  FRV_PROCESSING: 'uni-id-frv-processing',
+  REAL_NAME_VERIFIED: 'uni-id-realname-verified',
+  ID_CARD_EXISTS: 'uni-id-idcard-exists',
+  INVALID_ID_CARD: 'uni-id-invalid-idcard',
+  INVALID_REAL_NAME: 'uni-id-invalid-realname',
+  UNKNOWN_ERROR: 'uni-id-unknown-error',
+  REAL_NAME_VERIFY_UPPER_LIMIT: 'uni-id-realname-verify-upper-limit'
 }
 
 function isUniIdError (errCode) {

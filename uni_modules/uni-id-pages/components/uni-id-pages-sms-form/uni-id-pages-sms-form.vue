@@ -136,6 +136,11 @@
 				const uniIdCo = uniCloud.importObject("uni-id-co", {
 					customUI: true
 				})
+				console.log('sendSmsCode',{
+					"mobile": this.phone,
+					"scene": this.type,
+					"captcha": this.captcha
+				});
 				uniIdCo.sendSmsCode({
 					"mobile": this.phone,
 					"scene": this.type,
@@ -202,7 +207,6 @@
 		/* #endif */
 		justify-content: center;
 		align-items: center;
-
 	}
 
 	.inner-text {

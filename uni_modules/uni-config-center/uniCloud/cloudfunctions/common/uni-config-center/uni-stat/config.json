@@ -5,6 +5,7 @@
 	"sessionExpireTime": 1800,
 	"realtimeStat": true,
 	"cronMin": false,
+	"cronMinTips": "如果设置cronMin: true（开启分钟级统计）则你必须再修改 cloudfunctions/uni-stat-cron/package.json 文件内的 triggers 属性的 config的值为 0 */10 * * * * * 代表每10分钟运行一次定时任务",
 	"cron": [
 		{
 			"type": "stat",

@@ -22,7 +22,7 @@ class ConfigUtils {
     context
   } = {}) {
     this.context = context
-    this.clientInfo = context.getClientInfo()
+    this.clientInfo = context.getUniversalClientInfo()
     const {
       appId,
       uniPlatform

@@ -1,0 +1,41 @@
+// 文档教程: https://uniapp.dcloud.net.cn/uniCloud/schema
+{
+	"bsonType": "object",
+	"required": [],
+	"permission": {
+		"read": "auth.uid == doc.user_id",
+		"create": "auth.uid != null && 'signIn' in action", //如果你要使用`看广告签到`的方式请将这里的值改为：false
+		"update": false,
+		"delete": false
+	},
+	"properties": {
+		"_id": {
+			"description": "ID，系统自动生成"
+		},
+		"user_id":{
+			"forceDefaultValue":{
+				"$env":"uid"
+			}
+		},
+		"date":{
+			"bsonType":"timestamp",
+			"description":"签到的日期时间戳",
+			"permission":{
+				"write":false
+			}
+		},
+		"create_date":{
+			"bsonType":"timestamp",
+			"description":"签到的时间戳",
+			"forceDefaultValue":{
+				"$env":"now"
+			}
+		},
+		"ip":{
+			"bsonType":"string",
+			"forceDefaultValue":{
+				"$env":"clientIP"
+			}
+		}
+	}
+}

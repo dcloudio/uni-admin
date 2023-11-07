@@ -1,0 +1,84 @@
+{
+  "id": "uni-sign-in",
+  "displayName": "uni-starter签到插件 提升留存，激励视频变现",
+  "version": "1.0.5",
+  "description": "培养用户习惯，提升用户粘性，支持广告流量变现的签到得积分功能",
+  "keywords": [
+    "uni-sign-in",
+    "签到",
+    "营销",
+    "变现",
+    "积分"
+],
+  "repository": "",
+  "engines": {
+    "HBuilderX": "^3.1.0"
+  },
+  "dcloudext": {
+    "category": [
+        "uniCloud",
+        "云端一体页面模板"
+    ],
+    "sale": {
+      "regular": {
+        "price": "0.00"
+      },
+      "sourcecode": {
+        "price": "0.00"
+      }
+    },
+    "contact": {
+      "qq": ""
+    },
+    "declaration": {
+      "ads": "无",
+      "data": "无",
+      "permissions": "无"
+    },
+    "npmurl": ""
+  },
+  "uni_modules": {
+    "dependencies": ["uni-popup","uni-icons"],
+    "encrypt": [],
+    "platforms": {
+      "cloud": {
+        "tcb": "y",
+        "aliyun": "y"
+      },
+      "client": {
+        "App": {
+          "app-vue": "y",
+          "app-nvue": "u"
+        },
+        "H5-mobile": {
+          "Safari": "y",
+          "Android Browser": "u",
+          "微信浏览器(Android)": "u",
+          "QQ浏览器(Android)": "u"
+        },
+        "H5-pc": {
+          "Chrome": "y",
+          "IE": "u",
+          "Edge": "u",
+          "Firefox": "u",
+          "Safari": "u"
+        },
+        "小程序": {
+          "微信": "y",
+          "阿里": "u",
+          "百度": "u",
+          "字节跳动": "u",
+          "QQ": "u"
+        },
+        "快应用": {
+          "华为": "u",
+          "联盟": "u"
+        },
+        "Vue": {
+            "vue2": "y",
+            "vue3": "y"
+        }
+      }
+    }
+  }
+}

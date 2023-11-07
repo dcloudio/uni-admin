@@ -1,7 +1,7 @@
 {
   "id": "uni-captcha",
   "displayName": "uni-captcha",
-  "version": "0.6.1",
+  "version": "0.7.0",
   "description": "云端一体图形验证码组件",
   "keywords": [
     "captcha",
@@ -14,11 +14,7 @@
   "engines": {
     "HBuilderX": "^3.1.0"
   },
-  "dcloudext": {
-    "category": [
-      "uniCloud",
-      "云函数模板"
-    ],
+"dcloudext": {
     "sale": {
       "regular": {
         "price": "0.00"
@@ -35,7 +31,8 @@
       "data": "无",
       "permissions": "无"
     },
-    "npmurl": ""
+    "npmurl": "",
+    "type": "unicloud-template-function"
   },
   "uni_modules": {
     "dependencies": [],

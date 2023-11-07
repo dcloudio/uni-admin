@@ -1,3 +1,40 @@
+## 2.5.0-20230101（2023-01-01）
+- 秋云图表组件 修改条件编译顺序，确保uniapp的cli方式的项目依赖不完整时可以正常显示
+- 秋云图表组件 恢复props属性directory的使用，以修复vue3项目中，开启echarts后，echarts目录识别错误的bug
+- uCharts.js 修复区域图、混合图只有一个数据时图表显示不正确的bug
+- uCharts.js 修复折线图、区域图中时间轴类别图表tooltip指示点显示不正确的bug
+- uCharts.js 修复x轴使用labelCount时，并且boundaryGap = 'justify' 并且关闭Y轴显示的时候，最后一个坐标值不显示的bug
+- uCharts.js 修复折线图只有一组数据时 ios16 渲染颜色不正确的bug
+- uCharts.js 修复玫瑰图半径显示不正确的bug
+- uCharts.js 柱状图、山峰图增加正负图功能，y轴网格如果需要显示0轴则由 min max 及 splitNumber 确定，后续版本优化自动显示0轴
+- uCharts.js 柱状图column增加 opts.extra.column.labelPosition，数据标签位置，有效值为 outside外部, insideTop内顶部, center内中间, bottom内底部
+- uCharts.js 雷达图radar增加 opts.extra.radar.labelShow，否显示各项标识文案是，默认true
+- uCharts.js 提示窗tooltip增加 opts.extra.tooltip.boxPadding，提示窗边框填充距离，默认3px
+- uCharts.js 提示窗tooltip增加 opts.extra.tooltip.fontSize，提示窗字体大小配置，默认13px
+- uCharts.js 提示窗tooltip增加 opts.extra.tooltip.lineHeight，提示窗文字行高，默认20px
+- uCharts.js 提示窗tooltip增加 opts.extra.tooltip.legendShow，是否显示左侧图例，默认true
+- uCharts.js 提示窗tooltip增加 opts.extra.tooltip.legendShape，图例形状，图例标识样式，有效值为 auto自动跟随图例, diamond◆, circle●, triangle▲, square■, rect▬, line-
+- uCharts.js 标记线markLine增加 opts.extra.markLine.labelFontSize，字体大小配置，默认13px
+- uCharts.js 标记线markLine增加 opts.extra.markLine.labelPadding，标签边框内填充距离，默认6px
+- uCharts.js 折线图line增加 opts.extra.line.linearType，渐变色类型，可选值 none关闭渐变色，custom 自定义渐变色。使用自定义渐变色时请赋值serie.linearColor作为颜色值
+- uCharts.js 折线图line增加 serie.linearColor，渐变色数组，格式为2维数组[起始位置，颜色值]，例如[[0,'#0EE2F8'],[0.3,'#2BDCA8'],[0.6,'#1890FF'],[1,'#9A60B4']]
+- uCharts.js 折线图line增加 opts.extra.line.onShadow，是否开启折线阴影，开启后请赋值serie.setShadow阴影设置
+- uCharts.js 折线图line增加 serie.setShadow，阴影配置，格式为4位数组：[offsetX,offsetY,blur,color]
+- uCharts.js 折线图line增加 opts.extra.line.animation，动画效果方向，可选值为vertical 垂直动画效果，horizontal 水平动画效果
+- uCharts.js X轴xAxis增加 opts.xAxis.lineHeight，X轴字体行高，默认20px
+- uCharts.js X轴xAxis增加 opts.xAxis.marginTop，X轴文字距离轴线的距离，默认0px
+- uCharts.js X轴xAxis增加 opts.xAxis.title，当前X轴标题
+- uCharts.js X轴xAxis增加 opts.xAxis.titleFontSize，标题字体大小，默认13px
+- uCharts.js X轴xAxis增加 opts.xAxis.titleOffsetY，标题纵向偏移距离，负数为向上偏移，正数向下偏移
+- uCharts.js X轴xAxis增加 opts.xAxis.titleOffsetX，标题横向偏移距离，负数为向左偏移，正数向右偏移
+- uCharts.js X轴xAxis增加 opts.xAxis.titleFontColor，标题字体颜色，默认#666666
+
+## 报错TypeError: Cannot read properties of undefined (reading 'length')
+- 如果是uni-modules版本组件，请先登录HBuilderX账号；
+- 在HBuilderX中的manifest.json，点击重新获取uniapp的appid，或者删除appid重新粘贴，重新运行；
+- 如果是cli项目请使用码云上的非uniCloud版本组件；
+- 或者添加uniCloud的依赖；
+- 或者使用原生uCharts；
 ## 2.4.5-20221130（2022-11-30）
 - uCharts.js 优化tooltip当文字很多变为左侧显示时，如果画布仍显显示不下，提示框错位置变为以左侧0位置起画
 - uCharts.js 折线图修复特殊情况下只有单点数据，并改变线宽后点变为圆形的bug

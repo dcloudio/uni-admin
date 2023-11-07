@@ -28,10 +28,12 @@
 					uni.showLoading({ mask: true })
 					wx.checkSession({
 						success() {
+							// console.log('session_key 未过期');
 							resolve()
 							uni.hideLoading()
 						},
 						fail() {
+							// console.log('session_key 已经失效，正在执行更新');
 							wx.login({
 								success({
 									code
@@ -39,13 +41,11 @@
 									uniCloud.importObject("uni-id-co",{
 										customUI:true
 									}).loginByWeixin({code}).then(e=>{
-										console.log(e);
 										resolve()
 									}).catch(e=>{
 										console.log(e);
 										reject()
 									}).finally(e=>{
-										console.log(e);
 										uni.hideLoading()
 									})
 								},
@@ -152,8 +152,8 @@
 	.agree::after {
 		border: none;
 	}
-
 	/* #endif */
+	
 	.agree:active {
 		background-color: #F5F5F6;
 	}

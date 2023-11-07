@@ -1,4 +1,4 @@
-<!-- 
+<!--
  * qiun-data-charts 秋云高性能跨全端图表组件
  * Copyright (c) 2021 QIUN® 秋云 https://www.ucharts.cn All rights reserved.
  * Licensed ( http://www.apache.org/licenses/LICENSE-2.0 )
@@ -7,13 +7,13 @@
  *
  * uCharts®官方网站
  * https://www.uCharts.cn
- * 
+ *
  * 开源地址:
  * https://gitee.com/uCharts/uCharts
- * 
+ *
  * uni-app插件市场地址：
  * http://ext.dcloud.net.cn/plugin?id=271
- * 
+ *
  -->
 <template>
   <view class="chartsview" :id="'ChartBoxId'+cid">
@@ -32,9 +32,9 @@
         :style="{ background: background }"
         style="width: 100%;height: 100%;"
         :data-directory="directory"
-        :id="'EC'+cid" 
-        :prop="echartsOpts" 
-        :change:prop="rdcharts.ecinit" 
+        :id="'EC'+cid"
+        :prop="echartsOpts"
+        :change:prop="rdcharts.ecinit"
         :resize="echartsResize"
         :change:resize="rdcharts.ecresize"
         v-show="showchart"
@@ -1006,7 +1006,7 @@ export default {
               }
     	      });
     	    //#endif
-    	  } 
+    	  }
     	},this);
     },
     getImage(){
@@ -1300,7 +1300,7 @@ export default {
           cfe.option[cid].series.push(Template)
         }
       }
-      
+
       if (typeof window.echarts === 'object') {
           this.newEChart()
       }else{
@@ -1309,8 +1309,15 @@ export default {
         script.src = './uni_modules/qiun-data-charts/static/app-plus/echarts.min.js'
         // #endif
         // #ifdef H5
-        const { origin } = window.location
-        const rooturl = origin + process.env.BASE_URL
+        const { origin } = window.location;
+        let base_url = "";
+        // #ifdef VUE2
+        base_url = process.env.BASE_URL;
+        // #endif
+        // #ifdef VUE3
+        base_url = import.meta.env.BASE_URL;
+        // #endif
+        const rooturl = origin + base_url;
         script.src = rooturl + 'uni_modules/qiun-data-charts/static/h5/echarts.min.js'
         // #endif
         script.onload = this.newEChart
@@ -1389,9 +1396,9 @@ export default {
       	let viewHeight = size.viewSize[1]
       	let boxWidth = size.contentSize[0]
       	let boxHeight = size.contentSize[1]
-      	let posX = x + 30 
-      	let posY = y + 30 
-      	if (posX + boxWidth > viewWidth) { 
+      	let posX = x + 30
+      	let posY = y + 30
+      	if (posX + boxWidth > viewWidth) {
       		posX = x - boxWidth - 30
       	}
       	if (posY + boxHeight > viewHeight) {

@@ -80,9 +80,6 @@ export default {
 		}]
 	},
 	uniStat: {
-		// 上传 sourceMap 文件至腾讯云服务空间 ID。空值代表不启用 sourceMap 上报错误回溯源码功能
-		uploadSourceMapCloudSpaceId: '',
-		// 要上传到的腾讯云云存储访问地址
-		cloudSourceMapUrl: ''
+		
 	}
 }
