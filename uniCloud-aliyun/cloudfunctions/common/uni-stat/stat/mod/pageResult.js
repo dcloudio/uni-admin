@@ -68,51 +68,115 @@ module.exports = class PageResult extends BaseMod {
 
 		// 数据获取
 		this.pageLog = new PageLog()
-		const statRes = await this.aggregate(this.pageLog.tableName, {
-			project: {
-				appid: 1,
-				version: 1,
-				platform: 1,
-				channel: 1,
-				page_id: 1,
-				create_time: 1
-			},
-			match: {
-				create_time: {
-					$gte: this.startTime,
-					$lte: this.endTime
+		const countRes = await this.getCollection(this.pageLog.tableName).where({
+			create_time: {
+				$gte: this.startTime,
+				$lte: this.endTime
+			}
+		}).count()
+		let pageLogData = []
+		//临时处理-数据量过大按小时分片组合
+		if (countRes.total > 1000000) {
+			const list = {}
+			for (let start = 0; start < 24; start++) {
+				const getRes = await this.aggregate(this.pageLog.tableName, {
+					project: {
+						appid: 1,
+						version: 1,
+						platform: 1,
+						channel: 1,
+						page_id: 1,
+						create_time: 1
+					},
+					match: {
+						create_time: {
+							$gte: this.startTime + start * 3600000,
+							$lte: this.startTime + (start + 1) * 3600000 - 1
+						}
+					},
+					group: {
+						_id: {
+							appid: '$appid',
+							version: '$version',
+							platform: '$platform',
+							channel: '$channel',
+							page_id: '$page_id'
+						},
+						visit_times: {
+							$sum: 1
+						}
+					},
+					sort: {
+						visit_times: 1
+					},
+					getAll: true
+				})
+
+				if (getRes.data.length) {
+					for (let resData of getRes.data) {
+						const resKey = Object.values(resData._id).join('_')
+						if (!list[resKey]) {
+							list[resKey] = resData
+						} else {
+							list[resKey].visit_times += resData.visit_times
+						}
+					}
 				}
-			},
-			group: {
-				_id: {
-					appid: '$appid',
-					version: '$version',
-					platform: '$platform',
-					channel: '$channel',
-					page_id: '$page_id'
+			}
+			pageLogData = Object.values(list)
+		} else {
+			const statRes = await this.aggregate(this.pageLog.tableName, {
+				project: {
+					appid: 1,
+					version: 1,
+					platform: 1,
+					channel: 1,
+					page_id: 1,
+					create_time: 1
 				},
-				visit_times: {
-					$sum: 1
-				}
-			},
-			sort: {
-				visit_times: 1
-			},
-			getAll: true
-		})
+				match: {
+					create_time: {
+						$gte: this.startTime,
+						$lte: this.endTime
+					}
+				},
+				group: {
+					_id: {
+						appid: '$appid',
+						version: '$version',
+						platform: '$platform',
+						channel: '$channel',
+						page_id: '$page_id'
+					},
+					visit_times: {
+						$sum: 1
+					}
+				},
+				sort: {
+					visit_times: 1
+				},
+				getAll: true
+			})
+			pageLogData = statRes.data
+		}
+
 
 		let res = {
 			code: 0,
 			msg: 'success'
 		}
 		if (this.debug) {
-			console.log('Page statRes', JSON.stringify(statRes))
+			console.log('Page statRes', JSON.stringify(pageLogData))
 		}
-		if (statRes.data.length > 0) {
+		if (pageLogData.length > 0) {
 			this.fillData = []
 			//获取填充数据
-			for (const i in statRes.data) {
-				await this.fill(statRes.data[i])
+			for (const i in pageLogData) {
+				try{
+					await this.fill(pageLogData[i])
+				}catch(e){
+					console.error('page result data filled error', e)
+				}
 			}
 
 			//数据批量入库
@@ -219,7 +283,7 @@ module.exports = class PageResult extends BaseMod {
 			pageVisitDevices = statPageDeviceRes.data[0].total_devices
 		}
 
-		// 当前页面访问人数
+		//当前页面访问人数
 		const statPageUserRes = await this.aggregate(this.pageLog.tableName, {
 			project: {
 				appid: 1,
@@ -515,7 +579,6 @@ module.exports = class PageResult extends BaseMod {
 			start_time: this.startTime,
 			end_time: this.endTime
 		}
-
 		this.fillData.push(insertParams)
 		return insertParams
 	}

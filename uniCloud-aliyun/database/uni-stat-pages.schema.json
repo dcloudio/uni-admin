@@ -26,6 +26,10 @@
 			"bsonType": "string",
 			"description": "页面标题"
 		},
+		"page_rules": {
+			"bsonType": "array",
+			"description": "页面规则，每个页面最多设置5个，例：[['id','page'],['sid']]"
+		},
 		"create_time": {
 			"bsonType": "timestamp",
 			"description": "创建时间"

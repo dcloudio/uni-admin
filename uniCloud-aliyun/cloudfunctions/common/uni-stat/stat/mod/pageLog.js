@@ -149,7 +149,6 @@ module.exports = class PageLog extends BaseMod {
 			for (const sid in sessionData) {
 				await sessionLog.updateSession(sid, sessionData[sid])
 			}
-
 			return {
 				code: 0,
 				msg: 'success'
@@ -169,15 +168,12 @@ module.exports = class PageLog extends BaseMod {
 	async clean(days) {
 		days = Math.max(parseInt(days), 1)
 		console.log('clean page logs - day:', days)
-
 		const dateTime = new DateTime()
-
 		const res = await this.delete(this.tableName, {
 			create_time: {
 				$lt: dateTime.getTimeBySetDays(0 - days)
 			}
 		})
-
 		if (!res.code) {
 			console.log('clean page log:', res)
 		}
