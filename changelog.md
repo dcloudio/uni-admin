@@ -1,3 +1,5 @@
+## 2.3.13（2023-12-15）
+- 修复 opendb-news-comments.schema.json permission 配置少一个s的问题
 ## 2.3.12（2023-11-07）
 - 修复 uni统计兼容 skd 未上报 ut 参数的Bug
 - 优化 uni统计配置增加cronMinTips，用于对cronMin参数进行解释
