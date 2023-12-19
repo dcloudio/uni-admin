@@ -24,15 +24,19 @@
 		},
 		"page_link": {
 			"bsonType": "string",
-			"description": "页面链接,去除链接中无用参数后的url"
+			"description": "页面链接,匹配并去除链接中无用参数后的url"
 		},
-		"page_name": {
+		"page_title": {
 			"bsonType": "string",
-			"description": "页面名称"
+			"description": "页面标题"
 		},
 		"create_time": {
 			"bsonType": "timestamp",
 			"description": "创建时间"
+		},
+		"update_time": {
+			"bsonType": "timestamp",
+			"description": "修改时间"
 		}
 	}
 }
