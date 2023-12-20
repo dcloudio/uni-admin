@@ -160,6 +160,7 @@ module.exports = class SessionLog extends BaseMod {
 				msg: 'success',
 				data: {
 					pageId: pageInfo._id,
+					pageRules: pageInfo.page_rules,
 					sessionLogId: res.id,
 					entryPageId: fillParams.entry_page_id,
 					eventCount: fillParams.event_count,
@@ -260,6 +261,7 @@ module.exports = class SessionLog extends BaseMod {
 					msg: 'success',
 					data: {
 						pageId: pageInfo._id,
+						pageRules: pageInfo.page_rules,
 						sessionLogId: sessionLogInfoData._id,
 						entryPageId: sessionLogInfoData.entry_page_id,
 						eventCount: sessionLogInfoData.event_count,

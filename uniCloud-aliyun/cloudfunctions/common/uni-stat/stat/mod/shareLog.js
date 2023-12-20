@@ -28,7 +28,7 @@ module.exports = class ShareLog extends BaseMod {
 		const channel = new Channel()
 		for (const rk in reportParams) {
 			params = reportParams[rk]
-			
+
 			//暂存下会话数据，减少读库
 			sessionKey = params.ak + params.did + params.p
 			if (!sessionLogData[sessionKey]) {
@@ -45,6 +45,17 @@ module.exports = class ShareLog extends BaseMod {
 				sessionLogInfo = sessionLogData[sessionKey]
 			}
 
+			let pageDetailInfo
+			if(this.getConfig('pageDetailStat')) {
+				pageDetailInfo = await pageDetail.getPageDetailByPageRules({
+					appid: params.ak,
+					pageUrl: params.url,
+					pageTitle: params.ttpj,
+					pageId: sessionLogInfo.data.pageId,
+					pageRules: sessionLogInfo.data.pageRules
+				})
+			}
+
 			// 填充数据
 			fillParams.push({
 				appid: params.ak,
@@ -55,6 +66,7 @@ module.exports = class ShareLog extends BaseMod {
 				uid: params.uid ? params.uid : '',
 				session_id: sessionLogInfo.data.sessionLogId,
 				page_id: sessionLogInfo.data.pageId,
+				page_detail_id: (pageDetailInfo && pageDetailInfo._id) || undefined,
 				create_time: dateTime.getTime()
 			})
 		}
