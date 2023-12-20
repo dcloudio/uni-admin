@@ -45,7 +45,7 @@ module.exports = class PageDetail extends BaseMod {
 				await this.setCache(cacheKey, pageDetailInfo)
 			}
 		}
-		return pageDetailInfo
+		return pageDetailData
 	}
 
 	/**
@@ -119,6 +119,9 @@ module.exports = class PageDetail extends BaseMod {
 		pageRules
 	} = {}) {
 		const pageDetailUrl = this.getPageDetailUrlByRules(pageUrl, pageRules)
+		if(this.debug) {
+			console.log('pageDetailUrl', pageDetailUrl, pageUrl)
+		}
 		if (!pageDetailUrl) {
 			return false
 		}

@@ -5,6 +5,7 @@ const BaseMod = require('./base')
 const Platform = require('./platform')
 const Channel = require('./channel')
 const SessionLog = require('./sessionLog')
+const PageDetail = require('./pageDetail')
 const {
 	DateTime
 } = require('../lib')
@@ -26,6 +27,7 @@ module.exports = class ShareLog extends BaseMod {
 		const platform = new Platform()
 		const dateTime = new DateTime()
 		const channel = new Channel()
+		const pageDetail = new PageDetail()
 		for (const rk in reportParams) {
 			params = reportParams[rk]
 

@@ -127,6 +127,9 @@ module.exports = class PageLog extends BaseMod {
 					pageId: pageInfo._id,
 					pageRules: pageInfo.page_rules
 				})
+				if(this.debug) {
+					console.log('pageDetailInfo', pageDetailInfo)
+				}
 				if(params.urlref && referPageInfo) {
 					referPageDetailInfo = await pageDetail.getPageDetailByPageRules({
 						appid: params.ak,
