@@ -1,224 +1,109 @@
 <template>
 	<view>
-	<view class="uni-header">
-		<view class="uni-group">
-		<uni-stat-breadcrumb />
+		<view class="uni-header">
+			<view class="uni-group">
+				<view class="uni-title"></view>
+				<view class="uni-sub-title"></view>
+			</view>
+			<view class="uni-group">
+				<input class="uni-search" type="text" v-model="query" @confirm="search" placeholder="请输入搜索内容" />
+				<button class="uni-button" type="default" size="mini" @click="search">搜索</button>
+			</view>
 		</view>
-		<view class="uni-group">
-		<button class="uni-button" type="default" size="mini" @click="search">搜索</button>
-		</view>
-	</view>
-	<view class="uni-container">
-
-		<unicloud-db ref="udb" :collection="collectionList" field="user_id,nickname,provider,provider_pay_type,uni_platform,status,type,order_no,out_trade_no,transaction_id,device_id,client_ip,openid,description,err_msg,total_fee,refund_fee,refund_count,refund_list,provider_appid,appid,user_order_success,create_date,pay_date,notify_date,cancel_date" :where="where" page-data="replace"
-		:orderby="orderby" :getcount="true" :page-size="options.pageSize" :page-current="options.pageCurrent"
-		v-slot:default="{data,pagination,loading,error,options}" :options="options" loadtime="manual" @load="onqueryload">
-		<uni-table ref="table" :loading="loading" :emptyText="error.message || loading ? '请求中...' : '没有更多数据'" border stripe type="" @selection-change="selectionChange" style="min-height: 900px;">
-			<uni-tr>
-			<uni-th align="center">序号</uni-th>
-			<uni-th ref="user_id" align="center" :filterDefaultValue="filterDefaultValueUserId" filter-type="search" @filter-change="filterChange($event, 'user_id')" sortable @sort-change="sortChange($event, 'user_id')">用户</uni-th>
-			<uni-th align="center" filter-type="select" :filter-data="options.filterData.provider_localdata" @filter-change="filterChange($event, 'provider')">支付供应商</uni-th>
-			<uni-th align="center" filter-type="search" @filter-change="filterChange($event, 'provider_pay_type')" sortable @sort-change="sortChange($event, 'provider_pay_type')">支付方式</uni-th>
-			<uni-th align="center" filter-type="search" @filter-change="filterChange($event, 'uni_platform')" sortable @sort-change="sortChange($event, 'uni_platform')">应用平台</uni-th>
-			<uni-th align="center" filter-type="select" :filter-data="options.filterData.status_localdata" @filter-change="filterChange($event, 'status')">订单状态</uni-th>
-
-			<uni-th align="center" filter-type="search" @filter-change="filterChange($event, 'type')" sortable @sort-change="sortChange($event, 'type')">订单类型</uni-th>
-			<uni-th align="center" filter-type="search" @filter-change="filterChange($event, 'order_no')" sortable @sort-change="sortChange($event, 'order_no')">业务系统订单号</uni-th>
-			<uni-th align="center" filter-type="search" @filter-change="filterChange($event, 'out_trade_no')" sortable @sort-change="sortChange($event, 'out_trade_no')">支付插件订单号</uni-th>
-			<uni-th align="center" filter-type="search" @filter-change="filterChange($event, 'transaction_id')" sortable @sort-change="sortChange($event, 'transaction_id')">交易单号</uni-th>
-			<uni-th align="center" filter-type="search" @filter-change="filterChange($event, 'description')" sortable @sort-change="sortChange($event, 'description')">支付描述</uni-th>
-			<uni-th align="center" filter-type="range" @filter-change="filterChange($event, 'total_fee', 0.01)" sortable @sort-change="sortChange($event, 'total_fee')">订单支付金额</uni-th>
-			<uni-th align="center" filter-type="range" @filter-change="filterChange($event, 'refund_fee', 0.01)" sortable @sort-change="sortChange($event, 'refund_fee')">订单退款金额</uni-th>
-			<uni-th align="center" filter-type="range" @filter-change="filterChange($event, 'refund_count')" sortable @sort-change="sortChange($event, 'refund_count')">当前退款笔数</uni-th>
-			<uni-th align="center" sortable @sort-change="sortChange($event, 'user_order_success')">回调状态</uni-th>
-			<uni-th align="center" filter-type="timestamp" @filter-change="filterChange($event, 'create_date')" sortable @sort-change="sortChange($event, 'create_date')">创建时间</uni-th>
-			<uni-th align="center" filter-type="timestamp" @filter-change="filterChange($event, 'pay_date')" sortable @sort-change="sortChange($event, 'pay_date')">支付时间</uni-th>
-			<uni-th align="center" filter-type="timestamp" @filter-change="filterChange($event, 'cancel_date')" sortable @sort-change="sortChange($event, 'cancel_date')">取消时间</uni-th>
-			<uni-th align="center" filter-type="search" @filter-change="filterChange($event, 'provider_appid')" sortable @sort-change="sortChange($event, 'provider_appid')">开放平台appid</uni-th>
-			<uni-th align="center" filter-type="search" @filter-change="filterChange($event, 'appid')" sortable @sort-change="sortChange($event, 'appid')">DCloud AppId</uni-th>
-			<uni-th align="center" filter-type="search" @filter-change="filterChange($event, 'device_id')" sortable @sort-change="sortChange($event, 'device_id')">设备ID</uni-th>
-			<uni-th align="center" filter-type="search" @filter-change="filterChange($event, 'client_ip')" sortable @sort-change="sortChange($event, 'client_ip')">客户端IP</uni-th>
-			<uni-th align="center" filter-type="search" @filter-change="filterChange($event, 'openid')" sortable @sort-change="sortChange($event, 'openid')">openid</uni-th>
-			<!-- <uni-th align="center">操作</uni-th> -->
-			</uni-tr>
-			<uni-tr v-for="(item,index) in data" :key="index">
-			<uni-td align="center">{{ parseInt((index+1) + (pagination.current-1) * pagination.size) }} </uni-td>
-			<uni-td align="center"><text class="text-btn" @click="pageToUser(item)">{{ nameFormat(item) }}</text> </uni-td>
-			<uni-td align="center">{{options.provider_valuetotext[item.provider]}}</uni-td>
-			<uni-td align="center">{{item.provider_pay_type}}</uni-td>
-			<uni-td align="center">{{item.uni_platform}}</uni-td>
-			<uni-td align="center">{{options.status_valuetotext[item.status]}}</uni-td>
-			<uni-td align="center">{{item.type}}</uni-td>
-			<uni-td align="center">{{item.order_no}}</uni-td>
-			<uni-td align="center">{{item.out_trade_no}}</uni-td>
-			<uni-td align="center">{{item.transaction_id}}</uni-td>
-			<uni-td align="center">{{item.description}}</uni-td>
-			<uni-td align="center">{{ (item.total_fee * 0.01).toFixed(2) }}</uni-td>
-			<uni-td align="center">{{ (item.refund_fee * 0.01).toFixed(2) }}</uni-td>
-			<uni-td align="center">{{item.refund_count}}</uni-td>
-			<uni-td align="center">
-				<view v-if="item.user_order_success === true" style="color:#18bc37">✔正常</view>
-				<view v-else-if="[-1,0].indexOf(item.status) > -1 ">-</view>
-				<view v-else style="color:#e43d33">●异常</view>
-			</uni-td>
-			<uni-td align="center">
-				<uni-dateformat :threshold="[0, 0]" :date="item.create_date"></uni-dateformat>
-			</uni-td>
-			<uni-td align="center">
-				<uni-dateformat :threshold="[0, 0]" :date="item.pay_date"></uni-dateformat>
-			</uni-td>
-			<uni-td align="center">
-				<uni-dateformat :threshold="[0, 0]" :date="item.cancel_date"></uni-dateformat>
-			</uni-td>
-			<uni-td align="center">{{item.provider_appid}}</uni-td>
-			<uni-td align="center">{{item.appid}}</uni-td>
-			<uni-td align="center">{{item.device_id}}</uni-td>
-			<uni-td align="center">{{item.client_ip}}</uni-td>
-			<uni-td align="center">{{item.openid}}</uni-td>
-			<!-- <uni-td align="center">
-				<view class="uni-group">
-				<button @click="refundPopup(true, item)" class="uni-button" style="margin: 0;" size="mini" type="warn" v-if="[1,2].indexOf(item.status)>-1">发起退款</button>
+		<view class="uni-container">
+			<unicloud-db ref="udb" :collection="collectionList" field="title,path,page_rules" :where="where" page-data="replace" :orderby="orderby" :getcount="true"
+				:page-size="options.pageSize" :page-current="options.pageCurrent" v-slot:default="{data,pagination,loading,error,options}" :options="options" loadtime="manual"
+				@load="onqueryload">
+				<uni-table ref="table" :loading="loading" :emptyText="error.message || '没有更多数据'" border stripe>
+					<uni-tr>
+						<uni-th align="center">序号</uni-th>
+						<uni-th align="center" filter-type="search" @filter-change="filterChange($event, 'title')">页面标题</uni-th>
+						<uni-th align="left" filter-type="search" @filter-change="filterChange($event, 'path')">页面URL</uni-th>
+						<uni-th align="center">操作</uni-th>
+					</uni-tr>
+					<uni-tr v-for="(item,index) in data" :key="index">
+						<uni-td align="center">{{ (pagination.current - 1) * pagination.size + (index+1) }}</uni-td>
+						<uni-td align="center">{{ item.title }}</uni-td>
+						<uni-td align="left">{{ item.path }}</uni-td>
+						<uni-td align="center">
+							<view class="uni-group">
+								<button @click="editRule(item)" class="uni-button" size="mini" type="primary">编辑规则</button>
+							</view>
+						</uni-td>
+					</uni-tr>
+				</uni-table>
+				<view class="uni-pagination-box">
+					<uni-pagination show-icon :page-size="pagination.size" v-model="pagination.current" :total="pagination.count" @change="onPageChanged" />
 				</view>
-			</uni-td> -->
-			</uni-tr>
-		</uni-table>
-		<view class="uni-pagination-box">
-			<uni-pagination show-icon :page-size="pagination.size" v-model="pagination.current" :total="pagination.count" @change="onPageChanged" />
+			</unicloud-db>
 		</view>
-		</unicloud-db>
-	</view>
 
-	<uni-popup ref="popup" type="center" :animation="false">
-		<view style="padding: 30px;background-color: #ffffff;width: 500px;">
-			<view style="margin-bottom: 20px;text-align: center;font-size: 20px;font-weight: bold;">退款确认</view>
-			<uni-forms ref="refundForm" :modelValue="refundFormData" label-position="left" labelWidth="100px" :rules="refundFormRules">
-				<uni-forms-item label="退款金额" name="refund_fee">
-					<uni-easyinput type="text" v-model.number="refundFormData.refund_fee" placeholder="请输入退款金额" :clearable="false" ></uni-easyinput>
-					<view style="color: #666;margin-top: 5px;font-size: 12px;">最大可退：{{ refundFormData.max_refund_fee }}</view>
-				</uni-forms-item>
-				<uni-forms-item label="退款原因" name="refund_desc">
-					<uni-easyinput type="textarea" v-model="refundFormData.refund_desc" placeholder="请输入退款原因" :clearable="false" />
-				</uni-forms-item>
-				<button type="warn" style="width: 100px;height: 40px;font-size: 16px;" @click="confirmRefund(refundFormData);">确定</button>
-			</uni-forms>
-		</view>
-	</uni-popup>
-
+		<uni-popup ref="editRulePopup" type="center">
+			<view class="edit-rule-popup">
+				<view class="uni-title">页面规则</view>
+				<view class="edit-rule-popup-tips">
+					<uni-notice-bar :font-size="12" :text="editRulePopup.tips" />
+				</view>
+				<view class="edit-rule-popup-list">
+					<view class="edit-rule-popup-item" v-for="(item1,index1) in pageInfo.page_rules" :key="index1">
+						<view class="name">
+							规则 {{ pageInfo.page_rules.length - index1  }}
+						</view>
+						<view class="tags">
+							<view class="tags-item tags-item-text" v-for="(item2, index2) in item1" :key="index2">
+								<text class="text">{{ item2 }}</text> <uni-icons class="pointer" type="closeempty" size="12" color="#42b983" @click="deleteParamItem(index1,index2)"></uni-icons>
+							</view>
+							<view class="tags-item tags-item-add">
+								<input class="tags-item-add-input" type="text" v-model="editRulePopup.addParamInfo.value"
+									:focus="editRulePopup.addParamInfo.index1 === index1 && editRulePopup.isAddParam" @blur="confirmAddParamItem(index1)"
+									v-if="editRulePopup.addParamInfo.index1 === index1 && editRulePopup.isAddParam" placeholder="输入参数名" />
+								<button size="mini" class="tags-item-add-btn" @click="addParamItem(index1)" v-else> + 添加参数 </button>
+							</view>
+						</view>
+						<view class="btn">
+							<uni-icons type="plus" size="28" class="pointer" color="#606266" @click="addRulesItem" v-if="index1 === 0 && pageInfo.page_rules.length < 5"></uni-icons>
+							<uni-icons type="minus" size="28" class="pointer" color="#606266" @click="deleteRulesItem(index1)" v-else></uni-icons>
+						</view>
+					</view>
+				</view>
+				<view class="edit-rule-popup-btn">
+					<button class="uni-button btn" type="primary" size="default" :loading="editRulePopup.loading" :disabled="editRulePopup.loading" @click="saveRule">保存</button>
+					<button class="uni-button btn" type="default" size="default" @click="closeEditRulePopup">取消</button>
+				</view>
+			</view>
+		</uni-popup>
 	</view>
 </template>
 
 <script>
-	import { enumConverter, filterToWhere } from '../../../js_sdk/validator/uni-pay-orders.js';
-	// 引入支付云对象
-	const uniPayCo = uniCloud.importObject("uni-pay-co");
-	const db = uniCloud.database();
+	import { enumConverter, filterToWhere } from '../../../js_sdk/validator/uni-stat-pages.js';
+
+	const db = uniCloud.database()
 	// 表查询配置
-	const dbOrderBy = 'create_date desc'; // 排序字段
-	const dbSearchFields = ['order_no', 'out_trade_no', 'transaction_id']; // 模糊搜索字段，支持模糊搜索的字段列表。联表查询格式: 主表字段名.副表字段名，例如用户表关联角色表 role.role_name
+	const dbOrderBy = '' // 排序字段
+	const dbSearchFields = ['title', 'path'] // 模糊搜索字段，支持模糊搜索的字段列表。联表查询格式: 主表字段名.副表字段名，例如用户表关联角色表 role.role_name
 	// 分页配置
-	const pageSize = 20;
-	const pageCurrent = 1;
+	const pageSize = 20
+	const pageCurrent = 1
 
 	const orderByMapping = {
 		"ascending": "asc",
 		"descending": "desc"
-	};
-
-	import {
-		mapfields,
-		stringifyQuery,
-		stringifyField,
-		stringifyGroupField,
-		getTimeOfSomeDayAgo,
-		division,
-		format,
-		formatDate,
-		parseDateTime,
-		getFieldTotal,
-		debounce
-	} from '@/js_sdk/uni-stat/util.js'
+	}
 
 	export default {
 		data() {
 			return {
-				collectionList: "uni-pay-orders",
-				query: {
-					appid: '',
-					platform_id: '',
-					uni_platform: '',
-					version: '',
-					pay_date: [],
-				},
+				collectionList: "uni-stat-pages",
+				query: '',
 				where: '',
 				orderby: dbOrderBy,
 				orderByFieldName: "",
 				selectedIndexs: [],
-				filterDefaultValueUserId: "",
-				refundFormData:{
-					out_trade_no: "",
-					max_refund_fee: "",
-					refund_fee:"",
-					refund_desc: ""
-				},
-				refundFormRules:{
-					refund_fee: {
-						rules:[
-							// 校验 name 不能为空
-							{ required: true,errorMessage: '退款金额必须>0' },
-							// 对name字段进行长度验证
-							{
-								minimum: 0.01,
-								maximum: 0,
-								errorMessage: '最大可退 {maximum} 元',
-							}
-						],
-					},
-					refund_desc: {
-						rules:[
-							// 校验 name 不能为空
-							{ required: true,errorMessage: '请输入退款原因' },
-						],
-					}
-				},
 				options: {
 					pageSize,
 					pageCurrent,
-					filterData: {
-						"provider_localdata": [{
-								"text": "微信支付",
-								"value": "wxpay"
-							},
-							{
-								"text": "支付宝",
-								"value": "alipay"
-							},
-							{
-								"text": "苹果应用内支付",
-								"value": "appleiap"
-							}
-						],
-						"status_localdata": [{
-								"text": "已关闭",
-								"value": -1
-							},
-							{
-								"text": "未支付",
-								"value": 0
-							},
-							{
-								"text": "已支付",
-								"value": 1
-							},
-							{
-								"text": "已部分退款",
-								"value": 2
-							},
-							{
-								"text": "已全额退款",
-								"value": 3
-							}
-						]
-					},
+					filterData: {},
 					...enumConverter
 				},
 				imageStyles: {
@@ -226,49 +111,35 @@
 					height: 64
 				},
 				exportExcel: {
-					"filename": "uni-pay-orders.xls",
+					"filename": "uni-stat-pages.xls",
 					"type": "xls",
 					"fields": {
-						"用户ID": "user_id",
-						"用户昵称": "nickname",
-						"支付供应商": "provider",
-						"支付方式": "provider_pay_type",
-						"应用平台": "uni_platform",
-						"订单状态": "status",
-						"支付失败原因": "err_msg",
-						"订单类型": "type",
-						"业务系统订单号": "order_no",
-						"支付插件订单号": "out_trade_no",
-						"交易单号": "transaction_id",
-						"支付描述": "description",
-						"订单支付金额": "total_fee",
-						"订单退款金额": "refund_fee",
-						"当前退款笔数": "refund_count",
-						"退款详情": "refund_list",
-						"回调状态": "user_order_success",
-						"创建时间": "create_date",
-						"支付时间": "pay_date",
-						"异步通知时间": "notify_date",
-						"取消时间": "cancel_date",
-						"开放平台appid": "provider_appid",
-						"DCloud AppId": "appid",
-						"设备ID": "device_id",
-						"客户端IP": "client_ip",
-						"openid": "openid",
+						"title": "title",
+						"path": "path"
 					}
 				},
-				exportExcelData: []
+				exportExcelData: [],
+				pageInfo: {
+					_id: "",
+					page_rules: []
+				},
+				editRulePopup: {
+					loading: false,
+					tips: `页面规则说明：
+1. 用于生成内容统计 url 的规则。通过设置页面有效参数，通过带参数的 url 对内容进行标识。例如有一个详情页面的请求有三个参数 page/detail/detail?id=1&type=1&t=1565943419，其中 t 为时间戳或随机数，则 id 和 type 为有效参数，需要在页面规则 page/detail/detail 中添加 id,type 这两个参数。
+2. 每条规则可以添加多个参数，进行匹配时，每条规则单独生效。
+3. 每个页面可以添加多个规则（最多 5 个规则），进行匹配时，后添加的规则优先级较高
+4. 目前的匹配规则只能处理通过 url 显式传递参数，且参数形式为上述示例中的键值对格式。`,
+					isAddParam: false,
+					addParamInfo: {
+						index1: "",
+						value: ""
+					},
+				},
 			}
 		},
-		onLoad(e) {
+		onLoad() {
 			this._filter = {}
-			if (e.user_id) {
-				this.filterDefaultValueUserId = e.user_id;
-				this.filterChange({
-					filterType: "search",
-					filter: e.user_id,
-				}, "user_id");
-			}
 		},
 		onReady() {
 			this.$refs.udb.loadData()
@@ -278,36 +149,12 @@
 				this.exportExcelData = data
 			},
 			getWhere() {
-				let where = "";
-				let {
-					pay_date,
-					appid,
-					version,
-					uni_platform,
-					//query, // 模糊查询
-				} = this.query;
-				if (pay_date && pay_date.length == 2) {
-					where += ` && pay_date>=${pay_date[0]} && pay_date<=${pay_date[1]}`;
+				const query = this.query.trim()
+				if (!query) {
+					return ''
 				}
-				if (appid) {
-					where += ` && appid=='${appid}'`;
-				}
-				if (version) {
-					where += ` && stat_data.app_version=='${version}'`;
-				}
-				if (uni_platform) {
-					where += ` && stat_data.platform=='${uni_platform}'`;
-				}
-
-				// if (query) {
-				// 	const queryRe = new RegExp(query, 'i');
-				// 	let queryReStr = dbSearchFields.map(name => queryRe + '.test(' + name + ')').join(' || ');
-				// 	where += ` && (${queryReStr})`;
-				// }
-
-				where = where.substring(3).trim();
-				// console.log('where: ', where)
-				return where;
+				const queryRe = new RegExp(query, 'i')
+				return dbSearchFields.map(name => queryRe + '.test(' + name + ')').join(' || ')
 			},
 			search() {
 				const newWhere = this.getWhere()
@@ -339,84 +186,6 @@
 					}
 				})
 			},
-			// 多选处理
-			selectedItems() {
-				var dataList = this.$refs.udb.dataList
-				return this.selectedIndexs.map(i => dataList[i]._id)
-			},
-			// 批量删除
-			delTable() {
-				this.$refs.udb.remove(this.selectedItems(), {
-					success: (res) => {
-						this.$refs.table.clearSelection()
-					}
-				})
-			},
-			// 多选
-			selectionChange(e) {
-				this.selectedIndexs = e.detail.index
-			},
-			refundPopup(key, item){
-				if (key) {
-					let {
-						total_fee = 0,
-							refund_fee = 0,
-							out_trade_no
-					} = item;
-					let max_refund_fee = Number(((total_fee - refund_fee) / 100).toFixed(2));
-					this.refundFormData.max_refund_fee = max_refund_fee;
-					this.refundFormData.refund_fee = max_refund_fee;
-					this.refundFormData.out_trade_no = out_trade_no;
-					this.refundFormRules.refund_fee.rules[1].maximum = max_refund_fee;
-					this.$refs.popup.open();
-				} else {
-					this.refundFormData.max_refund_fee = "";
-					this.refundFormData.refund_fee = "";
-					this.refundFormData.out_trade_no = "";
-					this.refundFormRules.refund_fee.rules[1].maximum = 0;
-					this.$refs.popup.close();
-				}
-			},
-			// 主动退款
-			async confirmRefund(item) {
-				let {
-					total_fee = 0,
-						refund_fee = 0,
-						out_trade_no,
-						refund_desc
-				} = item;
-
-				item.refund_fee = Number((item.refund_fee).toFixed(2));
-				this.$refs.refundForm.validate().then(async formData=>{
-					//console.log('表单数据信息：', formData);
-					let apply_refund_fee = Number(refund_fee);
-					if (isNaN(apply_refund_fee) || apply_refund_fee <= 0) {
-						uni.showToast({
-							title: "请输入正确的退款金额",
-							icon: 'none',
-							success: () => {
-								setTimeout(() => {
-									this.confirmRefund(item);
-								}, 500);
-							}
-						})
-						return;
-					}
-					let refundData = {
-						out_trade_no,
-						refund_fee: parseInt(apply_refund_fee * 100), // 金额已分为单位，100 = 1元
-						refund_desc,
-					};
-					//console.log('refundData: ', refundData)
-					let res = await uniPayCo.refund(refundData);
-					if (!res.errCode) {
-						this.refundPopup(false);
-						this.loadData(false);
-					}
-				}).catch(err =>{
-					//console.log('表单错误信息：', err);
-				});
-			},
 			sortChange(e, name) {
 				this.orderByFieldName = name;
 				if (e.order) {
@@ -429,20 +198,11 @@
 					this.$refs.udb.loadData()
 				})
 			},
-			filterChange(e, name, k) {
-
-				if (k && e.filter) {
-					if (typeof e.filter == "object") {
-						if (typeof e.filter[0] === "number") e.filter[0] = e.filter[0] / k;
-						if (typeof e.filter[1] === "number") e.filter[1] = e.filter[1] / k;
-					}
-				}
-
+			filterChange(e, name) {
 				this._filter[name] = {
 					type: e.filterType,
-					value: e.filter,
+					value: e.filter
 				}
-
 				let newWhere = filterToWhere(this._filter, db.command)
 				if (Object.keys(newWhere).length) {
 					this.where = newWhere
@@ -453,54 +213,185 @@
 					this.$refs.udb.loadData()
 				})
 			},
-			platformChange(id, index, name, item) {
-				this.query.version = 0
-				this.query.uni_platform = item.code
+			// 编辑规则
+			editRule(item) {
+				// 显示弹窗
+				this.$refs.editRulePopup.open();
+				if (!item.page_rules) item.page_rules = [
+					[]
+				];
+				this.pageInfo = {
+					_id: item._id,
+					page_rules: JSON.parse(JSON.stringify(item.page_rules)), // 深拷贝，解除引用关系
+				};
 			},
-			nameFormat(item) {
-				if (!item.user_id) {
-					return "匿名用户";
-				} else if (item.nickname) {
-					return `${item.user_id}（${item.nickname}）`
-				} else {
-					return item.user_id;
+			// 添加一个规则
+			addRulesItem() {
+				this.pageInfo.page_rules.unshift([]);
+			},
+			// 删除一个规则
+			deleteRulesItem(index1) {
+				this.pageInfo.page_rules.splice(index1, 1);
+			},
+			// 添加一个参数
+			addParamItem(index1) {
+				this.editRulePopup.isAddParam = true;
+				this.editRulePopup.addParamInfo.value = "";
+				this.editRulePopup.addParamInfo.index1 = index1;
+			},
+			// 确认添加参数
+			confirmAddParamItem(index1) {
+				if (this.editRulePopup.addParamInfo.value) {
+					this.pageInfo.page_rules[index1].push(this.editRulePopup.addParamInfo.value);
 				}
+				this.editRulePopup.isAddParam = false;
 			},
-			pageToUser(item) {
-				let { user_id } = item;
-				uni.navigateTo({
-					url: `/pages/system/user/list?id=${user_id}`
+			// 删除某一个参数
+			deleteParamItem(index1, index2) {
+				this.pageInfo.page_rules[index1].splice(index2, 1);
+			},
+			// 关闭编辑规则弹窗
+			closeEditRulePopup() {
+				this.$refs.editRulePopup.close();
+			},
+			// 保存规则
+			saveRule() {
+				this.editRulePopup.loading = true;
+				// 过滤下空的规则
+				let page_rules = JSON.parse(JSON.stringify(this.pageInfo.page_rules));
+				page_rules = page_rules.filter(item => item.length > 0);
+				// 保存到数据库
+				this.$refs.udb.update(this.pageInfo._id, {
+					page_rules
+				}, {
+					showToast: false,
+					needLoading: false,
+					success: () => {
+						// 修改本地列表中的数据
+						this.$refs.udb.dataList.forEach(item => {
+							if (item._id === this.pageInfo._id) {
+								item.page_rules = page_rules;
+							}
+						});
+						// 关闭弹窗
+						this.closeEditRulePopup();
+					},
+					complete: () => {
+						this.editRulePopup.loading = false;
+					}
 				});
-			},
-		},
-		watch: {
-			query: {
-				deep: true,
-				handler(val) {
-					this.search()
-				}
 			}
-		},
-		computed: {
-			versionQuery() {
-				const {
-					appid,
-					uni_platform
-				} = this.query
-				const query = stringifyQuery({
-					appid,
-					uni_platform
-				})
-				return query
-			}
-		},
+		}
 	}
 </script>
 
 <style lang="scss" scoped>
-.text-btn{
-	color: $uni-color-primary;
-	cursor: pointer;
-	margin: 0 5px;
-}
+	.edit-rule-popup {
+		padding: 20px;
+		background-color: #fff;
+		width: 900px;
+		max-width: 90vw;
+
+		.edit-rule-popup-tips {
+			margin-top: 20px;
+		}
+
+		.edit-rule-popup-list {
+			margin-top: 20px;
+
+			.edit-rule-popup-item {
+				display: flex;
+				align-items: center;
+				justify-content: space-between;
+				margin-top: 20px;
+				color: #606266;
+				font-size: 14px;
+				word-break: break-all;
+
+				&:first-child {
+					margin-top: 0;
+				}
+
+				.name {
+					width: 80px;
+				}
+
+				.tags {
+					flex: 1;
+					border: 1px solid #eee;
+					padding: 5px 10px;
+					display: flex;
+					flex-wrap: wrap;
+
+					.tags-item {
+						display: inline-block;
+						height: 32px;
+						line-height: 30px;
+						font-size: 12px;
+						box-sizing: border-box;
+						white-space: nowrap;
+						margin: 5px;
+
+						.text {
+							margin-right: 8px;
+						}
+
+						&.tags-item-text {
+							background-color: #ecf8f3;
+							border-color: #d9f1e6;
+							padding: 0 10px;
+							color: #42b983;
+							border-width: 1px;
+							border-style: solid;
+							border-radius: 4px;
+						}
+
+						&.tags-item-add {
+							.tags-item-add-input {
+								width: 100px;
+								height: 32px;
+								line-height: 32px;
+								padding: 0 10px;
+								box-sizing: border-box;
+								border-radius: 4px;
+								border: 1px solid #dcdfe6;
+								font-size: 12px;
+								color: #606266;
+								outline: none;
+
+								&:focus {
+									border-color: #409eff;
+								}
+							}
+
+							.tags-item-add-btn {
+								height: 32px;
+								line-height: 32px;
+							}
+						}
+					}
+				}
+
+				.btn {
+					width: 80px;
+					text-align: center;
+				}
+			}
+		}
+
+		.edit-rule-popup-btn {
+			/* 按钮显示在右边 */
+			display: flex;
+			justify-content: flex-end;
+			margin-top: 20px;
+
+			.btn {
+				margin-left: 10px;
+			}
+		}
+
+		.pointer {
+			cursor: pointer;
+		}
+	}
 </style>
