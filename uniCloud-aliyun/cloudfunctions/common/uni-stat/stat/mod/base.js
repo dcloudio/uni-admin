@@ -151,6 +151,10 @@ module.exports = class BaseMod {
 		return await this.redis.del(key)
 	}
 
+	getCacheKeyByParams(params) {
+		return Object.keys(params).map((key) => key + ':' + params[key]).join('-')
+	}
+
 	/**
 	 * 通过数据表主键（_id）获取数据
 	 * @param {String} tab 表名
