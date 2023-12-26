@@ -21,11 +21,11 @@
 
 export default [{
 	title: '内容统计页面',
-	field: 'path',
+	field: 'page_link',
 	stat: -1
 }, {
 	title: '页面名称',
-	field: 'title',
+	field: 'page_title',
 	stat: -1
 },
 {
@@ -35,10 +35,11 @@ export default [{
 	value: 0
 }, {
 	title: '访问设备数',
-	field: 'exit_times',
+	field: 'visit_devices',
 	tooltip: '访问过应用内任意页面总次数，多个页面之间跳转、同一页面的重复访问计为多次访问；',
 	value: 0
-}, {
+},
+{
 	title: '次均停留时长',
 	field: 'avg_device_session_time',
 	computed: 'duration/visit_times',

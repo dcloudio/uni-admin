@@ -30,7 +30,7 @@
 				<view class="uni-stat-right-btn">
 					<button type="primary" size="mini" @click="pageTo('/pages/uni-stat/page-rule/page-rule')">页面规则</button>
 				</view>
-				<uni-table :loading="loading" border stripe :emptyText="$t('common.empty')">
+				<uni-table :loading="loading" border stripe :emptyText="errorMessage || $t('common.empty')">
 					<uni-tr>
 						<block v-for="(mapper, index) in fieldsMap" :key="index">
 							<uni-th v-if="mapper.title" :key="index" align="center">
@@ -56,7 +56,7 @@
 							<uni-td v-if="index === 1" :key="mapper.field" class="uni-stat-edit--x">
 								{{item[mapper.field] !== undefined ? item[mapper.field] : '-'}}
 								<uni-icons type="compose" color="#2979ff" size="25" class="uni-stat-edit--btn"
-									@click="inputDialogToggle(item.path, item.title)" />
+									@click="inputDialogToggle(item.page_link, item.page_title)" />
 							</uni-td>
 							<uni-td v-else :key="mapper.field" :align="index === 0 ? 'left' : 'center'">
 								{{item[mapper.field] !== undefined ? item[mapper.field] : '-'}}
@@ -118,7 +118,8 @@
 				panelData: fieldsMap.filter(f => f.hasOwnProperty('value')),
 				queryId: '',
 				updateValue: '',
-				channelData: []
+				channelData: [],
+				errorMessage: ''
 			}
 		},
 		computed: {
@@ -193,7 +194,13 @@
 			},
 
 			getTableData(query) {
+				if (!this.query.appid){
+					this.errorMessage = "请先选择应用";
+					return;
+				}
+				this.errorMessage = "";
 				query = stringifyQuery(this.query, null, ['uni_platform'])
+				console.log('query: ', query)
 				const {
 					pageCurrent
 				} = this.options
@@ -202,21 +209,20 @@
 				const filterAppid = stringifyQuery({
 					appid: this.query.appid
 				})
-				const mainTableTemp = db.collection('uni-stat-pages')
+				const mainTableTemp = db.collection('uni-stat-page-details')
 					.where(filterAppid)
-					.field('_id, title, path')
 					.getTemp()
-				const subTableTemp = db.collection('uni-stat-page-result')
+				const subTableTemp = db.collection('uni-stat-page-detail-result')
 					.where(query)
 					.getTemp()
 
 				db.collection(subTableTemp, mainTableTemp)
 					.field(
-						`${stringifyField(fieldsMap)}, stat_date, page_id`
+						`${stringifyField(fieldsMap)}, stat_date, page_detail_id`
 					)
-					.groupBy("page_id")
+					.groupBy("page_detail_id")
 					.groupField(stringifyGroupField(fieldsMap))
-					.orderBy('visit_times', 'desc')
+					.orderBy('visit_times desc')
 					.skip((pageCurrent - 1) * this.options.pageSize)
 					.limit(this.options.pageSize)
 					.get({
@@ -230,9 +236,9 @@
 						this.options.total = count
 						this.tableData = []
 						for (const item of data) {
-							const lines = item.page_id
+							const lines = item.page_detail_id
 							if (Array.isArray(lines)) {
-								delete(item.page_id)
+								delete(item.page_detail_id)
 								const line = lines[0]
 								if (line && Object.keys(line).length) {
 									for (const key in line) {
@@ -257,12 +263,12 @@
 
 			getPanelData(query = stringifyQuery(this.query, null, ['uni_platform'])) {
 				const db = uniCloud.database()
-				const subTable = db.collection('uni-stat-page-result')
+				const subTable = db.collection('uni-stat-page-detail-result')
 					.where(query)
 					.field(stringifyField(fieldsMap))
 					.groupBy('appid')
 					.groupField(stringifyGroupField(fieldsMap))
-					.orderBy('start_time', 'desc ')
+					.orderBy('start_time desc')
 					.get()
 					.then(res => {
 						const items = res.result.data[0]
@@ -276,16 +282,19 @@
 				this.updateValue = title
 				this.$refs.inputDialog.open()
 			},
-
+			// 修改页面名称
 			editName(value) {
 				// 使用 clientDB 提交数据
 				const db = uniCloud.database()
-				db.collection('uni-stat-pages')
+				uni.showLoading({
+					title: '请求中...'
+				})
+				db.collection('uni-stat-page-details')
 					.where({
-						path: this.queryId
+						page_link: this.queryId
 					})
 					.update({
-						title: value
+						page_title: value
 					})
 					.then((res) => {
 						if (res.result.updated) {
@@ -308,7 +317,6 @@
 						uni.hideLoading()
 					})
 			},
-
 			getChannelData(appid, platform_id) {
 				this.query.channel_id = ''
 				const db = uniCloud.database()
@@ -334,7 +342,7 @@
 					.getTemp()
 
 				db.collection(channelTemp, platformTemp)
-					.orderBy('platform_id', 'asc')
+					.orderBy('platform_id asc')
 					.get()
 					.then(res => {
 						let data = res.result.data
