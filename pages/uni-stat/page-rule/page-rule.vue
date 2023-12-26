@@ -54,7 +54,7 @@
 								<text class="text">{{ item2 }}</text> <uni-icons class="pointer" type="closeempty" size="12" color="#42b983" @click="deleteParamItem(index1,index2)"></uni-icons>
 							</view>
 							<view class="tags-item tags-item-add">
-								<input class="tags-item-add-input" type="text" v-model="editRulePopup.addParamInfo.value"
+								<input class="tags-item-add-input" type="text" v-model.trim="editRulePopup.addParamInfo.value"
 									:focus="editRulePopup.addParamInfo.index1 === index1 && editRulePopup.isAddParam" @blur="confirmAddParamItem(index1)"
 									v-if="editRulePopup.addParamInfo.index1 === index1 && editRulePopup.isAddParam" placeholder="输入参数名" />
 								<button size="mini" class="tags-item-add-btn" @click="addParamItem(index1)" v-else> + 添加参数 </button>

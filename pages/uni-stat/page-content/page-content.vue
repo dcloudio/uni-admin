@@ -200,7 +200,6 @@
 				}
 				this.errorMessage = "";
 				query = stringifyQuery(this.query, null, ['uni_platform'])
-				console.log('query: ', query)
 				const {
 					pageCurrent
 				} = this.options
@@ -262,18 +261,21 @@
 			},
 
 			getPanelData(query = stringifyQuery(this.query, null, ['uni_platform'])) {
+				let myFieldsMap = JSON.parse(JSON.stringify(fieldsMap));
+				// 去除myFieldsMap中的visit_devices字段
+				myFieldsMap = myFieldsMap.filter(item => item.field !== 'visit_devices');
 				const db = uniCloud.database()
 				const subTable = db.collection('uni-stat-page-detail-result')
 					.where(query)
-					.field(stringifyField(fieldsMap))
+					.field(stringifyField(myFieldsMap))
 					.groupBy('appid')
-					.groupField(stringifyGroupField(fieldsMap))
+					.groupField(stringifyGroupField(myFieldsMap))
 					.orderBy('start_time desc')
 					.get()
 					.then(res => {
 						const items = res.result.data[0]
 						this.panelData = []
-						this.panelData = mapfields(fieldsMap, items)
+						this.panelData = mapfields(myFieldsMap, items)
 					})
 			},
 
@@ -283,7 +285,7 @@
 				this.$refs.inputDialog.open()
 			},
 			// 修改页面名称
-			editName(value) {
+			editName(value="") {
 				// 使用 clientDB 提交数据
 				const db = uniCloud.database()
 				uni.showLoading({
@@ -294,7 +296,7 @@
 						page_link: this.queryId
 					})
 					.update({
-						page_title: value
+						page_title: value.trim()
 					})
 					.then((res) => {
 						if (res.result.updated) {
