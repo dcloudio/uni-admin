@@ -217,9 +217,12 @@
 			editRule(item) {
 				// 显示弹窗
 				this.$refs.editRulePopup.open();
-				if (!item.page_rules) item.page_rules = [
-					[]
-				];
+				// 如果没有规则，则初始化一个空规则
+				if (!item.page_rules || !item.page_rules.length) {
+					item.page_rules = [
+						[]
+					];
+				}
 				this.pageInfo = {
 					_id: item._id,
 					page_rules: JSON.parse(JSON.stringify(item.page_rules)), // 深拷贝，解除引用关系
