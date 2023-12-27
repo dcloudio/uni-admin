@@ -54,7 +54,8 @@
 				"needCaptcha": false,
 				"focusUsername": false,
 				"focusPassword": false,
-				"logo": "/static/logo.png"
+				"logo": "/static/logo.png",
+				"existAdmin": true
 			}
 		},
 		onShow() {
@@ -66,6 +67,17 @@
 				}
 			};
 			// #endif
+		},
+		async onLoad() {
+			// 查询是否已经有管理员注册了，如果有，则隐藏注册管理员的入口
+			try {
+				const db = uniCloud.database();
+				let countRes = await db.collection("uni-id-users").where({role:"admin"}).count();
+				let count = countRes.result.total;
+				this.existAdmin = count > 0 ? true : false;
+			} catch(err){
+				this.existAdmin = false;
+			}
 		},
 		methods: {
 			// 页面跳转，找回密码
@@ -155,7 +167,7 @@
 
 	@media screen and (min-width: 690px) {
 		.uni-content {
-			max-height: 650px;
+			height: auto;
 		}
 	}
 

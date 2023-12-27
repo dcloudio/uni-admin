@@ -1,3 +1,5 @@
+## 1.2.0（2023-04-27）
+- 优化 微信小程序平台 使用微信新增 API getStableAccessToken 获取 access_token, access_token 有效期内重复调用该接口不会更新 access_token, [详情](https://developers.weixin.qq.com/miniprogram/dev/OpenApiDoc/mp-access-token/getStableAccessToken.html)
 ## 1.1.5（2023-03-27）
 - 修复 微信小程序平台 某些情况下 encrypt_key 插入错误的问题
 ## 1.1.4（2023-03-13）

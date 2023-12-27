@@ -18,7 +18,8 @@ module.exports = async function (params = {}) {
   }
   this.middleware.validate(params, schema)
 
-  const deviceId = this.getUniversalClientInfo().deviceId
+  const { deviceId, platform } = this.getUniversalClientInfo()
+
   const {
     scene
   } = params
@@ -29,6 +30,7 @@ module.exports = async function (params = {}) {
   }
   return this.uniCaptcha.refresh({
     deviceId,
-    scene
+    scene,
+    uniPlatform: platform
   })
 }

@@ -1,7 +1,7 @@
 {
 	"id": "uni-id-pages",
 	"displayName": "uni-id-pages",
-	"version": "1.1.0",
+	"version": "1.1.14",
 	"description": "云端一体简单、统一、可扩展的用户中心页面模版",
 	"keywords": [
         "用户管理",
@@ -48,7 +48,8 @@
 			"uni-popup",
 			"uni-scss",
 			"uni-transition",
-			"uni-open-bridge-common"
+			"uni-open-bridge-common",
+			"uni-cloud-s2s"
 		],
 		"encrypt": [],
 		"platforms": {

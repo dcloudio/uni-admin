@@ -1,3 +1,32 @@
+## 2.3.13（2023-12-15）
+- 修复 opendb-news-comments.schema.json permission 配置少一个s的问题
+## 2.3.12（2023-11-07）
+- 修复 uni统计兼容 skd 未上报 ut 参数的Bug
+- 优化 uni统计配置增加cronMinTips，用于对cronMin参数进行解释
+- 更新 uni-captcha模块至0.7.0
+- 更新 升级中心升级至 0.6.1
+- 新增 升级中心 uni-upgrade-center 云函数 checkVersion.js 支持传递 is_uniapp_x 参数（uni-app x 项目安卓端无 wgt 更新）
+## 2.3.11（2023-08-07）
+- 优化 当菜单表无数据时，提示请先初始化云数据库
+## 2.3.10（2023-08-04）
+- 调整 db_init.json新增opendb-poi表
+## 2.3.9（2023-08-04）
+- 优化 打开选择地图时，确认按钮被top-window窗口覆盖的问题
+## 2.3.8（2023-08-03）
+- 修复 uni统计页面统计修改页面名称不生效的问题
+- 调整 uni统计支付订单明细查询改用全等匹配
+- 调整 opendb-news-articles.schema.json read默认权限
+- 优化 合并uni_modules插件的菜单时，菜单默认启用（不再需要一个一个点修改了）
+## 2.3.7（2023-05-29）
+- 升级 uni-id-pages 至 1.1.14
+- 修复 uni统计自定义事件的查询bug
+- 优化 uni统计日期选择支持时分秒
+- 优化 uni统计优化自定义事件查询，支持事件ID和设备标识查询
+- 优化 去除注册admin时的验证码组件（admin只能注册一次，无需验证码）
+## 2.3.6（2023-04-10）
+- 优化 支付统计-价值用户排行：只统计已支付的订单金额，且去除退款金额。
+## 2.3.5（2023-02-24）
+- 修复 升级中心安卓应用商店不显示的Bug
 ## 2.3.4（2023-02-09）
 - 重要 阿里云空间支持上传sourceMap用以分析js错误统计 [详情](https://uniapp.dcloud.net.cn/uni-stat-v2.html#sourcemap-parse-error)
 ## 2.3.3（2023-02-02）

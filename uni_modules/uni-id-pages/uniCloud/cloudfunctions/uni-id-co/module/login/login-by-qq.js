@@ -108,7 +108,8 @@ module.exports = async function (params = {}) {
   const extraData = {
     qq_openid: {
       [`${qqPlatform}_${appId}`]: openid
-    }
+    },
+    qq_unionid: unionid
   }
   if (type === 'register' && qqPlatform !== 'mp') {
     const {

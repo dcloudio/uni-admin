@@ -77,5 +77,14 @@ module.exports = {
   },
   setPwd: {
     auth: true
+  },
+  getFrvCertifyId: {
+    auth: true
+  },
+  getFrvAuthResult: {
+    auth: true
+  },
+  getRealNameInfo: {
+    auth: true
   }
 }

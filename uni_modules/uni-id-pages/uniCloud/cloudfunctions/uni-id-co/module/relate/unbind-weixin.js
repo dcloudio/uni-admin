@@ -16,14 +16,12 @@ const {
  */
 module.exports = async function () {
   const { uid } = this.authInfo
-  const weixinPlatform = getWeixinPlatform.call(this)
+  // const weixinPlatform = getWeixinPlatform.call(this)
 
   await preUnBind.call(this, {
     uid,
     unBindAccount: {
-      wx_openid: {
-        [weixinPlatform]: dbCmd.exists(true)
-      },
+      wx_openid: dbCmd.exists(true),
       wx_unionid: dbCmd.exists(true)
     },
     logType: LOG_TYPE.UNBIND_WEIXIN

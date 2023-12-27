@@ -2,7 +2,7 @@
 	<view style="position: relative;">
 		<uni-icons @mouseenter.native="mouseenter" @mouseleave.native="showStableInfo = false"
 			style="padding:0 10px;color: #a8a8a8;cursor: pointer;" type="info" />
-		<view v-if="showStableInfo" class="show-stable" :style="{top:`${top}px`,left:`${left}px`,width:`${width}px`}">
+		<view v-if="showStableInfo" class="show-stable" :style="{top:`${top}px`,left:`${left}px`}">
 			<text>{{content}}</text>
 		</view>
 	</view>
@@ -19,10 +19,6 @@
 			left: {
 				type: [Number, String],
 				default: -100
-			},
-			width: {
-				type: [Number, String],
-				default: 200
 			}
 		},
 		data() {

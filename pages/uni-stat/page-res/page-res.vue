@@ -15,7 +15,7 @@
 			</view>
 			<view class="uni-stat--x flex">
 				<uni-stat-tabs label="日期选择" :current="currentDateTab" mode="date" @change="changeTimeRange" />
-				<uni-datetime-picker type="daterange" :end="new Date().getTime()" v-model="query.start_time"
+				<uni-datetime-picker type="datetimerange" :end="new Date().getTime()" v-model="query.start_time"
 					returnType="timestamp" :clearIcon="false" class="uni-stat-datetime-picker"
 					:class="{'uni-stat__actived': currentDateTab < 0 && !!query.start_time.length}"
 					@change="useDatetimePicker" />
@@ -275,16 +275,23 @@
 				const db = uniCloud.database()
 				db.collection('uni-stat-pages')
 					.where({
-						url: this.queryId
+						path: this.queryId
 					})
 					.update({
 						title: value
 					})
 					.then((res) => {
-						uni.showToast({
-							title: '修改成功'
-						})
-						this.getTableData()
+						if (res.result.updated) {
+							uni.showToast({
+								title: '修改成功'
+							})
+							this.getTableData()
+						} else {
+							uni.showToast({
+								title: '修改失败',
+								icon: "none"
+							})
+						}
 					}).catch((err) => {
 						uni.showModal({
 							content: err.message || '请求服务失败',

@@ -55,7 +55,8 @@
 							<uni-td>{{ item.menu_id }}</uni-td>
 							<uni-td>{{ item.url }}</uni-td>
 							<uni-td align="center" :class="{'menu-disable':!item.enable}">
-								{{ item.enable ? '已启用' : '未启用' }}
+								<switch :checked="item.enable" @change="enableChange(item)" />
+								<!-- {{ item.enable ? '已启用' : '未启用' }} -->
 							</uni-td>
 							<uni-td align="center">
 								<view class="uni-group" style="justify-content: left;">
@@ -273,6 +274,12 @@ export default {
 		}
 	},
 	methods: {
+		enableChange(item){
+			item.enable = item.enable ? false : true;
+			db.collection("opendb-admin-menus").doc(item._id).update({
+				enable: item.enable
+			});
+		},
 		getSortMenu(menuList) {
 			// 标记叶子节点
 			menuList.map(item => {
@@ -360,6 +367,7 @@ export default {
 				if (menu) {
 					// 拷贝一份，移除 json 字段
 					const dbMenu = JSON.parse(JSON.stringify(menu))
+					dbMenu.enable = true;
 					delete dbMenu.json
 					menus.push(dbMenu)
 				}

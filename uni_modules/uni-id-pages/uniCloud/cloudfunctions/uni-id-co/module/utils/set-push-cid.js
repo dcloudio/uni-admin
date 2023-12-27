@@ -117,25 +117,16 @@ module.exports = async function (params = {}) {
       errCode: 0
     }
   }
-  // 同一用户允许更新token_expired，不同用户在token_expired小于Date.now()时允许更新。搭配逻辑：用户退出登录时将token_expired置0
-  if (
-    deviceRecord.user_id === uid ||
-    (deviceRecord.token_expired < Date.now())
-  ) {
-    await deviceCollection.where({
-      device_id: deviceId
-    }).update({
-      user_id: uid,
-      token_expired: tokenExpired,
-      push_clientid: pushClientId,
-      appid: appId
-    })
-    return {
-      errCode: 0
-    }
-  }
 
+  await deviceCollection.where({
+    device_id: deviceId
+  }).update({
+    user_id: uid,
+    token_expired: tokenExpired,
+    push_clientid: pushClientId,
+    appid: appId
+  })
   return {
-    errCode: ERROR.SYSTEM_ERROR
+    errCode: 0
   }
 }

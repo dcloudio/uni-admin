@@ -23,7 +23,6 @@ module.exports = {
 		//如果已存在则调用刷新接口，反之调用插件接口
 		let action = res.data.length ? 'refresh' : 'create'
 		//执行并返回结果
-		//导入配置，配置优先级说明：此处配置 > uni-config-center
 		return await uniCaptcha[action]({
 			scene, //来源客户端传递，表示：使用场景值，用于防止不同功能的验证码混用
 			uniPlatform: platform

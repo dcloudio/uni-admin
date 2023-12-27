@@ -113,7 +113,17 @@ module.exports = async function (params = {}) {
     data.mobile_confirmed = 1
   }
 
-  await userCollection.add(data)
+  // 触发 beforeRegister 钩子
+  const beforeRegister = this.hooks.beforeRegister
+  let userRecord = data
+  if (beforeRegister) {
+    userRecord = await beforeRegister({
+      userRecord,
+      clientInfo: this.getUniversalClientInfo()
+    })
+  }
+
+  await userCollection.add(userRecord)
   return {
     errCode: 0,
     errMsg: ''

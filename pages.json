@@ -28,9 +28,15 @@
 				"navigationBarTitleText": "版本信息查看"
 			}
 		}
-	],
-	"subPackages": [
-		{
+	,{
+    "path": "uni_modules/uni-id-pages/pages/userinfo/realname-verify/realname-verify",
+    "style": {
+        "enablePullDownRefresh": false,
+        "navigationBarTitleText": "实名认证"
+    }
+}
+],
+	"subPackages": [{
 			"root": "pages/system",
 			"pages": [
 				{
@@ -190,6 +196,20 @@
 					"path": "page-ent/page-ent",
 					"style": {
 						"navigationBarTitleText": "入口页",
+						"enablePullDownRefresh": false
+					}
+				},
+				{
+					"path": "page-content/page-content",
+					"style": {
+						"navigationBarTitleText": "内容统计",
+						"enablePullDownRefresh": false
+					}
+				},
+				{
+					"path": "page-rule/page-rule",
+					"style": {
+						"navigationBarTitleText": "页面规则",
 						"enablePullDownRefresh": false
 					}
 				},

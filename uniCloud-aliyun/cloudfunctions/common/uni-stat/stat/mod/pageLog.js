@@ -6,6 +6,7 @@ const Page = require('./page')
 const Platform = require('./platform')
 const Channel = require('./channel')
 const SessionLog = require('./sessionLog')
+const PageDetail = require('./pageDetail')
 const {
 	DateTime
 } = require('../lib')
@@ -39,6 +40,7 @@ module.exports = class PageLog extends BaseMod {
 		const platform = new Platform()
 		const dateTime = new DateTime()
 		const channel = new Channel()
+		const pageDetail = new PageDetail()
 		for (const pk in reportParams) {
 			params = reportParams[pk]
 			if (['3', '4'].includes(params.lt) && !params.url && params.urlref) {
@@ -114,6 +116,31 @@ module.exports = class PageLog extends BaseMod {
 			//当前页面url信息
 			const urlInfo = parseUrl(params.url)
 
+			//记录页面内容统计数据
+			let pageDetailInfo
+			let referPageDetailInfo
+			if(this.getConfig('pageDetailStat')) {
+				pageDetailInfo = await pageDetail.getPageDetailByPageRules({
+					appid: params.ak,
+					pageUrl: params.url,
+					pageTitle: params.ttpj,
+					pageId: pageInfo._id,
+					pageRules: pageInfo.page_rules
+				})
+				if(this.debug) {
+					console.log('pageDetailInfo', pageDetailInfo)
+				}
+				if(params.urlref && referPageInfo) {
+					referPageDetailInfo = await pageDetail.getPageDetailByPageRules({
+						appid: params.ak,
+						pageUrl: params.urlref,
+						pageTitle: params.ttpj,
+						pageId: referPageInfo._id,
+						pageRules: referPageInfo.page_rules
+					})
+				}
+			}
+
 			// 填充数据
 			fillParams.push({
 				appid: params.ak,
@@ -129,6 +156,8 @@ module.exports = class PageLog extends BaseMod {
 				previous_page_id: referPageInfo._id,
 				previous_page_duration: params.urlref_ts ? parseInt(params.urlref_ts) : 0,
 				previous_page_is_entry: referPageInfo._id === sessionLogInfo.data.entryPageId ? 1 : 0,
+				page_detail_id: (pageDetailInfo && pageDetailInfo._id) || undefined,
+				previous_page_detail_id: (referPageDetailInfo && referPageDetailInfo._id) || undefined,
 				create_time: dateTime.getTime()
 			})
 		}
@@ -149,7 +178,6 @@ module.exports = class PageLog extends BaseMod {
 			for (const sid in sessionData) {
 				await sessionLog.updateSession(sid, sessionData[sid])
 			}
-
 			return {
 				code: 0,
 				msg: 'success'
@@ -169,15 +197,12 @@ module.exports = class PageLog extends BaseMod {
 	async clean(days) {
 		days = Math.max(parseInt(days), 1)
 		console.log('clean page logs - day:', days)
-
 		const dateTime = new DateTime()
-
 		const res = await this.delete(this.tableName, {
 			create_time: {
 				$lt: dateTime.getTimeBySetDays(0 - days)
 			}
 		})
-
 		if (!res.code) {
 			console.log('clean page log:', res)
 		}

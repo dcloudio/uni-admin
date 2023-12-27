@@ -20,8 +20,8 @@ class WeixinServer {
   getAccessToken() {
     return uniCloud.httpclient.request(WeixinServer.AccessToken_Url, {
       dataType: 'json',
-      method: 'GET',
-      dataAsQueryString: true,
+      method: 'POST',
+      contentType: 'json',
       data: {
         appid: this._appid,
         secret: this._secret,
@@ -106,7 +106,7 @@ class WeixinServer {
   }
 }
 
-WeixinServer.AccessToken_Url = 'https://api.weixin.qq.com/cgi-bin/token'
+WeixinServer.AccessToken_Url = 'https://api.weixin.qq.com/cgi-bin/stable_token'
 WeixinServer.Code2Session_Url = 'https://api.weixin.qq.com/sns/jscode2session'
 WeixinServer.User_Encrypt_Key_Url = 'https://api.weixin.qq.com/wxa/business/getuserencryptkey'
 WeixinServer.AccessToken_H5_Url = 'https://api.weixin.qq.com/cgi-bin/token'

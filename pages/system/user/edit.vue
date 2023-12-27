@@ -292,6 +292,10 @@
 					return '审核中'
 				} else if (status === 3) {
 					return '审核拒绝'
+				} else if (status === 4) {
+					return '已注销'
+				} else if (typeof status !== "undefined") {
+					return '未知'
 				} else {
 					return '启用'
 				}

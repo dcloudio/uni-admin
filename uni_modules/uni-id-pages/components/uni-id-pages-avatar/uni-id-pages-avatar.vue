@@ -1,9 +1,9 @@
 <template>
-	<view @click="uploadAvatarImg" class="box" :class="{'showBorder':border}"  :style="{width,height,lineHeight:height}">
+	<button open-type="chooseAvatar" @chooseavatar="bindchooseavatar" @click="uploadAvatarImg" class="box" :class="{'showBorder':border}"  :style="{width,height,lineHeight:height}">
 		<cloud-image v-if="avatar_file" :src="avatar_file.url" :width="width" :height="height"></cloud-image>
 		<uni-icons v-else :style="{width,height,lineHeight:height}" class="chooseAvatar" type="plusempty" size="30"
 			color="#dddddd"></uni-icons>
-	</view>
+	</button>
 </template>
 
 <script>
@@ -66,7 +66,42 @@
 				// 使用 clientDB 提交数据
 				mutations.updateUserInfo({avatar_file})
 			},
+			async bindchooseavatar(res){
+				let avatarUrl = res.detail.avatarUrl
+				let avatar_file = {
+					extname: avatarUrl.split('.')[avatarUrl.split('.').length - 1],
+					name:'',
+					url:''
+				}
+				//上传到服务器
+				let cloudPath = this.userInfo._id + '' + Date.now()
+				avatar_file.name = cloudPath
+				try{
+					uni.showLoading({
+						title: "更新中",
+						mask: true
+					});
+					let {
+						fileID
+					} = await uniCloud.uploadFile({
+						filePath:avatarUrl,
+						cloudPath,
+						fileType: "image"
+					});
+					avatar_file.url = fileID
+					uni.hideLoading()
+				}catch(e){
+					console.error(e);
+				}
+				console.log('avatar_file',avatar_file);
+				this.setAvatarFile(avatar_file)
+			},
 			uploadAvatarImg(res) {
+				// #ifdef MP-WEIXIN
+				return false // 微信小程序走 bindchooseavatar方法
+				// #endif
+				
+				// #ifndef MP-WEIXIN
 				if(!this.hasLogin){
 					return uni.navigateTo({
 						url:'/uni_modules/uni-id-pages/pages/login/login-withoutpwd'
@@ -113,27 +148,6 @@
 								});
 							}
 							// #endif
-							
-							// #ifdef MP-WEIXIN
-							wx.cropImage({
-								src:filePath,
-								cropScale:"1:1",
-								success: res => {
-									callback(res.tempFilePath)
-								},
-								fail(e){
-									console.error(e)
-									uni.showModal({
-										content: 'wx.cropImage ' + e.errMsg,
-										showCancel: false,
-										confirmText:"跳过裁剪",
-										complete() {
-											callback(filePath)
-										}
-									});
-								}
-							})
-							// #endif
 						})
 						// #endif
 						
@@ -155,6 +169,7 @@
 						this.setAvatarFile(avatar_file)
 					}
 				})
+				// #endif
 			}
 		}
 	}
@@ -166,13 +181,15 @@
 		overflow: hidden;
 	}
 	/* #endif */
+	.box{
+		padding: 0;
+	}
 	
 	.chooseAvatar {
 		/* #ifndef APP-NVUE */
 		display: inline-block;
 		box-sizing: border-box;
 		/* #endif */
-		border: dotted 1px #ddd;
 		border-radius: 10px;
 		text-align: center;
 		padding: 1px;

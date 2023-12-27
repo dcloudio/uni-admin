@@ -32,7 +32,7 @@
 			"title": "头像地址",
 			"trim": "both",
 			"permission": {
-				"read": "doc._id == auth.uid || 'READ_UNI_ID_USERS' in auth.permission",
+				"read": true,
 				"write": "doc._id == auth.uid || 'CREATE_UNI_ID_USERS' in auth.permission || 'UPDATE_UNI_ID_USERS' in auth.permission"
 			}
 		},
@@ -41,7 +41,7 @@
 			"description": "用file类型方便使用uni-file-picker组件",
 			"title": "头像文件",
 			"permission": {
-				"read":true,
+				"read": true,
 				"write": "doc._id == auth.uid || 'CREATE_UNI_ID_USERS' in auth.permission || 'UPDATE_UNI_ID_USERS' in auth.permission"
 			}
 		},
@@ -332,23 +332,31 @@
 		"status": {
 			"bsonType": "int",
 			"defaultValue": 0,
-			"description": "用户状态：0 正常 1 禁用 2 审核中 3 审核拒绝",
+			"description": "用户状态：0 正常 1 禁用 2 审核中 3 审核拒绝 4 已注销",
 			"permission": {
 				"write": false
 			},
 			"enum": [{
-				"text": "正常",
-				"value": 0
-			}, {
-				"text": "禁用",
-				"value": 1
-			}, {
-				"text": "审核中",
-				"value": 2
-			}, {
-				"text": "审核拒绝",
-				"value": 3
-			}],
+					"text": "正常",
+					"value": 0
+				},
+				{
+					"text": "禁用",
+					"value": 1
+				},
+				{
+					"text": "审核中",
+					"value": 2
+				},
+				{
+					"text": "审核拒绝",
+					"value": 3
+				},
+				{
+					"text": "已注销",
+					"value": 4
+				}
+			],
 			"title": "用户状态"
 		},
 		"token": {
@@ -435,6 +443,14 @@
 			"permission": {
 				"read": false,
 				"write": false
+			}
+		},
+		"identities": {
+			"bsonType": "array",
+			"description": "三方平台身份信息；一个对象代表一个身份，参数支持: provider 身份源, userInfo 三方用户信息, openid 三方openid, unionid 三方unionid, uid 三方uid",
+			"permission": {
+				"read": "'READ_UNI_ID_USERS' in auth.permission",
+				"write": "'CREATE_UNI_ID_USERS' in auth.permission || 'UPDATE_UNI_ID_USERS' in auth.permission"
 			}
 		}
 	},

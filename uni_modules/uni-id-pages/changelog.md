@@ -1,3 +1,43 @@
+## 1.1.14（2023-05-19）
+- 修复 退出登录不会跳转至登录页的问题
+## 1.1.13（2023-05-10）
+- 修复 启用摇树优化 报错的问题
+## 1.1.12（2023-05-05）
+- uni-id-co 新增 调用 add-user 接口创建用户时允许触发 beforeRegister 钩子方法，beforeRegister 钩子[详见](https://uniapp.dcloud.net.cn/uniCloud/uni-id-summary.html#before-register)
+- uni-id-co 新增 自无 unionid 到有 unionid 状态进行登录时为用户补充 unionid 字段
+- uni-id-co 修复 i18n 在特定场景下报错的 bug
+- uni-id-co 修复 跨平台解绑微信/QQ时无法解绑的 bug
+- uni-id-co 修复 微信小程序等平台创建验证码时无法展示的 bug
+- uni-id-co 修复 更新 push_clientid 时因 device_id 没有变化导致无法更新
+## 1.1.11（2023-03-24）
+- 修复 tabbar页面因为token无效而强制跳转至登录页面（url参数包含`uniIdRedirectUrl`）后无法返回的问题
+## 1.1.10（2023-03-24）
+- 修复 PC微信扫码登录跳转地址错误
+- uni-id-co 新增 请求鉴权支持 uni-cloud-s2s 模块验证签名 [uni-cloud-s2s文档](https://uniapp.dcloud.net.cn/uniCloud/uni-cloud-s2s.html)
+## 1.1.9（2023-03-24）
+- 修复 跳转至登录页面的url参数包含`uniIdRedirectUrl`后无法返回的问题
+## 1.1.8（2023-03-02）
+- 修复 调试模式下没有对微信授权手机号登录方式进行配置检测
+## 1.1.7（2023-02-27）
+- 【重要】新增 实名认证功能 [详情](https://uniapp.dcloud.net.cn/uniCloud/uni-id-summary.html#frv)
+## 1.1.6（2023-02-24）
+- uni-id-co 新增 注册用户时允许配置默认角色 [文档](https://uniapp.dcloud.net.cn/uniCloud/uni-id-summary.html#config-defult-role)
+- uni-id-co 优化 `updateUserInfoByExternal`接口，允许修改头像、性别
+- uni-id-co 修复 请求签名密钥字段 `requestAuthSecret` 缺少为空判断
+- uni-id-co 修复 `externalRegister`接口头像未使用`avatar_file`字段保存
+- 修复 web微信登录回调地址不正确
+## 1.1.5（2023-02-23）
+- 更新 微信小程序端 更新头像信息，如果是使用微信的头像则不再调用裁剪接口
+## 1.1.4（2023-02-21）
+- 修复 部分情况下 `uniIdRedirectUrl` 参数无效的问题
+## 1.1.3（2023-02-20）
+- 修复 非微信小程序端报`TypeError: uni.hideHomeButton is not a function`的问题
+## 1.1.2（2023-02-10）
+- 新增 微信小程序端 首页需强制登录时，隐藏返回首页按钮
+- uni-id-co 新增 外部联登后修改用户信息接口(updateUserInfoByExternal) [文档](https://uniapp.dcloud.net.cn/uniCloud/uni-id-pages.html#external-update-userinfo)
+- uni-id-co 优化外部联登接口（登录、注册）逻辑
+## 1.1.1（2023-02-02）
+- 新增 微信小程序端 支持选择使用微信资料的“头像”和“昵称” 设置用户资料 [详情参考](https://wdoc-76491.picgzc.qpic.cn/MTY4ODg1MDUyNzQyMDUxNw_21263_rTNhg68FTngQGdvQ_1647431233?w=1280&h=695.7176470588236)
 ## 1.1.0（2023-01-31）
 - 【重要】优化 小程序端资源包大小（运行时大小为：731KB，发行后为：583KB；注：可以直接将本插件作为分包使用）
 - 更新 微信小程序端 上传头像功能 用`wx.cropImage`实现图片裁剪

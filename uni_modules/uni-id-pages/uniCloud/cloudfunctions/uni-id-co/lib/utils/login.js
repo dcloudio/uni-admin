@@ -173,8 +173,8 @@ async function thirdPartyLogin (params = {}) {
     user
   } = params
   return {
-    mobileComfirmd: user.mobile_comfirmd,
-    emailComfirmd: user.email_comfirmd
+    mobileConfirmed: !!user.mobile_confirmed,
+    emailConfirmed: !!user.email_confirmed
   }
 }
 
@@ -194,12 +194,18 @@ async function postLogin (params = {}) {
     last_login_ip: clientIP,
     ...extraData
   }
-  const {
-    token,
-    tokenExpired
-  } = await this.uniIdCommon.createToken({
+  const createTokenRes = await this.uniIdCommon.createToken({
     uid
   })
+
+  const {
+    errCode,
+    token,
+    tokenExpired
+  } = createTokenRes
+  if (errCode) {
+    throw createTokenRes
+  }
 
   if (uniIdToken) {
     try {

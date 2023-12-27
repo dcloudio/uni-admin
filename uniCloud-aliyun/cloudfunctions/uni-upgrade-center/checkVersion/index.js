@@ -8,12 +8,14 @@ module.exports = async (event, context) => {
 	 * 3. 再从所有线上发行更新中取出版本最大的一版。如果可以，尽量先检测wgt的线上发行版更新
 	 * 4. 使用上步取出的版本包的版本号 和传参 appVersion、wgtVersion 来检测是否有更新，必须同时大于这两项，否则返回暂无更新
 	 * 5. 如果库中 wgt包 版本大于传参 appVersion，但是不满足 min_uni_version < appVersion，则不会使用wgt更新，会接着判断库中 app包version 是否大于 appVersion
+	 * 6. is_uniapp_x 为了区分 App 类型，uni-app x 项目安卓端没有 wgt 升级
 	 */
 
 	let {
 		appid,
 		appVersion,
 		wgtVersion,
+		is_uniapp_x = false
 	} = event;
 
 	const platform_Android = 'Android';
@@ -71,37 +73,51 @@ module.exports = async (event, context) => {
 			const hasWgtPackage = !!Object.keys(wgtVersionInDb).length;
 
 			// 取两个版本中版本号最大的包，版本一样，使用wgt包
-			let stablePublishDb = hasAppPackage ?
-				hasWgtPackage ?
-				compare(wgtVersionInDb.version, appVersionInDb.version) >= 0 ?
-				wgtVersionInDb :
-				appVersionInDb :
-				appVersionInDb :
-				wgtVersionInDb;
+			let stablePublishDb = (() => {
+				// uni-app x 项目安卓端没有 wgt 升级
+				if (is_uniapp_x === true && platform === platform_Android) {
+					if (hasAppPackage) return appVersionInDb
+					return {}
+				}
+				if (hasAppPackage && hasWgtPackage) {
+					if (compare(wgtVersionInDb.version, appVersionInDb.version) >= 0)
+						return wgtVersionInDb
+					else {
+						return appVersionInDb
+					}
+				} else if (hasAppPackage) {
+					return appVersionInDb
+				} else if (hasWgtPackage) {
+					return wgtVersionInDb
+				}
+				return {}
+			})();
 
-			const {
-				version,
-				min_uni_version
-			} = stablePublishDb;
+			if (Object.keys(stablePublishDb).length) {
+				const {
+					version,
+					min_uni_version
+				} = stablePublishDb;
 
-			// 库中的version必须满足同时大于appVersion和wgtVersion才行，因为上次更新可能是wgt更新
-			const appUpdate = compare(version, appVersion) === 1; // app包可用更新
-			const wgtUpdate = compare(version, wgtVersion) === 1; // wgt包可用更新
+				// 库中的version必须满足同时大于appVersion和wgtVersion才行，因为上次更新可能是wgt更新
+				const appUpdate = compare(version, appVersion) === 1; // app包可用更新
+				const wgtUpdate = compare(version, wgtVersion) === 1; // wgt包可用更新
 
-			if (Object.keys(stablePublishDb).length && appUpdate && wgtUpdate) {
-				// 判断是否可用wgt更新
-				if (min_uni_version && compare(min_uni_version, appVersion) < 1) {
-					return {
-						code: 101,
-						message: 'wgt更新',
-						...stablePublishDb
-					};
-				} else if (hasAppPackage && compare(appVersionInDb.version, appVersion) === 1) {
-					return {
-						code: 102,
-						message: '整包更新',
-						...appVersionInDb
-					};
+				if (appUpdate && wgtUpdate) {
+					// 判断是否可用wgt更新
+					if (min_uni_version && compare(min_uni_version, appVersion) < 1) {
+						return {
+							code: 101,
+							message: 'wgt更新',
+							...stablePublishDb
+						};
+					} else if (hasAppPackage && compare(appVersionInDb.version, appVersion) === 1) {
+						return {
+							code: 102,
+							message: '整包更新',
+							...appVersionInDb
+						};
+					}
 				}
 			}
 

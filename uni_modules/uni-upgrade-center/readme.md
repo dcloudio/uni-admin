@@ -1,24 +1,26 @@
+## uni-admin 1.9.3+ 已内置，此插件不再维护  [点击查看文档](https://uniapp.dcloud.net.cn/uniCloud/upgrade-center.html)
+
+- `uni-admin < 1.9.0`：请前往 [Gitee](https://gitee.com/dcloud/uni-upgrade-center/releases) 下载 `tag v0.4.2` 版本使用
+-`1.9.0 <= uni-admin < 1.9.2` ：请前往 [Gitee](https://gitee.com/dcloud/uni-upgrade-center/releases) 下载 `tag v0.5.1` 版本使用
+- `uni-admin >= 1.9.3` ：uni-admin 已内置 升级中心，直接使用即可 [详情](https://uniapp.dcloud.io/uniCloud/admin.html#app-manager)。并且云函数 `upgrade-center` 废弃，使用 `uni-upgrade-center` 云函数。
+
 # uni-upgrade-center - Admin
 
 ### 概述
 
 > 统一管理App及App在`Android`、`iOS`平台上`App安装包`和`wgt资源包`的发布升级
 
-> 本插件为升级中心Admin后台管理系统，前台检查更新函数请点击查看 [uni-upgrade-center-app](https://ext.dcloud.net.cn/plugin?id=4542)
+> 本插件为uni升级中心后台管理系统，客户端检查更新插件请点击查看 [uni-upgrade-center-app](https://ext.dcloud.net.cn/plugin?id=4542)
 
 ### 基于uniCloud的App升级中心，本插件具有如下特征：
   - 云端基于uniCloud云函数实现
   - 数据库遵循opendb规范
-  - 遵循uniCloud Admin框架规范，可直接导入Admin项目中
+  - 遵循uni-Admin框架规范，可直接导入uni-admin项目中
   - 支持App整包升级及wgt资源包升级
-
-## 什么是 uniCloud
-
-uniCloud 是 DCloud 联合阿里云、腾讯云，为开发者提供的基于 serverless 模式和 js 编程的云开发平台，更多请参考[uniCloud 文档](https://uniapp.dcloud.io/uniCloud)。
 
 ## 升级中心解决了什么问题？
 
-升级中心是一款uniCloud admin插件，负责App版本更新业务。包含后台管理界面、更新检查逻辑，App内只要调用弹出提示即可。
+升级中心是一款uni-admin插件，负责App版本更新业务。包含后台管理界面、更新检查逻辑，App内只要调用弹出提示即可。
 
 升级中心有以下功能点：
 
@@ -46,8 +48,6 @@ uniCloud 是 DCloud 联合阿里云、腾讯云，为开发者提供的基于 se
 4. 等待下载安装完毕。由于本插件依赖一些uni-ui插件，下载完成后会显示合并插件页面，自行选择即可
 
 5. 找到`/uni_modules/uni-upgrade-center/uniCloud/cloudfunctions/upgrade-center`，右键上传部署
-
-6. 找到`/uni_modules/uni-upgrade-center/uniCloud/database/db_init.json`，右键初始化数据库
 
 7. 在`pages.json`中添加页面路径
 ```json
@@ -84,12 +84,16 @@ uniCloud 是 DCloud 联合阿里云、腾讯云，为开发者提供的基于 se
 
 9. 运行项目到`Chrome`
 
-10. 运行起来uniCloud admin，菜单管理模块会自动读取`/uni_modules/uni-upgrade-center/menu.json`文件中的菜单配置，生成【待添加菜单】，选中升级中心，点击`添加选中的菜单`即可
+10. 添加菜单
+	- `vue2`
 
-	<div align="center">
-	<img src="https://vkceyugu.cdn.bspapp.com/VKCEYUGU-a90b5f95-90ba-4d30-a6a7-cd4d057327db/16dc338e-7d5b-4290-98a9-adb7f0c23754.png" width="800"></img>
-	</div>
+		运行起来uniCloud admin，菜单管理模块会自动读取`/uni_modules/uni-upgrade-center/menu.json`文件中的菜单配置，生成【待添加菜单】，选中升级中心，点击`添加选中的菜单`即可
+		<div align="center">
+		<img src="https://vkceyugu.cdn.bspapp.com/VKCEYUGU-a90b5f95-90ba-4d30-a6a7-cd4d057327db/16dc338e-7d5b-4290-98a9-adb7f0c23754.png" width="800"></img>
+		</div>
+	- `vue3`
 
+		可将 `/uni_modules/uni-upgrade-center/menu.json` 拷贝至 `uniCloud/database/db_init.json` 中的 `opendb-admin-menus` 节点下，并右键初始化数据库即可。
 11. 添加成功后，就可以在左侧的菜单栏中找到`升级中心`菜单
 
 	<div align="center">
@@ -156,6 +160,7 @@ uniCloud 是 DCloud 联合阿里云、腾讯云，为开发者提供的基于 se
 		
 		- 修改当前包为上线发行，自动替换当前线上发行版
 
+	**注：版本号请填写以`.`分隔字符串，例如：`0.0.1`**
 - #### 发布wgt资源包
 	1. 大部分配置与发布 `原生App安装包` 一致
 
@@ -172,6 +177,9 @@ uniCloud 是 DCloud 联合阿里云、腾讯云，为开发者提供的基于 se
 
 	2. `静默更新`
 		- App升级时会在后台下载wgt包并自行安装。新功能在下次启动App时生效
+		- **静默更新后不重启应用，可能会导致正在访问的应用的页面数据错乱，请谨慎使用！**
+
+	**注：版本号请填写以`.`分隔字符串，例如：`0.0.1`**
 
 - #### 发布完成页面
 

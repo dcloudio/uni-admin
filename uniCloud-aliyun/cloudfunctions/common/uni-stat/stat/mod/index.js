@@ -14,6 +14,7 @@ module.exports = {
 	ActiveUsers: require('./activeUsers'),
 	ActiveDevices: require('./activeDevices'),
 	PageResult: require('./pageResult'),
+	PageDetailResult: require('./pageDetailResult'),
 	EventResult: require('./eventResult'),
 	ErrorResult: require('./errorResult'),
 	Loyalty: require('./loyalty'),

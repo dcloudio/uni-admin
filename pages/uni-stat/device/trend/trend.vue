@@ -15,7 +15,7 @@
 			</view>
 			<view class="uni-stat--x flex">
 				<uni-stat-tabs label="日期选择" :current="currentDateTab" mode="date" @change="changeTimeRange" />
-				<uni-datetime-picker type="daterange" :end="new Date().getTime()" v-model="query.start_time" returnType="timestamp" :clearIcon="false" class="uni-stat-datetime-picker" :class="{'uni-stat__actived': currentDateTab < 0 && !!query.start_time.length}" @change="useDatetimePicker" />
+				<uni-datetime-picker type="datetimerange" :end="new Date().getTime()" v-model="query.start_time" returnType="timestamp" :clearIcon="false" class="uni-stat-datetime-picker" :class="{'uni-stat__actived': currentDateTab < 0 && !!query.start_time.length}" @change="useDatetimePicker" />
 				<uni-stat-tabs label="维度选择" type="box" :current="currentDimensionTab" :tabs="dimensionTabs" v-model="query.dimension" />
 			</view>
 			<view class="uni-stat--x">
