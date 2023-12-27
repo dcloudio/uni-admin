@@ -2,7 +2,7 @@
 	"bsonType": "object",
 	"required": ["user_id", "title", "content"],
 	"permission": {
-		"read": "doc.user_id == auth.uid && doc.article_status == 0 || doc.article_status == 1",
+		"read": true,
 		"create": "auth.uid != null",
 		"update": "auth.uid != null",
 		"delete": "auth.uid != null"
