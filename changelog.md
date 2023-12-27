@@ -1,3 +1,7 @@
+## 2.4.1（2023-12-27）
+- 调整 db_init.json 新增内容统计相关表 [详情](https://uniapp.dcloud.net.cn/uni-stat-v2.html#upgrade2)
+## 2.4.0（2023-12-27）
+- 重要 uni统计-内容统计 [详情](https://uniapp.dcloud.net.cn/uni-stat-v2.html#upgrade2)
 ## 2.3.13（2023-12-15）
 - 修复 opendb-news-comments.schema.json permission 配置少一个s的问题
 ## 2.3.12（2023-11-07）
