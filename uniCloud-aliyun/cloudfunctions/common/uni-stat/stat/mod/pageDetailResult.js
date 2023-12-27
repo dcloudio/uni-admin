@@ -27,6 +27,12 @@ module.exports = class PageResult extends BaseMod {
 	 * @param {Boolean} reset 是否重置，为ture时会重置该批次数据
 	 */
 	async stat(type, date, reset) {
+		if(!this.getConfig('pageDetailStat')) {
+			return {
+				code: 1001,
+				msg: 'The page detail module not opened'
+			}
+		}
 		//允许的类型
 		const allowedType = ['day']
 		if (!allowedType.includes(type)) {
