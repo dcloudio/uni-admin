@@ -294,7 +294,7 @@
 		"enable": true,
 		"menu_id": "uni-stat-page-content-analysis",
 		"name": "内容统计",
-		"icon": "admin-icons-page-ent",
+		"icon": "admin-icons-doc",
 		"url": "",
 		"sort": 2140,
 		"create_date": 1638356902516
