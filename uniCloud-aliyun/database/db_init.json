@@ -376,6 +376,36 @@
 				"parent_id": "uni-stat",
 				"permission": [],
 				"enable": true,
+				"menu_id": "uni-stat-page-content-analysis",
+				"name": "内容统计",
+				"icon": "admin-icons-doc",
+				"url": "",
+				"sort": 2140,
+				"create_date": 1638356902516
+			}, {
+				"parent_id": "uni-stat-page-content-analysis",
+				"permission": [],
+				"enable": true,
+				"menu_id": "uni-stat-page-content",
+				"name": "内容统计",
+				"icon": "",
+				"url": "/pages/uni-stat/page-content/page-content",
+				"sort": 2141,
+				"create_date": 1638356902516
+			}, {
+				"parent_id": "uni-stat-page-content-analysis",
+				"permission": [],
+				"enable": true,
+				"menu_id": "uni-stat-page-rule",
+				"name": "页面规则",
+				"icon": "",
+				"url": "/pages/uni-stat/page-rule/page-rule",
+				"sort": 2142,
+				"create_date": 1638356902516
+			}, {
+				"parent_id": "uni-stat",
+				"permission": [],
+				"enable": true,
 				"menu_id": "uni-stat-senceChannel",
 				"name": "渠道/场景值分析",
 				"icon": "admin-icons-qudaofenxi",
