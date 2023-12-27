@@ -44,6 +44,9 @@
             "ios" : {},
             /* SDK配置 */
             "sdkConfigs" : {}
+        },
+        "uniStatistics" : {
+            "enable" : true
         }
     },
     /* 快应用特有相关 */
@@ -54,16 +57,28 @@
         "setting" : {
             "urlCheck" : false
         },
-        "usingComponents" : true
+        "usingComponents" : true,
+        "uniStatistics" : {
+            "enable" : true
+        }
     },
     "mp-alipay" : {
-        "usingComponents" : true
+        "usingComponents" : true,
+        "uniStatistics" : {
+            "enable" : true
+        }
     },
     "mp-baidu" : {
-        "usingComponents" : true
+        "usingComponents" : true,
+        "uniStatistics" : {
+            "enable" : true
+        }
     },
     "mp-toutiao" : {
-        "usingComponents" : true
+        "usingComponents" : true,
+        "uniStatistics" : {
+            "enable" : true
+        }
     },
     "h5" : {
         "template" : "template.h5.html",
@@ -73,10 +88,48 @@
         },
         "unipush" : {
             "enable" : true
+        },
+        "uniStatistics" : {
+            "enable" : true
         }
     },
     "vueVersion" : "2",
     "networkTimeout" : {
         "uploadFile" : 1200000 //ms， 如果不配置，上传大文件可能会超时
+    },
+    "uniStatistics" : {
+        "version" : "2",
+        "enable" : true,
+        "reportInterval" : "10"
+    },
+    "mp-jd" : {
+        "uniStatistics" : {
+            "enable" : true
+        }
+    },
+    "mp-kuaishou" : {
+        "uniStatistics" : {
+            "enable" : true
+        }
+    },
+    "mp-lark" : {
+        "uniStatistics" : {
+            "enable" : true
+        }
+    },
+    "mp-qq" : {
+        "uniStatistics" : {
+            "enable" : true
+        }
+    },
+    "quickapp-webview-huawei" : {
+        "uniStatistics" : {
+            "enable" : true
+        }
+    },
+    "quickapp-webview-union" : {
+        "uniStatistics" : {
+            "enable" : true
+        }
     }
 }
