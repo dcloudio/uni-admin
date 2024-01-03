@@ -54,13 +54,23 @@
 							<uni-easyinput v-model="formData[item].name" trim="both"></uni-easyinput>
 						</uni-forms-item>
 						<uni-forms-item class="forn-item__flex" v-if="item === 'app_android'" label="上传apk包">
-							<uni-file-picker v-model="appPackageInfo" file-extname="apk" :disabled="hasPackage"
+							<uni-file-picker v-model="appPackageInfo" file-extname="apk" :disabled="hasPackage"  :provider="uniFilePickerProvider"
 								returnType="object" file-mediatype="all" limit="1"
 								@success="(res) => iconUrlSuccess(res, `${item}.url`)"
 								@delete="(res) => iconUrlDelete(res,`${item}.url`)" style="flex:1;">
 								<view class="flex">
-									<button type="primary" size="mini" @click="selectFile"
-										style="margin: 0;">选择文件</button>
+									<radio-group @change="e => this.uniFilePickerProvider = e.detail.value">
+										<view class="flex" style="flex-wrap: nowrap;">
+									上传至：
+											<label>
+												<radio value="unicloud" checked/><text>内置存储</text>
+											</label>
+											<label style="margin-left: 20rpx;">
+												<radio value="extStorage" /><text>扩展存储</text>
+											</label>
+										</view>
+									</radio-group>
+									<button type="primary" size="mini" @click="selectFile" style="margin: 0 0 0 20rpx;">选择文件</button>
 									<text style="padding: 10px;font-size: 12px;color: #666;">
 										上传apk到当前服务空间的云存储中，上传成功后，会自动使用云存储地址填充下载链接
 									</text>
@@ -210,7 +220,8 @@
 				// 手风琴状态，默认为1
 				mpAccordionStatus: 1,
 				// 标签宽度，默认为'80px'
-				labelWidth: '80px'
+				labelWidth: '80px',
+				uniFilePickerProvider: 'unicloud'
 			}
 		},
 		/**
