@@ -112,7 +112,7 @@ export default {
 				.get()
 				.then(res => {
 					const data = res.result.data[0]
-					return data.store_list || []
+					return data ? data.store_list || [] : []
 				})
 		},
 		packageUploadSuccess(res) {

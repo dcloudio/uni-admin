@@ -40,9 +40,22 @@
 			</uni-forms-item>
 			<uni-forms-item v-if="!isiOS && !detailsState" label="上传apk包">
 				<uni-file-picker v-model="appFileList" :file-extname="fileExtname" :disabled="hasPackage"
-					returnType="object" file-mediatype="all" limit="1" @success="packageUploadSuccess"
+					returnType="object" file-mediatype="all" limit="1" @success="packageUploadSuccess" :provider="uniFilePickerProvider"
 					@delete="packageDelete">
-					<button type="primary" size="mini" @click="selectFile">选择文件</button>
+					<view class="flex">
+						<radio-group @change="e => this.uniFilePickerProvider = e.detail.value">
+							<view class="flex" style="flex-wrap: nowrap;">
+						上传至：
+								<label>
+									<radio value="unicloud" checked/><text>内置存储</text>
+								</label>
+								<label style="margin-left: 20rpx;">
+									<radio value="extStorage" /><text>扩展存储</text>
+								</label>
+							</view>
+						</radio-group>
+						<button type="primary" size="mini" @click="selectFile">选择文件</button>
+					</view>
 				</uni-file-picker>
 				<text v-if="hasPackage"
 					style="padding-left: 20px;color: #a8a8a8;">{{Number(appFileList.size / 1024 / 1024).toFixed(2)}}M</text>
@@ -159,7 +172,8 @@
 				showStableInfo: false,
 				isStable: true, // 是否是线上发行版
 				originalData: {}, // 原始数据，用于恢复状态
-				detailsState: true // 查看状态
+				detailsState: true, // 查看状态,
+				uniFilePickerProvider: 'unicloud'
 			}
 		},
 		async onLoad(e) {
