@@ -57,9 +57,9 @@ export default {
 </script>
 
 <style scoped lang="scss">
-// #ifdef H5
+/* #ifdef H5 */
 @import '@/uni_modules/uni-cms/common/style/editor-icon.css';
-// #endif
+/* #endif */
 .popup-body {
 	padding: 30px;
 	border-radius: 5px;

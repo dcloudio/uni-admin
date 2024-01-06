@@ -89,7 +89,7 @@ export default {
 </script>
 
 <style scoped>
-// #ifdef H5
+/* #ifdef H5 */
 @import '@/uni_modules/uni-cms/common/style/editor-icon.css';
-// #endif
+/* #endif */
 </style>

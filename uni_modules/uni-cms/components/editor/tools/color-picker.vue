@@ -40,9 +40,9 @@ export default {
 </script>
 
 <style scoped lang="scss">
-// #ifdef H5
+/* #ifdef H5 */
 @import '@/uni_modules/uni-cms/common/style/editor-icon.css';
-// #endif
+/* #endif */
 .color-panel {
 	padding: 5px;
 	.colors {
