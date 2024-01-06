@@ -1,0 +1,12 @@
+[
+  {
+    "menu_id": "uni-media-library",
+    "name": "媒体库",
+    "icon": "uni-icons-images",
+    "url": "/uni_modules/uni-media-library/pages/index/index",
+    "sort": 500,
+    "parent_id": "",
+    "permission": [],
+    "enable": true
+  }
+]

@@ -1,0 +1,10 @@
+{
+  "pages": [
+    {
+      "path": "uni_modules/uni-media-library/pages/index/index",
+      "style": {
+        "navigationBarTitleText": "媒体库"
+      }
+    }
+  ]
+}

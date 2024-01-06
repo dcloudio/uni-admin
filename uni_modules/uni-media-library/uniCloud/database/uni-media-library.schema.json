@@ -1,0 +1,65 @@
+{
+	"bsonType": "object",
+	"required": [],
+	"permission": {
+		"read": true,
+		"create": true,
+		"update": true,
+		"delete": true
+	},
+	"properties": {
+		"_id": {
+			"description": "ID，系统自动生成"
+		},
+		"src": {
+			"bsonType": "string",
+			"description": "媒体资源地址"
+		},
+		"cover": {
+			"bsonType": "string",
+			"description": "媒体资源封面地址；仅视频使用"
+		},
+		"type": {
+			"bsonType": "string",
+			"description": "媒体资源类型",
+			"enum": ["image", "video"]
+		},
+		"description": {
+			"bsonType": "string",
+			"description": "媒体资源描述"
+		},
+		"alt": {
+			"bsonType": "string",
+			"description": "媒体资源alt替代文字"
+		},
+		"originalName": {
+			"bsonType": "string",
+			"description": "媒体资源原始文件名"
+		},
+		"fileType": {
+			"bsonType": "string",
+			"description": "媒体资源文件类型"
+		},
+		"size": {
+			"bsonType": "number",
+			"description": "媒体资源大小"
+		},
+		"resolution": {
+			"bsonType": "object",
+			"description": "媒体资源分辨率"
+		},
+		"duration": {
+			"bsonType": "number",
+			"description": "媒体资源时长"
+		},
+		"uploadUser": {
+			"bsonType": "string",
+			"description": "媒体资源上传用户",
+			"foreignKey": "uni-id-users._id"
+		},
+		"createDate": {
+			"bsonType": "timestamp",
+			"description": "媒体资源创建时间"
+		}
+	}
+}

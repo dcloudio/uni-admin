@@ -1,7 +1,7 @@
 <template>
 	<view class="editor-toolbar-tool-box" ref="main">
 		<uni-tooltip>
-			<view class="editor-toolbar-tool" :class="{disabled: disabled, active: active, [type]: true, split: split}"
+			<view ref="editorToolbarTool" class="editor-toolbar-tool" :class="{disabled: disabled, active: active, [type]: true, split: split}"
 						@click="click">
 				<template v-if="type === 'button'">
 					<slot></slot>
@@ -23,7 +23,7 @@
 			</view>
 			<template v-if="tooltip.content" v-slot:content class="tooltip">
 				<view class="content">
-					<text>{{ tooltip.content }}</text>
+					<text class="text">{{ tooltip.content }}</text>
 				</view>
 				<view class="key" v-if="tooltip.key">
 					<text>{{ tooltip.key.join('+') }}</text>
@@ -101,7 +101,21 @@ export default {
       }
     }
   },
+  mounted () {
+    // 防止焦点失效
+    if (this.$refs.editorToolbarTool) {
+      this.$refs.editorToolbarTool.$el && this.$refs.editorToolbarTool.$el.addEventListener('mousedown', this.mousedownPreventDefault, {passive: false})
+    }
+  },
+  unmounted () {
+    if (this.$refs.editorToolbarTool) {
+      this.$refs.editorToolbarTool.$el && this.$refs.editorToolbarTool.$el.removeEventListener('mousedown', this.mousedownPreventDefault, {passive: false})
+    }
+  },
 	methods: {
+    mousedownPreventDefault (e) {
+      e.preventDefault()
+    },
 		hide(e) {
 			if (this.$refs.main && !this.$refs.main.$el.contains(e.target)) {
 				this.showPopup = false
@@ -145,8 +159,9 @@ export default {
 </script>
 
 <style scoped lang="scss">
+// #ifdef H5
 @import '@/uni_modules/uni-cms/common/style/editor-icon.css';
-
+// #endif
 .editor-toolbar-tool-box {
 	position: relative;
 	-webkit-user-select: none;
@@ -163,12 +178,11 @@ export default {
 		.key {
 			color: #999;
 		}
-    .content > * {
+    .content > .text {
       white-space: nowrap;
     }
 	}
 }
-
 .editor-toolbar-tool {
 	-webkit-user-select: none;
 	cursor: pointer;

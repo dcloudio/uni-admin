@@ -1,7 +1,7 @@
 {
   "id": "uni-sec-check",
   "displayName": "uni-sec-check",
-  "version": "2.0.1",
+  "version": "2.0.2",
   "description": "内容安全检测，包含图片和文字检测",
   "keywords": [
     "内容安全检查",

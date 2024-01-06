@@ -1,38 +1,30 @@
 const createConfig = require('uni-config-center')
 const {
   ErrorCode,
-  Cache,
   createApi,
   getClientInfo
 } = require('./utils/index')
 const MpWeixinService = require('./platform/mp-weixin/index')
 
-const configCenter = createConfig({
-  pluginId: 'uni-sec-check'
-})
 const providerMap = {
   'mp-weixin': MpWeixinService
 }
 
 class SecurityCheck {
-  constructor({
+  constructor ({
     provider,
-    requestId
-    } = {}) {
-    if (!requestId) {
-      throw new Error('缺少 requestId 参数')
-    }
+    requestId,
+    appId,
+  } = {}) {
     if (!provider || !providerMap[provider]) {
       throw new Error(`请提供支持的provider参数，当前provider为：${provider}`)
     }
 
     this.provider = provider
-
-    const clientInfo = getClientInfo(requestId)
-
     // 开发者提供的获取accessToken的接口，需要能返回{accessToken,expired}这种结构
     this.service = createApi(providerMap[provider], {
-      clientInfo
+      requestId,
+      appId
     })
 
     this.ErrorCode = ErrorCode
@@ -46,7 +38,7 @@ class SecurityCheck {
    * @param {Number} version
    * @return {Promise<*>}
    */
-  async imgSecCheck({
+  async imgSecCheck ({
     image,
     openid,
     scene,
@@ -76,7 +68,7 @@ class SecurityCheck {
    * @deprecated
    * @return {Promise<*>}
    */
-  async contentSecCheck({
+  async contentSecCheck ({
     content
   }) {
     console.warn('contentSecCheck接口已废弃，请使用textSecCheck')
@@ -93,7 +85,7 @@ class SecurityCheck {
    * @param {String} version
    * @return {Promise<*>}
    */
-  async textSecCheck({
+  async textSecCheck ({
     content,
     openid,
     scene,

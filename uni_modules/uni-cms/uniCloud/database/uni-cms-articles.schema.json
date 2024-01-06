@@ -3,9 +3,9 @@
 	"required": ["user_id", "title", "content"],
 	"permission": {
 		"read": true,
-		"create": "auth.uid != null",
-		"update": "auth.uid != null",
-		"delete": "auth.uid != null"
+		"create": "'admin' in auth.role || 'CREATE_UNI_CMS_ARTICLE' in auth.permission",
+		"update": "'admin' in auth.role || 'UPDATE_UNI_CMS_ARTICLE' in auth.permission",
+		"delete": "'admin' in auth.role || 'DELETE_UNI_CMS_ARTICLE' in auth.permission"
 	},
 	"properties": {
 		"_id": {
@@ -68,6 +68,7 @@
 			"bsonType": "int",
 			"title": "阅读数量",
 			"description": "阅读数量",
+			"defaultValue": 0,
 			"permission": {
 				"write": false
 			}
@@ -122,11 +123,11 @@
 			"foreignKey": "uni-id-users._id"
 		},
 		"thumbnail": {
-			"bsonType": "string",
+			"bsonType": "array",
 			"title": "封面大图",
 			"description": "缩略图地址",
 			"label": "封面大图",
-			"trim": "both"
+			"defaultValue": []
 		},
 		"publish_date": {
 			"bsonType": "timestamp",
@@ -158,6 +159,14 @@
 			"forceDefaultValue": {
 				"$env": "clientIP"
 			}
+		},
+		"preview_secret": {
+			"bsonType": "string",
+			"description": "文章预览密钥"
+		},
+		"preview_expired": {
+			"bsonType": "timestamp",
+			"description": "文章预览过期时间"
 		}
 	}
 }

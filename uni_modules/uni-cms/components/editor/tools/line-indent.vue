@@ -20,8 +20,8 @@ export default {
 	methods: {
 		change () {
 			this.$emit('change', {
-				type: 'indent',
-				value: this.active ? '-1' : '+1'
+				type: 'textIndent',
+				value: '1em'
 			})
 		}
 	}
@@ -29,5 +29,7 @@ export default {
 </script>
 
 <style scoped>
+// #ifdef H5
 @import '@/uni_modules/uni-cms/common/style/editor-icon.css';
+// #endif
 </style>

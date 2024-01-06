@@ -5,9 +5,9 @@
 	],
 	"permission": {
 		"read": true,
-		"create": true,
-		"update": true,
-		"delete": true
+		"create": "'admin' in auth.role || 'CREATE_UNI_CMS_CATEGORY' in auth.permission",
+		"update": "'admin' in auth.role || 'UPDATE_UNI_CMS_CATEGORY' in auth.permission",
+		"delete": "'admin' in auth.role || 'DELETE_UNI_CMS_CATEGORY' in auth.permission"
 	},
 	"properties": {
 		"_id": {

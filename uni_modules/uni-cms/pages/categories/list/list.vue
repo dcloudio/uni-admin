@@ -8,8 +8,8 @@
       <view class="uni-group">
         <input class="uni-search" type="text" v-model="query" @confirm="search" placeholder="请输入搜索内容" />
         <button class="uni-button" type="default" size="mini" @click="search">搜索</button>
-        <button class="uni-button" type="default" size="mini" @click="navigateTo('../add/add')">新增</button>
-        <button class="uni-button" type="default" size="mini" :disabled="!selectedIndexs.length" @click="delTable">批量删除</button>
+        <button v-if="hasPermission('CREATE_UNI_CMS_CATEGORIES')" class="uni-button" type="primary" size="mini" @click="navigateTo('../add/add')">新增</button>
+        <button v-if="hasPermission('DELETE_UNI_CMS_CATEGORIES')" class="uni-button" type="warn" size="mini" :disabled="!selectedIndexs.length" @click="delTable">批量删除</button>
         <download-excel class="hide-on-phone" :fields="exportExcel.fields" :data="exportExcelData" :type="exportExcel.type" :name="exportExcel.filename">
           <button class="uni-button" type="primary" size="mini">导出 Excel</button>
         </download-excel>
@@ -38,8 +38,8 @@
             </uni-td>
             <uni-td align="center">
               <view class="uni-group">
-                <button @click="navigateTo('../edit/edit?id='+item._id, false)" class="uni-button" size="mini" type="primary">修改</button>
-                <button @click="confirmDelete(item._id)" class="uni-button" size="mini" type="warn">删除</button>
+                <button v-if="hasPermission('UPDATE_UNI_CMS_CATEGORIES')" @click="navigateTo('../edit/edit?id='+item._id, false)" class="uni-button" size="mini" type="primary">修改</button>
+                <button v-if="hasPermission('DELETE_UNI_CMS_CATEGORIES')" @click="confirmDelete(item._id)" class="uni-button" size="mini" type="warn">删除</button>
               </view>
             </uni-td>
           </uni-tr>
@@ -54,13 +54,14 @@
 
 <script>
   import { enumConverter, filterToWhere } from '@/uni_modules/uni-cms/common/validator/uni-cms-categories.js';
+  import authMixin from "@/uni_modules/uni-cms/common/auth-mixin";
 
   const db = uniCloud.database()
   // 表查询配置
    // 排序字段
   const dbOrderBy = ''
    // 模糊搜索字段，支持模糊搜索的字段列表。联表查询格式: 主表字段名.副表字段名，例如用户表关联角色表 role.role_name
-  const dbSearchFields = []
+  const dbSearchFields = ['name']
   // 分页配置
   const pageSize = 20
   const pageCurrent = 1
@@ -71,6 +72,7 @@
   }
 
   export default {
+    mixins: [authMixin],
     data() {
       return {
         collectionList: "uni-cms-categories",
@@ -204,6 +206,15 @@ methods: {
           type: e.filterType,
           value: e.filter
         }
+
+        // range 类型的筛选，如果输入的值不是数字，则不进行筛选
+        const {type, value} = this._filter[name]
+        if (type === 'range') {
+          for (const val of value) {
+            if (typeof val === "number" && isNaN(val)) return
+          }
+        }
+
         let newWhere = filterToWhere(this._filter, db.command)
         if (Object.keys(newWhere).length) {
           this.where = newWhere

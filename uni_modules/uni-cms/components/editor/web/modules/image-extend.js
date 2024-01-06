@@ -1,7 +1,7 @@
 import './image-uploading.css'
 
 export default function (Quill) {
-	const Delta = Quill.import('delta')
+	// const Delta = Quill.import('delta')
 
 	class ImageExtend {
 		constructor(quill, config) {
@@ -12,7 +12,17 @@ export default function (Quill) {
 			quill.on(Quill.events.TEXT_CHANGE, (delta) => {
 				const imageElements = quill.container.querySelectorAll('img[data-local]:not(.uploading)')
 
-				imageElements.forEach(element => this.uploader(element))
+				imageElements.forEach(element => {
+					if (element.classList.contains('uploaded')) {
+						element.removeAttribute('data-local')
+						element.classList.remove('uploaded')
+						if(element.classList.length <= 0) {
+							element.removeAttribute('class')
+						}
+ 					} else {
+						this.uploader(element)
+					}
+				})
 			})
 
 			// 插入粘贴的文件图片
@@ -113,10 +123,11 @@ export default function (Quill) {
 		async convertImageFile(imageUrl) {
 			const result = {
 				blob: imageUrl,
-				ext: 'jpg'
+				ext: 'jpg',
+				size: 0,
 			}
 
-			if (!/^blob:/.test(imageUrl)) {
+			// if (!/^blob:/.test(imageUrl)) {
 				const image = await fetch(imageUrl)
 				const blob = await image.blob()
 				const mimeType = this.getBlobImageMimeType(blob, imageUrl)
@@ -126,7 +137,8 @@ export default function (Quill) {
 
 				result.blob = this.file2blob(file)
 				result.ext = ext
-			}
+				result.size = file.size
+			// }
 
 			return result
 		}
@@ -169,10 +181,9 @@ export default function (Quill) {
 		insertFileImage(file) {
 			const range = this.quill.getSelection(true)
 			const url = this.file2blob(file)
-			//
 			if (range.index > 0 && this.quill.getText(range.index - 1, 1) !== '\n') {
 				this.quill.insertText(range.index, '\n', Quill.sources.SILENT)
-				range.index += 1;
+				range.index += 1
 			}
 			this.quill.insertEmbed(range.index, 'image', url, Quill.sources.SILENT)
 			this.quill.formatText(range.index, 1, 'data-local', url, Quill.sources.SILENT)

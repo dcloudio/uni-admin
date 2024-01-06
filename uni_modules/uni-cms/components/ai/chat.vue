@@ -9,9 +9,9 @@
           </view>
           <view :class="{reverse:!msg.isAi}">
             <view class="userInfo">
-              <image class="avatar" v-if="msg.isAi" src="./static/uni-ai.png"
+              <image class="avatar" v-if="msg.isAi" :src="require('./static/uni-ai.png')"
                      mode="widthFix"></image>
-              <image class="avatar" v-else src="./static/avatar.png"
+              <image class="avatar" v-else :src="require('./static/avatar.png')"
                      mode="widthFix"></image>
             </view>
             <view class="content">
@@ -206,8 +206,6 @@ export default {
       this.msgList.splice(length - 1, 1, lastMsg)
     },
     onAdClose(e) {
-      console.log('onAdClose e.detail.isEnded', e.detail.isEnded);
-
       if (e.detail.isEnded) {
         //5次轮训查结果
         let i = 0;
@@ -333,9 +331,6 @@ export default {
           role
         }
       })
-
-      console.log('send to ai messages:', messages);
-
 
       if (this.stream) {
         sseChannel = new uniCloud.SSEChannel() // 创建消息通道
@@ -468,9 +463,9 @@ export default {
 }
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 /* #ifdef VUE3 && APP-PLUS */
-@import "@/components/uni-ai-msg/uni-ai-msg.scss";
+@import "@/uni_moduels/uni-cms/components/ai/components/uni-ai-msg/uni-ai-msg.scss";
 /* #endif */
 
 /* #ifndef APP-NVUE */
@@ -601,8 +596,7 @@ page,
   position: relative;
   width: 750 rpx;
   flex-direction: column;
-  padding: 0 15px;
-  padding-bottom: 15px;
+  padding: 15px;
 }
 
 .msgStateIcon {
@@ -705,10 +699,10 @@ page,
   .foot-box {
     border-top: solid 1px #dde0e2;
   }
-  .page {
-    width: 100vw;
-    flex-direction: row;
-  }
+  //.page {
+  //  width: 100vw;
+  //  flex-direction: row;
+  //}
   .page * {
     max-width: 950px;
   }
@@ -817,4 +811,29 @@ page,
 
 /* #endif */
 
+@media screen and (max-width: 768px) {
+  .page {
+    height: 75vh;
+  }
+  .foot-box {
+    padding: 10px;
+  }
+  .foot-box, .msg-list, .container, .create_time {
+    width: 100%;
+  }
+  .foot-box-content {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .textarea-box {
+    flex: 1;
+    .textarea {
+      flex: 1;
+      width: auto;
+    }
+  }
+
+}
 </style>

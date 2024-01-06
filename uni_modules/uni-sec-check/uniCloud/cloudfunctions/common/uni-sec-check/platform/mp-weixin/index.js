@@ -7,20 +7,28 @@ const protocol = require('./protocol.js')
 
 const {
   FormData,
-  resolveFile
+  resolveFile,
+  getClientInfo
 } = require('../../utils/index')
 
 class WxOpenapi {
   constructor({
-    clientInfo
+    appId,
+    requestId
   } = {}) {
-    this.clientInfo = clientInfo
+    if (requestId) {
+      this.clientInfo = getClientInfo(requestId)
+    }
+    if (!appId && !this.clientInfo) {
+      throw new Error('缺少requestId参数')
+    }
+    this.appId = appId || this.clientInfo.appId
     this._protocol = protocol
   }
 
   async getAccessToken () {
     const params = {
-      dcloudAppid: this.clientInfo.appId,
+      dcloudAppid: this.appId,
       platform: 'weixin-mp'
     }
 

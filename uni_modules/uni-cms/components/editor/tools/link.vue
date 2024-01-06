@@ -1,13 +1,13 @@
 <template>
 	<view>
-		<toolbarTool type="button" @change="$refs.popup.open()" :active="active" :disabled="disabled" :tooltip="{content: '添加链接'}">
+		<toolbarTool type="button" @change="$refs.popup.open()" :active="active" :disabled="disabled" :tooltip="{content: active ? '修改链接': '添加链接'}">
 			<uni-icons custom-prefix="editor-icon" type="icon-link" size="24px"></uni-icons>
 		</toolbarTool>
 		<uni-popup ref="popup" type="center">
 			<view class="popup-body">
 				<uni-forms label-width="90px">
 					<uni-forms-item label="链接地址" name="link">
-						<uni-easyinput v-model="link" />
+						<uni-easyinput v-model="link" placeholder="填写链接地址"/>
 					</uni-forms-item>
 				</uni-forms>
 				<view class="popup-body-btn-group">
@@ -36,7 +36,9 @@ export default {
 	},
 	watch: {
 		active (newValue) {
-			this.link = newValue
+      if (newValue) {
+        this.link = newValue
+      }
 		}
 	},
 	components: {
@@ -55,9 +57,11 @@ export default {
 </script>
 
 <style scoped lang="scss">
+// #ifdef H5
 @import '@/uni_modules/uni-cms/common/style/editor-icon.css';
+// #endif
 .popup-body {
-	padding: 20px;
+	padding: 30px;
 	border-radius: 5px;
 	background: #fff;
 	width: 350px;

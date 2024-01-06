@@ -1,3 +1,5 @@
+import './image.css'
+
 const ATTRIBUTES = [
 	'alt',
 	'height',
@@ -9,8 +11,25 @@ const ATTRIBUTES = [
 
 export default function (Quill) {
   const Image = Quill.import('formats/image')
-
+	const BlockEmbed = Quill.import('blots/block/embed')
 	class ExtendImageFormat extends Image {
+		static create (value) {
+			if (typeof value === 'string') {
+				value = {
+					src: value,
+					uploaded: false
+				}
+			}
+
+			const {src, uploaded} = value
+			const node = super.create(src)
+
+			if (uploaded) {
+				node.classList.add('uploaded')
+			}
+
+			return node
+		}
 		static formats (domNode) {
 			return ATTRIBUTES.reduce(function (formats, attribute) {
 				if (domNode.hasAttribute(attribute)) {
@@ -36,8 +55,27 @@ export default function (Quill) {
 			}
 		}
 	}
+	class ImageLoadingFormat extends BlockEmbed {
+		static create (value) {
+			const node = super.create(value)
+			node.setAttribute('contenteditable', false)
+			node.setAttribute('upload-id', value)
+
+			const loading = document.createElement('div')
+			loading.classList.add('image-loading-inner')
+			loading.innerText = '正在上传'
+
+			node.appendChild(loading)
+
+			return node
+		}
+	}
+	ImageLoadingFormat.blotName = 'image-loading'
+	ImageLoadingFormat.tagName = 'div'
+	ImageLoadingFormat.className = 'image-loading'
 
 	return {
-		'formats/image': ExtendImageFormat
+		'formats/image': ExtendImageFormat,
+		'formats/image-loading': ImageLoadingFormat,
 	}
 }

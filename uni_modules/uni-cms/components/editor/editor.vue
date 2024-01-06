@@ -40,6 +40,8 @@
         <view class="editor-toolbar-divider"></view>
         <tool-header @change="({type, value}) => format(type, value)" :active="formats.header"
                      :disabled="!showFooterToolBar"></tool-header>
+        <tool-font-size @change="({type, value}) => format(type, value)" :active="formats.fontSize"
+                     :disabled="!showFooterToolBar"></tool-font-size>
         <tool-bold @change="({type, value}) => format(type, value)" :active="formats.bold"
                    :disabled="!showFooterToolBar"></tool-bold>
         <tool-italic @change="({type, value}) => format(type, value)" :active="formats.italic"
@@ -55,7 +57,7 @@
         <tool-hr @change="({type, value}) => format(type, value)" :disabled="!showFooterToolBar"></tool-hr>
         <tool-list @change="({type, value}) => format(type, value)" :active="formats.list"
                    :disabled="!showFooterToolBar"></tool-list>
-        <tool-line-indent @change="({type, value}) => format(type, value)" :active="formats.indent"
+        <tool-line-indent @change="({type, value}) => format(type, value)" :active="formats.textIndent"
                           :disabled="!showFooterToolBar"></tool-line-indent>
         <tool-space-both @change="({type, value}) => format(type, value)"
                          :active="formats.marginLeft && formats.marginRight"
@@ -71,6 +73,7 @@
                     :disabled="!showFooterToolBar"></tool-color>
         <view class="editor-toolbar-divider"></view>
         <tool-image @change="({type, value}) => format(type, value)" :disabled="!showFooterToolBar"></tool-image>
+        <tool-video @change="({type, value}) => format(type, value)" :disabled="!showFooterToolBar"></tool-video>
         <tool-unlock-content @change="({type, value}) => format(type, value)"
                              :disabled="!showFooterToolBar"></tool-unlock-content>
         <tool-ai @change="({type, value}) => format(type, value)" :active="showImChat"
@@ -99,7 +102,7 @@
         <view :class="{tool: true, active: formats.link}" @click="showLinkPopup(formats.link)">
           <uni-icons custom-prefix="editor-icon" type="icon-link" size="60rpx"></uni-icons>
         </view>
-        <view class="tool" @click="imageUpload">
+        <view class="tool" @click="() => $refs.insertImageDrawer.open()">
           <uni-icons custom-prefix="editor-icon" type="icon-image" size="60rpx"></uni-icons>
         </view>
         <view :class="{tool: true}" @click="format('ai')">
@@ -193,7 +196,7 @@
           <text>添加</text>
         </view>
         <view class="body insert-block">
-          <view class="item" @click="imageUpload">
+          <view class="item" @click="() => $refs.insertImageDrawer.open()">
             <view class="icon">
               <uni-icons custom-prefix="editor-icon" type="icon-image" size="70rpx"></uni-icons>
             </view>
@@ -252,6 +255,21 @@
       </view>
       <uni-im-chat ref="uniImChat"></uni-im-chat>
     </view>
+
+    <uni-drawer
+        class="insert-image-drawer"
+        v-if="drawerWidth"
+        ref="insertImageDrawer"
+        mode="right"
+        :width="drawerWidth"
+    >
+      <uni-media-library
+          mode="picker"
+          :selected-count="1"
+          :media-tabs="['image']"
+          @onInsert="onInsertImage"
+      ></uni-media-library>
+    </uni-drawer>
   </view>
 </template>
 
@@ -279,7 +297,9 @@ import ToolImage from "./tools/image.vue";
 import ToolFormatClear from "./tools/format-clear.vue";
 import ToolUnlockContent from "./tools/unlock-content.vue";
 import ToolAi from "./tools/ai.vue";
+import ToolVideo from "./tools/video.vue";
 import uniImChat from '../ai/chat.vue';
+import ToolFontSize from './tools/font-size.vue'
 
 // #ifdef H5
 import WebEditor from "./web/editor.vue";
@@ -288,9 +308,6 @@ import WebEditor from "./web/editor.vue";
 export default {
   name: "editor",
   emits: ['change', 'textchange'],
-  props: {
-    imageSecCheck: Boolean
-  },
   components: {
     ToolBackground,
     ToolLetterSpace,
@@ -313,7 +330,9 @@ export default {
     ToolFormatClear,
     ToolUnlockContent,
     ToolAi,
+    ToolVideo,
     uniImChat,
+    ToolFontSize,
     // #ifdef H5
     WebEditor,
     // #endif
@@ -331,7 +350,8 @@ export default {
       currentLink: { // 当前链接的信息
         title: '', // 链接标题
         url: '' // 链接URL
-      }
+      },
+      drawerWidth: 0, // 插入图片抽屉宽度
     }
   },
   computed: {
@@ -361,6 +381,8 @@ export default {
   mounted() {
     // 调用`uni.getSystemInfoSync()`获取系统信息，保存到`systemInfo`属性中。
     this.systemInfo = uni.getSystemInfoSync()
+    // 设置插入图片抽屉宽度为窗口宽度的80%
+    this.drawerWidth = this.systemInfo.windowWidth * .8
   },
   methods: {
     // 编辑器加载完成时触发
@@ -388,7 +410,7 @@ export default {
         })
       }
 
-      // #endif
+     // #endif
 
       // #ifndef H5
       // 在非 H5 平台上，调用 `this.createSelectorQuery()` 方法获取编辑器的 `editorCtx` 对象，并将其保存到组件的 `editorCtx` 属性中。
@@ -546,6 +568,12 @@ export default {
           // 打开AI智能助手
           this.showImChat = !this.showImChat
           break
+        case 'mediaVideo':
+          // 仅H5支持
+          // #ifdef H5
+          this.editorCtx.insertMediaVideo(value)
+          // #endif
+          break
         default:
           this.editorCtx.format(name, value)
           break
@@ -559,105 +587,121 @@ export default {
       return this.formats
     },
     // 复制图片进入编辑器上传
-    uploadHandlerForH5({blob, ext}, el) {
+    uploadHandlerForH5({blob, ext, size}, el) {
       // 返回一个 Promise 对象，以便在上传成功后，将图片的 URL 插入到编辑器中。
       return new Promise((resolve, reject) => {
-        uni.showLoading({
-          title: '上传中...'
-        })
-        // 调用 uniCloud.uploadFile 方法，将图片上传到云存储中。
-        uniCloud.uploadFile({
+        this.uploadEditorImage({
           filePath: blob,
-          cloudPath: `cms/media/images/${Date.now()}_${Math.round(Math.random() * 10000)}.${ext || 'jpg'}`,
-          fileType: 'image',
-          success: res => {
-            const uniCmsCo = uniCloud.importObject('uni-cms-co', {
-              customUI: true
-            })
-            uni.showLoading({
-              title: '图片检测中...'
-            })
-
-            // 图片上传成功后，调用 checkImageSec 方法，检测图片是否违规。
-            uniCmsCo.checkImageSec(res.fileID).then(() => {
-              resolve(res.fileID)
-            }).catch(error => {
-              // 防止万一，只要检测失败就删除图片
-              Quill && Quill.find(el).deleteAt(0)
-              uni.showModal({
-                content: error.message,
-                showCancel: false
-              })
-              reject()
-            }).finally(() => {
-              uni.hideLoading()
-            })
-          },
-          fail: error => {
-            reject(error)
-            uni.hideLoading()
-          }
+          fileExt: ext,
+          size
+        }).then(fileID => {
+          resolve(fileID)
+        }).catch(error => {
+          // 防止万一，只要检测失败就删除图片
+          Quill && Quill.find(el).deleteAt(0)
+          uni.showModal({
+            content: error.message,
+            showCancel: false
+          })
+          reject()
+        }).finally(() => {
+          uni.hideLoading()
         })
       })
     },
-    // 插入图片上传云存储
-    imageUpload() {
-      // 选择本地图片，每次只能选择一张图片。
-      uni.chooseImage({
-        count: 1,
-        success: async (res) => {
-          const filePath = res.tempFilePaths[0]
+    onInsertImage (selectMediaItems) {
+      const image = selectMediaItems[0]
 
-          uni.showLoading({
-            title: "上传中..."
-          })
+      this.$refs.insertImageDrawer.close()
 
-          // 调用 uniCloud.uploadFile 方法，将图片上传到云存储中。
+      // 图片如果没有违规，调用 format 方法，将图片插入到富文本编辑器中，并滚动到插入的位置。
+      this.format('image', {
+        src: image.src,
+        data: {
+          source: image.src
+        }
+      })
+      setTimeout(() => this.editorCtx.scrollIntoView(), 0)
+    },
+    uploadEditorImage ({filePath, fileExt, size}) {
+      uni.showLoading({
+        title: '上传中...'
+      })
+
+      return new Promise((resolve, reject) => {
+        new Promise((res, rej) => {
           uniCloud.uploadFile({
             filePath,
-            cloudPath: `cms/media/images/${Date.now()}_${Math.round(Math.random() * 10000)}.jpg`,
+            cloudPath: `cms/media/images/${Date.now()}_${Math.round(Math.random() * 10000)}.${fileExt || 'jpg'}`,
             fileType: 'image',
-            success: res => {
-              const uniCmsCo = uniCloud.importObject('uni-cms-co', {
-                customUI: true
-              })
-
-              uni.showLoading({
-                title: '图片检测中...'
-              })
-
-              // 调用 checkImageSec 方法，检测图片是否违规。
-              uniCmsCo.checkImageSec({
-                image: res.fileID
-              }).then(() => {
-                // 图片如果没有违规，调用 format 方法，将图片插入到富文本编辑器中，并滚动到插入的位置。
-                this.format('image', {
-                  src: res.fileID,
-                  data: {
-                    source: res.fileID
-                  }
-                })
-                setTimeout(() => this.editorCtx.scrollIntoView(), 0)
-              }).catch(error => {
-                uni.showModal({
-                  content: error.message,
-                  showCancel: false
-                })
-              }).finally(() => {
-                uni.hideLoading()
-              })
+            success: _res => {
+              res(_res)
             },
             fail: error => {
-              uni.showModal({
-                content: error.message,
-                showCancel: false
-              })
+              rej(error)
             },
             complete: () => {
               uni.hideLoading()
             }
           })
-        }
+        }).then(res => {
+          uni.showLoading({
+            title: '图片检测中...'
+          })
+
+          const uniCmsCo = uniCloud.importObject('uni-cms-co', {
+            customUI: true
+          })
+
+          return uniCmsCo.checkImageSec(res.fileID).then(() => {
+            return res.fileID
+          })
+        }).then(fileID => {
+          uni.showLoading({
+            title: '上传媒体库...'
+          })
+
+          const uniMediaLibrary = uniCloud.importObject('uni-media-library-co', {
+            customUI: true
+          })
+
+          return new Promise((_resolve) => {
+            const image = new Image()
+            image.onload = () => {
+              _resolve({
+                fileID,
+                width: image.width,
+                height: image.height
+              })
+            }
+
+            image.src = fileID
+          }).then(({fileID, width, height}) => {
+            return uniMediaLibrary.report({
+              src: fileID,
+              cover: fileID,
+              type: 'image',
+              originalName: filePath.split('/').pop(),
+              fileType: fileExt || 'jpg',
+              size,
+              resolution: {
+                width,
+                height
+              },
+              uploadUser: uniCloud.getCurrentUserInfo().uid
+            })
+          }).then(() => {
+            return fileID
+          }).catch(e => {
+            console.log(e, 'e')
+          })
+        }).then((fileID) => {
+          resolve(fileID)
+        }).catch(error => {
+          reject(error)
+        }).finally(() => {
+          uni.hideLoading()
+        })
       })
     },
     // 在移动端插入超链接
@@ -680,7 +724,9 @@ export default {
 </script>
 
 <style scoped lang="scss">
+// #ifdef H5
 @import '@/uni_modules/uni-cms/common/style/editor-icon.css';
+// #endif
 
 /* #ifdef H5 */
 @import "quill.scss";
@@ -811,6 +857,8 @@ export default {
         font-size: 14px;
         font-weight: bold;
         color: #333;
+        padding-bottom: 0;
+        border: none;
       }
 
       .desc {
@@ -838,9 +886,9 @@ export default {
   }
 
   ::v-deep {
-    * {
-      max-width: 100%;
-    }
+    //* {
+    //  max-width: 100%;
+    //}
 
     .page {
       height: 720px;
@@ -904,22 +952,22 @@ export default {
       background: rgba(0, 0, 0, .5);
       z-index: -1;
     }
-
-    ::v-deep {
-      .page {
-        height: 75vh;
-      }
-
-      .foot-box {
-        width: 100%;
-      }
-      .foot-box-content {
-        width: 100%;
-        display: flex;
-        align-items: center;
-        gap: 10px;
-      }
-    }
+    //
+    //::v-deep {
+    //  .page {
+    //    height: 75vh;
+    //  }
+    //
+    //  .foot-box {
+    //    width: 100%;
+    //  }
+    //  .foot-box-content {
+    //    width: 100%;
+    //    display: flex;
+    //    align-items: center;
+    //    gap: 10px;
+    //  }
+    //}
   }
 }
 </style>

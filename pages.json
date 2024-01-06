@@ -35,6 +35,12 @@
         "navigationBarTitleText": "实名认证"
     }
 }
+,{
+    "path": "uni_modules/uni-media-library/pages/index/index",
+    "style": {
+        "navigationBarTitleText": "媒体库"
+    }
+}
 ],
 	"subPackages": [{
 			"root": "pages/system",

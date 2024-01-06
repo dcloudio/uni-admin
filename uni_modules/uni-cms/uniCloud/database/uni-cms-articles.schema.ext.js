@@ -1,5 +1,6 @@
 // 获取配置
 const createConfig = safeRequire('uni-config-center')
+const {QuillDeltaToHtmlConverter, QuillDeltaToJSONConverter} = safeRequire('quill-delta-converter')
 const config = createConfig({
 	pluginId: 'uni-cms'
 }).config()
@@ -48,19 +49,34 @@ async function checkImageSec(image, requestId, errorMsg) {
 		requestId
 	})
 
-	// 调用图片安全检测接口
-	const res = await uniSecCheck.imgSecCheck({
-		image, // 待检测的图片URL
-		scene: 1, // 表示资料类场景
-		version: 1 // 调用检测API的版本号
-	})
+	const images = typeof image === "string" ? [image]: image
 
-	// 如果存在违规内容，抛出异常
-	if (res.errCode === uniSecCheck.ErrorCode.RISK_CONTENT) {
-		throw new Error(errorMsg || '图片违规，请修改后提交')
-	} else if (res.errCode !== 0) {
-		console.error(res)
-		throw new Error('内容安全检测异常：' + res.errCode)
+	for (let item of images) {
+		// 处理cloud://开头的链接
+		if (item.startsWith('cloud://')) {
+			const res = await uniCloud.getTempFileURL({
+				fileList: [item]
+			})
+
+			if (res.fileList && res.fileList.length > 0) {
+				item = res.fileList[0].tempFileURL
+			}
+		}
+
+		// 调用图片安全检测接口
+		const res = await uniSecCheck.imgSecCheck({
+			image: item, // 待检测的图片URL
+			scene: 1, // 表示资料类场景
+			version: 1 // 调用检测API的版本号
+		})
+
+		// 如果存在违规内容，抛出异常
+		if (res.errCode === uniSecCheck.ErrorCode.RISK_CONTENT) {
+			throw new Error(errorMsg || '图片违规，请修改后提交')
+		} else if (res.errCode !== 0) {
+			console.error(res)
+			throw new Error('内容安全检测异常：' + res.errCode)
+		}
 	}
 }
 
@@ -84,10 +100,7 @@ function safeRequire(module) {
 module.exports = {
 	trigger: {
 		// 创建文章前触发
-		beforeCreate: async function ({
-			clientInfo,
-			addDataList,
-		}) {
+		beforeCreate: async function ({clientInfo, addDataList}) {
 			// addDataList 是一个数组，因为可以一次性创建多条数据
 			if (addDataList.length <= 0) return
 
@@ -119,11 +132,7 @@ module.exports = {
 			}
 		},
 		// 更新文章前触发
-		beforeUpdate: async function ({
-			clientInfo,
-			where,
-			updateData
-		}) {
+		beforeUpdate: async function ({clientInfo, where, updateData}) {
 			const id = where && where._id
 
 			if (!id) return
@@ -155,8 +164,8 @@ module.exports = {
 			await Promise.all(parallel)
 
 		},
-		// 读取文章前触发
-		afterRead: async function ({ userInfo, clientInfo, result, where, field }) {
+		// 读取文章后触发
+		afterRead: async function ({userInfo, clientInfo, result, where, field}) {
 			// 检查是否配置了clientAppIds字段，如果没有则抛出错误
 			if (!config.clientAppIds && clientInfo.uniPlatform !== 'web') {
 				throw new Error('请在 uni-cms 配置文件中配置 clientAppIds 字段后访问，详见：https://uniapp.dcloud.net.cn/uniCloud/uni-cms.html#uni-cms-config')
@@ -191,9 +200,26 @@ module.exports = {
 			let needUnlock = false
 			let unlockContent = []
 
-			// 遍历文章内容，找到解锁内容
+			article.content_images = article.content.ops.reduce((imageBlocks, block) => {
+				if (!block.insert.image) return imageBlocks
+
+				const {attributes} = block
+				const {'data-custom': custom = ""} = attributes || {}
+				const parseCustom = custom.split('&').reduce((obj, item) => {
+					const [key, value] = item.split('=')
+					obj[key] = value
+					return obj
+				})
+
+				return imageBlocks.concat(
+					parseCustom.source ||
+					block.insert.image
+				)
+			}, [])
+
 			for (const op of article.content.ops) {
 				unlockContent.push(op)
+				// 遍历文章内容，找到解锁内容
 				if (op.insert.unlockContent) {
 					needUnlock = true
 					break
@@ -201,16 +227,19 @@ module.exports = {
 			}
 
 			// 如果文章不需要解锁，则返回
-			if (!needUnlock) return
+			if (!needUnlock) {
+				article.content = getRenderableArticleContent(article.content, clientInfo)
+				return
+			}
 
 			// 获取唯一标识符
 			const uniqueId = adConfig.watchAdUniqueType === 'user' ? userInfo.uid : clientInfo.deviceId
 
 			// 如果未登录或者文章未解锁，则返回解锁内容
 			if (!uniqueId || !article._id) {
-				article.content = {
+				article.content = getRenderableArticleContent({
 					ops: unlockContent
-				}
+				}, clientInfo)
 				return
 			}
 
@@ -222,22 +251,90 @@ module.exports = {
 
 			// 如果未解锁，则返回解锁内容
 			if (unlockRecord.data && unlockRecord.data.length <= 0) {
-				article.content = {
+				article.content = getRenderableArticleContent({
 					ops: unlockContent
-				}
+				}, clientInfo)
 				return
 			}
 
 			// 将文章解锁替换为行结束符 \n
-			article.content = {
+			article.content = getRenderableArticleContent({
 				ops: article.content.ops.map(op => {
 					if (op.insert.unlockContent) {
 						op.insert = "\n"
 					}
 					return op
 				})
+			}, clientInfo)
+		}
+	}
+}
+
+function getRenderableArticleContent (rawArticleContent, clientInfo) {
+	const isUniAppX = /uni-app-x/i.test(clientInfo.userAgent)
+
+	if (!isUniAppX) {
+		const quillDeltaConverter = new QuillDeltaToJSONConverter(rawArticleContent.ops)
+		return quillDeltaConverter.convert()
+	}
+
+	const deltaOps = []
+
+	for (let i = 0; i < rawArticleContent.ops.length; i++) {
+		const op = rawArticleContent.ops[i]
+
+		if (typeof op.insert === 'object') {
+			const insertType = Object.keys(op.insert)
+			const blockRenderList = ['image', 'divider', 'unlockContent', 'mediaVideo']
+			if (insertType && insertType.length > 0 && blockRenderList.includes(insertType[0])) {
+				deltaOps.push({
+					type: insertType[0],
+					ops: [op]
+				})
+
+				// 一般块级节点后面都跟一个换行，需要把这个换行给去掉
+				const nextOps = rawArticleContent.ops[i+1]
+				if (nextOps && nextOps.insert === '\n') {
+					i ++
+				}
+
+				continue
 			}
 		}
 
+		const currentIndex = deltaOps.length > 0 ? deltaOps.length - 1: 0
+		if (
+			typeof deltaOps[currentIndex] !== "object" ||
+			(deltaOps[currentIndex] && deltaOps[currentIndex].type !== 'rich-text')
+		) {
+			deltaOps.push({
+				type: 'rich-text',
+				ops: []
+			})
+		}
+
+		deltaOps[deltaOps.length - 1].ops.push(op)
 	}
+
+	return deltaOps.reduce((content, item) => {
+		const isRichText = item.type === 'rich-text'
+		let block = {
+			type: item.type,
+			data: isRichText ? item.ops: item.ops[0]
+		}
+
+		if (item.type === 'rich-text') {
+			const lastOp = item.ops.length > 0 ? item.ops[item.ops.length - 1]: null
+
+			if (lastOp !== null && lastOp.insert === "\n") {
+				item.ops.pop()
+			}
+
+			const quillDeltaConverter = new QuillDeltaToHtmlConverter(item.ops)
+
+			block.data = quillDeltaConverter.convert()
+		}
+
+		return content.concat(block)
+	}, [])
 }

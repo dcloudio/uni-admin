@@ -1,0 +1,5 @@
+{
+  "name": "quill-delta-converter",
+  "description": "quill编辑器delta格式转换器",
+  "main": "index.js"
+}

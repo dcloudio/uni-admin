@@ -1,0 +1,62 @@
+{
+  "uni-id-permissions": [
+    {
+      "_id": "READ_UNI_CMS_ARTICLE",
+      "permission_id": "READ_UNI_CMS_ARTICLE",
+      "permission_name": "读取CMS文章"
+    },
+    {
+      "_id": "CREATE_UNI_CMS_ARTICLE",
+      "permission_id": "CREATE_UNI_CMS_ARTICLE",
+      "permission_name": "创建CMS文章"
+    },
+    {
+      "_id": "UPDATE_UNI_CMS_ARTICLE",
+      "permission_id": "UPDATE_UNI_CMS_ARTICLE",
+      "permission_name": "更新CMS文章"
+    },
+    {
+      "_id": "DELETE_UNI_CMS_ARTICLE",
+      "permission_id": "DELETE_UNI_CMS_ARTICLE",
+      "permission_name": "删除CMS文章"
+    },
+    {
+      "_id": "READ_UNI_CMS_CATEGORIES",
+      "permission_id": "READ_UNI_CMS_CATEGORIES",
+      "permission_name": "读取CMS分类"
+    },
+    {
+      "_id": "CREATE_UNI_CMS_CATEGORIES",
+      "permission_id": "CREATE_UNI_CMS_CATEGORIES",
+      "permission_name": "创建CMS分类"
+    },
+    {
+      "_id": "UPDATE_UNI_CMS_CATEGORIES",
+      "permission_id": "UPDATE_UNI_CMS_CATEGORIES",
+      "permission_name": "更新CMS分类"
+    },
+    {
+      "_id": "DELETE_UNI_CMS_CATEGORIES",
+      "permission_id": "DELETE_UNI_CMS_CATEGORIES",
+      "permission_name": "删除CMS分类"
+    }
+  ],
+  "uni-id-roles": [
+    {
+      "_id": "uni-cms-author",
+      "role_id": "uni-cms-author",
+      "role_name": "作者",
+      "comment": "uni-cms作者",
+      "permission": [
+        "READ_UNI_CMS_ARTICLE",
+        "CREATE_UNI_CMS_ARTICLE",
+        "UPDATE_UNI_CMS_ARTICLE",
+        "DELETE_UNI_CMS_ARTICLE",
+        "READ_UNI_CMS_CATEGORIES",
+        "CREATE_UNI_CMS_CATEGORIES",
+        "UPDATE_UNI_CMS_CATEGORIES",
+        "DELETE_UNI_CMS_CATEGORIES"
+      ]
+    }
+  ]
+}

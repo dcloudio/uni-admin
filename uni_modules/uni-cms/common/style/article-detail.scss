@@ -1,9 +1,10 @@
 @import '@/uni.scss';
+@import '@/uni_modules/uni-cms/common/style/editor-icon.css';
 
 $editorWidth: 950px;
 
 ::v-deep {
-  *[contenteditable] {
+  [contenteditable] {
     outline: none;
   }
   .ql-clipboard {
@@ -24,7 +25,7 @@ $editorWidth: 950px;
 		left: 0;
 		right: 0;
 		margin: 0 auto;
-		z-index: 1000;
+		z-index: 999;
 		height: 60px;
 		display: flex;
 		align-items: center;
@@ -41,7 +42,7 @@ $editorWidth: 950px;
 		left: 0;
 		right: 0;
 		border-top: #ebebeb solid 1px;
-		z-index: 1000;
+		z-index: 101;
 		.wrap {
 			width: $editorWidth;
 			margin: 0 auto;
@@ -52,7 +53,8 @@ $editorWidth: 950px;
 				flex: 1;
 				display: flex;
 				align-items: center;
-				.word-count {
+				gap: 10px;
+				.word-count, .auto-save {
 					font-size: 12px;
 					color: #666;
 				}
@@ -99,6 +101,60 @@ $editorWidth: 950px;
 			width: 100%;
 			padding: 10px;
 			font-size: 14px;
+		}
+	}
+	.thumbnail-list {
+		display: flex;
+		gap: 10px;
+		margin-top: 20px;
+	}
+	.thumbnail {
+		width: 150px;
+		height: 150px;
+		border: #e5e5e5 solid 1px;
+		border-radius: $uni-border-radius-sm;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		position: relative;
+		cursor: pointer;
+		overflow: hidden;
+		.placeholder {
+			position: absolute;
+			top: 0;
+			right: 0;
+			bottom: 0;
+			left: 0;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+		}
+		.remove-thumbnail {
+			position: absolute;
+			top: 10px;
+			right: 10px;
+			background: rgba(0,0,0,.5);
+			padding: 3px;
+			border-radius: 50%;
+			width: 20px;
+			height: 20px;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			z-index: 2;
+		}
+	}
+	.thumb-mode {
+		.mode {
+			margin-right: 10px;
+			&:last-child {
+				margin-right: 0;
+			}
+			::v-deep {
+				.uni-radio-input {
+					transform: scale(.7);
+				}
+			}
 		}
 	}
 }

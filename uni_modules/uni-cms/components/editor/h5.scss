@@ -13,7 +13,7 @@
 	top: 60px;
 	left: 0;
 	right: 0;
-	z-index: 1;
+	z-index: 999;
 	height: 54px;
 	border-bottom: #ebebeb solid 1px;
 	&.pc {
@@ -23,7 +23,7 @@
 		display: none;
 	}
 	&-box {
-		width: 900px;
+		width: 996px;
 		margin: 0 auto;
 		display: flex;
 		align-items: center;

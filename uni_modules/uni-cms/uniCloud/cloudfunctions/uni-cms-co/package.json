@@ -6,5 +6,9 @@
   },
   "extensions": {
     "uni-cloud-jql": {}
+  },
+  "cloudfunction-config": {
+    "timeout": 60,
+    "runtime":"Nodejs12"
   }
 }

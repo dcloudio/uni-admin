@@ -1,0 +1,7 @@
+{
+  "name": "uni-media-library-co",
+  "dependencies": {},
+  "extensions": {
+    "uni-cloud-jql": {}
+  }
+}

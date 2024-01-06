@@ -20,8 +20,8 @@
 			<view class="uni-group">
 				<input class="uni-search" type="text" v-model="query" @confirm="search" placeholder="请输入搜索内容" />
 				<button class="uni-button" type="default" size="mini" @click="search">搜索</button>
-				<button class="uni-button" type="default" size="mini" @click="navigateTo('../add/add')">新增</button>
-				<button class="uni-button" type="default" size="mini" :disabled="!selectedIndexs.length" @click="delTable">
+				<button v-if="hasPermission('CREATE_UNI_CMS_ARTICLE')" class="uni-button" type="primary" size="mini" @click="navigateTo('../add/add')">新增</button>
+				<button v-if="hasPermission('DELETE_UNI_CMS_ARTICLE')" class="uni-button" type="warn" size="mini" :disabled="!selectedIndexs.length" @click="delTable">
 					批量删除
 				</button>
 				<download-excel class="hide-on-phone" :fields="exportExcel.fields" :data="exportExcelData"
@@ -33,7 +33,7 @@
 		<view class="uni-container">
 			<unicloud-db ref="udb" :collection="collectionList" :where="where" page-data="replace" :orderby="orderby"
 				:getcount="true" :page-size="options.pageSize" :page-current="options.pageCurrent"
-				v-slot:default="{ data, pagination, loading, error, options }" :options="options" loadtime="manual"
+				v-slot:default="{ pagination, loading, error, options }" :options="options" loadtime="manual"
 				@load="onqueryload">
 				<uni-table ref="table" :loading="loading" :emptyText="error.message || '没有更多数据'" border stripe
 					type="selection" @selection-change="selectionChange">
@@ -48,7 +48,12 @@
 							sortable @sort-change="sortChange($event, 'excerpt')">摘要
 						</uni-th>
 						<uni-th align="center" sortable @sort-change="sortChange($event, 'user_id')">作者</uni-th>
-						<uni-th align="center">分类</uni-th>
+						<uni-th
+                align="center"
+                filter-type="select"
+                :filter-data="options.filterData.categories"
+                @filter-change="filterChange($event, 'category_id._id')"
+            >分类</uni-th>
 						<uni-th align="center" filter-type="select"
 							:filter-data="options.filterData.article_status_localdata"
 							@filter-change="filterChange($event, 'article_status')">文章状态
@@ -65,20 +70,18 @@
 						</uni-th>
 						<uni-th align="center">操作</uni-th>
 					</uni-tr>
-					<uni-tr v-for="(item, index) in data" :key="index">
-						<uni-td align="center" v-if="item.thumbnail">
-							<image :src="item.thumbnail" mode="aspectFill"
-								style="width: 120px; height: 80px; cursor:pointer;" @click="previewCover(item.thumbnail)">
+					<uni-tr v-for="(item, index) in tableList" :key="index">
+						<uni-td align="center" v-if="item.thumbnail && item.thumbnail.length > 0">
+							<image :src="item.thumbnail[0]" mode="aspectFill"
+								style="width: 120px; height: 80px; cursor:pointer;border-radius: 4px;" @click="previewCover(item.thumbnail)">
 							</image>
+              <view class="multi-tip" v-if="item.thumbnail && item.thumbnail.length >= 3">3图</view>
 						</uni-td>
-						<uni-td align="center" v-else></uni-td>
+						<uni-td align="center" v-else>无封面</uni-td>
 						<uni-td align="center">{{ item.title }}</uni-td>
 						<uni-td align="center">{{ item.excerpt }}</uni-td>
-						<uni-td align="center">{{ item.user_id && item.user_id[0] && item.user_id[0].nickname || '-'
-						}}</uni-td>
-						<uni-td align="center">{{ item.category_id && item.category_id[0] && item.category_id[0].text || '-'
-						}}
-						</uni-td>
+						<uni-td align="center">{{ item.user_id && item.user_id[0] && item.user_id[0].nickname || '-'}}</uni-td>
+						<uni-td align="center">{{ item.category_id && item.category_id[0] && item.category_id[0].text || '-'}}</uni-td>
 						<uni-td align="center">{{ options.article_status_valuetotext[item.article_status] }}</uni-td>
 						<!--						<uni-td align="center">{{ item.is_sticky == true ? '✅' : '❌' }}</uni-td>-->
 						<!--						<uni-td align="center">{{ item.is_essence == true ? '✅' : '❌' }}</uni-td>-->
@@ -90,12 +93,12 @@
 						</uni-td>
 						<uni-td align="center">
 							<view class="uni-group">
-								<button @click="navigateTo('../edit/edit?id=' + item._id, false)" class="uni-button"
+								<button v-if="hasPermission('UPDATE_UNI_CMS_ARTICLE')" @click="navigateTo('../edit/edit?id=' + item._id, false)" class="uni-button"
 									size="mini" type="primary">修改
 								</button>
-								<button v-if="item.article_status === 1" @click="takeOffArticle(item._id)"
+								<button v-if="item.article_status === 1 && hasPermission('UPDATE_UNI_CMS_ARTICLE')" @click="takeOffArticle(item._id)"
 									class="uni-button" size="mini" type="default">下架</button>
-								<button @click="confirmDelete(item._id)" class="uni-button" size="mini"
+								<button v-if="hasPermission('DELETE_UNI_CMS_ARTICLE')" @click="confirmDelete(item._id)" class="uni-button" size="mini"
 									type="warn">删除</button>
 							</view>
 						</uni-td>
@@ -113,6 +116,8 @@
 <script>
 // 引入公共方法
 import { enumConverter, filterToWhere } from '@/uni_modules/uni-cms/common/validator/uni-cms-articles.js';
+import authMixin from "@/uni_modules/uni-cms/common/auth-mixin";
+import {parseImageUrl} from "@/uni_modules/uni-cms/common/parse-image-url";
 
 // 实例化数据库
 const db = uniCloud.database()
@@ -125,7 +130,7 @@ const userDBName = 'uni-id-users'
 
 // 表查询配置
 const dbOrderBy = '' // 排序字段
-const dbSearchFields = [] // 模糊搜索字段，支持模糊搜索的字段列表。联表查询格式: 主表字段名.副表字段名，例如用户表关联角色表 role.role_name
+const dbSearchFields = ['title', 'excerpt'] // 模糊搜索字段，支持模糊搜索的字段列表。联表查询格式: 主表字段名.副表字段名，例如用户表关联角色表 role.role_name
 // 分页配置
 const pageSize = 20
 const pageCurrent = 1
@@ -137,6 +142,7 @@ const orderByMapping = {
 }
 
 export default {
+  mixins: [authMixin],
 	data() {
 		return {
 			// collectionList 包含了三个对象，每个对象都是一个数据库查询对象，用于联表查询。第一个对象查询文章表，第二个对象查询分类表，第三个对象查询用户表。
@@ -178,7 +184,8 @@ export default {
 							"value": 1,
 							"text": "开放"
 						}
-					]
+					],
+          categories: []
 				},
 				...enumConverter
 			},
@@ -210,6 +217,7 @@ export default {
 					"最后修改人IP": "last_modify_ip"
 				}
 			},
+      tableList: [],
 			exportExcelData: []
 		}
 	},
@@ -218,21 +226,48 @@ export default {
 	},
 	onReady() {
 		this.$refs.udb.loadData()
+    this.loadCategories()
 	},
 	methods: {
+    async loadCategories () {
+      const {result} = await db.collection(categoryDBName).get()
+
+      if (result) {
+        this.options.filterData.categories = result.data.map(item => {
+          return {
+            text: item.name,
+            value: item._id
+          }
+        })
+      }
+    },
 		/**
-		 * 封面预览
-		 * @param {String} src
-		 */
-		previewCover(src) {
+     * 封面预览
+     * @param imageList
+     */
+		previewCover(imageList) {
 			uni.previewImage({
-				current: src,
-				urls: [src]
+				current: imageList[0],
+				urls: imageList
 			})
 		},
 		// 查询数据加载完成
-		onqueryload(data) {
-			this.exportExcelData = data
+		async onqueryload(data) {
+			let listData = []
+
+			for (const item of data) {
+				if (item.thumbnail && typeof item.thumbnail === 'string') {
+					item.thumbnail = [item.thumbnail]
+				}
+
+				const parseImages = await parseImageUrl(item.thumbnail)
+				item.thumbnail = parseImages.map(image => image.src)
+
+				listData.push(item)
+			}
+
+      this.tableList = listData
+			this.exportExcelData = listData
 		},
 		// 获取查询条件
 		getWhere() {
@@ -328,6 +363,14 @@ export default {
 				type: e.filterType,
 				value: e.filter
 			}
+      // range 类型的筛选，如果输入的值不是数字，则不进行筛选
+      const {type, value} = this._filter[name]
+      if (type === 'range') {
+        for (const val of value) {
+          if (typeof val === "number" && isNaN(val)) return
+        }
+      }
+
 			// 将筛选对象转换为where条件
 			let newWhere = filterToWhere(this._filter, db.command)
 			// 判断是否有where条件
