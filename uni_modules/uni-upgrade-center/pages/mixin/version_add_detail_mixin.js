@@ -180,6 +180,13 @@ export default {
 				create_env: 'uni-stat',
 				stable_publish: false
 			}
+		},
+		// 临时方法，后面会优化
+		setCloudStorage(data){
+			// uniCloud.setCloudStorage 不是标准的API，临时挂载在uniCloud对象上的，后面会优化
+			if (typeof uniCloud.setCloudStorage === "function") {
+				uniCloud.setCloudStorage(data);
+			}
 		}
 	}
 }

@@ -239,7 +239,7 @@
 		},
 		onUnload() {
 			// 临时处理，后面会再优化
-			uniCloud.setCloudStorage({
+			this.setCloudStorage({
 				provider: null
 			});
 		},
@@ -256,7 +256,7 @@
 			},
 			"domain"(val) {
 				uni.setStorageSync('uni-admin-ext-storage-domain', val);
-				uniCloud.setCloudStorage({
+				this.setCloudStorage({
 					domain: val
 				});
 				if (this.formData.url) {
@@ -266,7 +266,7 @@
 				}
 			},
 			uniFilePickerProvider(val){
-				uniCloud.setCloudStorage({
+				this.setCloudStorage({
 					provider: val
 				});
 			}
