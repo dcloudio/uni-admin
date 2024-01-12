@@ -72,7 +72,6 @@
 					return await uniCloudStorageExtCo.getUploadFileOptions(event);
 				}
 			});
-
 		},
 		onShow: function() {
 			console.log('App Show')

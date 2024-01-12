@@ -23,7 +23,7 @@ export const fields =
 export default {
 	data() {
 		return {
-			labelWidth: '80px',
+			labelWidth: '100px',
 			enableiOSWgt: true, // 是否开启iOS的wgt更新
 			silentlyContent: '静默更新：App升级时会在后台下载wgt包并自行安装。新功能在下次启动App时生效',
 			mandatoryContent: '强制更新：App升级弹出框不可取消',

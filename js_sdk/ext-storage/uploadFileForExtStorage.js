@@ -11,6 +11,7 @@ function init(options = {}) {
 	let {
 		provider: defaultProvider,
 	} = options;
+	let originalDefaultProvider = defaultProvider;
 	let extStorage = new ExtStorage(options);
 
 	const uploadFile = uniCloud.uploadFile;
@@ -52,7 +53,20 @@ function init(options = {}) {
 		}
 	}
 
-
+	uniCloud.setCloudStorage = (data={}) => {
+		let {
+			provider,
+			domain,
+			fileID2fileURL,
+		} = data;
+		if (provider === null) {
+			defaultProvider = originalDefaultProvider;
+		} else if (provider) {
+			defaultProvider = provider;
+		}
+		if (domain) extStorage.domain = domain;
+		if (fileID2fileURL) extStorage.fileID2fileURL = fileID2fileURL;
+	}
 
 }
 
