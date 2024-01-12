@@ -37,7 +37,7 @@
 					returnType="object" file-mediatype="all" limit="1" @success="packageUploadSuccess" :provider="uniFilePickerProvider"
 					@delete="packageDelete">
 					<view class="flex">
-						<radio-group @change="e => this.uniFilePickerProvider = e.detail.value">
+						<radio-group @change="e => uniFilePickerProvider = e.detail.value">
 							<view class="flex" style="flex-wrap: nowrap;">
 						上传至：
 								<label>
