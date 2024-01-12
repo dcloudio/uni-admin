@@ -79,6 +79,7 @@
 			</uni-forms-item>
 			<uni-forms-item key="url" name="url" :label="isiOS ? 'AppStore' : '下载链接'" required>
 				<uni-easyinput :disabled="detailsState" placeholder="下载链接" v-model="formData.url" :maxlength="-1" />
+				<text style="margin-left: 10px;color: #2979ff;cursor: pointer;text-decoration: underline;" v-if="formData.url" @click="toUrl(formData.url)">测试下载</text>
 				<!-- <show-info :top="-80" :content="uploadFileContent"></show-info> -->
 			</uni-forms-item>
 

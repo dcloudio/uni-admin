@@ -181,6 +181,17 @@ export default {
 				stable_publish: false
 			}
 		},
+		toUrl(url){
+			// #ifdef H5
+			window.open(url);
+			// #endif
+			// #ifndef H5
+			uni.showToast({
+				title: '请在浏览器中打开',
+				icon: 'none'
+			});
+			// #endif
+		},
 		// 临时方法，后面会优化
 		setCloudStorage(data){
 			// uniCloud.setCloudStorage 不是标准的API，临时挂载在uniCloud对象上的，后面会优化
