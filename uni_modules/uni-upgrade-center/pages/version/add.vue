@@ -39,10 +39,10 @@
 						<view class="flex" style="flex-wrap: nowrap;">
 					上传至：
 							<label>
-								<radio value="unicloud" checked/><text>内置存储</text>
+								<radio value="unicloud" :checked="uniFilePickerProvider === 'unicloud'"/><text>内置存储</text>
 							</label>
 							<label style="margin-left: 20rpx;">
-								<radio value="extStorage" /><text>扩展存储</text>
+								<radio value="extStorage" :checked="uniFilePickerProvider === 'extStorage'"/><text>扩展存储</text>
 							</label>
 						</view>
 					</radio-group>
@@ -54,7 +54,7 @@
 
 			<uni-forms-item label="自定义域名" v-if="uniFilePickerProvider === 'extStorage'">
 				<view class="flex" style="flex-direction: column;align-items:flex-start;">
-					<uni-easyinput placeholder="扩展存储自定义域名" v-model="domain" :maxlength="-1" style="width: 550px;"/>
+					<uni-easyinput placeholder="请输入扩展存储自定义域名" v-model="domain" :maxlength="-1" style="width: 550px;" />
 					<text class="uni-sub-title" style="margin-top: 10px;font-size: 12px;color: #666;">输入扩展存储绑定的域名，在服务空间-云存储-扩展存储页面可查看，如：cdn.example.com</text>
 				</view>
 			</uni-forms-item>
@@ -75,8 +75,13 @@
 			</uni-forms-item>
 
 			<uni-forms-item key="url" name="url" :label="isiOS ? 'AppStore' : '下载链接'" required>
-				<uni-easyinput placeholder="链接" v-model="formData.url" :maxlength="-1" />
-				<text style="margin-left: 10px;color: #2979ff;cursor: pointer;text-decoration: underline;" v-if="formData.url" @click="toUrl(formData.url)">测试下载</text>
+				<view class="flex" style="flex-direction: column;align-items:flex-start;flex: 1;">
+					<view class="flex" style="width: 100%;">
+						<uni-easyinput placeholder="链接" v-model="formData.url" :maxlength="-1" />
+						<text style="margin-left: 10px;color: #2979ff;cursor: pointer;text-decoration: underline;" v-if="formData.url" @click="toUrl(formData.url)">测试下载</text>
+					</view>
+					<text style="margin-top: 10px;font-size: 12px;color: #666;" v-if="formData.url">建议点击【测试下载】能正常下载后，再进行发布</text>
+				</view>
 				<!-- <show-info :top="-80" :content="uploadFileContent"></show-info> -->
 			</uni-forms-item>
 
@@ -212,6 +217,10 @@
 			name,
 			type
 		}) {
+			let { domain, provider } = this.getCloudStorageConfig();
+			if (domain) this.domain = domain;
+			if (provider) this.uniFilePickerProvider = provider;
+
 			if (appid && type && name) {
 				const store_list = await this.getStoreList(appid)
 				this.formData = {
@@ -236,7 +245,6 @@
 					})
 				}
 			}
-			this.domain = uni.getStorageSync('uni-admin-ext-storage-domain') || "";
 		},
 		onUnload() {
 			// 临时处理，后面会再优化
@@ -256,7 +264,6 @@
 				this.setFormData(val)
 			},
 			"domain"(val) {
-				uni.setStorageSync('uni-admin-ext-storage-domain', val);
 				this.setCloudStorage({
 					domain: val
 				});
@@ -266,10 +273,13 @@
 					this.formData.url = this.formData.url.replace(/^(https?:\/\/)[^\/]+/, `$1${val}`);
 				}
 			},
-			uniFilePickerProvider(val){
-				this.setCloudStorage({
-					provider: val
-				});
+			uniFilePickerProvider:{
+				immediate: true,
+				handler(val){
+					this.setCloudStorage({
+						provider: val
+					});
+				}
 			}
 		},
 		methods: {
@@ -384,6 +394,11 @@
 				}).finally(() => {
 					uni.hideLoading()
 				})
+
+				this.setCloudStorageConfig({
+					provider: this.uniFilePickerProvider,
+					domain: this.domain,
+				});
 			},
 			/**
 			 * 获取表单数据

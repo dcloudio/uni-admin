@@ -192,6 +192,12 @@ export default {
 			});
 			// #endif
 		},
+		getCloudStorageConfig(){
+			return uni.getStorageSync('uni-admin-cloud-storage-config') || {};
+		},
+		setCloudStorageConfig(data={}){
+			uni.setStorageSync('uni-admin-cloud-storage-config', data);
+		},
 		// 临时方法，后面会优化
 		setCloudStorage(data){
 			// uniCloud.setCloudStorage 不是标准的API，临时挂载在uniCloud对象上的，后面会优化
