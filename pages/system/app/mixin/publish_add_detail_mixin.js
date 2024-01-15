@@ -235,19 +235,14 @@ export default {
 			let deleteRes = await this.requestCloudFunction('deleteFile', {
 				fileList: [res.tempFile.fileID || res.tempFile.url]
 			})
-			deleteRes.fileList ?
-				deleteRes = deleteRes.fileList[0] :
-				deleteRes = deleteRes[0];
-			if (deleteRes.success || deleteRes.code === "SUCCESS") {
-				uni.showToast({
-					icon: 'success',
-					title: '删除成功',
-					duration: 800
-				})
-				if (!key) return;
-				this.setFormData(key, '')
-				this.$refs.form.clearValidate(key)
-			}
+			uni.showToast({
+				icon: 'success',
+				title: '删除成功',
+				duration: 800
+			})
+			if (!key) return;
+			this.setFormData(key, '')
+			this.$refs.form.clearValidate(key)
 		},
 		getPlatformChcekbox(mp_name) {
 			return this.middleware_checkbox[mp_name]

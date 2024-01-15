@@ -23,7 +23,7 @@ export const fields =
 export default {
 	data() {
 		return {
-			labelWidth: '80px',
+			labelWidth: '100px',
 			enableiOSWgt: true, // 是否开启iOS的wgt更新
 			silentlyContent: '静默更新：App升级时会在后台下载wgt包并自行安装。新功能在下次启动App时生效',
 			mandatoryContent: '强制更新：App升级弹出框不可取消',
@@ -112,7 +112,7 @@ export default {
 				.get()
 				.then(res => {
 					const data = res.result.data[0]
-					return data.store_list || []
+					return data ? data.store_list || [] : []
 				})
 		},
 		packageUploadSuccess(res) {
@@ -179,6 +179,30 @@ export default {
 				uni_platform: uni_platform ? uni_platform : this.uni_platform,
 				create_env: 'uni-stat',
 				stable_publish: false
+			}
+		},
+		toUrl(url){
+			// #ifdef H5
+			window.open(url);
+			// #endif
+			// #ifndef H5
+			uni.showToast({
+				title: '请在浏览器中打开',
+				icon: 'none'
+			});
+			// #endif
+		},
+		getCloudStorageConfig(){
+			return uni.getStorageSync('uni-admin-cloud-storage-config') || {};
+		},
+		setCloudStorageConfig(data={}){
+			uni.setStorageSync('uni-admin-cloud-storage-config', data);
+		},
+		// 临时方法，后面会优化
+		setCloudStorage(data){
+			// uniCloud.setCloudStorage 不是标准的API，临时挂载在uniCloud对象上的，后面会优化
+			if (typeof uniCloud.setCloudStorage === "function") {
+				uniCloud.setCloudStorage(data);
 			}
 		}
 	}
