@@ -23,36 +23,36 @@ module.exports = {
 		});
 		return uploadFileOptionsRes;
 	},
-	// 下载文件
-	async downloadFile(data = {}) {
-		let {
-			fileID,
-			domain,
-		} = data;
-		const extStorageManager = uniCloud.getExtStorageManager({
-			provider, // 扩展存储供应商
-			domain, // 自定义域名
-		});
-		let res = extStorageManager.downloadFile({
-			fileID
-		});
-		return res;
-	},
-	// 删除文件
-	async deleteFile(data = {}) {
-		let {
-			fileList,
-			domain
-		} = data;
-		const extStorageManager = uniCloud.getExtStorageManager({
-			provider, // 扩展存储供应商
-			domain, // 自定义域名
-		});
-		let res = await extStorageManager.deleteFile({
-			fileList
-		});
-		console.log('deleteFile: ', res);
-		return res;
-	},
+	// // 下载文件
+	// async downloadFile(data = {}) {
+	// 	let {
+	// 		fileID,
+	// 		domain,
+	// 	} = data;
+	// 	const extStorageManager = uniCloud.getExtStorageManager({
+	// 		provider, // 扩展存储供应商
+	// 		domain, // 自定义域名
+	// 	});
+	// 	let res = extStorageManager.downloadFile({
+	// 		fileID
+	// 	});
+	// 	return res;
+	// },
+	// // 删除文件
+	// async deleteFile(data = {}) {
+	// 	let {
+	// 		fileList,
+	// 		domain
+	// 	} = data;
+	// 	const extStorageManager = uniCloud.getExtStorageManager({
+	// 		provider, // 扩展存储供应商
+	// 		domain, // 自定义域名
+	// 	});
+	// 	let res = await extStorageManager.deleteFile({
+	// 		fileList
+	// 	});
+	// 	console.log('deleteFile: ', res);
+	// 	return res;
+	// },
 
 }
