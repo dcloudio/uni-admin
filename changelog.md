@@ -1,3 +1,5 @@
+## 2.4.2（2024-01-15）
+- 优化 APP升级中心，支持上传到扩展存储 [简介](https://doc.dcloud.net.cn/uniCloud/ext-storage/intro.html)
 ## 2.4.1（2023-12-27）
 - 调整 db_init.json 新增内容统计相关表 [详情](https://uniapp.dcloud.net.cn/uni-stat-v2.html#upgrade2)
 ## 2.4.0（2023-12-27）

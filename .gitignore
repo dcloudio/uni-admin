@@ -12,3 +12,4 @@ manifest.json
 test-cron/
 uni-stat-receiver.param.js
 .uni-devtools
+test-cron-sync/

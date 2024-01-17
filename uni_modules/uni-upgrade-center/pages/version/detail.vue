@@ -38,17 +38,53 @@
 				<uni-easyinput :disabled="detailsState" placeholder="原生App最低版本" v-model="formData.min_uni_version" />
 				<show-info :content="minUniVersionContent"></show-info>
 			</uni-forms-item>
-			<uni-forms-item v-if="!isiOS && !detailsState" label="上传apk包">
+
+			<uni-forms-item label="存储选择" v-if="!detailsState">
+				<view class="flex">
+					<radio-group @change="e => uniFilePickerProvider = e.detail.value" style="width: 100%;">
+						<view class="flex" style="flex-wrap: nowrap;">
+					上传至：
+							<label>
+								<radio value="unicloud" :checked="uniFilePickerProvider === 'unicloud'"/><text>内置存储</text>
+							</label>
+							<label style="margin-left: 20rpx;">
+								<radio value="extStorage" :checked="uniFilePickerProvider === 'extStorage'"/><text>扩展存储</text>
+							</label>
+						</view>
+					</radio-group>
+					<text class="uni-sub-title" style="margin-top: 10px;font-size: 12px;color: #666;width: 100%;">内置存储是服务空间开通后自带的云存储，不支持自定义域名，不支持阶梯计费</text>
+					<text class="uni-sub-title" style="margin-top: 10px;font-size: 12px;color: #666;">扩展存储支持自定义域名、阶梯计费，越用越便宜、功能更强大</text>
+					<text class="uni-sub-title" style="margin-top: 10px;font-size: 12px;color: #2979ff;cursor: pointer;text-decoration: underline; margin-left: 10px;" @click="toUrl('https://doc.dcloud.net.cn/uniCloud/ext-storage/service.html')">扩展存储开通文档</text>
+				</view>
+			</uni-forms-item>
+
+
+			<uni-forms-item label="自定义域名" v-if="uniFilePickerProvider === 'extStorage' && !detailsState">
+				<view class="flex" style="flex-direction: column;align-items:flex-start;">
+					<uni-easyinput placeholder="请输入扩展存储自定义域名" v-model="domain" :maxlength="-1" style="width: 550px;"/>
+					<text class="uni-sub-title" style="margin-top: 10px;font-size: 12px;color: #666;">输入扩展存储绑定的域名，在服务空间-云存储-扩展存储页面可查看，如：cdn.example.com</text>
+				</view>
+			</uni-forms-item>
+
+			<uni-forms-item v-if="!isiOS && !detailsState" :label="'上传'+fileExtname[0]+'包'">
 				<uni-file-picker v-model="appFileList" :file-extname="fileExtname" :disabled="hasPackage"
-					returnType="object" file-mediatype="all" limit="1" @success="packageUploadSuccess"
+					returnType="object" file-mediatype="all" limit="1" @success="packageUploadSuccess" :provider="uniFilePickerProvider"
 					@delete="packageDelete">
-					<button type="primary" size="mini" @click="selectFile">选择文件</button>
+					<view class="flex">
+						<button type="primary" size="mini" @click="selectFile" style="margin: 0px;">选择文件</button>
+					</view>
 				</uni-file-picker>
 				<text v-if="hasPackage"
 					style="padding-left: 20px;color: #a8a8a8;">{{Number(appFileList.size / 1024 / 1024).toFixed(2)}}M</text>
 			</uni-forms-item>
 			<uni-forms-item key="url" name="url" :label="isiOS ? 'AppStore' : '下载链接'" required>
-				<uni-easyinput :disabled="detailsState" placeholder="下载链接" v-model="formData.url" :maxlength="-1" />
+				<view class="flex" style="flex-direction: column;align-items:flex-start;flex: 1;">
+					<view class="flex" style="width: 100%;">
+						<uni-easyinput :disabled="detailsState" placeholder="下载链接" v-model="formData.url" :maxlength="-1" />
+						<text style="margin-left: 10px;color: #2979ff;cursor: pointer;text-decoration: underline;" v-if="formData.url" @click="toUrl(formData.url)">测试下载</text>
+					</view>
+					<text style="margin-top: 10px;font-size: 12px;color: #666;" v-if="formData.url && !detailsState">建议点击【测试下载】能正常下载后，再进行发布</text>
+				</view>
 				<!-- <show-info :top="-80" :content="uploadFileContent"></show-info> -->
 			</uni-forms-item>
 
@@ -159,10 +195,16 @@
 				showStableInfo: false,
 				isStable: true, // 是否是线上发行版
 				originalData: {}, // 原始数据，用于恢复状态
-				detailsState: true // 查看状态
+				detailsState: true, // 查看状态,
+				uniFilePickerProvider: 'unicloud',
+				domain: ""
 			}
 		},
 		async onLoad(e) {
+			let { domain, provider } = this.getCloudStorageConfig();
+			if (domain) this.domain = domain;
+			if (provider) this.uniFilePickerProvider = provider;
+
 			const id = e.id
 			this.formDataId = id
 			await this.getDetail(id)
@@ -172,6 +214,29 @@
 				this.rules.min_uni_version.rules.push({
 					"required": true
 				})
+			}
+		},
+		onUnload() {
+			// 临时处理，后面会再优化
+			this.setCloudStorage({
+				provider: null
+			});
+		},
+		watch: {
+			"domain"(val) {
+				this.setCloudStorage({
+					domain: val
+				});
+				if (this.formData.url) {
+					// 替换 this.formData.url 内的域名
+					if (!val) val = "请输入自定义域名"
+					this.formData.url = this.formData.url.replace(/^(https?:\/\/)[^\/]+/, `$1${val}`);
+				}
+			},
+			uniFilePickerProvider(val){
+				this.setCloudStorage({
+					provider: val
+				});
 			}
 		},
 		methods: {
