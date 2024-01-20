@@ -85,7 +85,6 @@
 					</view>
 					<text style="margin-top: 10px;font-size: 12px;color: #666;" v-if="formData.url && !detailsState">建议点击【测试下载】能正常下载后，再进行发布</text>
 				</view>
-				<!-- <show-info :top="-80" :content="uploadFileContent"></show-info> -->
 			</uni-forms-item>
 
 			<uni-forms-item v-if="!isiOS && !isWGT && formData.store_list.length" label="Android应用市场" key="store_list"

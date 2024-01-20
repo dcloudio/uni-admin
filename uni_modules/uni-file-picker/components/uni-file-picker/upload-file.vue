@@ -3,18 +3,13 @@
 		<view v-if="!readonly" class="files-button" @click="choose">
 			<slot></slot>
 		</view>
-		<!-- :class="{'is-text-box':showType === 'list'}" -->
+
 		<view v-if="list.length > 0" class="uni-file-picker__lists is-text-box" :style="borderStyle">
-			<!-- ,'is-list-card':showType === 'list-card' -->
 
 			<view class="uni-file-picker__lists-box" v-for="(item ,index) in list" :key="index" :class="{
 				'files-border':index !== 0 && styles.dividline}"
 			 :style="index !== 0 && styles.dividline &&borderLineStyle">
 				<view class="uni-file-picker__item">
-					<!-- :class="{'is-text-image':showType === 'list'}" -->
-					<!-- 	<view class="files__image is-text-image">
-						<image class="header-image" :src="item.logo" mode="aspectFit"></image>
-					</view> -->
 					<view class="files__name">{{item.name}}</view>
 					<view v-if="delIcon&&!readonly" class="icon-del-box icon-files" @click="delFile(index)">
 						<view class="icon-del icon-files"></view>
@@ -111,11 +106,11 @@
 						'border-radius': radius
 					}
 				}
-				let classles = ''
+				let classStr = ''
 				for (let i in obj) {
-					classles += `${i}:${obj[i]};`
+					classStr += `${i}:${obj[i]};`
 				}
-				return classles
+				return classStr
 			},
 			borderLineStyle() {
 				let obj = {}
@@ -142,11 +137,11 @@
 					}
 					obj['border-top-style'] = style
 				}
-				let classles = ''
+				let classStr = ''
 				for (let i in obj) {
-					classles += `${i}:${obj[i]};`
+					classStr += `${i}:${obj[i]};`
 				}
-				return classles
+				return classStr
 			}
 		},
 

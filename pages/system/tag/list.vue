@@ -131,7 +131,7 @@ export default {
 	computed: {
 		smsReceiver() {
 			if (this.selectedIndexs.length) {
-				var dataList = this.$refs.udb.dataList
+				let dataList = this.$refs.udb.dataList
 				return this.selectedIndexs.map(i => dataList[i].tagid)
 			}
 		}
@@ -187,7 +187,7 @@ export default {
 		},
 		// 多选处理
 		selectedItems() {
-			var dataList = this.$refs.udb.dataList
+			let dataList = this.$refs.udb.dataList
 			return this.selectedIndexs.map(i => dataList[i]._id)
 		},
 		// 批量删除

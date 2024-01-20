@@ -27,7 +27,6 @@
 				<text class="link" @click="toRetrievePwd">找回密码</text>
 			</view>
 			<text v-if="!existAdmin" class="link" @click="toRegister">{{config.isAdmin ? '注册管理员账号': '注册账号'}}</text>
-			<!-- <text class="link" @click="toRegister" v-if="!config.isAdmin">注册账号</text> -->
 		</view>
 		<!-- 悬浮登录方式组件 -->
 		<uni-id-pages-fab-login ref="uniFabLogin"></uni-id-pages-fab-login>
@@ -58,7 +57,7 @@
 		onShow() {
 			// #ifdef H5
 			document.onkeydown = event => {
-				var e = event || window.event;
+				let e = event || window.event;
 				if (e && e.keyCode == 13) { //回车键的键值为13
 					this.pwdLogin()
 				}

@@ -12,9 +12,9 @@
 	const getVal = (val) => {
 		const reg = /^[0-9]*$/g
 		return (typeof val === 'number' ||　reg.test(val) )? val + 'px' : val;
-	} 
+	}
 	// #ifdef APP-NVUE
-	var domModule = weex.requireModule('dom');
+	let domModule = weex.requireModule('dom');
 	import iconUrl from './uniicons.ttf'
 	domModule.addRule('fontFace', {
 		'fontFamily': "uniicons",

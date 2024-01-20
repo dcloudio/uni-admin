@@ -1,4 +1,4 @@
-var pattern = {
+let pattern = {
 	email: /^\S+?@\S+?\.\S+?$/,
 	idcard: /^[1-9]\d{5}(18|19|([23]\d))\d{2}((0[1-9])|(10|11|12))(([0-2][1-9])|10|20|30|31)\d{3}[0-9Xx]$/,
 	url: new RegExp(
@@ -16,7 +16,7 @@ const FORMAT_MAPPING = {
 }
 
 function formatMessage(args, resources = '') {
-	var defaultMessage = ['label']
+	let defaultMessage = ['label']
 	defaultMessage.forEach((item) => {
 		if (args[item] === undefined) {
 			args[item] = ''
@@ -125,7 +125,7 @@ class RuleValidator {
 	}
 
 	async validateRule(fieldKey, fieldValue, value, data, allData) {
-		var result = null
+		let result = null
 
 		let rules = fieldValue.rules
 
@@ -141,13 +141,13 @@ class RuleValidator {
 			}
 		}
 
-		var message = this._message
+		let message = this._message
 
 		if (rules === undefined) {
 			return message['default']
 		}
 
-		for (var i = 0; i < rules.length; i++) {
+		for (let i = 0; i < rules.length; i++) {
 			let rule = rules[i]
 			let vt = this._getValidateType(rule)
 
@@ -207,7 +207,7 @@ class RuleValidator {
 	}
 
 	_getValidateType(rule) {
-		var result = ''
+		let result = ''
 		if (rule.required) {
 			result = 'required'
 		} else if (rule.format) {
@@ -328,8 +328,8 @@ const RuleValidatorHelper = {
 	},
 
 	format(rule, value, message) {
-		var customTypes = Object.keys(types);
-		var format = FORMAT_MAPPING[rule.format] ? FORMAT_MAPPING[rule.format] : (rule.format || rule.arrayType);
+		let customTypes = Object.keys(types);
+		let format = FORMAT_MAPPING[rule.format] ? FORMAT_MAPPING[rule.format] : (rule.format || rule.arrayType);
 
 		if (customTypes.indexOf(format) > -1) {
 			if (!types[format](value)) {
@@ -427,16 +427,16 @@ class SchemaValidator extends RuleValidator {
 	}
 
 	_checkFieldInSchema(data) {
-		var keys = Object.keys(data)
-		var keys2 = Object.keys(this._schema)
+		let keys = Object.keys(data)
+		let keys2 = Object.keys(this._schema)
 		if (new Set(keys.concat(keys2)).size === keys2.length) {
 			return ''
 		}
 
-		var noExistFields = keys.filter((key) => {
+		let noExistFields = keys.filter((key) => {
 			return keys2.indexOf(key) < 0;
 		})
-		var errorMessage = formatMessage({
+		let errorMessage = formatMessage({
 			field: JSON.stringify(noExistFields)
 		}, SchemaValidator.message.TAG + SchemaValidator.message['defaultInvalid'])
 		return [{

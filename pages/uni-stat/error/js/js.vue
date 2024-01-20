@@ -4,7 +4,6 @@
 		<view class="uni-header">
 			<uni-stat-breadcrumb class="uni-stat-breadcrumb-on-phone" />
 			<view class="uni-group hide-on-phone">
-				<!-- <view class="uni-title">错误分析</view> -->
 				<view class="uni-sub-title">开发者可以在这里快速查询应用最近出现的具体错误内容，了解错误概况信息，以便快速修复问题</view>
 			</view>
 		</view>
@@ -104,7 +103,6 @@
 							<uni-load-more class="mb-m" :showText="false" status="loading" />
 							<view>正在解析，请稍等...</view>
 						</view>
-						<!-- <pre>{{errMsg}}</pre> -->
 						<text>{{errMsg}}</text>
 					</view>
 				</scroll-view>
@@ -211,7 +209,7 @@
 
 	const dbNameSourceMap = `uni-stat-error-source-map`; // sourceMap资源存放的表名
 	const sourcemapPrefix = `__UNI__/uni-stat/sourcemap`;
-	var sourcemapFileCache = {};
+	let sourcemapFileCache = {};
 
 	export default {
 		data() {

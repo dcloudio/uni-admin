@@ -132,10 +132,6 @@
 			</uni-card>
 
 			<uni-card class="mp_platform" title="小程序/快应用信息">
-				<!-- <view class="extra-button">
-					<button type="primary" plain size="mini" @click="mpAccordion">{{mpExtra}}</button>
-					<show-info :left="40" :top="-20" content="折叠状态下，即使勾选也不会显示详情" />
-				</view> -->
 				<view v-for="item in mpPlatformKeys" :key="item">
 					<checkbox-group @change="({detail:{value}}) => {setPlatformChcekbox(item,!!value.length)}">
 						<label class="title_padding" :class="{'font_bold':getPlatformChcekbox(item)}">
@@ -198,11 +194,11 @@
 	 */
 	function randomString(len) {
 		// 设定要生成的字符串包含的字符
-		var array = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T',
+		let array = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T',
 			'U', 'V', 'W', 'X', 'Y', 'Z'
 		];
-		var result = '';
-		for (var i = 0; i < len; i++) {
+		let result = '';
+		for (let i = 0; i < len; i++) {
 			result += array[Math.floor(Math.random() * 26)];
 		}
 		return result;

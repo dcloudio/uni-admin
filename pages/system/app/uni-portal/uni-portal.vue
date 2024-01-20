@@ -1,6 +1,5 @@
 <template>
 	<view class="uni-container">
-		<!-- <h2 class="text-separated" style="padding-bottom: 40rpx;">统一发布页管理</h2> -->
 
 		<h3 class="text-separated" style="padding: 0 0 20rpx 0;">步骤1：了解“统一发布页”</h3>
 
@@ -52,11 +51,11 @@
 </template>
 
 <script>
-	var download = function(content, filename) {
-		var eleLink = document.createElement('a');
+	const download = function(content, filename) {
+		let eleLink = document.createElement('a');
 		eleLink.download = filename;
 		eleLink.style.display = 'none';
-		var blob = new Blob([content]);
+		let blob = new Blob([content]);
 		eleLink.href = URL.createObjectURL(blob);
 		document.body.appendChild(eleLink);
 		eleLink.click();

@@ -173,7 +173,7 @@ export default {
 				// TODO 定时器保证动画完全执行，目前有些问题，后面会取消定时器
 				this.timer = setTimeout(() => {
 					this.animation = createAnimation(this.config, this)
-					this.tranfromInit(false).step()
+					this.transformInit(false).step()
 					this.animation.run()
 					this.$emit('change', {
 						detail: this.isShow
@@ -184,7 +184,7 @@ export default {
 		// 关闭过度动画
 		close(type) {
 			if (!this.animation) return
-			this.tranfromInit(true)
+			this.transformInit(true)
 				.step()
 				.run(() => {
 					this.isShow = false
@@ -220,8 +220,8 @@ export default {
 			return styles
 		},
 		// 处理内置组合动画
-		tranfromInit(type) {
-			let buildTranfrom = (type, mode) => {
+		transformInit(type) {
+			let buildTransform = (type, mode) => {
 				let aniNum = null
 				if (mode === 'fade') {
 					aniNum = type ? 0 : 1
@@ -243,10 +243,10 @@ export default {
 				this.animation[this.animationMode()[mode]](aniNum)
 			}
 			if (typeof this.modeClass === 'string') {
-				buildTranfrom(type, this.modeClass)
+				buildTransform(type, this.modeClass)
 			} else {
 				this.modeClass.forEach(mode => {
-					buildTranfrom(type, mode)
+					buildTransform(type, mode)
 				})
 			}
 

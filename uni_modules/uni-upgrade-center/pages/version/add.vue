@@ -82,7 +82,6 @@
 					</view>
 					<text style="margin-top: 10px;font-size: 12px;color: #666;" v-if="formData.url">建议点击【测试下载】能正常下载后，再进行发布</text>
 				</view>
-				<!-- <show-info :top="-80" :content="uploadFileContent"></show-info> -->
 			</uni-forms-item>
 
 			<uni-forms-item v-if="!isiOS && !isWGT && formData.store_list.length" label="Android应用市场" labelWidth="125px"
@@ -98,10 +97,7 @@
 										<text>是否启用</text>
 									</label>
 								</checkbox-group>
-								<!-- <view style="padding-left: 10px;">
-									<button type="warn" size="mini"
-										@click="formData.store_list.splice(index,1)">删除</button>
-								</view> -->
+
 							</view>
 							<uni-forms-item label="商店名称">
 								<uni-easyinput disabled v-model="item.name" trim="both"></uni-easyinput>

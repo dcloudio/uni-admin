@@ -69,7 +69,7 @@ class UniStatDataStat {
 		// 数据跑批
 		let res = null
 		if (cronConfig && cronConfig.length > 0) {
-			for (var mi in cronConfig) {
+			for (let mi in cronConfig) {
 				const currCronConfig = cronConfig[mi]
 				const cronType = currCronConfig.type
 				const cronTime = currCronConfig.time.split(' ')

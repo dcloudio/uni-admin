@@ -138,7 +138,7 @@ function parseUrl(url) {
 	}
 	const urlInfo = url.split('?')
 
-	baseurl = urlInfo[0]
+	let baseurl = urlInfo[0]
 	if (baseurl !== '/' && baseurl.indexOf('/') === 0) {
 	  baseurl = baseurl.substr(1)
 	}

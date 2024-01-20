@@ -37,7 +37,7 @@ class AdHelper {
       mask: true
     })
 
-    var ad = this.get(ops)
+    const ad = this.get(ops)
 
     ad.load(() => {
       uni.hideLoading()

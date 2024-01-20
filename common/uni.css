@@ -21,7 +21,6 @@ html {
 
 .uni-app--showleftwindow uni-page-head .uni-page-head {
 	color: #333 !important;
-	/* margin-right: 15px; */
 }
 
 uni-page-head .uni-btn-icon {
@@ -33,10 +32,6 @@ uni-page-head .uni-btn-icon {
 	~ uni-page-wrapper {
 	height: auto;
 	padding-top: 44px;
-}
-
-.uni-app--showleftwindow uni-page-head ~ uni-page-wrapper uni-page-body {
-	/* padding-top: 44px; */
 }
 
 .uni-app--showleftwindow uni-page-wrapper {
@@ -183,13 +178,15 @@ uni-page-head .uni-btn-icon {
 	color: #606266;
 	padding: 0 10px;
 	border: 1px #dcdfe6 solid;
-	/* margin-right: 10px; */
 	border-radius: 3px;
 }
 
 /* 分页容器 */
 .uni-pagination-box {
 	margin-top: 20px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
 }
 
 .uni-input-border,
@@ -221,7 +218,6 @@ uni-page-head .uni-btn-icon {
 	position: absolute;
 	right: 8px;
 	top: 6px;
-	font-family: uniicons;
 	font-size: 20px;
 	font-weight: normal;
 	font-style: normal;
@@ -274,7 +270,6 @@ uni-page-head .uni-btn-icon {
 }
 
 .uni-tabs__item.is-active {
-	color: $uni-color-primary;
 	background-color: #fff;
 	border-right-color: #dcdfe6;
 	border-left-color: #dcdfe6;
@@ -284,8 +279,6 @@ uni-page-head .uni-btn-icon {
 	color: #999;
 	font-size: 12px;
 	margin-top: 10px;
-	/* position: absolute; */
-	/* top: 40px; */
 }
 
 .uni-form-item-empty {
@@ -373,12 +366,6 @@ button:after {
 	color: #999;
 }
 
-.uni-pagination-box {
-	display: flex;
-	align-items: center;
-	justify-content: center;
-}
-
 .select-picker {
 	margin-right: 20px;
 }
@@ -449,10 +436,6 @@ button:after {
 	margin-bottom: 15px;
 }
 
-.uni-stat__actived {
-	/* outline: 1px solid #2979ff; */
-}
-
 .flex {
 	display: flex;
 	flex-wrap: wrap;
@@ -482,7 +465,6 @@ button:after {
 
 /* uni-popup modal start */
 .modal {
-	/* width: 100%; */
 	max-width: calc(100vw - 200px);
 	min-width: 600px;
 	margin: 0 auto;
@@ -500,7 +482,6 @@ button:after {
 	display: flex;
 	justify-content: flex-end;
 	align-items: center;
-	/* border-top: 1px solid #eee; */
 }
 
 .modal-content {
@@ -560,9 +541,7 @@ button:after {
 @media screen and (min-width: 500px) {
 	.dispaly-grid {
 		display: grid;
-		/* grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); */
 		grid-template-columns: 1fr 1fr;
-		/* grid-template-rows: 1fr 1fr; */
 		column-gap: 15px;
 	}
 
@@ -586,17 +565,6 @@ button:after {
 	}
 }
 
-/* #endif */
-
-/* #ifdef H5 */
-/* fix 弹出层被遮盖 */
-::v-deep .uni-table-scroll {
-	min-height: calc(100vh - 237px);
-	box-sizing: border-box;
-}
-::v-deep .uni-table .tr-table--border {
-	border-left: 1px #ebeef5 solid;
-}
 /* #endif */
 
 /* #ifdef H5 */
