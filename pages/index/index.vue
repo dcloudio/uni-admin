@@ -366,7 +366,7 @@
 				if (this.showdbInit) {
 					uni.showModal({
 						title: "重要提示",
-						content: `检测到您未初始化数据库，请先右键 uniCloud/database 目录，执行初始化云数据库，否则左侧无法显示菜单等数据`,
+						content: `检测到您未初始化数据库，请先右键uni-admin项目根目下的 uniCloud/database 目录，执行初始化云数据库，否则左侧无法显示菜单等数据`,
 						showCancel: false,
 						confirmText: "我知道了"
 					});
