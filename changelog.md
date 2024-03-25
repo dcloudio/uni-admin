@@ -1,3 +1,32 @@
+## 2.4.3（2024-01-25）
+- 优化 修改数据库初始化提示语使用新版初始化方案
+- 优化 uni统计-内容统计-页面规则 支持根据应用筛选
+- 优化 代码通过 SonarLint 规范检测
+## 2.4.2（2024-01-15）
+- 优化 APP升级中心，支持上传到扩展存储 [简介](https://doc.dcloud.net.cn/uniCloud/ext-storage/intro.html)
+## 2.4.1（2023-12-27）
+- 调整 db_init.json 新增内容统计相关表 [详情](https://uniapp.dcloud.net.cn/uni-stat-v2.html#upgrade2)
+## 2.4.0（2023-12-27）
+- 重要 uni统计-内容统计 [详情](https://uniapp.dcloud.net.cn/uni-stat-v2.html#upgrade2)
+## 2.3.13（2023-12-15）
+- 修复 opendb-news-comments.schema.json permission 配置少一个s的问题
+## 2.3.12（2023-11-07）
+- 修复 uni统计兼容 skd 未上报 ut 参数的Bug
+- 优化 uni统计配置增加cronMinTips，用于对cronMin参数进行解释
+- 更新 uni-captcha模块至0.7.0
+- 更新 升级中心升级至 0.6.1
+- 新增 升级中心 uni-upgrade-center 云函数 checkVersion.js 支持传递 is_uniapp_x 参数（uni-app x 项目安卓端无 wgt 更新）
+## 2.3.11（2023-08-07）
+- 优化 当菜单表无数据时，提示请先初始化云数据库
+## 2.3.10（2023-08-04）
+- 调整 db_init.json新增opendb-poi表
+## 2.3.9（2023-08-04）
+- 优化 打开选择地图时，确认按钮被top-window窗口覆盖的问题
+## 2.3.8（2023-08-03）
+- 修复 uni统计页面统计修改页面名称不生效的问题
+- 调整 uni统计支付订单明细查询改用全等匹配
+- 调整 opendb-news-articles.schema.json read默认权限
+- 优化 合并uni_modules插件的菜单时，菜单默认启用（不再需要一个一个点修改了）
 ## 2.3.7（2023-05-29）
 - 升级 uni-id-pages 至 1.1.14
 - 修复 uni统计自定义事件的查询bug

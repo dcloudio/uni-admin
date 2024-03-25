@@ -4,7 +4,6 @@
 		<view class="uni-header">
 			<uni-stat-breadcrumb class="uni-stat-breadcrumb-on-phone" />
 			<view class="uni-group">
-				<!-- <view class="uni-title">趋势分析</view> -->
 				<view class="uni-sub-title hide-on-phone">各指标趋势分析</view>
 			</view>
 		</view>
@@ -21,8 +20,6 @@
 			<view class="uni-stat--x">
 				<uni-stat-tabs label="平台选择" type="boldLine" mode="platform" v-model="query.platform_id" @change="changePlatform" />
 				<uni-data-select ref="version-select" v-if="query.platform_id && query.platform_id.indexOf('==') === -1" collection="uni-stat-app-channels" :where="channelQuery" class="p-channel" field="_id as value, channel_name as text" orderby="text asc" label="渠道/场景值选择" v-model="query.channel_id" />
-				<!-- <uni-data-select v-if="query.platform_id && query.platform_id.indexOf('==') === -1"
-					:localdata="channelData" label="渠道/场景值选择" v-model="query.channel_id"></uni-data-select> -->
 			</view>
 			<uni-stat-panel :items="panelData" />
 

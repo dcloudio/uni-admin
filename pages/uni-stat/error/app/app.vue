@@ -4,7 +4,6 @@
 		<view class="uni-header">
 			<uni-stat-breadcrumb class="uni-stat-breadcrumb-on-phone" />
 			<view class="uni-group hide-on-phone">
-				<!-- <view class="uni-title">崩溃分析</view> -->
 				<view class="uni-sub-title">开发者可以在这里快速查询原生应用最近出现的具体崩溃内容，了解崩溃概况信息，以便快速修复问题</view>
 			</view>
 		</view>
@@ -51,11 +50,6 @@
 						style="overflow-y: scroll;">
 						<uni-tr>
 							<block v-for="(mapper, index) in fieldsMap" :key="index">
-								<!-- todo: schema table -->
-								<!-- <uni-th v-if="mapper.title" :key="index" :filter-type="mapper.filter"
-									@filter-change="filterChange($event, mapper.field)" sortable
-									@sort-change="sortChange($event, mapper.field)" align="center"
-									:style="`min-width: ${mapper.title.length * 15 + 80}px;`"> -->
 								<uni-th v-if="mapper.title" :key="index" align="center"
 									:style="{'minWidth':`${mapper.title.length * 15 + 80}px`}">
 									<!-- #ifdef MP -->

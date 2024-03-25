@@ -54,13 +54,23 @@
 							<uni-easyinput v-model="formData[item].name" trim="both"></uni-easyinput>
 						</uni-forms-item>
 						<uni-forms-item class="forn-item__flex" v-if="item === 'app_android'" label="上传apk包">
-							<uni-file-picker v-model="appPackageInfo" file-extname="apk" :disabled="hasPackage"
+							<uni-file-picker v-model="appPackageInfo" file-extname="apk" :disabled="hasPackage"  :provider="uniFilePickerProvider"
 								returnType="object" file-mediatype="all" limit="1"
 								@success="(res) => iconUrlSuccess(res, `${item}.url`)"
 								@delete="(res) => iconUrlDelete(res,`${item}.url`)" style="flex:1;">
 								<view class="flex">
-									<button type="primary" size="mini" @click="selectFile"
-										style="margin: 0;">选择文件</button>
+									<radio-group @change="e => this.uniFilePickerProvider = e.detail.value">
+										<view class="flex" style="flex-wrap: nowrap;">
+									上传至：
+											<label>
+												<radio value="unicloud" checked/><text>内置存储</text>
+											</label>
+											<label style="margin-left: 20rpx;">
+												<radio value="extStorage" /><text>扩展存储</text>
+											</label>
+										</view>
+									</radio-group>
+									<button type="primary" size="mini" @click="selectFile" style="margin: 0 0 0 20rpx;">选择文件</button>
 									<text style="padding: 10px;font-size: 12px;color: #666;">
 										上传apk到当前服务空间的云存储中，上传成功后，会自动使用云存储地址填充下载链接
 									</text>
@@ -122,10 +132,6 @@
 			</uni-card>
 
 			<uni-card class="mp_platform" title="小程序/快应用信息">
-				<!-- <view class="extra-button">
-					<button type="primary" plain size="mini" @click="mpAccordion">{{mpExtra}}</button>
-					<show-info :left="40" :top="-20" content="折叠状态下，即使勾选也不会显示详情" />
-				</view> -->
 				<view v-for="item in mpPlatformKeys" :key="item">
 					<checkbox-group @change="({detail:{value}}) => {setPlatformChcekbox(item,!!value.length)}">
 						<label class="title_padding" :class="{'font_bold':getPlatformChcekbox(item)}">
@@ -188,11 +194,11 @@
 	 */
 	function randomString(len) {
 		// 设定要生成的字符串包含的字符
-		var array = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T',
+		let array = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T',
 			'U', 'V', 'W', 'X', 'Y', 'Z'
 		];
-		var result = '';
-		for (var i = 0; i < len; i++) {
+		let result = '';
+		for (let i = 0; i < len; i++) {
 			result += array[Math.floor(Math.random() * 26)];
 		}
 		return result;
@@ -210,7 +216,8 @@
 				// 手风琴状态，默认为1
 				mpAccordionStatus: 1,
 				// 标签宽度，默认为'80px'
-				labelWidth: '80px'
+				labelWidth: '80px',
+				uniFilePickerProvider: 'unicloud'
 			}
 		},
 		/**

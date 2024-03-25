@@ -290,7 +290,7 @@ export default {
 			return buildMenus(menuList)
 		},
 		onqueryload(data) {
-			for (var i = 0; i < data.length; i++) {
+			for (let i = 0; i < data.length; i++) {
 				let item = data[i]
 				const depth = getParents(data, item.menu_id)
 				item.name = (depth ? '　'.repeat(depth) + '|-' : '') + item.name

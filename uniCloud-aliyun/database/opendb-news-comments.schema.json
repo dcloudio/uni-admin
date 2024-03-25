@@ -5,7 +5,7 @@
 	],
 	"permission": {
 		"read": true,
-		"create": "auth.uid != null && get(`database.opendb-news-article.${doc.article_id}`).comment_status == 1",
+		"create": "auth.uid != null && get(`database.opendb-news-articles.${doc.article_id}`).comment_status == 1",
 		"update": "doc.user_id == auth.uid",
 		"delete": "doc.user_id == auth.uid"
 	},

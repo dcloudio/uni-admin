@@ -81,7 +81,7 @@
 			async showRewardedVideoAd() {
 				let res = await this.getSignedInInfo();
 				console.log(res);
-				if (res && res.length == 0) {
+				if (res && res.length === 0) {
 					let userId= uniCloud.getCurrentUserInfo().uid
 					if (!userId) {
 						return uni.navigateTo({

@@ -5,7 +5,6 @@
 			<table-checkbox :checked="checked" :indeterminate="indeterminate" :disabled="disabled" @checkboxSelected="checkboxSelected"></table-checkbox>
 		</th>
 		<slot></slot>
-		<!-- <uni-th class="th-fixed">123</uni-th> -->
 	</tr>
 	<!-- #endif -->
 	<!-- #ifndef H5 -->

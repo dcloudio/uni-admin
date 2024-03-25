@@ -358,7 +358,6 @@
 		align-items: center;
 		text-align: center;
 		color: #666;
-		font-size: 12px;
 	}
 
 	.uni-pagination__num {

@@ -67,11 +67,7 @@
 									:threshold="[0, 0]" />
 							</uni-td>
 							<uni-td align="center">
-								<!-- <view class="uni-group"> -->
-								<button @click="navigateTo('./detail?id='+item._id, false)" class="uni-button"
-									size="mini" type="primary">详情</button>
-								<!-- <button @click="confirmDelete(item._id)" class="uni-button" size="mini" type="warn">删除</button> -->
-								<!-- </view> -->
+								<button @click="navigateTo('./detail?id='+item._id, false)" class="uni-button" size="mini" type="primary">详情</button>
 							</uni-td>
 						</uni-tr>
 					</uni-table>
@@ -239,7 +235,7 @@
 			},
 			// 多选处理
 			selectedItems() {
-				var dataList = this.$refs.udb.dataList
+				let dataList = this.$refs.udb.dataList
 				return this.selectedIndexs.map(i => dataList[i]._id)
 			},
 			// 批量删除

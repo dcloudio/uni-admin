@@ -19,7 +19,6 @@
 			<view class="uni-stat--x">
 				<uni-stat-tabs label="平台选择" type="boldLine" mode="platform" v-model="query.platform_id" @change="changePlatform" />
 				<uni-data-select ref="version-select" v-if="query.platform_id && query.platform_id.indexOf('==') === -1" collection="uni-stat-app-channels" :where="channelQuery" class="p-channel" field="_id as value, channel_name as text" orderby="text asc" label="渠道/场景值选择" v-model="query.channel_id" />
-				<!-- <uni-data-select v-if="query.platform_id && query.platform_id.indexOf('==') === -1" :localdata="channelData" label="渠道/场景值选择" class="p-channel" v-model="query.channel_id"></uni-data-select> -->
 			</view>
 			<view class="uni-stat--x p-m">
 				<view class="label-text mb-l">
@@ -373,11 +372,9 @@
 				// Make Sunday's day number 7
 				d.setUTCDate(d.getUTCDate() + 4 - (d.getUTCDay() || 7));
 				// Get first day of year
-				var yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
+				const yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
 				// Calculate full weeks to nearest Thursday
-				var weekNo = Math.ceil((((d - yearStart) / 86400000) + 1) / 7);
-				// Return array of year and week number
-				return weekNo;
+				return Math.ceil((((d - yearStart) / 86400000) + 1) / 7);
 			},
 			//获取渠道信息
 			getChannelData(appid, platform_id) {

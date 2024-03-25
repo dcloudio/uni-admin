@@ -421,7 +421,7 @@ function fileToUrl(file) {
 			}
 		}
 	}
-	var url = (window.URL || window.webkitURL).createObjectURL(file)
+	let url = (window.URL || window.webkitURL).createObjectURL(file)
 	files[url] = file
 	return url
 }

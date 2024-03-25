@@ -85,7 +85,7 @@ export default {
   computed: {
     // unique identifier
     idName() {
-      var now = new Date().getTime();
+      let now = new Date().getTime();
       return "export_" + now;
     },
 
@@ -204,7 +204,7 @@ export default {
 		*/
     jsonToCSV(data) {
       let _self = this;
-      var csvData = [];
+			let csvData = [];
 
       //Header
       const header = this.header || this.$attrs.title;
@@ -282,7 +282,7 @@ export default {
     parseExtraData(extraData, format) {
       let parseData = "";
       if (Array.isArray(extraData)) {
-        for (var i = 0; i < extraData.length; i++) {
+        for (let i = 0; i < extraData.length; i++) {
           if (extraData[i])
             parseData += format.replace("${data}", extraData[i]);
         }

@@ -275,7 +275,7 @@ module.exports = class ActiveUsers extends BaseMod {
 
 		return true
 	}
-	
+
 	/**
 	 * 日志清理，此处日志为临时数据并不需要自定义清理，默认为固定值即可
 	 */

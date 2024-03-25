@@ -39,7 +39,7 @@
 					return this.closeMe()
 				}
 				let {avatarUrl,nickName} = res.userInfo;
-				
+
 				let tempFilePath = await new Promise((callBack)=>{
 					uni.downloadFile({
 					    url: avatarUrl,
@@ -140,8 +140,8 @@ view{
 .close,.agree{
 	text-align: center;
 	width:200rpx;
-	height:80upx;
-	line-height:80upx;
+	height:80rpx;
+	line-height:80rpx;
 	border-radius:5px;
 	margin:0 20rpx;
 	font-size:14px;

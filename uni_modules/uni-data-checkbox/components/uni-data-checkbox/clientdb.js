@@ -44,7 +44,7 @@ export default {
 		this._isEnded = false
 
 		this.$watch(() => {
-			var al = []
+			let al = []
 			attrs.forEach(key => {
 				al.push(this[key])
 			})
@@ -87,7 +87,7 @@ export default {
 		// #ifdef MP-TOUTIAO
 		let changeName
 		let events = this.$scope.dataset.eventOpts
-		for (var i = 0; i < events.length; i++) {
+		for (let i = 0; i < events.length; i++) {
 			let event = events[i]
 			if (event[0].includes('^load')) {
 				changeName = event[1][0][0]
@@ -117,9 +117,9 @@ export default {
 	// #ifdef H5
 	beforeDestroy() {
 		if (process.env.NODE_ENV === 'development' && window.unidev) {
-			var cd = this._debugDataList
-			var dl = unidev.clientDB.data
-			for (var i = dl.length - 1; i >= 0; i--) {
+			let cd = this._debugDataList
+			let dl = unidev.clientDB.data
+			for (let i = dl.length - 1; i >= 0; i--) {
 				if (dl[i] === cd) {
 					dl.splice(i, 1)
 					break

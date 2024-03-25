@@ -323,6 +323,20 @@
 					}
 				},
 				{
+					"path": "page-content/page-content",
+					"style": {
+						"navigationBarTitleText": "内容统计",
+						"enablePullDownRefresh": false
+					}
+				},
+				{
+					"path": "page-rule/page-rule",
+					"style": {
+						"navigationBarTitleText": "页面规则",
+						"enablePullDownRefresh": false
+					}
+				},
+				{
 					"path": "scene/scene",
 					"style": {
 						"navigationBarTitleText": "场景值（小程序）",

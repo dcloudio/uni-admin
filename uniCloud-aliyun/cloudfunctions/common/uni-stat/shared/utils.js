@@ -115,6 +115,8 @@ function parseUrlParams(primitiveParams, context) {
 		sw: 'screenWidth',
 		//屏幕高度
 		sh: 'screenHeight',
+		//兼容前端sdk未上报ut参数的问题
+		ut: 'uniPlatform'
 	}
 	context = context ? context : {}
 	for (let key in convertParams) {
@@ -136,7 +138,7 @@ function parseUrl(url) {
 	}
 	const urlInfo = url.split('?')
 
-	baseurl = urlInfo[0]
+	let baseurl = urlInfo[0]
 	if (baseurl !== '/' && baseurl.indexOf('/') === 0) {
 	  baseurl = baseurl.substr(1)
 	}

@@ -47,6 +47,11 @@
 			"description": "当前页面ID，对应uni-stat-pagesd",
 			"foreignKey": "uni-stat-pagesd"
 		},
+		"page_detail_id": {
+			"bsonType": "string",
+			"description": "页面详情表ID，对应uni-stat-page-details._id",
+			"foreignKey": "uni-stat-page-details._id"
+		},
 		"create_time": {
 			"bsonType": "timestamp",
 			"description": "创建时间"

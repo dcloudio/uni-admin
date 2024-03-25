@@ -4,7 +4,6 @@
 		<view class="uni-header">
 			<uni-stat-breadcrumb class="uni-stat-breadcrumb-on-phone" />
 			<view class="uni-group">
-				<!-- <view class="uni-title">事件分析管理</view> -->
 				<view class="uni-sub-title hide-on-phone">分析用户自定义事件
 					<uni-link href="https://ask.dcloud.net.cn/article/36304" text="自定义事件说明>>"></uni-link>
 				</view>
@@ -25,8 +24,6 @@
 			<view class="uni-stat--x">
 				<uni-stat-tabs label="平台选择" type="boldLine" mode="platform" v-model="query.platform_id" @change="changePlatform" />
 				<uni-data-select ref="version-select" v-if="query.platform_id && query.platform_id.indexOf('==') === -1" collection="uni-stat-app-channels" :where="channelQuery" class="p-channel" field="concat(channel_code, '---',channel_name) as value,  channel_name as text" orderby="text asc" label="渠道/场景值选择" v-model="query.channel_id" @change="changeChannel"/>
-				<!-- <uni-data-select v-if="query.platform_id && query.platform_id.indexOf('==') === -1"
-					:localdata="channelData" label="渠道/场景值选择" v-model="query.channel_id"></uni-data-select> -->
 			</view>
 			<view class="uni-stat--x" style="display: flex;align-items: center;padding: 10px;">
 				<text style="width: 80px;">事件ID</text>

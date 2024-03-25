@@ -47,9 +47,20 @@
 			"description": "当前页面ID，对应uni-stat-pages._id",
 			"foreignKey": "uni-stat-pages._id"
 		},
+		"page_detail_id": {
+			"bsonType": "string",
+			"description": "页面详情表ID，对应uni-stat-page-details._id",
+			"foreignKey": "uni-stat-page-details._id"
+		},
 		"previous_page_id": {
 			"bsonType": "string",
-			"description": "上级页面ID，为空表示第一个页面, 对应uni-stat-pages._id"
+			"description": "上级页面ID，为空表示第一个页面, 对应uni-stat-pages._id",
+			"foreignKey": "uni-stat-pages._id"
+		},
+		"previous_page_detail_id": {
+			"bsonType": "string",
+			"description": "上级页面详情表ID，对应uni-stat-page-details._id",
+			"foreignKey": "uni-stat-page-details._id"
 		},
 		"previous_page_duration": {
 			"bsonType": "int",

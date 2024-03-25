@@ -126,7 +126,7 @@
 		},
 		methods: {
 			onqueryload(data) {
-				for (var i = 0; i < data.length; i++) {
+				for (let i = 0; i < data.length; i++) {
 					let item = data[i]
 					item.permission = item.permission.map(pItem => pItem.permission_name).join('、')
 					item.create_date = this.$formatDate(item.create_date)
@@ -180,7 +180,7 @@
 			},
 			// 多选处理
 			selectedItems() {
-				var dataList = this.$refs.udb.dataList
+				let dataList = this.$refs.udb.dataList
 				return this.selectedIndexs.map(i => dataList[i]._id)
 			},
 			// 批量删除
