@@ -1,7 +1,7 @@
 {
   "id": "unicloud-map-admin",
   "displayName": "unicloud-map 管理端插件",
-  "version": "1.0.1",
+  "version": "1.1.0",
   "description": "提供了地图POI管理，可以在uni-admin内可视化的标记POI。标记的结果存入opendb表，客户端的unicloud-map组件可以自动直接拉取显示POI",
   "keywords": [
     "unicloud-map-admin"
@@ -38,7 +38,8 @@
     "platforms": {
       "cloud": {
         "tcb": "y",
-        "aliyun": "y"
+        "aliyun": "y",
+        "alipay": "y"
       },
       "client": {
         "Vue": {
