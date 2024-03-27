@@ -157,7 +157,7 @@ if (process.env.NODE_ENV === 'development') {
 	})
 	// #endif
 	// #ifdef VUE3
-	const rootModules = import.meta.glob('../../../*-menu.json', {eager: true});
+	const rootModules = import.meta.glob('../../../uni_modules/*/*-menu.json', {eager: true});
 	for (const modulePath in rootModules) {
 		const json = modulePath.replace(/^..\/..\/..\//, '');
 		let moduleItem = rootModules[modulePath];
