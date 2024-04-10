@@ -83,6 +83,9 @@
 						<uni-forms-item :label="item === 'app_ios' ? 'AppStore' : '下载链接'">
 							<uni-easyinput :maxlength="-1" v-model="formData[item].url" trim="both"></uni-easyinput>
 						</uni-forms-item>
+						<uni-forms-item v-if="item === 'app_ios'" label="获取 ABM 应用登录链接">
+							<uni-easyinput :maxlength="-1" v-model="formData[item].abm_url" trim="both"></uni-easyinput>
+						</uni-forms-item>
 					</template>
 				</view>
 
