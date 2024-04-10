@@ -156,7 +156,7 @@ export default {
 			this.keepItems = this.platFormKeys
 				.filter(key =>
 					this.getPlatformChcekbox(key) &&
-					(this.formData[key].url || this.formData[key].qrcode_url)
+					(this.formData[key].url || this.formData[key].abm_url || this.formData[key].qrcode_url)
 				)
 				.concat(['icon_url', 'screenshot', 'create_date', 'store_list'])
 
