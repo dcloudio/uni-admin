@@ -8,7 +8,7 @@
 		$child-type: type-of($child);
 		$parent-is-map: $parent-type == map;
 		$child-is-map: $child-type == map;
-
+			
 		@if (not $parent-has-key) or ($parent-type != $child-type) or (not ($parent-is-map and $child-is-map)){
 			$result: map-merge($result, ( $key: $child ));
 		}@else {
@@ -16,4 +16,4 @@
 		}
 	}
 	@return $result;
-}
+};

@@ -313,7 +313,9 @@ uni-page-head .uni-btn-icon {
 }
 
 button {
+	/* #ifndef MP-TOUTIAO */
 	background: #fff;
+	/* #endif */
 	border: 1px solid #dcdfe6;
 	color: #606266;
 	box-sizing: border-box;

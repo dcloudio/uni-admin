@@ -52,7 +52,9 @@
     "mp-weixin" : {
         "appid" : "",
         "setting" : {
-            "urlCheck" : false
+            "urlCheck" : false,
+            "minified" : true,
+            "postcss" : true
         },
         "usingComponents" : true
     },
@@ -63,7 +65,13 @@
         "usingComponents" : true
     },
     "mp-toutiao" : {
-        "usingComponents" : true
+        "usingComponents" : true,
+        "scopedSlotsCompiler" : "augmented",
+        "setting" : {
+            "urlCheck" : false,
+            "postcss" : true,
+            "minified" : true
+        }
     },
     "uniStatistics" : {
         "enable" : false

@@ -50,10 +50,10 @@
 							<uni-dateformat :threshold="[0, 0]" :date="item.create_date"></uni-dateformat>
 						</uni-td>
 						<uni-td align="center">
-							<view v-if="item.appid === appid">
+							<!-- <view v-if="item.appid === appid">
 								-
-							</view>
-							<view v-else class="uni-group">
+							</view> -->
+							<view class="uni-group">
 								<button @click="publish(item._id)" class="uni-button" size="mini"
 									type="primary">{{$t('common.button.publish')}}</button>
 								<button

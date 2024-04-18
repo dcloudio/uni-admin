@@ -29,7 +29,9 @@
 			<text v-if="!existAdmin" class="link" @click="toRegister">{{config.isAdmin ? '注册管理员账号': '注册账号'}}</text>
 		</view>
 		<!-- 悬浮登录方式组件 -->
+		<!-- #ifndef MP-TOUTIAO -->
 		<uni-id-pages-fab-login ref="uniFabLogin"></uni-id-pages-fab-login>
+		<!-- #endif -->
 	</view>
 </template>
 

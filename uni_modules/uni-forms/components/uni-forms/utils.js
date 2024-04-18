@@ -113,7 +113,7 @@ export const rawData = (object = {}, name) => {
 
 /**
  * 真实name还原为 array
- * @param {*} name
+ * @param {*} name 
  */
 export const name2arr = (name) => {
 	let field = name.replace('_formdata_#', '')
@@ -130,14 +130,14 @@ export const name2arr = (name) => {
 export const objSet = (object, path, value) => {
 	if (typeof object !== 'object') return object;
 	_basePath(path).reduce((o, k, i, _) => {
-		if (i === _.length - 1) {
+		if (i === _.length - 1) { 
 			// 若遍历结束直接赋值
 			o[k] = value
 			return null
-		} else if (k in o) {
+		} else if (k in o) { 
 			// 若存在对应路径，则返回找到的对象，进行下一次遍历
 			return o[k]
-		} else {
+		} else { 
 			// 若不存在对应路径，则创建对应对象，若下一路径是数字，新对象赋值为空数组，否则赋值为空对象
 			o[k] = /^[0-9]{1,}$/.test(_[i + 1]) ? [] : {}
 			return o[k]
@@ -173,7 +173,7 @@ export const objGet = (object, path, defaultVal = 'undefined') => {
 
 
 /**
- * 是否为 number 类型
+ * 是否为 number 类型 
  * @param {any} num 需要判断的值
  * @return {Boolean} 是否为 number
  */
@@ -182,7 +182,7 @@ export const isNumber = (num) => {
 }
 
 /**
- * 是否为 boolean 类型
+ * 是否为 boolean 类型 
  * @param {any} bool 需要判断的值
  * @return {Boolean} 是否为 boolean
  */
@@ -212,10 +212,10 @@ export const isRequiredField = (rules) => {
  * @param {Any} obj 需要获取数据类型的值
  */
 export const type = (obj) => {
-	let class2type = {};
+	var class2type = {};
 
 	// 生成class2type映射
-	"Boolean Number String Function Array Date RegExp Object Error".split(" ").forEach(function(item, index) {
+	"Boolean Number String Function Array Date RegExp Object Error".split(" ").map(function(item, index) {
 		class2type["[object " + item + "]"] = item.toLowerCase();
 	})
 	if (obj == null) {
@@ -228,8 +228,8 @@ export const type = (obj) => {
 
 /**
  * 判断两个值是否相等
- * @param {any} a 值
- * @param {any} b 值
+ * @param {any} a 值  
+ * @param {any} b 值  
  * @return {Boolean} 是否相等
  */
 export const isEqual = (a, b) => {
@@ -243,7 +243,7 @@ export const isEqual = (a, b) => {
 		return a === b;
 	}
 	//接下来判断a和b的数据类型
-	let classNameA = toString.call(a),
+	var classNameA = toString.call(a),
 		classNameB = toString.call(b);
 	//如果数据类型不相等，则返回false
 	if (classNameA !== classNameB) {
@@ -269,13 +269,13 @@ export const isEqual = (a, b) => {
 	//如果是对象类型
 	if (classNameA == '[object Object]') {
 		//获取a和b的属性长度
-		let propsA = Object.getOwnPropertyNames(a),
+		var propsA = Object.getOwnPropertyNames(a),
 			propsB = Object.getOwnPropertyNames(b);
 		if (propsA.length != propsB.length) {
 			return false;
 		}
-		for (let i = 0; i < propsA.length; i++) {
-			let propName = propsA[i];
+		for (var i = 0; i < propsA.length; i++) {
+			var propName = propsA[i];
 			//如果对应属性对应值不相等，则返回false
 			if (a[propName] !== b[propName]) {
 				return false;

@@ -5,11 +5,12 @@
 	</td>
 	<!-- #endif -->
 	<!-- #ifndef H5 -->
+	<!-- :class="{'table--border':border}"  -->
 	<view class="uni-table-td" :class="{'table--border':border}" :style="{width:width + 'px','text-align':align}">
 		<slot></slot>
 	</view>
 	<!-- #endif -->
-
+	
 </template>
 
 <script>

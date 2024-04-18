@@ -235,6 +235,8 @@ $uni-primary: #007aff !default;
 	align-items: center;
 	flex: 1;
 }
+.arrow-box {
+}
 .arrow {
 	display: block;
 	position: relative;

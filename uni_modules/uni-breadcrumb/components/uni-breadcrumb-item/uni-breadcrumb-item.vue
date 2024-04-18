@@ -51,10 +51,10 @@
 		},
 		computed: {
 			separator() {
-				return this.uniBreadcrumb.separator
+				return this.uniBreadcrumb && this.uniBreadcrumb.separator
 			},
 			separatorClass() {
-				return this.uniBreadcrumb.separatorClass
+				return this.uniBreadcrumb && this.uniBreadcrumb.separatorClass
 			}
 		},
 		methods: {
@@ -113,7 +113,7 @@
 		&:first-child &--slot {
 			padding-left: 0;
 		}
-		
+
 		&:last-child &--separator {
 			display: none;
 		}

@@ -4,6 +4,18 @@
 			"path": "pages/index/index"
 		},
 		{
+			"path": "pages/demo/icons/icons",
+			"style": {
+				"navigationBarTitleText": "图标"
+			}
+		},
+		{
+			"path": "pages/demo/table/table",
+			"style": {
+				"navigationBarTitleText": "表格"
+			}
+		},
+		{
 			"path": "uni_modules/uni-id-pages/pages/login/login-withpwd",
 			"style": {
 				"topWindow": false,
@@ -268,22 +280,6 @@
 					"path": "safety/list",
 					"style": {
 						"navigationBarTitleText": "用户日志"
-					}
-				}
-			]
-		},
-		{
-			"root": "pages/demo",
-			"pages": [{
-					"path": "icons/icons",
-					"style": {
-						"navigationBarTitleText": "图标"
-					}
-				},
-				{
-					"path": "table/table",
-					"style": {
-						"navigationBarTitleText": "表格"
 					}
 				}
 			]
