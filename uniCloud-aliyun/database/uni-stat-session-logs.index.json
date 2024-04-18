@@ -1,0 +1,166 @@
+[
+    {
+        "IndexName": "index_search_time",
+        "MgoKeySchema": {
+            "MgoIndexKeys": [
+                {
+                    "Name": "create_time",
+                    "Direction": "1"
+                }
+            ],
+            "MgoIsUnique": false
+        }
+    },
+    {
+        "IndexName": "index_search_base",
+        "MgoKeySchema": {
+            "MgoIndexKeys": [
+                {
+                    "Name": "appid",
+                    "Direction": "1"
+                },
+                {
+                    "Name": "version",
+                    "Direction": "1"
+                },
+                {
+                    "Name": "platform",
+                    "Direction": "1"
+                },
+                {
+                    "Name": "channel",
+                    "Direction": "1"
+                }
+            ],
+            "MgoIsUnique": false
+        }
+    },
+    {
+        "IndexName": "index_search_auto",
+        "MgoKeySchema": {
+            "MgoIndexKeys": [
+                {
+                    "Name": "appid",
+                    "Direction": "1"
+                },
+                {
+                    "Name": "version",
+                    "Direction": "1"
+                },
+                {
+                    "Name": "platform",
+                    "Direction": "1"
+                },
+                {
+                    "Name": "channel",
+                    "Direction": "1"
+                },
+                {
+                    "Name": "create_time",
+                    "Direction": "1"
+                }
+            ],
+            "MgoIsUnique": false
+        }
+    },
+    {
+        "IndexName": "index_search_more",
+        "MgoKeySchema": {
+            "MgoIndexKeys": [
+                {
+                    "Name": "appid",
+                    "Direction": "1"
+                },
+                {
+                    "Name": "version",
+                    "Direction": "1"
+                },
+                {
+                    "Name": "platform",
+                    "Direction": "1"
+                },
+                {
+                    "Name": "channel",
+                    "Direction": "1"
+                },
+                {
+                    "Name": "device_id",
+                    "Direction": "1"
+                },
+                {
+                    "Name": "create_time",
+                    "Direction": "1"
+                }
+            ],
+            "MgoIsUnique": false
+        }
+    },
+    {
+        "IndexName": "index_search_replenish",
+        "MgoKeySchema": {
+            "MgoIndexKeys": [
+                {
+                    "Name": "appid",
+                    "Direction": "1"
+                },
+                {
+                    "Name": "version",
+                    "Direction": "1"
+                },
+                {
+                    "Name": "platform",
+                    "Direction": "1"
+                },
+                {
+                    "Name": "channel",
+                    "Direction": "1"
+                },
+                {
+                    "Name": "is_first_visit",
+                    "Direction": "1"
+                },
+                {
+                    "Name": "create_time",
+                    "Direction": "1"
+                }
+            ],
+            "MgoIsUnique": false
+        }
+    },
+    {
+        "IndexName": "index_search_all",
+        "MgoKeySchema": {
+            "MgoIndexKeys": [
+                {
+                    "Name": "appid",
+                    "Direction": "1"
+                },
+                {
+                    "Name": "version",
+                    "Direction": "1"
+                },
+                {
+                    "Name": "platform",
+                    "Direction": "1"
+                },
+                {
+                    "Name": "channel",
+                    "Direction": "1"
+                },
+                {
+                    "Name": "is_first_visit",
+                    "Direction": "1"
+                },
+                {
+                    "Name": "page_count",
+                    "Direction": "1"
+                },
+                {
+                    "Name": "create_time",
+                    "Direction": "1"
+                }
+            ],
+            "MgoIsUnique": false
+        }
+    }
+]

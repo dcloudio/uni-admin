@@ -1,0 +1,82 @@
+[
+    {
+        "IndexName": "index_search_time",
+        "MgoKeySchema": {
+            "MgoIndexKeys": [
+                {
+                    "Name": "create_time",
+                    "Direction": "1"
+                }
+            ],
+            "MgoIsUnique": false
+        }
+    },
+    {
+        "IndexName": "index_search_normal",
+        "MgoKeySchema": {
+            "MgoIndexKeys": [
+                {
+                    "Name": "appid",
+                    "Direction": "1"
+                },
+                {
+                    "Name": "version_id",
+                    "Direction": "1"
+                },
+                {
+                    "Name": "platform_id",
+                    "Direction": "1"
+                },
+                {
+                    "Name": "channel_id",
+                    "Direction": "1"
+                },
+                {
+                    "Name": "dimension",
+                    "Direction": "1"
+                },
+                {
+                    "Name": "create_time",
+                    "Direction": "1"
+                }
+            ],
+            "MgoIsUnique": false
+        }
+    },
+    {
+        "IndexName": "index_search_user",
+        "MgoKeySchema": {
+            "MgoIndexKeys": [
+                {
+                    "Name": "appid",
+                    "Direction": "1"
+                },
+                {
+                    "Name": "version_id",
+                    "Direction": "1"
+                },
+                {
+                    "Name": "platform_id",
+                    "Direction": "1"
+                },
+                {
+                    "Name": "channel_id",
+                    "Direction": "1"
+                },
+                {
+                    "Name": "uid",
+                    "Direction": "1"
+                },
+                {
+                    "Name": "dimension",
+                    "Direction": "1"
+                },
+                {
+                    "Name": "create_time",
+                    "Direction": "1"
+                }
+            ],
+            "MgoIsUnique": false
+        }
+    }
+]
