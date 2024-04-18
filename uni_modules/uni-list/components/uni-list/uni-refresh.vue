@@ -46,7 +46,7 @@
                 this.$emit("pullingdown", e);
                 // #endif
                 // #ifndef APP-NVUE
-								let detail = {
+                var detail = {
                     viewHeight: 90,
                     pullingDistance: e.height
                 }

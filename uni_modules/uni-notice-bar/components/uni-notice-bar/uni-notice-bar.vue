@@ -15,11 +15,11 @@
 					'uni-noticebar__content--single': !scrollable && (single || moreText)
 				}"
 			>
-				<text :id="elId" ref="animationEle" class="uni-noticebar__content-text"
+				<text :id="elId" ref="animationEle" class="uni-noticebar__content-text" 
 					:class="{
 						'uni-noticebar__content-text--scrollable': scrollable,
 						'uni-noticebar__content-text--single': !scrollable && (single || showGetMore)
-					}"
+					}" 
 					:style="{
 						color: color,
 						fontSize: fontSize + 'px',
@@ -150,20 +150,25 @@
 				animationDelay: '0s'
 			}
 		},
+		watch:{
+			text:function(newValue,oldValue){
+				this.initSize();
+			}
+		},
 		computed: {
 			isShowGetMore() {
 				return this.showGetMore === true || this.showGetMore === 'true'
 			},
 			isShowClose() {
-				return (this.showClose === true || this.showClose === 'true')
+				return (this.showClose === true || this.showClose === 'true') 
 					&& (this.showGetMore === false || this.showGetMore === 'false')
 			}
 		},
 		mounted() {
 			// #ifdef APP-PLUS
-			let pages = getCurrentPages();
-			let page = pages[pages.length - 1];
-			let currentWebview = page.$getAppWebview();
+			var pages = getCurrentPages();
+			var page = pages[pages.length - 1];
+			var currentWebview = page.$getAppWebview();
 			currentWebview.addEventListener('hide', () => {
 				this.webviewHide = true
 			})

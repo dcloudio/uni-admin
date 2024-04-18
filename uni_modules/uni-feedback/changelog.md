@@ -1,3 +1,5 @@
+## 1.1.1（2024-03-26）
+支持支付宝小程序云
 ## 1.1.0（2022-07-13）
 新增，应用[pages_init](https://uniapp.dcloud.io/plugin/publish.html#pages-init)当导入插件到项目工程时，自动合并本插件的页面路由到项目的pages.json
 ## 1.0.5（2022-07-13）

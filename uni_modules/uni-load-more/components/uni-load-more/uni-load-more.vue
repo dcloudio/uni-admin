@@ -129,9 +129,9 @@
 		},
 		mounted() {
 			// #ifdef APP-PLUS
-			let pages = getCurrentPages();
-			let page = pages[pages.length - 1];
-			let currentWebview = page.$getAppWebview();
+			var pages = getCurrentPages();
+			var page = pages[pages.length - 1];
+			var currentWebview = page.$getAppWebview();
 			currentWebview.addEventListener('hide', () => {
 				this.webviewHide = true
 			})

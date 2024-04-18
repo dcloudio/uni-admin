@@ -47,242 +47,242 @@
 </template>
 
 <script>
-	import dataPicker from "../uni-data-pickerview/uni-data-picker.js"
-	import DataPickerView from "../uni-data-pickerview/uni-data-pickerview.vue"
+  import dataPicker from "../uni-data-pickerview/uni-data-picker.js"
+  import DataPickerView from "../uni-data-pickerview/uni-data-pickerview.vue"
 
-	/**
-	 * DataPicker 级联选择
-	 * @description 支持单列、和多列级联选择。列数没有限制，如果屏幕显示不全，顶部tab区域会左右滚动。
-	 * @tutorial https://ext.dcloud.net.cn/plugin?id=3796
-	 * @property {String} popup-title 弹出窗口标题
-	 * @property {Array} localdata 本地数据，参考
-	 * @property {Boolean} border = [true|false] 是否有边框
-	 * @property {Boolean} readonly = [true|false] 是否仅读
-	 * @property {Boolean} preload = [true|false] 是否预加载数据
-	 * @value true 开启预加载数据，点击弹出窗口后显示已加载数据
-	 * @value false 关闭预加载数据，点击弹出窗口后开始加载数据
-	 * @property {Boolean} step-searh = [true|false] 是否分布查询
-	 * @value true 启用分布查询，仅查询当前选中节点
-	 * @value false 关闭分布查询，一次查询出所有数据
-	 * @property {String|DBFieldString} self-field 分布查询当前字段名称
-	 * @property {String|DBFieldString} parent-field 分布查询父字段名称
-	 * @property {String|DBCollectionString} collection 表名
-	 * @property {String|DBFieldString} field 查询字段，多个字段用 `,` 分割
-	 * @property {String} orderby 排序字段及正序倒叙设置
-	 * @property {String|JQLString} where 查询条件
-	 * @event {Function} popupshow 弹出的选择窗口打开时触发此事件
-	 * @event {Function} popuphide 弹出的选择窗口关闭时触发此事件
-	 */
-	export default {
-		name: 'UniDataPicker',
-		emits: ['popupopened', 'popupclosed', 'nodeclick', 'input', 'change', 'update:modelValue','inputclick'],
-		mixins: [dataPicker],
-		components: {
-			DataPickerView
-		},
-		props: {
-			options: {
-				type: [Object, Array],
-				default () {
-					return {}
-				}
-			},
-			popupTitle: {
-				type: String,
-				default: '请选择'
-			},
-			placeholder: {
-				type: String,
-				default: '请选择'
-			},
-			heightMobile: {
-				type: String,
-				default: ''
-			},
-			readonly: {
-				type: Boolean,
-				default: false
-			},
-			clearIcon: {
-				type: Boolean,
-				default: true
-			},
-			border: {
-				type: Boolean,
-				default: true
-			},
-			split: {
-				type: String,
-				default: '/'
-			},
-			ellipsis: {
-				type: Boolean,
-				default: true
-			}
-		},
-		data() {
-			return {
-				isOpened: false,
-				inputSelected: []
-			}
-		},
-		created() {
-			this.$nextTick(() => {
-				this.load();
-			})
-		},
-		watch: {
+  /**
+   * DataPicker 级联选择
+   * @description 支持单列、和多列级联选择。列数没有限制，如果屏幕显示不全，顶部tab区域会左右滚动。
+   * @tutorial https://ext.dcloud.net.cn/plugin?id=3796
+   * @property {String} popup-title 弹出窗口标题
+   * @property {Array} localdata 本地数据，参考
+   * @property {Boolean} border = [true|false] 是否有边框
+   * @property {Boolean} readonly = [true|false] 是否仅读
+   * @property {Boolean} preload = [true|false] 是否预加载数据
+   * @value true 开启预加载数据，点击弹出窗口后显示已加载数据
+   * @value false 关闭预加载数据，点击弹出窗口后开始加载数据
+   * @property {Boolean} step-searh = [true|false] 是否分布查询
+   * @value true 启用分布查询，仅查询当前选中节点
+   * @value false 关闭分布查询，一次查询出所有数据
+   * @property {String|DBFieldString} self-field 分布查询当前字段名称
+   * @property {String|DBFieldString} parent-field 分布查询父字段名称
+   * @property {String|DBCollectionString} collection 表名
+   * @property {String|DBFieldString} field 查询字段，多个字段用 `,` 分割
+   * @property {String} orderby 排序字段及正序倒叙设置
+   * @property {String|JQLString} where 查询条件
+   * @event {Function} popupshow 弹出的选择窗口打开时触发此事件
+   * @event {Function} popuphide 弹出的选择窗口关闭时触发此事件
+   */
+  export default {
+    name: 'UniDataPicker',
+    emits: ['popupopened', 'popupclosed', 'nodeclick', 'input', 'change', 'update:modelValue','inputclick'],
+    mixins: [dataPicker],
+    components: {
+      DataPickerView
+    },
+    props: {
+      options: {
+        type: [Object, Array],
+        default () {
+          return {}
+        }
+      },
+      popupTitle: {
+        type: String,
+        default: '请选择'
+      },
+      placeholder: {
+        type: String,
+        default: '请选择'
+      },
+      heightMobile: {
+        type: String,
+        default: ''
+      },
+      readonly: {
+        type: Boolean,
+        default: false
+      },
+      clearIcon: {
+        type: Boolean,
+        default: true
+      },
+      border: {
+        type: Boolean,
+        default: true
+      },
+      split: {
+        type: String,
+        default: '/'
+      },
+      ellipsis: {
+        type: Boolean,
+        default: true
+      }
+    },
+    data() {
+      return {
+        isOpened: false,
+        inputSelected: []
+      }
+    },
+    created() {
+      this.$nextTick(() => {
+        this.load();
+      })
+    },
+    watch: {
 			localdata: {
 				handler() {
 					this.load()
 				},
-				deep: true
+        deep: true
 			},
-		},
-		methods: {
-			clear() {
-				this._dispatchEvent([]);
-			},
-			onPropsChange() {
-				this._treeData = [];
-				this.selectedIndex = 0;
+    },
+    methods: {
+      clear() {
+        this._dispatchEvent([]);
+      },
+      onPropsChange() {
+        this._treeData = [];
+        this.selectedIndex = 0;
 
-				this.load();
-			},
-			load() {
-				if (this.readonly) {
-					this._processReadonly(this.localdata, this.dataValue);
-					return;
-				}
+        this.load();
+      },
+      load() {
+        if (this.readonly) {
+          this._processReadonly(this.localdata, this.dataValue);
+          return;
+        }
 
-				// 回显本地数据
-				if (this.isLocalData) {
-					this.loadData();
-					this.inputSelected = this.selected.slice(0);
-				} else if (this.isCloudDataList || this.isCloudDataTree) { // 回显 Cloud 数据
-					this.loading = true;
-					this.getCloudDataValue().then((res) => {
-						this.loading = false;
-						this.inputSelected = res;
-					}).catch((err) => {
-						this.loading = false;
-						this.errorMessage = err;
-					})
-				}
-			},
-			show() {
-				this.isOpened = true
-				setTimeout(() => {
-					this.$refs.pickerView.updateData({
-						treeData: this._treeData,
-						selected: this.selected,
-						selectedIndex: this.selectedIndex
-					})
-				}, 200)
-				this.$emit('popupopened')
-			},
-			hide() {
-				this.isOpened = false
-				this.$emit('popupclosed')
-			},
-			handleInput() {
-				if (this.readonly) {
+        // 回显本地数据
+        if (this.isLocalData) {
+          this.loadData();
+          this.inputSelected = this.selected.slice(0);
+        } else if (this.isCloudDataList || this.isCloudDataTree) { // 回显 Cloud 数据
+          this.loading = true;
+          this.getCloudDataValue().then((res) => {
+            this.loading = false;
+            this.inputSelected = res;
+          }).catch((err) => {
+            this.loading = false;
+            this.errorMessage = err;
+          })
+        }
+      },
+      show() {
+        this.isOpened = true
+        setTimeout(() => {
+          this.$refs.pickerView.updateData({
+            treeData: this._treeData,
+            selected: this.selected,
+            selectedIndex: this.selectedIndex
+          })
+        }, 200)
+        this.$emit('popupopened')
+      },
+      hide() {
+        this.isOpened = false
+        this.$emit('popupclosed')
+      },
+      handleInput() {
+        if (this.readonly) {
 					this.$emit('inputclick')
-					return
-				}
-				this.show()
-			},
-			handleClose(e) {
-				this.hide()
-			},
-			onnodeclick(e) {
-				this.$emit('nodeclick', e)
-			},
-			ondatachange(e) {
-				this._treeData = this.$refs.pickerView._treeData
-			},
-			onchange(e) {
-				this.hide()
-				this.$nextTick(() => {
-					this.inputSelected = e;
-				})
-				this._dispatchEvent(e)
-			},
-			_processReadonly(dataList, value) {
-				let isTree = dataList.findIndex((item) => {
-					return item.children
-				})
-				if (isTree > -1) {
-					let inputValue
-					if (Array.isArray(value)) {
-						inputValue = value[value.length - 1]
-						if (typeof inputValue === 'object' && inputValue.value) {
-							inputValue = inputValue.value
-						}
-					} else {
-						inputValue = value
-					}
-					this.inputSelected = this._findNodePath(inputValue, this.localdata)
-					return
-				}
+          return
+        }
+        this.show()
+      },
+      handleClose(e) {
+        this.hide()
+      },
+      onnodeclick(e) {
+        this.$emit('nodeclick', e)
+      },
+      ondatachange(e) {
+        this._treeData = this.$refs.pickerView._treeData
+      },
+      onchange(e) {
+        this.hide()
+        this.$nextTick(() => {
+          this.inputSelected = e;
+        })
+        this._dispatchEvent(e)
+      },
+      _processReadonly(dataList, value) {
+        var isTree = dataList.findIndex((item) => {
+          return item.children
+        })
+        if (isTree > -1) {
+          let inputValue
+          if (Array.isArray(value)) {
+            inputValue = value[value.length - 1]
+            if (typeof inputValue === 'object' && inputValue.value) {
+              inputValue = inputValue.value
+            }
+          } else {
+            inputValue = value
+          }
+          this.inputSelected = this._findNodePath(inputValue, this.localdata)
+          return
+        }
 
-				if (!this.hasValue) {
-					this.inputSelected = []
-					return
-				}
+        if (!this.hasValue) {
+          this.inputSelected = []
+          return
+        }
 
-				let result = []
-				for (let i = 0; i < value.length; i++) {
-					let val = value[i]
-					let item = dataList.find((v) => {
-						return v.value == val
-					})
-					if (item) {
-						result.push(item)
-					}
-				}
-				if (result.length) {
-					this.inputSelected = result
-				}
-			},
-			_filterForArray(data, valueArray) {
-				let result = []
-				for (let i = 0; i < valueArray.length; i++) {
-					let value = valueArray[i]
-					let found = data.find((item) => {
-						return item.value == value
-					})
-					if (found) {
-						result.push(found)
-					}
-				}
-				return result
-			},
-			_dispatchEvent(selected) {
-				let item = {}
-				if (selected.length) {
-					let value = new Array(selected.length)
-					for (let i = 0; i < selected.length; i++) {
-						value[i] = selected[i].value
-					}
-					item = selected[selected.length - 1]
-				} else {
-					item.value = ''
-				}
-				if (this.formItem) {
-					this.formItem.setValue(item.value)
-				}
+        let result = []
+        for (let i = 0; i < value.length; i++) {
+          var val = value[i]
+          var item = dataList.find((v) => {
+            return v.value == val
+          })
+          if (item) {
+            result.push(item)
+          }
+        }
+        if (result.length) {
+          this.inputSelected = result
+        }
+      },
+      _filterForArray(data, valueArray) {
+        var result = []
+        for (let i = 0; i < valueArray.length; i++) {
+          var value = valueArray[i]
+          var found = data.find((item) => {
+            return item.value == value
+          })
+          if (found) {
+            result.push(found)
+          }
+        }
+        return result
+      },
+      _dispatchEvent(selected) {
+        let item = {}
+        if (selected.length) {
+          var value = new Array(selected.length)
+          for (var i = 0; i < selected.length; i++) {
+            value[i] = selected[i].value
+          }
+          item = selected[selected.length - 1]
+        } else {
+          item.value = ''
+        }
+        if (this.formItem) {
+          this.formItem.setValue(item.value)
+        }
 
-				this.$emit('input', item.value)
-				this.$emit('update:modelValue', item.value)
-				this.$emit('change', {
-					detail: {
-						value: selected
-					}
-				})
-			}
-		}
-	}
+        this.$emit('input', item.value)
+        this.$emit('update:modelValue', item.value)
+        this.$emit('change', {
+          detail: {
+            value: selected
+          }
+        })
+      }
+    }
+  }
 </script>
 
 <style>
