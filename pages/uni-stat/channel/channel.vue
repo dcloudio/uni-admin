@@ -36,7 +36,7 @@
 				<view class="mb-m">
 					<uni-link color="" href="https://ask.dcloud.net.cn/article/35974" text="如何自定义渠道包?"></uni-link>
 				</view>
-				<uni-table :loading="loading" border stripe :emptyText="$t('common.empty')">
+				<uni-table :loading="loading" border stripe :emptyText="errorMessage || $t('common.empty')">
 					<uni-tr>
 						<block v-for="(mapper, index) in fieldsMap.slice(0, fieldsMap.length-1)" :key="index">
 							<uni-th v-if="mapper.title" :key="index" align="center">
@@ -223,9 +223,9 @@
 			},
 
 			getAllData(query) {
-				if (query.indexOf("appid") === -1) {
+				if (!this.query.appid){
 					this.errorMessage = "请先选择应用";
-					return; // 如果appid为空，则不进行查询
+					return;
 				}
 				this.errorMessage = "";
 				this.getPanelData();

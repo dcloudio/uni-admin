@@ -36,7 +36,7 @@
 				</view>
 			</view>
 			<view class="uni-stat--x p-m">
-				<uni-table :loading="loading" border stripe :emptyText="$t('common.empty')">
+				<uni-table :loading="loading" border stripe :emptyText="errorMessage || $t('common.empty')">
 					<uni-tr>
 						<block v-for="(mapper, index) in fieldsMap" :key="index">
 							<uni-th v-if="mapper.title" :key="index" align="center">
@@ -113,7 +113,8 @@
 				panelData: [],
 				queryId: '',
 				updateValue: '',
-				channelData: []
+				channelData: [],
+				errorMessage: ''
 			}
 		},
 		computed: {
@@ -197,6 +198,11 @@
 				//this.query.platform = channel.split("---")[1];
 			},
 			getTableData(query = stringifyQuery(this.query, null, ['uni_platform','platform_id','version_id', 'channel_id'])) {
+				if (!this.query.appid){
+					this.errorMessage = "请先选择应用";
+					return;
+				}
+				this.errorMessage = "";
 				const {
 					pageCurrent
 				} = this.options
@@ -238,6 +244,11 @@
 			},
 
 			getChannelData(appid, platform_id) {
+				if (!this.query.appid){
+					this.errorMessage = "请先选择应用";
+					return;
+				}
+				this.errorMessage = "";
 				this.query.channel_id = ''
 				const db = uniCloud.database()
 				const condition = {}

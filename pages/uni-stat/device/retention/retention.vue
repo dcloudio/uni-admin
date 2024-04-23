@@ -41,7 +41,7 @@
 					<uni-icons type="info"></uni-icons>
 					表格中显示为空，表示留存为 0 或无数据
 				</view>
-				<uni-table :loading="loading" stripe :emptyText="$t('common.empty')">
+				<uni-table :loading="loading" stripe :emptyText="errorMessage || $t('common.empty')">
 					<uni-tr style="background-color: #eee;">
 						<block v-for="(mapper, index) in fieldsMap" :key="index">
 							<uni-th v-if="mapper.title" :key="index" align="center">{{mapper.title}}</uni-th>
@@ -262,9 +262,9 @@
 			},
 
 			getAllData(query) {
-				if (!query.appid) {
+				if (!this.query.appid){
 					this.errorMessage = "请先选择应用";
-					return; // 如果appid为空，则不进行查询
+					return;
 				}
 				this.errorMessage = "";
 				this.getChartData(query, this.key, this.keyName)

@@ -46,7 +46,7 @@
 					:where="where" page-data="replace" :orderby="orderby" :getcount="true" :page-size="options.pageSize"
 					:page-current="options.pageCurrent" loadtime="manual"
 					v-slot:default="{data,pagination,loading,error,options}" :options="options" @load="onqueryload">
-					<uni-table ref="table" :loading="loading" border stripe :emptyText="$t('common.empty')"
+					<uni-table ref="table" :loading="loading" border stripe :emptyText="errorMessage || $t('common.empty')"
 						style="overflow-y: scroll;">
 						<uni-tr>
 							<block v-for="(mapper, index) in fieldsMap" :key="index">

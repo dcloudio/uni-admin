@@ -25,7 +25,7 @@
 			</view>
 			<uni-stat-panel :items="panelData" />
 			<view class="uni-stat--x p-m">
-				<uni-table :loading="loading" border stripe :emptyText="$t('common.empty')">
+				<uni-table :loading="loading" border stripe :emptyText="errorMessage || $t('common.empty')">
 					<uni-tr>
 						<block v-for="(mapper, index) in fieldsMap" :key="index">
 							<uni-th v-if="mapper.title" :key="index" align="center">
@@ -113,7 +113,8 @@
 				panelData: fieldsMap.filter(f => f.hasOwnProperty('value')),
 				queryId: '',
 				updateValue: '',
-				channelData: []
+				channelData: [],
+				errorMessage: ''
 			}
 		},
 		computed: {
@@ -183,6 +184,11 @@
 			},
 
 			getTableData(query) {
+				if (!this.query.appid){
+					this.errorMessage = "请先选择应用";
+					return;
+				}
+				this.errorMessage = "";
 				query = stringifyQuery(this.query, null, ['uni_platform'])
 				const {
 					pageCurrent
@@ -246,6 +252,11 @@
 			},
 
 			getPanelData(query = stringifyQuery(this.query, null, ['uni_platform'])) {
+				if (!this.query.appid){
+					this.errorMessage = "请先选择应用";
+					return;
+				}
+				this.errorMessage = "";
 				const db = uniCloud.database()
 				const subTable = db.collection('uni-stat-page-result')
 					.where(query)

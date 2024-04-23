@@ -40,7 +40,7 @@
 					<uni-icons type="info"></uni-icons>
 					表格中显示为空，表示留存为 0 或无数据
 				</view>
-				<uni-table :loading="loading" stripe :emptyText="$t('common.empty')">
+				<uni-table :loading="loading" stripe :emptyText="errorMessage || $t('common.empty')">
 					<uni-tr style="background-color: #eee;">
 						<block v-for="(mapper, index) in fieldsMap" :key="index">
 							<uni-th v-if="mapper.title" :key="index" align="center">{{mapper.title}}</uni-th>
