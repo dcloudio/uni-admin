@@ -437,6 +437,13 @@ button:after {
 	box-shadow: -1px -1px 5px 0 rgba(0, 0, 0, 0.1);
 	margin-bottom: 15px;
 }
+.uni-stat--app-select{
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	width: 900px;
+	max-width: 100%;
+}
 
 .flex {
 	display: flex;

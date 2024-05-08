@@ -7,8 +7,10 @@
 		<view class="uni-container">
 
 			<view class="uni-stat--x flex p-1015">
-				<uni-data-select collection="opendb-app-list" field="appid as value, name as text" orderby="text asc" :def-item="1" label="应用选择" v-model="query.appid" :clear="false" />
-				<uni-data-select collection="opendb-app-versions" :where="versionQuery" class="ml-m" field="_id as value, version as text, uni_platform as label, create_date as date" format="{label} - {text}" orderby="date desc" label="版本选择" v-model="query.version_id" />
+				<view class="uni-stat--app-select">
+					<uni-data-select collection="opendb-app-list" field="appid as value, name as text" orderby="text asc" :def-item="1" label="应用选择" v-model="query.appid" :clear="false" />
+					<uni-data-select collection="opendb-app-versions" :where="versionQuery" class="ml-m" field="_id as value, version as text, uni_platform as label, create_date as date" format="{label} - {text}" orderby="date desc" label="版本选择" v-model="query.version_id" />
+				</view>
 			</view>
 			<view class="uni-stat--x">
 				<uni-stat-tabs label="平台选择" type="boldLine" mode="platform" v-model="query.platform_id" @change="platformChange" />

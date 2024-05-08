@@ -9,7 +9,9 @@
 		</view>
 		<view class="uni-container">
 			<view class="uni-stat--x flex p-1015">
-				<uni-data-select ref="appListRef" collection="opendb-app-list" field="appid as value, name as text" orderby="text asc" label="应用选择" v-model="appid" @change="search" />
+				<view class="uni-stat--app-select" style="width: 500px;">
+					<uni-data-select ref="appListRef" collection="opendb-app-list" field="appid as value, name as text" orderby="text asc" label="应用选择" v-model="appid" @change="search" />
+				</view>
 			</view>
 
 			<unicloud-db ref="udb" :collection="collectionList" field="title,path,page_rules,appid" :where="where" page-data="replace" :orderby="orderby" :getcount="true"
