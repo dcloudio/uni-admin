@@ -1,10 +1,10 @@
 [
     {
-        "IndexName": "create_time",
+        "IndexName": "start_time",
         "MgoKeySchema": {
             "MgoIndexKeys": [
                 {
-                    "Name": "create_time",
+                    "Name": "start_time",
                     "Direction": "1"
                 }
             ],
@@ -24,11 +24,11 @@
         }
     },
     {
-        "IndexName": "version",
+        "IndexName": "version_id",
         "MgoKeySchema": {
             "MgoIndexKeys": [
                 {
-                    "Name": "version",
+                    "Name": "version_id",
                     "Direction": "1"
                 }
             ],
@@ -36,11 +36,11 @@
         }
     },
     {
-        "IndexName": "platform",
+        "IndexName": "platform_id",
         "MgoKeySchema": {
             "MgoIndexKeys": [
                 {
-                    "Name": "platform",
+                    "Name": "platform_id",
                     "Direction": "1"
                 }
             ],
@@ -48,11 +48,11 @@
         }
     },
     {
-        "IndexName": "channel",
+        "IndexName": "channel_id",
         "MgoKeySchema": {
             "MgoIndexKeys": [
                 {
-                    "Name": "channel",
+                    "Name": "channel_id",
                     "Direction": "1"
                 }
             ],
@@ -60,11 +60,35 @@
         }
     },
     {
-        "IndexName": "hash",
+        "IndexName": "dimension",
         "MgoKeySchema": {
             "MgoIndexKeys": [
                 {
-                    "Name": "hash",
+                    "Name": "dimension",
+                    "Direction": "1"
+                }
+            ],
+            "MgoIsUnique": false
+        }
+    },
+    {
+        "IndexName": "page_id",
+        "MgoKeySchema": {
+            "MgoIndexKeys": [
+                {
+                    "Name": "page_id",
+                    "Direction": "1"
+                }
+            ],
+            "MgoIsUnique": false
+        }
+    },
+    {
+        "IndexName": "page_detail_id",
+        "MgoKeySchema": {
+            "MgoIndexKeys": [
+                {
+                    "Name": "page_detail_id",
                     "Direction": "1"
                 }
             ],

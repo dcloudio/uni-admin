@@ -1,6 +1,6 @@
 [
     {
-        "IndexName": "index_search_time",
+        "IndexName": "create_time",
         "MgoKeySchema": {
             "MgoIndexKeys": [
                 {
@@ -12,31 +12,11 @@
         }
     },
     {
-        "IndexName": "index_search_normal",
+        "IndexName": "appid",
         "MgoKeySchema": {
             "MgoIndexKeys": [
                 {
                     "Name": "appid",
-                    "Direction": "1"
-                },
-                {
-                    "Name": "version",
-                    "Direction": "1"
-                },
-                {
-                    "Name": "platform",
-                    "Direction": "1"
-                },
-                {
-                    "Name": "channel",
-                    "Direction": "1"
-                },
-                {
-                    "Name": "event_key",
-                    "Direction": "1"
-                },
-                {
-                    "Name": "create_time",
                     "Direction": "1"
                 }
             ],
@@ -44,35 +24,59 @@
         }
     },
     {
-        "IndexName": "index_search_user",
+        "IndexName": "version",
         "MgoKeySchema": {
             "MgoIndexKeys": [
                 {
-                    "Name": "appid",
-                    "Direction": "1"
-                },
-                {
                     "Name": "version",
                     "Direction": "1"
-                },
+                }
+            ],
+            "MgoIsUnique": false
+        }
+    },
+    {
+        "IndexName": "platform",
+        "MgoKeySchema": {
+            "MgoIndexKeys": [
                 {
                     "Name": "platform",
                     "Direction": "1"
-                },
+                }
+            ],
+            "MgoIsUnique": false
+        }
+    },
+    {
+        "IndexName": "channel",
+        "MgoKeySchema": {
+            "MgoIndexKeys": [
                 {
                     "Name": "channel",
                     "Direction": "1"
-                },
+                }
+            ],
+            "MgoIsUnique": false
+        }
+    },
+    {
+        "IndexName": "event_key",
+        "MgoKeySchema": {
+            "MgoIndexKeys": [
                 {
                     "Name": "event_key",
                     "Direction": "1"
-                },
+                }
+            ],
+            "MgoIsUnique": false
+        }
+    },
+    {
+        "IndexName": "uid",
+        "MgoKeySchema": {
+            "MgoIndexKeys": [
                 {
                     "Name": "uid",
-                    "Direction": "1"
-                },
-                {
-                    "Name": "create_time",
                     "Direction": "1"
                 }
             ],

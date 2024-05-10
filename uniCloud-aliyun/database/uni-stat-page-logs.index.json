@@ -1,6 +1,6 @@
 [
     {
-        "IndexName": "index_search_time",
+        "IndexName": "create_time",
         "MgoKeySchema": {
             "MgoIndexKeys": [
                 {
@@ -12,21 +12,45 @@
         }
     },
     {
-        "IndexName": "index_search_base",
+        "IndexName": "appid",
         "MgoKeySchema": {
             "MgoIndexKeys": [
                 {
                     "Name": "appid",
                     "Direction": "1"
-                },
+                }
+            ],
+            "MgoIsUnique": false
+        }
+    },
+    {
+        "IndexName": "version",
+        "MgoKeySchema": {
+            "MgoIndexKeys": [
                 {
                     "Name": "version",
                     "Direction": "1"
-                },
+                }
+            ],
+            "MgoIsUnique": false
+        }
+    },
+    {
+        "IndexName": "platform",
+        "MgoKeySchema": {
+            "MgoIndexKeys": [
                 {
                     "Name": "platform",
                     "Direction": "1"
-                },
+                }
+            ],
+            "MgoIsUnique": false
+        }
+    },
+    {
+        "IndexName": "channel",
+        "MgoKeySchema": {
+            "MgoIndexKeys": [
                 {
                     "Name": "channel",
                     "Direction": "1"
@@ -36,95 +60,35 @@
         }
     },
     {
-        "IndexName": "index_search_auto",
+        "IndexName": "page_id",
         "MgoKeySchema": {
             "MgoIndexKeys": [
-                {
-                    "Name": "appid",
-                    "Direction": "1"
-                },
-                {
-                    "Name": "version",
-                    "Direction": "1"
-                },
-                {
-                    "Name": "platform",
-                    "Direction": "1"
-                },
-                {
-                    "Name": "channel",
-                    "Direction": "1"
-                },
-                {
-                    "Name": "create_time",
-                    "Direction": "1"
-                }
-            ],
-            "MgoIsUnique": false
-        }
-    },
-    {
-        "IndexName": "index_search_more",
-        "MgoKeySchema": {
-            "MgoIndexKeys": [
-                {
-                    "Name": "appid",
-                    "Direction": "1"
-                },
-                {
-                    "Name": "version",
-                    "Direction": "1"
-                },
-                {
-                    "Name": "platform",
-                    "Direction": "1"
-                },
-                {
-                    "Name": "channel",
-                    "Direction": "1"
-                },
                 {
                     "Name": "page_id",
                     "Direction": "1"
-                },
-                {
-                    "Name": "create_time",
-                    "Direction": "1"
                 }
             ],
             "MgoIsUnique": false
         }
     },
     {
-        "IndexName": "index_search_entry",
+        "IndexName": "previous_page_id",
         "MgoKeySchema": {
             "MgoIndexKeys": [
-                {
-                    "Name": "appid",
-                    "Direction": "1"
-                },
-                {
-                    "Name": "version",
-                    "Direction": "1"
-                },
-                {
-                    "Name": "platform",
-                    "Direction": "1"
-                },
-                {
-                    "Name": "channel",
-                    "Direction": "1"
-                },
                 {
                     "Name": "previous_page_id",
                     "Direction": "1"
-                },
+                }
+            ],
+            "MgoIsUnique": false
+        }
+    },
+    {
+        "IndexName": "previous_page_is_entry",
+        "MgoKeySchema": {
+            "MgoIndexKeys": [
                 {
                     "Name": "previous_page_is_entry",
-                    "Direction": "1"
-                },
-                {
-                    "Name": "create_time",
                     "Direction": "1"
                 }
             ],
@@ -132,39 +96,11 @@
         }
     },
     {
-        "IndexName": "index_search_entry_user",
+        "IndexName": "uid",
         "MgoKeySchema": {
             "MgoIndexKeys": [
                 {
-                    "Name": "appid",
-                    "Direction": "1"
-                },
-                {
-                    "Name": "version",
-                    "Direction": "1"
-                },
-                {
-                    "Name": "platform",
-                    "Direction": "1"
-                },
-                {
-                    "Name": "channel",
-                    "Direction": "1"
-                },
-                {
-                    "Name": "previous_page_id",
-                    "Direction": "1"
-                },
-                {
-                    "Name": "previous_page_is_entry",
-                    "Direction": "1"
-                },
-                {
                     "Name": "uid",
-                    "Direction": "1"
-                },
-                {
-                    "Name": "create_time",
                     "Direction": "1"
                 }
             ],
@@ -172,35 +108,23 @@
         }
     },
     {
-        "IndexName": "index_search_more_user",
+        "IndexName": "page_detail_id",
         "MgoKeySchema": {
             "MgoIndexKeys": [
                 {
-                    "Name": "appid",
+                    "Name": "page_detail_id",
                     "Direction": "1"
-                },
+                }
+            ],
+            "MgoIsUnique": false
+        }
+    },
+    {
+        "IndexName": "previous_page_detail_id",
+        "MgoKeySchema": {
+            "MgoIndexKeys": [
                 {
-                    "Name": "version",
-                    "Direction": "1"
-                },
-                {
-                    "Name": "platform",
-                    "Direction": "1"
-                },
-                {
-                    "Name": "channel",
-                    "Direction": "1"
-                },
-                {
-                    "Name": "page_id",
-                    "Direction": "1"
-                },
-                {
-                    "Name": "uid",
-                    "Direction": "1"
-                },
-                {
-                    "Name": "create_time",
+                    "Name": "previous_page_detail_id",
                     "Direction": "1"
                 }
             ],

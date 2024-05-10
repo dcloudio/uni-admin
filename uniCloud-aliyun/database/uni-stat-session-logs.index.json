@@ -1,6 +1,6 @@
 [
     {
-        "IndexName": "index_search_time",
+        "IndexName": "create_time",
         "MgoKeySchema": {
             "MgoIndexKeys": [
                 {
@@ -12,21 +12,45 @@
         }
     },
     {
-        "IndexName": "index_search_base",
+        "IndexName": "appid",
         "MgoKeySchema": {
             "MgoIndexKeys": [
                 {
                     "Name": "appid",
                     "Direction": "1"
-                },
+                }
+            ],
+            "MgoIsUnique": false
+        }
+    },
+    {
+        "IndexName": "version",
+        "MgoKeySchema": {
+            "MgoIndexKeys": [
                 {
                     "Name": "version",
                     "Direction": "1"
-                },
+                }
+            ],
+            "MgoIsUnique": false
+        }
+    },
+    {
+        "IndexName": "platform",
+        "MgoKeySchema": {
+            "MgoIndexKeys": [
                 {
                     "Name": "platform",
                     "Direction": "1"
-                },
+                }
+            ],
+            "MgoIsUnique": false
+        }
+    },
+    {
+        "IndexName": "channel",
+        "MgoKeySchema": {
+            "MgoIndexKeys": [
                 {
                     "Name": "channel",
                     "Direction": "1"
@@ -36,59 +60,23 @@
         }
     },
     {
-        "IndexName": "index_search_auto",
+        "IndexName": "device_id",
         "MgoKeySchema": {
             "MgoIndexKeys": [
-                {
-                    "Name": "appid",
-                    "Direction": "1"
-                },
-                {
-                    "Name": "version",
-                    "Direction": "1"
-                },
-                {
-                    "Name": "platform",
-                    "Direction": "1"
-                },
-                {
-                    "Name": "channel",
-                    "Direction": "1"
-                },
-                {
-                    "Name": "create_time",
-                    "Direction": "1"
-                }
-            ],
-            "MgoIsUnique": false
-        }
-    },
-    {
-        "IndexName": "index_search_more",
-        "MgoKeySchema": {
-            "MgoIndexKeys": [
-                {
-                    "Name": "appid",
-                    "Direction": "1"
-                },
-                {
-                    "Name": "version",
-                    "Direction": "1"
-                },
-                {
-                    "Name": "platform",
-                    "Direction": "1"
-                },
-                {
-                    "Name": "channel",
-                    "Direction": "1"
-                },
                 {
                     "Name": "device_id",
                     "Direction": "1"
-                },
+                }
+            ],
+            "MgoIsUnique": false
+        }
+    },
+    {
+        "IndexName": "is_first_visit",
+        "MgoKeySchema": {
+            "MgoIndexKeys": [
                 {
-                    "Name": "create_time",
+                    "Name": "is_first_visit",
                     "Direction": "1"
                 }
             ],
@@ -96,67 +84,11 @@
         }
     },
     {
-        "IndexName": "index_search_replenish",
+        "IndexName": "page_count",
         "MgoKeySchema": {
             "MgoIndexKeys": [
-                {
-                    "Name": "appid",
-                    "Direction": "1"
-                },
-                {
-                    "Name": "version",
-                    "Direction": "1"
-                },
-                {
-                    "Name": "platform",
-                    "Direction": "1"
-                },
-                {
-                    "Name": "channel",
-                    "Direction": "1"
-                },
-                {
-                    "Name": "is_first_visit",
-                    "Direction": "1"
-                },
-                {
-                    "Name": "create_time",
-                    "Direction": "1"
-                }
-            ],
-            "MgoIsUnique": false
-        }
-    },
-    {
-        "IndexName": "index_search_all",
-        "MgoKeySchema": {
-            "MgoIndexKeys": [
-                {
-                    "Name": "appid",
-                    "Direction": "1"
-                },
-                {
-                    "Name": "version",
-                    "Direction": "1"
-                },
-                {
-                    "Name": "platform",
-                    "Direction": "1"
-                },
-                {
-                    "Name": "channel",
-                    "Direction": "1"
-                },
-                {
-                    "Name": "is_first_visit",
-                    "Direction": "1"
-                },
                 {
                     "Name": "page_count",
-                    "Direction": "1"
-                },
-                {
-                    "Name": "create_time",
                     "Direction": "1"
                 }
             ],

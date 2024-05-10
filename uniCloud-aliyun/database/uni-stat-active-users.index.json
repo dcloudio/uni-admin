@@ -1,6 +1,6 @@
 [
     {
-        "IndexName": "index_search_time",
+        "IndexName": "create_time",
         "MgoKeySchema": {
             "MgoIndexKeys": [
                 {
@@ -12,31 +12,11 @@
         }
     },
     {
-        "IndexName": "index_search_normal",
+        "IndexName": "appid",
         "MgoKeySchema": {
             "MgoIndexKeys": [
                 {
                     "Name": "appid",
-                    "Direction": "1"
-                },
-                {
-                    "Name": "version_id",
-                    "Direction": "1"
-                },
-                {
-                    "Name": "platform_id",
-                    "Direction": "1"
-                },
-                {
-                    "Name": "channel_id",
-                    "Direction": "1"
-                },
-                {
-                    "Name": "dimension",
-                    "Direction": "1"
-                },
-                {
-                    "Name": "create_time",
                     "Direction": "1"
                 }
             ],
@@ -44,35 +24,47 @@
         }
     },
     {
-        "IndexName": "index_search_user",
+        "IndexName": "version_id",
         "MgoKeySchema": {
             "MgoIndexKeys": [
                 {
-                    "Name": "appid",
-                    "Direction": "1"
-                },
-                {
                     "Name": "version_id",
                     "Direction": "1"
-                },
+                }
+            ],
+            "MgoIsUnique": false
+        }
+    },
+    {
+        "IndexName": "platform_id",
+        "MgoKeySchema": {
+            "MgoIndexKeys": [
                 {
                     "Name": "platform_id",
                     "Direction": "1"
-                },
+                }
+            ],
+            "MgoIsUnique": false
+        }
+    },
+    {
+        "IndexName": "channel_id",
+        "MgoKeySchema": {
+            "MgoIndexKeys": [
                 {
                     "Name": "channel_id",
                     "Direction": "1"
-                },
-                {
-                    "Name": "uid",
-                    "Direction": "1"
-                },
+                }
+            ],
+            "MgoIsUnique": false
+        }
+    },
+    {
+        "IndexName": "dimension",
+        "MgoKeySchema": {
+            "MgoIndexKeys": [
                 {
                     "Name": "dimension",
-                    "Direction": "1"
-                },
-                {
-                    "Name": "create_time",
                     "Direction": "1"
                 }
             ],

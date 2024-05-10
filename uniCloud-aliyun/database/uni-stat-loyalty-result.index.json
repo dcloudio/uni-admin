@@ -1,6 +1,6 @@
 [
     {
-        "IndexName": "index_search_time",
+        "IndexName": "start_time",
         "MgoKeySchema": {
             "MgoIndexKeys": [
                 {
@@ -12,27 +12,59 @@
         }
     },
     {
-        "IndexName": "index_search_normal",
+        "IndexName": "appid",
         "MgoKeySchema": {
             "MgoIndexKeys": [
                 {
                     "Name": "appid",
                     "Direction": "1"
-                },
+                }
+            ],
+            "MgoIsUnique": false
+        }
+    },
+    {
+        "IndexName": "version_id",
+        "MgoKeySchema": {
+            "MgoIndexKeys": [
                 {
                     "Name": "version_id",
                     "Direction": "1"
-                },
+                }
+            ],
+            "MgoIsUnique": false
+        }
+    },
+    {
+        "IndexName": "platform_id",
+        "MgoKeySchema": {
+            "MgoIndexKeys": [
                 {
                     "Name": "platform_id",
                     "Direction": "1"
-                },
+                }
+            ],
+            "MgoIsUnique": false
+        }
+    },
+    {
+        "IndexName": "channel_id",
+        "MgoKeySchema": {
+            "MgoIndexKeys": [
                 {
                     "Name": "channel_id",
                     "Direction": "1"
-                },
+                }
+            ],
+            "MgoIsUnique": false
+        }
+    },
+    {
+        "IndexName": "dimension",
+        "MgoKeySchema": {
+            "MgoIndexKeys": [
                 {
-                    "Name": "start_time",
+                    "Name": "dimension",
                     "Direction": "1"
                 }
             ],

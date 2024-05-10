@@ -24,35 +24,11 @@
         }
     },
     {
-        "IndexName": "version",
+        "IndexName": "page_id",
         "MgoKeySchema": {
             "MgoIndexKeys": [
                 {
-                    "Name": "version",
-                    "Direction": "1"
-                }
-            ],
-            "MgoIsUnique": false
-        }
-    },
-    {
-        "IndexName": "platform",
-        "MgoKeySchema": {
-            "MgoIndexKeys": [
-                {
-                    "Name": "platform",
-                    "Direction": "1"
-                }
-            ],
-            "MgoIsUnique": false
-        }
-    },
-    {
-        "IndexName": "channel",
-        "MgoKeySchema": {
-            "MgoIndexKeys": [
-                {
-                    "Name": "channel",
+                    "Name": "page_id",
                     "Direction": "1"
                 }
             ],
