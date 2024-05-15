@@ -128,6 +128,12 @@ module.exports = class Platform extends BaseMod {
 				platformCode = 'mp-lark'
 				break
 			//原生应用
+			case 'app-android':
+				platformCode = 'android'
+			break
+			case 'app-ios':
+				platformCode = 'ios'
+			break
 			case 'n':
 			case 'app-plus':
 			case 'app':
