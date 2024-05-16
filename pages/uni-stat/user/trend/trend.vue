@@ -34,7 +34,7 @@
 				</view>
 				<uni-stat-tabs type="box" v-model="chartTab" :tabs="chartTabs" class="mb-l" @change="changeChartTab" />
 				<view class="uni-charts-box">
-					<qiun-data-charts type="area" :chartData="chartData" echartsH5 echartsApp :errorMessage="errorMessage"/>
+					<qiun-data-charts type="area" :chartData="chartData" echartsH5 echartsApp :errorMessage="errorMessage" :eopts="setOptions"/>
 				</view>
 			</view>
 
@@ -96,6 +96,33 @@
 				channelData: [],
 				tabName: '新增用户',
 				errorMessage: "",
+				setOptions: {
+					xAxis: {
+						boundaryGap: false,
+						axisTick: {
+							show: false
+						},
+						axisLine: {
+							lineStyle: {
+								color: '#999'
+							}
+						}
+					},
+					tooltip: {
+						trigger: 'axis',
+						axisPointer: {
+							type: 'cross'
+						},
+					},
+					grid: {
+						left: 40,
+						right: 50,
+						bottom: 50,
+						top: 60,
+						containLabel: true,
+						show: false
+					}
+				}
 			}
 		},
 		computed: {
@@ -141,7 +168,7 @@
 					})
 					this.currentDimensionTab = 0
 				} else {
-					this.query.dimension = 'day'
+					//this.query.dimension = 'day'
 					tabs.forEach((tab, index) => {
 						if (tab._id === 'hour') {
 							tab.disabled = false
@@ -149,7 +176,7 @@
 							tab.disabled = false
 						}
 					})
-					this.currentDimensionTab = 1
+					//this.currentDimensionTab = 1
 				}
 				return tabs
 			},
@@ -305,7 +332,7 @@
 					.field(stringifyField(fieldsMap))
 					.groupBy('start_time')
 					.groupField(stringifyGroupField(fieldsMap))
-					.orderBy('start_time', 'desc')
+					.orderBy('start_time', 'asc')
 					.skip((pageCurrent - 1) * this.options.pageSize)
 					.limit(this.options.pageSize)
 					.get({
@@ -338,7 +365,7 @@
 
 			getPanelData() {
 				let cloneQuery = JSON.parse(JSON.stringify(this.query))
-				cloneQuery.dimension = 'day'
+				//cloneQuery.dimension = 'day'
 				let query = stringifyQuery(cloneQuery, null, ['uni_platform'])
 				const db = uniCloud.database()
 				const subTable = db.collection('uni-stat-result')
