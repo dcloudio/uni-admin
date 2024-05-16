@@ -4,14 +4,15 @@
 		<view class="uni-header">
 			<uni-stat-breadcrumb class="uni-stat-breadcrumb-on-phone" />
 			<view class="uni-group hide-on-phone">
-				<!-- <view class="uni-title">崩溃分析</view> -->
 				<view class="uni-sub-title">开发者可以在这里快速查询原生应用最近出现的具体崩溃内容，了解崩溃概况信息，以便快速修复问题</view>
 			</view>
 		</view>
 		<view class="uni-container">
 			<view class="uni-stat--x flex p-1015">
-				<uni-data-select collection="opendb-app-list" field="appid as value, name as text" orderby="text asc" :defItem="1" label="应用选择" v-model="query.appid" :clear="false" />
-				<uni-data-select ref="app-versions" collection="opendb-app-versions" :where="versionQuery" class="ml-m" field="_id as value, version as text, uni_platform as label, create_date as date" format="{label} - {text}" orderby="date desc" label="版本选择" v-model="query.version_id" />
+				<view class="uni-stat--app-select">
+					<uni-data-select collection="opendb-app-list" field="appid as value, name as text" orderby="text asc" :defItem="1" label="应用选择" v-model="query.appid" :clear="false" />
+					<uni-data-select ref="app-versions" collection="opendb-app-versions" :where="versionQuery" class="ml-m" field="_id as value, version as text, uni_platform as label, create_date as date" format="{label} - {text}" orderby="date desc" label="版本选择" v-model="query.version_id" />
+				</view>
 				<uni-stat-tabs label="平台选择" type="boldLine" :all="false" mode="platform-channel" v-model="query.platform_id" @change="changePlatform" />
 			</view>
 			<view class="uni-stat--x flex">
@@ -47,15 +48,10 @@
 					:where="where" page-data="replace" :orderby="orderby" :getcount="true" :page-size="options.pageSize"
 					:page-current="options.pageCurrent" loadtime="manual"
 					v-slot:default="{data,pagination,loading,error,options}" :options="options" @load="onqueryload">
-					<uni-table ref="table" :loading="loading" border stripe :emptyText="$t('common.empty')"
+					<uni-table ref="table" :loading="loading" border stripe :emptyText="errorMessage || $t('common.empty')"
 						style="overflow-y: scroll;">
 						<uni-tr>
 							<block v-for="(mapper, index) in fieldsMap" :key="index">
-								<!-- todo: schema table -->
-								<!-- <uni-th v-if="mapper.title" :key="index" :filter-type="mapper.filter"
-									@filter-change="filterChange($event, mapper.field)" sortable
-									@sort-change="sortChange($event, mapper.field)" align="center"
-									:style="`min-width: ${mapper.title.length * 15 + 80}px;`"> -->
 								<uni-th v-if="mapper.title" :key="index" align="center"
 									:style="{'minWidth':`${mapper.title.length * 15 + 80}px`}">
 									<!-- #ifdef MP -->

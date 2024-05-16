@@ -82,7 +82,10 @@
 				let res = await this.getSignedInInfo();
 				console.log(res);
 				if (res && res.length == 0) {
-					let userId= uniCloud.getCurrentUserInfo().uid
+					let {
+						_id: userId
+					} = uni.getStorageSync('userInfo')
+					console.log(userId, uni.getStorageSync('userInfo'));
 					if (!userId) {
 						return uni.navigateTo({
 							url: "/pages/ucenter/login-page/index/index"

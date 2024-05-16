@@ -1,7 +1,7 @@
 {
   "id": "uni-feedback",
   "displayName": "问题反馈页面模板",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "问题反馈页面模板，方便开发者快速搭建问题反馈界面",
   "keywords": [
     "问题反馈页面模板"
@@ -10,11 +10,7 @@
   "engines": {
     "HBuilderX": "^3.1.0"
   },
-  "dcloudext": {
-    "category": [
-        "uniCloud",
-        "云端一体页面模板"
-    ],
+"dcloudext": {
     "sale": {
       "regular": {
         "price": "0.00"
@@ -31,7 +27,8 @@
       "data": "无",
       "permissions": "无"
     },
-    "npmurl": ""
+    "npmurl": "",
+    "type": "unicloud-template-page"
   },
   "uni_modules": {
     "dependencies": [
@@ -47,7 +44,8 @@
     "platforms": {
       "cloud": {
         "tcb": "y",
-        "aliyun": "y"
+        "aliyun": "y",
+        "alipay": "y"
       },
       "client": {
         "App": {

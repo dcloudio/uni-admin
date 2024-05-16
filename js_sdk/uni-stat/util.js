@@ -115,11 +115,14 @@ function stringifyQuery(query, dimension = false, delArrs = []) {
 					if (maxDeltaDay(time)) {
 						queryArr.push(`dimension == "hour"`)
 					} else {
-						if (val && val !== `"hour"`) {
-							queryArr.push(`${key} == ${val}`)
-						} else {
-							queryArr.push(`dimension == "day"`)
-						}
+						// if (val && val !== `"hour"`) {
+						// 	queryArr.push(`${key} == ${val}`)
+						// } else {
+						// 	queryArr.push(`dimension == "day"`)
+						// }
+
+						// 放开按小时查询的时间限制
+						queryArr.push(`${key} == ${val}`)
 					}
 				} else {
 					queryArr.push(`${key} == ${val}`)
@@ -308,7 +311,13 @@ function formatDate(date, type) {
 	if (type === 'hour') {
 		let h = d.getHours()
 		h = h < 10 ? '0' + h : h
-		return `${h}:00 ~ ${h}:59`
+		let str = `${h}:00 ~ ${h}:59`
+		if (h === 0) {
+			// 0 点的时候，显示为 yyyy-mm-dd（00:00 ~ 00:59）
+			let firstday = parseDateTime(d)
+			str = firstday + "（00:00 ~ 00:59）";
+		}
+		return str
 	} else if (type === 'week') {
 		const first = d.getDate() - d.getDay() + 1; // First day is the day of the month - the day of the week
 		const last = first + 6; // last day is the first day + 6
@@ -421,7 +430,7 @@ function fileToUrl(file) {
 			}
 		}
 	}
-	var url = (window.URL || window.webkitURL).createObjectURL(file)
+	let url = (window.URL || window.webkitURL).createObjectURL(file)
 	files[url] = file
 	return url
 }

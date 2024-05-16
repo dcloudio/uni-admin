@@ -3,8 +3,6 @@
 		<view class="uni-header">
 			<uni-stat-breadcrumb class="uni-stat-breadcrumb-on-phone" />
 			<view class="uni-group">
-				<!-- <input class="uni-search" type="text" v-model="query" placeholder="用户/内容" />
-				<button class="uni-button" type="default" size="mini" @click="search">搜索</button> -->
 				<input class="uni-search" type="text" v-model="query" @confirm="search" :placeholder="$t('common.placeholder.query')" />
 				<button class="uni-button hide-on-phone" type="default" size="mini" @click="search">{{$t('common.button.search')}}</button>
 			</view>
@@ -111,7 +109,7 @@
 			},
 			// 多选处理
 			selectedItems() {
-				var dataList = this.$refs.udb.dataList
+				let dataList = this.$refs.udb.dataList
 				return this.selectedIndexs.map(i => dataList[i]._id)
 			},
 			//批量删除

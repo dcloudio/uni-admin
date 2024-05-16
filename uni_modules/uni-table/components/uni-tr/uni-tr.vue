@@ -71,26 +71,34 @@ export default {
 	mounted() {
 		if (this.widthThArr.length > 0) {
 			const selectionWidth = this.selection === 'selection' ? 50 : 0
-			this.root.minWidth = this.widthThArr.reduce((a, b) => Number(a) + Number(b)) + selectionWidth
+			this.root.minWidth = Number(this.widthThArr.reduce((a, b) => Number(a) + Number(b))) + selectionWidth;
 		}
 	},
 	// #ifndef VUE3
 	destroyed() {
-		const index = this.root.trChildren.findIndex(i => i === this)
-		this.root.trChildren.splice(index, 1)
-		this.root.isNodata()
+		if (this.root && this.root.trChildren) {
+			const index = this.root.trChildren.findIndex(i => i === this)
+			this.root.trChildren.splice(index, 1)
+			this.root.isNodata()
+		}
 	},
 	// #endif
 	// #ifdef VUE3
 	unmounted() {
-		const index = this.root.trChildren.findIndex(i => i === this)
-		this.root.trChildren.splice(index, 1)
-		this.root.isNodata()
+		if (this.root && this.root.trChildren) {
+			const index = this.root.trChildren.findIndex(i => i === this)
+			this.root.trChildren.splice(index, 1)
+			this.root.isNodata()
+		}
 	},
 	// #endif
 	methods: {
 		minWidthUpdate(width) {
 			this.widthThArr.push(width)
+			if (this.widthThArr.length > 0) {
+				const selectionWidth = this.selection === 'selection' ? 50 : 0;
+				this.root.minWidth = Number(this.widthThArr.reduce((a, b) => Number(a) + Number(b))) + selectionWidth;
+			}
 		},
 		// 选中
 		checkboxSelected(e) {

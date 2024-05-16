@@ -55,7 +55,9 @@
     "mp-weixin" : {
         "appid" : "wx999bf02c8e05dfc9",
         "setting" : {
-            "urlCheck" : false
+            "urlCheck" : false,
+            "minified" : true,
+            "postcss" : true
         },
         "usingComponents" : true,
         "uniStatistics" : {
@@ -78,7 +80,16 @@
         "usingComponents" : true,
         "uniStatistics" : {
             "enable" : false
+        },
+        "scopedSlotsCompiler" : "augmented",
+        "setting" : {
+            "urlCheck" : false,
+            "postcss" : true,
+            "minified" : true
         }
+    },
+    "uniStatistics" : {
+        "enable" : false
     },
     "h5" : {
         "template" : "template.h5.html",

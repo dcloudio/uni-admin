@@ -1,3 +1,28 @@
+## 2.4.8（2024-05-10）
+- 优化 uni统计维度选择支持按时查询，调整应用选择的选择器宽度样式
+- 更新 uni统计表的索引，对齐opendb仓库内表的索引
+## 2.4.7（2024-04-23）
+- 优化 uni统计未选择appid时不进行查询
+## 2.4.6（2024-04-23）
+- 还原 uni-tooltip 组件的更新（新版uni-tooltip组件有问题）
+## 2.4.5（2024-04-19）
+- 更新 uni_modules依赖
+- 新增 数据库索引初始化文件
+- 优化 抖音小程序兼容性
+## 2.4.4（2024-04-10）
+- 更新 菜单表初始化数据指定_id(防止重复初始化时数据重复)
+- 更新 update: 优化vue3模块下菜单管理无法显示待添加的插件菜单的问题
+- 更新 应用管理支持填写 iOS ABM 包登录获取链接，发布页支持 iOS ABM 包获取，[hello-uniapp x](https://hellouniappx.dcloud.net.cn/)
+## 2.4.3（2024-01-25）
+- 优化 修改数据库初始化提示语使用新版初始化方案
+- 优化 uni统计-内容统计-页面规则 支持根据应用筛选
+- 优化 代码通过 SonarLint 规范检测
+## 2.4.2（2024-01-15）
+- 优化 APP升级中心，支持上传到扩展存储 [简介](https://doc.dcloud.net.cn/uniCloud/ext-storage/intro.html)
+## 2.4.1（2023-12-27）
+- 调整 db_init.json 新增内容统计相关表 [详情](https://uniapp.dcloud.net.cn/uni-stat-v2.html#upgrade2)
+## 2.4.0（2023-12-27）
+- 重要 uni统计-内容统计 [详情](https://uniapp.dcloud.net.cn/uni-stat-v2.html#upgrade2)
 ## 2.3.13（2023-12-15）
 - 修复 opendb-news-comments.schema.json permission 配置少一个s的问题
 ## 2.3.12（2023-11-07）

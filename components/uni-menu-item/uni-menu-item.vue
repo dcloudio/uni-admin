@@ -42,7 +42,8 @@
 		},
 		computed: {
 			paddingLeft() {
-				return 20 + 20 * this.rootMenu.SubMenu.length + 'px'
+				let subMenu = this.rootMenu && this.rootMenu.SubMenu && this.rootMenu.SubMenu.length || 0;
+				return 20 + 20 * subMenu + 'px'
 			}
 		},
 		created() {

@@ -19,7 +19,7 @@
       {
         "name": "uni-stat-cron",
         "type": "timer",
-        "config": "18 18 * * * * *"
+        "config": "19 19 * * * * *"
       }
     ]
   },

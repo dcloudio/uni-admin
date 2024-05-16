@@ -157,7 +157,7 @@ if (process.env.NODE_ENV === 'development') {
 	})
 	// #endif
 	// #ifdef VUE3
-	const rootModules = import.meta.glob('../../../*-menu.json', {eager: true});
+	const rootModules = import.meta.glob('../../../uni_modules/*/*-menu.json', {eager: true});
 	for (const modulePath in rootModules) {
 		const json = modulePath.replace(/^..\/..\/..\//, '');
 		let moduleItem = rootModules[modulePath];
@@ -290,7 +290,7 @@ export default {
 			return buildMenus(menuList)
 		},
 		onqueryload(data) {
-			for (var i = 0; i < data.length; i++) {
+			for (let i = 0; i < data.length; i++) {
 				let item = data[i]
 				const depth = getParents(data, item.menu_id)
 				item.name = (depth ? '　'.repeat(depth) + '|-' : '') + item.name

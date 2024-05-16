@@ -89,7 +89,7 @@ module.exports = class PageDetail extends BaseMod {
 				module: 'pageDetail',
 				appid,
 				pageId,
-				url: pageUrl
+				url
 			})
 			await this.clearCache(cacheKey)
 			await this.update(this.tableName, {

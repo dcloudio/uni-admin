@@ -482,21 +482,9 @@ export default {
 		}
 	}
 
-	//.options {
-	//  display: flex;
-	//  align-content: center;
-	//}
-	.field {
-		// flex: 1;
-	}
-
 	.type {
 		width: 100px;
 		flex: none;
-	}
-
-	.value {
-		// width: 80px;
 	}
 
 	.add,

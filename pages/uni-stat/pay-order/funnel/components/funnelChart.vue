@@ -99,6 +99,7 @@
 					this.errorMessage = "请先选择应用";
 					return;
 				}
+				this.errorMessage = "";
 				let insideQuery = this.getWhere();
 				let where = {
 					...query,

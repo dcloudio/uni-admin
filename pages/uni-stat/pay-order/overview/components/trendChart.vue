@@ -5,7 +5,6 @@
 		<view class="flex">
 			<uni-stat-tabs type="box" :current="dateTabs.index" :tabs="dateTabs.list" @change="dateTabsChange" />
 			<uni-datetime-picker type="datetimerange" v-model="dateTabs.time" :end="Date.now()" return-type="timestamp" :clear-icon="false" class="uni-stat-datetime-picker" @change="datePickerChange" />
-			<!-- <view class="uni-stat--tips" v-if="dateTabs.timeStr">当前时间范围：{{ dateTabs.timeStr }}</view> -->
 		</view>
 		<uni-stat-tabs type="box" :current="statTabs.index" :tabs="statTabs.list" @change="statTabsChange" />
 		<view class="uni-charts-box">

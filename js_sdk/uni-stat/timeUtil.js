@@ -1,7 +1,7 @@
 /**
  * 时间工具类
  */
-var timeUtil = {};
+let timeUtil = {};
 
 // 尽可能的将参数转成正确的时间对象
 timeUtil.getDateObject = function(date) {
@@ -10,7 +10,7 @@ timeUtil.getDateObject = function(date) {
 	// 如果是字符串，且纯数字，则强制转数值
 	if (typeof date === "string" && !isNaN(date)) date = Number(date);
 	if (typeof date === "number") {
-		if (date.toString().length == 10) date *= 1000;
+		if (date.toString().length === 10) date *= 1000;
 		nowDate = new Date(date); // 转时间对象
 	} else if (typeof date === "object") {
 		nowDate = new Date(date.getTime()); // 新建一个时间对象

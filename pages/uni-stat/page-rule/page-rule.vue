@@ -1,30 +1,35 @@
 <template>
 	<view>
 		<view class="uni-header">
-			<view class="uni-group">
-				<view class="uni-title"></view>
-				<view class="uni-sub-title"></view>
-			</view>
+			<uni-stat-breadcrumb class="uni-stat-breadcrumb-on-phone" />
 			<view class="uni-group">
 				<input class="uni-search" type="text" v-model="query" @confirm="search" placeholder="请输入搜索内容" />
 				<button class="uni-button" type="default" size="mini" @click="search">搜索</button>
 			</view>
 		</view>
 		<view class="uni-container">
-			<unicloud-db ref="udb" :collection="collectionList" field="title,path,page_rules" :where="where" page-data="replace" :orderby="orderby" :getcount="true"
+			<view class="uni-stat--x flex p-1015">
+				<view class="uni-stat--app-select" style="width: 500px;">
+					<uni-data-select ref="appListRef" collection="opendb-app-list" field="appid as value, name as text" orderby="text asc" label="应用选择" v-model="appid" @change="search" />
+				</view>
+			</view>
+
+			<unicloud-db ref="udb" :collection="collectionList" field="title,path,page_rules,appid" :where="where" page-data="replace" :orderby="orderby" :getcount="true"
 				:page-size="options.pageSize" :page-current="options.pageCurrent" v-slot:default="{data,pagination,loading,error,options}" :options="options" loadtime="manual"
 				@load="onqueryload">
-				<uni-table ref="table" :loading="loading" :emptyText="error.message || '没有更多数据'" border stripe>
+				<uni-table ref="table" :loading="loading" :emptyText="errorMessage || error.message || '没有更多数据'" border stripe>
 					<uni-tr>
 						<uni-th align="center">序号</uni-th>
 						<uni-th align="center" filter-type="search" @filter-change="filterChange($event, 'title')">页面标题</uni-th>
 						<uni-th align="left" filter-type="search" @filter-change="filterChange($event, 'path')">页面URL</uni-th>
+						<uni-th align="center" filter-type="search" @filter-change="filterChange($event, 'appid')">appid</uni-th>
 						<uni-th align="center">操作</uni-th>
 					</uni-tr>
 					<uni-tr v-for="(item,index) in data" :key="index">
 						<uni-td align="center">{{ (pagination.current - 1) * pagination.size + (index+1) }}</uni-td>
 						<uni-td align="center">{{ item.title }}</uni-td>
 						<uni-td align="left">{{ item.path }}</uni-td>
+						<uni-td align="center">{{ item.appid }}</uni-td>
 						<uni-td align="center">
 							<view class="uni-group">
 								<button @click="editRule(item)" class="uni-button" size="mini" type="primary">编辑规则</button>
@@ -95,11 +100,13 @@
 		data() {
 			return {
 				collectionList: "uni-stat-pages",
+				appid: '',
 				query: '',
 				where: '',
 				orderby: dbOrderBy,
 				orderByFieldName: "",
 				selectedIndexs: [],
+				errorMessage: '',
 				options: {
 					pageSize,
 					pageCurrent,
@@ -142,7 +149,10 @@
 			this._filter = {}
 		},
 		onReady() {
-			this.$refs.udb.loadData()
+			if (this.$refs.appListRef) {
+				this.appid = this.$refs.appListRef.getCache();
+				this.search()
+			}
 		},
 		methods: {
 			onqueryload(data) {
@@ -150,13 +160,22 @@
 			},
 			getWhere() {
 				const query = this.query.trim()
-				if (!query) {
-					return ''
+				let queryStr = ''
+				if (query) {
+					const queryRe = new RegExp(query, 'i')
+					queryStr = dbSearchFields.map(name => queryRe + '.test(' + name + ')').join(' || ')
 				}
-				const queryRe = new RegExp(query, 'i')
-				return dbSearchFields.map(name => queryRe + '.test(' + name + ')').join(' || ')
+				if (this.appid) {
+					if (query) {
+						queryStr = `appid=='${this.appid}' && (${queryStr})`;
+					} else {
+						queryStr = `appid=='${this.appid}'`;
+					}
+				}
+				return queryStr
 			},
 			search() {
+				this.errorMessage = "";
 				const newWhere = this.getWhere()
 				this.where = newWhere
 				this.$nextTick(() => {

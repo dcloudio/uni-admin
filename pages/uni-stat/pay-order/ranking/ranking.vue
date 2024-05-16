@@ -14,8 +14,10 @@
 		<view class="uni-container">
 
 			<view class="uni-stat--x flex p-1015">
-				<uni-data-select collection="opendb-app-list" field="appid as value, name as text" orderby="text asc" :defItem="1" label="应用选择" v-model="query.appid" :clear="false" />
-				<uni-data-select collection="opendb-app-versions" :where="versionQuery" class="ml-m" field="_id as value, version as text, uni_platform as label, create_date as date" format="{label} - {text}" orderby="date desc" label="版本选择" v-model="query.version_id" />
+				<view class="uni-stat--app-select">
+					<uni-data-select collection="opendb-app-list" field="appid as value, name as text" orderby="text asc" :defItem="1" label="应用选择" v-model="query.appid" :clear="false" />
+					<uni-data-select collection="opendb-app-versions" :where="versionQuery" class="ml-m" field="_id as value, version as text, uni_platform as label, create_date as date" format="{label} - {text}" orderby="date desc" label="版本选择" v-model="query.version_id" />
+				</view>
 			</view>
 			<view class="uni-stat--x" style="margin-bottom: 0;">
 				<uni-stat-tabs label="平台选择" type="boldLine" mode="platform" v-model="query.platform_id" @change="platformChange" />
@@ -38,18 +40,12 @@
 						<uni-th align="center">排名</uni-th>
 						<uni-th align="center" sortable @sort-change="sortChange($event, 'user_id')">用户</uni-th>
 						<uni-th align="center" sortable @sort-change="sortChange($event, 'reality_fee')">支付金额（不含退款）</uni-th>
-						<!-- <uni-th align="center" sortable @sort-change="sortChange($event, 'total_fee')">支付金额（含退款）</uni-th>
-						<uni-th align="center" sortable @sort-change="sortChange($event, 'refund_fee')">退款金额</uni-th> -->
 						<uni-th align="center" sortable @sort-change="sortChange($event, 'count')">订单数量</uni-th>
-						<!-- <uni-th align="center">操作</uni-th> -->
 					</uni-tr>
 					<uni-tr v-for="(item,index) in data" :key="index">
 						<uni-td align="center">{{ parseInt((index+1) + (pagination.current-1) * pagination.size) }} </uni-td>
 						<uni-td align="center"><text class="text-btn" @click="pageToUser(item)">{{ nameFormat(item) }}</text> </uni-td>
-						<!-- reality_fee字段是计算出来的，并非数据库里的字段（total_fee-refund_fee） -->
 						<uni-td align="center">{{ (item.reality_fee / 100).toFixed(2) }}</uni-td>
-						<!-- <uni-td align="center">{{ (item.total_fee / 100).toFixed(2) }}</uni-td>
-						<uni-td align="center">{{ (item.refund_fee / 100).toFixed(2) }}</uni-td> -->
 						<uni-td align="center"> <text class="text-btn" @click="pageToOrder(item)"> {{ item.count }} </text> </uni-td>
 					</uni-tr>
 				</uni-table>
@@ -225,7 +221,7 @@
 			},
 			// 多选处理
 			selectedItems() {
-				var dataList = this.$refs.udb.dataList
+				let dataList = this.$refs.udb.dataList
 				return this.selectedIndexs.map(i => dataList[i]._id)
 			},
 			// 批量删除

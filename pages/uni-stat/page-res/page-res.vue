@@ -4,14 +4,15 @@
 		<view class="uni-header">
 			<uni-stat-breadcrumb class="uni-stat-breadcrumb-on-phone" />
 			<view class="uni-group">
-				<!-- <view class="uni-title">受访页</view> -->
 				<view class="uni-sub-title hide-on-phone">受访页数据分析</view>
 			</view>
 		</view>
 		<view class="uni-container">
 			<view class="uni-stat--x flex p-1015">
-				<uni-data-select collection="opendb-app-list" field="appid as value, name as text" orderby="text asc" :defItem="1" label="应用选择" v-model="query.appid" :clear="false" />
-				<uni-data-select collection="opendb-app-versions" :where="versionQuery" class="ml-m" field="_id as value, version as text, uni_platform as label, create_date as date" format="{label} - {text}" orderby="date desc" label="版本选择" v-model="query.version_id" />
+				<view class="uni-stat--app-select">
+					<uni-data-select collection="opendb-app-list" field="appid as value, name as text" orderby="text asc" :defItem="1" label="应用选择" v-model="query.appid" :clear="false" />
+					<uni-data-select collection="opendb-app-versions" :where="versionQuery" class="ml-m" field="_id as value, version as text, uni_platform as label, create_date as date" format="{label} - {text}" orderby="date desc" label="版本选择" v-model="query.version_id" />
+				</view>
 			</view>
 			<view class="uni-stat--x flex">
 				<uni-stat-tabs label="日期选择" :current="currentDateTab" mode="date" @change="changeTimeRange" />
@@ -23,12 +24,10 @@
 			<view class="uni-stat--x">
 				<uni-stat-tabs label="平台选择" type="boldLine" mode="platform" v-model="query.platform_id" @change="changePlatform" />
 				<uni-data-select ref="version-select" v-if="query.platform_id && query.platform_id.indexOf('==') === -1" collection="uni-stat-app-channels" :where="channelQuery" class="p-channel" field="_id as value, channel_name as text" orderby="text asc" label="渠道/场景值选择" v-model="query.channel_id" />
-				<!-- <uni-data-select v-if="query.platform_id && query.platform_id.indexOf('==') === -1"
-					:localdata="channelData" label="渠道/场景值选择" v-model="query.channel_id"></uni-data-select> -->
 			</view>
 			<uni-stat-panel :items="panelData" />
 			<view class="uni-stat--x p-m">
-				<uni-table :loading="loading" border stripe :emptyText="$t('common.empty')">
+				<uni-table :loading="loading" border stripe :emptyText="errorMessage || $t('common.empty')">
 					<uni-tr>
 						<block v-for="(mapper, index) in fieldsMap" :key="index">
 							<uni-th v-if="mapper.title" :key="index" align="center">
@@ -116,7 +115,8 @@
 				panelData: fieldsMap.filter(f => f.hasOwnProperty('value')),
 				queryId: '',
 				updateValue: '',
-				channelData: []
+				channelData: [],
+				errorMessage: ''
 			}
 		},
 		computed: {
@@ -186,6 +186,11 @@
 			},
 
 			getTableData(query) {
+				if (!this.query.appid){
+					this.errorMessage = "请先选择应用";
+					return;
+				}
+				this.errorMessage = "";
 				query = stringifyQuery(this.query, null, ['uni_platform'])
 				const {
 					pageCurrent
@@ -249,6 +254,11 @@
 			},
 
 			getPanelData(query = stringifyQuery(this.query, null, ['uni_platform'])) {
+				if (!this.query.appid){
+					this.errorMessage = "请先选择应用";
+					return;
+				}
+				this.errorMessage = "";
 				const db = uniCloud.database()
 				const subTable = db.collection('uni-stat-page-result')
 					.where(query)

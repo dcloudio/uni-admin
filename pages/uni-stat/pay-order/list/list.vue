@@ -5,7 +5,6 @@
 		<uni-stat-breadcrumb />
 		</view>
 		<view class="uni-group">
-		<!-- <input class="uni-search" type="text" v-model="query.query" @confirm="search" placeholder="请输入订单号搜索，支持3种不同的订单号搜索" /> -->
 		<button class="uni-button" type="default" size="mini" @click="search">搜索</button>
 		<download-excel class="hide-on-phone" :fields="exportExcel.fields" :data="exportExcelData" :type="exportExcel.type" :name="exportExcel.filename">
 			<button class="uni-button" type="primary" size="mini">导出 Excel</button>
@@ -47,7 +46,6 @@
 			<uni-th align="center" filter-type="search" @filter-change="filterChange($event, 'device_id')" sortable @sort-change="sortChange($event, 'device_id')">设备ID</uni-th>
 			<uni-th align="center" filter-type="search" @filter-change="filterChange($event, 'client_ip')" sortable @sort-change="sortChange($event, 'client_ip')">客户端IP</uni-th>
 			<uni-th align="center" filter-type="search" @filter-change="filterChange($event, 'openid')" sortable @sort-change="sortChange($event, 'openid')">openid</uni-th>
-			<!-- <uni-th align="center">操作</uni-th> -->
 			</uni-tr>
 			<uni-tr v-for="(item,index) in data" :key="index">
 			<uni-td align="center">{{ parseInt((index+1) + (pagination.current-1) * pagination.size) }} </uni-td>
@@ -83,11 +81,6 @@
 			<uni-td align="center">{{item.device_id}}</uni-td>
 			<uni-td align="center">{{item.client_ip}}</uni-td>
 			<uni-td align="center">{{item.openid}}</uni-td>
-			<!-- <uni-td align="center">
-				<view class="uni-group">
-				<button @click="refundPopup(true, item)" class="uni-button" style="margin: 0;" size="mini" type="warn" v-if="[1,2].indexOf(item.status)>-1">发起退款</button>
-				</view>
-			</uni-td> -->
 			</uni-tr>
 		</uni-table>
 		<view class="uni-pagination-box">
@@ -349,7 +342,7 @@
 			},
 			// 多选处理
 			selectedItems() {
-				var dataList = this.$refs.udb.dataList
+				let dataList = this.$refs.udb.dataList
 				return this.selectedIndexs.map(i => dataList[i]._id)
 			},
 			// 批量删除

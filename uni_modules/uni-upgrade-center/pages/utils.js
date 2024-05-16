@@ -11,7 +11,7 @@ export function deepClone(obj) {
 		//原始类型直接返回
 		return obj;
 	}
-	var o = isArray(obj) ? [] : {};
+	let o = isArray(obj) ? [] : {};
 	for (let i in obj) {
 		if (obj.hasOwnProperty(i)) {
 			o[i] = typeof obj[i] === "object" ? deepClone(obj[i]) : obj[i];

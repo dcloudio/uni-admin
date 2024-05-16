@@ -1,7 +1,7 @@
 {
   "id": "uni-sign-in",
   "displayName": "uni-starter签到插件 提升留存，激励视频变现",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "培养用户习惯，提升用户粘性，支持广告流量变现的签到得积分功能",
   "keywords": [
     "uni-sign-in",
@@ -14,11 +14,7 @@
   "engines": {
     "HBuilderX": "^3.1.0"
   },
-  "dcloudext": {
-    "category": [
-        "uniCloud",
-        "云端一体页面模板"
-    ],
+"dcloudext": {
     "sale": {
       "regular": {
         "price": "0.00"
@@ -35,7 +31,8 @@
       "data": "无",
       "permissions": "无"
     },
-    "npmurl": ""
+    "npmurl": "",
+    "type": "unicloud-template-page"
   },
   "uni_modules": {
     "dependencies": ["uni-popup","uni-icons"],
@@ -43,7 +40,8 @@
     "platforms": {
       "cloud": {
         "tcb": "y",
-        "aliyun": "y"
+        "aliyun": "y",
+        "alipay": "y"
       },
       "client": {
         "App": {

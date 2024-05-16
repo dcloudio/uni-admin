@@ -1,3 +1,13 @@
+## 0.7.5（2023-12-18）
+- 修复 在uni-app x项目，部分情况下，执行uni-captcha组件的setFocus无效的问题
+## 0.7.4（2023-12-18）
+- 更新 `package.json` -> `dependencies` 增加 `uni-popup`
+## 0.7.3（2023-11-15）
+- 更新 uni-popup-captcha.uvue依赖的popup组件，直接使用uni_modules下的uni-popup组件
+## 0.7.2（2023-11-07）
+- 新增 前端组件：uni-captcha.uvue、uni-popup-captcha
+## 0.7.1（2023-11-07）
+- 新增 前端组件：uni-captcha.uvue、uni-popup-captcha
 ## 0.7.0（2023-10-10）
 - 新增 支持在`uni-config-center`中配置mode，可选值为svg和bmp，配置成bmp后可以在uniappx的uvue页面正常显示验证码（uvue不支持显示svg验证码）
 ## 0.6.4（2023-01-16）

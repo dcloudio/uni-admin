@@ -5,6 +5,7 @@ const TE = require('./lib/art-template.js');
 // 标准语法的界定符规则
 TE.defaults.openTag = '{@'
 TE.defaults.closeTag = '@}'
+TE.defaults.escape = false
 
 const success = {
 	success: true
@@ -146,10 +147,16 @@ module.exports = async function(id) {
 			} else {
 				defaultOptions.android_url = ''
 			}
-			if (defaultOptions.hasApp && appInfo.app_ios && appInfo.app_ios.url) {
-				defaultOptions.ios_url = appInfo.app_ios.url
+			if (defaultOptions.hasApp && appInfo.app_ios) {
+				if (appInfo.app_ios.url) {
+					defaultOptions.ios_url = appInfo.app_ios.url
+				}
+				if (appInfo.app_ios.abm_url) {
+					defaultOptions.ios_abm_url = appInfo.app_ios.abm_url
+				}
 			} else {
 				defaultOptions.ios_url = ''
+				defaultOptions.ios_abm_url = ''
 			}
 
 			// mp
@@ -157,8 +164,6 @@ module.exports = async function(id) {
 				return key.indexOf('mp') !== -1 && hasValue(appInfo[key])
 			})
 		}
-
-		const html = TE.render(templatePage)(Object.assign({}, appInfo, defaultOptions));
 
 		if (!(defaultOptions.hasApp || defaultOptions.hasH5 || defaultOptions.hasMP || defaultOptions
 				.hasQuickApp)) {
@@ -168,6 +173,8 @@ module.exports = async function(id) {
 				errMsg: '缺少应用信息，App、小程序、H5、快应用请至少填写一项'
 			}
 		}
+
+		const html = TE.render(templatePage)(Object.assign({}, appInfo, defaultOptions));
 
 		return {
 			...success,

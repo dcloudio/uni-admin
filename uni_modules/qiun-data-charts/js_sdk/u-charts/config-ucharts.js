@@ -4,16 +4,16 @@
  * Copyright (c) 2021 QIUN®秋云 https://www.ucharts.cn All rights reserved.
  * Licensed ( http://www.apache.org/licenses/LICENSE-2.0 )
  * 复制使用请保留本段注释，感谢支持开源！
- * 
+ *
  * uCharts®官方网站
  * https://www.uCharts.cn
- * 
+ *
  * 开源地址:
  * https://gitee.com/uCharts/uCharts
- * 
+ *
  * uni-app插件市场地址：
  * http://ext.dcloud.net.cn/plugin?id=271
- * 
+ *
  */
 
 // 主题颜色配置：如每个图表类型需要不同主题，请在对应图表类型上更改color属性
@@ -21,17 +21,17 @@ const color = ['#1890FF', '#91CB74', '#FAC858', '#EE6666', '#73C0DE', '#3CA272',
 
 //事件转换函数，主要用作格式化x轴为时间轴，根据需求自行修改
 const formatDateTime = (timeStamp, returnType)=>{
-  var date = new Date();
+  let date = new Date();
   date.setTime(timeStamp * 1000);
-  var y = date.getFullYear();
-  var m = date.getMonth() + 1;
+  let y = date.getFullYear();
+  let m = date.getMonth() + 1;
   m = m < 10 ? ('0' + m) : m;
-  var d = date.getDate();
+  let d = date.getDate();
   d = d < 10 ? ('0' + d) : d;
-  var h = date.getHours();
+  let h = date.getHours();
   h = h < 10 ? ('0' + h) : h;
-  var minute = date.getMinutes();
-  var second = date.getSeconds();
+  let minute = date.getMinutes();
+  let second = date.getSeconds();
   minute = minute < 10 ? ('0' + minute) : minute;
   second = second < 10 ? ('0' + second) : second;
   if(returnType == 'full'){return y + '-' + m + '-' + d + ' '+ h +':' + minute + ':' + second;}

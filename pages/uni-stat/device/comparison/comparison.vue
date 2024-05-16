@@ -4,15 +4,16 @@
 		<view class="uni-header">
 			<uni-stat-breadcrumb class="uni-stat-breadcrumb-on-phone" />
 			<view class="uni-group hide-on-phone">
-				<!-- <view class="uni-title">平台对比</view> -->
 				<view class="uni-sub-title">多个指标在不同平台数据的占比，可以直观看出各个平台引流的效果</view>
 			</view>
 		</view>
 		<view class="uni-container">
 			<view class="uni-stat--x flex mb-m" style="padding: 0px 15px;">
-				<uni-data-select collection="opendb-app-list" field="appid as value, name as text" orderby="text asc" :defItem="1" label="应用选择" v-model="query.appid" :clear="false" />
-				<uni-data-select collection="opendb-app-versions" :where="versionQuery" class="ml-m" field="_id as value, version as text, uni_platform as label, create_date as date" format="{label} - {text}" orderby="date desc" label="版本选择" v-model="query.version_id" />
-				<view class="flex">
+				<view class="uni-stat--app-select">
+					<uni-data-select collection="opendb-app-list" field="appid as value, name as text" orderby="text asc" :defItem="1" label="应用选择" v-model="query.appid" :clear="false" />
+					<uni-data-select collection="opendb-app-versions" :where="versionQuery" class="ml-m" field="_id as value, version as text, uni_platform as label, create_date as date" format="{label} - {text}" orderby="date desc" label="版本选择" v-model="query.version_id" />
+				</view>
+				<view class="flex" style="flex: 1;">
 					<view class="ml-m label-text hide-on-phone">日期选择:</view>
 					<uni-datetime-picker type="date" v-model="query.start_time" returnType="timestamp"
 						:clearIcon="false" class="uni-stat-datetime-picker"

@@ -237,7 +237,7 @@
 			},
 			smsReceiver() {
 				if (this.selectedIndexs.length) {
-					var dataList = this.$refs.udb.dataList
+					let dataList = this.$refs.udb.dataList
 					return this.selectedIndexs.map(i => dataList[i]._id)
 				} else {
 					return undefined;
@@ -246,7 +246,7 @@
 		},
 		methods: {
 			onqueryload(data) {
-				for (var i = 0; i < data.length; i++) {
+				for (let i = 0; i < data.length; i++) {
 					let item = data[i]
 					const roleArr = item.role.map(item => item.role_name)
 					item.role = roleArr.join('、')
@@ -335,7 +335,7 @@
 			},
 			// 多选处理
 			selectedItems() {
-				var dataList = this.$refs.udb.dataList
+				let dataList = this.$refs.udb.dataList
 				return this.selectedIndexs.map(i => dataList[i]._id)
 			},
 			// 批量删除

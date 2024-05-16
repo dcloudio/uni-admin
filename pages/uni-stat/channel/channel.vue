@@ -12,8 +12,10 @@
 		</view>
 		<view class="uni-container">
 			<view class="uni-stat--x flex p-1015">
-				<uni-data-select collection="opendb-app-list" field="appid as value, name as text" orderby="text asc" :defItem="1" label="应用选择" v-model="query.appid" :clear="false" />
-				<uni-data-select collection="opendb-app-versions" :storage="false" :where="versionQuery" class="ml-m" field="_id as value, version as text, uni_platform as label, create_date as date" format="{label} - {text}" orderby="date desc" label="版本选择" v-model="query.version_id" />
+				<view class="uni-stat--app-select">
+					<uni-data-select collection="opendb-app-list" field="appid as value, name as text" orderby="text asc" :defItem="1" label="应用选择" v-model="query.appid" :clear="false" />
+					<uni-data-select collection="opendb-app-versions" :storage="false" :where="versionQuery" class="ml-m" field="_id as value, version as text, uni_platform as label, create_date as date" format="{label} - {text}" orderby="date desc" label="版本选择" v-model="query.version_id" />
+				</view>
 				<uni-stat-tabs label="平台选择" type="boldLine" mode="platform-channel" :all="false" v-model="query.platform_id" @change="changePlatform" />
 			</view>
 			<view class="uni-stat--x flex">
@@ -36,7 +38,7 @@
 				<view class="mb-m">
 					<uni-link color="" href="https://ask.dcloud.net.cn/article/35974" text="如何自定义渠道包?"></uni-link>
 				</view>
-				<uni-table :loading="loading" border stripe :emptyText="$t('common.empty')">
+				<uni-table :loading="loading" border stripe :emptyText="errorMessage || $t('common.empty')">
 					<uni-tr>
 						<block v-for="(mapper, index) in fieldsMap.slice(0, fieldsMap.length-1)" :key="index">
 							<uni-th v-if="mapper.title" :key="index" align="center">
@@ -223,9 +225,9 @@
 			},
 
 			getAllData(query) {
-				if (query.indexOf("appid") === -1) {
+				if (!this.query.appid){
 					this.errorMessage = "请先选择应用";
-					return; // 如果appid为空，则不进行查询
+					return;
 				}
 				this.errorMessage = "";
 				this.getPanelData();
