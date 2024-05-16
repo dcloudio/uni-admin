@@ -31,8 +31,7 @@
 				</view>
 				<uni-stat-tabs type="box" v-model="chartTab" :tabs="chartTabs" class="mb-l" @change="changeChartTab" />
 				<view class="uni-charts-box">
-					<qiun-data-charts type="area" :chartData="chartData" echartsH5 echartsApp
-						tooltipFormat="tooltipCustom" :errorMessage="errorMessage"/>
+					<qiun-data-charts type="area" :chartData="chartData" echartsH5 echartsApp :errorMessage="errorMessage" :eopts="setOptions"/>
 				</view>
 			</view>
 
@@ -95,6 +94,33 @@
 				channelData: [],
 				tabIndex: 0,
 				errorMessage: "",
+				setOptions: {
+					xAxis: {
+						boundaryGap: false,
+						axisTick: {
+							show: false
+						},
+						axisLine: {
+							lineStyle: {
+								color: '#999'
+							}
+						}
+					},
+					tooltip: {
+						trigger: 'axis',
+						axisPointer: {
+							type: 'cross'
+						},
+					},
+					grid: {
+						left: 40,
+						right: 50,
+						bottom: 50,
+						top: 60,
+						containLabel: true,
+						show: false
+					}
+				}
 			}
 		},
 		computed: {
@@ -299,6 +325,7 @@
 					pageCurrent
 				} = this.options
 				query = stringifyQuery(query, true, ['uni_platform'])
+				console.log('query: ', query)
 				this.options.pageCurrent = 1 // 重置分页
 				this.loading = true
 				const db = uniCloud.database()
@@ -307,7 +334,7 @@
 					.field(stringifyField(fieldsMap))
 					.groupBy('start_time')
 					.groupField(stringifyGroupField(fieldsMap))
-					.orderBy('start_time', 'desc')
+					.orderBy('start_time', 'asc')
 					.skip((pageCurrent - 1) * this.options.pageSize)
 					.limit(this.options.pageSize)
 					.get({
@@ -340,7 +367,7 @@
 
 			getPanelData() {
 				let cloneQuery = JSON.parse(JSON.stringify(this.query))
-				cloneQuery.dimension = 'day'
+				//cloneQuery.dimension = 'day'
 				let query = stringifyQuery(cloneQuery, false, ['uni_platform'])
 				const db = uniCloud.database()
 				const subTable = db.collection(this.tableName)

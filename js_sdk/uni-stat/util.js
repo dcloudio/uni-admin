@@ -312,7 +312,7 @@ function formatDate(date, type) {
 		let h = d.getHours()
 		h = h < 10 ? '0' + h : h
 		let str = `${h}:00 ~ ${h}:59`
-		if (h === 0) {
+		if (h === "00") {
 			// 0 点的时候，显示为 yyyy-mm-dd（00:00 ~ 00:59）
 			let firstday = parseDateTime(d)
 			str = firstday + "（00:00 ~ 00:59）";
