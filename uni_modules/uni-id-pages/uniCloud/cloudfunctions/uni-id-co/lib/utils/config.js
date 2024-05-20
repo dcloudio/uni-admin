@@ -18,7 +18,7 @@ const uniIdConfig = createConfig({
 })
 
 class ConfigUtils {
-  constructor ({
+  constructor({
     context
   } = {}) {
     this.context = context
@@ -31,6 +31,8 @@ class ConfigUtils {
     switch (uniPlatform) {
       case 'app':
       case 'app-plus':
+      case 'app-android':
+      case 'app-ios':
         this.platform = 'app'
         break
       case 'web':
@@ -43,7 +45,7 @@ class ConfigUtils {
     }
   }
 
-  getConfigArray () {
+  getConfigArray() {
     let configContent
     try {
       configContent = require('uni-config-center/uni-id/config.json')
@@ -57,12 +59,12 @@ class ConfigUtils {
     return [configContent]
   }
 
-  getAppConfig () {
+  getAppConfig() {
     const configArray = this.getConfigArray()
     return configArray.find(item => item.dcloudAppid === this.appId) || configArray.find(item => item.isDefaultConfig)
   }
 
-  getPlatformConfig () {
+  getPlatformConfig() {
     const appConfig = this.getAppConfig()
     if (!appConfig) {
       throw new Error(
@@ -77,7 +79,7 @@ class ConfigUtils {
         `Client platform is ${this.platform}, but ${this.platform === 'web' ? 'h5' : 'app-plus'} was found in config. Please refer to: https://uniapp.dcloud.net.cn/uniCloud/uni-id-summary?id=m-to-co`
       )
     }
-
+    
     const defaultConfig = {
       tokenExpiresIn: 7200,
       tokenExpiresThreshold: 1200,
@@ -87,7 +89,7 @@ class ConfigUtils {
     return Object.assign(defaultConfig, appConfig, appConfig[platform])
   }
 
-  getOauthProvider ({
+  getOauthProvider({
     provider
   } = {}) {
     const clientPlatform = this.platform
@@ -101,7 +103,7 @@ class ConfigUtils {
     return oatuhProivder
   }
 
-  getOauthConfig ({
+  getOauthConfig({
     provider
   } = {}) {
     const config = this.getPlatformConfig()
@@ -122,7 +124,7 @@ class ConfigUtils {
     return oauthConfig
   }
 
-  getHooks () {
+  getHooks() {
     if (uniIdConfig.hasFile('hooks/index.js')) {
       return require(
         uniIdConfig.resolve('hooks/index.js')

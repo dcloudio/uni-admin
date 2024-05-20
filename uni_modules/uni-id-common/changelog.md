@@ -1,3 +1,5 @@
+## 1.0.17（2024-04-26）
+- 兼容uni-app-x对客户端uniPlatform的调整（uni-app-x内uniPlatform区分app-android、app-ios）
 ## 1.0.16（2023-04-25）
 - 新增maxTokenLength配置，用于限制数据库用户记录token数组的最大长度
 ## 1.0.15（2023-04-06）

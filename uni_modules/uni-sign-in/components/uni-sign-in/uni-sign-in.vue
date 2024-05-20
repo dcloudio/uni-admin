@@ -184,7 +184,7 @@
 	}
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 	view {
 		display: flex;
 		box-sizing: border-box;

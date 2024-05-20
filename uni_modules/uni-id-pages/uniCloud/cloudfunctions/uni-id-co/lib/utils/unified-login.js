@@ -40,9 +40,7 @@ async function realPreUnifiedLogin (params = {}) {
       type: 'register',
       user
     }
-  }
-
-	if (userMatched.length === 1) {
+  } if (userMatched.length === 1) {
     if (type === 'register') {
       throw {
         errCode: ERROR.ACCOUNT_EXISTS

@@ -171,13 +171,6 @@ function getNonceStr (length = 16) {
   return str.substring(0, length)
 }
 
-try {
-  require('lodash.merge')
-} catch (error) {
-  console.error('uni-id-co缺少依赖，请在uniCloud/cloudfunctions/uni-id-co目录执行 npm install 安装依赖')
-  throw error
-}
-
 function isMatchUserApp (userAppList, matchAppList) {
   if (userAppList === undefined || userAppList === null) {
     return true

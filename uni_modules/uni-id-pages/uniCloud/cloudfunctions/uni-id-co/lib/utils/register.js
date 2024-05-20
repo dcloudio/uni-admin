@@ -16,7 +16,9 @@ const {
   logout
 } = require('./logout')
 const PasswordUtils = require('./password')
-const merge = require('lodash.merge')
+const { 
+  merge
+} = require('../npm/index')
 
 async function realPreRegister (params = {}) {
   const {

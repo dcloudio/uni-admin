@@ -1,7 +1,7 @@
 {
   "id": "uni-sign-in",
   "displayName": "uni-starter签到插件 提升留存，激励视频变现",
-  "version": "1.0.6",
+  "version": "1.0.7",
   "description": "培养用户习惯，提升用户粘性，支持广告流量变现的签到得积分功能",
   "keywords": [
     "uni-sign-in",

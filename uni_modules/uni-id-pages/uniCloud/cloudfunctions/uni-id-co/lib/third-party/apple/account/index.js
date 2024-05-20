@@ -1,4 +1,7 @@
 const rsaPublicKeyPem = require('../rsa-public-key-pem')
+const {
+  jwtVerify
+} = require('../../../npm/index')
 let authKeysCache = null
 
 module.exports = class Auth {
@@ -44,7 +47,7 @@ module.exports = class Auth {
      *   nonce_supported: true
      * }
      */
-    const payload = require('jsonwebtoken').verify(
+    const payload = jwtVerify(
       identityToken,
       rsaPublicKeyPem(usedKey.n, usedKey.e),
       {

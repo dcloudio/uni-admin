@@ -1,7 +1,7 @@
 {
 	"id": "uni-id-pages",
 	"displayName": "uni-id-pages",
-	"version": "1.1.14",
+	"version": "1.1.20",
 	"description": "云端一体简单、统一、可扩展的用户中心页面模版",
 	"keywords": [
         "用户管理",
@@ -55,7 +55,8 @@
 		"platforms": {
 			"cloud": {
 				"tcb": "y",
-				"aliyun": "y"
+                "aliyun": "y",
+                "alipay": "y"
 			},
 			"client": {
 				"Vue": {
