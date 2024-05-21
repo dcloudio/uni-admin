@@ -89,7 +89,7 @@
 			"timely": true
 		}
 	],
-	"batchInsertNum": 5000,
+	"batchInsertNum": 1000,
 	"errorCheck": {
 		"needCheck": true,
 		"checkTime": 5
