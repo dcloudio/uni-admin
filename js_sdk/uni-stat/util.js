@@ -115,14 +115,19 @@ function stringifyQuery(query, dimension = false, delArrs = []) {
 					if (maxDeltaDay(time)) {
 						queryArr.push(`dimension == "hour"`)
 					} else {
-						// if (val && val !== `"hour"`) {
-						// 	queryArr.push(`${key} == ${val}`)
-						// } else {
-						// 	queryArr.push(`dimension == "day"`)
-						// }
-
-						// 放开按小时查询的时间限制
-						queryArr.push(`${key} == ${val}`)
+						// 判断页面，仅在pages/uni-stat/device/trend/trend和pages/uni-stat/user/trend/trend页面下，放开按小时查询的时间限制
+						let pages = getCurrentPages();
+						let page = pages[pages.length-1];
+						if (["pages/uni-stat/device/trend/trend","pages/uni-stat/user/trend/trend"].indexOf(page.route) > -1) {
+							// 放开按小时查询的时间限制
+							queryArr.push(`${key} == ${val}`)
+						} else {
+							if (val && val !== `"hour"`) {
+								queryArr.push(`${key} == ${val}`)
+							} else {
+								queryArr.push(`dimension == "day"`)
+							}
+						}
 					}
 				} else {
 					queryArr.push(`${key} == ${val}`)

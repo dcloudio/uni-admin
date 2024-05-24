@@ -334,7 +334,7 @@
 					.field(stringifyField(fieldsMap))
 					.groupBy('start_time')
 					.groupField(stringifyGroupField(fieldsMap))
-					.orderBy('start_time', 'asc')
+					.orderBy('start_time', 'desc')
 					.skip((pageCurrent - 1) * this.options.pageSize)
 					.limit(this.options.pageSize)
 					.get({
