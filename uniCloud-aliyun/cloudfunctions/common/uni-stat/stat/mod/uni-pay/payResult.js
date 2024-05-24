@@ -113,7 +113,7 @@ module.exports = class PayResult extends BaseMod {
 		// 获取当前时间的时间戳，赋值给 runStartTime
 		let runStartTime = Date.now();
 		// 定义变量 debug，赋值为 true
-		let debug = true;
+		let debug = this.debug;
 		if (debug) {
 			console.log(`-----------------支付统计开始（${dimension}）-----------------`);
 			console.log('本次统计时间：', dateTime.getDate('Y-m-d H:i:s', start_time), "-", dateTime.getDate('Y-m-d H:i:s', end_time))
@@ -160,7 +160,7 @@ module.exports = class PayResult extends BaseMod {
 					dimension  // 使用 dimension 变量作为删除条件
 				}
 			});
-			console.log('Delete old data result:', JSON.stringify(delRes));  // 输出删除数据的结果
+			if (debug) console.log('Delete old data result:', JSON.stringify(delRes));  // 输出删除数据的结果
 		}
 
 		// 支付订单分组（已下单）

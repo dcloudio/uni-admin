@@ -109,6 +109,7 @@ module.exports = async function (params) {
         fileID
       } = await uniCloud.uploadFile({
         cloudPath: `user/id-card/${uid}.b64`,
+        cloudPathAsRealPath: true,
         fileContent: Buffer.from(encryptData.call(this, pictureRes.data.toString('base64')))
       })
       updateData.realname_auth.in_hand = fileID

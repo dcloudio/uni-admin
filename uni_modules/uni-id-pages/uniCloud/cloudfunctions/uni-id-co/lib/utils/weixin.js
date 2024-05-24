@@ -43,6 +43,8 @@ function getWeixinPlatform () {
   switch (platform) {
     case 'app':
     case 'app-plus':
+    case 'app-android':
+    case 'app-ios':
       return 'app'
     case 'mp-weixin':
       return 'mp'

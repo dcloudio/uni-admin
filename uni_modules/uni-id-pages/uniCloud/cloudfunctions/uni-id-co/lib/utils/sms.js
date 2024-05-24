@@ -22,8 +22,6 @@ async function sendSmsCode ({
 } = {}) {
   const requiredParams = [
     'name',
-    'smsKey',
-    'smsSecret',
     'codeExpiresIn'
   ]
   const smsConfig = (this.config.service && this.config.service.sms) || {}

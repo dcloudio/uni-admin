@@ -1,7 +1,7 @@
 {
 	"id": "uni-id-common",
 	"displayName": "uni-id-common",
-	"version": "1.0.16",
+	"version": "1.0.17",
 	"description": "包含uni-id token生成、校验、刷新功能的云函数公共模块",
 	"keywords": [
         "uni-id-common",
@@ -39,7 +39,8 @@
 		"platforms": {
 			"cloud": {
 				"tcb": "y",
-				"aliyun": "y"
+                "aliyun": "y",
+                "alipay": "n"
 			},
 			"client": {
 				"Vue": {

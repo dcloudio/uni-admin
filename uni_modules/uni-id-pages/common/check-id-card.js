@@ -1,4 +1,4 @@
-export default function checkIdCard (idCardNumber) {
+function checkIdCard (idCardNumber) {
   if (!idCardNumber || typeof idCardNumber !== 'string' || idCardNumber.length !== 18) return false
 
   const coefficient = [7, 9, 10, 5, 8, 4, 2, 1, 6, 3, 7, 9, 10, 5, 8, 4, 2]
@@ -12,3 +12,5 @@ export default function checkIdCard (idCardNumber) {
 
   return checkCode[sum % 11].toString() === code.toLowerCase()
 }
+
+export default checkIdCard

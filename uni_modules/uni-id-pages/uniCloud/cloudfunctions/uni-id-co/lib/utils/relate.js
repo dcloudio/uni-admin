@@ -14,7 +14,9 @@ const {
 const {
   batchFindObjctValue
 } = require('../../common/utils')
-const merge = require('lodash.merge')
+const {
+  merge
+} = require('../npm/index')
 
 /**
  *

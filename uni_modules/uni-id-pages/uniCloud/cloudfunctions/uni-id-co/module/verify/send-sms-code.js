@@ -49,7 +49,7 @@ module.exports = async function (params = {}) {
     this.config.service.sms &&
     this.config.service.sms.scene &&
     this.config.service.sms.scene[scene]) || {}
-  if (!templateId) {
+  if (!templateId || !templateId.replace(/[^0-9a-zA-Z]/g, '')) {
     await require('../../lib/utils/verify-code')
       .setMobileVerifyCode.call(this, {
         mobile: params.mobile,

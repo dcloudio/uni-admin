@@ -3,7 +3,7 @@ async function getPhoneNumber ({
   access_token,
   openid
 } = {}) {
-  const requiredParams = ['apiKey', 'apiSecret']
+  const requiredParams = []
   const univerifyConfig = (this.config.service && this.config.service.univerify) || {}
   for (let i = 0; i < requiredParams.length; i++) {
     const key = requiredParams[i]

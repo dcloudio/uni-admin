@@ -111,6 +111,8 @@ module.exports = {
     switch (clientPlatform) {
       case 'app':
       case 'app-plus':
+      case 'app-android':
+      case 'app-ios':
         clientPlatform = 'app'
         break
       case 'web':
@@ -180,21 +182,21 @@ module.exports = {
     //   }
     // })
     // // 新增规则同样可以在数组验证规则中使用
-    // this.validator.valdate({
+    // this.validator.validate({
     //   timestamp: 123456789
     // }, {
     //   timestamp: 'timestamp'
     // })
-    // this.validator.valdate({
+    // this.validator.validate({
     //   timestampList: [123456789, 123123123123]
     // }, {
     //   timestampList: 'array<timestamp>'
     // })
     // // 甚至更复杂的写法
-    // this.validator.valdate({
-    //   timestamp: [123456789, 123123123123]
+    // this.validator.validate({
+    //   timestamp: [123456789123123123, 123123123123]
     // }, {
-    //   timestamp: 'timestamp|array<timestamp>'
+    //   timestamp: 'timestamp|array<timestamp|number>'
     // })
 
     // 挂载uni-captcha到this上，方便后续调用
