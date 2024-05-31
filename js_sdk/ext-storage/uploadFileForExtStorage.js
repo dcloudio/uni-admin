@@ -101,17 +101,23 @@ class ExtStorage {
 				const uploadTask = uni.uploadFile({
 					...uploadFileOptionsRes.uploadFileOptions, // 上传文件所需参数
 					filePath, // 本地文件路径
-					success: () => {
-						const res = {
-							cloudPath: uploadFileOptionsRes.cloudPath, // 文件云端路径
-							fileID: uploadFileOptionsRes.fileID, // 文件ID
-							fileURL: uploadFileOptionsRes.fileURL, // 文件URL（如果是私有权限，则此URL是无法直接访问的）
-						};
-						if (this.fileID2fileURL) {
-							res.fileID = `https://${this.domain}/${res.cloudPath}`;
+					success: (uploadFileRes) => {
+						if (uploadFileRes.statusCode !== 200) {
+							const err = uploadFileRes;
+							if (typeof options.fail === "function") options.fail(err);
+							reject(err);
+						} else {
+							const res = {
+								cloudPath: uploadFileOptionsRes.cloudPath, // 文件云端路径
+								fileID: uploadFileOptionsRes.fileID, // 文件ID
+								fileURL: uploadFileOptionsRes.fileURL, // 文件URL（如果是私有权限，则此URL是无法直接访问的）
+							};
+							if (this.fileID2fileURL) {
+								res.fileID = `https://${this.domain}/${res.cloudPath}`;
+							}
+							if (typeof options.success === "function") options.success(res);
+							resolve(res);
 						}
-						if (typeof options.success === "function") options.success(res);
-						resolve(res);
 					},
 					fail: (err) => {
 						if (typeof options.fail === "function") options.fail(err);
