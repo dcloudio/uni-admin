@@ -37,19 +37,21 @@ const fieldsMap = [{
 }, {
 	title: '次均停留时长',
 	field: 'avg_user_session_time',
+	computed: 'duration/user_session_times',
 	formatter: ':',
 	tooltip: '平均每次打开应用停留在应用内的总时长，即应用停留总时长/启动次数',
 	value: 0,
 	contrast: 0,
-	stat: 'avg'
+	//stat: 'avg'
 }, {
 	title: '人均停留时长 ',
 	field: 'avg_user_time',
+	computed: 'duration/active_user_count',
 	formatter: ':',
 	tooltip: '平均每个用户停留在应用内的总时长，即应用停留总时长/活跃用户',
 	value: 0,
 	contrast: 0,
-	stat: 'avg'
+	//stat: 'avg'
 }, {
 	title: '总用户数',
 	field: 'total_users',

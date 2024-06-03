@@ -4,7 +4,7 @@
 			<view class="uni-sub-menu__title-sub" :style="{color:disabled?'#999':textColor}">
 				<slot name="title"></slot>
 			</view>
-			<uni-icons class="uni-sub-menu__icon" :class="{transition:isOpen}" type="arrowdown" color="#bbb" size="14"></uni-icons>
+			<uni-icons class="uni-sub-menu__icon" :class="{transition:isOpen}" type="down" color="#bbb" size="14"></uni-icons>
 		</view>
 		<view class="uni-sub-menu__content" :class="{'uni-sub-menu--close':!isOpen}" :style="{'background-color':backgroundColor}">
 			<view id="content--hook">
