@@ -20,7 +20,7 @@
 					returnType="timestamp" :clearIcon="false" class="uni-stat-datetime-picker"
 					:class="{'uni-stat__actived': currentDateTab < 0 && !!query.start_time.length}"
 					@change="useDatetimePicker" />
-				<uni-stat-tabs label="维度选择" type="box" :current="currentDimensionTab" :tabs="dimensionTabs" v-model="query.dimension" />
+				<uni-stat-tabs label="维度选择" type="box" :current="currentDimensionTab" :tabs="dimensionTabs" @change="changeDimensionTab" />
 			</view>
 			<view class="uni-stat--x">
 				<uni-stat-tabs label="平台选择" type="boldLine" mode="platform" v-model="query.platform_id" @change="changePlatform" />
@@ -73,7 +73,7 @@
 			return {
 				fieldsMap,
 				query: {
-					dimension: "hour",
+					dimension: "day",
 					appid: '',
 					platform_id: '',
 					uni_platform: '',
@@ -88,7 +88,7 @@
 				},
 				loading: false,
 				currentDateTab: 1,
-				currentDimensionTab: 0,
+				currentDimensionTab: 1,
 				tableData: [],
 				panelData: fieldsMap.filter(f => f.hasOwnProperty('value')),
 				chartData: {},
@@ -258,6 +258,11 @@
 				this.tabName = name
 				this.getChartData(this.query, id, name)
 
+			},
+
+			changeDimensionTab(dimension, index){
+				this.currentDimensionTab = index;
+				this.query.dimension = dimension;
 			},
 
 			getAllData(query) {
