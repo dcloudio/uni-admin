@@ -45,12 +45,12 @@ export const mutations = {
 					.field('mobile,nickname,username,email,avatar_file')
 					.get()
 
-				const realNameRes = await uniIdCo.getRealNameInfo()
+				//const realNameRes = await uniIdCo.getRealNameInfo()
 
 				// console.log('fromDbData',res.result.data);
 				this.setUserInfo({
 					...res.result.data[0],
-					realNameAuth: realNameRes
+					//realNameAuth: realNameRes
 				})
 			} catch (e) {
 				this.setUserInfo({},{cover:true})
