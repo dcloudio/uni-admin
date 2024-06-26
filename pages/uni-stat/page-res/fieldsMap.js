@@ -48,7 +48,7 @@ export default [{
 	// value: 0,
 	stat: -1
 }, {
-	title: '访问总时长',
+	title: '访问总时长(秒)',
 	field: 'duration',
 	disabled: true,
 }, {
