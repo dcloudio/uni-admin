@@ -11,7 +11,7 @@ const ShareLog = require('./shareLog')
 const {
 	DateTime
 } = require('../lib')
-module.exports = class PageResult extends BaseMod {
+module.exports = class PageDetailResult extends BaseMod {
 	constructor() {
 		super()
 		this.tableName = 'page-detail-result'
