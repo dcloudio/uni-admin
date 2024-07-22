@@ -1,7 +1,7 @@
 {
 	"id": "uni-id-common",
 	"displayName": "uni-id-common",
-	"version": "1.0.17",
+	"version": "1.0.18",
 	"description": "包含uni-id token生成、校验、刷新功能的云函数公共模块",
 	"keywords": [
         "uni-id-common",

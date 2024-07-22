@@ -1,3 +1,5 @@
+## 1.0.18（2024-07-08）
+- checkToken时如果传入的token为空则返回uni-id-check-token-failed错误码以便uniIdRouter能正常跳转
 ## 1.0.17（2024-04-26）
 - 兼容uni-app-x对客户端uniPlatform的调整（uni-app-x内uniPlatform区分app-android、app-ios）
 ## 1.0.16（2023-04-25）
