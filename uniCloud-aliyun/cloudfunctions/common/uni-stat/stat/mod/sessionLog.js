@@ -75,7 +75,7 @@ module.exports = class SessionLog extends BaseMod {
 
 		// 页面信息
 		const page = new Page()
-		const pageInfo = await page.getPageAndCreate(params.ak, params.url, params.ttpj)
+		const pageInfo = await page.getPageAndCreate(params.ak, params.url, page.getPageTitle(params))
 		if (!pageInfo || pageInfo.length === 0) {
 			return {
 				code: 300,
@@ -198,7 +198,7 @@ module.exports = class SessionLog extends BaseMod {
 	async getSession(params) {
 		// 页面信息
 		const page = new Page()
-		const pageInfo = await page.getPageAndCreate(params.ak, params.url, params.ttpj)
+		const pageInfo = await page.getPageAndCreate(params.ak, params.url, page.getPageTitle(params))
 		if (!pageInfo || pageInfo.length === 0) {
 			return {
 				code: 300,

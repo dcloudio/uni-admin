@@ -52,7 +52,7 @@ module.exports = class PageLog extends BaseMod {
 			if (pageData[pageKey]) {
 				pageInfo = pageData[pageKey]
 			} else {
-				pageInfo = await page.getPageAndCreate(params.ak, params.url, params.ttpj)
+				pageInfo = await page.getPageAndCreate(params.ak, params.url, page.getPageTitle(params))
 				if (!pageInfo || pageInfo.length === 0) {
 					console.log('Not found this page by param:', JSON.stringify(params))
 					continue
@@ -106,7 +106,7 @@ module.exports = class PageLog extends BaseMod {
 			if (pageData[pageKey]) {
 				referPageInfo = pageData[pageKey]
 			} else {
-				referPageInfo = await page.getPageAndCreate(params.ak, params.urlref, params.ttpj)
+				referPageInfo = await page.getPageAndCreate(params.ak, params.urlref, page.getPageTitle(params))
 				if (!referPageInfo || referPageInfo.length === 0) {
 					referPageInfo = {_id:''}
 				}
@@ -123,7 +123,7 @@ module.exports = class PageLog extends BaseMod {
 				pageDetailInfo = await pageDetail.getPageDetailByPageRules({
 					appid: params.ak,
 					pageUrl: params.url,
-					pageTitle: params.ttpj,
+					pageTitle: page.getPageTitle(params),
 					pageId: pageInfo._id,
 					pageRules: pageInfo.page_rules
 				})
@@ -134,7 +134,7 @@ module.exports = class PageLog extends BaseMod {
 					referPageDetailInfo = await pageDetail.getPageDetailByPageRules({
 						appid: params.ak,
 						pageUrl: params.urlref,
-						pageTitle: params.ttpj,
+						pageTitle: page.getPageTitle(params),
 						pageId: referPageInfo._id,
 						pageRules: referPageInfo.page_rules
 					})

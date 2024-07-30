@@ -80,4 +80,17 @@ module.exports = class Page extends BaseMod {
 
 		return pageInfo
 	}
+
+	/**
+	 * 获取页面标题
+	 */
+	getPageTitle(params) {
+		const titleKeys = ['ttct', 'ttc', 'ttn', 'ttpj']
+		for(let item of titleKeys) {
+			if(params[item]) {
+				return params[item]
+			}
+		}
+		return ''
+	}
 }
