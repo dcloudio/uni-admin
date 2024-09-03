@@ -70,5 +70,29 @@
             ],
             "MgoIsUnique": false
         }
-    }
+    },
+		{
+		    "IndexName": "entry_count",
+		    "MgoKeySchema": {
+		        "MgoIndexKeys": [
+		            {
+		                "Name": "entry_count",
+		                "Direction": "1"
+		            }
+		        ],
+		        "MgoIsUnique": false
+		    }
+		},
+		{
+		    "IndexName": "visit_times",
+		    "MgoKeySchema": {
+		        "MgoIndexKeys": [
+		            {
+		                "Name": "visit_times",
+		                "Direction": "1"
+		            }
+		        ],
+		        "MgoIsUnique": false
+		    }
+		}
 ]
