@@ -30,7 +30,8 @@ const {
 	RunErrors,
 	UserSessionLog,
 	uniPay,
-	Setting
+	Setting,
+	AppCrashLogs
 } = require('./mod')
 class UniStatDataStat {
 	/**
