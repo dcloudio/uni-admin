@@ -130,5 +130,29 @@
 			    ],
 			    "MgoIsUnique": false
 			}
+		},
+		{
+			"IndexName": "exit_page_id",
+			"MgoKeySchema": {
+			    "MgoIndexKeys": [
+			        {
+			            "Name": "exit_page_id",
+			            "Direction": "1"
+			        }
+			    ],
+			    "MgoIsUnique": false
+			}
+		},
+		{
+			"IndexName": "entry_page_id",
+			"MgoKeySchema": {
+			    "MgoIndexKeys": [
+			        {
+			            "Name": "entry_page_id",
+			            "Direction": "1"
+			        }
+			    ],
+			    "MgoIsUnique": false
+			}
 		}
 ]
