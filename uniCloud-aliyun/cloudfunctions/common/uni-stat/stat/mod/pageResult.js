@@ -76,7 +76,7 @@ module.exports = class PageResult extends BaseMod {
 		}).count()
 		let pageLogData = []
 		//临时处理-数据量过大按小时分片组合
-		if (countRes.total > 1000000) {
+		if (countRes.total > 500000) {
 			const list = {}
 			for (let start = 0; start < 24; start++) {
 				const getRes = await this.aggregate(this.pageLog.tableName, {
