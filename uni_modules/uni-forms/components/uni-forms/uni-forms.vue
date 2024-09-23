@@ -187,7 +187,7 @@
 						if (!formVm) return console.error('当前 uni-froms 组件缺少 ref 属性');
 						if(formVm.model)formVm.model[name] = value
 						if(formVm.modelValue)formVm.modelValue[name] = value
-						if(formVm.value)formVm.model[name] = value
+						if(formVm.value)formVm.value[name] = value
 					}
 				}
 			}
