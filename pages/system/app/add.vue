@@ -20,6 +20,11 @@
 						@input="binddata('description', $event.detail.value)" class="uni-textarea-border"
 						v-model="formData.description"></textarea>
 				</uni-forms-item>
+				<uni-forms-item name="remark" label="应用备注">
+					<textarea :maxlength="-1" auto-height placeholder="应用备注"
+						@input="binddata('remark', $event.detail.value)" class="uni-textarea-border"
+						v-model="formData.remark"></textarea>
+				</uni-forms-item>
 			</uni-card>
 
 			<uni-card title="图标素材">

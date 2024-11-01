@@ -20,6 +20,7 @@ module.exports = async (event, context) => {
 
 	const platform_Android = 'Android';
 	const platform_iOS = 'iOS';
+	const platform_Harmony = 'Harmony';
 	const package_app = 'native_app';
 	const package_wgt = 'wgt';
 	const app_version_db_name = 'opendb-app-versions'
@@ -46,12 +47,20 @@ module.exports = async (event, context) => {
 		appVersion = body.appVersion;
 		wgtVersion = body.wgtVersion;
 
-		platform = /iPhone|iPad/.test(event.headers) ? platform_iOS : platform_Android;
+		if (/iPhone|iPad/.test(event.headers)) {
+			platform = platform_iOS
+		} else if (/Android|android/.test(event.headers)) {
+			platform = platform_Android
+		} else {
+			platform = platform_Harmony
+		}
 	} else if (context.OS) {
 		platform = context.OS === 'android' ?
 			platform_Android :
 			context.OS === 'ios' ?
 			platform_iOS :
+			context.OS === 'harmonyos' ?
+			platform_Harmony :
 			platform_Android;
 	}
 

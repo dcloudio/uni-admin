@@ -7,6 +7,7 @@
 			</view>
 		</view>
 		<uni-forms ref="form" :value="formData" validateTrigger="bind" :labelWidth="labelWidth">
+			<!-- region 基础信息 -->
 			<uni-forms-item name="appid" label="AppID" required>
 				<uni-easyinput :disabled="true" v-model="formData.appid" trim="both" />
 			</uni-forms-item>
@@ -17,7 +18,7 @@
 				<uni-easyinput placeholder="更新标题" v-model="formData.title" />
 			</uni-forms-item>
 			<uni-forms-item name="contents" label="更新内容" required>
-				<textarea auto-height style="box-sizing: content-box;" :maxlength="-1"
+				<textarea auto-height style="box-sizing: content-box;" :maxlength="-1"  placeholder="更新内容 (可换行)"
 					@input="binddata('contents', $event.detail.value)" class="uni-textarea-border"
 					:value="formData.contents" @update:value="val => formData.contents = val"></textarea>
 			</uni-forms-item>
@@ -27,64 +28,67 @@
 			<uni-forms-item name="version" label="版本号" required>
 				<uni-easyinput v-model="formData.version" placeholder="当前包版本号，必须大于当前线上发行版本号" />
 			</uni-forms-item>
+			<!-- endregion -->
 			<uni-forms-item v-if="isWGT" key="min_uni_version" name="min_uni_version" label="原生App最低版本"
 				:required="isWGT">
 				<uni-easyinput placeholder="原生App最低版本" v-model="formData.min_uni_version" />
 				<show-info :content="minUniVersionContent"></show-info>
 			</uni-forms-item>
 
-			<uni-forms-item label="存储选择">
-				<view class="flex">
-					<radio-group @change="e => uniFilePickerProvider = e.detail.value" style="width: 100%;">
-						<view class="flex" style="flex-wrap: nowrap;">
-					上传至：
-							<label>
-								<radio value="unicloud" :checked="uniFilePickerProvider === 'unicloud'"/><text>内置存储</text>
-							</label>
-							<label style="margin-left: 20rpx;">
-								<radio value="extStorage" :checked="uniFilePickerProvider === 'extStorage'"/><text>扩展存储</text>
-							</label>
+			<template v-if="enableUploadPackage">
+				<uni-forms-item label="存储选择">
+					<view class="flex">
+						<radio-group @change="e => uniFilePickerProvider = e.detail.value" style="width: 100%;">
+							<view class="flex" style="flex-wrap: nowrap;">
+						上传至：
+								<label>
+									<radio value="unicloud" :checked="uniFilePickerProvider === 'unicloud'"/><text>内置存储</text>
+								</label>
+								<label style="margin-left: 20rpx;">
+									<radio value="extStorage" :checked="uniFilePickerProvider === 'extStorage'"/><text>扩展存储</text>
+								</label>
+							</view>
+						</radio-group>
+						<text class="uni-sub-title" style="margin-top: 10px;font-size: 12px;color: #666;width: 100%;">内置存储是服务空间开通后自带的云存储，不支持自定义域名，不支持阶梯计费</text>
+						<text class="uni-sub-title" style="margin-top: 10px;font-size: 12px;color: #666;">扩展存储支持自定义域名、阶梯计费，越用越便宜、功能更强大</text>
+						<text class="uni-sub-title" style="margin-top: 10px;font-size: 12px;color: #2979ff;cursor: pointer;text-decoration: underline; margin-left: 10px;" @click="toUrl('https://doc.dcloud.net.cn/uniCloud/ext-storage/service.html')">扩展存储开通文档</text>
+					</view>
+				</uni-forms-item>
+
+				<uni-forms-item label="自定义域名" v-if="uniFilePickerProvider === 'extStorage'">
+					<view class="flex" style="flex-direction: column;align-items:flex-start;">
+						<uni-easyinput placeholder="请输入扩展存储自定义域名" v-model="domain" :maxlength="-1" style="width: 550px;" />
+						<text class="uni-sub-title" style="margin-top: 10px;font-size: 12px;color: #666;">输入扩展存储绑定的域名，在服务空间-云存储-扩展存储页面可查看，如：cdn.example.com</text>
+					</view>
+				</uni-forms-item>
+
+				<uni-forms-item :label="'上传'+fileExtname[0]+'包'">
+					<uni-file-picker v-model="appFileList" :file-extname="fileExtname" :disabled="hasPackage"
+						returnType="object" file-mediatype="all" limit="1" @success="packageUploadSuccess" :provider="uniFilePickerProvider"
+						@delete="packageDelete">
+						<view class="flex">
+							<button type="primary" size="mini" @click="selectFile" style="margin: 0px;">选择文件</button>
 						</view>
-					</radio-group>
-					<text class="uni-sub-title" style="margin-top: 10px;font-size: 12px;color: #666;width: 100%;">内置存储是服务空间开通后自带的云存储，不支持自定义域名，不支持阶梯计费</text>
-					<text class="uni-sub-title" style="margin-top: 10px;font-size: 12px;color: #666;">扩展存储支持自定义域名、阶梯计费，越用越便宜、功能更强大</text>
-					<text class="uni-sub-title" style="margin-top: 10px;font-size: 12px;color: #2979ff;cursor: pointer;text-decoration: underline; margin-left: 10px;" @click="toUrl('https://doc.dcloud.net.cn/uniCloud/ext-storage/service.html')">扩展存储开通文档</text>
-				</view>
-			</uni-forms-item>
+						<view class="flex">
+							<text style="margin-top: 10px;font-size: 12px;color: #666;">上传{{fileExtname[0]}}到当前服务空间的云存储中，上传成功后，会自动使用云存储地址填充下载链接</text>
+							<text style="margin-top: 10px;font-size: 12px;color: #666;">上传文件后同步到各地cdn缓存节点有延迟。请适当等候再提交新版信息入库，触发客户端更新提示。</text>
+						</view>
+					</uni-file-picker>
+					<text v-if="hasPackage" style="padding-left: 20px;color: #a8a8a8;">{{Number(appFileList.size / 1024 / 1024).toFixed(2)}}M</text>
+				</uni-forms-item>
+			</template>
 
-			<uni-forms-item label="自定义域名" v-if="uniFilePickerProvider === 'extStorage'">
-				<view class="flex" style="flex-direction: column;align-items:flex-start;">
-					<uni-easyinput placeholder="请输入扩展存储自定义域名" v-model="domain" :maxlength="-1" style="width: 550px;" />
-					<text class="uni-sub-title" style="margin-top: 10px;font-size: 12px;color: #666;">输入扩展存储绑定的域名，在服务空间-云存储-扩展存储页面可查看，如：cdn.example.com</text>
-				</view>
-			</uni-forms-item>
-
-			<uni-forms-item v-if="!isiOS" :label="'上传'+fileExtname[0]+'包'">
-				<uni-file-picker v-model="appFileList" :file-extname="fileExtname" :disabled="hasPackage"
-					returnType="object" file-mediatype="all" limit="1" @success="packageUploadSuccess" :provider="uniFilePickerProvider"
-					@delete="packageDelete">
-					<view class="flex">
-						<button type="primary" size="mini" @click="selectFile" style="margin: 0px;">选择文件</button>
-					</view>
-					<view class="flex">
-						<text style="margin-top: 10px;font-size: 12px;color: #666;">上传{{fileExtname[0]}}到当前服务空间的云存储中，上传成功后，会自动使用云存储地址填充下载链接</text>
-						<text style="margin-top: 10px;font-size: 12px;color: #666;">上传文件后同步到各地cdn缓存节点有延迟。请适当等候再提交新版信息入库，触发客户端更新提示。</text>
-					</view>
-				</uni-file-picker>
-				<text v-if="hasPackage" style="padding-left: 20px;color: #a8a8a8;">{{Number(appFileList.size / 1024 / 1024).toFixed(2)}}M</text>
-			</uni-forms-item>
-
-			<uni-forms-item key="url" name="url" :label="isiOS ? 'AppStore' : '下载链接'" required>
+			<uni-forms-item key="url" name="url" :label="urlLabel" required>
 				<view class="flex" style="flex-direction: column;align-items:flex-start;flex: 1;">
 					<view class="flex" style="width: 100%;">
 						<uni-easyinput placeholder="链接" v-model="formData.url" :maxlength="-1" />
-						<text style="margin-left: 10px;color: #2979ff;cursor: pointer;text-decoration: underline;" v-if="formData.url" @click="toUrl(formData.url)">测试下载</text>
+						<text style="margin-left: 10px;color: #2979ff;cursor: pointer;text-decoration: underline;" v-if="isApk" @click="toUrl(formData.url)">测试下载</text>
 					</view>
-					<text style="margin-top: 10px;font-size: 12px;color: #666;" v-if="formData.url">建议点击【测试下载】能正常下载后，再进行发布</text>
+					<text style="margin-top: 10px;font-size: 12px;color: #666;" v-if="isApk">建议点击【测试下载】能正常下载后，再进行发布</text>
 				</view>
 			</uni-forms-item>
 
-			<uni-forms-item v-if="!isiOS && !isWGT && formData.store_list.length" label="Android应用市场" labelWidth="125px"
+			<uni-forms-item v-if="isAndroid && !isWGT && formData.store_list.length" label="Android应用市场" labelWidth="125px"
 				key="store_list" name="store_list">
 				<view style="flex: 1;">
 					<view v-for="(item) in formData.store_list" :key="item.id">
@@ -117,7 +121,7 @@
 				<switch @change="binddata('is_silently', $event.detail.value)" :checked="formData.is_silently" />
 				<show-info :top="-80" :content="silentlyContent"></show-info>
 			</uni-forms-item>
-			<uni-forms-item v-if="!isiOS" key="is_mandatory" name="is_mandatory" label="强制更新">
+			<uni-forms-item key="is_mandatory" name="is_mandatory" label="强制更新">
 				<switch @change="binddata('is_mandatory', $event.detail.value)" :checked="formData.is_mandatory" />
 				<show-info :content="mandatoryContent"></show-info>
 			</uni-forms-item>
@@ -142,61 +146,15 @@
 		enumConverter
 	} from '@/js_sdk/validator/opendb-app-versions.js';
 	import addAndDetail, {
-		fields
+		fields, platform_iOS, platform_Android, platform_Harmony
 	} from '../mixin/version_add_detail_mixin.js';
 	import {
-		appVersionListDbName
+		appVersionListDbName, compare
 	} from '../utils.js';
 
 	const db = uniCloud.database();
 	const dbCmd = db.command;
 	const dbCollectionName = appVersionListDbName;
-
-	const platform_iOS = 'iOS';
-	const platform_Android = 'Android';
-
-	/**
-	 * 对比版本号，如需要，请自行修改判断规则
-	 * 支持比对	("3.0.0.0.0.1.0.1", "3.0.0.0.0.1")	("3.0.0.1", "3.0")	("3.1.1", "3.1.1.1") 之类的
-	 * @param {Object} v1
-	 * @param {Object} v2
-	 * v1 > v2 return 1
-	 * v1 < v2 return -1
-	 * v1 == v2 return 0
-	 */
-	function compare(v1 = '0', v2 = '0') {
-		v1 = String(v1).split('.')
-		v2 = String(v2).split('.')
-		const minVersionLens = Math.min(v1.length, v2.length);
-
-		let result = 0;
-		for (let i = 0; i < minVersionLens; i++) {
-			const curV1 = Number(v1[i])
-			const curV2 = Number(v2[i])
-
-			if (curV1 > curV2) {
-				result = 1
-				break;
-			} else if (curV1 < curV2) {
-				result = -1
-				break;
-			}
-		}
-
-		if (result === 0 && (v1.length !== v2.length)) {
-			const v1BiggerThenv2 = v1.length > v2.length;
-			const maxLensVersion = v1BiggerThenv2 ? v1 : v2;
-			for (let i = minVersionLens; i < maxLensVersion.length; i++) {
-				const curVersion = Number(maxLensVersion[i])
-				if (curVersion > 0) {
-					v1BiggerThenv2 ? result = 1 : result = -1
-					break;
-				}
-			}
-		}
-
-		return result;
-	}
 
 	export default {
 		mixins: [addAndDetail],
@@ -310,7 +268,7 @@
 						this.formData.platform = platform[0]
 
 						// iOS需要带出上一版本的AppStore链接
-						if (this.isiOS) {
+						if (this.isiOS || this.isHarmony) {
 							this.formData.url = url;
 						}
 					} else {
@@ -341,7 +299,7 @@
 					if (!this.isWGT) {
 						res.platform = [res.platform]
 					}
-					if (this.isiOS || this.isWGT) delete res.store_list;
+					if (this.isiOS || this.isHarmony || this.isWGT) delete res.store_list;
 					if (res.store_list) {
 						res.store_list.forEach(item => {
 							item.priority = parseFloat(item.priority)

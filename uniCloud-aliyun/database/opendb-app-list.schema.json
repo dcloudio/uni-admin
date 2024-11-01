@@ -123,11 +123,27 @@
 									"description": "AppStore 上架地址",
 									"label": "AppStore 地址"
 							},
-			"abm_url": {
-				"bsonType": "string",
-				"description": "获取 iOS ABM 应用登录链接",
-				"label": "获取 iOS ABM 应用登录链接"
-			}
+							"abm_url": {
+								"bsonType": "string",
+								"description": "获取 iOS ABM 应用登录链接",
+								"label": "获取 iOS ABM 应用登录链接"
+							}
+					}
+			},
+			"app_harmony": {
+					"bsonType": "object",
+					"description": "HarmonyOS Next App 相关信息",
+					"properties": {
+							"name": {
+									"bsonType": "string",
+									"description": "应用名称",
+									"label": "应用名称"
+							},
+							"url": {
+									"bsonType": "string",
+									"description": "可下载安装包或可访问地址",
+									"label": "下载地址"
+							}
 					}
 			},
 			"mp_weixin": {
@@ -316,6 +332,20 @@
 									"bsonType": "int",
 									"description": "按照从大到小排序",
 									"label": "优先级"
+							}
+					}
+			},
+			"remark": {
+					"bsonType": "string",
+					"description": "备注",
+					"label": "备注",
+					"componentForEdit": {
+							"name": "textarea"
+					},
+					"componentForShow": {
+							"name": "textarea",
+							"props": {
+									":disabled": true
 							}
 					}
 			},
