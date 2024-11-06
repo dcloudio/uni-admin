@@ -121,7 +121,7 @@ export default {
 			return platform_Harmony.toLocaleLowerCase()
 		},
 		enableUploadPackage() {
-			return !this.isiOS && (!this.isHarmony && !this.isWGT)
+			return this.isWGT || !(this.isiOS || this.isHarmony)
 		},
 		urlLabel() {
 			if (this.isWGT || this.isAndroid) return '下载链接'
