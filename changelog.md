@@ -1,3 +1,5 @@
+## 2.4.22（2024-11-06）
+- 修复 升级中心发布 wgt 升级时没有上传至云存储
 ## 2.4.21（2024-11-01）
 - 更新 应用管理支持添加 HarmonyOS Next 信息
 - 更新 App升级中心支持发布 HarmonyOS Next 整包更新、wgt 更新（App 端需要配合 HBuilderX 4.32、uni-upgrade-center-app 0.9.1+ 使用）
