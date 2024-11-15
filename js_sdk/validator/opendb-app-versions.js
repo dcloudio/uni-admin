@@ -1,6 +1,19 @@
 // 表单校验规则由 schema2code 生成，不建议直接修改校验规则，而建议通过 schema2code 生成, 详情: https://uniapp.dcloud.net.cn/uniCloud/schema
 
-
+const PLATFORM = [
+	{
+		"value": "Android",
+		"text": "安卓"
+	},
+	{
+		"value": "iOS",
+		"text": "苹果"
+	},
+	{
+		"value": "Harmony",
+		"text": "鸿蒙 Next"
+	}
+]
 
 const validator = {
 	"appid": {
@@ -44,15 +57,7 @@ const validator = {
 				"format": "array"
 			}, */
 			{
-				"range": [{
-						"value": "Android",
-						"text": "安卓"
-					},
-					{
-						"value": "iOS",
-						"text": "苹果"
-					}
-				]
+				"range": PLATFORM
 			}
 		],
 		"label": "平台"
@@ -136,15 +141,7 @@ const validator = {
 }
 
 const enumConverter = {
-	"platform_valuetotext": [{
-			"value": "Android",
-			"text": "安卓"
-		},
-		{
-			"value": "iOS",
-			"text": "苹果"
-		}
-	],
+	"platform_valuetotext": PLATFORM,
 	"type_valuetotext": {
 		"native_app": "原生App安装包",
 		"wgt": "wgt资源包"

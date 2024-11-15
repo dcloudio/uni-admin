@@ -158,6 +158,11 @@ module.exports = async function(id) {
 				defaultOptions.ios_url = ''
 				defaultOptions.ios_abm_url = ''
 			}
+			if (defaultOptions.hasApp && appInfo.app_harmony && appInfo.app_harmony.url) {
+				defaultOptions.harmony_url = appInfo.app_harmony.url
+			} else {
+				defaultOptions.harmony_url = ''
+			}
 
 			// mp
 			defaultOptions.mpKeys = Object.keys(appInfo).filter(key => {

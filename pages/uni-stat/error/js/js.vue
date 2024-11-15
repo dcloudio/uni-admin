@@ -699,7 +699,7 @@
 						uniPlatform: platform_code,
 						splitThirdParty: true
 					}
-				if (['ios', 'android', 'app'].indexOf(platform_code)>-1) {
+				if (['harmony', 'harmonyos'].indexOf(platform_code.toLocaleLowerCase()) === -1 && ['ios', 'android', 'app'].indexOf(platform_code)>-1) {
 					stacktraceyOptions.lineOffset = -1
 				}
 				stacktracey(err, {

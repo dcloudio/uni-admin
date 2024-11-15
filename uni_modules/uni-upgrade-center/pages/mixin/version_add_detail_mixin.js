@@ -3,8 +3,9 @@ import {
 	enumConverter
 } from '@/js_sdk/validator/opendb-app-versions.js';
 
-const platform_iOS = 'iOS';
-const platform_Android = 'Android';
+export const platform_iOS = 'iOS';
+export const platform_Android = 'Android';
+export const platform_Harmony = 'Harmony'
 const db = uniCloud.database();
 
 function getValidator(fields) {
@@ -51,23 +52,29 @@ export default {
 				"create_date": null
 			},
 			formOptions: {
-				"platform_localdata": [{
-					"value": "Android",
-					"text": "安卓"
-				},
-				{
-					"value": "iOS",
-					"text": "苹果"
-				}
+				"platform_localdata": [
+					{
+						"value": "Android",
+						"text": "安卓"
+					},
+					{
+						"value": "iOS",
+						"text": "苹果"
+					},
+					{
+						"value": "Harmony",
+						"text": "鸿蒙 Next"
+					}
 				],
-				"type_localdata": [{
-					"value": "native_app",
-					"text": "原生App安装包"
-				},
-				{
-					"value": "wgt",
-					"text": "App资源包"
-				}
+				"type_localdata": [
+					{
+						"value": "native_app",
+						"text": "原生App安装包"
+					},
+					{
+						"value": "wgt",
+						"text": "App资源包"
+					}
 				]
 			},
 			rules: {
@@ -86,8 +93,17 @@ export default {
 		isWGT() {
 			return this.formData.type === 'wgt'
 		},
+		isNativeApp() {
+			return this.formData.type === 'native_app'
+		},
 		isiOS() {
-			return !this.isWGT ? this.formData.platform.includes(platform_iOS) : false;
+			return this.formData.platform.includes(platform_iOS);
+		},
+		isAndroid() {
+			return this.formData.platform.includes(platform_Android)
+		},
+		isHarmony() {
+			return this.formData.platform.includes(platform_Harmony)
 		},
 		hasPackage() {
 			return this.appFileList && !!Object.keys(this.appFileList).length
@@ -97,10 +113,24 @@ export default {
 		},
 		platformLocaldata() {
 			return !this.isWGT ? this.formOptions.platform_localdata : this.enableiOSWgt ? this.formOptions
-				.platform_localdata : [this.formOptions.platform_localdata[0]]
+				.platform_localdata : [this.formOptions.platform_localdata[0], this.formOptions.platform_localdata[2]]
 		},
 		uni_platform() {
-			return (this.isiOS ? platform_iOS : platform_Android).toLocaleLowerCase()
+			if (this.isiOS) return platform_iOS.toLocaleLowerCase()
+			else if (this.isAndroid) return platform_Android.toLocaleLowerCase()
+			return platform_Harmony.toLocaleLowerCase()
+		},
+		enableUploadPackage() {
+			return this.isWGT || !(this.isiOS || this.isHarmony)
+		},
+		urlLabel() {
+			if (this.isWGT || this.isAndroid) return '下载链接'
+			if (this.isiOS) return 'AppStore'
+			else if (this.isHarmony) return '应用商店'
+		},
+		isApk() {
+			const apkIndex = this.formData.url.indexOf('apk')
+			return this.formData.url && (apkIndex > -1 && apkIndex === this.formData.url.length - 3)
 		}
 	},
 	methods: {

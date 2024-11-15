@@ -22,7 +22,7 @@
 			</view>
 		</view>
 		<view class="uni-container">
-			<unicloud-db ref="udb" collection="opendb-app-list" field="appid,name,description,create_date"
+			<unicloud-db ref="udb" collection="opendb-app-list" field="appid,name,description,remark,create_date"
 				:where="where" page-data="replace" :orderby="orderby" :getcount="true" :page-size="options.pageSize"
 				:page-current="options.pageCurrent" v-slot:default="{data,pagination,loading,error,options}"
 				:options="options" loadtime="manual" @load="onqueryload">
@@ -37,6 +37,7 @@
 						<uni-th align="center" filter-type="search" @filter-change="filterChange($event, 'description')"
 							sortable @sort-change="sortChange($event, 'description')" :width="descriptionThWidth">应用描述
 						</uni-th>
+						<uni-th align="center">应用备注</uni-th>
 						<uni-th align="center" filter-type="timestamp"
 							@filter-change="filterChange($event, 'create_date')" sortable
 							@sort-change="sortChange($event, 'create_date')">创建时间</uni-th>
@@ -45,7 +46,8 @@
 					<uni-tr v-for="(item,index) in data" :key="index" :disabled="item.appid === appid">
 						<uni-td align="center">{{item.appid}}</uni-td>
 						<uni-td align="center">{{item.name}}</uni-td>
-						<uni-td align="left">{{item.description}}</uni-td>
+						<uni-td align="left"><text>{{item.description || '-'}}</text></uni-td>
+						<uni-td align="left"><text>{{item.remark || '-'}}</text></uni-td>
 						<uni-td align="center">
 							<uni-dateformat :threshold="[0, 0]" :date="item.create_date"></uni-dateformat>
 						</uni-td>
