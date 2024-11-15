@@ -195,6 +195,9 @@ module.exports = class PageLog extends BaseMod {
 	 * @param {Number} days 页面日志保留天数
 	 */
 	async clean(days) {
+		if(days === 0) {
+			return false;
+		}
 		days = Math.max(parseInt(days), 1)
 		console.log('clean page logs - day:', days)
 		const dateTime = new DateTime()

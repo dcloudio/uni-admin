@@ -210,16 +210,17 @@ module.exports = class UserSessionLog extends BaseMod {
 	 * @param {Object} days 保留天数, 留存统计需要计算30天后留存率，因此至少应保留31天的日志数据
 	 */
 	async clean(days = 31) {
+		if(days === 0) {
+			return false;
+		}
 		days = Math.max(parseInt(days), 1)
 		console.log('clean user session logs - day:', days)
-
 		const dateTime = new DateTime()
 		const res = await this.delete(this.tableName, {
 			create_time: {
 				$lt: dateTime.getTimeBySetDays(0 - days)
 			}
 		})
-
 		if (!res.code) {
 			console.log('clean user session log:', res)
 		}

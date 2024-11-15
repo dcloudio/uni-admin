@@ -14,3 +14,4 @@ uni-stat-receiver.param.js
 .uni-devtools
 test-cron-sync/
 .DS_Store
+test-version.jql

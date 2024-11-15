@@ -59,7 +59,6 @@ module.exports = class Channel extends BaseMod {
 		if (!appid || !platformId) {
 			return []
 		}
-
 		const channelInfo = await this.getChannel(appid, platformId, channel)
 		if (channelInfo.length === 0) {
 			const thisTime = new DateTime().getTime()

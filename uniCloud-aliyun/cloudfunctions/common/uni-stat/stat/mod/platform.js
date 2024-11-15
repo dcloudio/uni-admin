@@ -70,76 +70,84 @@ module.exports = class Platform extends BaseMod {
 		let platformCode = platform
 
 		//兼容客户端上报参数
-		switch(platform) {
+		switch (platform) {
 			//h5|web
 			case 'h5':
 				platformCode = 'web'
 				break
-			//微信小程序
+				//微信小程序
 			case 'wx':
 				platformCode = 'mp-weixin'
 				break
-			//百度小程序
+				//百度小程序
 			case 'bd':
 				platformCode = 'mp-baidu'
 				break
-			//支付宝小程序
+				//支付宝小程序
 			case 'ali':
 				platformCode = 'mp-alipay'
 				break
-			//字节跳动小程序
+				//字节跳动小程序
 			case 'tt':
 				platformCode = 'mp-toutiao'
 				break
-			//qq小程序
+				//qq小程序
 			case 'qq':
 				platformCode = 'mp-qq'
 				break
-			//快应用联盟
+				//快应用联盟
 			case 'qn':
 				platformCode = 'quickapp-webview-union'
 				break
-			//快应用(webview)
+				//快应用(webview)
 			case 'qw':
 				platformCode = 'quickapp-webview'
 				break
-			//快应用华为
+				//快应用华为
 			case 'qi':
 				platformCode = 'quickapp-webview-huawei'
 				break
-			//360小程序
+				//360小程序
 			case '360':
 				platformCode = 'mp-360'
 				break
-			//京东小程序
+				//京东小程序
 			case 'jd':
 				platformCode = 'mp-jd'
 				break
-			//钉钉小程序
+				//钉钉小程序
 			case 'dt':
 				platformCode = 'mp-dingtalk'
 				break
-			//快手小程序
+				//快手小程序
 			case 'ks':
 				platformCode = 'mp-kuaishou'
 				break
-			//飞书小程序
+				//飞书小程序
 			case 'lark':
 				platformCode = 'mp-lark'
+				break
+			case 'mhm':
+				platformCode = 'mp-harmony'
 				break
 			//原生应用
 			case 'app-android':
 				platformCode = 'android'
-			break
+				break
 			case 'app-ios':
 				platformCode = 'ios'
-			break
+				break
+			case 'app-harmony':
+				platformCode = 'harmony'
+				break
 			case 'n':
 			case 'app-plus':
 			case 'app':
 				os = this.getOsName(os)
 				if (os === 'ios') {
 					platformCode = 'ios'
+				} else if (os === 'harmonyos') {
+					platformCode = 'harmony'
 				} else {
 					platformCode = 'android'
 				}
@@ -153,13 +161,14 @@ module.exports = class Platform extends BaseMod {
 	 * @param {Object} os系统标识
 	 */
 	getOsName(os) {
-		if(!os) {
+		if (!os) {
 			return ''
 		}
 		//兼容老版上报参数
 		const osSetting = {
 			i: 'ios',
-			a: 'android'
+			a: 'android',
+			h: 'harmonyos'
 		}
 		return osSetting[os] ? osSetting[os] : os
 	}

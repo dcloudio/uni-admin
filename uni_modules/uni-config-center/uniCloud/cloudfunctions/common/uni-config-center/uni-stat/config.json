@@ -102,7 +102,9 @@
 			"pageLog": 7,
 			"eventLog": 7,
 			"shareLog": 7,
-			"errorLog": 7
+			"errorLog": 7,
+			"resultHourLog": 7,
+			"appCrashLog": 7
 		}
 	}
 }
