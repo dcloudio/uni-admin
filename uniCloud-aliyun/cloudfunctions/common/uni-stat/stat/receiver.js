@@ -9,6 +9,7 @@ const SessionLog = require('./mod/sessionLog')
 const PageLog = require('./mod/pageLog')
 const EventLog = require('./mod/eventLog')
 const ErrorLog = require('./mod/errorLog')
+const AppCrashLog = require('./mod/appCrashLogs.js')
 const Device = require('./mod/device')
 class UniStatReportDataReceiver {
 	/**
@@ -42,6 +43,7 @@ class UniStatReportDataReceiver {
 		const sessionParams = []
 		const pageParams = []
 		const eventParams = []
+		const appCrashParams = []
 		const errorParams = []
 		const device = new Device()
 		for (const ri in requestParam) {
@@ -83,6 +85,10 @@ class UniStatReportDataReceiver {
 					errorParams.push(urlParams)
 					break
 				}
+				//uni-app x应用崩溃日志
+				case 41: {
+					appCrashParams.push(urlParams)
+				}
 				//unipush信息绑定
 				case 101: {
 					res = await device.bindPush(urlParams)
@@ -117,6 +123,12 @@ class UniStatReportDataReceiver {
 		if (errorParams.length > 0) {
 			const errorLog = new ErrorLog()
 			res = await errorLog.fill(errorParams)
+		}
+
+		//uni-app x应用崩溃日志填充
+		if(appCrashParams.length > 0) {
+			const appCrashLog = new AppCrashLog()
+			res = await appCrashLog.fill(appCrashParams)
 		}
 
 		return res
