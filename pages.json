@@ -17,14 +17,6 @@
 			}
 		},
 		{
-			"path": "uni_modules/uni-id-pages/pages/login/login-withpwd",
-			"style": {
-				"topWindow": false,
-				"leftWindow": false,
-				"navigationBarTitleText": "登录"
-			}
-		},
-		{
 			"path": "pages/error/404",
 			"style": {
 				"navigationBarTitleText": "Not Found"
@@ -48,13 +40,6 @@
 				"navigationBarTitleText": "版本信息查看"
 			}
 		}
-	,{
-    "path": "uni_modules/uni-id-pages/pages/userinfo/realname-verify/realname-verify",
-    "style": {
-        "enablePullDownRefresh": false,
-        "navigationBarTitleText": "实名认证"
-    }
-}
 ,{
     "path": "uni_modules/uni-media-library/pages/index/index",
     "style": {
