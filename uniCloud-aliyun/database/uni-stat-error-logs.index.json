@@ -60,11 +60,11 @@
         }
     },
     {
-        "IndexName": "hash",
+        "IndexName": "error_hash",
         "MgoKeySchema": {
             "MgoIndexKeys": [
                 {
-                    "Name": "hash",
+                    "Name": "error_hash",
                     "Direction": "1"
                 }
             ],

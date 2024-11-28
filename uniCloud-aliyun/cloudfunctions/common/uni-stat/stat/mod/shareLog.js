@@ -99,17 +99,17 @@ module.exports = class ShareLog extends BaseMod {
 	 * @param {Number} days 保留天数
 	 */
 	async clean(days) {
+		if(days === 0) {
+			return false;
+		}
 		days = Math.max(parseInt(days), 1)
 		console.log('clean share logs - day:', days)
-
 		const dateTime = new DateTime()
-
 		const res = await this.delete(this.tableName, {
 			create_time: {
 				$lt: dateTime.getTimeBySetDays(0 - days)
 			}
 		})
-
 		if (!res.code) {
 			console.log('clean share log:', res)
 		}

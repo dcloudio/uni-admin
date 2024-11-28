@@ -130,5 +130,17 @@
             ],
             "MgoIsUnique": false
         }
-    }
+    },
+		{
+		    "IndexName": "previous_page_duration",
+		    "MgoKeySchema": {
+		        "MgoIndexKeys": [
+		            {
+		                "Name": "previous_page_duration",
+		                "Direction": "1"
+		            }
+		        ],
+		        "MgoIsUnique": false
+		    }
+		}
 ]

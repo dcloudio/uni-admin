@@ -1,11 +1,21 @@
 'use strict';
-const success = {
-	success: true
-}
-const fail = {
-	success: false
-}
+const uniID = require('uni-id-common')
+const success = { success: true }
+const fail = { success: false }
 const checkVersion = require('./checkVersion')
+
+async function checkPermission(uniIDIns, uniIdToken, permission) {
+	const checkTokenRes = await uniIDIns.checkToken(uniIdToken)
+	if (checkTokenRes.errCode === 0) {
+		if (checkTokenRes.permission.indexOf(permission) > -1 || checkTokenRes.role.indexOf('admin') > -1) {
+			return true
+		} else {
+			return Object.assign({ errMsg: '权限不足' }, fail)
+		}
+	} else {
+		return Object.assign({}, checkTokenRes, { errMsg: checkTokenRes.message }, fail)
+	}
+}
 
 exports.main = async (event, context) => {
 	//event为客户端上传的参数
@@ -13,6 +23,7 @@ exports.main = async (event, context) => {
 	const db = uniCloud.database()
 	const appListDBName = 'opendb-app-list'
 	const appVersionDBName = 'opendb-app-versions'
+	const uniIDIns = uniID.createInstance({ context: context })
 	let res = {};
 
 	if (event.headers) {
@@ -36,13 +47,21 @@ exports.main = async (event, context) => {
 			res = await checkVersion(event, context)
 			break;
 		case 'deleteFile':
-			res = await uniCloud.deleteFile({
-				fileList: params.fileList
-			})
+			let checkDeletePermission = await checkPermission(uniIDIns, event.uniIdToken, 'DELETE_OPENDB_APP_VERSIONS')
+			if (checkDeletePermission === true) {
+				res = await uniCloud.deleteFile({ fileList: params.fileList })
+			} else {
+				return checkDeletePermission
+			}
 			break;
 		case 'setNewAppData':
-			params.value.create_date = Date.now()
-			res = await db.collection(appListDBName).doc(params.id).set(params.value)
+			let checkUpdatePermission = await checkPermission(uniIDIns, event.uniIdToken, 'UPDATE_OPENDB_APP_LIST')
+			if (checkUpdatePermission === true) {
+				params.value.create_date = Date.now()
+				res = await db.collection(appListDBName).doc(params.id).set(params.value)
+			} else {
+				return checkUpdatePermission
+			}
 			break;
 		case 'getAppInfo':
 			let dbAppList

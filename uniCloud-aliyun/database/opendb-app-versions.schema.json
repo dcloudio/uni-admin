@@ -71,9 +71,13 @@
 				{
 					"value": "iOS",
 					"text": "苹果"
+				},
+				{
+					"value": "Harmony",
+					"text": "鸿蒙 Next"
 				}
 			],
-			"description": "更新平台，Android || iOS || [Android, iOS]",
+			"description": "更新平台，Android || iOS || Harmony || [Android, iOS, Harmony]",
 			"label": "平台"
 		},
 		"type": {

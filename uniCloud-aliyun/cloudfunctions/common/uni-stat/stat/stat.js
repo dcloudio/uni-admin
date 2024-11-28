@@ -30,7 +30,8 @@ const {
 	RunErrors,
 	UserSessionLog,
 	uniPay,
-	Setting
+	Setting,
+	AppCrashLogs
 } = require('./mod')
 class UniStatDataStat {
 	/**
@@ -382,11 +383,21 @@ class UniStatDataStat {
 
 		// 实时统计日志
 		const resultHourLog = new StatResult()
-		res.data.resultHourLog = await resultHourLog.cleanHourLog()
+		if(Object.keys(cleanLog.reserveDays).indexOf('resultHourLog') > -1) {
+			res.data.resultHourLog = await resultHourLog.cleanHourLog(cleanLog.reserveDays.resultHourLog)
+		} else {
+			//兼容老版本
+			res.data.resultHourLog = await resultHourLog.cleanHourLog()
+		}
 
 		//原生应用崩溃日志
 		const appCrashLogs = new AppCrashLogs()
-		res.data.appCrashLogs = await appCrashLogs.clean()
+		if(Object.keys(cleanLog.reserveDays).indexOf('appCrashLog') > -1) {
+			res.data.appCrashLogs = await appCrashLogs.clean(cleanLog.reserveDays.appCrashLog)
+		} else {
+			//兼容老版本
+			res.data.appCrashLogs = await appCrashLogs.clean()
+		}
 
 		return res
 	}

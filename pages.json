@@ -236,7 +236,7 @@
 						"enablePullDownRefresh": false
 					}
 				},
-				// #ifndef MP
+				// #ifndef MP || APP
 				{
 					"path": "error/js/js",
 					"style": {

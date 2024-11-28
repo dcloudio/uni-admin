@@ -20,6 +20,11 @@
 						@input="binddata('description', $event.detail.value)" class="uni-textarea-border"
 						v-model="formData.description"></textarea>
 				</uni-forms-item>
+				<uni-forms-item name="remark" label="应用备注">
+					<textarea :maxlength="-1" auto-height placeholder="应用备注"
+						@input="binddata('remark', $event.detail.value)" class="uni-textarea-border"
+						v-model="formData.remark"></textarea>
+				</uni-forms-item>
 			</uni-card>
 
 			<uni-card title="图标素材">
@@ -80,7 +85,7 @@
 								{{appPackageInfo.size && Number(appPackageInfo.size / 1024 / 1024).toFixed(2) + 'M'}}
 							</text>
 						</uni-forms-item>
-						<uni-forms-item :label="item === 'app_ios' ? 'AppStore' : '下载链接'">
+						<uni-forms-item :label="item === 'app_ios' ? 'AppStore 链接' : '下载链接'">
 							<uni-easyinput :maxlength="-1" v-model="formData[item].url" trim="both"></uni-easyinput>
 						</uni-forms-item>
 						<uni-forms-item v-if="item === 'app_ios'" label="获取 ABM 应用登录链接">

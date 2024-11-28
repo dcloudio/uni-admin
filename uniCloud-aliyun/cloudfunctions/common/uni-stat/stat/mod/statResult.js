@@ -2132,11 +2132,15 @@ module.exports = class StatResult extends BaseMod {
 	 * @param {Number} days 实时统计日志保留天数
 	 */
 	async cleanHourLog(days = 7) {
+		if(days === 0) {
+			return false;
+		}
+
+		days = Math.max(parseInt(days), 1)
 
 		console.log('clean hour logs - day:', days)
 
 		const dateTime = new DateTime()
-
 		const res = await this.delete(this.tableName, {
 			dimension: 'hour',
 			start_time: {

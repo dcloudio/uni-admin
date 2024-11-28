@@ -75,7 +75,7 @@ module.exports = class SessionLog extends BaseMod {
 
 		// 页面信息
 		const page = new Page()
-		const pageInfo = await page.getPageAndCreate(params.ak, params.url, params.ttpj)
+		const pageInfo = await page.getPageAndCreate(params.ak, params.url, page.getPageTitle(params))
 		if (!pageInfo || pageInfo.length === 0) {
 			return {
 				code: 300,
@@ -198,7 +198,7 @@ module.exports = class SessionLog extends BaseMod {
 	async getSession(params) {
 		// 页面信息
 		const page = new Page()
-		const pageInfo = await page.getPageAndCreate(params.ak, params.url, params.ttpj)
+		const pageInfo = await page.getPageAndCreate(params.ak, params.url, page.getPageTitle(params))
 		if (!pageInfo || pageInfo.length === 0) {
 			return {
 				code: 300,
@@ -327,16 +327,17 @@ module.exports = class SessionLog extends BaseMod {
 	 * @param {Number} days 保留天数, 留存统计需要计算30天后留存率，因此至少应保留31天的日志数据
 	 */
 	async clean(days) {
+		if(days === 0) {
+			return false;
+		}
 		days = Math.max(parseInt(days), 1)
 		console.log('clean session logs - day:', days)
-
 		const dateTime = new DateTime()
 		const res = await this.delete(this.tableName, {
 			create_time: {
 				$lt: dateTime.getTimeBySetDays(0 - days)
 			}
 		})
-
 		if (!res.code) {
 			console.log('clean session log:', res)
 		}

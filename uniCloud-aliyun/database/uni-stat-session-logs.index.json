@@ -94,5 +94,65 @@
             ],
             "MgoIsUnique": false
         }
-    }
+    },
+		{
+		    "IndexName": "duration",
+		    "MgoKeySchema": {
+		        "MgoIndexKeys": [
+		            {
+		                "Name": "duration",
+		                "Direction": "1"
+		            }
+		        ],
+		        "MgoIsUnique": false
+		    }
+		},
+		{
+			"IndexName": "old_device_id",
+			"MgoKeySchema": {
+			    "MgoIndexKeys": [
+			        {
+			            "Name": "old_device_id",
+			            "Direction": "1"
+			        }
+			    ],
+			    "MgoIsUnique": false
+			}
+		},
+		{
+			"IndexName": "is_finish",
+			"MgoKeySchema": {
+			    "MgoIndexKeys": [
+			        {
+			            "Name": "is_finish",
+			            "Direction": "1"
+			        }
+			    ],
+			    "MgoIsUnique": false
+			}
+		},
+		{
+			"IndexName": "exit_page_id",
+			"MgoKeySchema": {
+			    "MgoIndexKeys": [
+			        {
+			            "Name": "exit_page_id",
+			            "Direction": "1"
+			        }
+			    ],
+			    "MgoIsUnique": false
+			}
+		},
+		{
+			"IndexName": "entry_page_id",
+			"MgoKeySchema": {
+			    "MgoIndexKeys": [
+			        {
+			            "Name": "entry_page_id",
+			            "Direction": "1"
+			        }
+			    ],
+			    "MgoIsUnique": false
+			}
+		}
 ]

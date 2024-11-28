@@ -119,20 +119,20 @@ module.exports = class ErrorLog extends BaseMod {
 
 	/**
 	 * 错误日志清理
-	 * @param {Number} days 日志保留天数
+	 * @param {Number} days 日志保留天数, 0为永久保留
 	 */
 	async clean(days) {
+		if(days === 0) {
+			return false;
+		}
 		days = Math.max(parseInt(days), 1)
 		console.log('clean error logs - day:', days)
-
 		const dateTime = new DateTime()
-
 		const res = await this.delete(this.tableName, {
 			create_time: {
 				$lt: dateTime.getTimeBySetDays(0 - days)
 			}
 		})
-
 		if (!res.code) {
 			console.log('clean error log:', res)
 		}

@@ -42,7 +42,7 @@ module.exports = class PageDetail extends BaseMod {
 			pageDetailData = []
 			if (pageDetailInfo.data.length > 0) {
 				pageDetailData = pageDetailInfo.data[0]
-				await this.setCache(cacheKey, pageDetailInfo)
+				await this.setCache(cacheKey, pageDetailData)
 			}
 		}
 		return pageDetailData

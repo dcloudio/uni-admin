@@ -35,6 +35,7 @@ export default {
 			"store_list": [],
 			"app_android": {},
 			"app_ios": {},
+			"app_harmony": {},
 			"mp_weixin": {},
 			"mp_alipay": {},
 			"mp_baidu": {},
@@ -55,10 +56,11 @@ export default {
 			middleware_img: {},
 			middleware_checkbox: {},
 			appPackageInfo: {},
-			appPlatformKeys: Object.freeze(['app_ios', 'app_android']),
+			appPlatformKeys: Object.freeze(['app_ios', 'app_android', 'app_harmony']),
 			appPlatformValues: Object.freeze({
 				app_android: 'Android',
-				app_ios: 'iOS'
+				app_ios: 'iOS',
+				app_harmony: 'Harmony'
 			}),
 			keepItems: Object.freeze([]),
 			isEdit: false,

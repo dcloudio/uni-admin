@@ -137,7 +137,12 @@ module.exports = class EventLog extends BaseMod {
 	 * @param {Number} days 保留天数
 	 */
 	async clean(days) {
+		if(days === 0) {
+			return false;
+		}
+
 		days = Math.max(parseInt(days), 1)
+
 		console.log('clean event logs - day:', days)
 
 		const dateTime = new DateTime()

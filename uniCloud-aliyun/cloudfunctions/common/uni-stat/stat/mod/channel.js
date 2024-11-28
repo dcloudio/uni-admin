@@ -3,6 +3,7 @@
  */
 const BaseMod = require('./base')
 const Scenes = require('./scenes')
+const Platform = require('./platform')
 const {
 	DateTime
 } = require('../lib')
@@ -58,7 +59,6 @@ module.exports = class Channel extends BaseMod {
 		if (!appid || !platformId) {
 			return []
 		}
-
 		const channelInfo = await this.getChannel(appid, platformId, channel)
 		if (channelInfo.length === 0) {
 			const thisTime = new DateTime().getTime()
@@ -97,9 +97,11 @@ module.exports = class Channel extends BaseMod {
 	 */
 	getChannelCode(params) {
 		//小程序未上报渠道则使用场景值
+		const platform = new Platform()
+		const platformCode = platform.getPlatformCode(params.ut, params.p)
 		if (params.ch) {
 			return params.ch
-		} else if (params.sc && params.ut.indexOf('mp-') === 0) {
+		} else if (params.sc && platformCode.indexOf('mp-') === 0) {
 			return params.sc
 		}
 		return this.scenes.defualtCode
