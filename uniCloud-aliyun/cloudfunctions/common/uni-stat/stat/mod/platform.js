@@ -127,10 +127,15 @@ module.exports = class Platform extends BaseMod {
 			case 'lark':
 				platformCode = 'mp-lark'
 				break
+				//鸿蒙元服务
 			case 'mhm':
 				platformCode = 'mp-harmony'
 				break
-			//原生应用
+				//小红书小程序
+			case 'xhs':
+				platformCode = 'mp-xhs'
+				break
+				//原生应用
 			case 'app-android':
 				platformCode = 'android'
 				break
