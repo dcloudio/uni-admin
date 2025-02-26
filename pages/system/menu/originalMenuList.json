@@ -373,7 +373,7 @@
 		"permission": [],
 		"enable": true,
 		"menu_id": "uni-stat-error-js",
-		"name": "js报错",
+		"name": "代码错误",
 		"icon": "",
 		"url": "/pages/uni-stat/error/js/js",
 		"sort": 2171,

@@ -16,6 +16,9 @@
 		<view class="uni-stat--x">
 			<uni-stat-tabs label="平台选择" type="boldLine" mode="platform" v-model="query.platform" @change="platformChange" />
 		</view>
+		<!-- #ifdef WEB -->
+		<uni-notice-bar showGetMore showIcon class="mb-m pointer" text="若用户昵称均为匿名用户，代表用户在发起支付前没有使用uni-id进行登录，建议接入uni-id，点击查看详情" @click="toUniIdDoc" />
+		<!-- #endif -->
 
 		<unicloud-db ref="udb" :collection="collectionList" field="user_id,nickname,provider,provider_pay_type,uni_platform,status,type,order_no,out_trade_no,transaction_id,device_id,client_ip,openid,description,err_msg,total_fee,refund_fee,refund_count,refund_list,provider_appid,appid,user_order_success,create_date,pay_date,notify_date,cancel_date" :where="where" page-data="replace"
 		:orderby="orderby" :getcount="true" :page-size="options.pageSize" :page-current="options.pageCurrent"
@@ -473,6 +476,11 @@
 					url: `/pages/system/user/list?id=${user_id}`
 				});
 			},
+			toUniIdDoc() {
+				// #ifdef WEB
+				window.open("https://doc.dcloud.net.cn/uniCloud/uni-id/summary.html");
+				// #endif
+			}
 		},
 		watch: {
 			query: {
