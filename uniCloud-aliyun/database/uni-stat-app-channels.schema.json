@@ -24,7 +24,7 @@
 			"foreignKey": "uni-stat-app-platforms._id"
 		},
 		"channel_code": {
-			"bsonType": "int",
+			"bsonType": "string",
 			"description": "客户端上报的渠道代码"
 		},
 		"channel_name": {
