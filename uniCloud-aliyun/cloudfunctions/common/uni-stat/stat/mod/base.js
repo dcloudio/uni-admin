@@ -399,14 +399,14 @@ module.exports = class BaseMod {
 		useDBPre = (useDBPre !== null && useDBPre !== undefined) ? useDBPre : true
 		const query = this.getCollection(tab, useDBPre).aggregate()
 
-		//设置返回字段
-		if (project) {
-			query.project(project)
-		}
-
 		//设置匹配条件
 		if (match) {
 			query.match(match)
+		}
+
+		//设置返回字段
+		if (project) {
+			query.project(project)
 		}
 
 		//数据表关联

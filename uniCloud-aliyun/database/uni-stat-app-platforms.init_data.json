@@ -103,5 +103,12 @@
         "order":15,
         "enable":true,
         "create_time":163998979103
-    }
+    },
+		{
+		    "name":"鸿蒙元服务",
+		    "code":"mp-harmony",
+		    "order":16,
+		    "enable":true,
+		    "create_time":163998979103
+		}
 ]

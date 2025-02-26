@@ -4,16 +4,16 @@
  * Copyright (c) 2021 QIUN®秋云 https://www.ucharts.cn All rights reserved.
  * Licensed ( http://www.apache.org/licenses/LICENSE-2.0 )
  * 复制使用请保留本段注释，感谢支持开源！
- * 
+ *
  * uCharts®官方网站
  * https://www.uCharts.cn
- * 
+ *
  * 开源地址:
  * https://gitee.com/uCharts/uCharts
- * 
+ *
  * uni-app插件市场地址：
  * http://ext.dcloud.net.cn/plugin?id=271
- * 
+ *
  */
 
 // 通用配置项
@@ -44,10 +44,24 @@ const cfe = {
       	// #ifdef H5
       	result += '\n' + res[i].seriesName + '：' + value + ' 万元'
       	// #endif
-      	
+
       	// #ifdef APP-PLUS
       	result += '<br/>' + res[i].marker + res[i].seriesName + '：' + value + ' 万元'
       	// #endif
+      }
+      return result;
+    },
+		platformTooltipCustom:function(res){
+      let result = ''
+      for (let i in res) {
+      	if (i == 0) {
+      		result += res[i].axisValueLabel
+      	}
+      	let data = '--'
+      	if (res[i].data !== null) {
+      		data = res[i].data
+      	}
+      	result += '：\n' + '设备数量：'+data.value+'\n占比：'+(data.value/data.total*100).toFixed(2) +'%'
       }
       return result;
     },
@@ -65,7 +79,7 @@ const cfe = {
   "demotype":{
     "color": color,
     //在这里填写echarts的option即可
-    
+
   },
   //下面是自定义配置，请添加项目所需的通用配置
 	"column": {
