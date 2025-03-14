@@ -31,7 +31,7 @@ module.exports = class AppCrashLogs extends BaseMod {
 				version: params.v || '',
 				platform: platform.getPlatformCode(params.ut, params.p),
 				channel: channel.getChannelCode(params),
-				sdk_version: params.mpsdk || '',
+				sdk_version: params.vb || '',
 				device_id: params.did,
 				device_net: params.net || '',
 				device_os: params.os || '',
