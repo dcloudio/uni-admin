@@ -34,21 +34,24 @@ export default [{
 	field: 'active_user_count',
 	tooltip: '访问过应用内任意页面的总用户数（去重）',
 	value: 0
-}, {
+},
+{
 	title: '次均停留时长',
 	field: 'avg_user_session_time',
+	computed: 'user_duration/active_user_count',
 	formatter: ':',
 	tooltip: '平均每次打开应用停留在应用内的总时长，即应用停留总时长/启动次数',
-	value: 0,
-	stat: 'avg'
-}, {
-	title: '人均停留时长 ',
+	value: 0
+},
+{
+	title: '人均停留时长',
 	field: 'avg_user_time',
+	computed: 'user_duration/user_session_times',
 	formatter: ':',
 	tooltip: '平均每个用户停留在应用内的总时长，即应用停留总时长/活跃用户',
-	value: 0,
-	stat: 'avg'
-}, {
+	value: 0
+},
+{
 	title: '总用户数',
 	field: 'total_users',
 	tooltip: '从添加统计到当前选择时间的总用户数（去重）',
