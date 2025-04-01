@@ -17,12 +17,27 @@ const fail = {
 async function translateTCB(_fileList = []) {
 	if (!_fileList.length) return _fileList
 	// 腾讯云和阿里云下载链接不同，需要处理一下，阿里云会原样返回
-	const {
-		fileList
-	} = await uniCloud.getTempFileURL({
-		fileList: _fileList
-	});
-	return fileList.map((item, index) => item.tempFileURL ? item.tempFileURL : _fileList[index])
+  const translateUrl = []
+  const translateUrlIndex = [] // 确保处理过后位置不变
+  _fileList.forEach((item, index) => {
+    if (/^cloud:\/\//.test(url)) {
+      translateUrl.push(item)
+      translateUrlIndex.push(index)
+    }
+  })
+  if (translateUrl.length) {
+    const {
+      fileList
+    } = await uniCloud.getTempFileURL({
+      fileList: translateUrl
+    });
+    fileList.forEach((item, index) => {
+      if (item.tempFileURL) {
+        _fileList.splice(translateUrlIndex[index], 1, item.tempFileURL)
+      }
+    })
+  }
+	return _fileList
 }
 
 function hasValue(value) {
