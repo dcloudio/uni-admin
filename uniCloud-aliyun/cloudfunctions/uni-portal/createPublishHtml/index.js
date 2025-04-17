@@ -20,7 +20,7 @@ async function translateTCB(_fileList = []) {
   const translateUrl = []
   const translateUrlIndex = [] // 确保处理过后位置不变
   _fileList.forEach((item, index) => {
-    if (/^cloud:\/\//.test(url)) {
+    if (/^cloud:\/\//.test(item)) {
       translateUrl.push(item)
       translateUrlIndex.push(index)
     }
