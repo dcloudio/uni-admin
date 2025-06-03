@@ -70,5 +70,17 @@
             ],
             "MgoIsUnique": false
         }
-    }
+    },
+		{
+			"IndexName": "is_finish",
+			"MgoKeySchema": {
+			    "MgoIndexKeys": [
+			        {
+			            "Name": "is_finish",
+			            "Direction": "1"
+			        }
+			    ],
+			    "MgoIsUnique": false
+			}
+		}
 ]
