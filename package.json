@@ -18,8 +18,8 @@
 ],
   "engines": {
     "HBuilderX": "^3.6.0",
-    "uni-app": "^3.1.0",
-    "uni-app-x": "^3.1.0"
+    "uni-app": "^4.02",
+    "uni-app-x": "^4.02"
   },
   "author": "",
   "license": "MIT",
@@ -46,39 +46,39 @@
     },
     "npmurl": "",
     "type": "unicloud-template-project",
-    "darkmode": "-",
-    "i18n": "-",
-    "widescreen": "-"
+    "darkmode": "x",
+    "i18n": "√",
+    "widescreen": "√"
   },
   "uni_modules": {
     "dependencies": [],
     "encrypt": [],
     "platforms": {
       "cloud": {
-        "tcb": "y",
-        "aliyun": "y",
-        "alipay": "y"
+        "tcb": "√",
+        "aliyun": "√",
+        "alipay": "√"
       },
       "client": {
         "uni-app": {
           "vue": {
-            "vue2": "-",
-            "vue3": "-"
+            "vue2": "√",
+            "vue3": "√"
           },
           "web": {
-            "safari": "-",
-            "chrome": "-"
+            "safari": "√",
+            "chrome": "√"
           },
           "app": {
-            "vue": "-",
-            "nvue": "-",
-            "android": "-",
-            "ios": "-",
-            "harmony": "-"
+            "vue": "√",
+            "nvue": "x",
+            "android": "√",
+            "ios": "√",
+            "harmony": "√"
           },
           "mp": {
-            "weixin": "-",
-            "alipay": "-",
+            "weixin": "√",
+            "alipay": "√",
             "toutiao": "-",
             "baidu": "-",
             "kuaishou": "-",
@@ -107,10 +107,10 @@
           }
         },
         "App": {
-            "app-harmony": "u",
-            "app-nvue": "u",
-            "app-uvue": "u",
-            "app-vue": "u"
+          "app-harmony": "u",
+          "app-nvue": "u",
+          "app-uvue": "u",
+          "app-vue": "u"
         }
       }
     }
