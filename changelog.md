@@ -1,3 +1,5 @@
+## 2.5.4（2025-06-18）
+- 调整表 opendb-admin-menus、opendb-app-versions 的默认索引，使之兼容支付宝云
 ## 2.5.3（2025-06-13）
 - 优化 uni-sms-co 群发短信不需要再配置 smsKey 和 smsSecret
 ## 2.5.2（2025-06-05）
