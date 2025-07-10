@@ -4,6 +4,14 @@
 		<uni-forms ref="form" v-model="formData" validateTrigger="bind" style="max-width: 792px;"
 			:labelWidth="labelWidth" :rules="rules">
 			<uni-card title="基础信息">
+				<uni-forms-item name="app_type" label="应用类型" required>
+					<uni-data-select
+						v-model="formData.app_type"
+						:localdata="appTypeOptions"
+						placeholder="请选择应用类型"
+						:clear="false">
+					</uni-data-select>
+				</uni-forms-item>
 				<uni-forms-item class="forn-item__flex" name="appid" label="AppID" required>
 					<uni-easyinput :disabled="isEdit" placeholder="应用的AppID" v-model="formData.appid" trim="both">
 					</uni-easyinput>
@@ -225,7 +233,12 @@
 				mpAccordionStatus: 1,
 				// 标签宽度，默认为'80px'
 				labelWidth: '80px',
-				uniFilePickerProvider: 'unicloud'
+				uniFilePickerProvider: 'unicloud',
+				// 应用类型选项
+				appTypeOptions: [
+					{ value: 0, text: 'uni-app' },
+					{ value: 1, text: 'uni-app x' }
+				]
 			}
 		},
 		/**

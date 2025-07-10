@@ -22,7 +22,7 @@
 			</view>
 		</view>
 		<view class="uni-container">
-			<unicloud-db ref="udb" collection="opendb-app-list" field="appid,name,description,remark,create_date"
+			<unicloud-db ref="udb" collection="opendb-app-list" field="appid,app_type,name,description,remark,create_date"
 				:where="where" page-data="replace" :orderby="orderby" :getcount="true" :page-size="options.pageSize"
 				:page-current="options.pageCurrent" v-slot:default="{data,pagination,loading,error,options}"
 				:options="options" loadtime="manual" @load="onqueryload">
@@ -32,6 +32,8 @@
 					<uni-tr>
 						<uni-th align="center" filter-type="search" @filter-change="filterChange($event, 'appid')"
 							sortable @sort-change="sortChange($event, 'appid')">AppID</uni-th>
+						<uni-th align="center" filter-type="select" :filter-data="appTypeData" @filter-change="filterChange($event, 'app_type')"
+							sortable @sort-change="sortChange($event, 'app_type')">应用类型</uni-th>
 						<uni-th align="center" filter-type="search" @filter-change="filterChange($event, 'name')"
 							sortable @sort-change="sortChange($event, 'name')">应用名称</uni-th>
 						<uni-th align="center" filter-type="search" @filter-change="filterChange($event, 'description')"
@@ -45,6 +47,7 @@
 					</uni-tr>
 					<uni-tr v-for="(item,index) in data" :key="index" :disabled="item.appid === appid">
 						<uni-td align="center">{{item.appid}}</uni-td>
+						<uni-td align="center">{{ getAppType(item.app_type) }}</uni-td>
 						<uni-td align="center">{{item.name}}</uni-td>
 						<uni-td align="left"><text>{{item.description || '-'}}</text></uni-td>
 						<uni-td align="left"><text>{{item.remark || '-'}}</text></uni-td>
@@ -128,6 +131,7 @@
 					"type": "xls",
 					"fields": {
 						"AppID": "appid",
+						"应用类型": "app_type",
 						"应用名称": "name",
 						"应用描述": "description",
 						"创建时间": "create_date"
@@ -136,7 +140,17 @@
 				exportExcelData: [],
 				addAppidLoading: true,
 				descriptionThWidth: 380,
-				buttonThWidth: 400
+				buttonThWidth: 400,
+				appTypeData: [
+					{
+						text: 'uni-app',
+						value: 0
+					},
+					{
+						text: 'uni-app x',
+						value: 1
+					}
+				]
 			}
 		},
 		onLoad() {
@@ -160,6 +174,7 @@
 				if (!data.find(item => item.appid === this.appid)) {
 					this.addCurrentAppid({
 						appid: this.appid,
+						app_type: 0,
 						name: this.appName,
 						description: "admin 管理后台"
 					})
@@ -285,6 +300,10 @@
 				uni.navigateTo({
 					url: '/pages/system/app/uni-portal/uni-portal?id=' + id
 				})
+			},
+			getAppType(app_type = 0) {
+				const data = ["uni-app", "uni-app x"];
+				return data[app_type] || "未知类型";
 			}
 		}
 	}
