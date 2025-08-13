@@ -86,9 +86,7 @@
 		},
 		created() {
 			if (this.hasLocalData(this.localdata)) return
-			// #ifndef H5
 			this.load()
-			// #endif
 		},
 		// computed:{
 		// 	userMenu() {
