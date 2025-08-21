@@ -175,14 +175,13 @@
 				let index = typeof e === 'object' ? e.detail.value : e
 				if (!index || index < 0) index = 0;
 				const lang = this.langs[index].lang || 'zh-Hans'
-				const platform = uni.getSystemInfoSync().platform
-				if (platform === 'android') {
+				if (!this.$i18n) {
 					uni.showToast({
 						icon: 'error',
 						title: '暂不支持',
 						duration: 2000
 					})
-					return
+					return;
 				}
 				this.$i18n.locale = lang
 				this.langIndex = index;
