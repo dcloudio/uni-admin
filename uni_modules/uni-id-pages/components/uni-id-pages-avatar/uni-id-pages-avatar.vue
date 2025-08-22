@@ -47,7 +47,7 @@
 		},
 		async mounted() {
 			// #ifdef H5
-			this.isPC = !['ios', 'android'].includes(uni.getSystemInfoSync().platform);
+			this.isPC = !(['ios', 'android'].includes(uni.getSystemInfoSync().platform) || ['harmonyos'].includes(uni.getSystemInfoSync().osName));
 			// #endif
 		},
 		computed: {
