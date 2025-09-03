@@ -219,12 +219,12 @@ $error-key: 'error';
 	$tag-type-color: getTheme(#{$tag-type + '-color'});
 	.uni-tag {
 		&--#{$tag-type} {
+			background-color: $tag-type-color !important;
+			border-color: $tag-type-color !important;
 			&--inverted {
 				background-color: #fff !important;
 				color: $tag-type-color !important;
 			}
-			background-color: $tag-type-color !important;
-			border-color: $tag-type-color !important;
 		}
 	}
 }
