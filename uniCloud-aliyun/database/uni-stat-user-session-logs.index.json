@@ -5,7 +5,8 @@
             "MgoIndexKeys": [
                 {
                     "Name": "create_time",
-                    "Direction": "1"
+                    "Direction": "1",
+										"Type": "long"
                 }
             ],
             "MgoIsUnique": false
@@ -77,7 +78,8 @@
 			    "MgoIndexKeys": [
 			        {
 			            "Name": "is_finish",
-			            "Direction": "1"
+			            "Direction": "1",
+									"Type": "int"
 			        }
 			    ],
 			    "MgoIsUnique": false

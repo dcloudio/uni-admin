@@ -41,7 +41,8 @@
             "MgoIndexKeys": [
                 {
                     "Name": "create_date",
-                    "Direction": "1"
+                    "Direction": "1",
+										"Type": "long"
                 }
             ],
             "MgoIsUnique": false
@@ -53,7 +54,8 @@
             "MgoIndexKeys": [
                 {
                     "Name": "pay_date",
-                    "Direction": "1"
+                    "Direction": "1",
+										"Type": "long"
                 }
             ],
             "MgoIsUnique": false
@@ -65,7 +67,8 @@
             "MgoIndexKeys": [
                 {
                     "Name": "total_fee",
-                    "Direction": "1"
+                    "Direction": "1",
+										"Type": "int"
                 }
             ],
             "MgoIsUnique": false
