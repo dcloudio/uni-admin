@@ -221,10 +221,10 @@ $error-key: 'error';
 		&--#{$tag-type} {
 			background-color: $tag-type-color !important;
 			border-color: $tag-type-color !important;
-			&--inverted {
-				background-color: #fff !important;
-				color: $tag-type-color !important;
-			}
+		}
+		&--#{$tag-type}--inverted {
+			background-color: #fff !important;
+			color: $tag-type-color !important;
 		}
 	}
 }
