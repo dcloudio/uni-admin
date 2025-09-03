@@ -22,6 +22,16 @@ const validator = {
 		],
 		"label": "应用名称"
 	},
+	"app_type": {
+		"rules": [{
+				"required": true
+			},
+			{
+				"format": "int"
+			}
+		],
+		"label": "应用类型"
+	},
 	"icon_url": {
 		"rules": [{
 			"format": "string"

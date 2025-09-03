@@ -501,7 +501,9 @@
 	"uniIdRouter": {
 		"loginPage": "uni_modules/uni-id-pages/pages/login/login-withpwd",
 		"needLogin": [
-			"^((?!uni-id-pages\/pages\/login|register|retrieve).)*$"
+			"^pages/uni-stat/*$",
+			"^pages/system/*$",
+			"^pages/index/*$"
 		],
 		"resToLogin": true
 	}

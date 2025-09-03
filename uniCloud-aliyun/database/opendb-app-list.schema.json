@@ -25,6 +25,21 @@
 							}
 					}
 			},
+			"app_type": {
+				"bsonType": "int",
+				"defaultValue": 0,
+				"description": "应用类型，0：uni-app 1：uni-app x",
+				"enum": [{
+						"text": "uni-app",
+						"value": 0
+					},
+					{
+						"text": "uni-app x",
+						"value": 1
+					}
+				],
+				"title": "应用类型"
+			},
 			"name": {
 					"bsonType": "string",
 					"description": "应用名称",

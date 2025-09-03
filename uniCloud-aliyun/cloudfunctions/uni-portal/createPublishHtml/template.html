@@ -147,37 +147,37 @@
             <p class="app-tip">扫码获取</p>
             <div class="pc-download" id="pc_download">
               <!-- PC 下载安卓 -->
-              {@if !android_url@}
-              <p class="download-tip"><span class="os-name">Android</span>平台尚未发布，敬请期待~</p>
-              {@/if@}
               {@if android_url@}
               <a href="{@android_url@}" class="btn btn-download android" type="button">
                 <span class="icon icon-android publish_iconfont">&#xe616;</span>
-                <span>Android平台下载</span>
+                <span>Android 平台下载</span>
               </a>
               {@/if@}
-              <!-- PC 下载鸿蒙 -->
-              {@if !harmony_url@}
-              <p class="download-tip"><span class="os-name">HarmonyOS Next </span>平台尚未发布，敬请期待~</p>
-              {@/if@}
-              {@if harmony_url@}
-              <p>请使用 HarmonyOS Next 设备扫码下载</p>
-              {@/if@}
               <!-- PC 下载 iOS -->
-              {@if !ios_url && !ios_abm_url@}
-              <p class="download-tip"><span class="os-name">iOS</span>平台尚未发布，敬请期待~</p>
-              {@/if@}
               {@if ios_url@}
               <a href="{@ios_url@}" class="btn btn-download ios" type="button">
                 <span class="icon icon-ios publish_iconfont">&#xe61f;</span>
-                <span>iOS平台下载</span>
+                <span>iOS 平台下载</span>
               </a>
               {@/if@}
               <!-- PC iOS 企业分发 APP 提示 -->
               {@if ios_abm_url@}
-              <p class="ios_abm_tip show"><span class="os-name">iOS</span>平台分发 ABM 应用，请使用 iPhone 扫码获取</p>
+              <p class="ios_abm_tip show"><span class="os-name">iOS</span> 平台分发 ABM 应用，请使用 iPhone 扫码获取</p>
               <a class="ios_abm_btn hide" style="display: inline-block; width:260px;" href="javascript:;">获取
                 ABM 应用</a>
+              {@/if@}
+              <!-- PC 下载鸿蒙 -->
+              {@if harmony_url@}
+              <p>鸿蒙 App 仅支持 HarmonyOS Next 设备扫码下载</p>
+              {@/if@}
+              {@if !android_url@}
+              <p class="download-tip"><span class="os-name">Android</span>平台尚未发布，敬请期待~</p>
+              {@/if@}
+              {@if !harmony_url@}
+              <p class="download-tip"><span class="os-name">HarmonyOS Next </span>平台尚未发布，敬请期待~</p>
+              {@/if@}
+              {@if !ios_url && !ios_abm_url@}
+              <p class="download-tip"><span class="os-name">iOS</span>平台尚未发布，敬请期待~</p>
               {@/if@}
             </div>
           </div>
