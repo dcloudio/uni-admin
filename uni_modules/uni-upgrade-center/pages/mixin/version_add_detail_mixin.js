@@ -211,7 +211,11 @@ export default {
 				stable_publish: false
 			}
 		},
-		toUrl(url){
+		async toUrl(url){
+			if (/^cloud:\/\//.test(url)) {
+				const tcbRes = await uniCloud.getTempFileURL({ fileList: [url] });
+				if (typeof tcbRes.fileList[0].tempFileURL !== 'undefined') url = tcbRes.fileList[0].tempFileURL;
+			}
 			// #ifdef H5
 			window.open(url);
 			// #endif
