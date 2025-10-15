@@ -5,7 +5,8 @@
             "MgoIndexKeys": [
                 {
                     "Name": "create_time",
-                    "Direction": "1"
+                    "Direction": "1",
+										"Type": "long"
                 }
             ],
             "MgoIsUnique": false
@@ -89,7 +90,8 @@
             "MgoIndexKeys": [
                 {
                     "Name": "previous_page_is_entry",
-                    "Direction": "1"
+                    "Direction": "1",
+										"Type": "int"
                 }
             ],
             "MgoIsUnique": false
@@ -137,7 +139,8 @@
 		        "MgoIndexKeys": [
 		            {
 		                "Name": "previous_page_duration",
-		                "Direction": "1"
+		                "Direction": "1",
+										"Type": "int"
 		            }
 		        ],
 		        "MgoIsUnique": false

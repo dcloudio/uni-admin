@@ -31,12 +31,41 @@
 				</view>
 				<!-- #endif -->
 
-				<picker class="navbar-right-item-gap" mode="selector" :range="themes" range-key="text" :value="themeIndex" @change="changeTheme">
-					<uni-icons type="color-filled" size="24" color="#999" />
-				</picker>
-				<picker class="navbar-right-item-gap" mode="selector" :range="langs" range-key="text" @change="changeLanguage" :value="langIndex">
-					<view class="admin-icons-lang" />
-				</picker>
+				<!-- 主题选择器 -->
+				<view class="navbar-right-item-gap" style="position: relative;" :class="{'popup-menu': themeMenuOpened}">
+					<view class="theme-selector" @click="toggleThemeMenu">
+						<uni-icons type="color-filled" size="24" color="#999" />
+						<uni-icons class="arrowdown" type="arrowdown" color="#666" size="13"></uni-icons>
+					</view>
+					<view class="uni-mask" @click="closeThemeMenu" />
+					<view class="theme-menu" :class="{ 'show': themeMenuOpened }">
+						<view v-for="(theme, index) in themes" :key="index"
+							class="menu-item hover-highlight"
+							:class="{ 'active': themeIndex === index }"
+							@click="changeTheme(index)">
+							<text>{{ theme.text }}</text>
+						</view>
+						<view class="popup-menu__arrow"></view>
+					</view>
+				</view>
+
+				<!-- 语言选择器 -->
+				<view class="navbar-right-item-gap" style="position: relative;" :class="{'popup-menu': langMenuOpened}">
+					<view class="lang-selector" @click="toggleLangMenu">
+						<view class="admin-icons-lang" />
+						<uni-icons class="arrowdown" type="arrowdown" color="#666" size="13"></uni-icons>
+					</view>
+					<view class="uni-mask" @click="closeLangMenu" />
+					<view class="lang-menu" :class="{ 'show': langMenuOpened }">
+						<view v-for="(lang, index) in langs" :key="index"
+							class="menu-item hover-highlight"
+							:class="{ 'active': langIndex === index }"
+							@click="changeLanguage(index)">
+							<text>{{ lang.text }}</text>
+						</view>
+						<view class="popup-menu__arrow"></view>
+					</view>
+				</view>
 
 				<view class="" style="position: relative;">
 					<view v-show="userInfo.nickname || userInfo.username || userInfo.mobile || userInfo.email" class="navbar-user" @click="togglePopupMenu">
@@ -103,6 +132,8 @@
 			return {
 				...config.navBar,
 				popupMenuOpened: false,
+				themeMenuOpened: false,
+				langMenuOpened: false,
 				mpCapsule: 0,
 				langIndex:0
 			}
@@ -164,6 +195,33 @@
 			},
 			togglePopupMenu() {
 				this.popupMenuOpened = !this.popupMenuOpened
+				// 关闭其他菜单
+				if (this.popupMenuOpened) {
+					this.themeMenuOpened = false
+					this.langMenuOpened = false
+				}
+			},
+			toggleThemeMenu() {
+				this.themeMenuOpened = !this.themeMenuOpened
+				// 关闭其他菜单
+				if (this.themeMenuOpened) {
+					this.popupMenuOpened = false
+					this.langMenuOpened = false
+				}
+			},
+			toggleLangMenu() {
+				this.langMenuOpened = !this.langMenuOpened
+				// 关闭其他菜单
+				if (this.langMenuOpened) {
+					this.popupMenuOpened = false
+					this.themeMenuOpened = false
+				}
+			},
+			closeThemeMenu() {
+				this.themeMenuOpened = false
+			},
+			closeLangMenu() {
+				this.langMenuOpened = false
 			},
 			changePassword() {
 				uni.navigateTo({
@@ -173,21 +231,20 @@
 					}
 				})
 			},
-			changeLanguage(e) {
-				let index = typeof e === 'object' ? e.detail.value : e
+			changeLanguage(index) {
 				if (!index || index < 0) index = 0;
 				const lang = this.langs[index].lang || 'zh-Hans'
-				const platform = uni.getSystemInfoSync().platform
-				if (platform === 'android') {
+				if (!this.$i18n) {
 					uni.showToast({
 						icon: 'error',
 						title: '暂不支持',
 						duration: 2000
 					})
-					return
+					return;
 				}
 				this.$i18n.locale = lang
 				this.langIndex = index;
+				this.langMenuOpened = false;
 				uni.setLocale(lang)
 			},
 			linkTo() {
@@ -195,10 +252,10 @@
 					url: '/'
 				})
 			},
-			changeTheme(e) {
-				const index = typeof e === 'object' ? e.detail.value : e
+			changeTheme(index) {
 				const theme = this.themes[index].value || 'default'
 				if(this.theme !== theme) this.SET_THEME(theme)
+				this.themeMenuOpened = false;
 			}
 		}
 	}
@@ -375,7 +432,9 @@
 	.navbar-middle,
 	// .navbar-user,
 	.popup-menu__arrow,
-	.navbar-right .uni-mask {
+	.navbar-right .uni-mask,
+	.theme-menu,
+	.lang-menu {
 		display: none;
 	}
 
@@ -431,6 +490,22 @@
 		display: block;
 	}
 
+	/* 主题和语言菜单的遮罩层显示 */
+	.popup-menu .uni-mask {
+		display: block;
+	}
+
+	/* 主题和语言菜单在小屏时显示 */
+	.theme-menu.show,
+	.lang-menu.show {
+		display: flex;
+	}
+
+	.theme-menu.show .popup-menu__arrow,
+	.lang-menu.show .popup-menu__arrow {
+		display: block;
+	}
+
 	.hover-highlight:hover {
 		color: $menu-text-color-actived;
 	}
@@ -463,4 +538,86 @@
 	.user-icon {
 		font-size: 20px;
 	}
+
+	// 主题和语言选择器样式
+	.theme-selector,
+	.lang-selector {
+		display: flex;
+		align-items: center;
+		cursor: pointer;
+		padding: 5px;
+		border-radius: 4px;
+		transition: background-color 0.2s;
+
+		&:hover {
+			background-color: rgba(0, 0, 0, 0.05);
+		}
+
+		.arrowdown {
+			margin-top: 4px;
+			margin-left: 3px;
+		}
+	}
+
+	.theme-menu,
+	.lang-menu {
+		width: 100px;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+		position: absolute;
+		right: 0;
+		top: 27px;
+		background-color: #fff;
+		z-index: 999;
+		padding: 10px 0;
+		border: 1px solid #ebeef5;
+		border-radius: 4px;
+		box-shadow: 0 6px 12px 0 rgba(0, 0, 0, .5);
+		display: none;
+
+		.menu-item {
+			padding: 8px;
+			font-size: 16px;
+			color: #555;
+			line-height: 1;
+			cursor: pointer;
+			transition: background-color 0.2s;
+
+			&.active {
+				color: #1890ff;
+			}
+
+			&:hover {
+				color: #1890ff;
+			}
+		}
+
+		.popup-menu__arrow {
+			position: absolute;
+			top: -6px;
+			right: 20px;
+			border-width: 6px;
+			margin-right: 3px;
+			border-top-width: 0;
+			border-bottom-color: #ebeef5;
+			filter: drop-shadow(0 6px 12px rgba(0, 0, 0, .1));
+		}
+
+		.popup-menu__arrow::after {
+			content: " ";
+			position: absolute;
+			display: block;
+			width: 0;
+			height: 0;
+			border-color: transparent;
+			border-style: solid;
+			border-width: 10px;
+			top: 1px;
+			margin-left: -10px;
+			border-top-width: 0;
+			border-bottom-color: #fff;
+		}
+	}
+
 </style>

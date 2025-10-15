@@ -48,12 +48,14 @@ export default [{
 }, {
 	title: '次均停留时长',
 	field: 'avg_device_session_time',
+	computed: 'duration/app_launch_count',
 	formatter: ':',
 	tooltip: '平均每次打开应用停留在应用内的总时长，即应用停留总时长/启动次数',
 	value: 0
 }, {
 	title: '设备平均停留时长 ',
 	field: 'avg_device_time',
+	computed: 'duration/active_device_count',
 	formatter: ':',
 	tooltip: '平均每个设备停留在应用内的总时长，即应用停留总时长/活跃设备',
 	value: 0

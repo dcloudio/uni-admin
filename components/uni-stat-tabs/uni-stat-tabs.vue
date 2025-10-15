@@ -6,27 +6,47 @@
 				:class="[`uni-stat--tab-item-${type}`]">
 				{{placeholder}}
 			</view>
-			<view v-else v-for="(item, index) in renderTabs" :key="index" @click="change(item, index)"
-				class="uni-stat--tab-item" :class="[
-					index === currentTab ? `uni-stat--tab-item-${type}-active` : '' , `uni-stat--tab-item-${type}`,
-					item.disabled ? 'uni-stat--tab-item-disabled' : ''
-				]">
-				<!-- #ifdef MP -->
-				{{item.name}}
-				<!-- #endif -->
-				<!-- #ifndef MP -->
-				<uni-tooltip>
-					{{item.name}}
-					<uni-icons v-if="item.tooltip" type="help" color="#666" />
-					<template v-if="item.tooltip" v-slot:content>
-						<view class="uni-stat-tooltip-s">
-							{{item.tooltip}}
-						</view>
-					</template>
-				</uni-tooltip>
-				<!-- #endif -->
-			</view>
+			<template v-else>
 
+				<template v-for="(item, index) in renderTabs">
+					<view v-if="item.enable"  :key="index" @click="change(item, index)"
+						class="uni-stat--tab-item" :class="[
+							index === currentTab ? `uni-stat--tab-item-${type}-active` : '' , `uni-stat--tab-item-${type}`,
+							item.disabled ? 'uni-stat--tab-item-disabled' : ''
+						]">
+						<!-- #ifdef MP -->
+						{{item.name}}
+						<!-- #endif -->
+						<!-- #ifndef MP -->
+						<uni-tooltip>
+							{{item.name}}
+							<uni-icons v-if="item.tooltip" type="help" color="#666" />
+							<template v-if="item.tooltip" v-slot:content>
+								<view class="uni-stat-tooltip-s">
+									{{item.tooltip}}
+								</view>
+							</template>
+						</uni-tooltip>
+						<!-- #endif -->
+					</view>
+				</template>
+
+			</template>
+
+		</view>
+		<view v-if="costom" class="costom-box">
+			<view class="coston-inner">
+				<button class="uni-btn" size="mini" type="primary">自定义平台</button>
+				<view class="costom-dialog">
+					<view class="costom-dialog-inner">
+						<uni-data-checkbox multiple v-model="customCheck" :map="{text:'name',value:'code'}	" :localdata="costomList" mode="list"></uni-data-checkbox>
+						<view class="costom-dialog-bottom">
+							<button class="uni-btn" size="mini" >取消</button>
+							<button class="uni-btn" size="mini" type="primary">确定</button>
+						</view>
+					</view>
+				</view>
+			</view>
 		</view>
 	</view>
 
@@ -39,7 +59,12 @@
 			return {
 				currentTab: 0,
 				renderTabs: [],
-				cacheKey: "uni-admin-statTabsData"
+				cacheKey: "uni-admin-statTabsData",
+				customCheck:[],
+				costomList:[{
+					"value": 0,
+					"text": "微信小程序",
+				}]
 			};
 		},
 		props: {
@@ -96,6 +121,10 @@
 				default: () => {
 					return []
 				}
+			},
+			costom: {
+				type: Boolean,
+				default: false
 			}
 		},
 		created() {
@@ -204,6 +233,13 @@
 						}
 						this.setCache(platforms);
 						this.renderTabs = platforms
+						this.costomList = []
+						this.renderTabs.forEach(item=>{
+							if(item.name !== '全部') {
+								this.costomList.push(item)
+							}
+						})
+						console.log(this.costomList);
 					})
 			},
 			setAllItem(platforms, _id = '', name = '全部') {
@@ -269,7 +305,6 @@
 	.uni-stat {
 
 		&--tab {
-
 			&-item {
 				white-space: nowrap;
 				font-size: 14px;
@@ -355,7 +390,63 @@
 			display: none;
 		}
 		/* #endif */
+
 	}
 
 	/* #endif */
+
+
+	.costom-box {
+		display:flex;
+		align-items: center;
+		margin-left: 20px;
+		height: auto;
+		width: auto;
+		.coston-inner {
+			position: relative;
+			.costom-dialog {
+				position: absolute;
+				top: 40px;
+				right: 0;
+				border: 1px #eee solid;
+				box-sizing: border-box;
+				width: 200px;
+				border-radius: 5px;
+				background-color: #fff;
+				box-shadow: 0 0 5px 0px rgba(0, 0, 0, 0.1);
+
+				// z-index: 10;
+				&::before {
+					content: '';
+					position: absolute;
+					right: 40px;
+					top: -5px;
+					width: 10px;
+					height: 10px;
+					transform: rotate(45deg);
+					// border: 1px red solid;
+					z-index: 0;
+					background-color: #fff;
+					box-shadow: 0 0 5px 1px rgba(0, 0, 0, 0.1);
+				}
+				.costom-dialog-inner {
+					position: relative;
+					padding: 15px;
+					width: 100%;
+					height: 100%;
+					background-color: #fff;
+					box-sizing: border-box;
+					z-index: 2;
+				}
+				.costom-dialog-bottom {
+					margin-top: 20px;
+					display: flex;
+					align-items: center;
+				}
+			}
+		}
+	}
+
+
+
 </style>

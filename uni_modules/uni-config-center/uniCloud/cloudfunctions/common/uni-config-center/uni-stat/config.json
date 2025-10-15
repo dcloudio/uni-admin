@@ -96,7 +96,7 @@
 			"eventLog": 7,
 			"shareLog": 7,
 			"errorLog": 7,
-			"resultHourLog": 7,
+			"resultHourLog": 30,
 			"appCrashLog": 7
 		}
 	}

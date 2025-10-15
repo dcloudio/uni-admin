@@ -5,7 +5,8 @@
             "MgoIndexKeys": [
                 {
                     "Name": "create_time",
-                    "Direction": "1"
+                    "Direction": "1",
+										"Type": "long"
                 }
             ],
             "MgoIsUnique": false
@@ -89,7 +90,8 @@
             "MgoIndexKeys": [
                 {
                     "Name": "is_new",
-                    "Direction": "1"
+                    "Direction": "1",
+										"Type": "int"
                 }
             ],
             "MgoIsUnique": false

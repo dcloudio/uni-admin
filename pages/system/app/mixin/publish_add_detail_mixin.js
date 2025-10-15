@@ -27,6 +27,7 @@ export default {
 		let formData = {
 			"appid": "",
 			"name": "",
+			"app_type": 0,
 			"icon_url": "",
 			"introduction": "",
 			"alias": "",
@@ -160,7 +161,7 @@ export default {
 					this.getPlatformChcekbox(key) &&
 					(this.formData[key].url || this.formData[key].abm_url || this.formData[key].qrcode_url)
 				)
-				.concat(['icon_url', 'screenshot', 'create_date', 'store_list'])
+				.concat(['icon_url', 'screenshot', 'create_date', 'store_list', 'app_type'])
 
 			if (this.formData.h5 && this.formData.h5.url)
 				this.keepItems.push('h5');

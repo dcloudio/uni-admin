@@ -5,7 +5,8 @@
             "MgoIndexKeys": [
                 {
                     "Name": "start_time",
-                    "Direction": "1"
+                    "Direction": "1",
+										"Type": "long"
                 }
             ],
             "MgoIsUnique": false
@@ -77,7 +78,8 @@
 		        "MgoIndexKeys": [
 		            {
 		                "Name": "entry_count",
-		                "Direction": "1"
+		                "Direction": "1",
+										"Type": "int"
 		            }
 		        ],
 		        "MgoIsUnique": false
@@ -89,7 +91,8 @@
 		        "MgoIndexKeys": [
 		            {
 		                "Name": "visit_times",
-		                "Direction": "1"
+		                "Direction": "1",
+										"Type": "int"
 		            }
 		        ],
 		        "MgoIsUnique": false

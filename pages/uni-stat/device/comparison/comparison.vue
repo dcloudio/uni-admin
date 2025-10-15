@@ -21,9 +21,11 @@
 				</view>
 			</view>
 			<view class="dispaly-grid">
-				<view v-for="(item,index) in chartsData" :key="index" class="uni-stat--x uni-charts-box1">
-					<view class="label-text" style="margin: 5px 0 20px 0;">{{chartsData[index].title}}</view>
-					<qiun-data-charts type="ring" :chartData="chartsData[index]" echartsH5 echartsApp :errorMessage="errorMessage"/>
+				<view v-for="(item,index) in chartsData" :key="index" class="uni-stat--x uni-charts-box1 charts-box">
+					<view class="label-text" style="padding: 5px 0 20px 0;">{{chartsData[index].title}}</view>
+					<view style="flex:1;">
+						<qiun-data-charts type="column" :eopts="eopts" :chartData="chartsData[index]"  echartsH5 echartsApp tooltipFormat="platformTooltipCustom" :errorMessage="errorMessage"/>
+					</view>
 				</view>
 			</view>
 
@@ -47,6 +49,33 @@
 	export default {
 		data() {
 			return {
+				eopts:{
+					// color: ["#91CB74","#1890FF","#FAC858","#EE6666","#73C0DE","#3CA272","#FC8452","#9A60B4","#ea7ccc"],
+					grid:{
+						left: 100,
+						right: 100,
+						bottom:50
+					},
+					xAxis:{
+						boundaryGap: true,
+						axisTick:{
+							alignWithLabel:true,
+							interval:0
+						},
+						axisLabel :{
+							interval:0,
+							 rotate:-30,
+							 align:'left'
+						}
+
+					},
+					extra: {
+						column: {
+							type:'group',
+							width: 120,
+						}
+					}
+				},
 				query: {
 					dimension: "day",
 					appid: '',
@@ -165,6 +194,7 @@
 
 					if (type === 'day') {
 						options.unshift({
+							type:"",
 							field: `day_total_devices`,
 							title: `总设备数对比`,
 							series: [{
@@ -176,22 +206,28 @@
 					this[goal] = options
 					const platformsData = res.result.data
 					const platforms = {}
+					let categories = []
 					platformsData.forEach(p => {
 						platforms[p._id] = p.name
+						categories.push(p.name)
 					})
 
 					for (const chart of this[goal]) {
-						const pie = chart.series[0].data
+						let pie = chart.series[0].data
+						chart.categories = categories
 						const p = JSON.parse(JSON.stringify(platforms))
+						let total = 0
+						let tableList = []
 						for (const item of data) {
 							for (const key in item) {
 								if (chart.field === key) {
 									const id = item.platform_id
 									const slice = {
 										name: p[id],
-										value: item[key]
+										value: item[key],
 									}
-									pie.push(slice)
+									total += item[key]
+									tableList.push(slice)
 									delete p[id]
 								}
 							}
@@ -201,8 +237,18 @@
 								name: p[key],
 								value: 0
 							}
-							pie.push(slice)
+							tableList.push(slice)
 						}
+						// 计算总数
+						tableList.map(item=>{
+							item.total = total
+							return item
+						})
+
+						categories.forEach(v=>{
+							const item  = tableList.find(i=>i.name === v)
+							chart.series[0].data.push(item)
+						})
 					}
 				})
 			}
@@ -216,5 +262,10 @@
 	.uni-charts-box1 {
 		padding: 10px;
 		height: 420px;
+	}
+
+	.charts-box {
+		display: flex;
+		flex-direction: column;
 	}
 </style>

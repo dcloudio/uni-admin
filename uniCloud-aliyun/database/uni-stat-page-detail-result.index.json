@@ -5,7 +5,8 @@
             "MgoIndexKeys": [
                 {
                     "Name": "start_time",
-                    "Direction": "1"
+                    "Direction": "1",
+										"Type": "long"
                 }
             ],
             "MgoIsUnique": false

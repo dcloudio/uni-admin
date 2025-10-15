@@ -306,7 +306,7 @@ export default {
 									this.$refs.smsPopup.close()
 								} else {
 									// #ifdef H5
-									window.open('https://dev.dcloud.net.cn/#/pages/sms/sendLog', '_blank')
+									window.open('https://unicloud.dcloud.net.cn/pages/uni-sms/send-record', '_blank')
 									// #endif
 									// ifndef H5
 									this.reset()

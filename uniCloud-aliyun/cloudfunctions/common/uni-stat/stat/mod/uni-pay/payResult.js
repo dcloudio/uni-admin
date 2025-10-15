@@ -116,7 +116,8 @@ module.exports = class PayResult extends BaseMod {
 		let debug = this.debug;
 		if (debug) {
 			console.log(`-----------------支付统计开始（${dimension}）-----------------`);
-			console.log('本次统计时间：', dateTime.getDate('Y-m-d H:i:s', start_time), "-", dateTime.getDate('Y-m-d H:i:s', end_time))
+			console.log('本次统计时间：', dateTime.getDate('Y-m-d H:i:s', start_time), "-", dateTime.getDate('Y-m-d H:i:s',
+				end_time))
 			console.log('本次统计参数：', 'type:' + type, 'date:' + date, 'reset:' + reset)
 		}
 		this.startTime = start_time;
@@ -132,18 +133,18 @@ module.exports = class PayResult extends BaseMod {
 			// 调用 dao.uniStatPayResult.list 方法获取列表
 			let list = await dao.uniStatPayResult.list({
 				whereJson: {
-					...pubWhere,  // 使用 pubWhere 对象的属性作为查询条件
-					dimension  // 使用 dimension 变量作为查询条件
+					...pubWhere, // 使用 pubWhere 对象的属性作为查询条件
+					dimension // 使用 dimension 变量作为查询条件
 				}
 			});
 			// 如果列表长度大于0
 			if (list.length > 0) {
-				console.log('data have exists');  // 输出数据已存在的提示信息
+				console.log('data have exists'); // 输出数据已存在的提示信息
 				// 如果 debug 为 true
 				if (debug) {
 					let runEndTime = Date.now();
-					console.log(`耗时：${((runEndTime - runStartTime ) / 1000).toFixed(3)} 秒`);  // 输出耗时信息
-					console.log(`-----------------支付统计结束（${dimension}）-----------------`);  // 输出支付统计结束信息
+					console.log(`耗时：${((runEndTime - runStartTime ) / 1000).toFixed(3)} 秒`); // 输出耗时信息
+					console.log(`-----------------支付统计结束（${dimension}）-----------------`); // 输出支付统计结束信息
 				}
 				// 返回一个对象，包含 code 和 msg 属性
 				return {
@@ -156,11 +157,11 @@ module.exports = class PayResult extends BaseMod {
 			// 调用 dao.uniStatPayResult.del 方法删除数据
 			let delRes = await dao.uniStatPayResult.del({
 				whereJson: {
-					...pubWhere,  // 使用 pubWhere 对象的属性作为删除条件
-					dimension  // 使用 dimension 变量作为删除条件
+					...pubWhere, // 使用 pubWhere 对象的属性作为删除条件
+					dimension // 使用 dimension 变量作为删除条件
 				}
 			});
-			if (debug) console.log('Delete old data result:', JSON.stringify(delRes));  // 输出删除数据的结果
+			if (debug) console.log('Delete old data result:', JSON.stringify(delRes)); // 输出删除数据的结果
 		}
 
 		// 支付订单分组（已下单）
@@ -189,31 +190,34 @@ module.exports = class PayResult extends BaseMod {
 			// 如果 statPayOrdersList 的长度大于0
 			// 遍历 statPayOrdersList 列表
 			for (let i = 0; i < statPayOrdersList.length; i++) {
-				let item = statPayOrdersList[i];  // 获取当前遍历到的元素
+				let item = statPayOrdersList[i]; // 获取当前遍历到的元素
 				let {
 					appid,
 					version,
 					platform,
 					channel,
-				} = item._id;  // 从 _id 属性中解构出 appid、version、platform 和 channel 属性
+				} = item._id; // 从 _id 属性中解构出 appid、version、platform 和 channel 属性
+				if (!appid) {
+					continue
+				}
 				let {
 					status_str
-				} = item;  // 解构出 status_str 属性
-				let key = `${appid}-${version}-${platform}-${channel}`;  // 拼接 key 字符串
+				} = item; // 解构出 status_str 属性
+				let key = `${appid}-${version}-${platform}-${channel}`; // 拼接 key 字符串
 				if (!statDta[key]) {
 					// 如果 statDta 对应的 key 不存在
 
-					statDta[key] = {  // 创建一个新的对象，赋值给 statDta[key]
+					statDta[key] = { // 创建一个新的对象，赋值给 statDta[key]
 						appid,
 						version,
 						platform,
 						channel,
-						status: {}  // 创建一个空的 status 对象
+						status: {} // 创建一个空的 status 对象
 					};
 				}
-				let newItem = JSON.parse(JSON.stringify(item));  // 复制 item 对象，赋值给 newItem
-				delete newItem._id;  // 删除 newItem 中的 _id 属性
-				statDta[key].status[status_str] = newItem;  // 将 newItem 添加到 statDta[key].status 对象中
+				let newItem = JSON.parse(JSON.stringify(item)); // 复制 item 对象，赋值给 newItem
+				delete newItem._id; // 删除 newItem 中的 _id 属性
+				statDta[key].status[status_str] = newItem; // 将 newItem 添加到 statDta[key].status 对象中
 			}
 		}
 
@@ -527,7 +531,8 @@ function timeFormat(time, fmt = 'yyyy-MM-dd hh:mm:ss', targetTimezone = 8) {
 		}
 		for (let k in opt) {
 			if (new RegExp("(" + k + ")").test(fmt)) {
-				fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (opt[k]) : (("00" + opt[k]).substr(("" + opt[k]).length)));
+				fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (opt[k]) : (("00" + opt[k]).substr(("" + opt[k])
+					.length)));
 			}
 		}
 		return fmt;

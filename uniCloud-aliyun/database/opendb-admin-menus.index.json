@@ -29,7 +29,8 @@
             "MgoIndexKeys": [
                 {
                     "Name": "permission",
-                    "Direction": "1"
+                    "Direction": "1",
+										"Type": "array"
                 }
             ],
             "MgoIsUnique": false
