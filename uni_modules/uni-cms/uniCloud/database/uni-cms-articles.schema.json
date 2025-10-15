@@ -2,7 +2,7 @@
 	"bsonType": "object",
 	"required": ["user_id", "title", "content"],
 	"permission": {
-		"read": true,
+		"read": "doc._id == auth.uid",
 		"create": "'admin' in auth.role || 'CREATE_UNI_CMS_ARTICLE' in auth.permission",
 		"update": "'admin' in auth.role || 'UPDATE_UNI_CMS_ARTICLE' in auth.permission",
 		"delete": "'admin' in auth.role || 'DELETE_UNI_CMS_ARTICLE' in auth.permission"
