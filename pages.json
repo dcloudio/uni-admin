@@ -554,10 +554,7 @@
 	"uniIdRouter": {
 		"loginPage": "uni_modules/uni-id-pages/pages/login/login-withpwd",
 		"needLogin": [
-			"pages/uni-stat/",
-			"pages/system/",
-			"pages/index/",
-			"uni_modules/uni-cms/pages/"
+			"^(?!.*uni-id-pages\/pages\/(login|register|retrieve)\/).*$"
 		],
 		"resToLogin": true
 	}
