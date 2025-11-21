@@ -1,45 +1,59 @@
 <template>
-    <view>
-        <view>
-            <!-- 显示404错误页面标题 -->
-            <text style="font-size: 25px;color: #333;">
-                404 页面未找到
-            </text>
-        </view>
-        <view>
-            <!-- 显示错误消息 -->
-            <text style="font-size: 18px;color: #999;">
-                {{errMsg}}
-            </text>
-        </view>
-		<!-- 在非H5环境下显示fix-window组件 -->
+	<view class="error-page">
+		<view class="error-container">
+			<view class="error-code">404</view>
+			<view class="error-title">页面未找到</view>
+			<view class="error-msg" v-if="errMsg">{{errMsg}}</view>
+		</view>
 		<!-- #ifndef H5 -->
 		<fix-window />
 		<!-- #endif -->
-    </view>
+	</view>
 </template>
 
-
 <script>
-    export default {
-        data() {
-            return {
-
-            }
-        },
-        onLoad(query) {
-            this.errMsg = query.errMsg || ''
-        },
-        methods: {
-
-        }
-    }
+	export default {
+		data() {
+			return {
+				errMsg: ''
+			}
+		},
+		onLoad(query) {
+			this.errMsg = query.errMsg || ''
+		}
+	}
 </script>
 
-<style>
-	/* #ifndef H5 */
+<style scoped>
 	page {
-		padding-top: 85px;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		background-color: #f5f7fa;
 	}
-	/* #endif */
+
+	.error-container {
+		text-align: center;
+		padding: 40px 20px;
+	}
+
+	.error-code {
+		font-size: 120px;
+		font-weight: 700;
+		color: #409eff;
+		line-height: 1;
+		margin-bottom: 20px;
+	}
+
+	.error-title {
+		font-size: 24px;
+		color: #303133;
+		margin-bottom: 12px;
+	}
+
+	.error-msg {
+		font-size: 14px;
+		color: #909399;
+		line-height: 1.6;
+	}
 </style>
