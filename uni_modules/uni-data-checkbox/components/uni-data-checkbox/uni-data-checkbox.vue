@@ -385,7 +385,7 @@
 						selectedArr.push(item[this.map.value])
 					}
 				})
-				return this.dataValue.length > 0 ? this.dataValue : selectedArr
+				return this.dataValue && this.dataValue.length > 0 ? this.dataValue : selectedArr
 			},
 
 			/**
