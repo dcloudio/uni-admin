@@ -168,7 +168,10 @@
               {@/if@}
               <!-- PC 下载鸿蒙 -->
               {@if harmony_url@}
-              <p>鸿蒙 App 仅支持 HarmonyOS Next 设备扫码下载</p>
+              <a href="{@harmony_url@}" class="btn btn-download harmony" type="button">
+                <!-- <span class="icon icon-harmony publish_iconfont">&#xe61f;</span> -->
+                <span>HarmonyOS 平台下载</span>
+              </a>
               {@/if@}
               {@if !android_url@}
               <p class="download-tip"><span class="os-name">Android</span>平台尚未发布，敬请期待~</p>
