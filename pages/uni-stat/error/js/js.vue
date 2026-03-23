@@ -650,10 +650,6 @@
 					}
 					this.errMsg = ''
 					const oldMsg = this.parsedErrors[err]
-					//  || oldMsg === err
-					this.msgLoading = true
-					this.parseError(this.errorItem)
-					return
 					if (!oldMsg) {
 						this.msgLoading = true
 						this.parseError(this.errorItem)
