@@ -232,7 +232,7 @@ export default {
 				title: '上传成功',
 				duration: 500
 			})
-			this.setFormData(key, res.tempFilePaths[0])
+			this.setFormData(key, res.tempFiles[0].url)
 		},
 		async iconUrlDelete(res, key) {
 			let deleteRes = await this.requestCloudFunction('deleteFile', {
