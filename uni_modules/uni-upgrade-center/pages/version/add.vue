@@ -63,7 +63,7 @@
 				</uni-forms-item>
 
 				<uni-forms-item :label="'上传'+fileExtname[0]+'包'">
-					<uni-file-picker v-model="appFileList" :file-extname="fileExtname" :disabled="hasPackage"
+					<uni-file-picker v-model="appFileList" :dir="uploadFileDir" :file-extname="fileExtname" :disabled="hasPackage"
 						returnType="object" file-mediatype="all" limit="1" @success="packageUploadSuccess" :provider="uniFilePickerProvider"
 						@delete="packageDelete">
 						<view class="flex">
