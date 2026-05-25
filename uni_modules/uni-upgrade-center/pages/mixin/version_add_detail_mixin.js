@@ -33,6 +33,7 @@ export default {
 			uploadFileContent: '可下载安装包地址。上传文件到云存储自动填写，也可以手动填写',
 			minUniVersionContent: '上次使用新Api或打包新模块的App版本',
 			priorityContent: '检查更新时，按照优先级从大到小依次尝试跳转商店。如果都跳转失败，则会打开浏览器使用下载链接下载apk安装包',
+			uploadFileDir: '/upgrade-center',
 			latestStableData: [], // 库中最新已上线版
 			appFileList: null, // 上传包
 			type_valuetotext: enumConverter.type_valuetotext,
@@ -152,7 +153,7 @@ export default {
 				duration: 800
 			})
 			this.preUrl = this.formData.url
-			this.formData.url = res.tempFilePaths[0]
+			this.formData.url = res.tempFiles[0].url
 		},
 		deleteFile(fileList) {
 			return this.$request('deleteFile', {
@@ -163,7 +164,7 @@ export default {
 		},
 		async packageDelete(res) {
 			if (!this.hasPackage) return;
-			await this.deleteFile([res.tempFilePath])
+			await this.deleteFile([res.tempFile.fileID])
 			uni.showToast({
 				icon: 'success',
 				title: '删除成功',
