@@ -1,4 +1,15 @@
 module.exports = {
   report: require('./report'),
-  deleteMedia: require('./delete-media')
+  deleteMedia: require('./delete-media'),
+  getImageLibraryProviders: require('./image-library/get-providers'),
+  searchImageLibrary: require('./image-library/search'),
+  uploadImage: require('./image-library/uploader-router'),
+  getUploadFileOptions: require('./get-upload-file-options'),
+  getTempFileURL: require('./get-temp-file-url'),
+  getStorageConfig: require('./get-storage-config'),
+  deleteTag: require('./delete-tag'),
+  getTags: require('./get-tags'),
+  addTagToMedia: require('./add-tag-to-media'),
+  removeTagFromMedia: require('./remove-tag-from-media'),
+  batchAddTagsToMedia: require('./batch-add-tags-to-media'),
 }

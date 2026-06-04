@@ -1,6 +1,7 @@
 async function deleteMedia (params) {
-  const {mediaIds = []} = params
+  const {mediaIds = [], deleteOriginalFile = true} = params
   const db = uniCloud.database()
+  const config = require('../common/config')
 
   if (mediaIds.length <= 0) {
     return {
@@ -18,24 +19,33 @@ async function deleteMedia (params) {
     }
   }
 
-  const mediaFileIds = mediaList.data.filter(item => item.src).map(item => item.src)
-  const coverFileIds = mediaList.data.filter(item => item.type === 'video' && item.cover).map(item => item.cover)
+  const mediaFileIds = mediaList.data.filter(item => item.src && (item.storageProvider || 'internal') === 'internal').map(item => item.src)
+  const coverFileIds = mediaList.data.filter(item => item.type === 'video' && item.cover && (item.storageProvider || 'internal') === 'internal').map(item => item.cover)
+
+  const qiniuFileIds = mediaList.data.filter(item => item.src && item.storageProvider === 'ext-qiniu').map(item => item.src)
+  const qiniuCoverFileIds = mediaList.data.filter(item => item.type === 'video' && item.cover && item.storageProvider === 'ext-qiniu').map(item => item.cover)
+
+  const allQiniuFiles = [...qiniuFileIds, ...qiniuCoverFileIds]
 
   try {
-    await Promise.all([
-      // 删除云数据库中的记录
+    const deletions = [
       db.collection('uni-media-library').where({
         _id: db.command.in(mediaIds)
-      }).remove(),
-      // 删除云存储中的文件
-      mediaFileIds.length && uniCloud.deleteFile({
-        fileList: mediaFileIds
-      }),
-      // 删除云存储中的文件
-      coverFileIds.length && uniCloud.deleteFile({
-        fileList: coverFileIds
-      })
-    ])
+      }).remove()
+    ]
+
+    if (deleteOriginalFile && mediaFileIds.length) {
+      deletions.push(uniCloud.deleteFile({ fileList: mediaFileIds }))
+    }
+    if (deleteOriginalFile && coverFileIds.length) {
+      deletions.push(uniCloud.deleteFile({ fileList: coverFileIds }))
+    }
+    if (deleteOriginalFile && allQiniuFiles.length) {
+      const extStorageManager = config.getExtStorageManager()
+      deletions.push(extStorageManager.deleteFile({ fileList: allQiniuFiles }))
+    }
+
+    await Promise.all(deletions)
   } catch (e) {
     console.log('删除云存储图片失败', e)
   }

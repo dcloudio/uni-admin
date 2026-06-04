@@ -147,7 +147,7 @@ export default {
 		return {
 			// collectionList 包含了三个对象，每个对象都是一个数据库查询对象，用于联表查询。第一个对象查询文章表，第二个对象查询分类表，第三个对象查询用户表。
 			collectionList: [
-				db.collection(articleDBName).field('user_id,category_id,content,title,excerpt,article_status,view_count,like_count,is_sticky,is_essence,comment_status,comment_count,last_comment_user_id,thumbnail,publish_date,publish_ip,last_modify_date,last_modify_ip').getTemp(),
+				db.collection(articleDBName).field('is_admin,user_id,category_id,content,title,excerpt,article_status,view_count,like_count,is_sticky,is_essence,comment_status,comment_count,last_comment_user_id,thumbnail,publish_date,publish_ip,last_modify_date,last_modify_ip').getTemp(),
 				db.collection(categoryDBName).field('name as text, _id').getTemp(),
 				db.collection(userDBName).field('nickname, _id').getTemp(),
 			],

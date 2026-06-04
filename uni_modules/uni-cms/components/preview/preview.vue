@@ -96,7 +96,7 @@ export default {
       })
     },
     async loadArticlePreviewSecret () {
-      const {result} = await db.collection('uni-cms-articles').doc(this.id).get({
+      const {result} = await db.collection('uni-cms-articles').doc(this.id).field('is_admin,preview_secret,preview_expired').get({
         getOne: true
       })
 

@@ -104,6 +104,10 @@ module.exports = {
 			// addDataList 是一个数组，因为可以一次性创建多条数据
 			if (addDataList.length <= 0) return
 
+			// 检测内容安全开关
+			const allowCheckContent = checkContentSecurityEnable('content')
+			const allowCheckImage = checkContentSecurityEnable('image')
+
 			// 遍历数组，对每一条数据进行安全检测
 			for (const addData of addDataList) {
 				// 如果是草稿，不检测
@@ -112,19 +116,19 @@ module.exports = {
 				// 并行检测
 				const parallel = []
 				// 检测标题
-				if (addData.title && checkContentSecurityEnable('content')) {
+				if (allowCheckContent && addData.title) {
 					parallel.push(checkContentSec(addData.title, clientInfo.requestId, '标题存在敏感字，请修改后提交'))
 				}
 				// 检测摘要
-				if (addData.excerpt && checkContentSecurityEnable('content')) {
+				if (allowCheckContent && addData.excerpt) {
 					parallel.push(checkContentSec(addData.excerpt, clientInfo.requestId, '摘要存在敏感字，请修改后提交'))
 				}
 				// 检测内容
-				if (addData.content && checkContentSecurityEnable('content')) {
+				if (allowCheckContent && addData.content) {
 					parallel.push(checkContentSec(JSON.stringify(addData.content), clientInfo.requestId, '内容存在敏感字，请修改后提交'))
 				}
 				// 检测封面图
-				if (addData.thumbnail && checkContentSecurityEnable('image')) {
+				if (allowCheckImage && addData.thumbnail) {
 					parallel.push(checkImageSec(addData.thumbnail, clientInfo.requestId, '封面图存在违规，请修改后提交'))
 				}
 				// 等待所有并行检测完成
@@ -140,23 +144,27 @@ module.exports = {
 			// 如果是草稿，不检测
 			if (updateData.article_status !== 1) return
 
+			// 检测内容安全开关
+			const allowCheckContent = checkContentSecurityEnable('content')
+			const allowCheckImage = checkContentSecurityEnable('image')
+
 			// 并行检测
 			const parallel = []
 
 			// 检测标题
-			if (updateData.title && checkContentSecurityEnable('content')) {
+			if (allowCheckContent && updateData.title) {
 				parallel.push(checkContentSec(updateData.title, clientInfo.requestId, '标题存在敏感字，请修改后提交'))
 			}
 			// 检测摘要
-			if (updateData.excerpt && checkContentSecurityEnable('content')) {
+			if (allowCheckContent && updateData.excerpt) {
 				parallel.push(checkContentSec(updateData.excerpt, clientInfo.requestId, '摘要存在敏感字，请修改后提交'))
 			}
 			// 检测内容
-			if (updateData.content && checkContentSecurityEnable('content')) {
+			if (allowCheckContent && updateData.content) {
 				parallel.push(checkContentSec(JSON.stringify(updateData.content), clientInfo.requestId, '内容存在敏感字，请修改后提交'))
 			}
 			// 检测封面图
-			if (updateData.thumbnail && checkContentSecurityEnable('image')) {
+			if (allowCheckImage && updateData.thumbnail) {
 				parallel.push(checkImageSec(updateData.thumbnail, clientInfo.requestId, '封面图存在违规，请修改后提交'))
 			}
 
@@ -166,9 +174,14 @@ module.exports = {
 		},
 		// 读取文章后触发
 		afterRead: async function ({userInfo, clientInfo, result, where, field}) {
+			const isAdmin = field && field.length && field.includes('is_admin')
 			// 检查是否配置了clientAppIds字段，如果没有则抛出错误
-			if (!config.clientAppIds && clientInfo.uniPlatform !== 'web') {
+			if ((!config.clientAppIds || !config.clientAppIds.length) && !isAdmin) {
 				throw new Error('请在 uni-cms 配置文件中配置 clientAppIds 字段后访问，详见：https://uniapp.dcloud.net.cn/uniCloud/uni-cms.html#uni-cms-config')
+			}
+
+			if (isAdmin && config.clientAppIds && config.clientAppIds.includes(clientInfo.appId)) {
+				throw new Error('uni-cms 配置文件中的 clientAppIds 字段请勿添加管理端的 appid，请移除后重试')
 			}
 
 			// 如果clientAppIds字段未配置或当前appId不在clientAppIds中，则返回
@@ -200,6 +213,7 @@ module.exports = {
 			let needUnlock = false
 			let unlockContent = []
 
+			// 获取文章内容中的图片
 			article.content_images = article.content.ops.reduce((imageBlocks, block) => {
 				if (!block.insert.image) return imageBlocks
 
@@ -293,7 +307,7 @@ function getRenderableArticleContent (rawArticleContent, clientInfo) {
 				})
 
 				// 一般块级节点后面都跟一个换行，需要把这个换行给去掉
-				const nextOps = rawArticleContent.ops[i+1]
+				const nextOps = rawArticleContent.ops[i + 1]
 				if (nextOps && nextOps.insert === '\n') {
 					i ++
 				}

@@ -1,7 +1,11 @@
 {
-  "name": "uni-media-library-co",
-  "dependencies": {},
-  "extensions": {
-    "uni-cloud-jql": {}
-  }
+    "name": "uni-media-library-co",
+    "dependencies": {
+        "uni-config-center": "file:../../../../uni-config-center/uniCloud/cloudfunctions/common/uni-config-center"
+    },
+    "extensions": {},
+    "origin-plugin-dev-name": "uni-media-library",
+    "origin-plugin-version": "2.0.0",
+    "plugin-dev-name": "uni-media-library",
+    "plugin-version": "2.0.0"
 }

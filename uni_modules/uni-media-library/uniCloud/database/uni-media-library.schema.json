@@ -5,7 +5,7 @@
 		"read": true,
 		"create": true,
 		"update": true,
-		"delete": true
+		"delete": false
 	},
 	"properties": {
 		"_id": {
@@ -60,6 +60,18 @@
 		"createDate": {
 			"bsonType": "timestamp",
 			"description": "媒体资源创建时间"
+		},
+		"storageProvider": {
+			"bsonType": "string",
+			"description": "媒体资源存储服务提供商",
+			"enum": ["internal", "ext-qiniu"]
+		},
+		"tags": {
+			"bsonType": "array",
+			"description": "关联的标签ID数组",
+			"items": {
+				"bsonType": "string"
+			}
 		}
 	}
 }

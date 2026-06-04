@@ -1,7 +1,7 @@
 {
   "id": "uni-cms",
   "displayName": "uni-cms",
-  "version": "1.0.18",
+  "version": "1.0.20",
   "description": "uni-cms 内容管理平台",
   "keywords": [
     "uni-cms",
@@ -40,13 +40,21 @@
       "uni-config-center",
       "uni-open-bridge-common",
       "uni-media-library",
-      "uni-row"
+      "uni-row",
+      "uni-transition",
+      "uni-forms",
+      "uni-popup",
+      "uni-drawer",
+      "uni-tooltip",
+      "uni-dateformat",
+      "uni-link"
     ],
     "encrypt": [],
     "platforms": {
       "cloud": {
         "tcb": "y",
-        "aliyun": "y"
+        "aliyun": "y",
+        "alipay": "y"
       },
       "client": {
         "Vue": {
@@ -54,24 +62,24 @@
           "vue3": "y"
         },
         "App": {
-          "app-vue": "u",
-          "app-nvue": "u"
+          "app-vue": "y",
+          "app-nvue": "y"
         },
         "H5-mobile": {
           "Safari": "y",
           "Android Browser": "y",
           "微信浏览器(Android)": "y",
-          "QQ浏览器(Android)": "u"
+          "QQ浏览器(Android)": "y"
         },
         "H5-pc": {
           "Chrome": "y",
           "IE": "u",
           "Edge": "y",
-          "Firefox": "u",
-          "Safari": "u"
+          "Firefox": "y",
+          "Safari": "y"
         },
         "小程序": {
-          "微信": "u",
+          "微信": "y",
           "阿里": "u",
           "百度": "u",
           "字节跳动": "u",

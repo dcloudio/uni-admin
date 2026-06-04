@@ -1,0 +1,23 @@
+{
+  "bsonType": "object",
+  "required": ["name"],
+  "permission": {
+    "read": true,
+    "create": true,
+    "update": true,
+    "delete": false
+  },
+  "properties": {
+    "_id": {
+      "description": "ID，系统自动生成"
+    },
+    "name": {
+      "bsonType": "string",
+      "description": "标签名称"
+    },
+    "createDate": {
+      "bsonType": "timestamp",
+      "description": "标签创建时间"
+    }
+  }
+}

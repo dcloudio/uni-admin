@@ -1,5 +1,5 @@
 <template>
-	<view class="uni-popup-dialog">
+	<view class="uni-popup-dialog" :style="{ borderRadius }">
 		<view class="uni-dialog-title">
 			<text class="uni-dialog-title-text" :class="['uni-popup__'+dialogType]">{{titleText}}</text>
 		</view>
@@ -124,6 +124,10 @@
 			focus: {
 				type: Boolean,
 				default: true,
+			},
+		    borderRadius: {
+				type: String,
+				default: '11px',
 			}
 		},
 		data() {
@@ -156,12 +160,13 @@
 				}
 			},
 			value(val) {
-				if (this.maxlength != -1 && this.mode === 'input') {
-					this.val = val.slice(0, this.maxlength);
-				} else {
-					this.val = val
-				}
+				this.setVal(val)
 			},
+			// #ifdef VUE3
+			modelValue(val) {
+				this.setVal(val)
+			},
+			// #endif
 			val(val) {
 				// #ifdef VUE2
 				// TODO 兼容 vue2
@@ -188,6 +193,16 @@
 			}
 		},
 		methods: {
+			/**
+			 * 给val属性赋值
+			 */
+			setVal(val) {
+				if (this.maxlength != -1 && this.mode === 'input') {
+					this.val = val.slice(0, this.maxlength);
+				} else {
+					this.val = val
+				}
+			},
 			/**
 			 * 点击确认按钮
 			 */
@@ -218,7 +233,6 @@
 <style lang="scss">
 	.uni-popup-dialog {
 		width: 300px;
-		border-radius: 11px;
 		background-color: #fff;
 	}
 

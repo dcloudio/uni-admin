@@ -258,7 +258,7 @@ export default {
 				mask: true
 			})
 			// 从数据库中获取文章数据
-			db.collection(dbCollectionName).doc(id).field("user_id,category_id,title,content,excerpt,article_status,is_sticky,is_essence,comment_status,thumbnail,publish_date").get().then((res) => {
+			db.collection(dbCollectionName).doc(id).field("is_admin,user_id,category_id,title,content,excerpt,article_status,is_sticky,is_essence,comment_status,thumbnail,publish_date").get().then((res) => {
 				const data = res.result.data[0]
 				if (data) {
 					// 将获取到的数据赋值给formData

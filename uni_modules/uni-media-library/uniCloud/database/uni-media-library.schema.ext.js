@@ -5,12 +5,16 @@ const config = createConfig({
 
 const coverCropRule = {
   aliyun: {
-    listCover: '?x-oss-process=image/auto-orient,1/resize,m_fill,w_150,h_150/quality,q_80',
-    detailCover: '?x-oss-process=image/auto-orient,1/resize,m_fill,w_300,h_180/quality,q_80'
+    listCover: 'x-oss-process=image/auto-orient,1/resize,m_fill,w_150,h_150/quality,q_80',
+    detailCover: 'x-oss-process=image/auto-orient,1/resize,m_fill,w_300,h_180/quality,q_80'
   },
   tencent: {
-    listCover: '?imageMogr2/thumbnail/!150x150r/quality/80',
-    detailCover: '?imageMogr2/thumbnail/!300x180r/quality/80',
+    listCover: 'imageMogr2/thumbnail/!150x150r/quality/80',
+    detailCover: 'imageMogr2/thumbnail/!300x180r/quality/80',
+  },
+  qiniu: {
+    listCover: 'imageView2/1/w/150/h/150/format/webp',
+    detailCover: 'imageView2/1/w/300/h/180/format/webp'
   }
 }
 
@@ -24,35 +28,37 @@ function safeRequire(module) {
   }
 }
 function getImageCropRule (url) {
-  return /^cloud:\/\//.test(url) ? coverCropRule.tencent : coverCropRule.aliyun
+  if (/^qiniu:\/\//.test(url)) {
+    return coverCropRule.qiniu
+  }
+
+  if (/^cloud:\/\/env-/.test(url)) {
+    return coverCropRule.aliyun
+  }
+
+  if (/^cloud:\/\//.test(url)) {
+    return coverCropRule.tencent
+  }
+
+  return coverCropRule.aliyun
 }
-function getOssProcessUrls (url) {
-  const urls = {}
 
-  if (!url) return urls
-
-  const cropRules = getImageCropRule(url)
+function getThumbRules (assetsUrl) {
   const cropMediaAssetsConfig = config.cropMediaAssets || false
 
-  for (const key in cropRules) {
-    // webp 格式不支持缩略图
-    if (/.webp/.test(url) || !cropMediaAssetsConfig) {
-      urls[key] = url
-    } else {
-      urls[key] = url + cropRules[key]
-    }
-  }
-  return urls
+  if (!cropMediaAssetsConfig) return {}
+
+  return getImageCropRule(assetsUrl)
 }
 function cropImage (result) {
   if (result && result.data && result.data.length > 0) {
     result.data.forEach(item => {
-      item.thumb = {}
+      item.thumbRules = {}
 
       if (item.type === 'video') {
-        item.thumb = getOssProcessUrls(item.cover)
+        item.thumbRules = getThumbRules(item.cover)
       } else {
-        item.thumb = getOssProcessUrls(item.src)
+        item.thumbRules = getThumbRules(item.src)
       }
     })
   }
@@ -66,7 +72,7 @@ module.exports = {
         cropImage(result)
       } catch (e) {
         console.error(e)
-        throw new Error("媒体资源应用缩略图规则失败，请看下云函数日志获取详细错误")
+        throw new Error("媒体资源应用缩略图规则失败，查看云函数日志获取详细错误")
       }
     }
   }

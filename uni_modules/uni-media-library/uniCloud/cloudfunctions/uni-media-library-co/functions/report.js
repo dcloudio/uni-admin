@@ -11,6 +11,10 @@ async function report (params) {
     resolution = {},
     duration,
     uploadUser,
+    description,
+    alt,
+    storageProvider,
+    tags
   } = params
 
   await db.collection('uni-media-library').add({
@@ -23,6 +27,10 @@ async function report (params) {
     resolution,
     duration,
     uploadUser,
+    description,
+    alt,
+    storageProvider: storageProvider || 'internal',
+    tags: tags || [],
     createDate: Date.now()
   })
 

@@ -657,6 +657,20 @@ export default {
             return res.fileID
           })
         }).then(fileID => {
+	        const isCloudFile = fileID.startsWith('cloud://')
+
+	        if (!isCloudFile) return fileID
+
+	        return uniCloud.getTempFileURL({
+            fileList: [fileID]
+	        }).then(res => {
+	          if (res.fileList && res.fileList.length) {
+	            return res.fileList[0].tempFileURL
+	          }
+
+						return fileID
+	        })
+        }).then(fileID => {
           uni.showLoading({
             title: '上传媒体库...'
           })
@@ -724,9 +738,9 @@ export default {
 </script>
 
 <style scoped lang="scss">
-/* #ifdef H5 */
+// #ifdef H5
 @import '@/uni_modules/uni-cms/common/style/editor-icon.css';
-/* #endif */
+// #endif
 
 /* #ifdef H5 */
 @import "quill.scss";
