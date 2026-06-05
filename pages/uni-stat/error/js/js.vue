@@ -205,14 +205,13 @@ import {
 	format,
 	formatDate,
 	parseDateTime,
-	fileToUrl,
 	debounce,
 	getAllDateCN,
 	createUniStatQuery
 } from '@/js_sdk/uni-stat/util.js';
 import { fieldsMap, popupFieldsMap } from './fieldsMap.js';
 import uploadTask from './uploadTask.vue';
-import { stacktracey, uniStracktraceyPreset, utsStracktraceyPreset } from '@dcloudio/uni-stacktracey';
+import { createSourceMapUploadState, initUploadSourcemapCloud, sourceMapMethods } from './sourcemap.js';
 import adminConfig from '@/admin.config.js';
 
 const panelOption = [
@@ -228,12 +227,6 @@ const panelOption = [
 	}
 ];
 
-const db = uniCloud.database(); // 初始化数据库实例
-const _ = db.command; // 定义数据库操作符
-
-const dbNameSourceMap = `uni-stat-error-source-map`; // sourceMap资源存放的表名
-const sourcemapPrefix = `__UNI__/uni-stat/sourcemap`;
-let sourcemapFileCache = {};
 
 export default {
 	data() {
@@ -281,13 +274,7 @@ export default {
 			],
 			errMsg: '',
 			msgLoading: false,
-			uploadFile: {
-				tempFileTasks: [],
-				tempFiles: [],
-				clear() {
-					this.tempFileTasks.length = this.tempFiles.length = 0;
-				}
-			},
+			uploadFile: createSourceMapUploadState(),
 			uploadSuccessTaskNames: [],
 			errorItem: '',
 			errorMessage: ''
@@ -321,8 +308,7 @@ export default {
 			return query;
 		},
 		vaildate() {
-			// 检验 this.uploadOptions 所有项都有值
-			const allItemHasVaule = Object.keys(this.uploadOptions).every((k) => this.uploadOptions[k]);
+			const allItemHasVaule = !!(this.uploadOptions.appid && this.uploadOptions.uni_platform && this.uploadOptions.version);
 			if (allItemHasVaule && this.uploadMsg) {
 				this.uploadMsg = '';
 			}
@@ -349,28 +335,7 @@ export default {
 		this.parsedErrors = {};
 
 		if (this.sourceMapEnabled) {
-			// sourceMap 功能需初始化上传的目标云空间
-			if (this.uniStat.uploadSourceMapCloudSpaceId) {
-				if (this.uniStat.uploadSourceMapCloudPlatform === 'aliyun') {
-					// 使用阿里云服务空间
-					let endpoint = this.uniStat.uploadSourceMapCloudSpaceId.indexOf('mp-') === 0 ? 'https://api.next.bspapp.com' : 'https://api.bspapp.com';
-					this.uploadSourcemapCloud = uniCloud.init({
-						provider: 'aliyun',
-						spaceId: this.uniStat.uploadSourceMapCloudSpaceId,
-						clientSecret: this.uniStat.uploadSourceMapCloudClientSecret,
-						endpoint
-					});
-				} else {
-					// 使用腾讯云服务空间
-					this.uploadSourcemapCloud = uniCloud.init({
-						provider: 'tencent',
-						spaceId: this.uniStat.uploadSourceMapCloudSpaceId
-					});
-				}
-			} else {
-				// 使用本项目绑定的服务空间
-				this.uploadSourcemapCloud = uniCloud;
-			}
+			this.uploadSourcemapCloud = initUploadSourcemapCloud(this.uniStat);
 		}
 
 		this.getCloudDataDebounce = debounce(() => {
@@ -391,6 +356,7 @@ export default {
 		}
 	},
 	methods: {
+		...sourceMapMethods,
 		useDatetimePicker(res) {
 			this.currentDateTab = -1;
 		},
@@ -651,278 +617,6 @@ export default {
 			}
 		},
 
-		closeErrPopup() {
-			this.$refs.errMsg.close();
-		},
-		errMsgPopupChange(res) {
-			if (res.show) {
-				const err = this.errorItem.msgTooltip;
-				if (this.msgLoading) {
-					this.closeErrPopup();
-					return;
-				}
-				if (!err) {
-					this.errMsg = '暂无错误数据';
-				}
-				this.errMsg = '';
-				const oldMsg = this.parsedErrors[err];
-				if (!oldMsg) {
-					this.msgLoading = true;
-					this.parseError(this.errorItem);
-				} else {
-					this.errMsg = oldMsg;
-				}
-			} else {
-				this.msgLoading = false;
-			}
-		},
-		async parseError(item) {
-			let { msgTooltip: err, appid, platform_code, version } = item;
-			//console.log('item: ', item)
-			let base = `/${appid}/${platform_code}/${version}/`;
-			let fileList;
-			if (sourcemapFileCache[base] && sourcemapFileCache[base].length > 0) {
-				fileList = sourcemapFileCache[base];
-			} else {
-				fileList = await this.getSourceMapFileList({
-					base
-				});
-				if (fileList && fileList.length > 0) {
-					sourcemapFileCache[base] = fileList;
-				} else {
-					console.error(`缺少${base}对应的sourceMap，请先上传sourceMap`);
-					this.msgLoading = false;
-					this.errMsg = err;
-					return;
-				}
-			}
-			//console.log('fileList: ', fileList)
-
-			try {
-				err = JSON.parse(err);
-			} catch (e) {}
-
-			// console.log("originalErrMsg: ", err);
-
-			const stacktraceyOptions = {
-				base,
-				uniPlatform: platform_code,
-				splitThirdParty: true
-			};
-			if (['harmony', 'harmonyos'].indexOf(platform_code.toLocaleLowerCase()) === -1 && ['ios', 'android', 'app'].indexOf(platform_code) > -1) {
-				stacktraceyOptions.lineOffset = -1;
-			}
-			let preset = {};
-			if (err.includes('UTSError')) {
-				const manifestItem = fileList.find((item) => item.name === '.manifest.json');
-				const manifestPath = manifestItem ? manifestItem.url : '';
-				if (manifestPath.length === 0) {
-					console.error(`缺少${base}对应的 .manifest.json 文件，请先上传`);
-					return;
-				}
-				stacktraceyOptions.sourceMapRoot = manifestPath;
-				preset = {
-					...utsStracktraceyPreset(stacktraceyOptions),
-					parseSourceMapUrl(file, fileName, fileRelative) {
-						let fileItem = fileList.find((item) => {
-							return item.cloud_path.indexOf(`${base}${file}.map`) > -1;
-						});
-						return fileItem ? fileItem.url : fileItem.cloud_path;
-					}
-				};
-			} else {
-				preset = {
-					...uniStracktraceyPreset(stacktraceyOptions),
-					/**
-					 *
-					 * 微信特殊处理
-					 * 微信解析步骤：
-					 * 	1. //usr/app-service.js -> 'weixin/__APP__/app-service.map.map'
-					 *  2. //usr/pages/API/app-service.js -> 'weixin/pages/API/app-service.map.map'
-					 *  3. uni-list-item/uni-list-item.js -> ${base}/uni-list-item/uni-list-item.js.map
-					 */
-					parseSourceMapUrl(file, fileName, fileRelative) {
-						// 组合 sourceMapUrl
-						if (fileRelative.indexOf('(') !== -1) {
-							let fileRelativeMatch = fileRelative.match(/\((.*)/);
-							fileRelative = fileRelativeMatch && fileRelativeMatch[1];
-						}
-						if (!base || !fileRelative) return '';
-						if (typeof sourceRoot !== 'undefined') {
-							return `${fileRelative.replace(sourceRoot, base + '/')}.map`;
-						}
-						let baseAfter = '';
-						if (platform_code.indexOf('mp-') > -1) {
-							if (fileRelative.indexOf('app-service.js') !== -1) {
-								baseAfter = (base.match(/\w$/) ? '/' : '') + '__WEIXIN__';
-								if (fileRelative === fileName) {
-									baseAfter += '/__APP__';
-								}
-								// fileRelative = fileRelative.replace('.js', '.map')
-							}
-						}
-						if (baseAfter && !!fileRelative.match(/^\w/)) baseAfter += '/';
-						let path = `${base}${baseAfter}${fileRelative}.map`;
-						let cloud_path = `${sourcemapPrefix}${path}`;
-
-						let cloud_path_web;
-						if (platform_code === 'web') {
-							// 尝试去掉第一级的项目名（web端可能会设置h5基础运行路径）
-							let fileRelativeWeb = fileRelative.substring(fileRelative.indexOf('/') + 1);
-							let pathWeb = `${base}${baseAfter}${fileRelativeWeb}.map`;
-							cloud_path_web = `${sourcemapPrefix}${pathWeb}`;
-						}
-
-						let fileItem = fileList.find((item) => {
-							return [cloud_path, cloud_path_web].indexOf(item.cloud_path) > -1;
-						});
-						//console.log('cloud_path: ', cloud_path, fileItem.url)
-						const url = fileItem ? fileItem.url : cloud_path;
-						if (/^https{0,1}:\/\//.test(url)) {
-							return url;
-						}
-						const errMsg = `${fileRelative} 找不到 sourcemap 文件`;
-						console.log(errMsg);
-						throw new Error(errMsg);
-					}
-				};
-			}
-			stacktracey(err, { preset })
-				.then((res) => {
-					if (typeof res === 'string') {
-						this.errMsg = res;
-					} else {
-						const { userError, thirdParty } = res;
-						const separate =
-							userError.length && thirdParty.length ? `\n\n------------${platform_code.indexOf('mp-') !== -1 ? platform_code : 'uni-app'} runtime error------------\n\n` : '';
-						this.errMsg = `${userError}${separate}${thirdParty}`;
-					}
-					this.parsedErrors[err] = this.errMsg;
-				})
-				.finally(() => {
-					this.msgLoading = false;
-				});
-		},
-		openUploadPopup() {
-			const { appid, uni_platform } = this.query;
-
-			this.uploadOptions = {
-				appid,
-				uni_platform
-			};
-			this.$refs.upload.open();
-		},
-		closeUploadPopup() {
-			this.$refs.upload.close();
-		},
-		createUploadFileTask(prefix, fileDiskPath, filePath, onUploadProgress) {
-			const cloudPath = prefix + fileDiskPath;
-
-			return this.uploadSourcemapCloud.uploadFile({
-				filePath,
-				cloudPath,
-				onUploadProgress
-			});
-		},
-		async choosefile() {
-			if (!this.vaildate) {
-				this.uploadMsg = '请先将应用、平台、版本填写完整';
-				return;
-			}
-			const { appid, uni_platform, version } = this.uploadOptions;
-
-			const base = `/${appid}/${uni_platform}/${version}/`;
-			const prefix = `${sourcemapPrefix}${base}`;
-
-			// 原生 input 上传逻辑
-			const inputEl = document.createElement('input');
-			inputEl.type = 'file';
-			inputEl.directory = true;
-			inputEl.webkitdirectory = true;
-			inputEl.click();
-			inputEl.addEventListener('change', async () => {
-				this.uploadFile.clear();
-
-				const fileList = inputEl.files; /* now you can work with the file list */
-				if (!fileList.length) return;
-
-				Array.prototype.forEach.call(fileList, (file) => {
-					const path = fileToUrl(file);
-					this.uploadFile.tempFileTasks.push({
-						fileDiskPath: file.webkitRelativePath.split('/').slice(1).join('/'),
-						path,
-						size: `${(file.size / 1024).toFixed(2)}kb`,
-						name: file.name,
-						state: 0,
-						progress: 0,
-						file
-					});
-					Object.defineProperty(file, 'path', {
-						get() {
-							return path;
-						}
-					});
-					this.uploadFile.tempFiles.push(file);
-				});
-				// 因为上传有并发限制，故还是一个一个上传靠谱
-				let dataArr = [];
-				for (let i = 0; i < this.uploadFile.tempFileTasks.length; i++) {
-					let cur = this.uploadFile.tempFileTasks[i];
-					let res = await new Promise((resolve, reject) => {
-						// 已上传的文件
-						if (this.uploadSuccessTaskNames.indexOf(cur.name) !== -1) {
-							cur.progress = 1;
-							setTimeout(() => {
-								cur.state = 1;
-								resolve();
-							}, 200);
-						} else {
-							this.createUploadFileTask(prefix, cur.fileDiskPath, cur.path, (OnUploadProgressRes) => {
-								const { loaded, total } = OnUploadProgressRes;
-								cur.progress = loaded / total;
-							})
-								.then((uploadRes) => {
-									const cloudPath = prefix + cur.fileDiskPath;
-									let fileID = uploadRes.fileID;
-									uniCloud
-										.getTempFileURL({
-											fileList: [fileID]
-										})
-										.then((res) => {
-											let url = res.fileList[0].tempFileURL;
-											let file = {
-												appid,
-												uni_platform,
-												version,
-												file_id: fileID,
-												url,
-												name: cur.name,
-												size: cur.file.size,
-												cloud_path: cloudPath,
-												base
-											};
-											setTimeout(() => {
-												this.uploadSuccessTaskNames.push(name);
-												cur.state = 1;
-												resolve(file);
-											}, 100);
-										});
-								})
-								.catch((err) => {
-									cur.state = -1;
-									reject(`${cur.name} 上传失败：` + JSON.stringify(err));
-								});
-						}
-					});
-					if (res) dataArr.push(res);
-				}
-
-				if (dataArr && dataArr.length > 0) {
-					// 将sourceMap资源文件写入数据库
-					await this.addSourceMapFile(dataArr);
-				}
-			});
-		},
 		createStr(maps, fn, prefix = 'total_') {
 			const strArr = [];
 			maps.forEach((mapper) => {
@@ -933,39 +627,6 @@ export default {
 			});
 			return strArr.join();
 		},
-		openErrPopup(item) {
-			this.errorItem = item;
-			this.$refs.errMsg.open();
-		},
-
-		// 将sourceMap资源文件写入数据库
-		async addSourceMapFile(dataArr) {
-			let cloud_path_arr = [];
-			dataArr.map((item, index) => {
-				cloud_path_arr.push(item.cloud_path);
-			});
-			// 先删除同版本的文件（避免重复上传时出现错误）
-			await db
-				.collection(dbNameSourceMap)
-				.where({
-					cloud_path: _.in(cloud_path_arr)
-				})
-				.remove();
-			// 再添加
-			await db.collection(dbNameSourceMap).add(dataArr);
-		},
-		// 从数据库中获取sourceMap资源文件
-		async getSourceMapFileList(obj) {
-			let { base } = obj;
-			let fileListRes = await db
-				.collection(dbNameSourceMap)
-				.where({
-					base
-				})
-				.limit(1000)
-				.get();
-			return fileListRes.result.data || [];
-		}
 	}
 };
 </script>
