@@ -1,1 +1,1 @@
-var testValue = 3 > 2 ? true : false; 
+var testValue = 3 > 2 ? true : false;

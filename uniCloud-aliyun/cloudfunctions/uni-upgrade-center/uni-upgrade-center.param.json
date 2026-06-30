@@ -3,8 +3,8 @@
 // 配置教程参考：https://uniapp.dcloud.net.cn/uniCloud/quickstart?id=runparam
 
 {
-	"action": "checkVersion",
-	"appid": "__UNI__3584C99",
-	"appVersion": "1.0.0",
-	"wgtVersion": "1.0.0"
+  "action": "checkVersion",
+  "appid": "__UNI__3584C99",
+  "appVersion": "1.0.0",
+  "wgtVersion": "1.0.0"
 }

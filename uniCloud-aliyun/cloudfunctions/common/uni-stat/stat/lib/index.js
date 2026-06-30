@@ -1,4 +1,4 @@
 module.exports = {
-	DateTime: require('./date'),
-	UniCrypto: require('./uni-crypto')
-}
+  DateTime: require('./date'),
+  UniCrypto: require('./uni-crypto'),
+};

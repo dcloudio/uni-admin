@@ -1,38 +1,36 @@
 // 校验规则由 schema 生成，请不要直接修改当前文件，如果需要请在uniCloud控制台修改schema
 // uniCloud: https://unicloud.dcloud.net.cn/
 
-
-
 export default {
-  "user_name": {
-    "rules": [
+  user_name: {
+    rules: [
       {
-        "format": "string"
-      }
-    ]
+        format: 'string',
+      },
+    ],
   },
-  "content": {
-    "rules": [
+  content: {
+    rules: [
       {
-        "required": true
+        required: true,
       },
       {
-        "format": "string"
-      }
-    ]
+        format: 'string',
+      },
+    ],
   },
-  "ip": {
-    "rules": [
+  ip: {
+    rules: [
       {
-        "format": "string"
-      }
-    ]
+        format: 'string',
+      },
+    ],
   },
-  "create_date": {
-    "rules": [
+  create_date: {
+    rules: [
       {
-        "format": "timestamp"
-      }
-    ]
-  }
-}
+        format: 'timestamp',
+      },
+    ],
+  },
+};

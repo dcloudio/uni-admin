@@ -23,20 +23,20 @@ $uni-color-warning: #f3a73f;
 $uni-color-error: #e43d33;
 
 $themes: (
-	default: (
-		primary-color: $uni-color-primary,
-		success-color: $uni-color-success,
-		warn-color: $uni-color-error,
-		warning-color: $uni-color-warning,
-		error-color: $uni-color-error
-	),
-	green: (
-		primary-color: #42b983,
-		success-color: $uni-color-success,
-		warn-color: $uni-color-error,
-		warning-color: $uni-color-warning,
-		error-color: $uni-color-error
-	)
+  default: (
+    primary-color: $uni-color-primary,
+    success-color: $uni-color-success,
+    warn-color: $uni-color-error,
+    warning-color: $uni-color-warning,
+    error-color: $uni-color-error,
+  ),
+  green: (
+    primary-color: #42b983,
+    success-color: $uni-color-success,
+    warn-color: $uni-color-error,
+    warning-color: $uni-color-warning,
+    error-color: $uni-color-error,
+  ),
 );
 /* 兼容 uni-ui 相关颜色 */
 $uni-primary: $uni-color-primary;

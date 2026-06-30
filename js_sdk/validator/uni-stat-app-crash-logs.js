@@ -1,264 +1,263 @@
 // 表单校验规则由 schema2code 生成，不建议直接修改校验规则，而建议通过 schema2code 生成, 详情: https://uniapp.dcloud.net.cn/uniCloud/schema
 
-
 const validator = {
-  "appid": {
-    "rules": [
+  appid: {
+    rules: [
       {
-        "format": "string"
-      }
-    ]
+        format: 'string',
+      },
+    ],
   },
-  "version": {
-    "rules": [
+  version: {
+    rules: [
       {
-        "format": "string"
-      }
-    ]
+        format: 'string',
+      },
+    ],
   },
-  "platform": {
-    "rules": [
+  platform: {
+    rules: [
       {
-        "format": "string"
-      }
-    ]
+        format: 'string',
+      },
+    ],
   },
-  "channel": {
-    "rules": [
+  channel: {
+    rules: [
       {
-        "format": "string"
-      }
-    ]
+        format: 'string',
+      },
+    ],
   },
-  "sdk_version": {
-    "rules": [
+  sdk_version: {
+    rules: [
       {
-        "format": "string"
-      }
-    ]
+        format: 'string',
+      },
+    ],
   },
-  "device_id": {
-    "rules": [
+  device_id: {
+    rules: [
       {
-        "format": "string"
-      }
-    ]
+        format: 'string',
+      },
+    ],
   },
-  "device_net": {
-    "rules": [
+  device_net: {
+    rules: [
       {
-        "format": "string"
-      }
-    ]
+        format: 'string',
+      },
+    ],
   },
-  "device_os": {
-    "rules": [
+  device_os: {
+    rules: [
       {
-        "format": "string"
-      }
-    ]
+        format: 'string',
+      },
+    ],
   },
-  "device_os_version": {
-    "rules": [
+  device_os_version: {
+    rules: [
       {
-        "format": "string"
-      }
-    ]
+        format: 'string',
+      },
+    ],
   },
-  "device_vendor": {
-    "rules": [
+  device_vendor: {
+    rules: [
       {
-        "format": "string"
-      }
-    ]
+        format: 'string',
+      },
+    ],
   },
-  "device_model": {
-    "rules": [
+  device_model: {
+    rules: [
       {
-        "format": "string"
-      }
-    ]
+        format: 'string',
+      },
+    ],
   },
-  "device_is_root": {
-    "rules": [
+  device_is_root: {
+    rules: [
       {
-        "format": "int"
-      }
-    ]
+        format: 'int',
+      },
+    ],
   },
-  "device_os_name": {
-    "rules": [
+  device_os_name: {
+    rules: [
       {
-        "format": "string"
-      }
-    ]
+        format: 'string',
+      },
+    ],
   },
-  "device_batt_level": {
-    "rules": [
+  device_batt_level: {
+    rules: [
       {
-        "format": "int"
-      }
-    ]
+        format: 'int',
+      },
+    ],
   },
-  "device_batt_temp": {
-    "rules": [
+  device_batt_temp: {
+    rules: [
       {
-        "format": "string"
-      }
-    ]
+        format: 'string',
+      },
+    ],
   },
-  "device_memory_use_size": {
-    "rules": [
+  device_memory_use_size: {
+    rules: [
       {
-        "format": "int"
-      }
-    ]
+        format: 'int',
+      },
+    ],
   },
-  "device_memory_total_size": {
-    "rules": [
+  device_memory_total_size: {
+    rules: [
       {
-        "format": "int"
-      }
-    ]
+        format: 'int',
+      },
+    ],
   },
-  "device_disk_use_size": {
-    "rules": [
+  device_disk_use_size: {
+    rules: [
       {
-        "format": "int"
-      }
-    ]
+        format: 'int',
+      },
+    ],
   },
-  "device_disk_total_size": {
-    "rules": [
+  device_disk_total_size: {
+    rules: [
       {
-        "format": "int"
-      }
-    ]
+        format: 'int',
+      },
+    ],
   },
-  "device_abis": {
-    "rules": [
+  device_abis: {
+    rules: [
       {
-        "format": "string"
-      }
-    ]
+        format: 'string',
+      },
+    ],
   },
-  "app_count": {
-    "rules": [
+  app_count: {
+    rules: [
       {
-        "format": "int"
-      }
-    ]
+        format: 'int',
+      },
+    ],
   },
-  "app_use_memory_size": {
-    "rules": [
+  app_use_memory_size: {
+    rules: [
       {
-        "format": "int"
-      }
-    ]
+        format: 'int',
+      },
+    ],
   },
-  "app_webview_count": {
-    "rules": [
+  app_webview_count: {
+    rules: [
       {
-        "format": "int"
-      }
-    ]
+        format: 'int',
+      },
+    ],
   },
-  "app_use_duration": {
-    "rules": [
+  app_use_duration: {
+    rules: [
       {
-        "format": "int"
-      }
-    ]
+        format: 'int',
+      },
+    ],
   },
-  "app_run_fore": {
-    "rules": [
+  app_run_fore: {
+    rules: [
       {
-        "format": "int"
-      }
-    ]
+        format: 'int',
+      },
+    ],
   },
-  "package_name": {
-    "rules": [
+  package_name: {
+    rules: [
       {
-        "format": "string"
-      }
-    ]
+        format: 'string',
+      },
+    ],
   },
-  "package_version": {
-    "rules": [
+  package_version: {
+    rules: [
       {
-        "format": "string"
-      }
-    ]
+        format: 'string',
+      },
+    ],
   },
-  "page_url": {
-    "rules": [
+  page_url: {
+    rules: [
       {
-        "format": "string"
-      }
-    ]
+        format: 'string',
+      },
+    ],
   },
-  "error_msg": {
-    "rules": [
+  error_msg: {
+    rules: [
       {
-        "format": "string"
-      }
-    ]
+        format: 'string',
+      },
+    ],
   },
-  "create_time": {
-    "rules": [
+  create_time: {
+    rules: [
       {
-        "format": "timestamp"
-      }
-    ]
-  }
-}
+        format: 'timestamp',
+      },
+    ],
+  },
+};
 
-const enumConverter = {}
+const enumConverter = {};
 
 function filterToWhere(filter, command) {
-  let where = {}
+  let where = {};
   for (let field in filter) {
-    let { type, value } = filter[field]
+    let { type, value } = filter[field];
     switch (type) {
-      case "search":
+      case 'search':
         if (typeof value === 'string' && value.length) {
-          where[field] = new RegExp(value)
+          where[field] = new RegExp(value);
         }
         break;
-      case "select":
+      case 'select':
         if (value.length) {
-          let selectValue = []
+          let selectValue = [];
           for (let s of value) {
-            selectValue.push(command.eq(s))
+            selectValue.push(command.eq(s));
           }
-          where[field] = command.or(selectValue)
+          where[field] = command.or(selectValue);
         }
         break;
-      case "range":
+      case 'range':
         if (value.length) {
-          let gt = value[0]
-          let lt = value[1]
-          where[field] = command.and([command.gte(gt), command.lte(lt)])
+          let gt = value[0];
+          let lt = value[1];
+          where[field] = command.and([command.gte(gt), command.lte(lt)]);
         }
         break;
-      case "date":
+      case 'date':
         if (value.length) {
-          let [s, e] = value
-          let startDate = new Date(s)
-          let endDate = new Date(e)
-          where[field] = command.and([command.gte(startDate), command.lte(endDate)])
+          let [s, e] = value;
+          let startDate = new Date(s);
+          let endDate = new Date(e);
+          where[field] = command.and([command.gte(startDate), command.lte(endDate)]);
         }
         break;
-      case "timestamp":
+      case 'timestamp':
         if (value.length) {
-          let [startDate, endDate] = value
-          where[field] = command.and([command.gte(startDate), command.lte(endDate)])
+          let [startDate, endDate] = value;
+          where[field] = command.and([command.gte(startDate), command.lte(endDate)]);
         }
         break;
     }
   }
-  return where
+  return where;
 }
 
-export { validator, enumConverter, filterToWhere }
+export { validator, enumConverter, filterToWhere };

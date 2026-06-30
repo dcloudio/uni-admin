@@ -1,42 +1,42 @@
 exports.chunk = function (arr, num) {
-  const list = []
-  let current = []
+  const list = [];
+  let current = [];
 
   for (const item of arr) {
     current.push(item);
     if (current.length === num) {
-      list.push(current)
-      current = []
+      list.push(current);
+      current = [];
     }
   }
 
-  if (current.length) list.push(current)
+  if (current.length) list.push(current);
 
-  return list
-}
+  return list;
+};
 
 exports.checkIsStaticTemplate = function (data = []) {
-  let isStatic = data.length <= 0
+  let isStatic = data.length <= 0;
 
   for (const template of data) {
     if (template.type === 'static') {
-      isStatic = true
-      break
+      isStatic = true;
+      break;
     }
   }
 
-  return isStatic
-}
+  return isStatic;
+};
 
 exports.parserDynamicField = function (templateData) {
   return templateData.reduce((res, template) => {
     if (/\{.*?\}/.test(template.value)) {
-      const [collection, field] = template.value.replace(/\{|\}/g, '').split('.')
+      const [collection, field] = template.value.replace(/\{|\}/g, '').split('.');
       if (!res[collection]) {
-        res[collection] = []
+        res[collection] = [];
       }
-      res[collection].push(field)
+      res[collection].push(field);
     }
-    return res
-  }, {})
-}
+    return res;
+  }, {});
+};

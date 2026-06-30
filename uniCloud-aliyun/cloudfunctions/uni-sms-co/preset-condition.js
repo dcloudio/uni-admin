@@ -5,23 +5,23 @@ const presetCondition = {
   '7-day-offline-users': () => ({
     last_login_date: {
       type: 'lt',
-      value: Date.now() - (7 * 24 * 60 * 60 * 1000)
-    }
+      value: Date.now() - 7 * 24 * 60 * 60 * 1000,
+    },
   }),
   // 预设条件：15天未登录用户
   '15-day-offline-users': () => ({
     last_login_date: {
       type: 'lt',
-      value: Date.now() - (15 * 24 * 60 * 60 * 1000)
-    }
+      value: Date.now() - 15 * 24 * 60 * 60 * 1000,
+    },
   }),
   // 预设条件：30天未登录用户
   '30-day-offline-users': () => ({
     last_login_date: {
       type: 'lt',
-      value: Date.now() - (30 * 24 * 60 * 60 * 1000)
-    }
-  })
+      value: Date.now() - 30 * 24 * 60 * 60 * 1000,
+    },
+  }),
 };
 
 function conditionConvert(condition, command) {
@@ -38,19 +38,14 @@ function conditionConvert(condition, command) {
       case 'select':
         // 选择条件
         if (field.value.length) {
-          newCondition[key] = command.or(
-            field.value.map(value => command.eq(value))
-          );
+          newCondition[key] = command.or(field.value.map((value) => command.eq(value)));
         }
         break;
       case 'range':
         // 范围条件
         if (field.value.length) {
           const [gt, lt] = field.value;
-          newCondition[key] = command.and([
-            command.gte(gt),
-            command.lte(lt)
-          ]);
+          newCondition[key] = command.and([command.gte(gt), command.lte(lt)]);
         }
         break;
       case 'date':
@@ -60,10 +55,7 @@ function conditionConvert(condition, command) {
           const startDate = new Date(startTimestamp);
           const endDate = new Date(endTimestamp);
 
-          newCondition[key] = command.and([
-            command.gte(startDate),
-            command.lte(endDate)
-          ]);
+          newCondition[key] = command.and([command.gte(startDate), command.lte(endDate)]);
         }
         break;
       case 'timestamp':
@@ -71,10 +63,7 @@ function conditionConvert(condition, command) {
         if (field.value.length) {
           const [startDate, endDate] = field.value;
 
-          newCondition[key] = command.and([
-            command.gte(startDate),
-            command.lte(endDate)
-          ]);
+          newCondition[key] = command.and([command.gte(startDate), command.lte(endDate)]);
         }
         break;
       case 'lt':
