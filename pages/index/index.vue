@@ -235,7 +235,7 @@
           .get()
           .then((res) => {
             let { data } = res.result;
-            //console.log('data: ', data)
+            // console.log('data: ', JSON.parse(JSON.stringify(data)));
             this[`${type}TableData`] = [];
             if (!data.length) return;
             let appids = [],
@@ -263,9 +263,10 @@
               const rowData = {};
               const t = todays.find((item) => item.appid === appid);
               const y = yesterdays.find((item) => item.appid === appid);
+              const appInfo = t || y || {};
               for (const key of keys) {
                 if (key === 'appid' || key === 'name') {
-                  rowData[key] = t && t[key];
+                  rowData[key] = key === 'appid' ? appInfo[key] || appid : appInfo[key];
                 } else {
                   const value = t && t[key];
                   const contrast = y && y[key];
@@ -279,7 +280,9 @@
               this[`${type}TableData`].push(rowData);
               if (appid) {
                 // total_users 不准确，置空后由 getFieldTotal 处理, appid 不存在时暂不处理
-                t[`total_${type}s`] = 0;
+                if (t) {
+                  t[`total_${type}s`] = 0;
+                }
                 const query = JSON.parse(JSON.stringify(this.query));
                 query.start_time = [getTimeOfSomeDayAgo(0), new Date().getTime()];
                 query.appid = appid;
