@@ -125,13 +125,13 @@
 
 			<uni-forms-item v-if="isWGT" key="is_silently" name="is_silently" label="静默更新">
 				<switch :disabled="detailsState"
-					@change="binddata('is_silently', $event.detail.value),formData.is_silently=$event.detail.value"
+					@change="onSilentlyChange"
 					:checked="formData.is_silently" />
 				<show-info :top="-80" :content="silentlyContent"></show-info>
 			</uni-forms-item>
 			<uni-forms-item key="is_mandatory" name="is_mandatory" label="强制更新">
 				<switch :disabled="detailsState"
-					@change="binddata('is_mandatory', $event.detail.value),formData.is_mandatory=$event.detail.value"
+					@change="onMandatoryChange"
 					:checked="formData.is_mandatory" />
 				<show-info width="230" :top="-30" :content="mandatoryContent"></show-info>
 			</uni-forms-item>
@@ -242,6 +242,24 @@
 			}
 		},
 		methods: {
+			onSilentlyChange(e) {
+				const val = e.detail.value;
+				this.binddata('is_silently', val);
+				this.formData.is_silently = val;
+				if (val) {
+					this.formData.is_mandatory = false;
+					this.binddata('is_mandatory', false);
+				}
+			},
+			onMandatoryChange(e) {
+				const val = e.detail.value;
+				this.binddata('is_mandatory', val);
+				this.formData.is_mandatory = val;
+				if (val) {
+					this.formData.is_silently = false;
+					this.binddata('is_silently', false);
+				}
+			},
 			/**
 			 * 触发表单提交
 			 */

@@ -118,11 +118,11 @@
 				</view>
 			</uni-forms-item>
 			<uni-forms-item v-if="isWGT" key="is_silently" name="is_silently" label="静默更新">
-				<switch @change="binddata('is_silently', $event.detail.value)" :checked="formData.is_silently" />
+				<switch @change="onSilentlyChange" :checked="formData.is_silently" />
 				<show-info :top="-80" :content="silentlyContent"></show-info>
 			</uni-forms-item>
 			<uni-forms-item key="is_mandatory" name="is_mandatory" label="强制更新">
-				<switch @change="binddata('is_mandatory', $event.detail.value)" :checked="formData.is_mandatory" />
+				<switch @change="onMandatoryChange" :checked="formData.is_mandatory" />
 				<show-info :content="mandatoryContent"></show-info>
 			</uni-forms-item>
 			<uni-forms-item name="stable_publish" label="上线发行">
@@ -237,6 +237,22 @@
 			}
 		},
 		methods: {
+			onSilentlyChange(e) {
+				const val = e.detail.value;
+				this.binddata('is_silently', val);
+				if (val) {
+					this.formData.is_mandatory = false;
+					this.binddata('is_mandatory', false);
+				}
+			},
+			onMandatoryChange(e) {
+				const val = e.detail.value;
+				this.binddata('is_mandatory', val);
+				if (val) {
+					this.formData.is_silently = false;
+					this.binddata('is_silently', false);
+				}
+			},
 			setFormData(os) {
 				uni.showLoading({
 					mask: true
