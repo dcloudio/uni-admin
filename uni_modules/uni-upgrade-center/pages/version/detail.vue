@@ -136,7 +136,7 @@
 				<show-info width="230" :top="-30" :content="mandatoryContent"></show-info>
 			</uni-forms-item>
 			<uni-forms-item name="stable_publish" label="上线发行">
-				<switch :disabled="detailsState || isStable"
+				<switch :disabled="detailsState"
 					@change="binddata('stable_publish', $event.detail.value),formData.stable_publish=$event.detail.value"
 					:checked="formData.stable_publish" />
 				<show-info v-if="isStable" :top="-50" width="350" :content="stablePublishContent"></show-info>
