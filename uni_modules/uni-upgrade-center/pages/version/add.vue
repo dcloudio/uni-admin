@@ -111,7 +111,7 @@
 							</uni-forms-item>
 							<uni-forms-item label="优先级">
 								<uni-easyinput v-model="item.priority" type="number"></uni-easyinput>
-								<show-info :top="-100" :left="-180" :content="priorityContent"></show-info>
+								<show-info :content="priorityContent"></show-info>
 							</uni-forms-item>
 						</uni-card>
 					</view>
@@ -119,7 +119,7 @@
 			</uni-forms-item>
 			<uni-forms-item v-if="isWGT" key="is_silently" name="is_silently" label="静默更新">
 				<switch @change="onSilentlyChange" :checked="formData.is_silently" />
-				<show-info :top="-80" :content="silentlyContent"></show-info>
+				<show-info :content="silentlyContent"></show-info>
 			</uni-forms-item>
 			<uni-forms-item key="is_mandatory" name="is_mandatory" label="强制更新">
 				<switch @change="onMandatoryChange" :checked="formData.is_mandatory" />
@@ -127,7 +127,7 @@
 			</uni-forms-item>
 			<uni-forms-item name="stable_publish" label="上线发行">
 				<switch @change="binddata('stable_publish', $event.detail.value)" :checked="formData.stable_publish" />
-				<show-info :top="-40" :content="stablePublishContent2"></show-info>
+				<show-info :content="stablePublishContent2"></show-info>
 			</uni-forms-item>
 			<uni-forms-item v-show="false" name="type" label="安装包类型">
 				<uni-data-checkbox v-model="formData.type" :localdata="formOptions.type_localdata" />

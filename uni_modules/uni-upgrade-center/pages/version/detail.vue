@@ -116,7 +116,7 @@
 							<uni-forms-item label="优先级">
 								<uni-easyinput :disabled="detailsState" v-model="item.priority" type="number">
 								</uni-easyinput>
-								<show-info :top="-100" :left="-180" :content="priorityContent"></show-info>
+								<show-info :content="priorityContent"></show-info>
 							</uni-forms-item>
 						</uni-card>
 					</view>
@@ -127,20 +127,20 @@
 				<switch :disabled="detailsState"
 					@change="onSilentlyChange"
 					:checked="formData.is_silently" />
-				<show-info :top="-80" :content="silentlyContent"></show-info>
+				<show-info :content="silentlyContent"></show-info>
 			</uni-forms-item>
 			<uni-forms-item key="is_mandatory" name="is_mandatory" label="强制更新">
 				<switch :disabled="detailsState"
 					@change="onMandatoryChange"
 					:checked="formData.is_mandatory" />
-				<show-info width="230" :top="-30" :content="mandatoryContent"></show-info>
+				<show-info :content="mandatoryContent"></show-info>
 			</uni-forms-item>
 			<uni-forms-item name="stable_publish" label="上线发行">
 				<switch :disabled="detailsState"
 					@change="binddata('stable_publish', $event.detail.value),formData.stable_publish=$event.detail.value"
 					:checked="formData.stable_publish" />
-				<show-info v-if="isStable" :top="-50" width="350" :content="stablePublishContent"></show-info>
-				<show-info v-else :top="-40" :content="stablePublishContent2"></show-info>
+				<show-info v-if="isStable" :content="stablePublishContent"></show-info>
+				<show-info v-else :content="stablePublishContent2"></show-info>
 			</uni-forms-item>
 			<uni-forms-item name="create_date" label="上传时间">
 				<uni-dateformat format="yyyy-MM-dd hh:mm:ss" :date="formData.create_date" :threshold="[0, 0]" />
