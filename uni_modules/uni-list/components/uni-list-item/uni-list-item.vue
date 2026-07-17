@@ -37,7 +37,7 @@
 					</view>
 				</slot>
 			</view>
-			<uni-icons v-if="showArrow || link" :size="16" class="uni-icon-wrapper" color="#bbb" type="arrowright" />
+			<uni-icons v-if="showArrow || link" :size="16" class="uni-icon-wrapper" color="#bbb" type="right" />
 		</view>
 		<!-- #ifdef APP-NVUE -->
 	</cell>
@@ -213,14 +213,22 @@
 							"bottom": verticalPadding,
 							"left": horizontalPadding
 						}
+					} else if(paddingArr.length === 3) {
+						const [topPadding, horizontalPadding, bottomPadding] = paddingArr;
+						this.padding = {
+							"top": topPadding,
+							"right": horizontalPadding,
+							"bottom": bottomPadding,
+							"left": horizontalPadding
+						}
 					} else if (paddingArr.length === 4) {
-							const [topPadding, rightPadding, bottomPadding, leftPadding] = paddingArr;
-							this.padding = {
-								"top": topPadding,
-								"right": rightPadding,
-								"bottom": bottomPadding,
-								"left": leftPadding
-							}
+						const [topPadding, rightPadding, bottomPadding, leftPadding] = paddingArr;
+						this.padding = {
+							"top": topPadding,
+							"right": rightPadding,
+							"bottom": bottomPadding,
+							"left": leftPadding
+						}
 					}
 				},
 				immediate: true

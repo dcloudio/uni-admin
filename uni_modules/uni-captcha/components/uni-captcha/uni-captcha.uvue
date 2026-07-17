@@ -4,14 +4,14 @@
       <image class="loding" src="/uni_modules/uni-captcha/static/run.gif" v-if="loging" mode="widthFix" />
       <image class="captcha-img" :class="{opacity:loging}" @click="getImageCaptcha(true)" :src="captchaBase64" mode="widthFix" />
     </view>
-    <input @blur="focusCaptchaInput = false" @focus="focusCaptchaInput = true" :focus="focusCaptchaInput" type="digit" class="captcha" :inputBorder="false"
+    <input @blur="focusCaptchaInput = false" @focus="focusCaptchaInput = true" :focus="focusCaptchaInput" type="text" class="captcha" :inputBorder="false"
       maxlength="4" v-model="val" placeholder="请输入验证码" :cursor-spacing="cursorSpacing" />
   </view>
 </template>
 
 <script>
   export default {
-    emits: ["modelValue"],
+    emits: ["modelValue","update:modelValue"],
     props: {
       cursorSpacing: {
         type: Number,
@@ -101,7 +101,7 @@
         }).then((result : UTSJSONObject) => {
           this.captchaBase64 = (result.getString('captchaBase64') as string)
         })
-       .catch<void>((err : any | null) : void => {
+       .catch((err : any | null) : void => {
          const error = err as UniCloudError
          console.error(error)
          console.error(error.code)

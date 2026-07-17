@@ -182,8 +182,8 @@ class Calendar {
 		if (!date) {
 			date = new Date()
 		}
-
-		return this.calendar.find(item => item.fullDate === this.getDateObj(date).fullDate)
+		const res = this.calendar.find(item => item.fullDate === this.getDateObj(date).fullDate)
+		return res ? res : this.getDateObj(date)
 	}
 
 	/**
@@ -389,8 +389,8 @@ function getDefaultSecond(hideSecond) {
 }
 
 function dateCompare(startDate, endDate) {
-	startDate = new Date(fixIosDateFormat(startDate))
-	endDate = new Date(fixIosDateFormat(endDate))
+	startDate = new Date(fixIosDateFormat(typeof startDate === 'string' ? startDate.trim() : startDate))
+	endDate = new Date(fixIosDateFormat(typeof endDate === 'string' ? endDate.trim() : endDate))
 	return startDate <= endDate
 }
 

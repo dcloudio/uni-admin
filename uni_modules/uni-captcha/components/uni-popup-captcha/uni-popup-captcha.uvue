@@ -16,7 +16,7 @@
 <script>
   let confirmCallBack = ():void=>console.log('未传入回调函数')
   export default {
-    emits:["modelValue","confirm","cancel"],
+    emits:["modelValue","confirm","cancel","update:modelValue"],
     data() {
       return {
         focus: false,
