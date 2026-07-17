@@ -171,27 +171,32 @@
           const dates = [
             {
               _id: 7,
-              name: '最近七天',
+              name: '最近7天',
+              enable: true,
             },
             {
               _id: 30,
               name: '最近30天',
+              enable: true,
             },
             {
               _id: 90,
               name: '最近90天',
+              enable: true,
             },
           ];
           if (this.yesterday) {
             dates.unshift({
               _id: 1,
               name: '昨天',
+              enable: true,
             });
           }
           if (this.today) {
             dates.unshift({
               _id: 0,
               name: '今天',
+              enable: true,
             });
           }
           this.renderTabs = dates;
