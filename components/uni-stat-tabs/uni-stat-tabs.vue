@@ -249,6 +249,8 @@
           platforms.unshift({
             name,
             _id,
+            code: '',
+            enable: true,
           });
       },
       // 获取当前缓存key
@@ -258,7 +260,17 @@
       // 获取缓存
       getCache(name = this.getCurrentCacheKey()) {
         let cacheData = uni.getStorageSync(this.cacheKey) || {};
-        return cacheData[name];
+        const tabs = cacheData[name];
+        if (!Array.isArray(tabs)) return tabs;
+        if (!this.all) return tabs.filter((item) => item.name !== '全部');
+        return tabs.map((item) => {
+          if (item.name !== '全部') return item;
+          return {
+            ...item,
+            code: '',
+            enable: true,
+          };
+        });
       },
       // 设置缓存
       setCache(value, name = this.getCurrentCacheKey()) {
