@@ -21,10 +21,9 @@
   </view>
 </template>
 
-<script>
+<script setup>
   import { mapfields, stringifyQuery, getTimeOfSomeDayAgo, division, format, formatDate, parseDateTime, debounce } from '@/js_sdk/uni-stat/util.js';
-  import { popupFieldsMap } from './fieldsMap.js';
-
+  import { popupFieldsMap as popupFieldsMapSource } from './fieldsMap.js';
   const panelOption = [
     {
       title: '错误总数',
@@ -37,71 +36,72 @@
       tooltip: '时间范围内的总错误数/应用启动次数，如果小于0.01%，默认显示为0',
     },
   ];
-
-  export default {
-    data() {
-      return {
-        popupFieldsMap,
-        options: {
-          pageSize: 20,
-          pageCurrent: 1, // 当前页
-          total: 0, // 数据总量
-        },
-        query: {
-          error_hash: '',
-          create_time: [],
-        },
-        loading: false,
-        tableData: [],
-      };
-    },
-    onLoad(option) {
-      let { error_hash, create_time } = option;
-      if (error_hash) {
-        create_time = Number(create_time);
-        this.query.error_hash = error_hash;
-        this.query.create_time = [create_time, create_time + 24 * 60 * 60 * 1000];
-        this.getTableData(stringifyQuery(this.query));
-      }
-    },
-    methods: {
-      changePageCurrent(e) {
-        this.options.pageCurrent = e.current;
-        this.getTableData(stringifyQuery(this.query));
-      },
-
-      changePageSize(pageSize) {
-        this.options.pageSize = pageSize;
-        this.options.pageCurrent = 1; // 重置分页
-        this.getTableData(stringifyQuery(this.query));
-      },
-
-      getTableData(query) {
-        const { pageCurrent } = this.options;
-        this.loading = true;
-        const db = uniCloud.database();
-        db.collection('uni-stat-error-logs')
-          .where(query)
-          .orderBy('create_time', 'desc')
-          .skip((pageCurrent - 1) * this.options.pageSize)
-          .limit(this.options.pageSize)
-          .get({
-            getCount: true,
-          })
-          .then((res) => {
-            const { count, data } = res.result;
-            this.options.total = count;
-            for (const item of data) {
-              item.create_time = parseDateTime(item.create_time, 'dateTime');
-            }
-            this.tableData = data;
-          })
-          .finally(() => {
-            this.loading = false;
-          });
-      },
-    },
+  import { ref } from 'vue';
+  import { onLoad } from '@dcloudio/uni-app';
+  const popupFieldsMapState = ref(popupFieldsMapSource);
+  const popupFieldsMap = popupFieldsMapState;
+  const optionsState = ref({
+    pageSize: 20,
+    pageCurrent: 1,
+    // 当前页
+    total: 0, // 数据总量
+  });
+  const options = optionsState;
+  const queryState = ref({
+    error_hash: '',
+    create_time: [],
+  });
+  const query = queryState;
+  const loadingState = ref(false);
+  const loading = loadingState;
+  const tableDataState = ref([]);
+  const tableData = tableDataState;
+  const changePageCurrentAction = (e) => {
+    optionsState.value.pageCurrent = e.current;
+    getTableDataAction(stringifyQuery(queryState.value));
   };
+  const changePageCurrent = changePageCurrentAction;
+  const changePageSizeAction = (pageSize) => {
+    optionsState.value.pageSize = pageSize;
+    optionsState.value.pageCurrent = 1; // 重置分页
+    // 重置分页
+    getTableDataAction(stringifyQuery(queryState.value));
+  };
+  const changePageSize = changePageSizeAction;
+  const getTableDataAction = (query) => {
+    const { pageCurrent } = optionsState.value;
+    loadingState.value = true;
+    const db = uniCloud.database();
+    db.collection('uni-stat-error-logs')
+      .where(query)
+      .orderBy('create_time', 'desc')
+      .skip((pageCurrent - 1) * optionsState.value.pageSize)
+      .limit(optionsState.value.pageSize)
+      .get({
+        getCount: true,
+      })
+      .then((res) => {
+        const { count, data } = res.result;
+        optionsState.value.total = count;
+        for (const item of data) {
+          item.create_time = parseDateTime(item.create_time, 'dateTime');
+        }
+        tableDataState.value = data;
+      })
+      .finally(() => {
+        loadingState.value = false;
+      });
+  };
+  const getTableData = getTableDataAction;
+  onLoad((option) => {
+    let { error_hash, create_time } = option;
+    if (error_hash) {
+      create_time = Number(create_time);
+      queryState.value.error_hash = error_hash;
+      queryState.value.create_time = [create_time, create_time + 24 * 60 * 60 * 1000];
+      getTableDataAction(stringifyQuery(queryState.value));
+    }
+  });
 </script>
 
 <style>

@@ -11,17 +11,14 @@
   </view>
 </template>
 
-<script>
-  export default {
-    data() {
-      return {
-        errMsg: '',
-      };
-    },
-    onLoad(query) {
-      this.errMsg = query.errMsg || '';
-    },
-  };
+<script setup>
+  import { ref } from 'vue';
+  import { onLoad } from '@dcloudio/uni-app';
+  const errMsgState = ref('');
+  const errMsg = errMsgState;
+  onLoad((query) => {
+    errMsgState.value = query.errMsg || '';
+  });
 </script>
 
 <style scoped>

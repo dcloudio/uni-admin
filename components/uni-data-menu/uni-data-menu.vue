@@ -7,165 +7,146 @@
   </view>
 </template>
 
-<script>
-  import { mapActions } from 'vuex';
+<script setup>
+  import { getCurrentInstance, onBeforeMount, ref, watch } from 'vue';
+  import { useStore } from 'vuex';
   import { buildMenus } from './util.js';
-  export default {
-    data() {
-      return {
-        menus: [],
-        userMenu: [],
-        famliy: [],
-      };
-    },
-    mixins: [uniCloud.mixinDatacom],
-    props: {
-      // 当前激活菜单的 url
-      value: {
-        type: String,
-        default: '',
-      },
-      // 当前激活菜单的文字颜色
-      activeTextColor: {
-        type: String,
-        default: '#42B983',
-      },
-      // 是否只保持一个子菜单的展开
-      uniqueOpened: {
-        type: Boolean,
-        default: false,
-      },
-      staticMenu: {
-        type: Array,
-        default() {
-          return [];
-        },
-      },
-    },
-    watch: {
-      localdata: {
-        handler(newval) {
-          if (this.hasLocalData(newval)) {
-            this.userMenu = newval;
-          }
-        },
-        immediate: true,
-      },
-      // TODO 暂时无需监听，需要看后面会出现什么问题
-      // #ifdef H5
-      menus: {
-        immediate: true,
-        handler(newVal, oldVal) {
-          const item = this.menus.find((m) => m.value === this.$route.path);
-          // 设置面包屑
-          if (item) {
-            this.getMenuAncestor(item.menu_id, newVal);
-            item && this.setRoutes && this.setRoutes(this.famliy);
-          }
-        },
-      },
-      // #endif
-      $route: {
-        immediate: false,
-        handler(val, old) {
-          if (val.fullPath !== old.fullPath) {
-            this.famliy = [];
-            const menu = this.menus.find((m) => m.value === val.path);
-            const menu_id = menu && menu.menu_id;
-            this.getMenuAncestor(menu_id, this.menus);
-            this.setRoutes && this.setRoutes(this.famliy);
-          }
-        },
-      },
-    },
-    created() {
-      if (this.hasLocalData(this.localdata)) return;
-      this.load();
-    },
-    // computed:{
-    // 	userMenu() {
-    // 		return this.getUserMenu(this.menus)
-    // 	}
-    // },
-    methods: {
-      ...mapActions({
-        setRoutes: 'app/setRoutes',
-      }),
-      getUserMenu(menuList) {
-        const { permission, role } = uniCloud.getCurrentUserInfo();
-        // 标记叶子节点
-        menuList.map((item) => {
-          if (!menuList.some((subMenuItem) => subMenuItem.parent_id === item.menu_id)) {
-            item.isLeafNode = true;
-          }
-        });
 
-        // 删除无权限访问的菜单
-        if (!role.includes('admin')) {
-          menuList = menuList.filter((item) => {
-            if (item.isLeafNode) {
-              if (item.permission && item.permission.length) {
-                return item.permission.some((item) => permission.indexOf(item) > -1);
-              }
-              return false;
-            }
-            return true;
-          });
-        }
-        return buildMenus(menuList);
-      },
-      onSelect(menu) {
-        this.famliy = [];
-        this.getMenuAncestor(menu.menu_id, this.menus);
-        this.emit(menu);
-      },
-      emit(menu) {
-        this.$emit('select', menu, this.famliy);
-        this.$emit('input', menu.value);
-      },
-      hasLocalData(value) {
-        return Array.isArray(value) && value.length > 0;
-      },
-      load() {
-        if (this.mixinDatacomLoading == true) {
-          return;
-        }
-        this.mixinDatacomLoading = true;
-        this.mixinDatacomGet()
-          .then((res) => {
-            this.mixinDatacomLoading = false;
-            const { data, count } = res.result;
-            this.menus = data;
-            this.userMenu = this.getUserMenu(this.menus);
-          })
-          .catch((err) => {
-            this.mixinDatacomLoading = false;
-            this.mixinDatacomErrorMessage = err;
-          });
-      },
-      getMenuAncestor(menuId, menus) {
-        menus.forEach((item) => {
-          if (item.menu_id === menuId) {
-            const route = {
-              name: item.text,
-            };
-            const path = item.value;
-            if (path) {
-              route.to = {
-                path,
-              };
-            }
-            this.famliy.unshift(route);
-            const parent_id = item.parent_id;
-            if (parent_id) {
-              this.getMenuAncestor(parent_id, menus);
-            }
-          }
-        });
-        // return famliy
+  defineOptions({ mixins: [uniCloud.mixinDatacom] });
+
+  const props = defineProps({
+    // 当前激活菜单的 url
+    value: {
+      type: String,
+      default: '',
+    },
+    // 当前激活菜单的文字颜色
+    activeTextColor: {
+      type: String,
+      default: '#42B983',
+    },
+    // 是否只保持一个子菜单的展开
+    uniqueOpened: {
+      type: Boolean,
+      default: false,
+    },
+    staticMenu: {
+      type: Array,
+      default() {
+        return [];
       },
     },
+  });
+
+  const emitEvent = defineEmits(['select', 'input']);
+  const store = useStore();
+  const { proxy } = getCurrentInstance();
+  const menus = ref([]);
+  const userMenu = ref([]);
+  const famliy = ref([]);
+
+  const setRoutes = (routes) => store.dispatch('app/setRoutes', routes);
+  const hasLocalData = (value) => Array.isArray(value) && value.length > 0;
+
+  const getUserMenu = (menuList) => {
+    const { permission, role } = uniCloud.getCurrentUserInfo();
+    menuList.forEach((item) => {
+      if (!menuList.some((subMenuItem) => subMenuItem.parent_id === item.menu_id)) {
+        item.isLeafNode = true;
+      }
+    });
+
+    if (!role.includes('admin')) {
+      menuList = menuList.filter((item) => {
+        if (item.isLeafNode) {
+          if (item.permission && item.permission.length) {
+            return item.permission.some((item) => permission.indexOf(item) > -1);
+          }
+          return false;
+        }
+        return true;
+      });
+    }
+    return buildMenus(menuList);
   };
+
+  const getMenuAncestor = (menuId, menuList) => {
+    menuList.forEach((item) => {
+      if (item.menu_id !== menuId) return;
+      const route = { name: item.text };
+      if (item.value) route.to = { path: item.value };
+      famliy.value.unshift(route);
+      if (item.parent_id) getMenuAncestor(item.parent_id, menuList);
+    });
+  };
+
+  const emit = (menu) => {
+    emitEvent('select', menu, famliy.value);
+    emitEvent('input', menu.value);
+  };
+
+  const onSelect = (menu) => {
+    famliy.value = [];
+    getMenuAncestor(menu.menu_id, menus.value);
+    emit(menu);
+  };
+
+  const load = () => {
+    if (proxy.mixinDatacomLoading === true) return;
+    proxy.mixinDatacomLoading = true;
+    proxy
+      .mixinDatacomGet()
+      .then((res) => {
+        proxy.mixinDatacomLoading = false;
+        menus.value = res.result.data;
+        userMenu.value = getUserMenu(menus.value);
+      })
+      .catch((err) => {
+        proxy.mixinDatacomLoading = false;
+        proxy.mixinDatacomErrorMessage = err;
+      });
+  };
+
+  watch(
+    () => proxy.localdata,
+    (value) => {
+      if (hasLocalData(value)) userMenu.value = value;
+    },
+    { immediate: true }
+  );
+
+  // #ifdef H5
+  watch(
+    menus,
+    (value) => {
+      const route = proxy.$route;
+      const item = route && value.find((menu) => menu.value === route.path);
+      if (item) {
+        getMenuAncestor(item.menu_id, value);
+        setRoutes(famliy.value);
+      }
+    },
+    { immediate: true }
+  );
+  // #endif
+
+  watch(
+    () => proxy.$route,
+    (value, oldValue) => {
+      if (value.fullPath !== oldValue.fullPath) {
+        famliy.value = [];
+        const menu = menus.value.find((item) => item.value === value.path);
+        getMenuAncestor(menu && menu.menu_id, menus.value);
+        setRoutes(famliy.value);
+      }
+    }
+  );
+
+  onBeforeMount(() => {
+    if (!hasLocalData(proxy.localdata)) load();
+  });
+
+  defineExpose({ load });
 </script>
 
 <style></style>

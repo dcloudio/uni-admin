@@ -30,35 +30,32 @@
   </uni-table>
 </template>
 
-<script>
-  export default {
+<script setup>
+  defineOptions({
     name: 'uni-stat-table',
-    data() {
-      return {};
-    },
-    props: {
-      data: {
-        type: Array,
-        default: () => {
-          return [];
-        },
-      },
-      filedsMap: {
-        type: Array,
-        default: () => {
-          return [];
-        },
-      },
-      loading: {
-        type: Boolean,
-        default: false,
-      },
-      tooltip: {
-        type: Boolean,
-        default: false,
+  });
+  const props = defineProps({
+    data: {
+      type: Array,
+      default: () => {
+        return [];
       },
     },
-  };
+    filedsMap: {
+      type: Array,
+      default: () => {
+        return [];
+      },
+    },
+    loading: {
+      type: Boolean,
+      default: false,
+    },
+    tooltip: {
+      type: Boolean,
+      default: false,
+    },
+  });
 </script>
 
 <style>

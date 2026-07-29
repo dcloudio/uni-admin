@@ -1,6 +1,6 @@
 <template>
   <view class="uni-container">
-    <uni-forms labelWidth="80" ref="form" v-model="formData" :rules="rules" validateTrigger="bind" @submit="submit">
+    <uni-forms labelWidth="80" ref="formRef" v-model="formData" :rules="rules" validateTrigger="bind" @submit="submit">
       <uni-forms-item name="menu_id" label="标识" required>
         <uni-easyinput v-model="formData.menu_id" :clearable="false" placeholder="请输入菜单项的ID，不可重复" />
       </uni-forms-item>
@@ -46,7 +46,7 @@
         >
       </view>
     </uni-forms>
-    <uni-popup class="icon-modal-box" ref="iconPopup" type="center">
+    <uni-popup class="icon-modal-box" ref="iconPopupRef" type="center">
       <view class="icon-modal icon-modal-pc">
         <Icons :tag="false" :fix-window="false" />
       </view>
@@ -54,14 +54,12 @@
   </view>
 </template>
 
-<script>
+<script setup>
   import validator from '@/js_sdk/validator/opendb-admin-menus.js';
   import Icons from '@/pages/demo/icons/icons.vue';
-
   const db = uniCloud.database();
   const dbCmd = db.command;
   const dbCollectionName = 'opendb-admin-menus';
-
   function getValidator(fields) {
     let result = {};
     for (let key in validator) {
@@ -71,81 +69,73 @@
     }
     return result;
   }
-
-  export default {
-    components: {
-      Icons,
-    },
-    data() {
-      return {
-        formData: {
-          menu_id: '',
-          name: '',
-          icon: '',
-          url: '',
-          sort: null,
-          parent_id: '',
-          permission: [],
-          enable: true,
-        },
-        rules: {
-          ...getValidator(['menu_id', 'name', 'icon', 'url', 'sort', 'parent_id', 'permission', 'enable']),
-        },
-      };
-    },
-    onLoad(e) {
-      if (e.parent_id) {
-        this.formData.parent_id = e.parent_id;
-      }
-    },
-    methods: {
-      /**
-       * 触发表单提交
-       */
-      submitForm() {
-        this.$refs.form.submit();
-      },
-
-      /**
-       * 表单提交
-       * @param {Object} event 回调参数 Function(callback:{value,errors})
-       */
-      submit(event) {
-        const { value, errors } = event.detail;
-
-        // 表单校验失败页面会提示报错 ，要停止表单提交逻辑
-        if (errors) {
-          return;
-        }
-        uni.showLoading({
-          title: '提交中...',
-          mask: true,
-        });
-        // 使用 uni-clientDB 提交数据
-        db.collection(dbCollectionName)
-          .add(value)
-          .then((res) => {
-            uni.showToast({
-              title: '新增成功',
-            });
-            this.getOpenerEventChannel().emit('refreshData');
-            setTimeout(() => uni.navigateBack(), 500);
-          })
-          .catch((err) => {
-            uni.showModal({
-              content: err.message || '请求服务失败',
-              showCancel: false,
-            });
-          })
-          .finally(() => {
-            uni.hideLoading();
-          });
-      },
-      showIconPopup() {
-        this.$refs.iconPopup.open();
-      },
-    },
+  import { getCurrentInstance, ref } from 'vue';
+  import { onLoad } from '@dcloudio/uni-app';
+  const { proxy } = getCurrentInstance();
+  const formDataState = ref({
+    menu_id: '',
+    name: '',
+    icon: '',
+    url: '',
+    sort: null,
+    parent_id: '',
+    permission: [],
+    enable: true,
+  });
+  const formData = formDataState;
+  const rulesState = ref({
+    ...getValidator(['menu_id', 'name', 'icon', 'url', 'sort', 'parent_id', 'permission', 'enable']),
+  });
+  const rules = rulesState;
+  const formRef = ref(null);
+  const iconPopupRef = ref(null);
+  const submitFormAction = () => {
+    formRef.value.submit();
   };
+  const submitForm = submitFormAction;
+  const submitAction = (event) => {
+    const { value, errors } = event.detail;
+
+    // 表单校验失败页面会提示报错 ，要停止表单提交逻辑
+    // 表单校验失败页面会提示报错 ，要停止表单提交逻辑
+    if (errors) {
+      return;
+    }
+    uni.showLoading({
+      title: '提交中...',
+      mask: true,
+    });
+    // 使用 uni-clientDB 提交数据
+    // 使用 uni-clientDB 提交数据
+    db.collection(dbCollectionName)
+      .add(value)
+      .then((res) => {
+        uni.showToast({
+          title: '新增成功',
+        });
+        proxy.getOpenerEventChannel().emit('refreshData');
+        setTimeout(() => uni.navigateBack(), 500);
+      })
+      .catch((err) => {
+        uni.showModal({
+          content: err.message || '请求服务失败',
+          showCancel: false,
+        });
+      })
+      .finally(() => {
+        uni.hideLoading();
+      });
+  };
+  const submit = submitAction;
+  const showIconPopupAction = () => {
+    iconPopupRef.value.open();
+  };
+  const showIconPopup = showIconPopupAction;
+  onLoad((e) => {
+    if (e.parent_id) {
+      formDataState.value.parent_id = e.parent_id;
+    }
+  });
 </script>
 <style scoped>
   .icon-modal-box {

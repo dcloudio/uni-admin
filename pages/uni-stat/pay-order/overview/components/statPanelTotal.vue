@@ -42,174 +42,203 @@
   </view>
 </template>
 
-<script>
+<script setup>
   import { formatterData, stringifyQuery, stringifyField, stringifyGroupField, getTimeOfSomeDayAgo, formatDate, parseDateTime, debounce } from '@/js_sdk/uni-stat/util.js';
   import timeUtil from '@/js_sdk/uni-stat/timeUtil.js';
   import { statPanelTodayFieldsMap } from '../fieldsMap.js';
-  let fieldsMap = statPanelTodayFieldsMap;
-
-  export default {
-    props: {
-      query: {
-        type: [Object],
-        default: function () {
-          return {};
-        },
+  let fieldsMapSource = statPanelTodayFieldsMap;
+  import { ref, watch } from 'vue';
+  const props = defineProps({
+    query: {
+      type: [Object],
+      default: function () {
+        return {};
       },
     },
-    data() {
-      return {
-        tableName: 'uni-stat-pay-result',
-        fieldsMap,
-        panelData: {
-          today: { pay_total_amount: '-', pay_order_count: '-' },
-          yesterday: { pay_total_amount: '-', pay_order_count: '-' },
-          beforeyesterday: { pay_total_amount: '-', pay_order_count: '-' },
-          week: { pay_total_amount: '-', pay_order_count: '-' },
-          month: { pay_total_amount: '-', pay_order_count: '-' },
-          quarter: { pay_total_amount: '-', pay_order_count: '-' },
-          year: { pay_total_amount: '-', pay_order_count: '-' },
-          total: { pay_total_amount: '-', pay_order_count: '-' },
-        },
-        loading: false,
-      };
+  });
+  const tableNameState = ref('uni-stat-pay-result');
+  const tableName = tableNameState;
+  const fieldsMapState = ref(fieldsMapSource);
+  const fieldsMap = fieldsMapState;
+  const panelDataState = ref({
+    today: {
+      pay_total_amount: '-',
+      pay_order_count: '-',
     },
-    created() {
-      this.getCloudDataDebounce = debounce(() => {
-        this.getCloudData();
-      }, 300);
-      this.getCloudDataDebounce();
+    yesterday: {
+      pay_total_amount: '-',
+      pay_order_count: '-',
     },
-    methods: {
-      // 获取云端数据
-      getCloudData() {
-        let query = this.query;
-        if (!query.appid) return;
-        this.loading = true;
-        query = stringifyQuery(query, true, ['uni_platform']);
-        let where = this.getWhere(query);
-        if (query) {
-          where = `${query} && (${where})`;
-        }
-        //console.log('where: ', where)
-        const db = uniCloud.database();
-        db.collection(this.tableName)
-          .where(where)
-          .field(`${stringifyField(fieldsMap)}, dimension, stat_date.date_str as stat_time, start_time`)
-          .groupBy(`stat_time, dimension`)
-          .groupField(stringifyGroupField(fieldsMap) + ',last(start_time) as start_time')
-          //.field(`pay_total_amount,pay_order_count, dimension, start_time`)
-          .get()
-          .then((res) => {
-            let data = res.result.data;
-            data.map((item, index) => {
-              if (!item.actual_total_amount) item.actual_total_amount = item.pay_total_amount - item.refund_total_amount;
-            });
-            // 数据格式化
-            data = formatterData({
-              fieldsMap,
-              data,
-            });
-            this.loading = false;
-            //console.log('data: ', data)
-            Object.assign(this.panelData, this.setPanelData(data));
-            //console.log('this.panelData: ', this.panelData)
-          });
-        // 再单独获取下总金额
-        let totalWhere = `${query} && dimension == "year"`;
-        //console.log('totalWhere: ', totalWhere)
-        db.collection(this.tableName)
-          .where(totalWhere)
-          .field(`${stringifyField(fieldsMap)}, dimension`)
-          .groupBy(`dimension`)
-          .groupField(stringifyGroupField(fieldsMap))
-          .get()
-          .then((res) => {
-            let data = res.result.data;
-            data.map((item, index) => {
-              item.actual_total_amount = item.pay_total_amount - item.refund_total_amount;
-            });
-            // 数据格式化
-            data = formatterData({
-              fieldsMap,
-              data,
-            });
-            Object.assign(this.panelData, {
-              total: data[0] || { pay_total_amount: 0, pay_order_count: 0, create_total_amount: 0, refund_total_amount: 0, actual_total_amount: 0 },
-            });
-          });
-      },
-      // 获取查询条件
-      getWhere(query) {
-        let where;
-        // 昨日的条件 or 今日的条件 or 本周的条件 or 本月的条件 or 本季度的条件 or 本年度的条件
-        let nowTime = Date.now();
-
-        let today = timeUtil.getOffsetStartAndEnd('day', 0, nowTime);
-
-        let yesterday = timeUtil.getOffsetStartAndEnd('day', -1, nowTime);
-
-        let beforeyesterday = timeUtil.getOffsetStartAndEnd('day', -2, nowTime);
-
-        let week = timeUtil.getOffsetStartAndEnd('week', 0, nowTime);
-
-        let month = timeUtil.getOffsetStartAndEnd('month', 0, nowTime);
-
-        let quarter = timeUtil.getOffsetStartAndEnd('quarter', 0, nowTime);
-
-        let year = timeUtil.getOffsetStartAndEnd('year', 0, nowTime);
-
-        where = `(dimension=="day" && start_time==${today.startTime} && end_time==${today.endTime}) || (dimension=="day" && start_time==${yesterday.startTime} && end_time==${yesterday.endTime}) || (dimension=="day" && start_time==${beforeyesterday.startTime} && end_time==${beforeyesterday.endTime}) || (dimension=="week" && start_time==${week.startTime} && end_time==${week.endTime}) || (dimension=="month" && start_time==${month.startTime} && end_time==${month.endTime}) || (dimension=="quarter" && start_time==${quarter.startTime} && end_time==${quarter.endTime}) || (dimension=="year" && start_time==${year.startTime} && end_time==${year.endTime})`;
-        return where;
-      },
-      // 设置面板数据
-      setPanelData(data) {
-        let nowTime = Date.now();
-        let todayData = timeUtil.getOffsetStartAndEnd('day', 0, nowTime);
-        let yesterdayData = timeUtil.getOffsetStartAndEnd('day', -1, nowTime);
-        let beforeyesterdayData = timeUtil.getOffsetStartAndEnd('day', -2, nowTime);
-        let today = data.find((item) => {
-          return item.dimension === 'day' && item.start_time === todayData.startTime;
-        });
-        let yesterday = data.find((item) => {
-          return item.dimension === 'day' && item.start_time === yesterdayData.startTime;
-        });
-        let beforeyesterday = data.find((item) => {
-          return item.dimension === 'day' && item.start_time === beforeyesterdayData.startTime;
-        });
-        let week = data.find((item) => {
-          return item.dimension === 'week';
-        });
-        let month = data.find((item) => {
-          return item.dimension === 'month';
-        });
-        let quarter = data.find((item) => {
-          return item.dimension === 'quarter';
-        });
-        let year = data.find((item) => {
-          return item.dimension === 'year';
-        });
-        let defaultData = { pay_total_amount: 0, pay_order_count: 0, create_total_amount: 0, refund_total_amount: 0, actual_total_amount: 0 };
-        return {
-          today: today || defaultData,
-          yesterday: yesterday || defaultData,
-          beforeyesterday: beforeyesterday || defaultData,
-          week: week || defaultData,
-          month: month || defaultData,
-          quarter: quarter || defaultData,
-          year: year || defaultData,
-        };
-      },
+    beforeyesterday: {
+      pay_total_amount: '-',
+      pay_order_count: '-',
     },
-    watch: {
-      query: {
-        deep: true,
-        handler(val) {
-          this.getCloudDataDebounce();
-        },
-      },
+    week: {
+      pay_total_amount: '-',
+      pay_order_count: '-',
     },
+    month: {
+      pay_total_amount: '-',
+      pay_order_count: '-',
+    },
+    quarter: {
+      pay_total_amount: '-',
+      pay_order_count: '-',
+    },
+    year: {
+      pay_total_amount: '-',
+      pay_order_count: '-',
+    },
+    total: {
+      pay_total_amount: '-',
+      pay_order_count: '-',
+    },
+  });
+  const panelData = panelDataState;
+  const loadingState = ref(false);
+  const loading = loadingState;
+  const getCloudDataDebounceState = ref(undefined);
+  const getCloudDataDebounce = getCloudDataDebounceState;
+  const getCloudDataAction = () => {
+    let query = props.query;
+    if (!query.appid) return;
+    loadingState.value = true;
+    query = stringifyQuery(query, true, ['uni_platform']);
+    let where = getWhereAction(query);
+    if (query) {
+      where = `${query} && (${where})`;
+    }
+    //console.log('where: ', where)
+    //console.log('where: ', where)
+    const db = uniCloud.database();
+    db.collection(tableNameState.value)
+      .where(where)
+      .field(`${stringifyField(fieldsMapSource)}, dimension, stat_date.date_str as stat_time, start_time`)
+      .groupBy(`stat_time, dimension`)
+      .groupField(stringifyGroupField(fieldsMapSource) + ',last(start_time) as start_time')
+      //.field(`pay_total_amount,pay_order_count, dimension, start_time`)
+      .get()
+      .then((res) => {
+        let data = res.result.data;
+        data.map((item, index) => {
+          if (!item.actual_total_amount) item.actual_total_amount = item.pay_total_amount - item.refund_total_amount;
+        });
+        // 数据格式化
+        data = formatterData({
+          fieldsMap: fieldsMapSource,
+          data,
+        });
+        loadingState.value = false;
+        //console.log('data: ', data)
+        Object.assign(panelDataState.value, setPanelDataAction(data));
+        //console.log('this.panelData: ', this.panelData)
+      });
+    // 再单独获取下总金额
+    // 再单独获取下总金额
+    let totalWhere = `${query} && dimension == "year"`;
+    //console.log('totalWhere: ', totalWhere)
+    //console.log('totalWhere: ', totalWhere)
+    db.collection(tableNameState.value)
+      .where(totalWhere)
+      .field(`${stringifyField(fieldsMapSource)}, dimension`)
+      .groupBy(`dimension`)
+      .groupField(stringifyGroupField(fieldsMapSource))
+      .get()
+      .then((res) => {
+        let data = res.result.data;
+        data.map((item, index) => {
+          item.actual_total_amount = item.pay_total_amount - item.refund_total_amount;
+        });
+        // 数据格式化
+        data = formatterData({
+          fieldsMap: fieldsMapSource,
+          data,
+        });
+        Object.assign(panelDataState.value, {
+          total: data[0] || {
+            pay_total_amount: 0,
+            pay_order_count: 0,
+            create_total_amount: 0,
+            refund_total_amount: 0,
+            actual_total_amount: 0,
+          },
+        });
+      });
   };
+  const getCloudData = getCloudDataAction;
+  const getWhereAction = (query) => {
+    let where;
+    // 昨日的条件 or 今日的条件 or 本周的条件 or 本月的条件 or 本季度的条件 or 本年度的条件
+    // 昨日的条件 or 今日的条件 or 本周的条件 or 本月的条件 or 本季度的条件 or 本年度的条件
+    let nowTime = Date.now();
+    let today = timeUtil.getOffsetStartAndEnd('day', 0, nowTime);
+    let yesterday = timeUtil.getOffsetStartAndEnd('day', -1, nowTime);
+    let beforeyesterday = timeUtil.getOffsetStartAndEnd('day', -2, nowTime);
+    let week = timeUtil.getOffsetStartAndEnd('week', 0, nowTime);
+    let month = timeUtil.getOffsetStartAndEnd('month', 0, nowTime);
+    let quarter = timeUtil.getOffsetStartAndEnd('quarter', 0, nowTime);
+    let year = timeUtil.getOffsetStartAndEnd('year', 0, nowTime);
+    where = `(dimension=="day" && start_time==${today.startTime} && end_time==${today.endTime}) || (dimension=="day" && start_time==${yesterday.startTime} && end_time==${yesterday.endTime}) || (dimension=="day" && start_time==${beforeyesterday.startTime} && end_time==${beforeyesterday.endTime}) || (dimension=="week" && start_time==${week.startTime} && end_time==${week.endTime}) || (dimension=="month" && start_time==${month.startTime} && end_time==${month.endTime}) || (dimension=="quarter" && start_time==${quarter.startTime} && end_time==${quarter.endTime}) || (dimension=="year" && start_time==${year.startTime} && end_time==${year.endTime})`;
+    return where;
+  };
+  const getWhere = getWhereAction;
+  const setPanelDataAction = (data) => {
+    let nowTime = Date.now();
+    let todayData = timeUtil.getOffsetStartAndEnd('day', 0, nowTime);
+    let yesterdayData = timeUtil.getOffsetStartAndEnd('day', -1, nowTime);
+    let beforeyesterdayData = timeUtil.getOffsetStartAndEnd('day', -2, nowTime);
+    let today = data.find((item) => {
+      return item.dimension === 'day' && item.start_time === todayData.startTime;
+    });
+    let yesterday = data.find((item) => {
+      return item.dimension === 'day' && item.start_time === yesterdayData.startTime;
+    });
+    let beforeyesterday = data.find((item) => {
+      return item.dimension === 'day' && item.start_time === beforeyesterdayData.startTime;
+    });
+    let week = data.find((item) => {
+      return item.dimension === 'week';
+    });
+    let month = data.find((item) => {
+      return item.dimension === 'month';
+    });
+    let quarter = data.find((item) => {
+      return item.dimension === 'quarter';
+    });
+    let year = data.find((item) => {
+      return item.dimension === 'year';
+    });
+    let defaultData = {
+      pay_total_amount: 0,
+      pay_order_count: 0,
+      create_total_amount: 0,
+      refund_total_amount: 0,
+      actual_total_amount: 0,
+    };
+    return {
+      today: today || defaultData,
+      yesterday: yesterday || defaultData,
+      beforeyesterday: beforeyesterday || defaultData,
+      week: week || defaultData,
+      month: month || defaultData,
+      quarter: quarter || defaultData,
+      year: year || defaultData,
+    };
+  };
+  const setPanelData = setPanelDataAction;
+  watch(
+    () => props.query,
+    (val) => {
+      getCloudDataDebounceState.value();
+    },
+    {
+      deep: true,
+    }
+  );
+  getCloudDataDebounceState.value = debounce(() => {
+    getCloudDataAction();
+  }, 300);
+  getCloudDataDebounceState.value();
 </script>
 
 <style lang="scss" scoped>

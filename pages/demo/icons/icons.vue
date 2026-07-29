@@ -24,81 +24,69 @@
   </view>
 </template>
 
-<script>
+<script setup>
   // 导入名为 "icons" 的模块，路径为 './uni-icons.js'
-  import icons from './uni-icons.js';
+  import iconsSource from './uni-icons.js';
 
   // 导出默认模块
-  export default {
-    // 数据属性
-    data() {
-      return {
-        // 数据属性：icons
-        icons,
-      };
+  import { ref } from 'vue';
+  const props = defineProps({
+    // 属性：tag
+    tag: {
+      // 类型为布尔型
+      type: Boolean,
+      // 默认值为 true
+      default: true,
     },
-
-    // 属性
-    props: {
-      // 属性：tag
-      tag: {
-        // 类型为布尔型
-        type: Boolean,
-        // 默认值为 true
-        default: true,
-      },
-      // 属性：fixWindow
-      fixWindow: {
-        // 类型为布尔型
-        type: Boolean,
-        // 默认值为 true
-        default: true,
-      },
+    // 属性：fixWindow
+    fixWindow: {
+      // 类型为布尔型
+      type: Boolean,
+      // 默认值为 true
+      default: true,
     },
+  });
+  const iconsState = ref(iconsSource);
+  const icons = iconsState;
+  const setClipboardDataAction = (type, icon) => {
+    // 定义变量 data，值为 'uni-icons-' 加上 icon 参数
+    let data = 'uni-icons-' + icon;
 
-    // 方法
-    methods: {
-      // 方法：setClipboardData，参数为 type 和 icon
-      setClipboardData(type, icon) {
-        // 定义变量 data，值为 'uni-icons-' 加上 icon 参数
-        let data = 'uni-icons-' + icon;
+    // 如果 this.tag 为真且 type 等于 'tag'
+    // 如果 this.tag 为真且 type 等于 'tag'
+    if (props.tag && type === 'tag') {
+      // 将 data 的值修改为带有 class 属性的字符串
+      data = '<view class="' + data + '"></view>';
+    }
 
-        // 如果 this.tag 为真且 type 等于 'tag'
-        if (this.tag && type === 'tag') {
-          // 将 data 的值修改为带有 class 属性的字符串
-          data = '<view class="' + data + '"></view>';
-        }
-
-        // 调用 uni.setClipboardData 函数
-        uni.setClipboardData({
-          // 数据为变量 data 的值
-          data,
-
-          // 成功回调函数
-          success(res) {
-            // 调用 uni.showToast 函数
-            uni.showToast({
-              // 图标为 'none'
-              icon: 'none',
-              // 提示信息为 '复制 ' 加上 data 的值，再加上 ' 成功！'
-              title: '复制 ' + data + ' 成功！',
-            });
-          },
-
-          // 失败回调函数
-          fail(res) {
-            // 调用 uni.showModal 函数
-            uni.showModal({
-              // 弹窗内容为 '复制 ' 加上 data 的值，再加上 ' 失败！'
-              content: '复制 ' + data + ' 失败！',
-              // 不显示取消按钮
-              showCancel: false,
-            });
-          },
+    // 调用 uni.setClipboardData 函数
+    // 调用 uni.setClipboardData 函数
+    uni.setClipboardData({
+      // 数据为变量 data 的值
+      data,
+      // 成功回调函数
+      success(res) {
+        // 调用 uni.showToast 函数
+        uni.showToast({
+          // 图标为 'none'
+          icon: 'none',
+          // 提示信息为 '复制 ' 加上 data 的值，再加上 ' 成功！'
+          title: '复制 ' + data + ' 成功！',
         });
       },
-    },
+      // 失败回调函数
+      fail(res) {
+        // 调用 uni.showModal 函数
+        uni.showModal({
+          // 弹窗内容为 '复制 ' 加上 data 的值，再加上 ' 失败！'
+          content: '复制 ' + data + ' 失败！',
+          // 不显示取消按钮
+          showCancel: false,
+        });
+      },
+    });
   };
+  const setClipboardData = setClipboardDataAction;
 </script>
 
 <style lang="scss">

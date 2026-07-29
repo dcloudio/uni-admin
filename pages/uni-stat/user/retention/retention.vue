@@ -109,331 +109,361 @@
   </view>
 </template>
 
-<script>
-  import { mapfields, stringifyQuery, stringifyField, stringifyGroupField, getTimeOfSomeDayAgo, division, format, formatDate, debounce } from '@/js_sdk/uni-stat/util.js';
+<script setup>
+  import {
+    mapfields,
+    stringifyQuery,
+    stringifyField as stringifyFieldSource,
+    stringifyGroupField,
+    getTimeOfSomeDayAgo,
+    division,
+    format,
+    formatDate,
+    debounce,
+  } from '@/js_sdk/uni-stat/util.js';
   import fieldsFactory from './fieldsMap.js';
-  export default {
-    data() {
+  import { computed, ref, watch } from 'vue';
+  const queryState = ref({
+    dimension: 'day',
+    appid: '',
+    platform_id: '',
+    uni_platform: '',
+    version_id: '',
+    channel_id: '',
+    start_time: [],
+  });
+  const query = queryState;
+  const optionsState = ref({
+    pageSize: 20,
+    pageCurrent: 1,
+    // 当前页
+    total: 0, // 数据总量
+  });
+  const options = optionsState;
+  const loadingState = ref(false);
+  const loading = loadingState;
+  const currentDateTabState = ref(0);
+  const currentDateTab = currentDateTabState;
+  const tableDataState = ref([]);
+  const tableData = tableDataState;
+  const chartDataState = ref({});
+  const chartData = chartDataState;
+  const fieldState = ref('new_user');
+  const field = fieldState;
+  const fieldsState = ref([
+    {
+      _id: 'new_user',
+      name: '新增留存',
+      tooltip: '指定时间新增（即首次访问应用）用户，在之后的第N天，再次访问应用的用户数占比',
+    },
+    {
+      _id: 'active_user',
+      name: '活跃留存',
+      tooltip: '指定时间活跃（即访问应用）用户，在之后的第N天，再次访问应用的用户数占比',
+    },
+  ]);
+  const fields = fieldsState;
+  const keyState = ref(1);
+  const key = keyState;
+  const channelDataState = ref([]);
+  const channelData = channelDataState;
+  const errorMessageState = ref('');
+  const errorMessage = errorMessageState;
+  const debounceGetState = ref(undefined);
+  const debounceGet = debounceGetState;
+  const fieldsMapComputed = computed(() => {
+    const title = fieldState.value === 'active_user' ? '活跃用户' : '新增用户';
+    const maps = [
+      {
+        title,
+        field: `${fieldState.value}_count`,
+        stat: 0,
+      },
+    ];
+    return fieldsFactory(maps);
+  });
+  const fieldsMap = fieldsMapComputed;
+  const fieldNameComputed = computed(() => {
+    let name = '';
+    fieldsState.value.forEach((item) => {
+      if (item._id === fieldState.value) {
+        name = item.name;
+      }
+    });
+    return name;
+  });
+  const fieldName = fieldNameComputed;
+  const keyNameComputed = computed(() => {
+    return keysComputed.value.forEach((item) => {
+      if (item._id === keyState.value) {
+        return item.name;
+      }
+    });
+  });
+  const keyName = keyNameComputed;
+  const keysComputed = computed(() => {
+    const values = [1, 2, 3, 4, 5, 6, 7, 14, 30];
+    return values.map((val) => {
       return {
-        query: {
-          dimension: 'day',
-          appid: '',
-          platform_id: '',
-          uni_platform: '',
-          version_id: '',
-          channel_id: '',
-          start_time: [],
-        },
-        options: {
-          pageSize: 20,
-          pageCurrent: 1, // 当前页
-          total: 0, // 数据总量
-        },
-        loading: false,
-        currentDateTab: 0,
-        tableData: [],
-        chartData: {},
-        field: 'new_user',
-        fields: [
-          {
-            _id: 'new_user',
-            name: '新增留存',
-            tooltip: '指定时间新增（即首次访问应用）用户，在之后的第N天，再次访问应用的用户数占比',
-          },
-          {
-            _id: 'active_user',
-            name: '活跃留存',
-            tooltip: '指定时间活跃（即访问应用）用户，在之后的第N天，再次访问应用的用户数占比',
-          },
-        ],
-        key: 1,
-        channelData: [],
-        errorMessage: '',
+        _id: val,
+        name: `${val}天后`,
       };
-    },
-    computed: {
-      fieldsMap() {
-        const title = this.field === 'active_user' ? '活跃用户' : '新增用户';
-        const maps = [
-          {
-            title,
-            field: `${this.field}_count`,
-            stat: 0,
-          },
-        ];
-        return fieldsFactory(maps);
-      },
-      fieldName() {
-        let name = '';
-        this.fields.forEach((item) => {
-          if (item._id === this.field) {
-            name = item.name;
-          }
-        });
-        return name;
-      },
-      keyName() {
-        return this.keys.forEach((item) => {
-          if (item._id === this.key) {
-            return item.name;
-          }
-        });
-      },
-      keys() {
-        const values = [1, 2, 3, 4, 5, 6, 7, 14, 30];
-        return values.map((val) => {
-          return {
-            _id: val,
-            name: `${val}天后`,
-          };
-        });
-      },
-      channelQuery() {
-        const platform_id = this.query.platform_id;
-        return stringifyQuery({
-          platform_id,
-        });
-      },
-      versionQuery() {
-        const { appid, uni_platform } = this.query;
-        const query = stringifyQuery({
-          appid,
-          uni_platform,
-        });
-        return query;
-      },
-    },
-    created() {
-      this.debounceGet = debounce(() => {
-        this.getAllData(this.query);
-      }, 300);
-      this.getChannelData();
-    },
-    watch: {
-      query: {
-        deep: true,
-        handler(val) {
-          this.options.pageCurrent = 1; // 重置分页
-          this.debounceGet();
-        },
-      },
-      key() {
-        this.debounceGet();
-      },
-      field() {
-        this.debounceGet();
-      },
-    },
-    methods: {
-      useDatetimePicker() {
-        this.currentDateTab = -1;
-      },
-      changeAppid(id) {
-        this.getChannelData(id, false);
-      },
-      changePlatform(id, index, name, item) {
-        this.getChannelData(null, id);
-        this.query.version_id = 0;
-        this.query.uni_platform = item.code;
-      },
-      changeTimeRange(id, index) {
-        this.currentDateTab = index;
-        const start = getTimeOfSomeDayAgo(id),
-          end = getTimeOfSomeDayAgo(0) - 1;
-        this.query.start_time = [start, end];
-      },
-
-      changePageCurrent(e) {
-        this.options.pageCurrent = e.current;
-        this.getTabelData(this.query);
-      },
-
-      changePageSize(pageSize) {
-        this.options.pageSize = pageSize;
-        this.options.pageCurrent = 1; // 重置分页
-        this.getTabelData(this.query);
-      },
-
-      // 此处 util 中的 stringifyField 不满足需求，特殊处理 stringifyField
-      stringifyField(mapping, goal, prop) {
-        if (goal) {
-          mapping = mapping.filter((f) => f.field === goal);
-        }
-        if (prop) {
-          mapping = mapping.filter((f) => f.field && f.hasOwnProperty(prop));
-        }
-        const fields = mapping
-          .map((f) => {
-            if (f.stat === -1) {
-              return f.field;
-            } else if (f.stat === 0) {
-              return `${f.field} as ${'temp_' + f.field}`;
-            } else {
-              return `retention.${this.field}.${f.field}.user_count as ${'temp_' + f.field}`;
-            }
-          })
-          .join();
-        return fields;
-      },
-
-      // 此处 util 中的 groupField 不满足需求，特殊处理 groupField
-      createStr(type = 'user_count', vals, fields, tail) {
-        const value = vals || [1, 2, 3, 4, 5, 6, 7, 14, 30];
-        const p = 'd';
-        const f = this.fields.map((item) => item._id);
-        fields = fields || f;
-        const strArr = value.map((item) => {
-          return fields.map((field) => {
-            return `retention.${field}.${p + '_' + item}.${type} as ${p + '_' + item}`;
-          });
-        });
-        if (tail) {
-          strArr.push(tail);
-        }
-        const str = strArr.join();
-        return str;
-      },
-
-      getAllData(query) {
-        if (!query.appid) {
-          this.errorMessage = '请先选择应用';
-          return; // 如果appid为空，则不进行查询
-        }
-        this.errorMessage = '';
-        this.getChartData(query, this.key, this.keyName);
-        this.getTabelData(query);
-      },
-
-      getChartData(query, key = this.key, name = '访问人数') {
-        // this.chartData = {}
-        const { pageCurrent } = this.options;
-        query = stringifyQuery(query, null, ['uni_platform']);
-        const groupField = this.createStr('user_count', [key], [this.field]);
-        const db = uniCloud.database();
-        db.collection('uni-stat-result')
-          .where(query)
-          .field(`${this.stringifyField(this.fieldsMap, `d_${key}`)}, start_time`)
-          .groupBy('start_time')
-          .groupField(stringifyGroupField(this.fieldsMap, `d_${key}`))
-          .orderBy('start_time', 'asc')
-          .get({
-            getCount: true,
-          })
-          .then((res) => {
-            let { count, data } = res.result;
-            const options = {
-              categories: [],
-              series: [
-                {
-                  name: `${key}天后${this.fieldName}`,
-                  data: [],
-                },
-              ],
-            };
-            for (const item of data) {
-              const x = formatDate(item.start_time, 'day');
-              const y = item[`d_${key}`];
-              options.series[0].data.push(y);
-              options.categories.push(x);
-            }
-            this.chartData = options;
-          })
-          .catch((err) => {
-            console.error(err);
-            // err.message 错误信息
-            // err.code 错误码
-          })
-          .finally(() => {
-            this.loading = false;
-          });
-      },
-
-      getTabelData(query) {
-        const { pageCurrent } = this.options;
-        query = stringifyQuery(query, null, ['uni_platform']);
-        const tail = this.field + '_count';
-        const groupField = this.createStr('user_rate', '', [this.field], tail);
-        this.loading = true;
-        const db = uniCloud.database();
-        db.collection('uni-stat-result')
-          .where(query)
-          .field(this.stringifyField(this.fieldsMap))
-          .groupBy('start_time')
-          .groupField(stringifyGroupField(this.fieldsMap))
-          .orderBy('start_time', 'desc')
-          .skip((pageCurrent - 1) * this.options.pageSize)
-          .limit(this.options.pageSize)
-          .get({
-            getCount: true,
-          })
-          .then((res) => {
-            const { count, data } = res.result;
-            for (const item of data) {
-              mapfields(this.fieldsMap, item, item);
-            }
-            this.options.total = count;
-            this.tableData = [];
-            this.tableData = data;
-          })
-          .catch((err) => {
-            console.error(err);
-            // err.message 错误信息
-            // err.code 错误码
-          })
-          .finally(() => {
-            this.loading = false;
-          });
-      },
-      //获取渠道信息
-      getChannelData(appid, platform_id) {
-        this.query.channel_id = '';
-        const db = uniCloud.database();
-        const condition = {};
-        //对应应用
-        appid = appid ? appid : this.query.appid;
-        if (appid) {
-          condition.appid = appid;
-        }
-        //对应平台
-        platform_id = platform_id ? platform_id : this.query.platform_id;
-        if (platform_id) {
-          condition.platform_id = platform_id;
-        }
-
-        let platformTemp = db.collection('uni-stat-app-platforms').field('_id, name').getTemp();
-
-        let channelTemp = db.collection('uni-stat-app-channels').where(condition).field('_id, channel_name, create_time, platform_id').getTemp();
-
-        db.collection(channelTemp, platformTemp)
-          .orderBy('platform_id', 'asc')
-          .get()
-          .then((res) => {
-            let data = res.result.data;
-            let channels = [];
-            if (data.length > 0) {
-              let channelName;
-              for (let i in data) {
-                channelName = data[i].channel_name ? data[i].channel_name : '默认';
-                if (data[i].platform_id.length > 0) {
-                  channelName = data[i].platform_id[0].name + '-' + channelName;
-                }
-                channels.push({
-                  value: data[i]._id,
-                  text: channelName,
-                });
-              }
-            }
-            this.channelData = channels;
-          })
-          .catch((err) => {
-            console.error(err);
-            // err.message 错误信息
-            // err.code 错误码
-          })
-          .finally(() => {});
-      },
-    },
+    });
+  });
+  const keys = keysComputed;
+  const channelQueryComputed = computed(() => {
+    const platform_id = queryState.value.platform_id;
+    return stringifyQuery({
+      platform_id,
+    });
+  });
+  const channelQuery = channelQueryComputed;
+  const versionQueryComputed = computed(() => {
+    const { appid, uni_platform } = queryState.value;
+    const query = stringifyQuery({
+      appid,
+      uni_platform,
+    });
+    return query;
+  });
+  const versionQuery = versionQueryComputed;
+  const useDatetimePickerAction = () => {
+    currentDateTabState.value = -1;
   };
+  const useDatetimePicker = useDatetimePickerAction;
+  const changeAppidAction = (id) => {
+    getChannelDataAction(id, false);
+  };
+  const changeAppid = changeAppidAction;
+  const changePlatformAction = (id, index, name, item) => {
+    getChannelDataAction(null, id);
+    queryState.value.version_id = 0;
+    queryState.value.uni_platform = item.code;
+  };
+  const changePlatform = changePlatformAction;
+  const changeTimeRangeAction = (id, index) => {
+    currentDateTabState.value = index;
+    const start = getTimeOfSomeDayAgo(id),
+      end = getTimeOfSomeDayAgo(0) - 1;
+    queryState.value.start_time = [start, end];
+  };
+  const changeTimeRange = changeTimeRangeAction;
+  const changePageCurrentAction = (e) => {
+    optionsState.value.pageCurrent = e.current;
+    getTabelDataAction(queryState.value);
+  };
+  const changePageCurrent = changePageCurrentAction;
+  const changePageSizeAction = (pageSize) => {
+    optionsState.value.pageSize = pageSize;
+    optionsState.value.pageCurrent = 1; // 重置分页
+    // 重置分页
+    getTabelDataAction(queryState.value);
+  };
+  const changePageSize = changePageSizeAction;
+  const stringifyFieldAction = (mapping, goal, prop) => {
+    if (goal) {
+      mapping = mapping.filter((f) => f.field === goal);
+    }
+    if (prop) {
+      mapping = mapping.filter((f) => f.field && f.hasOwnProperty(prop));
+    }
+    const fields = mapping
+      .map((f) => {
+        if (f.stat === -1) {
+          return f.field;
+        } else if (f.stat === 0) {
+          return `${f.field} as ${'temp_' + f.field}`;
+        } else {
+          return `retention.${fieldState.value}.${f.field}.user_count as ${'temp_' + f.field}`;
+        }
+      })
+      .join();
+    return fields;
+  };
+  const stringifyField = stringifyFieldAction;
+  const createStrAction = (type = 'user_count', vals, fields, tail) => {
+    const value = vals || [1, 2, 3, 4, 5, 6, 7, 14, 30];
+    const p = 'd';
+    const f = fieldsState.value.map((item) => item._id);
+    fields = fields || f;
+    const strArr = value.map((item) => {
+      return fields.map((field) => {
+        return `retention.${field}.${p + '_' + item}.${type} as ${p + '_' + item}`;
+      });
+    });
+    if (tail) {
+      strArr.push(tail);
+    }
+    const str = strArr.join();
+    return str;
+  };
+  const createStr = createStrAction;
+  const getAllDataAction = (query) => {
+    if (!query.appid) {
+      errorMessageState.value = '请先选择应用';
+      return; // 如果appid为空，则不进行查询
+    }
+
+    errorMessageState.value = '';
+    getChartDataAction(query, keyState.value, keyNameComputed.value);
+    getTabelDataAction(query);
+  };
+  const getAllData = getAllDataAction;
+  const getChartDataAction = (query, key = keyState.value, name = '访问人数') => {
+    // this.chartData = {}
+    const { pageCurrent } = optionsState.value;
+    query = stringifyQuery(query, null, ['uni_platform']);
+    const groupField = createStrAction('user_count', [key], [fieldState.value]);
+    const db = uniCloud.database();
+    db.collection('uni-stat-result')
+      .where(query)
+      .field(`${stringifyFieldAction(fieldsMapComputed.value, `d_${key}`)}, start_time`)
+      .groupBy('start_time')
+      .groupField(stringifyGroupField(fieldsMapComputed.value, `d_${key}`))
+      .orderBy('start_time', 'asc')
+      .get({
+        getCount: true,
+      })
+      .then((res) => {
+        let { count, data } = res.result;
+        const options = {
+          categories: [],
+          series: [
+            {
+              name: `${key}天后${fieldNameComputed.value}`,
+              data: [],
+            },
+          ],
+        };
+        for (const item of data) {
+          const x = formatDate(item.start_time, 'day');
+          const y = item[`d_${key}`];
+          options.series[0].data.push(y);
+          options.categories.push(x);
+        }
+        chartDataState.value = options;
+      })
+      .catch((err) => {
+        console.error(err);
+        // err.message 错误信息
+        // err.code 错误码
+      })
+      .finally(() => {
+        loadingState.value = false;
+      });
+  };
+  const getChartData = getChartDataAction;
+  const getTabelDataAction = (query) => {
+    const { pageCurrent } = optionsState.value;
+    query = stringifyQuery(query, null, ['uni_platform']);
+    const tail = fieldState.value + '_count';
+    const groupField = createStrAction('user_rate', '', [fieldState.value], tail);
+    loadingState.value = true;
+    const db = uniCloud.database();
+    db.collection('uni-stat-result')
+      .where(query)
+      .field(stringifyFieldAction(fieldsMapComputed.value))
+      .groupBy('start_time')
+      .groupField(stringifyGroupField(fieldsMapComputed.value))
+      .orderBy('start_time', 'desc')
+      .skip((pageCurrent - 1) * optionsState.value.pageSize)
+      .limit(optionsState.value.pageSize)
+      .get({
+        getCount: true,
+      })
+      .then((res) => {
+        const { count, data } = res.result;
+        for (const item of data) {
+          mapfields(fieldsMapComputed.value, item, item);
+        }
+        optionsState.value.total = count;
+        tableDataState.value = [];
+        tableDataState.value = data;
+      })
+      .catch((err) => {
+        console.error(err);
+        // err.message 错误信息
+        // err.code 错误码
+      })
+      .finally(() => {
+        loadingState.value = false;
+      });
+  };
+  const getTabelData = getTabelDataAction;
+  const getChannelDataAction = (appid, platform_id) => {
+    queryState.value.channel_id = '';
+    const db = uniCloud.database();
+    const condition = {};
+    //对应应用
+    //对应应用
+    appid = appid ? appid : queryState.value.appid;
+    if (appid) {
+      condition.appid = appid;
+    }
+    //对应平台
+    //对应平台
+    platform_id = platform_id ? platform_id : queryState.value.platform_id;
+    if (platform_id) {
+      condition.platform_id = platform_id;
+    }
+    let platformTemp = db.collection('uni-stat-app-platforms').field('_id, name').getTemp();
+    let channelTemp = db.collection('uni-stat-app-channels').where(condition).field('_id, channel_name, create_time, platform_id').getTemp();
+    db.collection(channelTemp, platformTemp)
+      .orderBy('platform_id', 'asc')
+      .get()
+      .then((res) => {
+        let data = res.result.data;
+        let channels = [];
+        if (data.length > 0) {
+          let channelName;
+          for (let i in data) {
+            channelName = data[i].channel_name ? data[i].channel_name : '默认';
+            if (data[i].platform_id.length > 0) {
+              channelName = data[i].platform_id[0].name + '-' + channelName;
+            }
+            channels.push({
+              value: data[i]._id,
+              text: channelName,
+            });
+          }
+        }
+        channelDataState.value = channels;
+      })
+      .catch((err) => {
+        console.error(err);
+        // err.message 错误信息
+        // err.code 错误码
+      })
+      .finally(() => {});
+  };
+  const getChannelData = getChannelDataAction;
+  watch(
+    () => queryState.value,
+    (val) => {
+      optionsState.value.pageCurrent = 1; // 重置分页
+      // 重置分页
+      debounceGetState.value();
+    },
+    {
+      deep: true,
+    }
+  );
+  watch(
+    () => keyState.value,
+    () => {
+      debounceGetState.value();
+    }
+  );
+  watch(
+    () => fieldState.value,
+    () => {
+      debounceGetState.value();
+    }
+  );
+  debounceGetState.value = debounce(() => {
+    getAllDataAction(queryState.value);
+  }, 300);
+  getChannelDataAction();
 </script>
 
 <style lang="scss">

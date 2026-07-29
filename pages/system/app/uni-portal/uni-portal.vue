@@ -51,7 +51,7 @@
   </view>
 </template>
 
-<script>
+<script setup>
   const download = function (content, filename) {
     let eleLink = document.createElement('a');
     eleLink.download = filename;
@@ -62,62 +62,58 @@
     eleLink.click();
     document.body.removeChild(eleLink);
   };
-
-  export default {
-    data() {
-      return {
-        id: '',
-      };
-    },
-    onLoad({ id }) {
-      this.id = id;
-    },
-    methods: {
-      publish() {
-        if (!this.id) {
-          uni.showModal({
-            content: '页面出错，请返回重进',
-            showCancel: false,
-            success(res) {
-              uni.redirectTo({
-                url: '/pages/system/app/list',
-              });
-            },
+  import { request } from '@/js_sdk/uni-admin/request.js';
+  import { ref } from 'vue';
+  import { onLoad } from '@dcloudio/uni-app';
+  const idState = ref('');
+  const id = idState;
+  const publishAction = () => {
+    if (!idState.value) {
+      uni.showModal({
+        content: '页面出错，请返回重进',
+        showCancel: false,
+        success(res) {
+          uni.redirectTo({
+            url: '/pages/system/app/list',
           });
-          return;
-        }
-        this.$request(
-          'createPublishHtml',
-          {
-            id: this.id,
-          },
-          {
-            functionName: 'uni-portal',
-            showModal: false,
-          }
-        )
-          .then((res) => {
-            // #ifdef H5
-            if ('download' in document.createElement('a')) {
-              download(res.body, 'index.html');
-            } else {
-              uni.showToast({
-                icon: 'error',
-                title: '浏览器不支持',
-                duration: 800,
-              });
-            }
-            // #endif
-          })
-          .catch((res) => {
-            uni.showModal({
-              content: res.errMsg,
-              showCancel: false,
-            });
-          });
+        },
+      });
+      return;
+    }
+    request(
+      'createPublishHtml',
+      {
+        id: idState.value,
       },
-    },
+      {
+        functionName: 'uni-portal',
+        showModal: false,
+      }
+    )
+      .then((res) => {
+        // #ifdef H5
+        if ('download' in document.createElement('a')) {
+          download(res.body, 'index.html');
+        } else {
+          uni.showToast({
+            icon: 'error',
+            title: '浏览器不支持',
+            duration: 800,
+          });
+        }
+        // #endif
+      })
+      .catch((res) => {
+        uni.showModal({
+          content: res.errMsg,
+          showCancel: false,
+        });
+      });
   };
+  const publish = publishAction;
+  onLoad(({ id }) => {
+    idState.value = id;
+  });
 </script>
 
 <style lang="scss">

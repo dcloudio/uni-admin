@@ -22,21 +22,19 @@
   </view>
 </template>
 
-<script>
-  export default {
-    props: {
-      uploadTasks: {
-        type: Array,
-        default: function () {
-          return [];
-        },
-      },
-      showProgress: {
-        type: Boolean,
-        default: true,
+<script setup>
+  const props = defineProps({
+    uploadTasks: {
+      type: Array,
+      default: function () {
+        return [];
       },
     },
-  };
+    showProgress: {
+      type: Boolean,
+      default: true,
+    },
+  });
 </script>
 
 <style>

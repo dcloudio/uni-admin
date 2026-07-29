@@ -38,7 +38,7 @@ export function initUploadSourcemapCloud(uniStat = {}) {
   });
 }
 
-export const sourceMapMethods = {
+const sourceMapMethods = {
   logSourceMapDebug(event, payload = {}) {
     try {
       console.info('[sourceMapDebug] ' + event, payload);
@@ -417,17 +417,15 @@ export const sourceMapMethods = {
         asTableStacktrace(payload) {
           logSourceMapDebug('parseError:stack-items-after-map', {
             base,
-            items: (payload && payload.stack && Array.isArray(payload.stack.items) ? payload.stack.items : [])
-              .slice(0, 10)
-              .map((item) => ({
-                file: item.file,
-                fileRelative: item.fileRelative,
-                fileShort: item.fileShort,
-                line: item.line,
-                column: item.column,
-                parsed: !!item.parsed,
-                beforeParse: item.beforeParse || '',
-              })),
+            items: (payload && payload.stack && Array.isArray(payload.stack.items) ? payload.stack.items : []).slice(0, 10).map((item) => ({
+              file: item.file,
+              fileRelative: item.fileRelative,
+              fileShort: item.fileShort,
+              line: item.line,
+              column: item.column,
+              parsed: !!item.parsed,
+              beforeParse: item.beforeParse || '',
+            })),
           });
           return basePreset.asTableStacktrace(payload);
         },
@@ -636,3 +634,24 @@ export const sourceMapMethods = {
     return result;
   },
 };
+
+export function useSourceMap(context) {
+  const actions = {};
+  const actionContext = new Proxy(
+    {},
+    {
+      get(target, key) {
+        return Object.prototype.hasOwnProperty.call(actions, key) ? actions[key] : context[key];
+      },
+      set(target, key, value) {
+        context[key] = value;
+        return true;
+      },
+    }
+  );
+
+  Object.keys(sourceMapMethods).forEach((name) => {
+    actions[name] = sourceMapMethods[name].bind(actionContext);
+  });
+  return actions;
+}

@@ -49,248 +49,254 @@
   </view>
 </template>
 
-<script>
-  export default {
+<script setup>
+  import { nextTick, onMounted, ref, watch } from 'vue';
+  defineOptions({
     name: 'uni-stat-tabs',
-    data() {
-      return {
-        currentTab: 0,
-        renderTabs: [],
-        cacheKey: 'uni-admin-statTabsData',
-        customCheck: [],
-        costomList: [
-          {
-            value: 0,
-            text: '微信小程序',
-          },
-        ],
-      };
+  });
+  const props = defineProps({
+    type: {
+      type: String,
+      default: 'line',
     },
-    props: {
-      type: {
-        type: String,
-        default: 'line',
+    value: {
+      type: [String, Number],
+      default: '',
+    },
+    modelValue: {
+      type: [String, Number],
+      default: '',
+    },
+    current: {
+      type: [String, Number],
+      default: 0,
+    },
+    mode: {
+      type: String,
+      default: '',
+    },
+    today: {
+      type: Boolean,
+      default: false,
+    },
+    yesterday: {
+      type: Boolean,
+      default: true,
+    },
+    disabled: {
+      type: Boolean,
+      default: false,
+    },
+    tooltip: {
+      type: Boolean,
+      default: false,
+    },
+    all: {
+      type: Boolean,
+      default: true,
+    },
+    label: {
+      type: String,
+      default: '',
+    },
+    placeholder: {
+      type: String,
+      default: '暂无选项',
+    },
+    tabs: {
+      type: Array,
+      default: () => {
+        return [];
       },
-      value: {
-        type: [String, Number],
-        default: '',
-      },
-      modelValue: {
-        type: [String, Number],
-        default: '',
-      },
-      current: {
-        type: [String, Number],
-        default: 0,
-      },
-      mode: {
-        type: String,
-        default: '',
-      },
-      today: {
-        type: Boolean,
-        default: false,
-      },
-      yesterday: {
-        type: Boolean,
-        default: true,
-      },
-      disabled: {
-        type: Boolean,
-        default: false,
-      },
-      tooltip: {
-        type: Boolean,
-        default: false,
-      },
-      all: {
-        type: Boolean,
-        default: true,
-      },
-      label: {
-        type: String,
-        default: '',
-      },
-      placeholder: {
-        type: String,
-        default: '暂无选项',
-      },
-      tabs: {
-        type: Array,
-        default: () => {
-          return [];
+    },
+    costom: {
+      type: Boolean,
+      default: false,
+    },
+  });
+  const emitEvent = defineEmits(['change', 'input', 'update:modelValue']);
+  const currentTabState = ref(0);
+  const currentTab = currentTabState;
+  const renderTabsState = ref([]);
+  const renderTabs = renderTabsState;
+  const cacheKeyState = ref('uni-admin-statTabsData');
+  const cacheKey = cacheKeyState;
+  const customCheckState = ref([]);
+  const customCheck = customCheckState;
+  const costomListState = ref([
+    {
+      value: 0,
+      text: '微信小程序',
+    },
+  ]);
+  const costomList = costomListState;
+  const lastState = ref(undefined);
+  const last = lastState;
+  const initAction = () => {
+    if (props.mode.indexOf('platform') > -1) {
+      renderTabsState.value = getCacheAction() || [];
+      getPlatformAction();
+    } else if (props.mode === 'date') {
+      const dates = [
+        {
+          _id: 7,
+          name: '最近7天',
+          enable: true,
         },
-      },
-      costom: {
-        type: Boolean,
-        default: false,
-      },
-    },
-    created() {
-      this.last = `${this.mode.replace('-', '_')}_last_data`;
-    },
-    mounted() {
-      this.init();
-    },
-    computed: {},
-    watch: {
-      current: {
-        immediate: true,
-        handler(val) {
-          this.currentTab = val;
+        {
+          _id: 30,
+          name: '最近30天',
+          enable: true,
         },
-      },
-
-      // value(val) {
-      // 	this.currentTab = val
-      // },
-
-      tabs: {
-        immediate: false,
-        handler(val) {
-          this.init();
+        {
+          _id: 90,
+          name: '最近90天',
+          enable: true,
         },
-      },
-
-      renderTabs(val) {
-        const index = this.current;
-        if (this.mode && val.length && index >= 0) {
-          this.$nextTick(function () {
-            const item = this.renderTabs[index];
-            this.change(item, index);
-          });
-        }
-      },
-    },
-    methods: {
-      init() {
-        if (this.mode.indexOf('platform') > -1) {
-          this.renderTabs = this.getCache() || [];
-          this.getPlatform();
-        } else if (this.mode === 'date') {
-          const dates = [
-            {
-              _id: 7,
-              name: '最近7天',
-              enable: true,
-            },
-            {
-              _id: 30,
-              name: '最近30天',
-              enable: true,
-            },
-            {
-              _id: 90,
-              name: '最近90天',
-              enable: true,
-            },
-          ];
-          if (this.yesterday) {
-            dates.unshift({
-              _id: 1,
-              name: '昨天',
-              enable: true,
-            });
-          }
-          if (this.today) {
-            dates.unshift({
-              _id: 0,
-              name: '今天',
-              enable: true,
-            });
-          }
-          this.renderTabs = dates;
-        } else {
-          this.renderTabs = this.tabs;
-        }
-      },
-      change(item, index) {
-        if (item.disabled) return;
-        const id = item._id;
-        const name = item.name;
-        this.currentTab = index;
-        this.emit(id, index, name, item);
-      },
-      emit(id, index, name, item) {
-        this.$emit('change', id, index, name, item);
-        this.$emit('input', id, index, name);
-        this.$emit('update:modelValue', id, index, name);
-      },
-      getPlatform() {
-        const db = uniCloud.database();
-        const appList = db
-          .collection('uni-stat-app-platforms')
-          .get()
-          .then((res) => {
-            let platforms = res.result.data;
-            platforms = platforms.filter((p) => (p.hasOwnProperty('enable') ? p.enable : true));
-            platforms.sort((a, b) => a.order - b.order);
-            if (this.mode === 'platform-channel') {
-              platforms = platforms.filter((item) => /^android|ios|harmony$/.test(item.code));
-              let _id = platforms.map((p) => `platform_id == "${p._id}"`).join(' || ');
-              _id = `(${_id})`;
-              this.setAllItem(platforms, _id);
-            } else if (this.mode === 'platform-scene') {
-              platforms = platforms.filter((item) => /mp-/.test(item.code));
-              let _id = platforms.map((p) => `platform_id == "${p._id}"`).join(' || ');
-              _id = `(${_id})`;
-              this.setAllItem(platforms, _id);
-            } else {
-              this.setAllItem(platforms);
-            }
-            this.setCache(platforms);
-            this.renderTabs = platforms;
-            this.costomList = [];
-            this.renderTabs.forEach((item) => {
-              if (item.name !== '全部') {
-                this.costomList.push(item);
-              }
-            });
-            console.log(this.costomList);
-          });
-      },
-      setAllItem(platforms, _id = '', name = '全部') {
-        this.all &&
-          platforms.unshift({
-            name,
-            _id,
-            code: '',
-            enable: true,
-          });
-      },
-      // 获取当前缓存key
-      getCurrentCacheKey() {
-        return this.mode;
-      },
-      // 获取缓存
-      getCache(name = this.getCurrentCacheKey()) {
-        let cacheData = uni.getStorageSync(this.cacheKey) || {};
-        const tabs = cacheData[name];
-        if (!Array.isArray(tabs)) return tabs;
-        if (!this.all) return tabs.filter((item) => item.name !== '全部');
-        return tabs.map((item) => {
-          if (item.name !== '全部') return item;
-          return {
-            ...item,
-            code: '',
-            enable: true,
-          };
+      ];
+      if (props.yesterday) {
+        dates.unshift({
+          _id: 1,
+          name: '昨天',
+          enable: true,
         });
-      },
-      // 设置缓存
-      setCache(value, name = this.getCurrentCacheKey()) {
-        let cacheData = uni.getStorageSync(this.cacheKey) || {};
-        cacheData[name] = value;
-        uni.setStorageSync(this.cacheKey, cacheData);
-      },
-      // 删除缓存
-      removeCache(name = this.getCurrentCacheKey()) {
-        let cacheData = uni.getStorageSync(this.cacheKey) || {};
-        delete cacheData[name];
-        uni.setStorageSync(this.cacheKey, cacheData);
-      },
-    },
+      }
+      if (props.today) {
+        dates.unshift({
+          _id: 0,
+          name: '今天',
+          enable: true,
+        });
+      }
+      renderTabsState.value = dates;
+    } else {
+      renderTabsState.value = props.tabs;
+    }
   };
+  const init = initAction;
+  const changeAction = (item, index) => {
+    if (item.disabled) return;
+    const id = item._id;
+    const name = item.name;
+    currentTabState.value = index;
+    emitAction(id, index, name, item);
+  };
+  const change = changeAction;
+  const emitAction = (id, index, name, item) => {
+    emitEvent('change', id, index, name, item);
+    emitEvent('input', id, index, name);
+    emitEvent('update:modelValue', id, index, name);
+  };
+  const emit = emitAction;
+  const getPlatformAction = () => {
+    const db = uniCloud.database();
+    const appList = db
+      .collection('uni-stat-app-platforms')
+      .get()
+      .then((res) => {
+        let platforms = res.result.data;
+        platforms = platforms.filter((p) => (p.hasOwnProperty('enable') ? p.enable : true));
+        platforms.sort((a, b) => a.order - b.order);
+        if (props.mode === 'platform-channel') {
+          platforms = platforms.filter((item) => /^android|ios|harmony$/.test(item.code));
+          let _id = platforms.map((p) => `platform_id == "${p._id}"`).join(' || ');
+          _id = `(${_id})`;
+          setAllItemAction(platforms, _id);
+        } else if (props.mode === 'platform-scene') {
+          platforms = platforms.filter((item) => /mp-/.test(item.code));
+          let _id = platforms.map((p) => `platform_id == "${p._id}"`).join(' || ');
+          _id = `(${_id})`;
+          setAllItemAction(platforms, _id);
+        } else {
+          setAllItemAction(platforms);
+        }
+        setCacheAction(platforms);
+        renderTabsState.value = platforms;
+        costomListState.value = [];
+        renderTabsState.value.forEach((item) => {
+          if (item.name !== '全部') {
+            costomListState.value.push(item);
+          }
+        });
+        console.log(costomListState.value);
+      });
+  };
+  const getPlatform = getPlatformAction;
+  const setAllItemAction = (platforms, _id = '', name = '全部') => {
+    props.all &&
+      platforms.unshift({
+        name,
+        _id,
+        code: '',
+        enable: true,
+      });
+  };
+  const setAllItem = setAllItemAction;
+  const getCurrentCacheKeyAction = () => {
+    return props.mode;
+  };
+  const getCurrentCacheKey = getCurrentCacheKeyAction;
+  const getCacheAction = (name = getCurrentCacheKeyAction()) => {
+    let cacheData = uni.getStorageSync(cacheKeyState.value) || {};
+    const tabs = cacheData[name];
+    if (!Array.isArray(tabs)) return tabs;
+    if (!props.all) return tabs.filter((item) => item.name !== '全部');
+    return tabs.map((item) => {
+      if (item.name !== '全部') return item;
+      return {
+        ...item,
+        code: '',
+        enable: true,
+      };
+    });
+  };
+  const getCache = getCacheAction;
+  const setCacheAction = (value, name = getCurrentCacheKeyAction()) => {
+    let cacheData = uni.getStorageSync(cacheKeyState.value) || {};
+    cacheData[name] = value;
+    uni.setStorageSync(cacheKeyState.value, cacheData);
+  };
+  const setCache = setCacheAction;
+  const removeCacheAction = (name = getCurrentCacheKeyAction()) => {
+    let cacheData = uni.getStorageSync(cacheKeyState.value) || {};
+    delete cacheData[name];
+    uni.setStorageSync(cacheKeyState.value, cacheData);
+  };
+  const removeCache = removeCacheAction;
+  watch(
+    () => props.current,
+    (val) => {
+      currentTabState.value = val;
+    },
+    {
+      immediate: true,
+    }
+  );
+  watch(
+    () => props.tabs,
+    (val) => {
+      initAction();
+    },
+    {
+      immediate: false,
+    }
+  );
+  watch(
+    () => renderTabsState.value,
+    (val) => {
+      const index = props.current;
+      if (props.mode && val.length && index >= 0) {
+        nextTick(function () {
+          const item = renderTabsState.value[index];
+          changeAction(item, index);
+        });
+      }
+    }
+  );
+  lastState.value = `${props.mode.replace('-', '_')}_last_data`;
+  onMounted(() => {
+    initAction();
+  });
 </script>
 
 <style lang="scss">

@@ -27,23 +27,17 @@
   </view>
 </template>
 
-<script>
-  import { mapState } from 'vuex';
+<script setup>
+  import { computed } from 'vue';
+  import { useStore } from 'vuex';
   import config from '@/admin.config.js';
+
   const debugOptions = config.navBar.debug || {};
-  export default {
-    data() {
-      return {
-        engines: debugOptions.engine || [],
-      };
-    },
-    computed: {
-      ...mapState('error', ['logs']),
-    },
-    methods: {
-      search(engine, log) {},
-    },
-  };
+  const store = useStore();
+  const engines = debugOptions.engine || [];
+  const logs = computed(() => store.state.error.logs);
+
+  const search = (engine, log) => {};
 </script>
 
 <style>

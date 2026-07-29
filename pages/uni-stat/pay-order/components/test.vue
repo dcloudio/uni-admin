@@ -2,7 +2,8 @@
   <view> </view>
 </template>
 
-<script>
+<script setup>
+  import { ref, watch } from 'vue';
   import {
     mapfields,
     stringifyQuery,
@@ -17,40 +18,35 @@
     debounce,
   } from '@/js_sdk/uni-stat/util.js';
   import { fieldsMap } from '../fieldsMap.js';
-  export default {
-    props: {
-      query: {
-        type: [Object],
-        default: function () {
-          return {};
-        },
+
+  const props = defineProps({
+    query: {
+      type: Object,
+      default() {
+        return {};
       },
     },
-    data() {
-      return {
-        tableName: 'uni-stat-pay-result',
-      };
-    },
-    created() {
+  });
+
+  const tableName = ref('uni-stat-pay-result');
+  const options = ref();
+
+  function getChartData(query) {}
+
+  watch(
+    () => props.query,
+    () => {
+      options.value.pageCurrent = 1; // 重置分页
       debounce(() => {
-        this.getChartData(this.query);
+        getChartData(props.query);
       })();
     },
-    methods: {
-      getChartData(query) {},
-    },
-    watch: {
-      query: {
-        deep: true,
-        handler(val) {
-          this.options.pageCurrent = 1; // 重置分页
-          debounce(() => {
-            this.getChartData(this.query);
-          })();
-        },
-      },
-    },
-  };
+    { deep: true }
+  );
+
+  debounce(() => {
+    getChartData(props.query);
+  })();
 </script>
 
 <style lang="scss" scoped></style>

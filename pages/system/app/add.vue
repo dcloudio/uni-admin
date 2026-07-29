@@ -93,7 +93,7 @@
                 style="flex: 1"
               >
                 <view class="flex">
-                  <radio-group @change="(e) => (this.uniFilePickerProvider = e.detail.value)">
+                  <radio-group @change="(e) => (uniFilePickerProvider = e.detail.value)">
                     <view class="flex" style="flex-wrap: nowrap">
                       上传至：
                       <label> <radio value="unicloud" checked /><text>内置存储</text> </label>
@@ -211,9 +211,11 @@
   </view>
 </template>
 
-<script>
-  // 导入 mixin 文件
-  import mixin from './mixin/publish_add_detail_mixin.js';
+<script setup>
+  import { getCurrentInstance, ref, watch } from 'vue';
+  import { onLoad, onReady } from '@dcloudio/uni-app';
+  import { usePublishAddDetail } from './mixin/publish_add_detail_mixin.js';
+
   // 获取数据库实例
   const db = uniCloud.database();
   // 获取数据库命令实例
@@ -236,232 +238,259 @@
     return result;
   }
 
-  export default {
-    // mixins 导入 mixin
-    mixins: [mixin],
-    // 组件的数据对象
-    data() {
-      return {
-        // 额外数据，初始化为空字符串
-        mpExtra: ' ',
-        // 手风琴状态，默认为1
-        mpAccordionStatus: 1,
-        // 标签宽度，默认为'80px'
-        labelWidth: '80px',
-        uniFilePickerProvider: 'unicloud',
-        // 应用类型选项
-        appTypeOptions: [
-          { value: 0, text: 'uni-app' },
-          { value: 1, text: 'uni-app x' },
-        ],
-      };
-    },
-    /**
-     * 页面加载时的处理函数
-     * @param {object} e - 传入的参数对象
-     */
-    onLoad(e) {
-      if (e.id) {
-        // 标记为编辑状态
-        this.isEdit = true;
-        // 设置导航栏标题为'修改应用'
-        uni.setNavigationBarTitle({
-          title: '修改应用',
-        });
-        this.setFormData('appid', e.id);
-        this.getDetail(e.id);
-      } else {
-        // 填写应用名称后，给各平台设置相同的名称
-        this.$watch('formData.name', (name) => {
-          this.platFormKeys.forEach((key) => {
-            this.setFormData(`${key}.name`, name);
+  const { proxy } = getCurrentInstance();
+  const form = ref(null);
+  const scheme = ref(null);
+  const mpExtra = ref(' ');
+  const mpAccordionStatus = ref(1);
+  const labelWidth = '80px';
+  const uniFilePickerProvider = ref('unicloud');
+  const appTypeOptions = Object.freeze([
+    { value: 0, text: 'uni-app' },
+    { value: 1, text: 'uni-app x' },
+  ]);
+  const formDataId = ref();
+
+  const {
+    formData,
+    rules,
+    mpPlatform,
+    screenshotList,
+    middleware_img,
+    middleware_checkbox,
+    appPackageInfo,
+    appPlatformKeys,
+    appPlatformValues,
+    keepItems,
+    isEdit,
+    deletedStore,
+    mpPlatformKeys,
+    platFormKeys,
+    hasPackage,
+    requestCloudFunction,
+    initFormData,
+    setFormData,
+    getFormData,
+    formatFormData,
+    autoFill,
+    autoFillApp,
+    fetchAppInfo,
+    iconUrlSuccess,
+    iconUrlDelete,
+    getPlatformChcekbox,
+    setPlatformChcekbox,
+    selectFile,
+  } = usePublishAddDetail(form);
+
+  onLoad((event) => {
+    if (event.id) {
+      isEdit.value = true;
+      uni.setNavigationBarTitle({
+        title: '修改应用',
+      });
+      setFormData('appid', event.id);
+      getDetail(event.id);
+    } else {
+      watch(
+        () => formData.name,
+        (name) => {
+          platFormKeys.forEach((key) => {
+            setFormData(`${key}.name`, name);
           });
+        }
+      );
+    }
+  });
+
+  onReady(() => {
+    mpExtra.value = '折叠';
+  });
+
+  // 更新线上版本的 store 记录
+  function resolvestableVersionStoreList() {
+    const modifiedMap = {};
+    const modifiedKeys = [];
+    formData.store_list.forEach((item, index) => {
+      modifiedKeys.push(item.id);
+      modifiedMap[item.id] = index;
+    });
+
+    return fetchAppInfo(getFormData('appid'), 'Android').then((res) => {
+      if (!res.success) return;
+      if (res.store_list) {
+        const originalMap = {};
+        const originalKeys = [];
+        res.store_list.forEach((item, index) => {
+          originalKeys.push(item.id);
+          originalMap[item.id] = index;
         });
-      }
-    },
-    onReady() {
-      this.mpExtra = '折叠';
-    },
-    methods: {
-      // 更新线上版本的 store 记录
-      resolvestableVersionStoreList() {
-        const modifiedMap = {};
-        const modifiedKeys = [];
-        this.formData.store_list.forEach((item, index) => {
-          modifiedKeys.push(item.id);
-          modifiedMap[item.id] = index;
-        });
 
-        return this.fetchAppInfo(this.getFormData('appid'), 'Android').then((res) => {
-          if (!res.success) return;
-          if (res.store_list) {
-            const originalMap = {};
-            const originalKeys = [];
-            res.store_list.forEach((item, index) => {
-              originalKeys.push(item.id);
-              originalMap[item.id] = index;
-            });
-
-            modifiedKeys.forEach((key, index) => {
-              const afterItem = this.formData.store_list[modifiedMap[key]];
-              // 新增
-              if (originalKeys.indexOf(key) === -1) {
-                res.store_list.push(afterItem);
-              } else {
-                // 修改
-                res.store_list[originalMap[key]].name = afterItem.name;
-                res.store_list[originalMap[key]].scheme = afterItem.scheme;
-              }
-            });
-
-            // 删除
-            for (let i = 0; i < res.store_list.length; i++) {
-              let id = res.store_list[i].id;
-              if (this.deletedStore.indexOf(id) !== -1 && modifiedKeys.indexOf(id) === -1) {
-                res.store_list.splice(i, 1);
-                i--;
-              }
-            }
+        modifiedKeys.forEach((key, index) => {
+          const afterItem = formData.store_list[modifiedMap[key]];
+          // 新增
+          if (originalKeys.indexOf(key) === -1) {
+            res.store_list.push(afterItem);
           } else {
-            res.store_list = this.formData.store_list;
+            // 修改
+            res.store_list[originalMap[key]].name = afterItem.name;
+            res.store_list[originalMap[key]].scheme = afterItem.scheme;
           }
+        });
 
-          return this.updateAppVersion(res._id, {
-            store_list: res.store_list,
-          });
-        });
-      },
-      updateAppVersion(id, value) {
-        // 更新应用版本
-        return db.collection('opendb-app-versions').doc(id).update(value);
-      },
-      /**
-       * 验证表单并提交
-       */
-      submit() {
-        // 显示遮罩
-        uni.showLoading({
-          mask: true,
-        });
-        this.formatFormData();
-        // 表单验证
-        this.$refs.form
-          .validate(this.keepItems)
-          .then((res) => {
-            // 表单提交
-            return this.submitForm(res);
-          })
-          .catch((err) => {
-            console.error(err);
-          })
-          .finally(() => {
-            // 关闭遮罩
-            uni.hideLoading();
-          });
-      },
-      /**
-       * 提交表单
-       */
-      submitForm(value) {
-        (this.isEdit
-          ? this.requestCloudFunction('setNewAppData', {
-              id: this.formDataId,
-              value,
-            })
-          : db.collection(dbCollectionName).add(value)
-        )
-          .then((res) => {
-            if (this.isEdit) return this.resolvestableVersionStoreList();
-          })
-          .then(() => {
-            uni.showToast({
-              title: `${this.isEdit ? '更新' : '新增'}成功`,
-            });
-            this.getOpenerEventChannel().emit('refreshData');
-            setTimeout(() => uni.navigateBack(), 500);
-          })
-          .catch((err) => {
-            uni.showModal({
-              content: err.message || '请求服务失败',
-              showCancel: false,
-            });
-          });
-      },
-      /**
-       * 获取表单数据
-       * @param {Object} id
-       */
-      getDetail(id) {
-        uni.showLoading({
-          mask: true,
-        });
-        db.collection(dbCollectionName)
-          .where({
-            appid: id,
-          })
-          .get()
-          .then((res) => {
-            const data = res.result.data[0];
-            if (data) {
-              this.formDataId = data._id;
-              this.initFormData(data);
-            } else {
-              this.autoFill();
-              this.autoFillApp();
-            }
-          })
-          .catch((err) => {
-            uni.showModal({
-              content: err.message || '请求服务失败',
-              showCancel: false,
-            });
-          })
-          .finally(() => {
-            uni.hideLoading();
-          });
-      },
-      // 切换手风琴状态
-      mpAccordion() {
-        if (this.mpAccordionStatus) {
-          this.mpExtra = '展开';
-          this.mpAccordionStatus = 0;
-        } else {
-          this.mpExtra = '折叠';
-          this.mpAccordionStatus = 1;
+        // 删除
+        for (let i = 0; i < res.store_list.length; i++) {
+          let id = res.store_list[i].id;
+          if (deletedStore.indexOf(id) !== -1 && modifiedKeys.indexOf(id) === -1) {
+            res.store_list.splice(i, 1);
+            i--;
+          }
         }
-      },
-      addStoreScheme() {
-        this.formData.store_list.push({
-          enable: false,
-          priority: 0,
-          id: randomString(5) + '_' + Date.now(),
+      } else {
+        res.store_list = formData.store_list;
+      }
+
+      return updateAppVersion(res._id, {
+        store_list: res.store_list,
+      });
+    });
+  }
+
+  function updateAppVersion(id, value) {
+    // 更新应用版本
+    return db.collection('opendb-app-versions').doc(id).update(value);
+  }
+
+  /**
+   * 验证表单并提交
+   */
+  function submit() {
+    // 显示遮罩
+    uni.showLoading({
+      mask: true,
+    });
+    formatFormData();
+    // 表单验证
+    form.value
+      .validate(keepItems.value)
+      .then((res) => {
+        // 表单提交
+        return submitForm(res);
+      })
+      .catch((err) => {
+        console.error(err);
+      })
+      .finally(() => {
+        // 关闭遮罩
+        uni.hideLoading();
+      });
+  }
+
+  /**
+   * 提交表单
+   */
+  function submitForm(value) {
+    (isEdit.value
+      ? requestCloudFunction('setNewAppData', {
+          id: formDataId.value,
+          value,
+        })
+      : db.collection(dbCollectionName).add(value)
+    )
+      .then((res) => {
+        if (isEdit.value) return resolvestableVersionStoreList();
+      })
+      .then(() => {
+        uni.showToast({
+          title: `${isEdit.value ? '更新' : '新增'}成功`,
         });
-      },
-      deleteStore(index, item) {
-        if (item.scheme && item.scheme.trim().length && this.isEdit) {
-          uni.showModal({
-            content: '是否同步删除线上版本此条商店记录？',
-            success: (res) => {
-              const storeItem = this.formData.store_list.splice(index, 1)[0];
-              if (storeItem && res.confirm) {
-                this.deletedStore.push(storeItem.id);
-              }
-            },
-          });
+        proxy.getOpenerEventChannel().emit('refreshData');
+        setTimeout(() => uni.navigateBack(), 500);
+      })
+      .catch((err) => {
+        uni.showModal({
+          content: err.message || '请求服务失败',
+          showCancel: false,
+        });
+      });
+  }
+
+  /**
+   * 获取表单数据
+   * @param {Object} id
+   */
+  function getDetail(id) {
+    uni.showLoading({
+      mask: true,
+    });
+    db.collection(dbCollectionName)
+      .where({
+        appid: id,
+      })
+      .get()
+      .then((res) => {
+        const data = res.result.data[0];
+        if (data) {
+          formDataId.value = data._id;
+          initFormData(data);
         } else {
-          this.formData.store_list.splice(index, 1)[0];
+          autoFill();
+          autoFillApp();
         }
-      },
-      schemeDemo() {
-        // #ifndef H5
-        $refs.scheme.open('center');
-        // #endif
-        // #ifdef H5
-        window.open('https://ask.dcloud.net.cn/article/39960', '_blank');
-        // #endif
-      },
-    },
-  };
+      })
+      .catch((err) => {
+        uni.showModal({
+          content: err.message || '请求服务失败',
+          showCancel: false,
+        });
+      })
+      .finally(() => {
+        uni.hideLoading();
+      });
+  }
+
+  // 切换手风琴状态
+  function mpAccordion() {
+    if (mpAccordionStatus.value) {
+      mpExtra.value = '展开';
+      mpAccordionStatus.value = 0;
+    } else {
+      mpExtra.value = '折叠';
+      mpAccordionStatus.value = 1;
+    }
+  }
+
+  function addStoreScheme() {
+    formData.store_list.push({
+      enable: false,
+      priority: 0,
+      id: randomString(5) + '_' + Date.now(),
+    });
+  }
+
+  function deleteStore(index, item) {
+    if (item.scheme && item.scheme.trim().length && isEdit.value) {
+      uni.showModal({
+        content: '是否同步删除线上版本此条商店记录？',
+        success: (res) => {
+          const storeItem = formData.store_list.splice(index, 1)[0];
+          if (storeItem && res.confirm) {
+            deletedStore.push(storeItem.id);
+          }
+        },
+      });
+    } else {
+      formData.store_list.splice(index, 1)[0];
+    }
+  }
+
+  function schemeDemo() {
+    // #ifndef H5
+    scheme.value.open('center');
+    // #endif
+    // #ifdef H5
+    window.open('https://ask.dcloud.net.cn/article/39960', '_blank');
+    // #endif
+  }
 </script>
 
 <style lang="scss">

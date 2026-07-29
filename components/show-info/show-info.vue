@@ -1,41 +1,37 @@
 <template>
   <view style="position: relative">
-    <uni-icons @mouseenter.native="mouseenter" @mouseleave.native="showStableInfo = false" style="padding: 0 10px; color: #a8a8a8; cursor: pointer" type="info" />
+    <uni-icons @mouseenter="mouseenter" @mouseleave="showStableInfo = false" style="padding: 0 10px; color: #a8a8a8; cursor: pointer" type="info" />
     <view v-if="showStableInfo" class="show-stable" :style="{ top: `${top}px`, left: `${left}px`, width: `${width}px` }">
       <text>{{ content }}</text>
     </view>
   </view>
 </template>
 
-<script>
-  export default {
-    props: {
-      content: String,
-      top: {
-        type: [Number, String],
-        default: -60,
-      },
-      left: {
-        type: [Number, String],
-        default: -100,
-      },
-      width: {
-        type: [Number, String],
-        default: 200,
-      },
+<script setup>
+  import { ref } from 'vue';
+  const props = defineProps({
+    content: String,
+    top: {
+      type: [Number, String],
+      default: -60,
     },
-    data() {
-      return {
-        showStableInfo: false,
-        arrowStyle: {},
-      };
+    left: {
+      type: [Number, String],
+      default: -100,
     },
-    methods: {
-      mouseenter(e) {
-        this.showStableInfo = true;
-      },
+    width: {
+      type: [Number, String],
+      default: 200,
     },
+  });
+  const showStableInfoState = ref(false);
+  const showStableInfo = showStableInfoState;
+  const arrowStyleState = ref({});
+  const arrowStyle = arrowStyleState;
+  const mouseenterAction = (e) => {
+    showStableInfoState.value = true;
   };
+  const mouseenter = mouseenterAction;
 </script>
 
 <style lang="scss" scoped>

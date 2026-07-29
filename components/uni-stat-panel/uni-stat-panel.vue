@@ -25,25 +25,22 @@
   </view>
 </template>
 
-<script>
-  export default {
+<script setup>
+  defineOptions({
     name: 'uni-stat-panel',
-    data() {
-      return {};
-    },
-    props: {
-      items: {
-        type: Array,
-        default: () => {
-          return [];
-        },
-      },
-      contrast: {
-        type: Boolean,
-        default: false,
+  });
+  const props = defineProps({
+    items: {
+      type: Array,
+      default: () => {
+        return [];
       },
     },
-  };
+    contrast: {
+      type: Boolean,
+      default: false,
+    },
+  });
 </script>
 
 <style lang="scss">

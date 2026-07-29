@@ -14,94 +14,75 @@
   </view>
 </template>
 
-<script>
-  import rootParent from '../uni-nav-menu/mixins/rootParent.js';
-  export default {
-    name: 'uniSubMenu',
-    mixins: [rootParent],
-    props: {
-      // 唯一标识
-      index: {
-        type: [String, Object],
-        default() {
-          return '';
-        },
-      },
-      // TODO 自定义类名
-      popperClass: {
-        type: String,
-        default: '',
-      },
-      // TODO 是否禁用
-      disabled: {
-        type: Boolean,
-        default: false,
-      },
-      // 展开菜单的背景色
-      backgroundColor: {
-        type: String,
-        default: '#f5f5f5',
-      },
-    },
-    data() {
-      return {
-        height: 0,
-        oldheight: 0,
-        isOpen: false,
-        textColor: '#303133',
-      };
-    },
-    computed: {
-      paddingLeft() {
-        let subMenu = (this.rootMenu && this.rootMenu.SubMenu && this.rootMenu.SubMenu.length) || 0;
-        return 20 + 20 * subMenu + 'px';
-      },
-    },
-    created() {
-      this.init();
-    },
-    destroyed() {
-      // 销毁页面后，将当前页面实例从数据中删除
-      if (this.$menuParent) {
-        const menuIndex = this.$menuParent.subChildrens.findIndex((item) => item === this);
-        this.$menuParent.subChildrens.splice(menuIndex, 1);
-      }
-    },
-    methods: {
-      init() {
-        // 所有父元素
-        this.rootMenu = {
-          NavMenu: [],
-          SubMenu: [],
-        };
-        this.childrens = [];
-        this.indexPath = [];
-        // 获取直系的所有父元素实例
-        this.getParentAll('SubMenu', this);
-        // 获取最外层父元素实例
-        this.$menuParent = this.getParent('uniNavMenu', this);
-        this.textColor = this.$menuParent.textColor;
-        // 直系父元素 SubMenu
-        this.$subMenu = this.rootMenu.SubMenu;
+<script setup>
+  import { computed, inject, onBeforeUnmount, provide, ref } from 'vue';
+  import { navMenuKey, subMenuPathKey } from '../uni-nav-menu/menu-context.js';
 
-        // 将当前插入到menu数组中
-        if (this.$menuParent) {
-          this.$menuParent.subChildrens.push(this);
-        }
-      },
-      select() {
-        if (this.disabled) return;
-        // 手动开关 sunMenu
-        this.$menuParent.selectMenu(this);
-      },
-      open() {
-        this.isOpen = true;
-      },
-      close() {
-        this.isOpen = false;
+  defineOptions({ name: 'uniSubMenu' });
+
+  const props = defineProps({
+    // 唯一标识
+    index: {
+      type: [String, Object],
+      default() {
+        return '';
       },
     },
+    // TODO 自定义类名
+    popperClass: {
+      type: String,
+      default: '',
+    },
+    // TODO 是否禁用
+    disabled: {
+      type: Boolean,
+      default: false,
+    },
+    // 展开菜单的背景色
+    backgroundColor: {
+      type: String,
+      default: '#f5f5f5',
+    },
+  });
+
+  const menu = inject(navMenuKey);
+  const subMenus = inject(subMenuPathKey, []);
+  const isOpen = ref(false);
+  const textColor = menu.textColor;
+  const paddingLeft = computed(() => `${20 + 20 * subMenus.length}px`);
+
+  const subMenu = {
+    get disabled() {
+      return props.disabled;
+    },
+    get index() {
+      return props.index;
+    },
+    get isOpen() {
+      return isOpen.value;
+    },
+    set isOpen(value) {
+      isOpen.value = value;
+    },
+    subMenus,
   };
+
+  provide(subMenuPathKey, [...subMenus, subMenu]);
+
+  const select = () => {
+    if (!props.disabled) menu.selectMenu(subMenu);
+  };
+  const open = () => {
+    isOpen.value = true;
+  };
+  const close = () => {
+    isOpen.value = false;
+  };
+
+  const unregister = menu.registerSubMenu(subMenu);
+  onBeforeUnmount(unregister);
+
+  defineExpose({ close, open });
 </script>
 
 <style lang="scss">

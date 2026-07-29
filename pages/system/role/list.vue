@@ -16,7 +16,7 @@
     </view>
     <view class="uni-container">
       <unicloud-db
-        ref="udb"
+        ref="udbRef"
         :collection="collectionList"
         :where="where"
         page-data="replace"
@@ -29,7 +29,7 @@
         loadtime="manual"
         @load="onqueryload"
       >
-        <uni-table ref="table" :loading="loading" :emptyText="error.message || $t('common.empty')" border stripe type="selection" @selection-change="selectionChange">
+        <uni-table ref="tableRef" :loading="loading" :emptyText="error.message || $t('common.empty')" border stripe type="selection" @selection-change="selectionChange">
           <uni-tr>
             <uni-th align="center" filter-type="search" @filter-change="filterChange($event, 'role_id')" sortable @sort-change="sortChange($event, 'role_id')">唯一ID</uni-th>
             <uni-th align="center" filter-type="search" @filter-change="filterChange($event, 'role_name')" sortable @sort-change="sortChange($event, 'role_name')">名称</uni-th>
@@ -75,170 +75,189 @@
   </view>
 </template>
 
-<script>
+<script setup>
   import { enumConverter, filterToWhere } from '@/js_sdk/validator/uni-id-roles.js';
-
   const db = uniCloud.database();
   // 表查询配置
+  // 表查询配置
   const dbOrderBy = 'create_date desc'; // 排序字段
+  // 排序字段
   const dbSearchFields = ['role_id', 'role_name', 'permission.permission_name']; // 支持模糊搜索的字段列表	// 分页配置
+  // 支持模糊搜索的字段列表	// 分页配置
   const pageSize = 20;
   const pageCurrent = 1;
-
   const orderByMapping = {
     ascending: 'asc',
     descending: 'desc',
   };
-
-  export default {
-    data() {
-      return {
-        collectionList: [
-          db.collection('uni-id-roles').field('comment,permission,role_id,role_name,create_date').getTemp(),
-          db.collection('uni-id-permissions').field('permission_name, permission_id').getTemp(),
-        ],
-        query: '',
-        where: '',
-        orderby: dbOrderBy,
-        orderByFieldName: '',
-        selectedIndexs: [],
-        options: {
-          pageSize,
-          pageCurrent,
-          filterData: {},
-          ...enumConverter,
-        },
-        imageStyles: {
-          width: 64,
-          height: 64,
-        },
-        exportExcel: {
-          filename: 'uni-id-roles.xls',
-          type: 'xls',
-          fields: {
-            唯一ID: 'role_id',
-            名称: 'role_name',
-            权限: 'permission',
-            备注: 'comment',
-            create_date: 'create_date',
-          },
-        },
-        exportExcelData: [],
-      };
+  import { getCurrentInstance, nextTick, ref } from 'vue';
+  import { onLoad, onReady } from '@dcloudio/uni-app';
+  const { proxy } = getCurrentInstance();
+  const collectionListState = ref([
+    db.collection('uni-id-roles').field('comment,permission,role_id,role_name,create_date').getTemp(),
+    db.collection('uni-id-permissions').field('permission_name, permission_id').getTemp(),
+  ]);
+  const collectionList = collectionListState;
+  const queryState = ref('');
+  const query = queryState;
+  const whereState = ref('');
+  const where = whereState;
+  const orderbyState = ref(dbOrderBy);
+  const orderby = orderbyState;
+  const orderByFieldNameState = ref('');
+  const orderByFieldName = orderByFieldNameState;
+  const selectedIndexsState = ref([]);
+  const selectedIndexs = selectedIndexsState;
+  const optionsState = ref({
+    pageSize,
+    pageCurrent,
+    filterData: {},
+    ...enumConverter,
+  });
+  const options = optionsState;
+  const imageStylesState = ref({
+    width: 64,
+    height: 64,
+  });
+  const imageStyles = imageStylesState;
+  const exportExcelState = ref({
+    filename: 'uni-id-roles.xls',
+    type: 'xls',
+    fields: {
+      唯一ID: 'role_id',
+      名称: 'role_name',
+      权限: 'permission',
+      备注: 'comment',
+      create_date: 'create_date',
     },
-    onLoad() {
-      this._filter = {};
-    },
-    onReady() {
-      this.$refs.udb.loadData();
-    },
-    methods: {
-      onqueryload(data) {
-        for (let i = 0; i < data.length; i++) {
-          let item = data[i];
-          item.permission = item.permission.map((pItem) => pItem.permission_name).join('、');
-          item.create_date = this.$formatDate(item.create_date);
-        }
-        this.exportExcelData = data;
-      },
-      changeSize(pageSize) {
-        this.options.pageSize = pageSize;
-        this.options.pageCurrent = 1;
-        this.$nextTick(() => {
-          this.loadData();
-        });
-      },
-      getWhere() {
-        const query = this.query.trim();
-        if (!query) {
-          return '';
-        }
-        const queryRe = new RegExp(query, 'i');
-        return dbSearchFields.map((name) => queryRe + '.test(' + name + ')').join(' || ');
-      },
-      search() {
-        const newWhere = this.getWhere();
-        this.where = newWhere;
-        this.$nextTick(() => {
-          this.loadData();
-        });
-      },
-      loadData(clear = true) {
-        this.$refs.udb.loadData({
-          clear,
-        });
-      },
-      onPageChanged(e) {
-        this.selectedIndexs.length = 0;
-        this.$refs.table.clearSelection();
-        this.$refs.udb.loadData({
-          current: e.current,
-        });
-      },
-      navigateTo(url, clear) {
-        // clear 表示刷新列表时是否清除页码，true 表示刷新并回到列表第 1 页，默认为 true
-        uni.navigateTo({
-          url,
-          events: {
-            refreshData: () => {
-              this.loadData(clear);
-            },
-          },
-        });
-      },
-      // 多选处理
-      selectedItems() {
-        let dataList = this.$refs.udb.dataList;
-        return this.selectedIndexs.map((i) => dataList[i]._id);
-      },
-      // 批量删除
-      delTable() {
-        this.$refs.udb.remove(this.selectedItems(), {
-          success: (res) => {
-            this.$refs.table.clearSelection();
-          },
-        });
-      },
-      // 多选
-      selectionChange(e) {
-        this.selectedIndexs = e.detail.index;
-      },
-      confirmDelete(id) {
-        this.$refs.udb.remove(id, {
-          success: (res) => {
-            this.$refs.table.clearSelection();
-          },
-        });
-      },
-      sortChange(e, name) {
-        this.orderByFieldName = name;
-        if (e.order) {
-          this.orderby = name + ' ' + orderByMapping[e.order];
-        } else {
-          this.orderby = '';
-        }
-        this.$refs.table.clearSelection();
-        this.$nextTick(() => {
-          this.$refs.udb.loadData();
-        });
-      },
-      filterChange(e, name) {
-        this._filter[name] = {
-          type: e.filterType,
-          value: e.filter,
-        };
-        let newWhere = filterToWhere(this._filter, db.command);
-        if (Object.keys(newWhere).length) {
-          this.where = newWhere;
-        } else {
-          this.where = '';
-        }
-        this.$nextTick(() => {
-          this.$refs.udb.loadData();
-        });
-      },
-    },
+  });
+  const exportExcel = exportExcelState;
+  const exportExcelDataState = ref([]);
+  const exportExcelData = exportExcelDataState;
+  const _filterState = ref(undefined);
+  const _filter = _filterState;
+  const udbRef = ref(null);
+  const tableRef = ref(null);
+  const onqueryloadAction = (data) => {
+    for (let i = 0; i < data.length; i++) {
+      let item = data[i];
+      item.permission = item.permission.map((pItem) => pItem.permission_name).join('、');
+      item.create_date = proxy.$formatDate(item.create_date);
+    }
+    exportExcelDataState.value = data;
   };
+  const onqueryload = onqueryloadAction;
+  const changeSizeAction = (pageSize) => {
+    optionsState.value.pageSize = pageSize;
+    optionsState.value.pageCurrent = 1;
+    nextTick(() => {
+      loadDataAction();
+    });
+  };
+  const changeSize = changeSizeAction;
+  const getWhereAction = () => {
+    const query = queryState.value.trim();
+    if (!query) {
+      return '';
+    }
+    const queryRe = new RegExp(query, 'i');
+    return dbSearchFields.map((name) => queryRe + '.test(' + name + ')').join(' || ');
+  };
+  const getWhere = getWhereAction;
+  const searchAction = () => {
+    const newWhere = getWhereAction();
+    whereState.value = newWhere;
+    nextTick(() => {
+      loadDataAction();
+    });
+  };
+  const search = searchAction;
+  const loadDataAction = (clear = true) => {
+    udbRef.value.loadData({
+      clear,
+    });
+  };
+  const loadData = loadDataAction;
+  const onPageChangedAction = (e) => {
+    selectedIndexsState.value.length = 0;
+    tableRef.value.clearSelection();
+    udbRef.value.loadData({
+      current: e.current,
+    });
+  };
+  const onPageChanged = onPageChangedAction;
+  const navigateToAction = (url, clear) => {
+    // clear 表示刷新列表时是否清除页码，true 表示刷新并回到列表第 1 页，默认为 true
+    uni.navigateTo({
+      url,
+      events: {
+        refreshData: () => {
+          loadDataAction(clear);
+        },
+      },
+    });
+  };
+  const navigateTo = navigateToAction;
+  const selectedItemsAction = () => {
+    let dataList = udbRef.value.dataList;
+    return selectedIndexsState.value.map((i) => dataList[i]._id);
+  };
+  const selectedItems = selectedItemsAction;
+  const delTableAction = () => {
+    udbRef.value.remove(selectedItemsAction(), {
+      success: (res) => {
+        tableRef.value.clearSelection();
+      },
+    });
+  };
+  const delTable = delTableAction;
+  const selectionChangeAction = (e) => {
+    selectedIndexsState.value = e.detail.index;
+  };
+  const selectionChange = selectionChangeAction;
+  const confirmDeleteAction = (id) => {
+    udbRef.value.remove(id, {
+      success: (res) => {
+        tableRef.value.clearSelection();
+      },
+    });
+  };
+  const confirmDelete = confirmDeleteAction;
+  const sortChangeAction = (e, name) => {
+    orderByFieldNameState.value = name;
+    if (e.order) {
+      orderbyState.value = name + ' ' + orderByMapping[e.order];
+    } else {
+      orderbyState.value = '';
+    }
+    tableRef.value.clearSelection();
+    nextTick(() => {
+      udbRef.value.loadData();
+    });
+  };
+  const sortChange = sortChangeAction;
+  const filterChangeAction = (e, name) => {
+    _filterState.value[name] = {
+      type: e.filterType,
+      value: e.filter,
+    };
+    let newWhere = filterToWhere(_filterState.value, db.command);
+    if (Object.keys(newWhere).length) {
+      whereState.value = newWhere;
+    } else {
+      whereState.value = '';
+    }
+    nextTick(() => {
+      udbRef.value.loadData();
+    });
+  };
+  const filterChange = filterChangeAction;
+  onLoad(() => {
+    _filterState.value = {};
+  });
+  onReady(() => {
+    udbRef.value.loadData();
+  });
 </script>
 
 <style></style>

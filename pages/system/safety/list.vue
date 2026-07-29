@@ -9,7 +9,7 @@
     </view>
     <view class="uni-container">
       <unicloud-db
-        ref="udb"
+        ref="udbRef"
         :collection="collectionList"
         :options="options"
         :where="where"
@@ -48,92 +48,105 @@
   </view>
 </template>
 
-<script>
+<script setup>
   const db = uniCloud.database();
   // 表查询配置
+  // 表查询配置
   const dbOrderBy = 'create_date desc'; // 排序字段
+  // 排序字段
   const dbSearchFields = ['user_id.username', 'user_id.nickname', 'type', 'ip']; // 支持模糊搜索的字段列表
+  // 分页配置
+  // 支持模糊搜索的字段列表
   // 分页配置
   const pageSize = 20;
   const pageCurrent = 1;
-
-  export default {
-    data() {
-      return {
-        collectionList: [db.collection('uni-id-log').field('type, ip, create_date, user_id').getTemp(), db.collection('uni-id-users').field('_id, username,nickname').getTemp()],
-        query: '',
-        where: '',
-        orderby: dbOrderBy,
-        options: {
-          pageSize,
-          pageCurrent,
-        },
-      };
-    },
-    methods: {
-      getWhere() {
-        const query = this.query.trim();
-        if (!query) {
-          return '';
-        }
-        let queryRe;
-        try {
-          queryRe = new RegExp(query, 'i');
-        } catch (err) {
-          uni.showToast({
-            title: '请勿输入\等不满足正则格式的符号',
-            icon: 'none',
-          });
-          return;
-        }
-        return dbSearchFields.map((name) => queryRe + '.test(' + name + ')').join(' || ');
-      },
-      search() {
-        const newWhere = this.getWhere();
-        const isSameWhere = newWhere === this.where;
-        this.where = newWhere;
-        if (isSameWhere) {
-          // 相同条件时，手动强制刷新
-          this.loadData();
-        }
-      },
-      loadData(clear = true) {
-        this.$refs.udb.loadData({
-          clear,
-        });
-      },
-      onPageChanged(e) {
-        this.$refs.udb.loadData({
-          current: e.current,
-        });
-      },
-      navigateTo(url) {
-        uni.navigateTo({
-          url,
-          events: {
-            refreshData: () => {
-              this.loadData();
-            },
-          },
-        });
-      },
-      // 多选处理
-      selectedItems() {
-        let dataList = this.$refs.udb.dataList;
-        return this.selectedIndexs.map((i) => dataList[i]._id);
-      },
-      //批量删除
-      delTable() {
-        this.$refs.udb.remove(this.selectedItems());
-      },
-      // 多选
-      selectionChange(e) {
-        this.selectedIndexs = e.detail.index;
-      },
-      confirmDelete(id) {
-        this.$refs.udb.remove(id);
-      },
-    },
+  import { ref } from 'vue';
+  const collectionListState = ref([
+    db.collection('uni-id-log').field('type, ip, create_date, user_id').getTemp(),
+    db.collection('uni-id-users').field('_id, username,nickname').getTemp(),
+  ]);
+  const collectionList = collectionListState;
+  const queryState = ref('');
+  const query = queryState;
+  const whereState = ref('');
+  const where = whereState;
+  const orderbyState = ref(dbOrderBy);
+  const orderby = orderbyState;
+  const optionsState = ref({
+    pageSize,
+    pageCurrent,
+  });
+  const options = optionsState;
+  const selectedIndexsState = ref(undefined);
+  const selectedIndexs = selectedIndexsState;
+  const udbRef = ref(null);
+  const getWhereAction = () => {
+    const query = queryState.value.trim();
+    if (!query) {
+      return '';
+    }
+    let queryRe;
+    try {
+      queryRe = new RegExp(query, 'i');
+    } catch (err) {
+      uni.showToast({
+        title: '请勿输入\等不满足正则格式的符号',
+        icon: 'none',
+      });
+      return;
+    }
+    return dbSearchFields.map((name) => queryRe + '.test(' + name + ')').join(' || ');
   };
+  const getWhere = getWhereAction;
+  const searchAction = () => {
+    const newWhere = getWhereAction();
+    const isSameWhere = newWhere === whereState.value;
+    whereState.value = newWhere;
+    if (isSameWhere) {
+      // 相同条件时，手动强制刷新
+      loadDataAction();
+    }
+  };
+  const search = searchAction;
+  const loadDataAction = (clear = true) => {
+    udbRef.value.loadData({
+      clear,
+    });
+  };
+  const loadData = loadDataAction;
+  const onPageChangedAction = (e) => {
+    udbRef.value.loadData({
+      current: e.current,
+    });
+  };
+  const onPageChanged = onPageChangedAction;
+  const navigateToAction = (url) => {
+    uni.navigateTo({
+      url,
+      events: {
+        refreshData: () => {
+          loadDataAction();
+        },
+      },
+    });
+  };
+  const navigateTo = navigateToAction;
+  const selectedItemsAction = () => {
+    let dataList = udbRef.value.dataList;
+    return selectedIndexsState.value.map((i) => dataList[i]._id);
+  };
+  const selectedItems = selectedItemsAction;
+  const delTableAction = () => {
+    udbRef.value.remove(selectedItemsAction());
+  };
+  const delTable = delTableAction;
+  const selectionChangeAction = (e) => {
+    selectedIndexsState.value = e.detail.index;
+  };
+  const selectionChange = selectionChangeAction;
+  const confirmDeleteAction = (id) => {
+    udbRef.value.remove(id);
+  };
+  const confirmDelete = confirmDeleteAction;
 </script>
 <style></style>

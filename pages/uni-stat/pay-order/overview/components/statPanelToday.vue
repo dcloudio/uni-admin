@@ -37,99 +37,96 @@
   </view>
 </template>
 
-<script>
+<script setup>
   import { formatterData, stringifyQuery, stringifyField, stringifyGroupField, getTimeOfSomeDayAgo, formatDate, parseDateTime, debounce } from '@/js_sdk/uni-stat/util.js';
   import timeUtil from '@/js_sdk/uni-stat/timeUtil.js';
   import { fieldsMap, fieldsGroupMap } from '../fieldsMap.js';
-
-  export default {
-    props: {
-      query: {
-        type: [Object],
-        default: function () {
-          return {};
-        },
+  import { ref, watch } from 'vue';
+  const props = defineProps({
+    query: {
+      type: [Object],
+      default: function () {
+        return {};
       },
     },
-    data() {
-      return {
-        tableName: 'uni-stat-pay-result',
-        panelData: fieldsGroupMap,
-        loading: false,
-      };
-    },
-    created() {
-      this.getCloudDataDebounce = debounce(() => {
-        this.getCloudData();
-      }, 300);
-      this.getCloudDataDebounce();
-    },
-    methods: {
-      // 获取云端数据
-      getCloudData() {
-        let query = this.query;
-        if (!query.appid) return;
-        this.loading = true;
-        const where = stringifyQuery(
-          {
-            ...query,
-            start_time: [getTimeOfSomeDayAgo(0), Date.now()],
-          },
-          true,
-          ['uni_platform']
-        );
-        //console.log('where: ', where)
-        const db = uniCloud.database();
-        const subTable = db
-          .collection(this.tableName)
-          .where(where)
-          .field(`${stringifyField(fieldsMap)}, dimension, stat_date.date_str as stat_time, start_time`)
-          .groupBy(`stat_time, dimension`)
-          .groupField(stringifyGroupField(fieldsMap))
-          .orderBy('stat_time', 'desc')
-          .get()
-          .then((res) => {
-            let data = res.result.data;
-            // 数据格式化
-            data = formatterData({
-              fieldsMap,
-              data,
-            });
-            //console.log('data: ', data)
-            // 获取今日数据
-            let today = data.find((item) => {
-              return item.dimension === 'day' && item.stat_time === parseDateTime(getTimeOfSomeDayAgo(0), '');
-            });
-            if (!today) {
-              today =
-                data.find((item) => {
-                  return item.dimension === 'hour' && item.stat_time === parseDateTime(getTimeOfSomeDayAgo(0), '');
-                }) || {};
-            }
-            this.loading = false;
-            this.panelData = this.setPanelData(today);
-          });
+  });
+  const tableNameState = ref('uni-stat-pay-result');
+  const tableName = tableNameState;
+  const panelDataState = ref(fieldsGroupMap);
+  const panelData = panelDataState;
+  const loadingState = ref(false);
+  const loading = loadingState;
+  const getCloudDataDebounceState = ref(undefined);
+  const getCloudDataDebounce = getCloudDataDebounceState;
+  const getCloudDataAction = () => {
+    let query = props.query;
+    if (!query.appid) return;
+    loadingState.value = true;
+    const where = stringifyQuery(
+      {
+        ...query,
+        start_time: [getTimeOfSomeDayAgo(0), Date.now()],
       },
-      // 设置面板数据
-      setPanelData(data) {
-        let panelData = this.panelData;
-        panelData.map((item1, index1) => {
-          item1.list.map((item2, index2) => {
-            item2.value = data[item2.field] || 0;
-          });
+      true,
+      ['uni_platform']
+    );
+    //console.log('where: ', where)
+    //console.log('where: ', where)
+    const db = uniCloud.database();
+    const subTable = db
+      .collection(tableNameState.value)
+      .where(where)
+      .field(`${stringifyField(fieldsMap)}, dimension, stat_date.date_str as stat_time, start_time`)
+      .groupBy(`stat_time, dimension`)
+      .groupField(stringifyGroupField(fieldsMap))
+      .orderBy('stat_time', 'desc')
+      .get()
+      .then((res) => {
+        let data = res.result.data;
+        // 数据格式化
+        data = formatterData({
+          fieldsMap,
+          data,
         });
-        return panelData;
-      },
-    },
-    watch: {
-      query: {
-        deep: true,
-        handler(val) {
-          this.getCloudDataDebounce();
-        },
-      },
-    },
+        //console.log('data: ', data)
+        // 获取今日数据
+        let today = data.find((item) => {
+          return item.dimension === 'day' && item.stat_time === parseDateTime(getTimeOfSomeDayAgo(0), '');
+        });
+        if (!today) {
+          today =
+            data.find((item) => {
+              return item.dimension === 'hour' && item.stat_time === parseDateTime(getTimeOfSomeDayAgo(0), '');
+            }) || {};
+        }
+        loadingState.value = false;
+        panelDataState.value = setPanelDataAction(today);
+      });
   };
+  const getCloudData = getCloudDataAction;
+  const setPanelDataAction = (data) => {
+    let panelData = panelDataState.value;
+    panelData.map((item1, index1) => {
+      item1.list.map((item2, index2) => {
+        item2.value = data[item2.field] || 0;
+      });
+    });
+    return panelData;
+  };
+  const setPanelData = setPanelDataAction;
+  watch(
+    () => props.query,
+    (val) => {
+      getCloudDataDebounceState.value();
+    },
+    {
+      deep: true,
+    }
+  );
+  getCloudDataDebounceState.value = debounce(() => {
+    getCloudDataAction();
+  }, 300);
+  getCloudDataDebounceState.value();
 </script>
 
 <style lang="scss" scoped>

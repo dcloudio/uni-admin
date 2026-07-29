@@ -117,7 +117,7 @@
       </view>
     </view>
 
-    <uni-popup ref="errMsg" type="center" :animation="false" :maskClick="true" @change="errMsgPopupChange">
+    <uni-popup ref="errMsgPopup" type="center" :animation="false" :maskClick="true" @change="errMsgPopupChange">
       <view class="modal black-theme">
         <view class="modal-header">错误详情</view>
         <scroll-view scroll-x="true" scroll-y="true">
@@ -137,7 +137,7 @@
     </uni-popup>
 
     <!-- #ifdef H5 -->
-    <uni-drawer class="sourcemap-drawser" ref="upload" mode="right" :mask-click="true" :width="340">
+    <uni-drawer class="sourcemap-drawser" ref="uploadDrawer" mode="right" :mask-click="true" :width="340">
       <view class="modal" style="max-width: none; min-width: auto; padding: 0 10px">
         <view class="modal-header">上传 sourceMap</view>
         <view class="modal-content" style="height: 300px; padding: 0">
@@ -196,7 +196,8 @@
   </view>
 </template>
 
-<script>
+<script setup>
+  import { computed, markRaw, reactive, ref, toRefs, watch } from 'vue';
   import {
     mapfields,
     stringifyQuery,
@@ -211,7 +212,7 @@
   } from '@/js_sdk/uni-stat/util.js';
   import { fieldsMap, popupFieldsMap } from './fieldsMap.js';
   import uploadTask from './uploadTask.vue';
-  import { createSourceMapUploadState, initUploadSourcemapCloud, sourceMapMethods } from './sourcemap.js';
+  import { createSourceMapUploadState, initUploadSourcemapCloud, useSourceMap } from './sourcemap.js';
   import adminConfig from '@/admin.config.js';
 
   const panelOption = [
@@ -227,407 +228,417 @@
     },
   ];
 
-  export default {
-    data() {
-      return {
-        uniStat: adminConfig.uniStat,
-        fieldsMap,
-        popupFieldsMap,
-        query: {
-          type: 'js',
-          dimension: 'day',
-          appid: '',
-          platform_id: '',
-          uni_platform: '',
-          version_id: '',
-          start_time: [],
-        },
-        uploadOptions: createUniStatQuery({
-          appid: '',
-          uni_platform: '',
-        }),
-        uploadMsg: '',
-        options: {
-          pageSize: 20,
-          pageCurrent: 1, // 当前页
-          total: 0, // 数据总量
-        },
-        loading: false,
-        popupLoading: false,
-        currentDateTab: 0,
-        // currentChartTab: ,
-        tableData: [],
-        popupTableData: [],
-        panelData: JSON.parse(JSON.stringify(panelOption)),
-        chartData: {},
-        chartTab: 'errorCount',
-        chartTabs: [
-          {
-            _id: 'errorCount',
-            name: '错误次数',
-          },
-          {
-            _id: 'errorRate',
-            name: '错误率',
-          },
-        ],
-        errMsg: '',
-        msgLoading: false,
-        uploadFile: createSourceMapUploadState(),
-        uploadSuccessTaskNames: [],
-        errorItem: '',
-        errorMessage: '',
-      };
+  const errMsgPopup = ref(null);
+  const uploadDrawer = ref(null);
+  const state = reactive({
+    uniStat: adminConfig.uniStat,
+    query: {
+      type: 'js',
+      dimension: 'day',
+      appid: '',
+      platform_id: '',
+      uni_platform: '',
+      version_id: '',
+      start_time: [],
     },
-    components: {
-      uploadTask,
+    uploadOptions: createUniStatQuery({
+      appid: '',
+      uni_platform: '',
+    }),
+    uploadMsg: '',
+    options: {
+      pageSize: 20,
+      pageCurrent: 1,
+      total: 0,
     },
-    computed: {
-      queryStr() {
-        return stringifyQuery(this.query);
+    loading: false,
+    popupLoading: false,
+    currentDateTab: 0,
+    tableData: [],
+    popupTableData: [],
+    panelData: JSON.parse(JSON.stringify(panelOption)),
+    chartData: {},
+    chartTab: 'errorCount',
+    chartTabs: [
+      {
+        _id: 'errorCount',
+        name: '错误次数',
       },
-      versionQuery() {
-        const { appid, uni_platform } = this.query;
-        const query = stringifyQuery(
-          createUniStatQuery({
-            appid,
-            uni_platform,
-          })
-        );
-        return query;
+      {
+        _id: 'errorRate',
+        name: '错误率',
       },
-      uploadVersionQuery() {
-        const { appid, uni_platform } = this.uploadOptions;
-        const query = stringifyQuery(
-          createUniStatQuery({
-            appid,
-            uni_platform,
-          })
-        );
-        return query;
-      },
-      vaildate() {
-        const allItemHasVaule = !!(this.uploadOptions.appid && this.uploadOptions.uni_platform && this.uploadOptions.version);
-        if (allItemHasVaule && this.uploadMsg) {
-          this.uploadMsg = '';
+    ],
+    errMsg: '',
+    msgLoading: false,
+    uploadFile: createSourceMapUploadState(),
+    uploadSuccessTaskNames: [],
+    errorItem: '',
+    errorMessage: '',
+    parsedErrors: {},
+    uploadSourcemapCloud: null,
+  });
+
+  const queryStr = computed(() => stringifyQuery(state.query));
+  const versionQuery = computed(() => {
+    const { appid, uni_platform } = state.query;
+    return stringifyQuery(
+      createUniStatQuery({
+        appid,
+        uni_platform,
+      })
+    );
+  });
+  const uploadVersionQuery = computed(() => {
+    const { appid, uni_platform } = state.uploadOptions;
+    return stringifyQuery(
+      createUniStatQuery({
+        appid,
+        uni_platform,
+      })
+    );
+  });
+  const vaildate = computed(() => {
+    const allItemHasVaule = !!(state.uploadOptions.appid && state.uploadOptions.uni_platform && state.uploadOptions.version);
+    if (allItemHasVaule && state.uploadMsg) {
+      state.uploadMsg = '';
+    }
+    return allItemHasVaule;
+  });
+  const uploadSuccessTasks = computed(() => state.uploadFile.tempFileTasks.filter((task) => task.state === 1));
+  const sortUploadFileTempFileTasks = computed(() => state.uploadFile.tempFileTasks.filter((task) => task.state !== 1).sort((a, b) => a.state - b.state));
+  const sourceMapEnabled = computed(() => true);
+  const channelQuery = computed(() =>
+    stringifyQuery({
+      platform_id: state.query.platform_id,
+    })
+  );
+
+  const sourceMapContext = new Proxy(
+    {},
+    {
+      get(target, key) {
+        if (key === '$refs') {
+          return {
+            errMsg: errMsgPopup.value,
+            upload: uploadDrawer.value,
+          };
         }
-        return allItemHasVaule;
+        if (key === 'vaildate') return vaildate.value;
+        return state[key];
       },
-      uploadSuccessTasks() {
-        return this.uploadFile.tempFileTasks.filter((task) => task.state === 1);
-      },
-      sortUploadFileTempFileTasks() {
-        return this.uploadFile.tempFileTasks.filter((task) => task.state !== 1).sort((a, b) => a.state - b.state);
-      },
-      sourceMapEnabled() {
-        //return !!this.uniStat.uploadSourceMapCloudSpaceId
+      set(target, key, value) {
+        state[key] = value;
         return true;
       },
-      channelQuery() {
-        const platform_id = this.query.platform_id;
-        return stringifyQuery({
-          platform_id,
+    }
+  );
+  const { closeErrPopup, errMsgPopupChange, openUploadPopup, closeUploadPopup, choosefile, openErrPopup } = useSourceMap(sourceMapContext);
+
+  function useDatetimePicker(res) {
+    state.currentDateTab = -1;
+  }
+
+  function changePlatform(id, index, name, item) {
+    state.query.version_id = 0;
+    state.uploadOptions.uni_platform = item.code;
+    state.query.uni_platform = item.code;
+  }
+
+  function changeTimeRange(id, index) {
+    state.currentDateTab = index;
+    const start = getTimeOfSomeDayAgo(id);
+    const end = getTimeOfSomeDayAgo(0) - 1;
+    state.query.start_time = [start, end];
+  }
+
+  function changePageCurrent(event) {
+    state.options.pageCurrent = event.current;
+    getTableData(queryStr.value);
+  }
+
+  function changePageSize(pageSize) {
+    state.options.pageSize = pageSize;
+    state.options.pageCurrent = 1;
+    getTableData(queryStr.value);
+  }
+
+  function getAllData(query) {
+    if (query.indexOf('appid') === -1) {
+      state.errorMessage = '请先选择应用';
+      return;
+    }
+    state.errorMessage = '';
+    getChartData(query);
+    getTableData(query);
+  }
+
+  function getChartData(query, field = 'day_count') {
+    const querystr = stringifyQuery(state.query, false, ['uni_platform']);
+    state.chartData = {};
+    const { pageCurrent } = state.options;
+    const db = uniCloud.database();
+    const [start_time, end_tiem] = state.query.start_time;
+    const timeAll = getAllDateCN(new Date(start_time), new Date(end_tiem));
+    db.collection('uni-stat-error-result')
+      .where(querystr)
+      .groupBy('start_time')
+      .groupField('sum(count) as total_day_count')
+      .orderBy('start_time', 'desc')
+      .get({
+        getCount: true,
+      })
+      .then(async (res) => {
+        const count = res.result.count;
+        const resData = res.result.data;
+        const data = [];
+
+        timeAll.forEach((value) => {
+          const item = resData.find((currentItem) => currentItem.start_time === value);
+          if (item) {
+            data.push(item);
+          } else {
+            data.push({
+              start_time: value,
+              total_day_count: 0,
+            });
+          }
         });
-      },
-    },
-    created() {
-      this.parsedErrors = {};
 
-      if (this.sourceMapEnabled) {
-        this.uploadSourcemapCloud = initUploadSourcemapCloud(this.uniStat);
-      }
-
-      this.getCloudDataDebounce = debounce(() => {
-        this.getAllData(this.queryStr);
-      }, 300);
-      this.getCloudDataDebounce();
-    },
-    watch: {
-      query: {
-        deep: true,
-        handler(val, old) {
-          this.options.pageCurrent = 1; // 重置分页
-          this.getCloudDataDebounce();
-        },
-      },
-      chartTab(val) {
-        this.getChartData(this.queryStr);
-      },
-    },
-    methods: {
-      ...sourceMapMethods,
-      useDatetimePicker(res) {
-        this.currentDateTab = -1;
-      },
-      changePlatform(id, index, name, item) {
-        this.query.version_id = 0;
-        this.uploadOptions.uni_platform = item.code;
-        this.query.uni_platform = item.code;
-      },
-      changeTimeRange(id, index) {
-        this.currentDateTab = index;
-        const start = getTimeOfSomeDayAgo(id),
-          end = getTimeOfSomeDayAgo(0) - 1;
-        this.query.start_time = [start, end];
-      },
-      changePageCurrent(e) {
-        this.options.pageCurrent = e.current;
-        this.getTableData(this.queryStr);
-      },
-
-      changePageSize(pageSize) {
-        this.options.pageSize = pageSize;
-        this.options.pageCurrent = 1; // 重置分页
-        this.getTableData(this.queryStr);
-      },
-
-      getAllData(query) {
-        if (query.indexOf('appid') === -1) {
-          this.errorMessage = '请先选择应用';
-          return; // 如果appid为空，则不进行查询
-        }
-        this.errorMessage = '';
-        this.getChartData(query);
-        this.getTableData(query);
-      },
-
-      getChartData(query, field = 'day_count') {
-        let querystr = stringifyQuery(this.query, false, ['uni_platform']);
-        this.chartData = {};
-        const { pageCurrent } = this.options;
-        const db = uniCloud.database();
-        const [start_time, end_tiem] = this.query.start_time;
-        const timeAll = getAllDateCN(new Date(start_time), new Date(end_tiem));
-        db.collection('uni-stat-error-result')
-          .where(querystr)
-          .groupBy('start_time')
-          .groupField('sum(count) as total_day_count')
-          .orderBy('start_time', 'desc')
-          .get({
-            getCount: true,
-          })
-          .then(async (res) => {
-            const count = res.result.count;
-            const resData = res.result.data;
-            let data = [];
-
-            timeAll.forEach((v) => {
-              let item = resData.find((item) => item.start_time === v);
-              if (item) {
-                data.push(item);
+        const options = {
+          categories: [],
+          series: [
+            {
+              name: '暂无数据',
+              data: [],
+            },
+          ],
+        };
+        if (state.chartTab === 'errorCount') {
+          const countLine = (options.series[0] = {
+            name: '错误次数',
+            data: [],
+          });
+          const xAxis = options.categories;
+          for (const item of data) {
+            const date = item.start_time;
+            const x = formatDate(date, 'day');
+            const countY = item[`total_${field}`];
+            xAxis.push(x);
+            countLine.data.push(countY);
+          }
+          state.chartData = options;
+        } else {
+          const dayAppLaunchs = await getDayLaunch(querystr);
+          const rateLine = (options.series[0] = {
+            name: '错误率(%)',
+            data: [],
+            lineStyle: {
+              color: '#EE6666',
+              width: 1,
+            },
+            itemStyle: {
+              borderWidth: 1,
+              borderColor: '#EE6666',
+              color: '#EE6666',
+            },
+            areaStyle: {
+              color: {
+                colorStops: [
+                  {
+                    offset: 0,
+                    color: '#EE6666',
+                  },
+                  {
+                    offset: 1,
+                    color: '#FFFFFF',
+                  },
+                ],
+              },
+            },
+          });
+          const xAxis = options.categories;
+          for (const item of data) {
+            const date = item.start_time;
+            const x = formatDate(date, 'day');
+            const countY = item[`total_${field}`];
+            xAxis.push(x);
+            if (dayAppLaunchs.length) {
+              const day = dayAppLaunchs.find((currentDay) => currentDay.start_time === item.start_time);
+              const dataIndex = xAxis.indexOf(x);
+              if (day) {
+                let rateY = (countY * 100) / day.day_app_launch_count;
+                rateY = rateY.toFixed(2);
+                rateLine.data[dataIndex] = rateY;
               } else {
-                data.push({
-                  start_time: v,
-                  total_day_count: 0,
-                });
+                rateLine.data[dataIndex] = 0;
+              }
+            }
+          }
+          state.chartData = options;
+        }
+      })
+      .catch((error) => {
+        console.error(error);
+      })
+      .finally(() => {});
+  }
+
+  function getTotalCount(query) {
+    const db = uniCloud.database();
+    return db.collection('uni-stat-error-result').where(query).groupBy('appid').groupField('sum(count) as total_count').get();
+  }
+
+  function getTotalLaunch(query) {
+    const db = uniCloud.database();
+    return db.collection('uni-stat-result').where(query).groupBy('appid').groupField('sum(app_launch_count) as total_app_launch_count').get();
+  }
+
+  async function getDayLaunch(query) {
+    const db = uniCloud.database();
+    const res = await db
+      .collection('uni-stat-result')
+      .where(query)
+      .groupBy('start_time')
+      .groupField('sum(app_launch_count) as day_app_launch_count')
+      .orderBy('start_time', 'asc')
+      .get();
+    return res.result.data || [];
+  }
+
+  function getTableData(query = stringifyQuery(state.query)) {
+    const querystr = stringifyQuery(state.query, false, ['uni_platform']);
+    const { pageCurrent } = state.options;
+    state.loading = true;
+    const db = uniCloud.database();
+    const filterAppid = stringifyQuery(
+      createUniStatQuery({
+        appid: state.query.appid,
+      })
+    );
+    const mainTableTemp = db.collection('uni-stat-error-result').where(querystr).getTemp();
+    const versions = db.collection('opendb-app-versions').where(filterAppid).getTemp();
+    const platforms = db.collection('uni-stat-app-platforms').getTemp();
+
+    db.collection(mainTableTemp, versions, platforms)
+      .orderBy('count', 'desc')
+      .skip((pageCurrent - 1) * state.options.pageSize)
+      .limit(state.options.pageSize)
+      .get({
+        getCount: true,
+      })
+      .then((res) => {
+        const { count, data } = res.result;
+        const tempData = [];
+        state.panelData = JSON.parse(JSON.stringify(panelOption));
+        for (const item of data) {
+          item.last_time = parseDateTime(item.last_time, 'dateTime');
+          item.msgTooltip = item.msg;
+          item.msg = !item.msg ? '' : item.msg.substring(0, 100) + '...';
+          const version = item.version_id[0];
+          const platform = item.platform_id[0];
+          item.version = version && version.version;
+          item.platform = platform && platform.name;
+          item.platform_code = platform && platform.code;
+          tempData.push(item);
+        }
+        getTotalCount(querystr)
+          .then((totalCountRes) => {
+            const total = totalCountRes.result.data[0];
+            const totalCount = total && total.total_count;
+            if (totalCount) {
+              tempData.forEach((item) => (item.total_count = Number(totalCount)));
+              state.panelData[0].value = totalCount;
+            }
+            let launchCount = '';
+            getTotalLaunch(querystr).then((totalLaunchRes) => {
+              const launchTotal = totalLaunchRes.result.data[0];
+              launchCount = launchTotal && launchTotal.total_app_launch_count;
+              if (totalCount && launchCount) {
+                let errorRate = totalCount / launchCount;
+                errorRate = (errorRate * 100).toFixed(2) + '%';
+                state.panelData[1].value = errorRate;
               }
             });
-
-            const options = {
-              categories: [],
-              series: [
-                {
-                  name: '暂无数据',
-                  data: [],
-                },
-              ],
-            };
-            if (this.chartTab === 'errorCount') {
-              const countLine = (options.series[0] = {
-                name: '错误次数',
-                data: [],
-              });
-              const xAxis = options.categories;
-              for (const item of data) {
-                let date = item.start_time;
-                const x = formatDate(date, 'day');
-                const countY = item[`total_${field}`];
-                xAxis.push(x);
-                countLine.data.push(countY);
-              }
-              this.chartData = options;
-            } else {
-              let dayAppLaunchs = await this.getDayLaunch(querystr);
-              const rateLine = (options.series[0] = {
-                name: '错误率(%)',
-                data: [],
-                lineStyle: {
-                  color: '#EE6666',
-                  width: 1,
-                },
-                itemStyle: {
-                  borderWidth: 1,
-                  borderColor: '#EE6666',
-                  color: '#EE6666',
-                },
-                areaStyle: {
-                  color: {
-                    colorStops: [
-                      {
-                        offset: 0,
-                        color: '#EE6666', // 0% 处的颜色
-                      },
-                      {
-                        offset: 1,
-                        color: '#FFFFFF', // 100% 处的颜色
-                      },
-                    ],
-                  },
-                },
-              });
-              const xAxis = options.categories;
-              for (const item of data) {
-                let date = item.start_time;
-                const x = formatDate(date, 'day');
-                const countY = item[`total_${field}`];
-                xAxis.push(x);
-                if (dayAppLaunchs.length) {
-                  const day = dayAppLaunchs.find((day) => day.start_time === item.start_time);
-                  const index = xAxis.indexOf(x);
-                  if (day) {
-                    let rateY = (countY * 100) / day.day_app_launch_count;
-                    rateY = rateY.toFixed(2);
-                    rateLine.data[index] = rateY;
-                  } else {
-                    rateLine.data[index] = 0;
-                  }
-                }
-              }
-              this.chartData = options;
-            }
-          })
-          .catch((err) => {
-            console.error(err);
-            // err.message 错误信息
-            // err.code 错误码
-          })
-          .finally(() => {});
-      },
-
-      getTotalCount(query) {
-        const db = uniCloud.database();
-        return db.collection('uni-stat-error-result').where(query).groupBy('appid').groupField('sum(count) as total_count').get();
-      },
-
-      getTotalLaunch(query) {
-        const db = uniCloud.database();
-        return db.collection('uni-stat-result').where(query).groupBy('appid').groupField('sum(app_launch_count) as total_app_launch_count').get();
-      },
-
-      /**
-       * 从结果表里获取范围时间内的启动次数
-       * @param {Object} query
-       */
-      async getDayLaunch(query) {
-        const db = uniCloud.database();
-        const res = await db
-          .collection('uni-stat-result')
-          .where(query)
-          .groupBy('start_time')
-          .groupField('sum(app_launch_count) as day_app_launch_count')
-          .orderBy('start_time', 'asc')
-          .get();
-        return res.result.data || [];
-      },
-
-      getTableData(query = stringifyQuery(this.query)) {
-        let querystr = stringifyQuery(this.query, false, ['uni_platform']);
-        const { pageCurrent } = this.options;
-        this.loading = true;
-        const db = uniCloud.database();
-        const filterAppid = stringifyQuery(
-          createUniStatQuery({
-            appid: this.query.appid,
-          })
-        );
-        const mainTableTemp = db.collection('uni-stat-error-result').where(querystr).getTemp();
-        const versions = db.collection('opendb-app-versions').where(filterAppid).getTemp();
-
-        const platforms = db.collection('uni-stat-app-platforms').getTemp();
-
-        db.collection(mainTableTemp, versions, platforms)
-          .orderBy('count', 'desc')
-          .skip((pageCurrent - 1) * this.options.pageSize)
-          .limit(this.options.pageSize)
-          .get({
-            getCount: true,
-          })
-          .then((res) => {
-            const { count, data } = res.result;
-            const tempData = [];
-            this.panelData = JSON.parse(JSON.stringify(panelOption));
-            for (const item of data) {
-              item.last_time = parseDateTime(item.last_time, 'dateTime');
-              item.msgTooltip = item.msg;
-              item.msg = !item.msg ? '' : item.msg.substring(0, 100) + '...';
-              const v = item.version_id[0];
-              const p = item.platform_id[0];
-              item.version = v && v.version;
-              item.platform = p && p.name;
-              item.platform_code = p && p.code;
-              tempData.push(item);
-            }
-            this.getTotalCount(querystr)
-              .then((res) => {
-                const total = res.result.data[0];
-                const total_count = total && total.total_count;
-                if (total_count) {
-                  tempData.forEach((item) => (item.total_count = Number(total_count)));
-                  this.panelData[0].value = total_count;
-                }
-                let launch_count = '';
-                this.getTotalLaunch(querystr).then((res) => {
-                  const total = res.result.data[0];
-                  launch_count = total && total.total_app_launch_count;
-                  if (total_count && launch_count) {
-                    let errorRate = total_count / launch_count;
-                    errorRate = (errorRate * 100).toFixed(2) + '%';
-                    this.panelData[1].value = errorRate;
-                  }
-                });
-              })
-              .finally(() => {
-                this.tableData = [];
-                this.options.total = count;
-                tempData.forEach((item) => mapfields(fieldsMap, item, item));
-                this.tableData = tempData;
-              });
-          })
-          .catch((err) => {
-            console.error(err);
-            // err.message 错误信息
-            // err.code 错误码
           })
           .finally(() => {
-            this.loading = false;
+            state.tableData = [];
+            state.options.total = count;
+            tempData.forEach((item) => mapfields(fieldsMap, item, item));
+            state.tableData = tempData;
           });
-      },
+      })
+      .catch((error) => {
+        console.error(error);
+      })
+      .finally(() => {
+        state.loading = false;
+      });
+  }
 
-      navTo(url, item) {
-        if (url.indexOf('http') > -1) {
-          window.open(url);
-        } else {
-          if (item) {
-            url = `${url}?error_hash=${item.hash}&create_time=${item.start_time}`;
-          }
-          uni.navigateTo({
-            url,
-          });
-        }
-      },
+  function navTo(url, item) {
+    if (url.indexOf('http') > -1) {
+      window.open(url);
+    } else {
+      if (item) {
+        url = `${url}?error_hash=${item.hash}&create_time=${item.start_time}`;
+      }
+      uni.navigateTo({ url });
+    }
+  }
 
-      createStr(maps, fn, prefix = 'total_') {
-        const strArr = [];
-        maps.forEach((mapper) => {
-          if (field.hasOwnProperty('value')) {
-            const fieldName = mapper.field;
-            strArr.push(`${fn}(${fieldName}) as ${prefix + fieldName}`);
-          }
-        });
-        return strArr.join();
-      },
+  function createStr(maps, fn, prefix = 'total_') {
+    const strArr = [];
+    maps.forEach((mapper) => {
+      if (field.hasOwnProperty('value')) {
+        const fieldName = mapper.field;
+        strArr.push(`${fn}(${fieldName}) as ${prefix + fieldName}`);
+      }
+    });
+    return strArr.join();
+  }
+
+  state.uploadSourcemapCloud = sourceMapEnabled.value ? markRaw(initUploadSourcemapCloud(state.uniStat)) : null;
+  const getCloudDataDebounce = debounce(() => {
+    getAllData(queryStr.value);
+  }, 300);
+
+  watch(
+    () => state.query,
+    () => {
+      state.options.pageCurrent = 1;
+      getCloudDataDebounce();
     },
-  };
+    { deep: true }
+  );
+  watch(
+    () => state.chartTab,
+    () => {
+      getChartData(queryStr.value);
+    }
+  );
+
+  const {
+    query,
+    uploadOptions,
+    uploadMsg,
+    options,
+    loading,
+    popupLoading,
+    currentDateTab,
+    tableData,
+    popupTableData,
+    panelData,
+    chartData,
+    chartTab,
+    chartTabs,
+    errMsg,
+    msgLoading,
+    uploadFile,
+    errorMessage,
+  } = toRefs(state);
+
+  getCloudDataDebounce();
 </script>
 
 <style>

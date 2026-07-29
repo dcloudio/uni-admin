@@ -6,18 +6,14 @@
   </view>
 </template>
 
-<script>
-  import { mapState } from 'vuex';
+<script setup>
+  import { computed } from 'vue';
+  import { useStore } from 'vuex';
 
-  export default {
-    name: 'uni-stat-breadcrumb',
-    data() {
-      return {};
-    },
-    computed: {
-      ...mapState('app', ['routes']),
-    },
-  };
+  defineOptions({ name: 'uni-stat-breadcrumb' });
+
+  const store = useStore();
+  const routes = computed(() => store.state.app.routes);
 </script>
 
 <style>

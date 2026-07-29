@@ -1,9 +1,9 @@
 <template>
   <view>
-    <uni-popup ref="smsPopup" type="center" @change="popupChange" :is-mask-click="false">
+    <uni-popup ref="smsPopupRef" type="center" @change="popupChange" :is-mask-click="false">
       <view class="sms-manager">
         <view class="sms-manager--header mb">群发短信</view>
-        <uni-forms :label-width="100" :modelValue="smsDataModel" ref="smsForm">
+        <uni-forms :label-width="100" :modelValue="smsDataModel" ref="smsFormRef">
           <uni-forms-item v-if="toType === 'user' && !isSelectedReceiver" label="目标对象" name="smsPreset" :rules="[{ required: true, errorMessage: '请选择目标对象' }]" required>
             <uni-data-select class="type m" placeholder="预设条件" size="mini" :clear="false" :localdata="smsPresetList" v-model="smsDataModel.smsPreset"> </uni-data-select>
             <view class="sms-data-tip">如需给指定用户发送，请在列表选择要发送的用户。</view>
@@ -74,7 +74,7 @@
       </view>
       <uni-icons type="closeempty" size="24" class="close" @click="close"></uni-icons>
     </uni-popup>
-    <uni-popup ref="previewPopup" type="center" :is-mask-click="false">
+    <uni-popup ref="previewPopupRef" type="center" :is-mask-click="false">
       <view class="sms-manager preview">
         <view class="sms-manager--header mb">
           <view>短信预览</view>
@@ -97,293 +97,294 @@
           <view>短信长度不超过70个字，按照一条短信计费；超过70个字，按照67字/条拆分成多条计费。</view>
         </view>
         <view class="uni-group">
-          <button @click="$refs.previewPopup.close()" class="uni-button">关闭</button>
+          <button @click="previewPopupRef.close()" class="uni-button">关闭</button>
         </view>
       </view>
     </uni-popup>
   </view>
 </template>
 
-<script>
+<script setup>
   const uniSmsCo = uniCloud.importObject('uni-sms-co');
-
-  export default {
+  import { computed, ref, watch } from 'vue';
+  defineOptions({
     name: 'batchSms',
-    props: {
-      // 发送类型 user|userTags
-      toType: String,
-      // 接收者 user=user._id, userTags=tag.id
-      receiver: {
-        type: Array,
-        default() {
-          return [];
-        },
-      },
-      // 条件；跨分页选择时需要
-      condition: {
-        type: Object,
-        default() {
-          return {};
-        },
+  });
+  const props = defineProps({
+    // 发送类型 user|userTags
+    toType: String,
+    // 接收者 user=user._id, userTags=tag.id
+    receiver: {
+      type: Array,
+      default() {
+        return [];
       },
     },
-    data() {
-      return {
-        smsTemplateLoading: false,
-        smsPresetList: [
-          {
-            value: 'all',
-            text: '全部用户',
-          },
-          {
-            value: '7-day-offline-users',
-            text: '7天内未登录用户',
-          },
-          {
-            value: '15-day-offline-users',
-            text: '15天内未登录用户',
-          },
-          {
-            value: '30-day-offline-users',
-            text: '30天内未登录用户',
-          },
-        ],
-        smsTemplate: [],
-        smsTemplateDataErrorMessage: '',
-        smsDataModel: {
-          name: '',
-          templateId: '',
-          templateData: [],
-          smsPreset: '',
-          filtered: false,
-        },
-        smsTemplateContent: '',
-        smsPreviewContent: [],
-        smsSendUserCount: 0,
-      };
-    },
-    computed: {
-      isSelectedReceiver() {
-        return !!this.receiver.length;
-      },
-      sendAll() {
-        return this.smsDataModel.smsPreset === 'all' || this.toType === 'userTags';
-      },
-      hasCondition() {
-        return !!Object.keys(this.condition).length;
+    // 条件；跨分页选择时需要
+    condition: {
+      type: Object,
+      default() {
+        return {};
       },
     },
-    watch: {
-      smsDataModel: {
-        handler(smsDataModel) {
-          if (!smsDataModel.templateId) return '';
-
-          const template = this.smsTemplate.find((template) => template.value === smsDataModel.templateId);
-          let content = smsDataModel.templateData.reduce((res, param) => {
-            const reg = new RegExp(`\\$\\{${param.field}\\}`);
-            return res.replace(reg, ($1) => param.value || $1);
-          }, template.content);
-
-          this.smsTemplateContent = `【${template.sign}】${content}`;
-        },
-        deep: true,
-      },
+  });
+  const smsTemplateLoadingState = ref(false);
+  const smsTemplateLoading = smsTemplateLoadingState;
+  const smsPresetListState = ref([
+    {
+      value: 'all',
+      text: '全部用户',
     },
-    methods: {
-      smsFilteredChange() {
-        this.smsDataModel.filtered = !this.smsDataModel.filtered;
-      },
-      popupChange(e) {
-        if (!e.show) this.reset();
-      },
-      open() {
-        this.$refs.smsPopup.open();
-        this.loadSmsTemplate();
-      },
-      close() {
-        this.reset();
-        this.$refs.smsPopup.close();
-      },
-      async loadSmsTemplate() {
-        if (this.smsTemplate.length > 0 || this.smsTemplateLoading) return;
-
-        this.smsTemplateLoading = true;
-
-        try {
-          const uniSmsCo = uniCloud.importObject('uni-sms-co', { customUI: true });
-          const res = await uniSmsCo.template();
-          this.smsTemplate = res.map((item) => ({
-            ...item,
-            value: item._id,
-            text: item.name,
-          }));
-        } finally {
-          this.smsTemplateLoading = false;
-        }
-      },
-      onSmsTemplateSelected(templateId) {
-        const current = this.smsTemplate.find((template) => template.value === templateId);
-
-        if (!current) return;
-
-        const reg = new RegExp(/\$\{(.*?)\}/g);
-        let templateVars = [];
-        let _execResult;
-
-        while ((_execResult = reg.exec(current.content))) {
-          const param = _execResult[1];
-
-          if (param) {
-            templateVars.push({
-              field: param,
-              value: '',
-            });
-          }
-        }
-
-        this.smsDataModel.templateData = templateVars;
-      },
-      async sendSms(isPreview = false) {
-        const values = await this.$refs.smsForm.validate();
-        const receiver = this.receiver;
-
-        for (const template of this.smsDataModel.templateData) {
-          if (!template.value) {
-            this.smsTemplateDataErrorMessage = '字段/值不可为空';
-            return;
-          }
-        }
-        this.smsTemplateDataErrorMessage = '';
-
-        const to = {
-          type: this.toType,
-          receiver,
-        };
-
-        if (this.smsDataModel.filtered || this.smsDataModel.smsPreset) {
-          to.condition = this.smsDataModel.smsPreset || this.condition;
-        }
-
-        if (isPreview) {
-          const res = await uniSmsCo.preview(to, values.templateId, this.smsDataModel.templateData);
-
-          if (res.errCode === 0) {
-            this.smsPreviewContent = res.list;
-            this.$refs.previewPopup.open();
-            this.smsSendUserCount = res.total;
-            return;
-          }
-        }
-
-        uni.showModal({
-          title: '发送确认',
-          content: `短信${this.sendAll ? '将发送给所有用户' : this.smsSendUserCount ? `预计发送${this.smsSendUserCount}人` : `将发送给符合条件的用户`}，确定发送？`,
-          success: async (e) => {
-            this.smsSendUserCount = 0;
-
-            if (e.cancel) return;
-
-            const res = await uniSmsCo.createSmsTask(to, values.templateId, this.smsDataModel.templateData, {
-              taskName: values.name,
-            });
-
-            if (res.taskId) {
-              uni.showModal({
-                content: '短信任务已提交，您可在DCloud开发者后台查看短信发送记录',
-                confirmText: '立即查看',
-                cancelText: '关闭',
-                success: (e) => {
-                  if (e.cancel) {
-                    this.reset();
-                    this.$refs.smsPopup.close();
-                  } else {
-                    // #ifdef H5
-                    window.open('https://unicloud.dcloud.net.cn/pages/uni-sms/send-record', '_blank');
-                    // #endif
-                    // ifndef H5
-                    this.reset();
-                    this.$refs.smsPopup.close();
-                    // endif
-                  }
-                },
-              });
-            }
-          },
+    {
+      value: '7-day-offline-users',
+      text: '7天内未登录用户',
+    },
+    {
+      value: '15-day-offline-users',
+      text: '15天内未登录用户',
+    },
+    {
+      value: '30-day-offline-users',
+      text: '30天内未登录用户',
+    },
+  ]);
+  const smsPresetList = smsPresetListState;
+  const smsTemplateState = ref([]);
+  const smsTemplate = smsTemplateState;
+  const smsTemplateDataErrorMessageState = ref('');
+  const smsTemplateDataErrorMessage = smsTemplateDataErrorMessageState;
+  const smsDataModelState = ref({
+    name: '',
+    templateId: '',
+    templateData: [],
+    smsPreset: '',
+    filtered: false,
+  });
+  const smsDataModel = smsDataModelState;
+  const smsTemplateContentState = ref('');
+  const smsTemplateContent = smsTemplateContentState;
+  const smsPreviewContentState = ref([]);
+  const smsPreviewContent = smsPreviewContentState;
+  const smsSendUserCountState = ref(0);
+  const smsSendUserCount = smsSendUserCountState;
+  const smsPopupRef = ref(null);
+  const smsFormRef = ref(null);
+  const previewPopupRef = ref(null);
+  const isSelectedReceiverComputed = computed(() => {
+    return !!props.receiver.length;
+  });
+  const isSelectedReceiver = isSelectedReceiverComputed;
+  const sendAllComputed = computed(() => {
+    return smsDataModelState.value.smsPreset === 'all' || props.toType === 'userTags';
+  });
+  const sendAll = sendAllComputed;
+  const hasConditionComputed = computed(() => {
+    return !!Object.keys(props.condition).length;
+  });
+  const hasCondition = hasConditionComputed;
+  const smsFilteredChangeAction = () => {
+    smsDataModelState.value.filtered = !smsDataModelState.value.filtered;
+  };
+  const smsFilteredChange = smsFilteredChangeAction;
+  const popupChangeAction = (e) => {
+    if (!e.show) resetAction();
+  };
+  const popupChange = popupChangeAction;
+  const openAction = () => {
+    smsPopupRef.value.open();
+    loadSmsTemplateAction();
+  };
+  const open = openAction;
+  const closeAction = () => {
+    resetAction();
+    smsPopupRef.value.close();
+  };
+  const close = closeAction;
+  const loadSmsTemplateAction = async () => {
+    if (smsTemplateState.value.length > 0 || smsTemplateLoadingState.value) return;
+    smsTemplateLoadingState.value = true;
+    try {
+      const uniSmsCo = uniCloud.importObject('uni-sms-co', {
+        customUI: true,
+      });
+      const res = await uniSmsCo.template();
+      smsTemplateState.value = res.map((item) => ({
+        ...item,
+        value: item._id,
+        text: item.name,
+      }));
+    } finally {
+      smsTemplateLoadingState.value = false;
+    }
+  };
+  const loadSmsTemplate = loadSmsTemplateAction;
+  const onSmsTemplateSelectedAction = (templateId) => {
+    const current = smsTemplateState.value.find((template) => template.value === templateId);
+    if (!current) return;
+    const reg = new RegExp(/\$\{(.*?)\}/g);
+    let templateVars = [];
+    let _execResult;
+    while ((_execResult = reg.exec(current.content))) {
+      const param = _execResult[1];
+      if (param) {
+        templateVars.push({
+          field: param,
+          value: '',
         });
-      },
-      chooseFile() {
-        if (typeof window.FileReader === 'undefined') {
-          uni.showModal({
-            content: '当前浏览器不支持文件上传，请升级浏览器重试',
-            showCancel: false,
-          });
-          return;
-        }
-
-        uni.chooseFile({
-          count: 1,
-          extension: ['.json'],
-          success: ({ tempFiles }) => {
-            if (tempFiles.length <= 0) return;
-            const [file] = tempFiles;
-            const reader = new FileReader();
-
-            reader.readAsText(file);
-            reader.onload = () => this.parserFileJson(null, reader.result);
-            reader.onerror = () => this.parserFileJson(reader.error);
-          },
-          fail: () => {
-            uni.showModal({
-              content: '打开选择文件框失败',
-              showCancel: false,
-            });
-          },
+      }
+    }
+    smsDataModelState.value.templateData = templateVars;
+  };
+  const onSmsTemplateSelected = onSmsTemplateSelectedAction;
+  const sendSmsAction = async (isPreview = false) => {
+    const values = await smsFormRef.value.validate();
+    const receiver = props.receiver;
+    for (const template of smsDataModelState.value.templateData) {
+      if (!template.value) {
+        smsTemplateDataErrorMessageState.value = '字段/值不可为空';
+        return;
+      }
+    }
+    smsTemplateDataErrorMessageState.value = '';
+    const to = {
+      type: props.toType,
+      receiver,
+    };
+    if (smsDataModelState.value.filtered || smsDataModelState.value.smsPreset) {
+      to.condition = smsDataModelState.value.smsPreset || props.condition;
+    }
+    if (isPreview) {
+      const res = await uniSmsCo.preview(to, values.templateId, smsDataModelState.value.templateData);
+      if (res.errCode === 0) {
+        smsPreviewContentState.value = res.list;
+        previewPopupRef.value.open();
+        smsSendUserCountState.value = res.total;
+        return;
+      }
+    }
+    uni.showModal({
+      title: '发送确认',
+      content: `短信${
+        sendAllComputed.value ? '将发送给所有用户' : smsSendUserCountState.value ? `预计发送${smsSendUserCountState.value}人` : `将发送给符合条件的用户`
+      }，确定发送？`,
+      success: async (e) => {
+        smsSendUserCountState.value = 0;
+        if (e.cancel) return;
+        const res = await uniSmsCo.createSmsTask(to, values.templateId, smsDataModelState.value.templateData, {
+          taskName: values.name,
         });
-      },
-      async parserFileJson(error, fileContent) {
-        if (error) {
-          console.error(error);
+        if (res.taskId) {
           uni.showModal({
-            content: '文件读取失败，请重新上传文件',
-            showCancel: false,
-          });
-          return;
-        }
-
-        let templates = [];
-        try {
-          templates = JSON.parse(fileContent);
-        } catch (e) {
-          console.error(e);
-          uni.showModal({
-            content: '短信模板解析失败，请检查模板格式',
-            showCancel: false,
-          });
-          return;
-        }
-
-        const res = await uniSmsCo.updateTemplates(templates);
-        if (res.errCode === 0) {
-          uni.showModal({
-            content: '短信模板更新成功',
-            showCancel: false,
-            success: () => {
-              this.loadSmsTemplate();
+            content: '短信任务已提交，您可在DCloud开发者后台查看短信发送记录',
+            confirmText: '立即查看',
+            cancelText: '关闭',
+            success: (e) => {
+              if (e.cancel) {
+                resetAction();
+                smsPopupRef.value.close();
+              } else {
+                // #ifdef H5
+                window.open('https://unicloud.dcloud.net.cn/pages/uni-sms/send-record', '_blank');
+                // #endif
+                // ifndef H5
+                resetAction();
+                smsPopupRef.value.close();
+                // endif
+              }
             },
           });
         }
       },
-      reset() {
-        this.smsDataModel.name = '';
-        this.smsDataModel.smsPreset = '';
-        this.smsDataModel.templateId = '';
-        this.smsDataModel.templateData = [];
-        this.smsPreviewContent = [];
-        this.smsTemplateContent = '';
-        this.smsSendUserCount = 0;
-      },
-    },
+    });
   };
+  const sendSms = sendSmsAction;
+  const chooseFileAction = () => {
+    if (typeof window.FileReader === 'undefined') {
+      uni.showModal({
+        content: '当前浏览器不支持文件上传，请升级浏览器重试',
+        showCancel: false,
+      });
+      return;
+    }
+    uni.chooseFile({
+      count: 1,
+      extension: ['.json'],
+      success: ({ tempFiles }) => {
+        if (tempFiles.length <= 0) return;
+        const [file] = tempFiles;
+        const reader = new FileReader();
+        reader.readAsText(file);
+        reader.onload = () => parserFileJsonAction(null, reader.result);
+        reader.onerror = () => parserFileJsonAction(reader.error);
+      },
+      fail: () => {
+        uni.showModal({
+          content: '打开选择文件框失败',
+          showCancel: false,
+        });
+      },
+    });
+  };
+  const chooseFile = chooseFileAction;
+  const parserFileJsonAction = async (error, fileContent) => {
+    if (error) {
+      console.error(error);
+      uni.showModal({
+        content: '文件读取失败，请重新上传文件',
+        showCancel: false,
+      });
+      return;
+    }
+    let templates = [];
+    try {
+      templates = JSON.parse(fileContent);
+    } catch (e) {
+      console.error(e);
+      uni.showModal({
+        content: '短信模板解析失败，请检查模板格式',
+        showCancel: false,
+      });
+      return;
+    }
+    const res = await uniSmsCo.updateTemplates(templates);
+    if (res.errCode === 0) {
+      uni.showModal({
+        content: '短信模板更新成功',
+        showCancel: false,
+        success: () => {
+          loadSmsTemplateAction();
+        },
+      });
+    }
+  };
+  const parserFileJson = parserFileJsonAction;
+  const resetAction = () => {
+    smsDataModelState.value.name = '';
+    smsDataModelState.value.smsPreset = '';
+    smsDataModelState.value.templateId = '';
+    smsDataModelState.value.templateData = [];
+    smsPreviewContentState.value = [];
+    smsTemplateContentState.value = '';
+    smsSendUserCountState.value = 0;
+  };
+  const reset = resetAction;
+  watch(
+    () => smsDataModelState.value,
+    (smsDataModel) => {
+      if (!smsDataModel.templateId) return '';
+      const template = smsTemplateState.value.find((template) => template.value === smsDataModel.templateId);
+      let content = smsDataModel.templateData.reduce((res, param) => {
+        const reg = new RegExp(`\\$\\{${param.field}\\}`);
+        return res.replace(reg, ($1) => param.value || $1);
+      }, template.content);
+      smsTemplateContentState.value = `【${template.sign}】${content}`;
+    },
+    {
+      deep: true,
+    }
+  );
+
+  defineExpose({ close: closeAction, open: openAction });
 </script>
 
 <style lang="scss">

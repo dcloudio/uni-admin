@@ -7,18 +7,11 @@
         <button class="uni-button hide-on-phone" type="default" size="mini" @click="search">{{ $t('common.button.search') }}</button>
         <button class="uni-button" type="primary" size="mini" @click="navigateTo('./add')">{{ $t('common.button.add') }}</button>
         <button class="uni-button" type="warn" size="mini" :disabled="!selectedIndexs.length" @click="delTable">{{ $t('common.button.batchDelete') }}</button>
-        <!-- #ifdef H5 -->
-        <!-- #ifndef VUE3 -->
-        <download-excel class="hide-on-phone" :fields="exportExcel.fields" :data="exportExcelData" :type="exportExcel.type" :name="exportExcel.filename">
-          <button class="uni-button" type="primary" size="mini">{{ $t('common.button.exportExcel') }}</button>
-        </download-excel>
-        <!-- #endif -->
-        <!-- #endif -->
       </view>
     </view>
     <view class="uni-container">
       <unicloud-db
-        ref="udb"
+        ref="udbRef"
         collection="opendb-app-list"
         field="appid,app_type,name,description,remark,create_date"
         :where="where"
@@ -33,7 +26,7 @@
         @load="onqueryload"
       >
         <uni-table
-          ref="table"
+          ref="tableRef"
           :loading="loading || addAppidLoading"
           :emptyText="error.message || $t('common.empty')"
           border
@@ -117,224 +110,258 @@
     <!-- #endif -->
   </view>
 </template>
-<script>
+<script setup>
   import { enumConverter, filterToWhere } from '../../../js_sdk/validator/opendb-app-list.js';
-  import { mapState } from 'vuex';
-
   const db = uniCloud.database();
   // 表查询配置
+  // 表查询配置
   const dbOrderBy = 'create_date'; // 排序字段
+  // 排序字段
   const dbSearchFields = []; // 模糊搜索字段，支持模糊搜索的字段列表
+  // 分页配置
+  // 模糊搜索字段，支持模糊搜索的字段列表
   // 分页配置
   const pageSize = 20;
   const pageCurrent = 1;
-
   const orderByMapping = {
     ascending: 'asc',
     descending: 'desc',
   };
-
-  export default {
-    data() {
-      return {
-        query: '',
-        where: '',
-        orderby: dbOrderBy,
-        orderByFieldName: '',
-        selectedIndexs: [],
-        options: {
-          pageSize,
-          pageCurrent,
-          filterData: {},
-          ...enumConverter,
-        },
-        imageStyles: {
-          width: 64,
-          height: 64,
-        },
-        exportExcel: {
-          filename: 'opendb-app-list.xls',
-          type: 'xls',
-          fields: {
-            AppID: 'appid',
-            应用类型: 'app_type',
-            应用名称: 'name',
-            应用描述: 'description',
-            创建时间: 'create_date',
-          },
-        },
-        exportExcelData: [],
-        addAppidLoading: true,
-        descriptionThWidth: 380,
-        buttonThWidth: 400,
-        appTypeData: [
-          {
-            text: 'uni-app',
-            value: 0,
-          },
-          {
-            text: 'uni-app x',
-            value: 1,
-          },
-        ],
-      };
+  import { useStore } from 'vuex';
+  import { computed, nextTick, ref } from 'vue';
+  import { onLoad, onReady } from '@dcloudio/uni-app';
+  const store = useStore();
+  const queryState = ref('');
+  const query = queryState;
+  const whereState = ref('');
+  const where = whereState;
+  const orderbyState = ref(dbOrderBy);
+  const orderby = orderbyState;
+  const orderByFieldNameState = ref('');
+  const orderByFieldName = orderByFieldNameState;
+  const selectedIndexsState = ref([]);
+  const selectedIndexs = selectedIndexsState;
+  const optionsState = ref({
+    pageSize,
+    pageCurrent,
+    filterData: {},
+    ...enumConverter,
+  });
+  const options = optionsState;
+  const imageStylesState = ref({
+    width: 64,
+    height: 64,
+  });
+  const imageStyles = imageStylesState;
+  const exportExcelState = ref({
+    filename: 'opendb-app-list.xls',
+    type: 'xls',
+    fields: {
+      AppID: 'appid',
+      应用类型: 'app_type',
+      应用名称: 'name',
+      应用描述: 'description',
+      创建时间: 'create_date',
     },
-    onLoad() {
-      this._filter = {};
+  });
+  const exportExcel = exportExcelState;
+  const exportExcelDataState = ref([]);
+  const exportExcelData = exportExcelDataState;
+  const addAppidLoadingState = ref(true);
+  const addAppidLoading = addAppidLoadingState;
+  const descriptionThWidthState = ref(380);
+  const descriptionThWidth = descriptionThWidthState;
+  const buttonThWidthState = ref(400);
+  const buttonThWidth = buttonThWidthState;
+  const appTypeDataState = ref([
+    {
+      text: 'uni-app',
+      value: 0,
     },
-    onReady() {
-      this.$refs.udb.loadData();
+    {
+      text: 'uni-app x',
+      value: 1,
     },
-    computed: {
-      ...mapState('app', ['appName', 'appid']),
-    },
-    methods: {
-      pageSizeChange(pageSize) {
-        this.options.pageSize = pageSize;
-        this.options.pageCurrent = 1;
-        this.$nextTick(() => {
-          this.loadData();
-        });
-      },
-      onqueryload(data) {
-        if (!data.find((item) => item.appid === this.appid)) {
-          this.addCurrentAppid({
-            appid: this.appid,
-            app_type: 0,
-            name: this.appName,
-            description: 'admin 管理后台',
-          });
-        } else {
-          this.addAppidLoading = false;
-        }
-        this.exportExcelData = data;
-      },
-      changeSize(e) {
-        this.pageSizeIndex = e.detail.value;
-      },
-      addCurrentAppid(app) {
-        // 使用 clientDB 提交当前 appid
-        db.collection('opendb-app-list')
-          .add(app)
-          .then((res) => {
-            this.loadData();
-            setTimeout(() => {
-              uni.showModal({
-                content: `检测到数据库中无当前应用, 已自动添加应用: ${this.appName}`,
-                showCancel: false,
-              });
-            }, 500);
-          })
-          .catch((err) => {})
-          .finally(() => {
-            this.addAppidLoading = false;
-          });
-      },
-      getWhere() {
-        const query = this.query.trim();
-        if (!query) {
-          return '';
-        }
-        const queryRe = new RegExp(query, 'i');
-        return dbSearchFields.map((name) => queryRe + '.test(' + name + ')').join(' || ');
-      },
-      search() {
-        const newWhere = this.getWhere();
-        this.where = newWhere;
-        this.loadData();
-      },
-      loadData(clear = true) {
-        this.$refs.udb.loadData({
-          clear,
-        });
-      },
-      onPageChanged(e) {
-        this.selectedIndexs.length = 0;
-        this.$refs.table.clearSelection();
-        this.$refs.udb.loadData({
-          current: e.current,
-        });
-      },
-      navigateTo(url, clear) {
-        // clear 表示刷新列表时是否清除页码，true 表示刷新并回到列表第 1 页，默认为 true
-        uni.navigateTo({
-          url,
-          events: {
-            refreshData: () => {
-              this.loadData(clear);
-            },
-          },
-        });
-      },
-      // 多选处理
-      selectedItems() {
-        let dataList = this.$refs.udb.dataList;
-        return this.selectedIndexs.map((i) => dataList[i]._id);
-      },
-      // 批量删除
-      delTable() {
-        console.warn(
-          '删除应用，只能删除应用表 opendb-app-list 中的应用数据记录，不能删除与应用关联的其他数据，例如：使用升级中心 uni-upgrade-center 等插件产生的数据（应用版本数据等）'
-        );
-        this.$refs.udb.remove(this.selectedItems(), {
-          success: (res) => {
-            this.$refs.table.clearSelection();
-          },
-        });
-      },
-      // 多选
-      selectionChange(e) {
-        this.selectedIndexs = e.detail.index;
-      },
-      confirmDelete(id) {
-        console.warn(
-          '删除应用，只能删除应用表 opendb-app-list 中的应用数据记录，不能删除与应用关联的其他数据，例如：使用升级中心 uni-upgrade-center 等插件产生的数据（应用版本数据等）'
-        );
-        this.$refs.udb.remove(id, {
-          confirmContent: '是否删除该应用',
-          success: (res) => {
-            this.$refs.table.clearSelection();
-          },
-        });
-      },
-      sortChange(e, name) {
-        this.orderByFieldName = name;
-        if (e.order) {
-          this.orderby = name + ' ' + orderByMapping[e.order];
-        } else {
-          this.orderby = '';
-        }
-        this.$refs.table.clearSelection();
-        this.$nextTick(() => {
-          this.$refs.udb.loadData();
-        });
-      },
-      filterChange(e, name) {
-        this._filter[name] = {
-          type: e.filterType,
-          value: e.filter,
-        };
-        let newWhere = filterToWhere(this._filter, db.command);
-        if (Object.keys(newWhere).length) {
-          this.where = newWhere;
-        } else {
-          this.where = '';
-        }
-        this.$nextTick(() => {
-          this.$refs.udb.loadData();
-        });
-      },
-      publish(id) {
-        uni.navigateTo({
-          url: '/pages/system/app/uni-portal/uni-portal?id=' + id,
-        });
-      },
-      getAppType(app_type = 0) {
-        const data = ['uni-app', 'uni-app x'];
-        return data[app_type] || '未知类型';
-      },
-    },
+  ]);
+  const appTypeData = appTypeDataState;
+  const _filterState = ref(undefined);
+  const _filter = _filterState;
+  const pageSizeIndexState = ref(undefined);
+  const pageSizeIndex = pageSizeIndexState;
+  const udbRef = ref(null);
+  const tableRef = ref(null);
+  const appNameComputed = computed(() => {
+    return store.state.app.appName;
+  });
+  const appName = appNameComputed;
+  const appidComputed = computed(() => {
+    return store.state.app.appid;
+  });
+  const appid = appidComputed;
+  const pageSizeChangeAction = (pageSize) => {
+    optionsState.value.pageSize = pageSize;
+    optionsState.value.pageCurrent = 1;
+    nextTick(() => {
+      loadDataAction();
+    });
   };
+  const pageSizeChange = pageSizeChangeAction;
+  const onqueryloadAction = (data) => {
+    if (!data.find((item) => item.appid === appidComputed.value)) {
+      addCurrentAppidAction({
+        appid: appidComputed.value,
+        app_type: 0,
+        name: appNameComputed.value,
+        description: 'admin 管理后台',
+      });
+    } else {
+      addAppidLoadingState.value = false;
+    }
+    exportExcelDataState.value = data;
+  };
+  const onqueryload = onqueryloadAction;
+  const changeSizeAction = (e) => {
+    pageSizeIndexState.value = e.detail.value;
+  };
+  const changeSize = changeSizeAction;
+  const addCurrentAppidAction = (app) => {
+    // 使用 clientDB 提交当前 appid
+    db.collection('opendb-app-list')
+      .add(app)
+      .then((res) => {
+        loadDataAction();
+        setTimeout(() => {
+          uni.showModal({
+            content: `检测到数据库中无当前应用, 已自动添加应用: ${appNameComputed.value}`,
+            showCancel: false,
+          });
+        }, 500);
+      })
+      .catch((err) => {})
+      .finally(() => {
+        addAppidLoadingState.value = false;
+      });
+  };
+  const addCurrentAppid = addCurrentAppidAction;
+  const getWhereAction = () => {
+    const query = queryState.value.trim();
+    if (!query) {
+      return '';
+    }
+    const queryRe = new RegExp(query, 'i');
+    return dbSearchFields.map((name) => queryRe + '.test(' + name + ')').join(' || ');
+  };
+  const getWhere = getWhereAction;
+  const searchAction = () => {
+    const newWhere = getWhereAction();
+    whereState.value = newWhere;
+    loadDataAction();
+  };
+  const search = searchAction;
+  const loadDataAction = (clear = true) => {
+    udbRef.value.loadData({
+      clear,
+    });
+  };
+  const loadData = loadDataAction;
+  const onPageChangedAction = (e) => {
+    selectedIndexsState.value.length = 0;
+    tableRef.value.clearSelection();
+    udbRef.value.loadData({
+      current: e.current,
+    });
+  };
+  const onPageChanged = onPageChangedAction;
+  const navigateToAction = (url, clear) => {
+    // clear 表示刷新列表时是否清除页码，true 表示刷新并回到列表第 1 页，默认为 true
+    uni.navigateTo({
+      url,
+      events: {
+        refreshData: () => {
+          loadDataAction(clear);
+        },
+      },
+    });
+  };
+  const navigateTo = navigateToAction;
+  const selectedItemsAction = () => {
+    let dataList = udbRef.value.dataList;
+    return selectedIndexsState.value.map((i) => dataList[i]._id);
+  };
+  const selectedItems = selectedItemsAction;
+  const delTableAction = () => {
+    console.warn(
+      '删除应用，只能删除应用表 opendb-app-list 中的应用数据记录，不能删除与应用关联的其他数据，例如：使用升级中心 uni-upgrade-center 等插件产生的数据（应用版本数据等）'
+    );
+    udbRef.value.remove(selectedItemsAction(), {
+      success: (res) => {
+        tableRef.value.clearSelection();
+      },
+    });
+  };
+  const delTable = delTableAction;
+  const selectionChangeAction = (e) => {
+    selectedIndexsState.value = e.detail.index;
+  };
+  const selectionChange = selectionChangeAction;
+  const confirmDeleteAction = (id) => {
+    console.warn(
+      '删除应用，只能删除应用表 opendb-app-list 中的应用数据记录，不能删除与应用关联的其他数据，例如：使用升级中心 uni-upgrade-center 等插件产生的数据（应用版本数据等）'
+    );
+    udbRef.value.remove(id, {
+      confirmContent: '是否删除该应用',
+      success: (res) => {
+        tableRef.value.clearSelection();
+      },
+    });
+  };
+  const confirmDelete = confirmDeleteAction;
+  const sortChangeAction = (e, name) => {
+    orderByFieldNameState.value = name;
+    if (e.order) {
+      orderbyState.value = name + ' ' + orderByMapping[e.order];
+    } else {
+      orderbyState.value = '';
+    }
+    tableRef.value.clearSelection();
+    nextTick(() => {
+      udbRef.value.loadData();
+    });
+  };
+  const sortChange = sortChangeAction;
+  const filterChangeAction = (e, name) => {
+    _filterState.value[name] = {
+      type: e.filterType,
+      value: e.filter,
+    };
+    let newWhere = filterToWhere(_filterState.value, db.command);
+    if (Object.keys(newWhere).length) {
+      whereState.value = newWhere;
+    } else {
+      whereState.value = '';
+    }
+    nextTick(() => {
+      udbRef.value.loadData();
+    });
+  };
+  const filterChange = filterChangeAction;
+  const publishAction = (id) => {
+    uni.navigateTo({
+      url: '/pages/system/app/uni-portal/uni-portal?id=' + id,
+    });
+  };
+  const publish = publishAction;
+  const getAppTypeAction = (app_type = 0) => {
+    const data = ['uni-app', 'uni-app x'];
+    return data[app_type] || '未知类型';
+  };
+  const getAppType = getAppTypeAction;
+  onLoad(() => {
+    _filterState.value = {};
+  });
+  onReady(() => {
+    udbRef.value.loadData();
+  });
 </script>
 
 <style></style>

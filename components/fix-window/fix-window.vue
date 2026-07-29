@@ -7,25 +7,16 @@
   </view>
 </template>
 
-<script>
+<script setup>
   import topWindow from '../../windows/topWindow.vue';
   import leftWindow from '../../windows/leftWindow.vue';
-  export default {
-    components: {
-      topWindow,
-      leftWindow,
-    },
-    data() {
-      return {
-        visible: false,
-      };
-    },
-    methods: {
-      tiggerWindow() {
-        this.visible = !this.visible;
-      },
-    },
+  import { ref } from 'vue';
+  const visibleState = ref(false);
+  const visible = visibleState;
+  const tiggerWindowAction = () => {
+    visibleState.value = !visibleState.value;
   };
+  const tiggerWindow = tiggerWindowAction;
 </script>
 
 <style>

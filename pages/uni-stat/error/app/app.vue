@@ -20,7 +20,7 @@
             :clear="false"
           />
           <uni-data-select
-            ref="app-versions"
+            ref="app_versionsRef"
             collection="opendb-app-versions"
             :where="versionQuery"
             class="ml-m"
@@ -67,7 +67,7 @@
         </view>
 
         <unicloud-db
-          ref="udb"
+          ref="udbRef"
           :collection="collectionList"
           field="appid,version,platform,channel,sdk_version,device_id,device_net,device_os,device_os_version,device_vendor,device_model,device_is_root,device_os_name,device_batt_level,device_batt_temp,device_memory_use_size,device_memory_total_size,device_disk_use_size,device_disk_total_size,device_abis,app_count,app_use_memory_size,app_webview_count,app_use_duration,app_run_fore,package_name,package_version,page_url,error_msg,create_time"
           :where="where"
@@ -81,7 +81,7 @@
           :options="options"
           @load="onqueryload"
         >
-          <uni-table ref="table" :loading="loading" border stripe :emptyText="errorMessage || $t('common.empty')" style="overflow-y: scroll">
+          <uni-table ref="tableRef" :loading="loading" border stripe :emptyText="errorMessage || $t('common.empty')" style="overflow-y: scroll">
             <uni-tr>
               <block v-for="(mapper, index) in fieldsMap" :key="index">
                 <uni-th v-if="mapper.title" :key="index" align="center" :style="{ minWidth: `${mapper.title.length * 15 + 80}px` }">
@@ -142,10 +142,9 @@
   </view>
 </template>
 
-<script>
+<script setup>
   import { mapfields, stringifyQuery, getTimeOfSomeDayAgo, division, format, formatDate, parseDateTime, debounce, getAllDateCN } from '@/js_sdk/uni-stat/util.js';
-  import { fieldsMap } from './fieldsMap.js';
-
+  import { fieldsMap as fieldsMapSource } from './fieldsMap.js';
   const panelOption = [
     {
       title: '崩溃总数',
@@ -163,393 +162,438 @@
       tooltip: '时间范围内的总崩溃数/原生应用启动次数，如果小于0.01%，默认显示为0',
     },
   ];
-
   import { enumConverter, filterToWhere } from '@/js_sdk/validator/uni-stat-app-crash-logs.js';
-
   const db = uniCloud.database();
   // 表查询配置
+  // 表查询配置
   const dbOrderBy = 'create_time desc'; // 排序字段
+  // 排序字段
   const dbSearchFields = []; // 模糊搜索字段，支持模糊搜索的字段列表。联表查询格式: 主表字段名.副表字段名，例如用户表关联角色表 role.role_name
+  // 分页配置
+  // 模糊搜索字段，支持模糊搜索的字段列表。联表查询格式: 主表字段名.副表字段名，例如用户表关联角色表 role.role_name
   // 分页配置
   const pageSize = 20;
   const pageCurrent = 1;
-
   const orderByMapping = {
     ascending: 'asc',
     descending: 'desc',
   };
-
-  export default {
-    data() {
-      return {
-        fieldsMap,
-        //todo：要与schema 生成页面一起工作，stringifyQuery 需要与 schema 查询逻辑相容
-        query: {
-          type: 'crash',
-          dimension: 'day',
-          appid: '',
-          platform_id: '',
-          uni_platform: '',
-          version_id: '',
-          start_time: [],
-        },
-        loading: false,
-        popupLoading: false,
-        currentDateTab: 0,
-        // currentChartTab: ,
-        tableData: [],
-        popupTableData: [],
-        panelData: JSON.parse(JSON.stringify(panelOption)),
-        chartData: {},
-        chartTab: 'errorCount',
-        chartTabs: [
-          {
-            _id: 'errorCount',
-            name: '崩溃次数',
-          },
-          {
-            _id: 'errorRate',
-            name: '崩溃率',
-          },
-        ],
-
-        collectionList: 'uni-stat-app-crash-logs',
-        schemaQuery: '',
-        where: this.tableData,
-        orderby: dbOrderBy,
-        orderByFieldName: '',
-        selectedIndexs: [],
-        options: {
-          pageCurrent: 1, // 当前页
-          total: 0, // 数据总量
-          pageSizeIndex: 0, // 与 pageSizeRange 一起计算得出 pageSize
-          pageSizeRange: [10, 20, 50, 100],
-          pageSize,
-          pageCurrent,
-          filterData: {},
-          ...enumConverter,
-        },
-        errorMessage: '',
-        exportExcel: {
-          filename: 'uni-stat-app-crash-logs.xls',
-          type: 'xls',
-          fields: {
-            appid: 'appid',
-            version: 'version',
-            platform: 'platform',
-            channel: 'channel',
-            sdk_version: 'sdk_version',
-            device_id: 'device_id',
-            device_net: 'device_net',
-            device_os: 'device_os',
-            device_os_version: 'device_os_version',
-            device_vendor: 'device_vendor',
-            device_model: 'device_model',
-            device_is_root: 'device_is_root',
-            device_os_name: 'device_os_name',
-            device_batt_level: 'device_batt_level',
-            device_batt_temp: 'device_batt_temp',
-            device_memory_use_size: 'device_memory_use_size',
-            device_memory_total_size: 'device_memory_total_size',
-            device_disk_use_size: 'device_disk_use_size',
-            device_disk_total_size: 'device_disk_total_size',
-            device_abis: 'device_abis',
-            app_count: 'app_count',
-            app_use_memory_size: 'app_use_memory_size',
-            app_webview_count: 'app_webview_count',
-            app_use_duration: 'app_use_duration',
-            app_run_fore: 'app_run_fore',
-            package_name: 'package_name',
-            package_version: 'package_version',
-            page_url: 'page_url',
-            error_msg: 'error_msg',
-            create_time: 'create_time',
-          },
-        },
-        exportExcelData: [],
-      };
+  import { computed, nextTick, ref, watch } from 'vue';
+  import { onLoad } from '@dcloudio/uni-app';
+  const fieldsMapState = ref(fieldsMapSource);
+  const fieldsMap = fieldsMapState;
+  const queryState = ref({
+    type: 'crash',
+    dimension: 'day',
+    appid: '',
+    platform_id: '',
+    uni_platform: '',
+    version_id: '',
+    start_time: [],
+  });
+  const query = queryState;
+  const loadingState = ref(false);
+  const loading = loadingState;
+  const popupLoadingState = ref(false);
+  const popupLoading = popupLoadingState;
+  const currentDateTabState = ref(0);
+  const currentDateTab = currentDateTabState;
+  const tableDataState = ref([]);
+  const tableData = tableDataState;
+  const popupTableDataState = ref([]);
+  const popupTableData = popupTableDataState;
+  const panelDataState = ref(JSON.parse(JSON.stringify(panelOption)));
+  const panelData = panelDataState;
+  const chartDataState = ref({});
+  const chartData = chartDataState;
+  const chartTabState = ref('errorCount');
+  const chartTab = chartTabState;
+  const chartTabsState = ref([
+    {
+      _id: 'errorCount',
+      name: '崩溃次数',
     },
-    computed: {
-      queryStr() {
-        return stringifyQuery(this.query);
-      },
-      tableQuery() {
-        const { appid, platform_id, version_id, start_time } = this.query;
-
-        // 从本地存储中取到数据做过滤
-        const platform = this.getPlatform(platform_id);
-        const version = this.getVersion(version_id);
-
-        const query = stringifyQuery({
-          appid,
-          create_time: start_time,
-          platform: platform,
-          version: version,
-        });
-        //console.log('query: ', query)
-        return query;
-      },
-      versionQuery() {
-        const { appid, uni_platform } = this.query;
-        const query = stringifyQuery({
-          appid,
-          uni_platform,
-          type: 'native_app',
-        });
-        //console.log('query: ', query)
-        return query;
-      },
+    {
+      _id: 'errorRate',
+      name: '崩溃率',
     },
-    created() {
-      this.debounceGet = debounce(() => {
-        this.getAllData(this.queryStr);
-        this.where = this.tableQuery;
-        this.$nextTick(() => {
-          this.$refs.udb && this.$refs.udb.loadData();
-        }, 200);
-      }, 300);
-      this.debounceGet();
+  ]);
+  const chartTabs = chartTabsState;
+  const collectionListState = ref('uni-stat-app-crash-logs');
+  const collectionList = collectionListState;
+  const schemaQueryState = ref('');
+  const schemaQuery = schemaQueryState;
+  const whereState = ref(tableDataState.value);
+  const where = whereState;
+  const orderbyState = ref(dbOrderBy);
+  const orderby = orderbyState;
+  const orderByFieldNameState = ref('');
+  const orderByFieldName = orderByFieldNameState;
+  const selectedIndexsState = ref([]);
+  const selectedIndexs = selectedIndexsState;
+  const optionsState = ref({
+    pageCurrent: 1,
+    // 当前页
+    total: 0,
+    // 数据总量
+    pageSizeIndex: 0,
+    // 与 pageSizeRange 一起计算得出 pageSize
+    pageSizeRange: [10, 20, 50, 100],
+    pageSize,
+    pageCurrent,
+    filterData: {},
+    ...enumConverter,
+  });
+  const options = optionsState;
+  const errorMessageState = ref('');
+  const errorMessage = errorMessageState;
+  const exportExcelState = ref({
+    filename: 'uni-stat-app-crash-logs.xls',
+    type: 'xls',
+    fields: {
+      appid: 'appid',
+      version: 'version',
+      platform: 'platform',
+      channel: 'channel',
+      sdk_version: 'sdk_version',
+      device_id: 'device_id',
+      device_net: 'device_net',
+      device_os: 'device_os',
+      device_os_version: 'device_os_version',
+      device_vendor: 'device_vendor',
+      device_model: 'device_model',
+      device_is_root: 'device_is_root',
+      device_os_name: 'device_os_name',
+      device_batt_level: 'device_batt_level',
+      device_batt_temp: 'device_batt_temp',
+      device_memory_use_size: 'device_memory_use_size',
+      device_memory_total_size: 'device_memory_total_size',
+      device_disk_use_size: 'device_disk_use_size',
+      device_disk_total_size: 'device_disk_total_size',
+      device_abis: 'device_abis',
+      app_count: 'app_count',
+      app_use_memory_size: 'app_use_memory_size',
+      app_webview_count: 'app_webview_count',
+      app_use_duration: 'app_use_duration',
+      app_run_fore: 'app_run_fore',
+      package_name: 'package_name',
+      package_version: 'package_version',
+      page_url: 'page_url',
+      error_msg: 'error_msg',
+      create_time: 'create_time',
     },
-    watch: {
-      query: {
-        deep: true,
-        handler(val) {
-          this.options.pageCurrent = 1; // 重置分页
-          this.debounceGet();
-        },
-      },
-      chartTab(val) {
-        this.getChartData(this.queryStr);
-      },
-    },
-    onLoad() {
-      this._filter = {};
-    },
-    methods: {
-      onqueryload(data) {
-        this.exportExcelData = data;
-        this.tableData = data;
-      },
-      getWhere() {
-        const query = this.schemaQuery.trim();
-        if (!query) {
-          return '';
-        }
-        const queryRe = new RegExp(query, 'i');
-        return dbSearchFields.map((name) => queryRe + '.test(' + name + ')').join(' || ');
-      },
-      loadData(clear = true) {
-        this.$refs.udb.loadData({
-          clear,
-        });
-      },
-      onPageChanged(e) {
-        this.selectedIndexs.length = 0;
-        this.$refs.table.clearSelection();
-        this.$refs.udb.loadData({
-          current: e.current,
-        });
-      },
-      sortChange(e, name) {
-        this.orderByFieldName = name;
-        if (e.order) {
-          this.orderby = name + ' ' + orderByMapping[e.order];
-        } else {
-          this.orderby = '';
-        }
-        this.$refs.table.clearSelection();
-        this.$nextTick(() => {
-          this.$refs.udb.loadData();
-        });
-      },
-      filterChange(e, name) {
-        this._filter[name] = {
-          type: e.filterType,
-          value: e.filter,
-        };
-        let newWhere = filterToWhere(this._filter, db.command);
-        if (Object.keys(newWhere).length) {
-          this.where = newWhere;
-        } else {
-          this.where = '';
-          // this.where = this.tableQuery
-        }
-        this.$nextTick(() => {
-          this.$refs.udb.loadData();
-        });
-      },
-      useDatetimePicker() {
-        this.currentDateTab = -1;
-      },
-      changePlatform(id, index, name, item) {
-        this.query.version_id = 0;
-        this.query.uni_platform = item.code;
-      },
-      changeTimeRange(id, index) {
-        this.currentDateTab = index;
-        const start = getTimeOfSomeDayAgo(id),
-          end = getTimeOfSomeDayAgo(0) - 1;
-        this.query.start_time = [start, end];
-      },
+  });
+  const exportExcel = exportExcelState;
+  const exportExcelDataState = ref([]);
+  const exportExcelData = exportExcelDataState;
+  const debounceGetState = ref(undefined);
+  const debounceGet = debounceGetState;
+  const _filterState = ref(undefined);
+  const _filter = _filterState;
+  const udbRef = ref(null);
+  const tableRef = ref(null);
+  const app_versionsRef = ref(null);
+  const queryStrComputed = computed(() => {
+    return stringifyQuery(queryState.value);
+  });
+  const queryStr = queryStrComputed;
+  const tableQueryComputed = computed(() => {
+    const { appid, platform_id, version_id, start_time } = queryState.value;
 
-      getPlatform(platform_id) {
-        const statTabsData = uni.getStorageSync('uni-admin-statTabsData');
-        const platforms = statTabsData['platform-channel'];
-        const p = Array.isArray(platforms) && platforms.find((p) => p._id === platform_id);
-        return (p && p.code) || '';
-      },
-      getVersion(version_id) {
-        let versions = [];
-        if (this.$refs['app-versions'] && typeof this.$refs['app-versions'].getLoadData === 'function') {
-          versions = this.$refs['app-versions'].getLoadData();
-        }
-        const v = Array.isArray(versions) && versions.find((v) => v._id === version_id);
-        return (v && v.text) || '';
-      },
-
-      getAllData(query) {
-        if (query.indexOf('appid') === -1) {
-          this.errorMessage = '请先选择应用';
-          return; // 如果appid为空，则不进行查询
-        }
-        this.errorMessage = '';
-        this.getPanelData(query);
-        this.getChartData(query);
-      },
-
-      getPanelData(query) {
-        let querystr = stringifyQuery(this.query, false, ['uni_platform']);
-        const db = uniCloud.database();
-        db.collection('uni-stat-error-result')
-          .where(querystr)
-          .field('count as temp_count, app_launch_count as temp_app_launch_count, appid')
-          .groupBy('appid')
-          .groupField('sum(temp_count) as count, sum(temp_app_launch_count) as app_launch_count')
-          .get({
-            getCount: true,
-          })
-          .then((res) => {
-            const { count, data } = res.result;
-            const item = res.result.data[0] || { count: 0, app_launch_count: 0 };
-            // this.panelData = []
-            let queryTemp = Object.assign({}, this.query);
-            delete queryTemp.type;
-            this.getTotalLaunch(stringifyQuery(queryTemp, false, ['uni_platform'])).then((res) => {
-              const total = res.result.data[0];
-              if (item) {
-                let launch_count = total && total.total_app_launch_count;
-                item.app_launch_count = launch_count;
-                this.panelData = mapfields(panelOption, item);
-              }
-            });
-          });
-      },
-      getTotalLaunch(query) {
-        const db = uniCloud.database();
-        return db.collection('uni-stat-result').where(query).groupBy('appid').groupField('sum(app_launch_count) as total_app_launch_count').get();
-      },
-      getChartData(query, field = 'day_count') {
-        let querystr = stringifyQuery(this.query, false, ['uni_platform']);
-        this.chartData = {};
-        const { pageCurrent } = this.options;
-        const db = uniCloud.database();
-        const [start_time, end_tiem] = this.query.start_time;
-        // 时间补全
-        const timeAll = getAllDateCN(new Date(start_time), new Date(end_tiem));
-
-        db.collection('uni-stat-error-result')
-          .where(querystr)
-          .field('count as temp_count, app_launch_count as temp_app_launch_count, start_time')
-          .groupBy('start_time')
-          .groupField('sum(temp_count) as count, sum(temp_app_launch_count) as app_launch_count')
-          .orderBy('start_time', 'asc')
-          .get({
-            getCount: true,
-          })
-          .then((res) => {
-            const { count, data } = res.result;
-            let dataAll = [];
-            timeAll.forEach((v) => {
-              let item = data.find((item) => item.start_time === v);
-              if (item) {
-                dataAll.push(item);
-              } else {
-                dataAll.push({
-                  app_launch_count: 0,
-                  count: 0,
-                  start_time: v,
-                });
-              }
-            });
-
-            const options = {
-              categories: [],
-              series: [
-                {
-                  name: '暂无数据',
-                  data: [],
-                },
-              ],
-            };
-            if (this.chartTab === 'errorCount') {
-              const countLine = (options.series[0] = {
-                name: '崩溃次数',
-                data: [],
-              });
-              const xAxis = options.categories;
-              for (const item of dataAll) {
-                let date = item.start_time;
-                const x = formatDate(date, 'day');
-                const countY = item.count;
-                xAxis.push(x);
-                countLine.data.push(countY);
-              }
-              this.chartData = options;
-            } else {
-              const rateLine = (options.series[0] = {
-                name: '崩溃率(%)',
-                data: [],
-                lineStyle: {
-                  color: '#EE6666',
-                  width: 1,
-                },
-                itemStyle: {
-                  borderWidth: 1,
-                  borderColor: '#EE6666',
-                  color: '#EE6666',
-                },
-                areaStyle: {
-                  color: {
-                    colorStops: [
-                      {
-                        offset: 0,
-                        color: '#EE6666', // 0% 处的颜色
-                      },
-                      {
-                        offset: 1,
-                        color: '#FFFFFF', // 100% 处的颜色
-                      },
-                    ],
-                  },
-                },
-              });
-              const xAxis = options.categories;
-              for (const item of dataAll) {
-                const { count, app_launch_count } = item;
-                let date = item.start_time;
-                const x = formatDate(date, 'day');
-                xAxis.push(x);
-                let y = count / app_launch_count;
-                y = !y ? 0 : y.toFixed(2);
-                rateLine.data.push(y);
-              }
-              this.chartData = options;
-            }
-          })
-          .finally(() => {});
-      },
-    },
+    // 从本地存储中取到数据做过滤
+    // 从本地存储中取到数据做过滤
+    const platform = getPlatformAction(platform_id);
+    const version = getVersionAction(version_id);
+    const query = stringifyQuery({
+      appid,
+      create_time: start_time,
+      platform: platform,
+      version: version,
+    });
+    //console.log('query: ', query)
+    //console.log('query: ', query)
+    return query;
+  });
+  const tableQuery = tableQueryComputed;
+  const versionQueryComputed = computed(() => {
+    const { appid, uni_platform } = queryState.value;
+    const query = stringifyQuery({
+      appid,
+      uni_platform,
+      type: 'native_app',
+    });
+    //console.log('query: ', query)
+    //console.log('query: ', query)
+    return query;
+  });
+  const versionQuery = versionQueryComputed;
+  const onqueryloadAction = (data) => {
+    exportExcelDataState.value = data;
+    tableDataState.value = data;
   };
+  const onqueryload = onqueryloadAction;
+  const getWhereAction = () => {
+    const query = schemaQueryState.value.trim();
+    if (!query) {
+      return '';
+    }
+    const queryRe = new RegExp(query, 'i');
+    return dbSearchFields.map((name) => queryRe + '.test(' + name + ')').join(' || ');
+  };
+  const getWhere = getWhereAction;
+  const loadDataAction = (clear = true) => {
+    udbRef.value.loadData({
+      clear,
+    });
+  };
+  const loadData = loadDataAction;
+  const onPageChangedAction = (e) => {
+    selectedIndexsState.value.length = 0;
+    tableRef.value.clearSelection();
+    udbRef.value.loadData({
+      current: e.current,
+    });
+  };
+  const onPageChanged = onPageChangedAction;
+  const sortChangeAction = (e, name) => {
+    orderByFieldNameState.value = name;
+    if (e.order) {
+      orderbyState.value = name + ' ' + orderByMapping[e.order];
+    } else {
+      orderbyState.value = '';
+    }
+    tableRef.value.clearSelection();
+    nextTick(() => {
+      udbRef.value.loadData();
+    });
+  };
+  const sortChange = sortChangeAction;
+  const filterChangeAction = (e, name) => {
+    _filterState.value[name] = {
+      type: e.filterType,
+      value: e.filter,
+    };
+    let newWhere = filterToWhere(_filterState.value, db.command);
+    if (Object.keys(newWhere).length) {
+      whereState.value = newWhere;
+    } else {
+      whereState.value = '';
+      // this.where = this.tableQuery
+    }
+
+    nextTick(() => {
+      udbRef.value.loadData();
+    });
+  };
+  const filterChange = filterChangeAction;
+  const useDatetimePickerAction = () => {
+    currentDateTabState.value = -1;
+  };
+  const useDatetimePicker = useDatetimePickerAction;
+  const changePlatformAction = (id, index, name, item) => {
+    queryState.value.version_id = 0;
+    queryState.value.uni_platform = item.code;
+  };
+  const changePlatform = changePlatformAction;
+  const changeTimeRangeAction = (id, index) => {
+    currentDateTabState.value = index;
+    const start = getTimeOfSomeDayAgo(id),
+      end = getTimeOfSomeDayAgo(0) - 1;
+    queryState.value.start_time = [start, end];
+  };
+  const changeTimeRange = changeTimeRangeAction;
+  const getPlatformAction = (platform_id) => {
+    const statTabsData = uni.getStorageSync('uni-admin-statTabsData');
+    const platforms = statTabsData['platform-channel'];
+    const p = Array.isArray(platforms) && platforms.find((p) => p._id === platform_id);
+    return (p && p.code) || '';
+  };
+  const getPlatform = getPlatformAction;
+  const getVersionAction = (version_id) => {
+    let versions = [];
+    if (app_versionsRef.value && typeof app_versionsRef.value.getLoadData === 'function') {
+      versions = app_versionsRef.value.getLoadData();
+    }
+    const v = Array.isArray(versions) && versions.find((v) => v._id === version_id);
+    return (v && v.text) || '';
+  };
+  const getVersion = getVersionAction;
+  const getAllDataAction = (query) => {
+    if (query.indexOf('appid') === -1) {
+      errorMessageState.value = '请先选择应用';
+      return; // 如果appid为空，则不进行查询
+    }
+
+    errorMessageState.value = '';
+    getPanelDataAction(query);
+    getChartDataAction(query);
+  };
+  const getAllData = getAllDataAction;
+  const getPanelDataAction = (query) => {
+    let querystr = stringifyQuery(queryState.value, false, ['uni_platform']);
+    const db = uniCloud.database();
+    db.collection('uni-stat-error-result')
+      .where(querystr)
+      .field('count as temp_count, app_launch_count as temp_app_launch_count, appid')
+      .groupBy('appid')
+      .groupField('sum(temp_count) as count, sum(temp_app_launch_count) as app_launch_count')
+      .get({
+        getCount: true,
+      })
+      .then((res) => {
+        const { count, data } = res.result;
+        const item = res.result.data[0] || {
+          count: 0,
+          app_launch_count: 0,
+        };
+        // this.panelData = []
+        let queryTemp = Object.assign({}, queryState.value);
+        delete queryTemp.type;
+        getTotalLaunchAction(stringifyQuery(queryTemp, false, ['uni_platform'])).then((res) => {
+          const total = res.result.data[0];
+          if (item) {
+            let launch_count = total && total.total_app_launch_count;
+            item.app_launch_count = launch_count;
+            panelDataState.value = mapfields(panelOption, item);
+          }
+        });
+      });
+  };
+  const getPanelData = getPanelDataAction;
+  const getTotalLaunchAction = (query) => {
+    const db = uniCloud.database();
+    return db.collection('uni-stat-result').where(query).groupBy('appid').groupField('sum(app_launch_count) as total_app_launch_count').get();
+  };
+  const getTotalLaunch = getTotalLaunchAction;
+  const getChartDataAction = (query, field = 'day_count') => {
+    let querystr = stringifyQuery(queryState.value, false, ['uni_platform']);
+    chartDataState.value = {};
+    const { pageCurrent } = optionsState.value;
+    const db = uniCloud.database();
+    const [start_time, end_tiem] = queryState.value.start_time;
+    // 时间补全
+    // 时间补全
+    const timeAll = getAllDateCN(new Date(start_time), new Date(end_tiem));
+    db.collection('uni-stat-error-result')
+      .where(querystr)
+      .field('count as temp_count, app_launch_count as temp_app_launch_count, start_time')
+      .groupBy('start_time')
+      .groupField('sum(temp_count) as count, sum(temp_app_launch_count) as app_launch_count')
+      .orderBy('start_time', 'asc')
+      .get({
+        getCount: true,
+      })
+      .then((res) => {
+        const { count, data } = res.result;
+        let dataAll = [];
+        timeAll.forEach((v) => {
+          let item = data.find((item) => item.start_time === v);
+          if (item) {
+            dataAll.push(item);
+          } else {
+            dataAll.push({
+              app_launch_count: 0,
+              count: 0,
+              start_time: v,
+            });
+          }
+        });
+        const options = {
+          categories: [],
+          series: [
+            {
+              name: '暂无数据',
+              data: [],
+            },
+          ],
+        };
+        if (chartTabState.value === 'errorCount') {
+          const countLine = (options.series[0] = {
+            name: '崩溃次数',
+            data: [],
+          });
+          const xAxis = options.categories;
+          for (const item of dataAll) {
+            let date = item.start_time;
+            const x = formatDate(date, 'day');
+            const countY = item.count;
+            xAxis.push(x);
+            countLine.data.push(countY);
+          }
+          chartDataState.value = options;
+        } else {
+          const rateLine = (options.series[0] = {
+            name: '崩溃率(%)',
+            data: [],
+            lineStyle: {
+              color: '#EE6666',
+              width: 1,
+            },
+            itemStyle: {
+              borderWidth: 1,
+              borderColor: '#EE6666',
+              color: '#EE6666',
+            },
+            areaStyle: {
+              color: {
+                colorStops: [
+                  {
+                    offset: 0,
+                    color: '#EE6666', // 0% 处的颜色
+                  },
+                  {
+                    offset: 1,
+                    color: '#FFFFFF', // 100% 处的颜色
+                  },
+                ],
+              },
+            },
+          });
+
+          const xAxis = options.categories;
+          for (const item of dataAll) {
+            const { count, app_launch_count } = item;
+            let date = item.start_time;
+            const x = formatDate(date, 'day');
+            xAxis.push(x);
+            let y = count / app_launch_count;
+            y = !y ? 0 : y.toFixed(2);
+            rateLine.data.push(y);
+          }
+          chartDataState.value = options;
+        }
+      })
+      .finally(() => {});
+  };
+  const getChartData = getChartDataAction;
+  watch(
+    () => queryState.value,
+    (val) => {
+      optionsState.value.pageCurrent = 1; // 重置分页
+      // 重置分页
+      debounceGetState.value();
+    },
+    {
+      deep: true,
+    }
+  );
+  watch(
+    () => chartTabState.value,
+    (val) => {
+      getChartDataAction(queryStrComputed.value);
+    }
+  );
+  debounceGetState.value = debounce(() => {
+    getAllDataAction(queryStrComputed.value);
+    whereState.value = tableQueryComputed.value;
+    nextTick(() => {
+      udbRef.value && udbRef.value.loadData();
+    }, 200);
+  }, 300);
+  debounceGetState.value();
+  onLoad(() => {
+    _filterState.value = {};
+  });
 </script>
 
 <style>

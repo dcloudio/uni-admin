@@ -18,23 +18,18 @@
   </view>
 </template>
 
-<script>
-  export default {
+<script setup>
+  defineOptions({
     name: 'uniMenuSidebar',
-    props: {
-      data: {
-        type: Array,
-        default() {
-          return [];
-        },
+  });
+  const props = defineProps({
+    data: {
+      type: Array,
+      default() {
+        return [];
       },
     },
-    data() {
-      return {};
-    },
-    computed: {},
-    methods: {},
-  };
+  });
 </script>
 
 <style lang="scss">

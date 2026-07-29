@@ -54,7 +54,7 @@
   </view>
 </template>
 
-<script>
+<script setup>
   import {
     mapfields,
     stringifyQuery,
@@ -68,62 +68,51 @@
     getFieldTotal,
     debounce,
   } from '@/js_sdk/uni-stat/util.js';
-
   import timeUtil from '@/js_sdk/uni-stat/timeUtil.js';
-
   import funnelChart from './components/funnelChart';
   import trendChart from './components/trendChart';
-  export default {
-    components: {
-      funnelChart,
-      trendChart,
-    },
-    data() {
-      return {
-        tableName: 'uni-stat-pay-result',
-        query: {
-          dimension: 'hour',
-          appid: '',
-          platform_id: '',
-          uni_platform: '',
-          version_id: '',
-          start_time: [],
-        },
-        loading: false,
-      };
-    },
-    onLoad(option) {
-      const { appid } = option;
-      if (appid) {
-        this.query.appid = appid;
-      }
-    },
-    created() {},
-    methods: {
-      // 监听 - 平台更改
-      platformChange(id, index, name, item) {
-        this.query.version_id = 0;
-        this.query.uni_platform = item.code;
-      },
-    },
-    watch: {},
-    computed: {
-      versionQuery() {
-        const { appid, uni_platform } = this.query;
-        const query = stringifyQuery({
-          appid,
-          uni_platform,
-        });
-        return query;
-      },
-      channelQuery() {
-        const { appid, platform_id } = this.query;
-        const query = stringifyQuery({
-          appid,
-          platform_id,
-        });
-        return query;
-      },
-    },
+  import { computed, ref } from 'vue';
+  import { onLoad } from '@dcloudio/uni-app';
+  const tableNameState = ref('uni-stat-pay-result');
+  const tableName = tableNameState;
+  const queryState = ref({
+    dimension: 'hour',
+    appid: '',
+    platform_id: '',
+    uni_platform: '',
+    version_id: '',
+    start_time: [],
+  });
+  const query = queryState;
+  const loadingState = ref(false);
+  const loading = loadingState;
+  const versionQueryComputed = computed(() => {
+    const { appid, uni_platform } = queryState.value;
+    const query = stringifyQuery({
+      appid,
+      uni_platform,
+    });
+    return query;
+  });
+  const versionQuery = versionQueryComputed;
+  const channelQueryComputed = computed(() => {
+    const { appid, platform_id } = queryState.value;
+    const query = stringifyQuery({
+      appid,
+      platform_id,
+    });
+    return query;
+  });
+  const channelQuery = channelQueryComputed;
+  const platformChangeAction = (id, index, name, item) => {
+    queryState.value.version_id = 0;
+    queryState.value.uni_platform = item.code;
   };
+  const platformChange = platformChangeAction;
+  onLoad((option) => {
+    const { appid } = option;
+    if (appid) {
+      queryState.value.appid = appid;
+    }
+  });
 </script>
