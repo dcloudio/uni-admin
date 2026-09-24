@@ -35,7 +35,7 @@ export const fields =
 	'appid,name,title,contents,platform,type,version,min_uni_version,url,stable_publish,is_silently,is_mandatory,is_vapor,isVapor,sha256,file_id,file_domain,obsolete_file_ids,create_date,store_list'
 
 /**
- * 新增/编辑版本页面共用逻辑（原 mixin 改写为组合式 API，兼容 vue3 vapor 模式）
+ * 新增/编辑版本页面共用逻辑（原 mixin 改写为组合式 API，兼容 vue3 蒸汽模式）
  * @param {Object} formRef uni-forms 组件实例的 ref
  */
 export function useVersionForm(formRef) {
@@ -44,7 +44,7 @@ export function useVersionForm(formRef) {
 	const enableiOSWgt = true; // 是否开启iOS的wgt更新
 	const silentlyContent = '静默更新：App升级时会在后台下载wgt包并自行安装。新功能在下次启动App时生效'
 	const mandatoryContent = '强制更新：App升级弹出框不可取消'
-	const vaporContent = 'Vapor应用：标记该wgt资源包为Vapor应用。平台仅支持单选，且暂不支持鸿蒙'
+	const vaporContent = '蒸汽模式：标记该wgt资源包为蒸汽模式应用。平台仅支持单选，且暂不支持鸿蒙'
 	const stablePublishContent = '将线上发行包变更为下线'
 	const stablePublishContent2 = '使用本包替换当前线上发行版'
 	const minUniVersionContent = '上次使用新Api或打包新模块的App版本'
@@ -126,7 +126,7 @@ export function useVersionForm(formRef) {
 		let wgtExt = ['wgt']
 		const apkExt = ['apk']
 		if (formData.value.is_vapor) {
-			// Vapor 应用资源包支持 .zst（zstd 压缩）与 .wgt
+			// 蒸汽模式应用资源包支持 .zst（zstd 压缩）与 .wgt
 			wgtExt = ['wgt', 'zst']
 		}
 		return isWGT.value ? wgtExt : apkExt
@@ -134,7 +134,7 @@ export function useVersionForm(formRef) {
 	const platformLocaldata = computed(() => {
 		let localdata = !isWGT.value ? formOptions.platform_localdata : enableiOSWgt ? formOptions
 			.platform_localdata : [formOptions.platform_localdata[0], formOptions.platform_localdata[2]]
-		// Vapor 应用暂不支持鸿蒙
+		// 蒸汽模式应用暂不支持鸿蒙
 		if (isWGT.value && formData.value.is_vapor) {
 			localdata = localdata.map(item => item.value === platform_Harmony ? { ...item,
 				disabled: true
@@ -159,7 +159,7 @@ export function useVersionForm(formRef) {
 		return url && (apkIndex > -1 && apkIndex === url.length - 3)
 	})
 	/**
-	 * 当前待校验的 vapor 资源包文件：优先使用文件选择器中的包；从平台槽位恢复的包（选择器为空）使用当前引用的 file_id
+	 * 当前待校验的蒸汽模式资源包文件：优先使用文件选择器中的包；从平台槽位恢复的包（选择器为空）使用当前引用的 file_id
 	 */
 	const vaporPackageFile = computed(() => {
 		if (appFileList.value) return appFileList.value
@@ -170,7 +170,7 @@ export function useVersionForm(formRef) {
 	})
 	/**
 	 * SHA256 展示状态：'' 不展示；loading 计算中；success 已获取；fail 获取失败
-	 * 仅 Vapor 应用需要展示与校验 SHA256；有可校验文件但摘要缺失时展示失败以提供重算入口
+	 * 仅蒸汽模式应用需要展示与校验 SHA256；有可校验文件但摘要缺失时展示失败以提供重算入口
 	 */
 	const sha256Status = computed(() => {
 		if (!formData.value.is_vapor) return ''
@@ -221,7 +221,7 @@ export function useVersionForm(formRef) {
 	 * 将文件标记进废弃列表（同一文件去重）
 	 * @param {String} fileId 云存储文件ID
 	 * @param {String} fileDomain 文件所在扩展存储的自定义域名，为空表示内置存储
-	 * @param {Object} slotInfo 可选的平台槽位信息（{ platform, url, sha256 }），用于 vapor 应用切换平台后切回时恢复
+	 * @param {Object} slotInfo 可选的平台槽位信息（{ platform, url, sha256 }），用于蒸汽模式应用切换平台后切回时恢复
 	 */
 	function pushObsoleteFile(fileId, fileDomain, slotInfo) {
 		if (!fileId) return
@@ -259,15 +259,15 @@ export function useVersionForm(formRef) {
 	}
 
 	/**
-	 * 提取平台标识：vapor 应用平台为单选，值可能是字符串或单元素数组
+	 * 提取平台标识：蒸汽模式应用平台为单选，值可能是字符串或单元素数组
 	 */
 	function getPlatformKey(platform) {
 		return Array.isArray(platform) ? String(platform[0] || '') : String(platform || '')
 	}
 
 	/**
-	 * vapor 应用切换平台时维护按平台暂存的包：
-	 * - vapor 的 wgt 内部为平台相关字节码（Android/iOS/鸿蒙互不兼容），同一时间仅一个平台的包处于引用
+	 * 蒸汽模式应用切换平台时维护按平台暂存的包：
+	 * - 蒸汽模式的 wgt 内部为平台相关字节码（Android/iOS/鸿蒙互不兼容），同一时间仅一个平台的包处于引用
 	 * - 旧平台的引用包暂存进废弃列表（带 platform/url/sha256，切回时可恢复）
 	 * - 目标平台若已有暂存的包则从废弃列表取出恢复（含下载链接与 SHA256）；否则清空等待重新上传
 	 * - 普通 wgt（多平台共用）与原生 App（链接按平台手填）不参与
@@ -322,14 +322,14 @@ export function useVersionForm(formRef) {
 		formData.value.file_domain = uniFilePickerProvider.value === 'extStorage' ? (domain.value || '') : ''
 		// 记录本会话上传的包，取消编辑时统一标记废弃
 		pushSessionUploadedFile(formData.value.file_id, formData.value.file_domain)
-		// 仅 Vapor 应用需要计算 SHA256
+		// 仅蒸汽模式应用需要计算 SHA256
 		if (formData.value.is_vapor) {
 			getPackageSha256(res.tempFiles[0])
 		}
 	}
 
 	/**
-	 * 勾选 Vapor 时，若已上传包但尚未计算 SHA256，则自动补算（如先上传后勾选的场景）
+	 * 开启蒸汽模式时，若已上传包但尚未计算 SHA256，则自动补算（如先上传后勾选的场景）
 	 */
 	function tryCalcVaporSha256() {
 		if (formData.value.is_vapor && hasPackage.value && !formData.value.sha256 && !sha256Loading.value) {
@@ -348,7 +348,7 @@ export function useVersionForm(formRef) {
 	}
 
 	/**
-	 * Vapor 应用提交前校验 SHA256（计算中或缺失时提示并抛出异常，中断提交）
+	 * 蒸汽模式应用提交前校验 SHA256（计算中或缺失时提示并抛出异常，中断提交）
 	 */
 	function ensureVaporSha256() {
 		if (!formData.value.is_vapor) return
@@ -363,7 +363,7 @@ export function useVersionForm(formRef) {
 			// 存在可校验文件（选择器中的上传包或平台槽位恢复的包）时引导重新生成
 			const hasFile = vaporPackageFile.value != null
 			uni.showModal({
-				content: hasFile ? 'SHA256 获取失败，请点击【重新生成】重试，或删除已上传的包后重新上传' : 'Vapor 应用需上传资源包以生成 SHA256',
+				content: hasFile ? 'SHA256 获取失败，请点击【重新生成】重试，或删除已上传的包后重新上传' : '蒸汽模式应用需上传资源包以生成 SHA256',
 				showCancel: false
 			})
 			throw new Error('SHA256缺失')
@@ -371,8 +371,8 @@ export function useVersionForm(formRef) {
 	}
 
 	/**
-	 * 提交前校验本次上传的包后缀与 Vapor 标记匹配（先上传普通 wgt 再勾选 Vapor 等操作会发布客户端无法安装的包）
-	 * Vapor 应用资源包支持 .zst（zstd 压缩）与 .wgt；普通 wgt 仅支持 .wgt，不能使用 .zst
+	 * 提交前校验本次上传的包后缀与蒸汽模式标记匹配（先上传普通 wgt 再勾选蒸汽模式等操作会发布客户端无法安装的包）
+	 * 蒸汽模式应用资源包支持 .zst（zstd 压缩）与 .wgt；普通 wgt 仅支持 .wgt，不能使用 .zst
 	 * 仅校验本次新上传的文件，编辑历史记录、手动填写下载链接时不触发
 	 */
 	function ensurePackageExt() {
@@ -383,22 +383,22 @@ export function useVersionForm(formRef) {
 		const isWgtFile = fileName.endsWith('.wgt')
 		if (formData.value.is_vapor === true && !isZstFile && !isWgtFile) {
 			uni.showModal({
-				content: 'Vapor 应用需上传 .zst 或 .wgt 格式的资源包，请删除已上传的包后重新上传',
+				content: '蒸汽模式应用需上传 .zst 或 .wgt 格式的资源包，请删除已上传的包后重新上传',
 				showCancel: false
 			})
-			throw new Error('Vapor应用资源包格式错误')
+			throw new Error('蒸汽模式应用资源包格式错误')
 		}
 		if (formData.value.is_vapor !== true && isZstFile) {
 			uni.showModal({
-				content: '当前上传的是 .zst 格式资源包，请勾选 Vapor应用，或重新上传普通 wgt 包',
+				content: '当前上传的是 .zst 格式资源包，请勾选蒸汽模式，或重新上传普通 wgt 包',
 				showCancel: false
 			})
-			throw new Error('资源包格式与Vapor标记不匹配')
+			throw new Error('资源包格式与蒸汽模式标记不匹配')
 		}
 	}
 
 	/**
-	 * 获取上传包的SHA256（仅 Vapor 应用，用于鸿蒙应用市场上架等场景填写）
+	 * 获取上传包的SHA256（仅蒸汽模式应用，用于鸿蒙应用市场上架等场景填写）
 	 * @param {Object} file 上传成功后的文件对象，需包含 fileID 或 url
 	 */
 	async function getPackageSha256(file) {
@@ -422,7 +422,7 @@ export function useVersionForm(formRef) {
 			}
 		})
 		if (res && res.success && res.sha256) {
-			// 计算期间可能取消勾选 Vapor、删除/更换了包，或从平台槽位恢复；
+			// 计算期间可能取消勾选蒸汽模式、删除/更换了包，或从平台槽位恢复；
 			// 选择器为空时以当前引用的 file_id 作为对应标识，仅最新请求且结果仍对应当前包时写入
 			const currentFileID = appFileList.value ? (appFileList.value.fileID || appFileList.value.url) : (
 				formData.value.file_id || '')
@@ -492,7 +492,7 @@ export function useVersionForm(formRef) {
 		return {
 			...value,
 			is_vapor: isVaporPackage,
-			// 仅 Vapor 应用携带 SHA256
+			// 仅蒸汽模式应用携带 SHA256
 			sha256: isVaporPackage ? (formData.value.sha256 || '') : '',
 			file_id: formData.value.file_id || '',
 			file_domain: formData.value.file_domain || '',

@@ -61,7 +61,7 @@
 							color: '#e6a23c',
 							border: '1px solid #faecd8',
 							borderRadius: '4px'
-							}">Vapor</text>
+							}">蒸汽</text>
 						</uni-td>
 							<uni-td align="center">
 								<uni-data-picker :localdata="options.platform_valuetotext" :value="item.platform"

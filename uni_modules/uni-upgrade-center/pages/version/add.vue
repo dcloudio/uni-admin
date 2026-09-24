@@ -22,14 +22,14 @@
 					@input="binddata('contents', $event.detail.value)" class="uni-textarea-border"
 					:value="formData.contents" @update:value="val => formData.contents = val"></textarea>
 			</uni-forms-item>
-      <uni-forms-item v-if="isWGT" key="is_vapor" name="is_vapor" label="Vapor应用">
-      	<!-- SHA256 计算中禁止取消勾选：Vapor 标记与摘要计算强关联，计算期间变更会破坏校验语义 -->
+      <uni-forms-item v-if="isWGT" key="is_vapor" name="is_vapor" label="蒸汽模式">
+      	<!-- SHA256 计算中禁止取消勾选：蒸汽模式标记与摘要计算强关联，计算期间变更会破坏校验语义 -->
       	<switch :disabled="sha256Loading" @change="onVaporChange" :checked="formData.is_vapor" />
       	<show-info :content="vaporContent"></show-info>
       </uni-forms-item>
       
       <uni-forms-item name="platform" label="平台" required>
-        <!-- sha256 计算中禁止切换平台：vapor 切换平台会暂存旧包，需等待摘要写入暂存信息 -->
+        <!-- sha256 计算中禁止切换平台：蒸汽模式切换平台会暂存旧包，需等待摘要写入暂存信息 -->
         <uni-data-checkbox :disabled="sha256Loading" :multiple="isWGT && !formData.is_vapor" v-model="formData.platform" :localdata="platformLocaldata" />
       </uni-forms-item>
 			<uni-forms-item name="version" label="版本号" required>
@@ -297,7 +297,7 @@
 	});
 
 	watch(isiOS, (val) => {
-		// wgt 的链接不在此处理：普通 wgt 多平台共用不随平台变化；vapor 包由 handlePlatformChange 按平台暂存/恢复
+		// wgt 的链接不在此处理：普通 wgt 多平台共用不随平台变化；蒸汽模式包由 handlePlatformChange 按平台暂存/恢复
 		if (isWGT.value) return
 		// 原生 App：按平台切换链接（Android 安装包 / iOS 商店地址）
 		if (!val && hasPackage.value) {
@@ -308,7 +308,7 @@
 	});
 
 	watch(() => formData.value.platform, (val, oldVal) => {
-		// vapor 应用切换平台时先维护按平台暂存的包，再按平台带出历史版本信息
+		// 蒸汽模式应用切换平台时先维护按平台暂存的包，再按平台带出历史版本信息
 		handlePlatformChange(val, oldVal)
 		setFormData(val)
 	});
@@ -405,11 +405,11 @@
 				})
 				throw new Error('版本号必须大于已上线版本');
 			}
-			// 校验本次上传的包后缀与 Vapor 标记匹配（防止先上传普通 wgt 再勾选 Vapor 等操作发布坏包）
+			// 校验本次上传的包后缀与蒸汽模式标记匹配（防止先上传普通 wgt 再勾选蒸汽模式等操作发布坏包）
 			ensurePackageExt()
-			// Vapor 应用必须携带 SHA256 提交（计算中/缺失时抛出异常中断）
+			// 蒸汽模式应用必须携带 SHA256 提交（计算中/缺失时抛出异常中断）
 			ensureVaporSha256()
-			// 勾选 Vapor 会清空平台选择（多选转单选且数据形态变化），防止未重选平台时提交空平台记录
+			// 勾选蒸汽模式会清空平台选择（多选转单选且数据形态变化），防止未重选平台时提交空平台记录
 			if (!res.platform || !res.platform.length) {
 				uni.showModal({
 					content: '请选择更新平台',
@@ -417,7 +417,7 @@
 				})
 				throw new Error('平台未选择')
 			}
-			// 链接必填（上传安装包会自动填充；vapor 切换平台会清空链接，需重新提供对应平台的包）
+			// 链接必填（上传安装包会自动填充；蒸汽模式切换平台会清空链接，需重新提供对应平台的包）
 			if (!res.url) {
 				uni.showModal({
 					content: '请填写下载链接或上传安装包',

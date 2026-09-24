@@ -27,13 +27,13 @@
 					@input="binddata('contents', $event.detail.value)" class="uni-textarea-border" placeholder="更新内容 (可换行)"
 					:value="formData.contents" @update:value="val => formData.contents = val"></textarea>
 			</uni-forms-item>
-      <uni-forms-item v-if="isWGT" key="is_vapor" name="is_vapor" label="Vapor应用">
-      	<!-- 发布后不允许修改 Vapor 标记，避免与已发布资源包及其 SHA256 不匹配 -->
+      <uni-forms-item v-if="isWGT" key="is_vapor" name="is_vapor" label="蒸汽模式">
+      	<!-- 发布后不允许修改蒸汽模式标记，避免与已发布资源包及其 SHA256 不匹配 -->
       	<switch :disabled="true" :checked="formData.is_vapor" />
       	<show-info :content="vaporContent"></show-info>
       </uni-forms-item>
 			<uni-forms-item name="platform" label="平台" required>
-				<!-- Vapor 应用的平台为单选；普通 wgt 支持多选（multiple 为 true 时才会按数组反显） -->
+				<!-- 蒸汽模式应用的平台为单选；普通 wgt 支持多选（multiple 为 true 时才会按数组反显） -->
 				<uni-data-checkbox :disabled="true" :multiple="isWGT && !formData.is_vapor" v-model="formData.platform"
 					:localdata="platformLocaldata" />
 			</uni-forms-item>
@@ -355,9 +355,9 @@
 			mask: true
 		})
 		form.value.validate(['store_list']).then((res) => {
-			// 校验本次上传的包后缀与 Vapor 标记匹配（防止先上传普通 wgt 再勾选 Vapor 等操作发布坏包）
+			// 校验本次上传的包后缀与蒸汽模式标记匹配（防止先上传普通 wgt 再勾选蒸汽模式等操作发布坏包）
 			ensurePackageExt()
-			// Vapor 应用必须携带 SHA256 提交（计算中/缺失时抛出异常中断）
+			// 蒸汽模式应用必须携带 SHA256 提交（计算中/缺失时抛出异常中断）
 			ensureVaporSha256()
 			// 链接必填（上传安装包会自动填充），防止手动清空后提交空链接记录
 			if (!res.url) {
@@ -380,7 +380,7 @@
 
 	async function submitForm(value) {
 		submitting.value = true
-		// 补充非表单项数据（Vapor标记、安装包SHA256、文件ID与存储域名，仅 Vapor 应用携带 SHA256）
+		// 补充非表单项数据（蒸汽模式标记、安装包SHA256、文件ID与存储域名，仅蒸汽模式应用携带 SHA256）
 		value.is_vapor = isWGT.value && formData.value.is_vapor === true
 		value.sha256 = value.is_vapor ? (formData.value.sha256 || '') : ''
 		value.file_id = formData.value.file_id || ''
@@ -435,7 +435,7 @@
 					if (!data.store_list) data.store_list = []
 					// 历史记录无废弃包字段，补齐默认值（后续 push/remove 依赖数组方法）
 					if (!data.obsolete_file_ids) data.obsolete_file_ids = []
-					// 兼容历史数据：Vapor 标记字段由驼峰 isVapor 更名为蛇形 is_vapor（提交时写回新字段）
+					// 兼容历史数据：蒸汽模式标记字段由驼峰 isVapor 更名为蛇形 is_vapor（提交时写回新字段）
 					if (data.is_vapor === undefined && data.isVapor !== undefined) {
 						data.is_vapor = data.isVapor === true
 					}
