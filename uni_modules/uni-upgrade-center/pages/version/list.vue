@@ -14,17 +14,19 @@
 						</picker>
 					</view>
 				</view>
-				<view class="uni-group">
-					<input class="uni-search" type="text" v-model="query" @confirm="search" placeholder="请输入搜索内容" />
-					<button class="uni-button" type="default" size="mini" @click="search">搜索</button>
-					<button class="uni-button publish" type="primary" size="mini" @click="publish">发布新版</button>
-					<button class="uni-button" type="warn" size="mini" :disabled="!selectedIndexs.length"
-						@click="delTable">批量删除</button>
-				</view>
+			<view class="uni-group">
+				<input class="uni-search" type="text" v-model="query" @confirm="search" placeholder="请输入搜索内容" />
+				<button class="uni-button" type="default" size="mini" @click="search">搜索</button>
+				<button class="uni-button" v-if="obsoleteFileCount" type="default" size="mini"
+					@click="cleanObsoleteFiles">清理废弃资源 ({{obsoleteFileCount}})</button>
+				<button class="uni-button publish" type="primary" size="mini" @click="publish">发布新版</button>
+			<button class="uni-button batch-delete" type="warn" size="mini" :disabled="!selectedIndexs.length"
+				@click="delTable">批量删除</button>
+			</view>
 			</view>
 			<view class="uni-container">
 				<unicloud-db ref="udb" :collection="appVersionListDbName"
-					field="store_list,appid,contents,platform,type,version,min_uni_version,url,stable_publish,create_date,title,name"
+				field="store_list,appid,contents,platform,type,version,min_uni_version,url,stable_publish,is_vapor,isVapor,file_id,file_domain,obsolete_file_ids,create_date,title,name"
 					:where="where" page-data="replace" :orderby="orderby" :getcount="true" :page-size="options.pageSize"
 					:page-current="options.pageCurrent" v-slot:default="{data,pagination,loading,error,options}"
 					:options="options">
@@ -44,15 +46,23 @@
 						<uni-tr v-for="(item,index) in data" :key="index" :disabled="item.stable_publish">
 							<uni-td align="center"> {{item.appid}} </uni-td>
 							<uni-td align="center"> {{item.title || '-'}} </uni-td>
-							<uni-td align="center">
-								<text :style="{
-								padding: '5px 8px',
-								backgroundColor: item.type === 'wgt' ? '#f0f9eb' : '#ecf5ff',
-								color: item.type === 'wgt' ? '#67c23a' : '#409eff',
-								border: `1px solid ${item.type === 'wgt' ? '#e1f3d8' : '#d9ecff'}`,
-								borderRadius: '4px'
-								}">{{options.type_valuetotext[item.type]}}</text>
-							</uni-td>
+						<uni-td align="center">
+							<text :style="{
+							padding: '5px 8px',
+							backgroundColor: item.type === 'wgt' ? '#f0f9eb' : '#ecf5ff',
+							color: item.type === 'wgt' ? '#67c23a' : '#409eff',
+							border: `1px solid ${item.type === 'wgt' ? '#e1f3d8' : '#d9ecff'}`,
+							borderRadius: '4px'
+							}">{{options.type_valuetotext[item.type]}}</text>
+							<text v-if="item.is_vapor === true || item.isVapor === true" :style="{
+							padding: '5px 8px',
+							marginLeft: '4px',
+							backgroundColor: '#fdf6ec',
+							color: '#e6a23c',
+							border: '1px solid #faecd8',
+							borderRadius: '4px'
+							}">Vapor</text>
+						</uni-td>
 							<uni-td align="center">
 								<uni-data-picker :localdata="options.platform_valuetotext" :value="item.platform"
 									:border="false" :readonly="true" split="," />
@@ -91,7 +101,10 @@
 	import {
 		appListDbName,
 		appVersionListDbName,
-		defaultDisplayApp
+		defaultDisplayApp,
+		confirmDeleteVersionRecords,
+		groupFilesByDomain,
+		deleteFileGroups
 	} from '../utils.js'
 	import {
 		mapState
@@ -143,7 +156,8 @@
 				loaded: false,
 				containerTop: {},
 				appList: [],
-				showAppIndex: 0
+				showAppIndex: 0,
+				obsoleteRecords: [] // 当前应用含废弃包的版本记录（[{ _id, obsolete_file_ids }]）
 			}
 		},
 		async onLoad({
@@ -165,11 +179,21 @@
 			this.where = createListQuery({
 				appid: this.currentAppid
 			})
+			this.loadObsoleteFiles()
 		},
 		computed: {
 			...mapState('app', ['appid']),
 			appNameList() {
 				return this.appList.map(item => item.name)
+			},
+			// 废弃文件项扁平列表（用于统计与清理分组）
+			obsoleteFileList() {
+				return this.obsoleteRecords.reduce((files, record) => files.concat(record.obsolete_file_ids), [])
+			},
+			// 待清理文件数（与清理时的分组去重口径一致，反映实际可删除的文件数）
+			obsoleteFileCount() {
+				return Object.values(groupFilesByDomain(this.obsoleteFileList))
+					.reduce((count, fileIds) => count + fileIds.length, 0)
 			}
 		},
 		watch: {
@@ -179,6 +203,7 @@
 				this.where = createListQuery({
 					appid: this.currentAppid
 				})
+				this.loadObsoleteFiles()
 			}
 		},
 		onReady() {
@@ -222,32 +247,122 @@
 					current: e.current
 				})
 			},
-			navigateTo(url, clear) {
-				// clear 表示刷新列表时是否清除页码，true 表示刷新并回到列表第 1 页，默认为 true
-				uni.navigateTo({
-					url,
-					events: {
-						refreshData: () => {
-							this.loadData(clear)
-						}
+		navigateTo(url, clear) {
+			// clear 表示刷新列表时是否清除页码，true 表示刷新并回到列表第 1 页，默认为 true
+			uni.navigateTo({
+				url,
+				events: {
+					refreshData: () => {
+						this.loadData(clear)
+						// 编辑页可能标记了新的废弃包，同步刷新统计
+						this.loadObsoleteFiles()
+					}
+				}
+			})
+		},
+			// 统计当前应用所有版本记录收集的废弃包（版本列表为分页数据，统计需全量查询）
+			async loadObsoleteFiles() {
+				try {
+					const res = await db.collection(appVersionListDbName)
+						.where(createListQuery({
+							appid: this.currentAppid
+						}))
+						.field('_id,obsolete_file_ids')
+						.limit(500)
+						.get()
+					// 过滤无 file_id 的无效项，避免计数与清理能力不一致
+					this.obsoleteRecords = (res.result.data || [])
+						.map(record => ({
+							_id: record._id,
+							obsolete_file_ids: (record.obsolete_file_ids || []).filter(item => item.file_id)
+						}))
+						.filter(record => record.obsolete_file_ids.length)
+				} catch (e) {
+					console.error('统计废弃安装包失败：', e)
+				}
+			},
+			// 清理废弃资源：删除记录中已收集的无引用安装包文件（编辑替换资源包、取消编辑产生）
+			cleanObsoleteFiles() {
+				const groups = groupFilesByDomain(this.obsoleteFileList)
+				const count = this.obsoleteFileCount
+				if (!count) return
+				uni.showModal({
+					title: '清理废弃资源',
+					content: `当前应用共有 ${count} 个已废弃的安装包文件（编辑替换资源包、取消编辑产生），删除后不可恢复，是否清理？`,
+					success: res => {
+						if (res.confirm) this.doCleanObsoleteFiles(groups, count)
 					}
 				})
+			},
+			// 执行清理：先删云端文件，成功后再清记录标记（失败分组的标记保留，待下次清理重试）
+			async doCleanObsoleteFiles(groups, total) {
+				uni.showLoading({
+					mask: true
+				})
+				const deletedFiles = await deleteFileGroups(groups)
+				if (!deletedFiles.length) {
+					uni.hideLoading()
+					uni.showToast({ icon: 'none', title: '清理失败，请稍后重试' })
+					return
+				}
+				// 后清标记：重新拉取最新数据（避免用陈旧快照覆盖期间其他操作新增的废弃项），仅移除已删除成功的文件
+				await this.loadObsoleteFiles()
+				for (const record of this.obsoleteRecords) {
+					const remain = record.obsolete_file_ids.filter(item => deletedFiles.indexOf(item.file_id) === -1)
+					if (remain.length === record.obsolete_file_ids.length) continue
+					try {
+						await db.collection(appVersionListDbName).doc(record._id).update({
+							obsolete_file_ids: remain
+						})
+					} catch (e) {
+						console.error('清理废弃资源标记失败：', e)
+					}
+				}
+				uni.hideLoading()
+				uni.showToast({
+					icon: deletedFiles.length === total ? 'success' : 'none',
+					title: deletedFiles.length === total ? '清理完成' : '部分文件清理失败，可稍后重试'
+				})
+				this.loadObsoleteFiles()
 			},
 			// 多选处理
 			selectedItems() {
 				let dataList = this.$refs.udb.dataList
 				return this.selectedIndexs.map(i => dataList[i]._id)
 			},
-			// 批量删除
+			// 批量删除（一次交互确认是否同步删除云存储中的安装包）
 			delTable() {
-				this.$refs.udb.remove(this.selectedItems())
+				// #ifdef H5
+				const {
+					top,
+					left,
+					width,
+					height
+				} = document.querySelector('.uni-button.batch-delete').getBoundingClientRect()
+				// #endif
+
+				const records = this.selectedIndexs.map(i => this.$refs.udb.dataList[i])
+			confirmDeleteVersionRecords(records, () => {
+				return new Promise((resolve, reject) => {
+					this.$refs.udb.remove(this.selectedItems(), {
+						needConfirm: false, // 已通过 ActionSheet 确认
+						success: () => {
+							// 被删记录的废弃包计数同步失效，刷新统计
+							this.loadObsoleteFiles()
+							resolve()
+						},
+						fail: reject
+					})
+				})
+			}
+				// #ifdef H5
+				, { top: top + height, left, width: 200 }
+				// #endif
+				)
 			},
 			// 多选
 			selectionChange(e) {
 				this.selectedIndexs = e.detail.index
-			},
-			confirmDelete(id) {
-				this.$refs.udb.remove(id)
 			},
 			publish(e) {
 				// #ifdef H5

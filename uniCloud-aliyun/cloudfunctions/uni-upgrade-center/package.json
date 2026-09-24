@@ -1,9 +1,18 @@
 {
-  "name": "uni-app-manager",
-  "dependencies": {
-    "uni-id-common": "file:../../../uni_modules/uni-id-common/uniCloud/cloudfunctions/common/uni-id-common"
-  },
-  "extensions": {
-    "uni-cloud-jql": {}
-  }
+    "name": "uni-app-manager",
+    "dependencies": {
+        "uni-id-common": "file:../../../uni_modules/uni-id-common/uniCloud/cloudfunctions/common/uni-id-common"
+    },
+    "extensions": {
+        "uni-cloud-jql": {},
+        "uni-cloud-ext-storage": {}
+    },
+    "cloudfunction-config": {
+        "timeout": 120,
+        "runtime": "Nodejs18"
+    },
+    "origin-plugin-dev-name": "uni-template-admin",
+    "origin-plugin-version": "3.0.0",
+    "plugin-dev-name": "uni-template-admin",
+    "plugin-version": "3.0.0"
 }

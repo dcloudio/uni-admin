@@ -122,6 +122,22 @@ const validator = {
     ],
     label: '链接',
   },
+  file_id: {
+    rules: [
+      {
+        format: 'string',
+      },
+    ],
+    label: '文件ID',
+  },
+  file_domain: {
+    rules: [
+      {
+        format: 'string',
+      },
+    ],
+    label: '文件域名',
+  },
   stable_publish: {
     rules: [
       {
@@ -155,6 +171,23 @@ const validator = {
     ],
     label: '强制更新',
     defaultValue: false,
+  },
+  is_vapor: {
+    rules: [
+      {
+        format: 'bool',
+      },
+    ],
+    label: 'Vapor应用',
+    defaultValue: false,
+  },
+  sha256: {
+    rules: [
+      {
+        format: 'string',
+      },
+    ],
+    label: '安装包SHA256',
   },
   uni_platform: {
     rules: [

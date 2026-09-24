@@ -104,6 +104,47 @@
       "description": "可下载或跳转的链接",
       "label": "链接"
     },
+    "file_id": {
+      "bsonType": "string",
+      "description": "安装包在云存储中的文件ID，用于删除记录时同步删除文件",
+      "label": "文件ID"
+    },
+    "file_domain": {
+      "bsonType": "string",
+      "description": "安装包所在扩展存储的自定义域名，为空表示内置存储",
+      "label": "文件域名"
+    },
+    "obsolete_file_ids": {
+      "bsonType": "array",
+      "description": "已废弃的安装包文件列表（编辑替换资源包、取消编辑产生），供版本列表的清理入口统一删除；vapor 应用切换平台时暂存旧平台包以便切回恢复",
+      "label": "废弃安装包列表",
+      "properties": {
+        "file_id": {
+          "bsonType": "string",
+          "description": "云存储文件ID"
+        },
+        "file_domain": {
+          "bsonType": "string",
+          "description": "文件所在扩展存储的自定义域名，为空表示内置存储"
+        },
+        "obsolete_date": {
+          "bsonType": "timestamp",
+          "description": "标记废弃的时间"
+        },
+        "platform": {
+          "bsonType": "string",
+          "description": "暂存包所属平台（vapor 应用切换平台时用于匹配恢复），普通废弃包为空"
+        },
+        "url": {
+          "bsonType": "string",
+          "description": "暂存包的上传链接（vapor 应用切换平台时用于恢复）"
+        },
+        "sha256": {
+          "bsonType": "string",
+          "description": "暂存包的文件摘要（vapor 应用切换平台时用于恢复）"
+        }
+      }
+    },
     "stable_publish": {
       "bsonType": "bool",
       "description": "是否上线发行",
@@ -120,6 +161,17 @@
       "description": "是否强制更新",
       "label": "强制更新",
       "defaultValue": false
+    },
+    "is_vapor": {
+      "bsonType": "bool",
+      "description": "是否为Vapor应用，仅wgt资源包有效",
+      "label": "Vapor应用",
+      "defaultValue": false
+    },
+    "sha256": {
+      "bsonType": "string",
+      "description": "安装包SHA256",
+      "label": "安装包SHA256"
     },
     "create_date": {
       "bsonType": "timestamp",
