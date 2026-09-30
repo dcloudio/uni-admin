@@ -32,7 +32,7 @@ function getValidator(fields) {
 }
 
 export const fields =
-	'appid,name,title,contents,platform,type,version,min_uni_version,url,stable_publish,is_silently,is_mandatory,is_vapor,isVapor,sha256,file_id,file_domain,obsolete_file_ids,create_date,store_list'
+	'appid,name,title,contents,is_update_prompt,update_prompt,update_prompt_content,platform,type,version,min_uni_version,min_required_version,url,stable_publish,is_silently,is_mandatory,is_vapor,isVapor,sha256,file_id,file_domain,obsolete_file_ids,create_date,store_list'
 
 /**
  * 新增/编辑版本页面共用逻辑（原 mixin 改写为组合式 API，兼容 vue3 蒸汽模式）
@@ -42,12 +42,27 @@ export function useVersionForm(formRef) {
 	// 模板与方法共用的常量
 	const labelWidth = '100px';
 	const enableiOSWgt = true; // 是否开启iOS的wgt更新
-	const silentlyContent = '静默更新：App升级时会在后台下载wgt包并自行安装。新功能在下次启动App时生效'
-	const mandatoryContent = '强制更新：App升级弹出框不可取消'
+	const silentlyContent = '后台下载安装wgt包，不提示、不主动重启，下次启动App时生效'
+	const updatePromptContent = computed(() => isNativeApp.value ? '仅 Android 可用；后台下载APK，完成后弹窗提醒安装' : '后台下载安装wgt包，完成后提醒重启；与静默更新互斥')
+	const updatePromptModalContent = '完成后弹窗先显示提醒内容，再附上更新内容；按钮文字固定。'
+	const mandatoryContent = computed(() => {
+		if (isNativeApp.value) {
+			return formData.value.is_update_prompt
+				? '开启安装提醒时，强制更新决定安装弹窗是否显示“取消”；系统安装器仍由系统控制'
+				: '未开启安装提醒时，强制更新使下载前的升级弹窗不可关闭'
+		}
+		if (formData.value.is_update_prompt) {
+			return formData.value.update_prompt === 'toast'
+				? '更新提醒选择轻提示时没有可取消的弹窗；强制更新不改变提示方式'
+				: '开启弹窗提醒时，强制更新决定重启弹窗是否显示“取消”'
+		}
+		return '未开启更新提醒时，强制更新使下载前的升级弹窗不可关闭'
+	})
 	const vaporContent = '蒸汽模式：标记该wgt资源包为蒸汽模式应用。平台仅支持单选，且暂不支持鸿蒙'
 	const stablePublishContent = '将线上发行包变更为下线'
 	const stablePublishContent2 = '使用本包替换当前线上发行版'
 	const minUniVersionContent = '上次使用新Api或打包新模块的App版本'
+	const minRequiredVersionContent = '当前 App 版本低于此版本时强制升级；等于此版本时不强制。仅原生 App 安装包生效'
 	const priorityContent = '检查更新时，按照优先级从大到小依次尝试跳转商店。如果都跳转失败，则会打开浏览器使用下载链接下载apk安装包'
 	const uploadFileDir = '/upgrade-center'
 	const type_valuetotext = enumConverter.type_valuetotext
@@ -73,11 +88,18 @@ export function useVersionForm(formRef) {
 				"value": "wgt",
 				"text": "App资源包"
 			}
-		]
+		],
+		"update_prompt_localdata": [{
+			"value": "modal",
+			"text": "弹窗提示"
+		}, {
+			"value": "toast",
+			"text": "轻提示"
+		}]
 	}
 	const rules = getValidator([
-		"appid", "contents", "platform", "type",
-		"version", "min_uni_version", "url", "stable_publish",
+		"appid", "contents", "is_update_prompt", "update_prompt", "update_prompt_content", "platform", "type",
+		"version", "min_uni_version", "min_required_version", "url", "stable_publish",
 		"title", "name", "is_silently", "is_mandatory", "is_vapor", "store_list"
 	])
 
@@ -101,11 +123,15 @@ export function useVersionForm(formRef) {
 		"name": "",
 		"title": "",
 		"contents": "",
+		"is_update_prompt": false,
+		"update_prompt": "modal",
+		"update_prompt_content": "应用已更新，是否立即重启？",
 		"platform": [],
 		"store_list": [],
 		"type": "",
 		"version": "",
 		"min_uni_version": "",
+		"min_required_version": "",
 		"url": "",
 		"file_id": "",
 		"file_domain": "",
@@ -118,6 +144,8 @@ export function useVersionForm(formRef) {
 
 	// 计算属性
 	const isWGT = computed(() => formData.value.type === 'wgt')
+	const isNativeApp = computed(() => formData.value.type === 'native_app')
+	const updatePromptLocaldata = computed(() => isNativeApp.value ? [formOptions.update_prompt_localdata[0]] : formOptions.update_prompt_localdata)
 	const isiOS = computed(() => formData.value.platform.includes(platform_iOS))
 	const isAndroid = computed(() => formData.value.platform.includes(platform_Android))
 	const isHarmony = computed(() => formData.value.platform.includes(platform_Harmony))
@@ -152,6 +180,7 @@ export function useVersionForm(formRef) {
 		if (isWGT.value || isAndroid.value) return '下载链接'
 		if (isiOS.value) return 'AppStore'
 		else if (isHarmony.value) return '应用商店'
+		return '下载链接'
 	})
 	const isApk = computed(() => {
 		const url = formData.value.url || ''
@@ -187,22 +216,51 @@ export function useVersionForm(formRef) {
 		formData.value[name] = value
 	}
 
-	/**
-	 * 静默更新切换：与强制更新互斥
-	 */
+	/** 静默更新与安装后提醒、强制更新互斥（仅 WGT） */
 	function onSilentlyChange(e) {
 		const val = e.detail.value
 		binddata('is_silently', val)
-		if (val) binddata('is_mandatory', false)
+		if (val) {
+			binddata('is_update_prompt', false)
+			binddata('is_mandatory', false)
+		}
 	}
 
-	/**
-	 * 强制更新切换：与静默更新互斥
-	 */
+	function onUpdatePromptChange(e) {
+		const val = e.detail.value
+		binddata('is_update_prompt', val)
+		if (isNativeApp.value) {
+			binddata('is_silently', val)
+			if (val && !isAndroid.value) binddata('platform', platform_Android)
+		} else if (val) {
+			binddata('is_silently', false)
+		}
+	}
+
+	/** 强制更新只限制取消；WGT 的静默更新不允许与强制更新同时开启 */
 	function onMandatoryChange(e) {
 		const val = e.detail.value
 		binddata('is_mandatory', val)
-		if (val) binddata('is_silently', false)
+		if (val && isWGT.value) binddata('is_silently', false)
+	}
+
+	function validatePromptFields(data) {
+		if (data.is_update_prompt === false) return
+		if (data.type === 'native_app') data.update_prompt = 'modal'
+		const prompt = data.update_prompt || 'modal'
+		if (prompt === 'modal' && !String(data.update_prompt_content || '').trim()) {
+			uni.showModal({ content: '弹窗提醒内容不能为空', showCancel: false })
+			throw new Error('提醒内容未填写')
+		}
+	}
+
+	function validateMinRequiredVersion(data, compare) {
+		if (data.type !== 'native_app' || !String(data.min_required_version || '').trim()) return
+		if (!/^\d+(\.\d+)*$/.test(data.min_required_version) ||
+			!/^\d+(\.\d+)*$/.test(data.version) || compare(data.min_required_version, data.version) > 0) {
+			uni.showModal({ content: '最低强制版本须为数字版本号且不能高于目标版本号', showCancel: false })
+			throw new Error('最低强制版本无效')
+		}
 	}
 
 	function getStoreList(appid) {
@@ -560,10 +618,13 @@ export function useVersionForm(formRef) {
 		labelWidth,
 		silentlyContent,
 		mandatoryContent,
+		updatePromptContent,
+		updatePromptModalContent,
 		vaporContent,
 		stablePublishContent,
 		stablePublishContent2,
 		minUniVersionContent,
+		minRequiredVersionContent,
 		priorityContent,
 		uploadFileDir,
 		type_valuetotext,
@@ -577,6 +638,8 @@ export function useVersionForm(formRef) {
 		sessionUploadedFiles,
 		formData,
 		isWGT,
+		isNativeApp,
+		updatePromptLocaldata,
 		isiOS,
 		isAndroid,
 		isHarmony,
@@ -589,7 +652,10 @@ export function useVersionForm(formRef) {
 		sha256Status,
 		binddata,
 		onSilentlyChange,
+		onUpdatePromptChange,
 		onMandatoryChange,
+		validatePromptFields,
+		validateMinRequiredVersion,
 		handlePlatformChange,
 		getStoreList,
 		packageUploadSuccess,

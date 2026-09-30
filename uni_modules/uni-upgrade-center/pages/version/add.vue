@@ -17,20 +17,36 @@
 			<uni-forms-item name="title" label="更新标题">
 				<uni-easyinput placeholder="更新标题" v-model="formData.title" />
 			</uni-forms-item>
+			<uni-forms-item v-if="isWGT || isNativeApp" name="is_update_prompt" :label="isNativeApp ? '安装提醒' : '更新提醒'">
+				<switch @change="onUpdatePromptChange" :checked="formData.is_update_prompt" />
+				<show-info :content="updatePromptContent"></show-info>
+				<text v-if="isNativeApp && !isAndroid" style="color:#666;font-size:12px;">开启后自动选择安卓平台</text>
+			</uni-forms-item>
+			<uni-forms-item v-if="isWGT && formData.is_update_prompt" name="update_prompt" label="提醒方式">
+				<uni-data-checkbox v-model="formData.update_prompt" :localdata="updatePromptLocaldata" />
+			</uni-forms-item>
+			<uni-forms-item v-if="formData.is_update_prompt && (isNativeApp || formData.update_prompt === 'modal')" name="update_prompt_content" label="提醒内容">
+				<view style="display:flex;flex-direction:column;flex:1;">
+					<textarea auto-height style="box-sizing: content-box;" :maxlength="-1" :placeholder="isNativeApp ? '安装包已下载，是否立即安装？' : '应用已更新，是否立即重启？'"
+						@input="binddata('update_prompt_content', $event.detail.value)" class="uni-textarea-border"
+						:value="formData.update_prompt_content" @update:value="val => formData.update_prompt_content = val"></textarea>
+					<text style="color:#666;font-size:12px;margin-top:6px;">{{updatePromptModalContent}}</text>
+				</view>
+			</uni-forms-item>
 			<uni-forms-item name="contents" label="更新内容" required>
 				<textarea auto-height style="box-sizing: content-box;" :maxlength="-1"  placeholder="更新内容 (可换行)"
 					@input="binddata('contents', $event.detail.value)" class="uni-textarea-border"
 					:value="formData.contents" @update:value="val => formData.contents = val"></textarea>
 			</uni-forms-item>
       <uni-forms-item v-if="isWGT" key="is_vapor" name="is_vapor" label="蒸汽模式">
-      	<!-- SHA256 计算中禁止取消勾选：蒸汽模式标记与摘要计算强关联，计算期间变更会破坏校验语义 -->
+		<!-- SHA256 计算中禁止取消勾选：蒸汽模式标记与摘要计算强关联，计算期间变更会破坏校验语义 -->
       	<switch :disabled="sha256Loading" @change="onVaporChange" :checked="formData.is_vapor" />
       	<show-info :content="vaporContent"></show-info>
       </uni-forms-item>
       
       <uni-forms-item name="platform" label="平台" required>
         <!-- sha256 计算中禁止切换平台：蒸汽模式切换平台会暂存旧包，需等待摘要写入暂存信息 -->
-        <uni-data-checkbox :disabled="sha256Loading" :multiple="isWGT && !formData.is_vapor" v-model="formData.platform" :localdata="platformLocaldata" />
+        <uni-data-checkbox :disabled="sha256Loading" :multiple="isWGT && !formData.is_vapor" v-model="formData.platform" :localdata="platformLocaldata" @change="onPlatformChangeByUser" />
       </uni-forms-item>
 			<uni-forms-item name="version" label="版本号" required>
 				<uni-easyinput v-model="formData.version" placeholder="当前包版本号，必须大于当前线上发行版本号" />
@@ -40,6 +56,10 @@
 				:required="isWGT">
 				<uni-easyinput placeholder="原生App最低版本" v-model="formData.min_uni_version" />
 				<show-info :content="minUniVersionContent"></show-info>
+			</uni-forms-item>
+			<uni-forms-item v-if="isNativeApp" key="min_required_version" name="min_required_version" label="最低强制版本">
+				<uni-easyinput placeholder="不填则仅按强制更新开关判断" v-model="formData.min_required_version" />
+				<show-info :content="minRequiredVersionContent"></show-info>
 			</uni-forms-item>
 
 			<template v-if="enableUploadPackage">
@@ -88,7 +108,7 @@
 			<uni-forms-item key="url" name="url" :label="urlLabel" required>
 				<view class="flex" style="flex-direction: column;align-items:flex-start;flex: 1;">
 					<view class="flex" style="width: 100%;">
-						<uni-easyinput placeholder="链接" v-model="formData.url" :maxlength="-1" />
+				<uni-easyinput placeholder="链接" v-model="formData.url" :maxlength="-1" />
 						<text style="margin-left: 10px;color: #2979ff;cursor: pointer;text-decoration: underline;" v-if="isApk" @click="toUrl(formData.url)">测试下载</text>
 					</view>
 					<text style="margin-top: 10px;font-size: 12px;color: #666;" v-if="isApk">建议点击【测试下载】能正常下载后，再进行发布</text>
@@ -195,9 +215,12 @@
 		labelWidth,
 		silentlyContent,
 		mandatoryContent,
+		updatePromptContent,
+		updatePromptModalContent,
 		vaporContent,
 		stablePublishContent2,
 		minUniVersionContent,
+		minRequiredVersionContent,
 		priorityContent,
 		uploadFileDir,
 		type_valuetotext,
@@ -211,6 +234,8 @@
 		sessionUploadedFiles,
 		formData,
 		isWGT,
+		isNativeApp,
+		updatePromptLocaldata,
 		isiOS,
 		isAndroid,
 		isHarmony,
@@ -223,7 +248,10 @@
 		sha256Status,
 		binddata,
 		onSilentlyChange,
+		onUpdatePromptChange,
 		onMandatoryChange,
+		validatePromptFields,
+		validateMinRequiredVersion,
 		handlePlatformChange,
 		getStoreList,
 		packageUploadSuccess,
@@ -259,6 +287,7 @@
 		if (provider) uniFilePickerProvider.value = provider;
 
 		if (appid && type && name) {
+			if (type === 'native_app') formData.value.update_prompt_content = '安装包已下载，是否立即安装？'
 			const store_list = await getStoreList(appid)
 			formData.value = {
 				...formData.value,
@@ -346,6 +375,12 @@
 		tryCalcVaporSha256()
 	}
 
+	function onPlatformChangeByUser() {
+		if (!isNativeApp.value) return
+		formData.value.is_update_prompt = false
+		formData.value.is_silently = false
+	}
+
 	function setFormData(os) {
 		uni.showLoading({
 			mask: true
@@ -363,6 +398,7 @@
 				name,
 				platform,
 				min_uni_version,
+				min_required_version,
 				url
 			} = data
 
@@ -374,10 +410,11 @@
 			// 如果不是wgt，则需要删除 min_uni_version 字段
 			if (!isWGT.value) {
 				delete formData.value.min_uni_version;
+				formData.value.min_required_version = min_required_version || '';
 				formData.value.platform = platform[0]
 
 				// iOS需要带出上一版本的AppStore链接
-				if (isiOS.value || isHarmony.value) {
+					if (isAndroid.value || isiOS.value || isHarmony.value) {
 					formData.value.url = url;
 				}
 			} else {
@@ -386,6 +423,8 @@
 			}
 		} else if (isWGT.value) {
 			formData.value.min_uni_version = ''
+		} else {
+			formData.value.min_required_version = ''
 		}
 		uni.hideLoading()
 	}
@@ -398,6 +437,16 @@
 			mask: true
 		})
 		form.value.validate(['store_list']).then((res) => {
+			res.update_prompt = formData.value.update_prompt || 'modal'
+			res.is_update_prompt = formData.value.is_update_prompt === true && (isWGT.value || isAndroid.value)
+			if (isWGT.value && res.is_silently === true) res.is_update_prompt = false
+			if (isNativeApp.value) {
+				res.update_prompt = 'modal'
+				res.is_silently = res.is_update_prompt
+			}
+			res.update_prompt_content = formData.value.update_prompt_content || '应用已更新，是否立即重启？'
+			validatePromptFields(res)
+			validateMinRequiredVersion(res, compare)
 			if (compare(latestVersion.value, res.version) >= 0) {
 				uni.showModal({
 					content: `版本号必须大于当前已上线版本（${latestVersion.value}）`,
@@ -430,6 +479,7 @@
 				res.platform = [res.platform]
 			}
 			if (isiOS.value || isHarmony.value || isWGT.value) delete res.store_list;
+			if (isWGT.value) delete res.min_required_version;
 			if (res.store_list) {
 				res.store_list.forEach(item => {
 					item.priority = parseFloat(item.priority)

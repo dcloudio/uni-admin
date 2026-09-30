@@ -6,6 +6,7 @@ const platform_Harmony = 'Harmony';
 const package_app = 'native_app';
 const package_wgt = 'wgt';
 const app_version_db_name = 'opendb-app-versions';
+const default_update_prompt_content = '应用已更新，是否立即重启？';
 
 module.exports = async (event, context) => {
   /**
@@ -84,6 +85,18 @@ module.exports = async (event, context) => {
       const hasAppPackage = !!Object.keys(appVersionInDb).length;
       const hasWgtPackage = !!Object.keys(wgtVersionInDb).length;
 
+      // 历史记录缺失新字段时补齐兼容默认值；原 is_mandatory 保持不变。
+      if (hasAppPackage) {
+        applyUpdatePromptDefaults(appVersionInDb);
+        appVersionInDb.min_required_version = typeof appVersionInDb.min_required_version === 'string' ?
+          appVersionInDb.min_required_version : '';
+        appVersionInDb.effective_is_mandatory = getEffectiveMandatory(appVersionInDb, appVersion);
+      }
+      if (hasWgtPackage) {
+        applyUpdatePromptDefaults(wgtVersionInDb);
+        wgtVersionInDb.effective_is_mandatory = wgtVersionInDb.is_mandatory === true;
+      }
+
       // 组装当前客户端可用的候选包（顺序固定：先整包后 wgt）：整包始终可用；wgt 需客户端能力与 Vapor 标记匹配（见 isWgtUsable）
       const candidates = [];
       if (hasAppPackage) candidates.push(appVersionInDb);
@@ -92,7 +105,12 @@ module.exports = async (event, context) => {
       }
       // 候选至多两项：只有一项时直接使用；两项时版本号大者优先，版本相同时优先使用 wgt（可热更新）
       let stablePublishDb = {};
-      if (candidates.length === 1) {
+      const appHasRequiredUpdate = hasAppPackage && appVersionInDb.effective_is_mandatory === true &&
+        compare(appVersionInDb.version, appVersion) === 1;
+      if (appHasRequiredUpdate) {
+        // 有整包最低强制版本要求时，不能被更高版本的 WGT 绕过。
+        stablePublishDb = appVersionInDb;
+      } else if (candidates.length === 1) {
         stablePublishDb = candidates[0];
       } else if (candidates.length === 2) {
         const appPkg = candidates[0];
@@ -107,20 +125,32 @@ module.exports = async (event, context) => {
         const appUpdate = compare(version, appVersion) === 1; // app包可用更新
         const wgtUpdate = compare(version, wgtVersion) === 1; // wgt包可用更新
 
-        if (appUpdate && wgtUpdate) {
-          // 判断是否可用wgt更新（确保命中记录是 wgt 且满足最低原生版本要求）
+         if (appUpdate && wgtUpdate) {
+           // 整包存在最低强制版本要求时，不能被更高版本号的 WGT 绕过。
+           if (stablePublishDb.type === package_wgt && hasAppPackage && isAppUpgradeRequired(appVersion, appVersionInDb)) {
+             if (compare(appVersionInDb.version, appVersion) === 1) {
+               return {
+                 code: 102,
+                 message: '整包更新',
+                 ...appVersionInDb,
+                 effective_is_mandatory: true,
+               };
+             }
+           }
+           // 判断是否可用wgt更新（确保命中记录是 wgt 且满足最低原生版本要求）
           if (stablePublishDb.type === package_wgt && min_uni_version && compare(min_uni_version, appVersion) < 1) {
             return {
               code: 101,
               message: 'wgt更新',
               ...stablePublishDb,
             };
-          } else if (hasAppPackage && compare(appVersionInDb.version, appVersion) === 1) {
-            return {
-              code: 102,
-              message: '整包更新',
-              ...appVersionInDb,
-            };
+           } else if (hasAppPackage && compare(appVersionInDb.version, appVersion) === 1) {
+             return {
+               code: 102,
+               message: '整包更新',
+               ...appVersionInDb,
+               effective_is_mandatory: isAppUpgradeRequired(appVersion, appVersionInDb),
+             };
           }
         }
       }
@@ -186,6 +216,21 @@ function compare(v1 = '0', v2 = '0') {
   return result;
 }
 
+function isAppUpgradeRequired(currentVersion, appPackage) {
+  if (appPackage.is_mandatory === true) return true;
+  const minRequiredVersion = String(appPackage.min_required_version || '').trim();
+  if (!minRequiredVersion || !isValidVersion(minRequiredVersion)) return false;
+  return compare(currentVersion, minRequiredVersion) < 0;
+}
+
+function applyUpdatePromptDefaults(versionPackage) {
+  versionPackage.is_update_prompt = versionPackage.is_update_prompt === true;
+  versionPackage.update_prompt = versionPackage.update_prompt === 'toast' ? 'toast' : 'modal';
+  if (versionPackage.type === package_app) versionPackage.update_prompt = 'modal';
+  versionPackage.update_prompt_content = typeof versionPackage.update_prompt_content === 'string' ?
+    versionPackage.update_prompt_content : default_update_prompt_content;
+}
+
 /**
  * 判断库中的 wgt 包能否参与当前客户端的版本竞选（保守策略：除 Vapor 新能力外，所有存量场景与历史行为完全一致）
  * - Vapor 应用（is_vapor=true，客户端编译期条件编译上报）：仅可热更新 vapor 标记（is_vapor=true）的 wgt（.zst/.wgt）
@@ -197,4 +242,17 @@ function isWgtUsable(wgtVersionInDb, is_vapor, is_uniapp_x, platform) {
   if (is_vapor === true) return recordIsVapor;
   if (recordIsVapor) return false;
   return !(is_uniapp_x === true && platform === platform_Android);
+}
+
+function isValidVersion(version) {
+  return typeof version === 'string' && /^\d+(\.\d+)*$/.test(version);
+}
+
+function getEffectiveMandatory(appPackage, currentAppVersion) {
+  const minRequiredVersion = appPackage.min_required_version;
+  const hasValidMinimum = appPackage.type === package_app &&
+    isValidVersion(minRequiredVersion) && isValidVersion(appPackage.version) &&
+    isValidVersion(currentAppVersion) && compare(minRequiredVersion, appPackage.version) <= 0;
+  return appPackage.is_mandatory === true ||
+    (hasValidMinimum && compare(currentAppVersion, minRequiredVersion) < 0);
 }

@@ -22,13 +22,29 @@
 			<uni-forms-item name="title" label="更新标题">
 				<uni-easyinput :disabled="detailsState" placeholder="更新标题" v-model="formData.title" />
 			</uni-forms-item>
+			<uni-forms-item v-if="isWGT || isNativeApp" name="is_update_prompt" :label="isNativeApp ? '安装提醒' : '更新提醒'">
+				<switch :disabled="detailsState || (isNativeApp && !isAndroid)" @change="onUpdatePromptChange" :checked="formData.is_update_prompt" />
+				<show-info :content="updatePromptContent"></show-info>
+				<text v-if="isNativeApp && !isAndroid" style="color:#666;font-size:12px;">仅 Android 可用</text>
+			</uni-forms-item>
+			<uni-forms-item v-if="isWGT && formData.is_update_prompt" name="update_prompt" label="提醒方式">
+				<uni-data-checkbox :disabled="detailsState" v-model="formData.update_prompt" :localdata="updatePromptLocaldata" />
+			</uni-forms-item>
+			<uni-forms-item v-if="formData.is_update_prompt && (isNativeApp || formData.update_prompt === 'modal')" name="update_prompt_content" label="提醒内容">
+				<view style="display:flex;flex-direction:column;flex:1;">
+					<textarea auto-height style="box-sizing: content-box;" :maxlength="-1" :disabled="detailsState" :placeholder="isNativeApp ? '安装包已下载，是否立即安装？' : '应用已更新，是否立即重启？'"
+						@input="binddata('update_prompt_content', $event.detail.value)" class="uni-textarea-border"
+						:value="formData.update_prompt_content" @update:value="val => formData.update_prompt_content = val"></textarea>
+					<text style="color:#666;font-size:12px;margin-top:6px;">{{updatePromptModalContent}}</text>
+				</view>
+			</uni-forms-item>
 			<uni-forms-item name="contents" label="更新内容" required>
 				<textarea auto-height style="box-sizing: content-box;" :disabled="detailsState"
 					@input="binddata('contents', $event.detail.value)" class="uni-textarea-border" placeholder="更新内容 (可换行)"
 					:value="formData.contents" @update:value="val => formData.contents = val"></textarea>
 			</uni-forms-item>
       <uni-forms-item v-if="isWGT" key="is_vapor" name="is_vapor" label="蒸汽模式">
-      	<!-- 发布后不允许修改蒸汽模式标记，避免与已发布资源包及其 SHA256 不匹配 -->
+		<!-- 发布后不允许修改蒸汽模式标记，避免与已发布资源包及其 SHA256 不匹配 -->
       	<switch :disabled="true" :checked="formData.is_vapor" />
       	<show-info :content="vaporContent"></show-info>
       </uni-forms-item>
@@ -46,6 +62,10 @@
 				:required="isWGT">
 				<uni-easyinput :disabled="detailsState" placeholder="原生App最低版本" v-model="formData.min_uni_version" />
 				<show-info :content="minUniVersionContent"></show-info>
+			</uni-forms-item>
+			<uni-forms-item v-if="isNativeApp" key="min_required_version" name="min_required_version" label="最低强制版本">
+				<uni-easyinput :disabled="detailsState" placeholder="不填则仅按强制更新开关判断" v-model="formData.min_required_version" />
+				<show-info :content="minRequiredVersionContent"></show-info>
 			</uni-forms-item>
 
 			<template v-if="enableUploadPackage && !detailsState">
@@ -196,7 +216,8 @@
 	import {
 		deepClone,
 		appVersionListDbName,
-		confirmDeleteVersionRecords
+		confirmDeleteVersionRecords,
+		compare
 	} from '../utils.js';
 
 	const {
@@ -211,10 +232,13 @@
 		labelWidth,
 		silentlyContent,
 		mandatoryContent,
+		updatePromptContent,
+		updatePromptModalContent,
 		vaporContent,
 		stablePublishContent,
 		stablePublishContent2,
 		minUniVersionContent,
+		minRequiredVersionContent,
 		priorityContent,
 		uploadFileDir,
 		type_valuetotext,
@@ -228,6 +252,8 @@
 		sessionUploadedFiles,
 		formData,
 		isWGT,
+		isNativeApp,
+		updatePromptLocaldata,
 		isiOS,
 		isAndroid,
 		hasPackage,
@@ -238,7 +264,10 @@
 		sha256Status,
 		binddata,
 		onSilentlyChange,
+		onUpdatePromptChange,
 		onMandatoryChange,
+		validatePromptFields,
+		validateMinRequiredVersion,
 		regeneratePackageSha256,
 		packageUploadSuccess,
 		packageDelete,
@@ -355,6 +384,17 @@
 			mask: true
 		})
 		form.value.validate(['store_list']).then((res) => {
+			res.update_prompt = formData.value.update_prompt || 'modal'
+			res.is_update_prompt = formData.value.is_update_prompt === true && (isWGT.value || isAndroid.value)
+			if (isWGT.value && res.is_silently === true) res.is_update_prompt = false
+			if (isNativeApp.value) {
+				res.update_prompt = 'modal'
+				res.is_silently = res.is_update_prompt
+			}
+			res.update_prompt_content = formData.value.update_prompt_content || '应用已更新，是否立即重启？'
+			validatePromptFields(res)
+			validateMinRequiredVersion(res, compare)
+			if (isWGT.value) delete res.min_required_version
 			// 校验本次上传的包后缀与蒸汽模式标记匹配（防止先上传普通 wgt 再勾选蒸汽模式等操作发布坏包）
 			ensurePackageExt()
 			// 蒸汽模式应用必须携带 SHA256 提交（计算中/缺失时抛出异常中断）
@@ -433,6 +473,12 @@
 				const data = res.result.data[0]
 				if (data) {
 					if (!data.store_list) data.store_list = []
+					if (data.is_update_prompt === undefined) data.is_update_prompt = false
+					if (data.type === 'wgt' && data.is_silently === true) data.is_update_prompt = false
+					if (data.type === 'native_app' && data.platform.includes('Android')) data.is_update_prompt = data.is_silently === true
+					if (!data.update_prompt) data.update_prompt = 'modal'
+					if (!data.update_prompt_content) data.update_prompt_content = data.type === 'native_app' ? '安装包已下载，是否立即安装？' : '应用已更新，是否立即重启？'
+					if (data.type === 'native_app' && !data.min_required_version) data.min_required_version = ''
 					// 历史记录无废弃包字段，补齐默认值（后续 push/remove 依赖数组方法）
 					if (!data.obsolete_file_ids) data.obsolete_file_ids = []
 					// 兼容历史数据：蒸汽模式标记字段由驼峰 isVapor 更名为蛇形 is_vapor（提交时写回新字段）

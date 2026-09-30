@@ -41,6 +41,34 @@
       "description": "更新标题",
       "label": "更新标题"
     },
+    "update_prompt": {
+      "bsonType": "string",
+      "enum": [
+        {
+          "value": "modal",
+          "text": "弹窗提示"
+        },
+        {
+          "value": "toast",
+          "text": "轻提示"
+        }
+      ],
+      "description": "更新提示方式，历史缺失时按 modal 处理",
+      "label": "更新提示方式",
+      "defaultValue": "modal"
+    },
+    "is_update_prompt": {
+      "bsonType": "bool",
+      "description": "是否启用更新完成后的提示，历史记录缺失时视为未启用",
+      "label": "启用更新提醒",
+      "defaultValue": false
+    },
+    "update_prompt_content": {
+      "bsonType": "string",
+      "description": "更新完成后的提示文案",
+      "label": "更新提醒文案",
+      "defaultValue": "应用已更新，是否立即重启？"
+    },
     "contents": {
       "bsonType": "string",
       "description": "更新内容",
@@ -98,6 +126,12 @@
       "bsonType": "string",
       "description": "原生App最低版本",
       "label": "原生App最低版本"
+    },
+    "min_required_version": {
+      "bsonType": "string",
+      "description": "原生App最低强制版本，仅 native_app 有效，可为空",
+      "label": "最低强制版本",
+      "defaultValue": ""
     },
     "url": {
       "bsonType": "string",

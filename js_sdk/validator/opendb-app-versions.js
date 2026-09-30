@@ -43,11 +43,31 @@ const validator = {
     ],
     label: '更新标题',
   },
-  contents: {
+  update_prompt: {
     rules: [
       {
-        required: true,
+        range: [
+          { value: 'modal', text: '弹窗提示' },
+          { value: 'toast', text: '轻提示' },
+        ],
       },
+    ],
+    label: '更新提示方式',
+    defaultValue: 'modal',
+  },
+  is_update_prompt: {
+    rules: [{ format: 'bool' }],
+    label: '更新提醒',
+    defaultValue: false,
+  },
+  update_prompt_content: {
+    rules: [{ format: 'string' }],
+    label: '提醒内容',
+    defaultValue: '应用已更新，是否立即重启？',
+  },
+  contents: {
+    // 提醒弹窗的内容使用独立字段，更新日志仍使用 contents。
+    rules: [
       {
         format: 'string',
       },
@@ -111,6 +131,15 @@ const validator = {
     ],
     label: '原生App最低版本',
   },
+  min_required_version: {
+    rules: [
+      {
+        format: 'string',
+      },
+    ],
+    label: '最低强制版本',
+    defaultValue: '',
+  },
   url: {
     rules: [
       {
@@ -162,6 +191,15 @@ const validator = {
     ],
     label: '静默更新',
     defaultValue: false,
+  },
+  update_prompt: {
+    rules: [{ format: 'string' }],
+    label: '更新提示方式',
+    defaultValue: 'modal',
+  },
+  min_required_version: {
+    rules: [{ format: 'string' }],
+    label: '最低强制安装版本',
   },
   is_mandatory: {
     rules: [
