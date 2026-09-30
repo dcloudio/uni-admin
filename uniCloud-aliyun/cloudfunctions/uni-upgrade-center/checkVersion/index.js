@@ -163,7 +163,7 @@ module.exports = async (event, context) => {
 
     return {
       code: -101,
-      message: '暂无更新或检查appid是否填写正确',
+      message: '暂无更新',
     };
   }
 
