@@ -1,8 +1,8 @@
 'use strict';
 
-const crypto = require('crypto');
 const uniID = require('uni-id-common');
 const checkVersion = require('./checkVersion');
+const { downloadSha256 } = require('./get-file-sha256');
 
 const success = { success: true };
 const fail = { success: false };
@@ -87,7 +87,10 @@ exports.main = async (event, context) => {
   const appVersionDBName = 'opendb-app-versions';
   const uniIDIns = uniID.createInstance({ context });
 
-  // 云函数 URL 化处理：GET 取查询参数（无查询参数时兜底空对象），POST 解析 body
+  // 云函数 URL 化处理：GET 取查询参数（无查询参数时兜底空对象），POST 解析 body。
+  // checkVersion 需读取 user-agent 识别平台，须保留原始 event（含 headers/queryStringParameters/body），
+  // 否则 URL 化请求会丢失请求头，平台退化为默认的 Android。
+  const rawEvent = event;
   if (event.headers) {
     try {
       if ((event.httpMethod || '').toLowerCase() === 'get') {
@@ -107,7 +110,7 @@ exports.main = async (event, context) => {
 
   switch (event.action) {
     case 'checkVersion': {
-      return await checkVersion(event, context);
+      return await checkVersion(rawEvent, context);
     }
 
     case 'deleteFile': {
@@ -118,11 +121,12 @@ exports.main = async (event, context) => {
 
       if (params.domain) {
         // 扩展存储（七牛云）：仅当传入 domain 时按扩展存储删除
+        // 删除失败必须回报失败，否则前端会清除废弃标记，导致文件成为永久孤儿且无法重试
         try {
           await getExtStorageManager(params.domain).deleteFile({ fileList: params.fileList });
         } catch (e) {
-          // 删除失败不阻断前端流程（如文件已不存在），记录日志即可
           console.error('扩展存储文件删除失败：', e);
+          return failWith('扩展存储文件删除失败：' + (e.message || e));
         }
         return success;
       }
@@ -202,15 +206,9 @@ exports.main = async (event, context) => {
         if (sha256) return { success: true, sha256 };
       }
 
-      // 3. 下载文件（不传 dataType 时返回 buffer）并计算 SHA256
+      // 3. 流式下载并增量计算 SHA256，避免把安装包整体放入内存。
       try {
-        const downloadRes = await uniCloud.httpclient.request(tempFileURL, {
-          method: 'GET',
-          followRedirect: true, // CDN 可能返回 302
-          timeout: [5000, 100000], // 连接超时 5 秒、响应超时 100 秒（安装包较大，且需小于云函数超时 120 秒）
-        });
-        if (downloadRes.status !== 200) return failWith('文件下载失败：HTTP ' + downloadRes.status);
-        const sha256 = crypto.createHash('sha256').update(downloadRes.data).digest('hex');
+        const sha256 = await downloadSha256(uniCloud.httpclient, tempFileURL);
         return { success: true, sha256 };
       } catch (e) {
         return failWith('文件下载失败：' + (e.message || e));

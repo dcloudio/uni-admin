@@ -199,6 +199,14 @@
 
 ## 项目代码说明
 
+### Admin 摘要回归测试
+
+在项目根目录执行 `node --test uni_modules/uni-upgrade-center/tests/*.test.cjs`（Node.js 22+）。测试直接加载生产脚本，模拟云请求/数据库，复用已有 TypeScript 转译器和 Vue runtime，不编译项目、不打开浏览器或设备。
+
+默认复用 macOS 的 HBuilderX-Dev 插件目录；其他安装位置可设置 `HBUILDERX_PLUGINS`，或分别设置 `TYPESCRIPT_PATH`、`VUE_RUNTIME_PATH`。请求包装测试读取同一父目录下的 `uni-admin` 和 `uni-app-x-admin`。
+
+HTTP(S) 摘要绑定当前下载 URL；fileID 只在非 HTTP 来源时回退。手改链接不会清除原 `file_id`、自动删文件或自动写库，查看态不下载。URL 沿用现有 `getFileSha256` 支持范围，地址可信限制仍由后端处理，不新增白名单或访问权限。摘要请求超时为 115 秒，服务端处理预算与真实设备下载/校验需另行人工验证。
+
 ### uniCloud 数据表
 
 数据表基于 [openDB](https://gitee.com/dcloud/opendb/tree/master) 规范，它约定了一个标准用户表的表名和字段定义，并且基于 nosql 的特性，可以由开发者自行扩展字段。

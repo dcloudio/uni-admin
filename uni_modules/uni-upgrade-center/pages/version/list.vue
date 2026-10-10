@@ -133,6 +133,11 @@
 		}
 	}
 
+	// 转义正则元字符，供搜索条件（JQL 的 /regex/.test(field)）按明文匹配
+	function escapeRegExp(value = '') {
+		return String(value).replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+	}
+
 	export default {
 		data() {
 			return {
@@ -222,17 +227,18 @@
 				if (!query) {
 					return ''
 				}
-				const queryRe = new RegExp(query, 'i')
+				// 搜索框按明文子串匹配：转义正则元字符，避免 (、[ 等输入构造出非法正则导致搜索异常
+				const queryRe = new RegExp(escapeRegExp(query), 'i')
 				return dbSearchFields.map(name => queryRe + '.test(' + name + ')').join(' || ')
 			},
 			search() {
-				const newWhere = this.getWhere()
-				const isSameWhere = newWhere === this.where
-				this.where = newWhere
-				if (this.where) {
-					this.where = `(${this.where}) && `
-				}
-				this.where += `${new RegExp(this.currentAppid, 'i')}.test(appid)`
+				const searchExpr = this.getWhere()
+				// 搜索路径必须与默认列表口径一致，排除 uni-stat 自动创建的记录，否则搜索后会出现统计记录
+				const conditions = [`create_env != "uni-stat"`, `${new RegExp(escapeRegExp(this.currentAppid), 'i')}.test(appid)`]
+				if (searchExpr) conditions.splice(1, 0, `(${searchExpr})`)
+				const nextWhere = conditions.join(' && ')
+				const isSameWhere = nextWhere === this.where
+				this.where = nextWhere
 				if (isSameWhere) { // 相同条件时，手动强制刷新
 					this.loadData()
 				}
@@ -398,13 +404,10 @@
 					} = await db.collection(appListDbName).get()
 					if (result && result.data && result.data.length > 0) {
 						this.appList = result.data.filter(item => item.appid !== this.appid)
-					} else {
-						this.showModalToAppManager()
 					}
 				} catch (e) {
-					const arr = ['TOKEN_INVALID_TOKEN_EXPIRED', 'TOKEN_INVALID_ANONYMOUS_USER']
-					if (arr.indexOf(e.code) === -1)
-						this.showModalToAppManager()
+					// 加载失败交由 onLoad 统一按“无可用应用”提示并跳转，避免重复弹窗与二次导航
+					console.error('获取应用列表失败：', e)
 				}
 			},
 			showModalToAppManager() {

@@ -111,11 +111,17 @@
 			<uni-forms-item key="url" name="url" :label="urlLabel" required>
 				<view class="flex" style="flex-direction: column;align-items:flex-start;flex: 1;">
 					<view class="flex" style="width: 100%;">
-						<uni-easyinput :disabled="detailsState" placeholder="下载链接" v-model="formData.url" :maxlength="-1" />
+						<uni-easyinput :disabled="detailsState" placeholder="下载链接" v-model="formData.url" @input="onPackageUrlInput" :maxlength="-1" />
 						<text style="margin-left: 10px;color: #2979ff;cursor: pointer;text-decoration: underline;" v-if="formData.url" @click="toUrl(formData.url)">测试下载</text>
 					</view>
 					<text style="margin-top: 10px;font-size: 12px;color: #666;" v-if="formData.url && !detailsState">建议点击【测试下载】能正常下载后，再进行发布</text>
 				</view>
+			</uni-forms-item>
+
+			<uni-forms-item v-if="isNativeApp && isAndroid" key="verify_sha256" name="verify_sha256" label="SHA256校验">
+				<!-- 发布后修改开关会改变同版本安装包的校验行为，需重新生成摘要 -->
+				<switch :disabled="detailsState || sha256Loading" @change="onVerifySha256Change" :checked="formData.verify_sha256" />
+				<show-info :content="verifySha256Content"></show-info>
 			</uni-forms-item>
 
 			<uni-forms-item v-if="sha256Status" key="sha256" name="sha256" label="SHA256">
@@ -126,7 +132,7 @@
 				<text v-else-if="sha256Status === 'loading'" class="package-sha256-tip">SHA256 计算中，完成后方可提交…</text>
 				<view v-else class="flex" style="align-items: center;width: 100%;">
 					<text class="package-sha256-fail">SHA256 获取失败</text>
-					<text class="package-sha256-copy" @click="regeneratePackageSha256">重新生成</text>
+					<text class="package-sha256-copy" @click="regenerateSha256InEdit">重新生成</text>
 				</view>
 			</uni-forms-item>
 
@@ -189,7 +195,7 @@
 			<button type="primary" class="uni-button" style="width: 100px;" @click="enterEdit"
 				v-if="detailsState">修改</button>
 			<button type="primary" class="uni-button" style="width: 100px;" @click="submit"
-				:disabled="submitting || (formData.is_vapor && sha256Loading)" v-if="!detailsState">提交</button>
+				:disabled="submitting || (needSha256 && sha256Loading)" v-if="!detailsState">提交</button>
 				<button type="warn" class="uni-button" style="width: 100px;" @click="cancelEdit"
 					v-if="!detailsState">取消</button>
 				<button class="uni-button" style="width: 100px;margin-left: 15px;" @click="backPage">返回</button>
@@ -235,6 +241,7 @@
 		updatePromptContent,
 		updatePromptModalContent,
 		vaporContent,
+		verifySha256Content,
 		stablePublishContent,
 		stablePublishContent2,
 		minUniVersionContent,
@@ -262,16 +269,24 @@
 		enableUploadPackage,
 		urlLabel,
 		sha256Status,
+		needSha256,
 		binddata,
+		onPackageUrlInput,
+		changePackageDomain,
+		bindLoadedPackageSha256,
+		capturePackageState,
+		restorePackageState,
 		onSilentlyChange,
 		onUpdatePromptChange,
 		onMandatoryChange,
 		validatePromptFields,
 		validateMinRequiredVersion,
 		regeneratePackageSha256,
+		resetSha256Request,
 		packageUploadSuccess,
+		onVerifySha256Change,
 		packageDelete,
-		ensureVaporSha256,
+		ensurePackageSha256,
 		ensurePackageExt,
 		copyPackageSha256,
 		selectFile,
@@ -282,6 +297,7 @@
 
 	const isStable = ref(true); // 是否是线上发行版
 	const originalData = ref({}); // 原始数据，用于恢复状态
+	const originalPackageState = ref(null); // 与原记录一同恢复的摘要来源绑定
 	const detailsState = ref(true) // 查看状态
 	const submitting = ref(false) // 提交进行中：防止离开页面时的兜底标记与提交写库竞态
 
@@ -308,6 +324,7 @@
 	});
 
 	onUnload(() => {
+		resetSha256Request()
 		// 兜底：编辑态被直接离开（物理返回/关闭页面等未走确认流程的路径），尽力标记本会话上传的包，
 		// 避免文件无引用且无记录；提交进行中不标记（防与提交写库竞态）；页面已卸载，无法反馈结果，失败不再重试
 		if (!submitting.value && !detailsState.value && sessionUploadedFiles.value.length) {
@@ -325,16 +342,8 @@
 		setCloudStorage({
 			domain: val
 		});
-		// 已上传的扩展存储文件与域名绑定，域名变更时同步快照，保证删除/校验时路由正确
-		if (formData.value.file_domain) {
-			formData.value.file_domain = val || ''
-		}
-		if (formData.value.url) {
-			// 替换 formData.value.url 内的域名
-			if (!val) val = "请输入自定义域名"
-			formData.value.url = formData.value.url.replace(/^(https?:\/\/)[^\/]+/, `$1${val}`);
-		}
-	});
+		if (!detailsState.value) changePackageDomain(val)
+	}, { flush: 'sync' });
 
 	watch(uniFilePickerProvider, (val) => {
 		setCloudStorage({
@@ -397,8 +406,8 @@
 			if (isWGT.value) delete res.min_required_version
 			// 校验本次上传的包后缀与蒸汽模式标记匹配（防止先上传普通 wgt 再勾选蒸汽模式等操作发布坏包）
 			ensurePackageExt()
-			// 蒸汽模式应用必须携带 SHA256 提交（计算中/缺失时抛出异常中断）
-			ensureVaporSha256()
+			// 需校验 SHA256 的记录必须携带摘要提交（计算中/缺失时抛出异常中断）
+			ensurePackageSha256(res)
 			// 链接必填（上传安装包会自动填充），防止手动清空后提交空链接记录
 			if (!res.url) {
 				uni.showModal({
@@ -419,10 +428,13 @@
 	}
 
 	async function submitForm(value) {
+		// SHA256 提交校验已在 submit() 中统一执行，此处不再重复，避免 submitting 置位后再抛异常导致页面卡死
 		submitting.value = true
-		// 补充非表单项数据（蒸汽模式标记、安装包SHA256、文件ID与存储域名，仅蒸汽模式应用携带 SHA256）
+		// 补充非表单项数据（蒸汽模式标记、安装包SHA256、文件ID与存储域名，蒸汽模式 wgt 或开启校验的 APK 携带 SHA256）
 		value.is_vapor = isWGT.value && formData.value.is_vapor === true
-		value.sha256 = value.is_vapor ? (formData.value.sha256 || '') : ''
+		// verify_sha256 仅 Android APK 生效（iOS/Harmony 无上传入口）
+		value.verify_sha256 = isNativeApp.value && isAndroid.value && formData.value.verify_sha256 === true
+		value.sha256 = (value.is_vapor || value.verify_sha256) ? (formData.value.sha256 || '') : ''
 		value.file_id = formData.value.file_id || ''
 		value.file_domain = formData.value.file_domain || ''
 		// 本会话产生的废弃文件（被替换的原包、× 移除的新包）随记录更新原子入库，由清理入口统一删除
@@ -479,14 +491,17 @@
 					if (!data.update_prompt) data.update_prompt = 'modal'
 					if (!data.update_prompt_content) data.update_prompt_content = data.type === 'native_app' ? '安装包已下载，是否立即安装？' : '应用已更新，是否立即重启？'
 					if (data.type === 'native_app' && !data.min_required_version) data.min_required_version = ''
+					// 历史记录无校验开关字段，默认关闭
+					if (data.verify_sha256 === undefined) data.verify_sha256 = false
 					// 历史记录无废弃包字段，补齐默认值（后续 push/remove 依赖数组方法）
 					if (!data.obsolete_file_ids) data.obsolete_file_ids = []
 					// 兼容历史数据：蒸汽模式标记字段由驼峰 isVapor 更名为蛇形 is_vapor（提交时写回新字段）
 					if (data.is_vapor === undefined && data.isVapor !== undefined) {
 						data.is_vapor = data.isVapor === true
 					}
-					formData.value = data
+					bindLoadedPackageSha256(data)
 					originalData.value = deepClone(formData.value)
+					originalPackageState.value = capturePackageState()
 				}
 			}).catch((err) => {
 				uni.showModal({
@@ -600,8 +615,9 @@
 	 * @param {Function} onDone 处理完成后的补充动作（如返回列表）
 	 */
 	function commitDiscard(onDone) {
+		resetSha256Request()
 		if (sessionUploadedFiles.value.length) {
-			markSessionFilesObsolete(onDone)
+			return markSessionFilesObsolete(onDone)
 		} else {
 			restoreEditState()
 			onDone && onDone()
@@ -636,13 +652,17 @@
 		uni.showLoading({
 			mask: true
 		})
-		db.collection(dbCollectionName).doc(formDataId).field('obsolete_file_ids').get().then((latestRes) => {
+		return db.collection(dbCollectionName).doc(formDataId).field('obsolete_file_ids').get().then((latestRes) => {
 			const data = latestRes.result.data[0]
 			// 记录已不存在（被并发删除）时退化为本页原始数据，写库将 no-op
 			const latestObsolete = data && data.obsolete_file_ids ? data.obsolete_file_ids : (originalData.value
 				.obsolete_file_ids || [])
+			const obsoleteFileIds = buildObsoleteFileList(latestObsolete)
 			return db.collection(dbCollectionName).doc(formDataId).update({
-				obsolete_file_ids: buildObsoleteFileList(latestObsolete)
+				obsolete_file_ids: obsoleteFileIds
+			}).then(() => {
+				// 成功后刷新原快照，下一次编辑提交不能覆盖刚保存或并发新增的废弃项。
+				originalData.value.obsolete_file_ids = deepClone(obsoleteFileIds)
 			})
 		}).then(() => {
 			uni.hideLoading()
@@ -675,11 +695,26 @@
 		})
 	}
 
+	/** 查看态不允许直接重算（结果不会入库），提示先进入编辑 */
+	function regenerateSha256InEdit() {
+		if (detailsState.value) {
+			uni.showToast({
+				icon: 'none',
+				title: '请先点击修改'
+			})
+			return
+		}
+		regeneratePackageSha256()
+	}
+
 	/**
 	 * 恢复查看态：还原入库数据、清空选择器显示与本会话上传记录
 	 */
 	function restoreEditState() {
+		// 取消在途 SHA256 请求，避免旧响应写入已还原查看态的表单
+		resetSha256Request()
 		formData.value = deepClone(originalData.value)
+		restorePackageState(originalPackageState.value || {})
 		appFileList.value = null
 		sessionUploadedFiles.value = []
 		detailsState.value = true

@@ -36,16 +36,22 @@ module.exports = async (event, context) => {
       } else {
         body = JSON.parse(event.body);
       }
+      // JSON.parse('null') 等解析结果不是对象时统一按请求错误处理
+      if (body == null || typeof body !== 'object') {
+        throw new Error('invalid body');
+      }
     } catch (e) {
       return {
-        code: 500,
-        msg: '请求错误',
+        code: -102,
+        message: '请求错误',
       };
     }
 
     appid = body.appid;
     appVersion = body.appVersion;
     wgtVersion = body.wgtVersion;
+    is_uniapp_x = body.is_uniapp_x === true || body.is_uniapp_x === 'true';
+    is_vapor = body.is_vapor === true || body.is_vapor === 'true';
 
     // HTTP 头字段名大小写不敏感，遍历 headers 兼容 user-agent / User-Agent / USER-AGENT 等写法
     let userAgent = '';
@@ -125,10 +131,13 @@ module.exports = async (event, context) => {
         const appUpdate = compare(version, appVersion) === 1; // app包可用更新
         const wgtUpdate = compare(version, wgtVersion) === 1; // wgt包可用更新
 
-         if (appUpdate && wgtUpdate) {
+         // appHasRequiredUpdate 时已强制选中整包，不能被“已安装更高版本 wgt”挡掉
+         if (appUpdate && (wgtUpdate || appHasRequiredUpdate)) {
            // 整包存在最低强制版本要求时，不能被更高版本号的 WGT 绕过。
            if (stablePublishDb.type === package_wgt && hasAppPackage && isAppUpgradeRequired(appVersion, appVersionInDb)) {
              if (compare(appVersionInDb.version, appVersion) === 1) {
+               const shaError = getApkSha256Error(appVersionInDb, is_uniapp_x);
+               if (shaError) return shaError;
                return {
                  code: 102,
                  message: '整包更新',
@@ -145,6 +154,8 @@ module.exports = async (event, context) => {
               ...stablePublishDb,
             };
            } else if (hasAppPackage && compare(appVersionInDb.version, appVersion) === 1) {
+             const shaError = getApkSha256Error(appVersionInDb, is_uniapp_x);
+             if (shaError) return shaError;
              return {
                code: 102,
                message: '整包更新',
@@ -242,6 +253,19 @@ function isWgtUsable(wgtVersionInDb, is_vapor, is_uniapp_x, platform) {
   if (is_vapor === true) return recordIsVapor;
   if (recordIsVapor) return false;
   return !(is_uniapp_x === true && platform === platform_Android);
+}
+
+/**
+ * uni-app x 客户端对 APK 开启校验（verify_sha256=true）但记录缺少 SHA256 时拦截，
+ * 避免客户端安装未经校验的安装包；uni1 无运行时校验能力，忽略该开关与校验结果。
+ */
+function getApkSha256Error(pkg, is_uniapp_x) {
+  if (is_uniapp_x !== true || pkg.type !== package_app || pkg.verify_sha256 !== true) return null;
+  const sha256 = typeof pkg.sha256 === 'string' ? pkg.sha256.trim() : '';
+  if (sha256.length === 0) return { code: -103, message: '安装包校验失败，sha256 为空' };
+  // 非 64 位 hex 属发布配置错误，避免客户端校验永远失败
+  if (!/^[0-9a-fA-F]{64}$/.test(sha256)) return { code: -103, message: '安装包校验失败' };
+  return null;
 }
 
 function isValidVersion(version) {

@@ -108,11 +108,17 @@
 			<uni-forms-item key="url" name="url" :label="urlLabel" required>
 				<view class="flex" style="flex-direction: column;align-items:flex-start;flex: 1;">
 					<view class="flex" style="width: 100%;">
-				<uni-easyinput placeholder="链接" v-model="formData.url" :maxlength="-1" />
+				<uni-easyinput placeholder="链接" v-model="formData.url" @input="onPackageUrlInput" :maxlength="-1" />
 						<text style="margin-left: 10px;color: #2979ff;cursor: pointer;text-decoration: underline;" v-if="isApk" @click="toUrl(formData.url)">测试下载</text>
 					</view>
 					<text style="margin-top: 10px;font-size: 12px;color: #666;" v-if="isApk">建议点击【测试下载】能正常下载后，再进行发布</text>
 				</view>
+			</uni-forms-item>
+
+			<uni-forms-item v-if="isNativeApp && isAndroid" key="verify_sha256" name="verify_sha256" label="SHA256校验">
+				<!-- SHA256 计算中禁止切换开关：摘要与开关强关联，计算期间变更会破坏校验语义 -->
+				<switch :disabled="sha256Loading" @change="onVerifySha256Change" :checked="formData.verify_sha256" />
+				<show-info :content="verifySha256Content"></show-info>
 			</uni-forms-item>
 
 			<uni-forms-item v-if="sha256Status" key="sha256" name="sha256" label="SHA256">
@@ -173,7 +179,7 @@
 			</uni-forms-item>
 			<view class="uni-button-group">
 				<button type="primary" class="uni-button" style="width: 100px;" @click="submit"
-					:disabled="submitting || (formData.is_vapor && sha256Loading)">发布</button>
+					:disabled="submitting || (needSha256 && sha256Loading)">发布</button>
 				<button type="warn" class="uni-button" style="width: 100px;margin-left: 15px;" @click="back">取消</button>
 			</view>
 		</uni-forms>
@@ -218,6 +224,7 @@
 		updatePromptContent,
 		updatePromptModalContent,
 		vaporContent,
+		verifySha256Content,
 		stablePublishContent2,
 		minUniVersionContent,
 		minRequiredVersionContent,
@@ -246,19 +253,26 @@
 		urlLabel,
 		isApk,
 		sha256Status,
+		needSha256,
 		binddata,
+		onPackageUrlInput,
+		changePackageDomain,
+		capturePackageState,
+		restorePackageState,
 		onSilentlyChange,
 		onUpdatePromptChange,
 		onMandatoryChange,
+		onVerifySha256Change,
 		validatePromptFields,
 		validateMinRequiredVersion,
 		handlePlatformChange,
 		getStoreList,
 		packageUploadSuccess,
 		packageDelete,
-		tryCalcVaporSha256,
+		tryCalcPackageSha256,
 		regeneratePackageSha256,
-		ensureVaporSha256,
+		resetSha256Request,
+		ensurePackageSha256,
 		ensurePackageExt,
 		copyPackageSha256,
 		selectFile,
@@ -273,6 +287,7 @@
 	const latestVersion = ref('0.0.0');
 	const lastVersionId = ref('');
 	const submitting = ref(false); // 提交进行中：防止离开页面时的兜底删除与提交竞态
+	const androidPackageState = ref(null);
 
 	onLoad(async ({
 		appid,
@@ -302,7 +317,7 @@
 			latestStableData.value = (await getDetail(appid, type)) || []
 			// 如果有数据，否则为发布第一版，默认为Android
 			if (!isWGT.value && latestStableData.value.length) {
-				setFormData(platform_Android)
+				formData.value.platform = platform_Android
 			}
 			// 如果是wgt ，则需要将 min_uni_version 设为必填
 			if (isWGT.value) {
@@ -314,6 +329,7 @@
 	});
 
 	onUnload(() => {
+		resetSha256Request()
 		// 兜底：未提交离开（物理返回/关闭页面等未走确认流程的路径）时尽力删除本会话上传的包，避免遗留无引用文件；
 		// 提交进行中不删（防与提交竞态误删刚入库的包），删除失败不再重试
 		if (!submitting.value && sessionUploadedFiles.value.length) {
@@ -325,37 +341,29 @@
 		});
 	});
 
-	watch(isiOS, (val) => {
-		// wgt 的链接不在此处理：普通 wgt 多平台共用不随平台变化；蒸汽模式包由 handlePlatformChange 按平台暂存/恢复
-		if (isWGT.value) return
-		// 原生 App：按平台切换链接（Android 安装包 / iOS 商店地址）
-		if (!val && hasPackage.value) {
-			formData.value.url = appFileList.value.url
-			return;
-		}
-		formData.value.url = ''
-	});
-
 	watch(() => formData.value.platform, (val, oldVal) => {
-		// 蒸汽模式应用切换平台时先维护按平台暂存的包，再按平台带出历史版本信息
-		handlePlatformChange(val, oldVal)
+		if (isWGT.value) {
+			handlePlatformChange(val, oldVal)
+			setFormData(val)
+			return
+		}
+		const oldKey = Array.isArray(oldVal) ? oldVal[0] : oldVal
+		if (oldKey === platform_Android && hasPackage.value) androidPackageState.value = capturePackageState()
+		// 一个平台事务负责历史链接、上传引用和摘要，不能依赖多个 watch 的执行顺序。
+		restorePackageState({})
+		if (!isAndroid.value) formData.value.verify_sha256 = false
 		setFormData(val)
-	});
+		if (isAndroid.value && hasPackage.value && androidPackageState.value) {
+			restorePackageState(androidPackageState.value)
+		}
+	}, { flush: 'sync' });
 
 	watch(domain, (val) => {
 		setCloudStorage({
 			domain: val
 		});
-		// 已上传的扩展存储文件与域名绑定，域名变更时同步快照，保证删除/校验时路由正确
-		if (formData.value.file_domain) {
-			formData.value.file_domain = val || ''
-		}
-		if (formData.value.url) {
-			// 替换 formData.value.url 内的域名
-			if (!val) val = "请输入自定义域名"
-			formData.value.url = formData.value.url.replace(/^(https?:\/\/)[^\/]+/, `$1${val}`);
-		}
-	});
+		changePackageDomain(val)
+	}, { flush: 'sync' });
 
 	watch(uniFilePickerProvider, (val) => {
 		setCloudStorage({
@@ -368,11 +376,12 @@
 	// binddata 即对 formData 字段的直接赋值（原 uni-forms vue3 全局 binddata 亦不触发校验），无需再手动赋值一遍
 
 	function onVaporChange(e) {
+		resetSha256Request()
 		binddata('is_vapor', e.detail.value);
 		// 平台在单选/多选间切换，数据形态变化需清除已选；勾选时 Harmony 会置为 disabled（见 platformLocaldata）
 		binddata('platform', []);
 		// 先上传后勾选的场景，自动补算 SHA256
-		tryCalcVaporSha256()
+		tryCalcPackageSha256()
 	}
 
 	function onPlatformChangeByUser() {
@@ -411,7 +420,6 @@
 			if (!isWGT.value) {
 				delete formData.value.min_uni_version;
 				formData.value.min_required_version = min_required_version || '';
-				formData.value.platform = platform[0]
 
 				// iOS需要带出上一版本的AppStore链接
 					if (isAndroid.value || isiOS.value || isHarmony.value) {
@@ -456,8 +464,8 @@
 			}
 			// 校验本次上传的包后缀与蒸汽模式标记匹配（防止先上传普通 wgt 再勾选蒸汽模式等操作发布坏包）
 			ensurePackageExt()
-			// 蒸汽模式应用必须携带 SHA256 提交（计算中/缺失时抛出异常中断）
-			ensureVaporSha256()
+			// 需校验 SHA256 的记录必须携带摘要提交（计算中/缺失时抛出异常中断）
+			ensurePackageSha256(res)
 			// 勾选蒸汽模式会清空平台选择（多选转单选且数据形态变化），防止未重选平台时提交空平台记录
 			if (!res.platform || !res.platform.length) {
 				uni.showModal({
@@ -599,6 +607,7 @@
 			content: sessionUploadedFiles.value.length ? '将会删除已上传的包（含已移除但未提交清理的）' : undefined,
 			success: res => {
 				if (res.confirm) {
+					resetSha256Request()
 					// 取消发布时记录尚未创建，废弃标记无处挂载，须当场删净本会话上传的所有包（失败交互式重试）
 					if (sessionUploadedFiles.value.length) {
 						removeUploadedPackages()

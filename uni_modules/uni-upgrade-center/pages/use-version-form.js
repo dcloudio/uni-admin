@@ -1,6 +1,7 @@
 import {
 	ref,
-	computed
+	computed,
+	watch
 } from 'vue';
 import {
 	onReady
@@ -12,6 +13,11 @@ import {
 import {
 	request
 } from '@/js_sdk/uni-admin/request.js';
+import {
+	getPackageSha256Source,
+	isSamePackageSha256Source,
+	isValidPackageSha256
+} from './package-sha256.js';
 
 export const platform_iOS = 'iOS';
 export const platform_Android = 'Android';
@@ -32,7 +38,7 @@ function getValidator(fields) {
 }
 
 export const fields =
-	'appid,name,title,contents,is_update_prompt,update_prompt,update_prompt_content,platform,type,version,min_uni_version,min_required_version,url,stable_publish,is_silently,is_mandatory,is_vapor,isVapor,sha256,file_id,file_domain,obsolete_file_ids,create_date,store_list'
+	'appid,name,title,contents,is_update_prompt,update_prompt,update_prompt_content,platform,type,version,min_uni_version,min_required_version,url,stable_publish,is_silently,is_mandatory,is_vapor,isVapor,sha256,verify_sha256,file_id,file_domain,obsolete_file_ids,create_date,store_list'
 
 /**
  * 新增/编辑版本页面共用逻辑（原 mixin 改写为组合式 API，兼容 vue3 蒸汽模式）
@@ -59,6 +65,7 @@ export function useVersionForm(formRef) {
 		return '未开启更新提醒时，强制更新使下载前的升级弹窗不可关闭'
 	})
 	const vaporContent = '蒸汽模式：标记该wgt资源包为蒸汽模式应用。平台仅支持单选，且暂不支持鸿蒙'
+	const verifySha256Content = '开启后仅 uni-app x 客户端会在安装前校验安装包 SHA256；uni1 客户端不支持运行时校验，将忽略此开关'
 	const stablePublishContent = '将线上发行包变更为下线'
 	const stablePublishContent2 = '使用本包替换当前线上发行版'
 	const minUniVersionContent = '上次使用新Api或打包新模块的App版本'
@@ -109,13 +116,14 @@ export function useVersionForm(formRef) {
 	const sha256Loading = ref(false) // 上传包SHA256计算中
 	// SHA256 请求序号：计算期间重新上传会并发新请求，仅最新请求的结果生效（旧请求不写入/不复位/不提示）
 	let sha256RequestId = 0
+	const sha256Binding = ref(null) // 仅表单实例持有，不写入数据库
+	let restoringPackage = false
+	let managedPackageUrl = ''
+	let managedExtStorage = false
+	const platformPackages = new Map()
 	const uniFilePickerProvider = ref('unicloud') // 上传存储供应商：unicloud 内置存储；extStorage 扩展存储
 	const domain = ref('') // 扩展存储绑定的自定义域名
-	const preUrl = ref('')
-	// 被替换包的引用信息暂存（× 移除新上传的包时恢复，防止丢失原记录的 file_id）
-	const preFileId = ref('')
-	const preFileDomain = ref('')
-	const preSha256 = ref('')
+	const previousPackage = ref(null) // × 移除新上传的包时一并恢复引用与摘要绑定
 	// 本会话上传过的所有包（含已被 × 移除的），取消编辑时统一标记废弃写库
 	const sessionUploadedFiles = ref([])
 	const formData = ref({
@@ -139,12 +147,15 @@ export function useVersionForm(formRef) {
 		"stable_publish": false,
 		"is_vapor": false,
 		"sha256": "",
+		"verify_sha256": false,
 		"create_date": null
 	})
 
 	// 计算属性
 	const isWGT = computed(() => formData.value.type === 'wgt')
 	const isNativeApp = computed(() => formData.value.type === 'native_app')
+	// 需要生成/校验 SHA256：蒸汽模式 wgt，或开启校验的 APK
+	const needSha256 = computed(() => (isWGT.value && formData.value.is_vapor === true) || (isNativeApp.value && formData.value.verify_sha256 === true))
 	const updatePromptLocaldata = computed(() => isNativeApp.value ? [formOptions.update_prompt_localdata[0]] : formOptions.update_prompt_localdata)
 	const isiOS = computed(() => formData.value.platform.includes(platform_iOS))
 	const isAndroid = computed(() => formData.value.platform.includes(platform_Android))
@@ -187,28 +198,103 @@ export function useVersionForm(formRef) {
 		const apkIndex = url.indexOf('apk')
 		return url && (apkIndex > -1 && apkIndex === url.length - 3)
 	})
-	/**
-	 * 当前待校验的蒸汽模式资源包文件：优先使用文件选择器中的包；从平台槽位恢复的包（选择器为空）使用当前引用的 file_id
-	 */
-	const vaporPackageFile = computed(() => {
-		if (appFileList.value) return appFileList.value
-		if (formData.value.file_id) return {
-			fileID: formData.value.file_id
-		}
-		return null
-	})
+	const packageSource = computed(() => getPackageSha256Source(formData.value))
+	const hasBoundPackageSha256 = computed(hasCurrentPackageSha256)
+	// 只使摘要失效，不自动发请求；同步监听保证程序修改 URL 也无法在提交前绕过来源检查。
+	watch(() => [formData.value.url, formData.value.file_id, formData.value.file_domain], () => {
+		if (!restoringPackage) invalidatePackageSha256()
+	}, { flush: 'sync' })
+	watch(needSha256, (needed) => {
+		if (!needed) resetSha256Request()
+	}, { flush: 'sync' })
 	/**
 	 * SHA256 展示状态：'' 不展示；loading 计算中；success 已获取；fail 获取失败
-	 * 仅蒸汽模式应用需要展示与校验 SHA256；有可校验文件但摘要缺失时展示失败以提供重算入口
+	 * 需校验 SHA256 的记录（蒸汽模式 wgt 或开启校验的 APK）；有可校验文件但摘要缺失时展示失败以提供重算入口
 	 */
 	const sha256Status = computed(() => {
-		if (!formData.value.is_vapor) return ''
+		if (!needSha256.value) return ''
 		if (sha256Loading.value) return 'loading'
-		if (formData.value.sha256) return 'success'
-		return vaporPackageFile.value ? 'fail' : ''
+		if (hasBoundPackageSha256.value) return 'success'
+		return packageSource.value ? 'fail' : ''
 	})
 
 	// 方法
+	function hasCurrentPackageSha256() {
+		return isValidPackageSha256(formData.value.sha256) && sha256Binding.value &&
+			sha256Binding.value.sha256 === formData.value.sha256 && sha256Binding.value.generation === sha256RequestId &&
+			isSamePackageSha256Source(sha256Binding.value, getPackageSha256Source(formData.value))
+	}
+
+	function invalidatePackageSha256() {
+		resetSha256Request()
+		sha256Binding.value = null
+		formData.value.sha256 = ''
+	}
+
+	function capturePackageState() {
+		const data = formData.value
+		return {
+			url: data.url || '', file_id: data.file_id || '', file_domain: data.file_domain || '',
+			sha256: hasBoundPackageSha256.value ? data.sha256 : '',
+			binding: hasBoundPackageSha256.value ? { ...sha256Binding.value } : null,
+			managedUrl: managedPackageUrl, extStorage: managedExtStorage
+		}
+	}
+
+	function restorePackageState(state = {}) {
+		resetSha256Request()
+		restoringPackage = true
+		try {
+			formData.value.url = state.url || ''
+			formData.value.file_id = state.file_id || ''
+			formData.value.file_domain = state.file_domain || ''
+			managedPackageUrl = state.managedUrl || ''
+			managedExtStorage = state.extStorage === true || !!state.file_domain
+			const valid = isValidPackageSha256(state.sha256) && state.binding &&
+				state.binding.sha256 === state.sha256 && isSamePackageSha256Source(state.binding, packageSource.value)
+			formData.value.sha256 = valid ? state.sha256 : ''
+			sha256Binding.value = valid ? { ...state.binding, generation: sha256RequestId } : null
+		} finally {
+			restoringPackage = false
+		}
+	}
+
+	/** 仅在加载库中数据时认可已有摘要，不下载、不写库；后续恢复必须使用保存的 binding。 */
+	function bindLoadedPackageSha256(data) {
+		if (data) {
+			restoringPackage = true
+			try { formData.value = data } finally { restoringPackage = false }
+		}
+		resetSha256Request()
+		managedPackageUrl = formData.value.file_id ? (formData.value.url || '') : ''
+		managedExtStorage = !!formData.value.file_domain
+		const source = packageSource.value
+		sha256Binding.value = source && isValidPackageSha256(formData.value.sha256)
+			? { ...source, generation: sha256RequestId, sha256: formData.value.sha256 } : null
+		platformPackages.clear()
+		previousPackage.value = null
+		;(formData.value.obsolete_file_ids || []).forEach(slot => {
+			if (!slot.platform) return
+			const slotSource = getPackageSha256Source(slot)
+			platformPackages.set(slot.platform, { ...slot, managedUrl: slot.url || '',
+				binding: slotSource && isValidPackageSha256(slot.sha256)
+					? { ...slotSource, generation: sha256RequestId, sha256: slot.sha256 } : null })
+		})
+	}
+
+	function onPackageUrlInput(value) {
+		binddata('url', value)
+		if (value !== managedPackageUrl) managedPackageUrl = ''
+	}
+
+	function changePackageDomain(value) {
+		// 存储配置不改写手填外链，也不改变其清理引用；已上传扩展存储包的地址变更需重新生成摘要。
+		if (!managedExtStorage || !managedPackageUrl || formData.value.url !== managedPackageUrl) return
+		const url = formData.value.url.replace(/^(https?:\/\/)[^\/]+/i, `$1${value || '请输入自定义域名'}`)
+		if (url === formData.value.url && (value || '') === formData.value.file_domain) return
+		restorePackageState({ ...formData.value, file_domain: value || '', url, managedUrl: url, extStorage: true })
+	}
+
 	/**
 	 * 等价于 uni-forms 挂载的 binddata：向表单数据中写入字段值
 	 */
@@ -335,7 +421,8 @@ export function useVersionForm(formRef) {
 		const newKey = getPlatformKey(newPlatform)
 		const oldKey = getPlatformKey(oldPlatform)
 		if (!newKey || !oldKey || newKey === oldKey) return
-		// 旧平台的引用包暂存（无 file_id 的手填链接无处安放，随清空处理）
+		platformPackages.set(oldKey, capturePackageState())
+		// 清理归属仍只使用 file_id，外链槽位仅在当前表单实例暂存。
 		if (formData.value.file_id) {
 			pushObsoleteFile(formData.value.file_id, formData.value.file_domain, {
 				platform: oldKey,
@@ -343,22 +430,16 @@ export function useVersionForm(formRef) {
 				sha256: formData.value.sha256 || ''
 			})
 		}
-		// 清空当前引用与文件选择器显示
-		formData.value.url = ''
-		formData.value.file_id = ''
-		formData.value.file_domain = ''
-		formData.value.sha256 = ''
+		const target = platformPackages.get(newKey)
+		restorePackageState(target || {})
 		appFileList.value = null
+		previousPackage.value = null
 		// 目标平台有暂存包则恢复
 		const obsoleteList = formData.value.obsolete_file_ids
 		if (!obsoleteList) return
 		const slotIndex = obsoleteList.findIndex(item => item.platform === newKey)
 		if (slotIndex === -1) return
-		const slot = obsoleteList.splice(slotIndex, 1)[0]
-		formData.value.url = slot.url || ''
-		formData.value.file_id = slot.file_id || ''
-		formData.value.file_domain = slot.file_domain || ''
-		formData.value.sha256 = slot.sha256 || ''
+		obsoleteList.splice(slotIndex, 1)
 	}
 
 	function packageUploadSuccess(res) {
@@ -368,48 +449,62 @@ export function useVersionForm(formRef) {
 			duration: 800
 		})
 		// 暂存被替换包的引用信息，× 移除新包时恢复
-		preUrl.value = formData.value.url
-		preFileId.value = formData.value.file_id
-		preFileDomain.value = formData.value.file_domain
-		preSha256.value = formData.value.sha256
+		previousPackage.value = capturePackageState()
 		// 被替换的原包标记废弃（无 file_id 的历史记录/手动外链无从删除，跳过）
 		pushObsoleteFile(formData.value.file_id, formData.value.file_domain)
-		formData.value.url = res.tempFiles[0].url
+		const file = res.tempFiles[0]
 		// 保存文件ID与存储域名（内置存储 domain 为空；扩展存储为其自定义域名），用于删除记录时同步删除云存储文件
-		formData.value.file_id = res.tempFiles[0].fileID || res.tempFiles[0].url || ''
-		formData.value.file_domain = uniFilePickerProvider.value === 'extStorage' ? (domain.value || '') : ''
+		restorePackageState({ url: file.url, file_id: file.fileID || file.url || '',
+			file_domain: uniFilePickerProvider.value === 'extStorage' ? (domain.value || '') : '', managedUrl: file.url,
+			extStorage: uniFilePickerProvider.value === 'extStorage' })
 		// 记录本会话上传的包，取消编辑时统一标记废弃
 		pushSessionUploadedFile(formData.value.file_id, formData.value.file_domain)
-		// 仅蒸汽模式应用需要计算 SHA256
-		if (formData.value.is_vapor) {
-			getPackageSha256(res.tempFiles[0])
+		// 需校验 SHA256 的记录需要计算摘要
+		if (needSha256.value) {
+			getPackageSha256()
 		}
 	}
 
 	/**
-	 * 开启蒸汽模式时，若已上传包但尚未计算 SHA256，则自动补算（如先上传后勾选的场景）
+	 * 需校验 SHA256 的记录（蒸汽模式 wgt 或开启校验的 APK）若已上传包但尚未计算摘要，则自动补算
 	 */
-	function tryCalcVaporSha256() {
-		if (formData.value.is_vapor && hasPackage.value && !formData.value.sha256 && !sha256Loading.value) {
-			getPackageSha256(appFileList.value)
-		}
+	function tryCalcPackageSha256() {
+		if (!needSha256.value || hasBoundPackageSha256.value || sha256Loading.value) return
+		return getPackageSha256()
+	}
+
+	/** APK 开启/关闭 SHA256 校验；开启时若已上传包但未计算摘要，自动补算 */
+	function onVerifySha256Change(e) {
+		const val = e.detail.value
+		binddata('verify_sha256', val)
+		if (val) return tryCalcPackageSha256()
+		resetSha256Request()
 	}
 
 	/**
 	 * 重新生成上传包的 SHA256（获取失败后的重试入口，无需删除重传）
 	 */
 	function regeneratePackageSha256() {
-		if (!formData.value.is_vapor || sha256Loading.value) return
-		const file = vaporPackageFile.value
-		if (!file) return
-		getPackageSha256(file)
+		if (!needSha256.value || sha256Loading.value) return
+		return getPackageSha256()
+	}
+
+	/** 使在途 SHA256 请求失效（取消编辑/退出时调用），避免旧响应写入已还原的表单 */
+	function resetSha256Request() {
+		const binding = sha256Binding.value
+		sha256RequestId++
+		sha256Loading.value = false
+		// 使在途请求失效不等于丢弃已完成摘要；来源未变时为已有绑定换代。
+		if (binding && isSamePackageSha256Source(binding, packageSource.value)) {
+			sha256Binding.value = { ...binding, generation: sha256RequestId }
+		}
 	}
 
 	/**
-	 * 蒸汽模式应用提交前校验 SHA256（计算中或缺失时提示并抛出异常，中断提交）
+	 * 需校验 SHA256 的记录提交前校验（计算中或缺失时提示并抛出异常，中断提交）
 	 */
-	function ensureVaporSha256() {
-		if (!formData.value.is_vapor) return
+	function ensurePackageSha256(data = formData.value) {
+		if (!needSha256.value) return
 		if (sha256Loading.value) {
 			uni.showModal({
 				content: 'SHA256 计算中，请稍候再提交',
@@ -417,14 +512,13 @@ export function useVersionForm(formRef) {
 			})
 			throw new Error('SHA256计算中')
 		}
-		if (!formData.value.sha256) {
-			// 存在可校验文件（选择器中的上传包或平台槽位恢复的包）时引导重新生成
-			const hasFile = vaporPackageFile.value != null
+		if (data.url !== formData.value.url || !hasCurrentPackageSha256()) {
+			// 即使调用方/组件以程序方式改值，提交也必须与当前下载 URL 的绑定一致。
 			uni.showModal({
-				content: hasFile ? 'SHA256 获取失败，请点击【重新生成】重试，或删除已上传的包后重新上传' : '蒸汽模式应用需上传资源包以生成 SHA256',
+				content: packageSource.value ? 'SHA256 缺失、无效或下载来源已变更，请点击【重新生成】' : '请填写下载链接或上传安装包以生成 SHA256',
 				showCancel: false
 			})
-			throw new Error('SHA256缺失')
+			throw new Error('SHA256来源未绑定或无效')
 		}
 	}
 
@@ -456,43 +550,44 @@ export function useVersionForm(formRef) {
 	}
 
 	/**
-	 * 获取上传包的SHA256（仅蒸汽模式应用，用于鸿蒙应用市场上架等场景填写）
-	 * @param {Object} file 上传成功后的文件对象，需包含 fileID 或 url
+	 * 按当前客户端下载来源计算 SHA256；URL 参数沿用已有云接口，不改变服务端访问权限。
 	 */
-	async function getPackageSha256(file) {
-		const fileID = file && (file.fileID || file.url)
-		if (!fileID) return
+	async function getPackageSha256() {
+		const source = getPackageSha256Source(formData.value)
+		if (!source) return
 		const requestId = ++sha256RequestId
+		const binding = { ...source, generation: requestId }
+		sha256Binding.value = null
 		formData.value.sha256 = ''
 		sha256Loading.value = true
 		const res = await request('getFileSha256', {
-			fileID,
-			// file_domain 为上传时快照，与删除逻辑一致（避免上传后切换存储类型导致路由错误）
-			domain: formData.value.file_domain || ''
+			fileID: binding.fileID,
+			domain: binding.domain
 		}, {
-			functionName: 'uni-upgrade-center'
+			functionName: 'uni-upgrade-center',
+			timeout: 115000
 		}).catch(err => {
-			console.error('获取文件SHA256失败：', err && (err.errMsg || err.message) || err)
+			if (requestId === sha256RequestId && isSamePackageSha256Source(binding, getPackageSha256Source(formData.value))) {
+				console.error('获取文件SHA256失败：', err && (err.errMsg || err.message) || err)
+			}
 		}).finally(() => {
 			// 仅最新请求结束时复位计算状态：计算期间重新上传会并发新请求，旧请求结束不得提前解锁
 			if (requestId === sha256RequestId) {
 				sha256Loading.value = false
 			}
 		})
-		if (res && res.success && res.sha256) {
-			// 计算期间可能取消勾选蒸汽模式、删除/更换了包，或从平台槽位恢复；
-			// 选择器为空时以当前引用的 file_id 作为对应标识，仅最新请求且结果仍对应当前包时写入
-			const currentFileID = appFileList.value ? (appFileList.value.fileID || appFileList.value.url) : (
-				formData.value.file_id || '')
-			if (requestId === sha256RequestId && formData.value.is_vapor && currentFileID === fileID) {
+		const isCurrentRequest = requestId === sha256RequestId && isSamePackageSha256Source(binding, getPackageSha256Source(formData.value))
+		if (res && res.success && isValidPackageSha256(res.sha256)) {
+			if (isCurrentRequest && needSha256.value) {
 				formData.value.sha256 = res.sha256
+				sha256Binding.value = { ...binding, sha256: res.sha256 }
 			}
-		} else if (res && res.errMsg) {
-			// 旧请求的失败不打扰（当前已是更新的请求/包）
-			if (requestId === sha256RequestId) {
+		} else if (res) {
+			// 旧请求/已移除的包不打扰
+			if (isCurrentRequest) {
 				uni.showToast({
 					icon: 'none',
-					title: '获取SHA256失败：' + res.errMsg,
+					title: '获取SHA256失败：' + (res.errMsg || '摘要格式无效'),
 					duration: 3000
 				})
 			}
@@ -500,7 +595,7 @@ export function useVersionForm(formRef) {
 	}
 
 	function copyPackageSha256() {
-		if (!formData.value.sha256) return
+		if (!hasBoundPackageSha256.value) return
 		uni.setClipboardData({
 			data: formData.value.sha256,
 			showToast: false,
@@ -515,22 +610,23 @@ export function useVersionForm(formRef) {
 	}
 
 	function packageDelete(res) {
-		if (!hasPackage.value) return;
+		if (!res.tempFile) return;
 		// × 移除的是本会话新上传的包（云端已存在且无引用），标记废弃，由版本列表的清理入口统一删除；
 		// file_domain 为上传时快照，须在恢复引用信息前取值
-		pushObsoleteFile(res.tempFile.fileID || res.tempFile.url || '', formData.value.file_domain)
+		const removedFileId = res.tempFile.fileID || res.tempFile.url || ''
+		const uploadedFile = sessionUploadedFiles.value.find(item => item.file_id === removedFileId)
+		pushObsoleteFile(removedFileId, uploadedFile ? uploadedFile.file_domain : formData.value.file_domain)
 		// 恢复被替换包的引用信息（原记录的 file_id 不能丢失，否则后续删除记录时无法同步删除其文件）
-		formData.value.file_id = preFileId.value || ''
-		formData.value.file_domain = preFileDomain.value || ''
-		formData.value.sha256 = preSha256.value || ''
+		restorePackageState(previousPackage.value || {})
+		appFileList.value = null
+		previousPackage.value = null
 		// 被替换的原包回到引用状态，移出废弃列表
-		removeObsoleteFile(preFileId.value)
+		removeObsoleteFile(formData.value.file_id)
 		uni.showToast({
 			icon: 'success',
 			title: '已移除并标记废弃',
 			duration: 800
 		})
-		formData.value.url = preUrl.value
 		formRef.value.clearValidate('url')
 	}
 
@@ -544,18 +640,36 @@ export function useVersionForm(formRef) {
 		}
 	}
 
+	// SHA256 提交校验在页面 submit() 中统一执行（可被表单校验链捕获），此处不再重复校验
 	function createCenterRecord(value) {
 		// 局部变量保持驼峰命名，数据库字段使用蛇形 is_vapor
 		const isVaporPackage = isWGT.value && formData.value.is_vapor === true
+		// verify_sha256 仅 Android APK 生效（iOS/Harmony 无上传入口）；uni1 客户端忽略该开关
+		const verifySha256 = isNativeApp.value && isAndroid.value && formData.value.verify_sha256 === true
+		// 仅 wgt 或 Android APK 会引用上传文件，其余平台不写文件引用
+		const keepFileRef = isWGT.value || (isNativeApp.value && isAndroid.value)
+		const referencedFileId = keepFileRef ? (formData.value.file_id || '') : ''
+		// 本会话上传但最终未被引用的包并入废弃列表，避免切离 Android 后成为孤儿文件
+		const obsoleteFileIds = (formData.value.obsolete_file_ids || []).slice()
+		sessionUploadedFiles.value.forEach(item => {
+			if (item.file_id && item.file_id !== referencedFileId && !obsoleteFileIds.some(o => o.file_id === item.file_id)) {
+				obsoleteFileIds.push({
+					file_id: item.file_id,
+					file_domain: item.file_domain || '',
+					obsolete_date: Date.now()
+				})
+			}
+		})
 		return {
 			...value,
 			is_vapor: isVaporPackage,
-			// 仅蒸汽模式应用携带 SHA256
-			sha256: isVaporPackage ? (formData.value.sha256 || '') : '',
-			file_id: formData.value.file_id || '',
-			file_domain: formData.value.file_domain || '',
+			verify_sha256: verifySha256,
+			// 蒸汽模式 wgt 或开启校验的 APK 携带 SHA256
+			sha256: (isVaporPackage || verifySha256) ? (formData.value.sha256 || '') : '',
+			file_id: referencedFileId,
+			file_domain: referencedFileId ? (formData.value.file_domain || '') : '',
 			// 本会话产生的废弃文件（被替换的原包、× 移除的新包）随记录原子入库
-			obsolete_file_ids: formData.value.obsolete_file_ids || [],
+			obsolete_file_ids: obsoleteFileIds,
 			uni_platform: uni_platform.value,
 			create_env: 'upgrade-center'
 		}
@@ -621,6 +735,7 @@ export function useVersionForm(formRef) {
 		updatePromptContent,
 		updatePromptModalContent,
 		vaporContent,
+		verifySha256Content,
 		stablePublishContent,
 		stablePublishContent2,
 		minUniVersionContent,
@@ -633,6 +748,7 @@ export function useVersionForm(formRef) {
 		latestStableData,
 		appFileList,
 		sha256Loading,
+		sha256Binding,
 		uniFilePickerProvider,
 		domain,
 		sessionUploadedFiles,
@@ -650,18 +766,26 @@ export function useVersionForm(formRef) {
 		urlLabel,
 		isApk,
 		sha256Status,
+		needSha256,
 		binddata,
+		onPackageUrlInput,
+		changePackageDomain,
+		bindLoadedPackageSha256,
+		capturePackageState,
+		restorePackageState,
 		onSilentlyChange,
 		onUpdatePromptChange,
 		onMandatoryChange,
+		onVerifySha256Change,
 		validatePromptFields,
 		validateMinRequiredVersion,
 		handlePlatformChange,
 		getStoreList,
 		packageUploadSuccess,
-		tryCalcVaporSha256,
+		tryCalcPackageSha256,
 		regeneratePackageSha256,
-		ensureVaporSha256,
+		resetSha256Request,
+		ensurePackageSha256,
 		ensurePackageExt,
 		copyPackageSha256,
 		packageDelete,

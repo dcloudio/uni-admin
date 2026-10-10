@@ -5,7 +5,7 @@ const debugOptions = config.navBar.debug;
 const db = uniCloud.database();
 
 export function request(action, params, options) {
-  const { objectName, functionName, showModal, ...objectOptions } = Object.assign(
+  const { objectName, functionName, showModal, timeout, ...objectOptions } = Object.assign(
     {
       objectName: 'uni-id-co',
       functionName: '',
@@ -24,6 +24,7 @@ export function request(action, params, options) {
   if (functionName) {
     call = uniCloud.callFunction({
       name: functionName,
+      ...(timeout === undefined ? {} : { timeout }),
       data: {
         action,
         params,

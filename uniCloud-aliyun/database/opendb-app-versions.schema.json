@@ -204,8 +204,14 @@
     },
     "sha256": {
       "bsonType": "string",
-      "description": "安装包SHA256",
+      "description": "安装包SHA256（蒸汽模式wgt或开启校验的apk）",
       "label": "安装包SHA256"
+    },
+    "verify_sha256": {
+      "bsonType": "bool",
+      "description": "是否开启安装包SHA256校验（仅 uni-app x 客户端在安装 APK 前校验；uni1 忽略）",
+      "label": "SHA256校验",
+      "defaultValue": false
     },
     "create_date": {
       "bsonType": "timestamp",
