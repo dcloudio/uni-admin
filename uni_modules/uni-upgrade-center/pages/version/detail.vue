@@ -39,9 +39,7 @@
 				</view>
 			</uni-forms-item>
 			<uni-forms-item name="contents" label="更新内容" required>
-				<textarea auto-height style="box-sizing: content-box;" :disabled="detailsState"
-					@input="binddata('contents', $event.detail.value)" class="uni-textarea-border" placeholder="更新内容 (可换行)"
-					:value="formData.contents" @update:value="val => formData.contents = val"></textarea>
+				<version-contents v-model="formData.contents" :disabled="detailsState" />
 			</uni-forms-item>
       <uni-forms-item v-if="isWGT" key="is_vapor" name="is_vapor" label="蒸汽模式">
 		<!-- 发布后不允许修改蒸汽模式标记，避免与已发布资源包及其 SHA256 不匹配 -->
@@ -215,6 +213,7 @@
 		onUnload
 	} from '@dcloudio/uni-app';
 	import showInfo from '../components/show-info.vue';
+	import versionContents from '../components/version-contents.vue';
 	import {
 		useVersionForm,
 		fields
