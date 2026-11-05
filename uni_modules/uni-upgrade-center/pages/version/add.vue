@@ -27,7 +27,7 @@
 			</uni-forms-item>
 			<uni-forms-item v-if="formData.is_update_prompt && (isNativeApp || formData.update_prompt === 'modal')" name="update_prompt_content" label="提醒内容">
 				<view style="display:flex;flex-direction:column;flex:1;">
-					<textarea auto-height style="box-sizing: content-box;" :maxlength="-1" :placeholder="isNativeApp ? '安装包已下载，是否立即安装？' : '应用已更新，是否立即重启？'"
+					<textarea auto-height style="box-sizing: content-box;" :maxlength="-1" :placeholder="isNativeApp ? '安装包已下载，是否立即安装？' : `新版本已安装（${formData.version || '版本号'}）点击重启立即生效或下次启动应用时生效`"
 						@input="binddata('update_prompt_content', $event.detail.value)" class="uni-textarea-border"
 						:value="formData.update_prompt_content" @update:value="val => formData.update_prompt_content = val"></textarea>
 					<text style="color:#666;font-size:12px;margin-top:6px;">{{updatePromptModalContent}}</text>
@@ -41,7 +41,7 @@
       	<switch :disabled="sha256Loading" @change="onVaporChange" :checked="formData.is_vapor" />
       	<show-info :content="vaporContent"></show-info>
       </uni-forms-item>
-      
+
       <uni-forms-item name="platform" label="平台" required>
         <!-- sha256 计算中禁止切换平台：蒸汽模式切换平台会暂存旧包，需等待摘要写入暂存信息 -->
         <uni-data-checkbox :disabled="sha256Loading" :multiple="isWGT && !formData.is_vapor" v-model="formData.platform" :localdata="platformLocaldata" @change="onPlatformChangeByUser" />
@@ -451,7 +451,7 @@
 				res.update_prompt = 'modal'
 				res.is_silently = res.is_update_prompt
 			}
-			res.update_prompt_content = formData.value.update_prompt_content || '应用已更新，是否立即重启？'
+			res.update_prompt_content = formData.value.update_prompt_content || (isNativeApp.value ? '安装包已下载，是否立即安装？' : `新版本已安装（${res.version}）\n点击重启立即生效或下次启动应用时生效`)
 			validatePromptFields(res)
 			validateMinRequiredVersion(res, compare)
 			if (compare(latestVersion.value, res.version) >= 0) {

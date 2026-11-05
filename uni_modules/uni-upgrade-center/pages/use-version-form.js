@@ -50,7 +50,7 @@ export function useVersionForm(formRef) {
 	const enableiOSWgt = true; // 是否开启iOS的wgt更新
 	const silentlyContent = '后台下载安装wgt包，不提示、不主动重启，下次启动App时生效'
 	const updatePromptContent = computed(() => isNativeApp.value ? '仅 Android 可用；后台下载APK，完成后弹窗提醒安装' : '后台下载安装wgt包，完成后提醒重启；与静默更新互斥')
-	const updatePromptModalContent = '完成后弹窗先显示提醒内容，再附上更新内容；按钮文字固定。'
+	const updatePromptModalContent = computed(() => isNativeApp.value ? '完成后弹窗先显示提醒内容，再附上更新内容；按钮文字固定。' : '安装完成后弹窗显示提醒内容，留空使用默认文案；不附加更新内容，按钮文字固定。')
 	const mandatoryContent = computed(() => {
 		if (isNativeApp.value) {
 			return formData.value.is_update_prompt
@@ -133,7 +133,7 @@ export function useVersionForm(formRef) {
 		"contents": "",
 		"is_update_prompt": false,
 		"update_prompt": "modal",
-		"update_prompt_content": "应用已更新，是否立即重启？",
+		"update_prompt_content": "",
 		"platform": [],
 		"store_list": [],
 		"type": "",
